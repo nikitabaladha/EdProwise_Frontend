@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
-import "./assets/css/app.min.css";
-import "./assets/css/custom.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import "./assets/css/custom.min.css";
-import "./assets/css/icons.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 import AppRoutes from "./routes";
 
@@ -25,6 +23,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <AppRoutes isAuthenticated={isAuthenticated} handleLogin={handleLogin} />
+      <ToastContainer />
     </BrowserRouter>
   );
 };

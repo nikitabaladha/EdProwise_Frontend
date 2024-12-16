@@ -1,189 +1,65 @@
-// import React from "react";
-
-// const Login = () => {
-//   return (
-//     <>
-//       <div className="auth-page-wrapper pt-5">
-//         {/* auth page bg */}
-//         <div className="auth-one-bg-position auth-one-bg" id="auth-particles">
-//           <div className="bg-overlay" />
-//           <div className="shape">
-//             <svg
-//               xmlns="http://www.w3.org/2000/svg"
-//               version="1.1"
-//               xmlnsXlink="http://www.w3.org/1999/xlink"
-//               viewBox="0 0 1440 120"
-//             >
-//               <path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z" />
-//             </svg>
-//           </div>
-//           <canvas
-//             className="particles-js-canvas-el"
-//             width={752}
-//             height={475}
-//             style={{ width: "100%", height: "100%" }}
-//           />
-//         </div>
-//         {/* auth page content */}
-//         <div className="auth-page-content">
-//           <div className="container">
-//             <div className="row">
-//               <div className="col-lg-12">
-//                 <div className="text-center mt-sm-5 mb-4 text-white-50">
-//                   <div>
-//                     <a href="#" className="d-inline-block auth-logo">
-//                       <img
-//                         src="logoit.png"
-//                         alt=""
-//                         height={20}
-//                         style={{ height: 95 }}
-//                       />
-//                     </a>
-//                   </div>
-//                   <p className="mt-3 fs-15 fw-medium">
-//                     Welcome To Domain Name{" "}
-//                   </p>
-//                 </div>
-//               </div>
-//             </div>
-//             {/* end row */}
-//             <div className="row justify-content-center">
-//               <div className="col-md-8 col-lg-6 col-xl-5">
-//                 <div className="card mt-4 card-bg-fill">
-//                   <div className="card-body p-4">
-//                     <div className="text-center mt-2">
-//                       <h5 className="text-primary">Welcome Back !</h5>
-//                       <p className="text-muted">
-//                         Sign in to continue to Domain Name .
-//                       </p>
-//                     </div>
-//                     <div className="p-2 mt-4">
-//                       <form action="" method="POST">
-//                         <div className="mb-3">
-//                           <label htmlFor="username" className="form-label">
-//                             Username
-//                           </label>
-//                           <input
-//                             type="text"
-//                             name="email"
-//                             required=""
-//                             className="form-control"
-//                             id="username"
-//                             placeholder="Enter username"
-//                           />
-//                         </div>
-//                         <div className="mb-3">
-//                           <label
-//                             className="form-label"
-//                             htmlFor="password-input"
-//                           >
-//                             Password
-//                           </label>
-//                           <div className="position-relative auth-pass-inputgroup mb-3">
-//                             <input
-//                               type="password"
-//                               name="password"
-//                               required=""
-//                               className="form-control pe-5 password-input"
-//                               placeholder="Enter password"
-//                               id="password-input"
-//                             />
-//                             <button
-//                               className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon material-shadow-none"
-//                               type="button"
-//                               id="password-addon"
-//                             >
-//                               <i className="ri-eye-fill align-middle" />
-//                             </button>
-//                           </div>
-//                         </div>
-//                         <div className="form-check">
-//                           <input
-//                             className="form-check-input"
-//                             required=""
-//                             type="checkbox"
-//                             defaultValue=""
-//                             id="auth-remember-check"
-//                           />
-//                           <label
-//                             className="form-check-label"
-//                             htmlFor="auth-remember-check"
-//                           >
-//                             Remember me
-//                           </label>
-//                         </div>
-//                         <div className="mt-4">
-//                           <button
-//                             className="btn btn-success w-100"
-//                             type="submit"
-//                             name="login"
-//                           >
-//                             Sign In
-//                           </button>
-//                         </div>
-//                       </form>
-//                     </div>
-//                   </div>
-//                   {/* end card body */}
-//                 </div>
-//                 {/* end card */}
-//               </div>
-//             </div>
-//             {/* end row */}
-//           </div>
-//           {/* end container */}
-//         </div>
-//         {/* end auth page content */}
-//         {/* footer */}
-//         <footer className="footer">
-//           <div className="container">
-//             <div className="row">
-//               <div className="col-lg-12">
-//                 <div className="text-center">
-//                   <p className="mb-0 text-muted">© Domain Name.</p>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </footer>
-//         {/* end Footer */}
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Login;
-
 import React, { useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import postAPI from "../../api/postAPI";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+const Login = ({ onLogin }) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [generalError, setGeneralError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async (e) => {
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    setGeneralError("");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post("/your-api-endpoint/login", {
-        email: email,
-        password: password,
-      });
+      const response = await postAPI("/login", formData, false);
 
-      if (response.data.success) {
-        // Handle successful login (e.g., redirect to OTP page)
-        window.location.href = "/otp";
+      if (!response.hasError) {
+        localStorage.setItem(
+          "accessToken",
+          JSON.stringify(response.data.token)
+        );
+        localStorage.setItem(
+          "userDetails",
+          JSON.stringify(response.data.userDetails)
+        );
+        toast.success("Login successful!");
+
+        setTimeout(() => {
+          onLogin();
+        }, 2000);
       } else {
-        // Handle unsuccessful login
-        setErrorMessage(response.data.message || "Invalid Credentials");
+        setGeneralError(response.data.message);
       }
     } catch (error) {
-      console.error("Login error:", error);
-      setErrorMessage("An error occurred during login. Please try again.");
+      setGeneralError(
+        error?.response?.data?.message ||
+          "An unexpected login error occurred. Please try again."
+      );
     }
   };
 
+  const handleSignupRedirect = () => {
+    navigate("/signup");
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
   return (
     <div className="auth-page-wrapper pt-5">
       {/* auth page bg */}
@@ -208,16 +84,16 @@ const Login = () => {
             <div className="col-lg-12">
               <div className="text-center mt-sm-5 mb-4 text-white-50">
                 <div>
-                  <a href="#" className="d-inline-block auth-logo">
+                  <Link to="" className="d-inline-block auth-logo">
                     <img
                       src="logoit.png"
                       alt=""
                       height="20"
                       style={{ height: "95px" }}
                     />
-                  </a>
+                  </Link>
                 </div>
-                <p className="mt-3 fs-15 fw-medium">Welcome To Domain Name </p>
+                <p className="mt-3 fs-15 fw-medium">Welcome To Domain Name</p>
               </div>
             </div>
           </div>
@@ -230,20 +106,20 @@ const Login = () => {
                   <div className="text-center mt-2">
                     <h5 className="text-primary">Welcome Back!</h5>
                     <p className="text-muted">
-                      Sign in to continue to Domain Name.
+                      Sign in to continue to EdProwise.
                     </p>
                   </div>
                   <div className="p-2 mt-4">
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleSubmit}>
                       <div className="mb-3">
                         <label htmlFor="username" className="form-label">
-                          Username
+                          Email
                         </label>
                         <input
                           type="text"
                           name="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          value={formData.email}
+                          onChange={handleChange}
                           required
                           className="form-control"
                           id="username"
@@ -257,10 +133,10 @@ const Login = () => {
                         </label>
                         <div className="position-relative auth-pass-inputgroup mb-3">
                           <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             name="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={formData.password}
+                            onChange={handleChange}
                             required
                             className="form-control pe-5 password-input"
                             placeholder="Enter password"
@@ -270,8 +146,13 @@ const Login = () => {
                             className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon material-shadow-none"
                             type="button"
                             id="password-addon"
+                            onClick={togglePasswordVisibility}
                           >
-                            <i className="ri-eye-fill align-middle"></i>
+                            <i
+                              className={`ri-eye${
+                                showPassword ? "-off" : ""
+                              }-fill align-middle`}
+                            ></i>
                           </button>
                         </div>
                       </div>
@@ -291,15 +172,26 @@ const Login = () => {
                         </label>
                       </div>
 
-                      {errorMessage && (
+                      {generalError && (
                         <div className="alert alert-danger mt-3">
-                          {errorMessage}
+                          {generalError}
                         </div>
                       )}
 
                       <div className="mt-4">
                         <button className="btn btn-success w-100" type="submit">
                           Sign In
+                        </button>
+                      </div>
+
+                      <p className="mt-4">Don't have an account ?</p>
+                      <div className="d-grid">
+                        <button
+                          className="btn btn-info login-do-btn"
+                          type="submit"
+                          onClick={handleSignupRedirect}
+                        >
+                          Signup
                         </button>
                       </div>
                     </form>
@@ -323,9 +215,7 @@ const Login = () => {
             <div className="col-lg-12">
               <div className="text-center">
                 <p className="mb-0 text-muted">
-                  &copy;
-                  <script>document.write(new Date().getFullYear())</script>{" "}
-                  Domain Name.
+                  &copy; {new Date().getFullYear()} EdProwise.
                 </p>
               </div>
             </div>
