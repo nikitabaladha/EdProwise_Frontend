@@ -4,7 +4,7 @@ import postAPI from "../../api/postAPI";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
-const Login = ({ onLogin }) => {
+const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -40,7 +40,7 @@ const Login = ({ onLogin }) => {
         toast.success("Login successful!");
 
         setTimeout(() => {
-          onLogin();
+          return navigate("/dashboard");
         }, 2000);
       } else {
         setGeneralError(response.data.message);
@@ -93,7 +93,7 @@ const Login = ({ onLogin }) => {
                     />
                   </Link>
                 </div>
-                <p className="mt-3 fs-15 fw-medium">Welcome To Domain Name</p>
+                <p className="mt-3 fs-15 fw-medium">Welcome To EdProwise</p>
               </div>
             </div>
           </div>

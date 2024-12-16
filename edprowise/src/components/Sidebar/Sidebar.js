@@ -1,679 +1,319 @@
-// import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { IoIosArrowForward } from "react-icons/io";
+import brandLogo from "./logo.png";
+const Sidebar = () => {
+  // State to track the expanded/collapsed status of each menu
+  const [expandedMenus, setExpandedMenus] = useState({});
 
-// import { Link } from "react-router-dom";
+  // Function to toggle the state of a parent menu
+  const toggleMenu = (menuId) => {
+    setExpandedMenus((prev) => ({
+      ...prev,
+      [menuId]: !prev[menuId], // Toggle the state of the clicked menu
+    }));
+  };
 
-// import PerfectScrollbar from "react-perfect-scrollbar";
+  const menuData = [
+    {
+      id: "dashboard",
+      title: "Dashboards",
+      icon: "ri-dashboard-2-line",
+      link: "",
+    },
+    {
+      id: "formMenu",
+      title: "Form",
+      icon: "mdi mdi-compare-vertical",
+      subMenus: [
+        { title: "Registration Form", link: "" },
+        { title: "Admission Form", link: "" },
+        { title: "TC Form", link: "" },
+        { title: "Concession Form", link: "" },
+      ],
+    },
+    {
+      id: "feesMenu",
+      title: "Fees Receipts",
+      icon: "mdi mdi-compare-vertical",
+      subMenus: [
+        { title: "School Fees", link: "" },
+        { title: "Board Registration Fees", link: "" },
+        { title: "Board Exam Fees", link: "" },
+      ],
+    },
 
-// import "react-perfect-scrollbar/dist/css/styles.css";
+    {
+      id: "reportMenus",
+      title: "Reports",
+      icon: "mdi mdi-compare-vertical",
+      subMenus: [
+        { title: "Daily Collection", link: "" },
+        { title: "Defaulter Fees", link: "" },
+        { title: "Loss of fees due to left Students", link: "" },
+        { title: "Loss of fees due to Late Admission", link: "" },
+        { title: "Arrear Fees Received Report", link: "" },
+        { title: "Advance Fees Report", link: "" },
+        { title: "Fees Concession Report", link: "" },
+        { title: "Registration Fee Report", link: "" },
+        { title: "Admission Fee Report", link: "" },
+        { title: "Board Registration Fees Report", link: "" },
+        { title: "Board Exam Fees Report", link: "" },
+        { title: "Fees Structure", link: "" },
+        { title: " Student Master", link: "" },
+      ],
+    },
 
-// const menuConfig = [
-//   {
-//     id: "dashboard",
-//     label: "Dashboard",
-//     iconClass: <AiOutlineHome />,
-//     link: "/dashboard/overview",
-//     subMenu: [
-//       {
-//         id: "overview",
-//         label: "Overview",
-//         link: "/dashboard/overview",
-//       },
-//       {
-//         id: "report",
-//         label: "Report",
-//         subMenu: [
-//           {
-//             id: "incomeExpense",
-//             label: "Income Vs Expense",
-//             link: "/dashboard/report/income-vs-expense",
-//           },
-//           {
-//             id: "monthlyAttendance",
-//             label: "Monthly Attendance",
-//             link: "/dashboard/report/monthly-attendance",
-//           },
-//           {
-//             id: "leave",
-//             label: "Leave",
-//             link: "/dashboard/report/leave",
-//           },
-//           {
-//             id: "accountStatement",
-//             label: "Account Statement",
-//             link: "/dashboard/report/account-statement",
-//           },
-//           {
-//             id: "payroll",
-//             label: "Payroll",
-//             link: "/dashboard/report/payroll",
-//           },
-//           {
-//             id: "timesheet",
-//             label: "Timesheet",
-//             link: "/dashboard/report/time-sheet",
-//           },
-//         ],
-//       },
-//     ],
-//   },
+    {
+      id: "auditDocumentation",
+      title: "Audit Documentation",
+      icon: "mdi mdi-compare-vertical",
+      subMenus: [
+        { title: "Fees Reconciliation (Headcount)", link: "" },
+        { title: " Fees Reconciliation (Fees wise)", link: "" },
+        {
+          title: "Fees Reconciliation (Fees Module vs Finance Module)",
+          link: "",
+        },
+      ],
+    },
 
-//   // staff
-//   {
-//     id: "staff",
-//     label: "Staff",
-//     iconClass: <TbUsers />,
-//     link: "",
-//     subMenu: [
-//       {
-//         id: "user",
-//         label: "User",
-//         link: "/dashboard/staff/user",
-//       },
-//       {
-//         id: "roles",
-//         label: "Role",
-//         link: "/dashboard/staff/roles",
-//       },
-//       {
-//         id: "employeeProfile",
-//         label: "Employee Profile",
-//         link: "/dashboard/staff/employee-profile",
-//       },
-//     ],
-//   },
+    {
+      id: "adminSetting",
+      title: "Admin Setting",
+      icon: "mdi mdi-compare-vertical",
+      subMenus: [
+        { title: "Fees Structure", link: "" },
+        { title: "Class", link: "" },
+        {
+          title: " Shift",
+          link: "",
+        },
+        {
+          title: "Section",
+          link: "",
+        },
+      ],
+    },
 
-//   // employee
-//   {
-//     id: "employee",
-//     label: "Employee",
-//     iconClass: <LuUser />,
-//     link: "/dashboard/employee",
-//   },
+    {
+      id: "support",
+      title: "Support",
+      icon: "mdi mdi-compare-vertical",
+      subMenus: [
+        { title: "Profile", link: "" },
+        { title: "User Manual", link: "" },
+        {
+          title: "Raise Ticket",
+          link: "",
+        },
+        {
+          title: "FAQ",
+          link: "",
+        },
+      ],
+    },
+    {
+      id: "logOut",
+      title: "Logout",
+      icon: "mdi mdi-logout",
+      link: "",
+    },
+  ];
 
-//   // pay roll
-//   {
-//     id: "payroll",
-//     label: "Payroll",
-//     iconClass: <TbReceipt />,
-//     link: "",
-//     subMenu: [
-//       {
-//         id: "setSalary",
-//         label: "Set Salary",
-//         link: "/dashboard/payroll/set-salary",
-//       },
-//       {
-//         id: "payslip",
-//         label: "Payslip",
-//         link: "/dashboard/payroll/payslip",
-//       },
-//     ],
-//   },
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
 
-//   // timessheet
-//   {
-//     id: "timeSheet",
-//     label: "Timesheet",
-//     iconClass: <FaRegClock />,
-//     link: "#!",
-//     subMenu: [
-//       {
-//         id: "timeSheet",
-//         label: "Timesheet",
-//         link: "/dashboard/time-sheet/time-sheet",
-//       },
-//       {
-//         id: "manageLeave",
-//         label: "Manage Leave",
-//         link: "/dashboard/time-sheet/manage-leave",
-//       },
-//       {
-//         id: "attendance",
-//         label: "Attendance",
-//         subMenu: [
-//           {
-//             id: "markedAttendance",
-//             label: "Marked Attendance",
+  return (
+    <div
+      className="app-menu navbar-menu"
+      style={{
+        backgroundColor: " #7c50f5",
+        borderRadius: 25,
+        marginLeft: 10,
+      }}
+    >
+      <div className="navbar-brand-box">
+        {/* Dark Logo*/}
+        <a href="index.php" className="logo logo-dark">
+          <span className="logo-sm">
+            <img src={brandLogo} style={{ height: 22 }} alt="" />
+          </span>
+          <span className="logo-lg">
+            <img src={brandLogo} style={{ height: 17 }} alt="" />
+          </span>
+        </a>
+        {/* Light Logo*/}
+        <a href="index.php" className="logo logo-light">
+          <span className="logo-sm">
+            <img src={brandLogo} style={{ height: 22 }} alt="" />
+          </span>
+          <span className="logo-lg">
+            <img src={brandLogo} style={{ height: 17 }} alt="" />
+          </span>
+        </a>
+        <button
+          type="button"
+          className="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+          id="vertical-hover"
+        >
+          <i className="ri-record-circle-line" />
+        </button>
+      </div>
 
-//             link: "/dashboard/time-sheet/attendance/marked-attendance",
-//           },
-//           {
-//             id: "bulkAttendance",
-//             label: "Bulk Attendance",
-//             link: "/dashboard/time-sheet/attendance/bulk-attendance",
-//           },
-//         ],
-//       },
-//     ],
-//   },
+      <div
+        id="scrollbar"
+        data-simplebar="init"
+        className="h-100 simplebar-scrollable-y"
+      >
+        <div className="simplebar-wrapper" style={{ margin: 0 }}>
+          <div className="simplebar-height-auto-observer-wrapper">
+            <div className="simplebar-height-auto-observer" />
+          </div>
+          <div className="simplebar-mask">
+            <div className="simplebar-offset" style={{ right: 0, bottom: 0 }}>
+              <div
+                className="simplebar-content-wrapper"
+                tabIndex={0}
+                role="region"
+                aria-label="scrollable content"
+                style={{ height: "100%", overflow: "hidden scroll" }}
+              >
+                <div className="simplebar-content" style={{ padding: 0 }}>
+                  <div className="container-fluid">
+                    <ul className="navbar-nav" id="navbar-nav">
+                      <li className="menu-title">
+                        <span data-key="t-menu" style={{ color: "white" }}>
+                          Menu
+                        </span>
+                      </li>
 
-//   // performance
-//   {
-//     id: "performance",
-//     label: "Performance",
-//     iconClass: <HiCubeTransparent />,
-//     link: "#!",
-//     subMenu: [
-//       {
-//         id: "indicator",
-//         label: "Indicator",
-//         link: "/dashboard/performance/indicator",
-//       },
-//       {
-//         id: "appraisal",
-//         label: "Appraisal",
-//         link: "/dashboard/performance/appraisal",
-//       },
-//       {
-//         id: "goalTracking",
-//         label: "Goal Tracking",
-//         link: "/dashboard/performance/goal-tracking",
-//       },
-//     ],
-//   },
+                      {menuData.map((menu) => (
+                        <li key={menu.id} className="nav-item">
+                          {menu.subMenus ? (
+                            <>
+                              {/* Parent Menu */}
+                              <div
+                                className="nav-link menu-link"
+                                onClick={() => toggleMenu(menu.id)}
+                                style={{
+                                  cursor: "pointer",
+                                  background: "none",
+                                }}
+                                aria-expanded={expandedMenus[menu.id] || false}
+                              >
+                                <i
+                                  className={menu.icon}
+                                  style={{ color: "white" }}
+                                />{" "}
+                                <span
+                                  data-key="t-authentication"
+                                  style={{
+                                    fontFamily:
+                                      "var(--vz-headings-font-family)",
+                                    color: "white",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <b>{menu.title}</b>
+                                  <span
+                                    className={`dash-arrow ${
+                                      activeSubMenu === menu.id ? "active" : ""
+                                    }`}
+                                    style={{
+                                      transform: expandedMenus[menu.id]
+                                        ? "rotate(90deg)"
+                                        : "rotate(0deg)",
+                                      transition: "transform 0.3s ease",
+                                    }}
+                                  >
+                                    <IoIosArrowForward />
+                                  </span>
+                                </span>
+                              </div>
+                              {/* Submenu */}
+                              <div
+                                className={`collapse menu-dropdown ${
+                                  expandedMenus[menu.id] ? "show" : ""
+                                }`}
+                              >
+                                <ul className="nav nav-sm flex-column">
+                                  {menu.subMenus.map((subMenu, index) => (
+                                    <li key={index} className="nav-item">
+                                      <Link
+                                        to={subMenu.link}
+                                        className="nav-link"
+                                        style={{
+                                          fontFamily:
+                                            "var(--vz-headings-font-family)",
+                                          color: "white",
+                                          fontStyle: "italic",
+                                        }}
+                                      >
+                                        {subMenu.title}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </>
+                          ) : (
+                            // Single Link Menu
+                            <Link className="nav-link menu-link" to={menu.link}>
+                              <i
+                                className={menu.icon}
+                                style={{ color: "white" }}
+                              />{" "}
+                              <span
+                                data-key="t-dashboards"
+                                style={{
+                                  fontFamily: "var(--vz-headings-font-family)",
+                                  color: "white",
+                                }}
+                              >
+                                <b>{menu.title}</b>
+                              </span>
+                            </Link>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {/* Sidebar */}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="simplebar-placeholder"
+            style={{ width: 249, height: 422 }}
+          />
+        </div>
+        <div
+          className="simplebar-track simplebar-horizontal"
+          style={{ visibility: "hidden" }}
+        >
+          <div
+            className="simplebar-scrollbar"
+            style={{ width: 0, display: "none" }}
+          />
+        </div>
+        <div
+          className="simplebar-track simplebar-vertical"
+          style={{ visibility: "visible" }}
+        >
+          <div
+            className="simplebar-scrollbar"
+            style={{
+              height: 351,
+              display: "block",
+              transform: "translate3d(0px, 33px, 0px)",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
-//   // finance
-//   {
-//     id: "finance",
-//     label: "Finance",
-//     iconClass: <LuWallet />,
-//     link: "#!",
-//     subMenu: [
-//       {
-//         id: "accountList",
-//         label: "Account List",
-//         link: "/dashboard/finance/account-list",
-//       },
-//       {
-//         id: "accountBalance",
-//         label: "Account Balance",
-//         link: "/dashboard/finance/account-balance",
-//       },
-//       {
-//         id: "payees",
-//         label: "Payees",
-//         link: "/dashboard/finance/payees",
-//       },
-//       {
-//         id: "payers",
-//         label: "payers",
-//         link: "/dashboard/finance/payer",
-//       },
-//       {
-//         id: "deposit",
-//         label: "Deposit",
-//         link: "/dashboard/finance/deposit",
-//       },
-//       {
-//         id: "expense",
-//         label: "Expense",
-//         link: "/dashboard/finance/expense",
-//       },
-//       {
-//         id: "transferBalance",
-//         label: "Transfer Balance",
-//         link: "/dashboard/finance/transfer-balance",
-//       },
-//     ],
-//   },
-
-//   // training
-//   {
-//     id: "training",
-//     label: "Training",
-//     iconClass: <TbSchool />,
-//     link: "#!",
-//     subMenu: [
-//       {
-//         id: "trainingList",
-//         label: "Training List",
-//         link: "/dashboard/training/training-list",
-//       },
-//       {
-//         id: "trainer",
-//         label: "Trainer",
-//         link: "/dashboard/training/trainer",
-//       },
-//     ],
-//   },
-
-//   // hr admin setup
-//   {
-//     id: "hrAdminSetup",
-//     label: "Hr Admin Setup",
-//     iconClass: <LuUserPlus />,
-//     link: "#!",
-//     subMenu: [
-//       {
-//         id: "award",
-//         label: "Award",
-//         link: "/dashboard/hr-admin-setup/award",
-//       },
-//       // {
-//       //   id: "transfer",
-//       //   label: "Transfer",
-//       //   link: "/dashboard/hr-admin-setup/transfer",
-//       // },
-//       {
-//         id: "resignation",
-//         label: "Resignation",
-//         link: "/dashboard/hr-admin-setup/resignation",
-//       },
-//       // {
-//       //   id: "trip",
-//       //   label: "Trip",
-//       //   link: "/dashboard/hr-admin-setup/trip",
-//       // },
-//       {
-//         id: "promotion",
-//         label: "Promotion",
-//         link: "/dashboard/hr-admin-setup/promotion",
-//       },
-
-//       {
-//         id: "complaints",
-//         label: "Complaints",
-//         link: "/dashboard/hr-admin-setup/complaint",
-//       },
-//       {
-//         id: "warning",
-//         label: "Warning",
-//         link: "/dashboard/hr-admin-setup/warning",
-//       },
-//       {
-//         id: "termination",
-//         label: "Termination",
-//         link: "/dashboard/hr-admin-setup/termination",
-//       },
-//       {
-//         id: "announcement",
-//         label: "Announcement",
-//         link: "/dashboard/hr-admin-setup/announcement",
-//       },
-//       {
-//         id: "holidays",
-//         label: "Holidays",
-//         link: "/dashboard/hr-admin-setup/holiday",
-//       },
-//     ],
-//   },
-
-//   // Recruitment
-//   {
-//     id: "recruitment",
-//     label: "Recruitment",
-//     iconClass: <TbLicense />,
-//     link: "#!",
-//     subMenu: [
-//       {
-//         id: "jobs",
-//         label: "Jobs",
-//         link: "/dashboard/recruitment/job",
-//       },
-//       {
-//         id: "jobCreate",
-//         label: "Job Create",
-//         link: "/dashboard/recruitment/job-create",
-//       },
-//       {
-//         id: "jobApplication",
-//         label: "Job Application",
-//         link: "/dashboard/recruitment/job-application",
-//       },
-//       {
-//         id: "jobCandidate",
-//         label: "Job Candidate",
-//         link: "/dashboard/recruitment/job-candidate",
-//       },
-//       {
-//         id: "jobOnboarding",
-//         label: "Job On-Boarding",
-//         link: "/dashboard/recruitment/job-onboard",
-//       },
-//       {
-//         id: "customQuestion",
-//         label: "Custom Question",
-//         link: "/dashboard/recruitment/custom-question",
-//       },
-//       {
-//         id: "interviewSchedule",
-//         label: "Interview Schedule",
-//         link: "h/dashboard/recruitment/interview-schedule",
-//       },
-//       {
-//         id: "career",
-//         label: "Career",
-//         link: "/dashboard/recruitment/career",
-//         target: "_blank",
-//       },
-//     ],
-//   },
-
-//   // Contract
-//   {
-//     id: "contract",
-//     label: "Contracts",
-//     iconClass: <TbDeviceFloppy />,
-//     link: "/dashboard/contract",
-//   },
-
-//   // Ticket
-//   {
-//     id: "ticket",
-//     label: "Ticket",
-//     iconClass: <LuTicket />,
-//     link: "/dashboard/ticket",
-//   },
-
-//   // Event
-//   {
-//     id: "event",
-//     label: "Event",
-//     iconClass: <TbCalendarEvent />,
-//     link: "/dashboard/event",
-//   },
-
-//   // Meeting
-//   {
-//     id: "meeting",
-//     label: "Meeting",
-//     iconClass: <MdOutlineCalendarMonth />,
-//     link: "/dashboard/meeting",
-//   },
-
-//   // Zoom Meeting
-//   {
-//     id: "zoomMeeting",
-//     label: "Zoom Meeting",
-//     iconClass: <CiVideoOn />,
-//     link: "/dashboard/zoom-meeting",
-//   },
-
-//   // Assets
-//   {
-//     id: "assets",
-//     label: "Assets",
-//     iconClass: <TbMedicalCross />,
-//     link: "/dashboard/assets",
-//   },
-
-//   // Document
-//   {
-//     id: "document",
-//     label: "Document",
-//     iconClass: <CiFileOn />,
-//     link: "/dashboard/upload",
-//   },
-
-//   // Email Templates
-//   {
-//     id: "emailTemplates",
-//     label: "Email Templates",
-//     iconClass: <TbTemplate />,
-//     link: "/dashboard/email-templates",
-//   },
-
-//   // Company Policy
-//   {
-//     id: "companyPolicy",
-//     label: "Company Policy",
-//     iconClass: <TbPray />,
-//     link: "/dashboard/company-policy",
-//   },
-
-//   // Messenger
-//   {
-//     id: "messenger",
-//     label: "Messenger",
-//     iconClass: <LuMessagesSquare />,
-//     link: "/dashboard/messenger",
-//   },
-
-//   // Notification Template
-//   {
-//     id: "notificationTemplate",
-//     label: "Notification Template",
-//     iconClass: <GoBell />,
-//     link: "/dashboard/notification-templates",
-//   },
-
-//   // HRM System Setup
-//   {
-//     id: "hrmSystemSetup",
-//     label: "HRM System Setup",
-//     iconClass: <FiTable />,
-//     link: "/dashboard/hrm-system-branch",
-//   },
-
-//   // Landing Page
-//   {
-//     id: "landingPage",
-//     label: "Landing Page",
-//     iconClass: <TbLicense />,
-//     link: "/dashboard/landing-page",
-//   },
-
-//   // System Setting
-//   {
-//     id: "systemSetting",
-//     label: "System Setting",
-//     iconClass: <IoSettingsOutline />,
-//     link: "/dashboard/system-settings",
-//   },
-// ];
-
-// const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
-//   const [activeMenu, setActiveMenu] = useState(null);
-//   const [activeSubMenu, setActiveSubMenu] = useState(null);
-
-//   const sidebarRef = useRef(null);
-
-//   // Handle clicks outside of the sidebar
-//   useEffect(() => {
-//     const handleClickOutside = (event) => {
-//       if (
-//         sidebarRef.current &&
-//         !sidebarRef.current.contains(event.target) &&
-//         sidebarVisible
-//       ) {
-//         toggleSidebar();
-//       }
-//     };
-
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () => {
-//       document.removeEventListener("mousedown", handleClickOutside);
-//     };
-//   }, [sidebarVisible, toggleSidebar]);
-
-//   const toggleMenu = (menuId) => {
-//     setActiveMenu(activeMenu === menuId ? null : menuId);
-//     setActiveSubMenu(null);
-//   };
-
-//   const toggleSubMenu = (subMenuId) => {
-//     setActiveSubMenu(activeSubMenu === subMenuId ? null : subMenuId);
-//   };
-
-//   const renderSubMenu = (subMenu) => (
-//     <ul className="dash-submenu">
-//       {subMenu.map((item) => (
-//         <li key={item.id} className="dash-item">
-//           {item.subMenu ? (
-//             <div
-//               className="dash-link"
-//               onClick={() => toggleSubMenu(item.id)}
-//               role="button"
-//               tabIndex={0}
-//               onKeyPress={(e) => {
-//                 if (e.key === "Enter") {
-//                   toggleSubMenu(item.id);
-//                 }
-//               }}
-//             >
-//               <span className="dash-mtext">{item.label}</span>
-//               <span
-//                 className={`dash-arrow ${
-//                   activeSubMenu === item.id ? "active" : ""
-//                 }`}
-//                 style={{
-//                   transform:
-//                     activeSubMenu === item.id
-//                       ? "rotate(90deg)"
-//                       : "rotate(0deg)",
-//                   transition: "transform 0.3s ease",
-//                 }}
-//               >
-//                 <IoIosArrowForward />
-//               </span>
-//             </div>
-//           ) : (
-//             <Link to={item.link} className="dash-link">
-//               {item.label}
-//             </Link>
-//           )}
-//           {item.subMenu &&
-//             activeSubMenu === item.id &&
-//             renderSubMenu(item.subMenu)}
-//         </li>
-//       ))}
-//     </ul>
-//   );
-//   return (
-//     <>
-//       <nav
-//         ref={sidebarRef}
-//         className={`dash-sidebar light-sidebar transprent-bg ${
-//           sidebarVisible ? "mob-sidebar-active" : ""
-//         }`}
-//       >
-//         <div className="navbar-wrapper" style={{ display: "block" }}>
-//           <div className="m-header main-logo">
-//             <Link
-//               to="https://demo.workdo.io/hrmgo/dashboard"
-//               className="b-brand"
-//             >
-//               <img
-//                 src="https://demo.workdo.io/hrmgo/storage/uploads/logo/logo-dark.png?1730091906"
-//                 alt="HRMGo"
-//                 className="logo logo-lg"
-//               />
-//               <img
-//                 src="https://demo.workdo.io/hrmgo/storage/uploads/logo/logo-dark.png"
-//                 alt="HRMGo"
-//                 className="logo logo-sm"
-//               />
-//             </Link>
-//           </div>
-
-//           <div
-//             className="navbar-content active dash-trigger"
-//             data-simplebar="init"
-//           >
-//             <div className="simplebar-wrapper" style={{ margin: "-10px 0px" }}>
-//               <div className="simplebar-height-auto-observer-wrapper">
-//                 <div className="simplebar-height-auto-observer"></div>
-//               </div>
-//               <div className="simplebar-mask">
-//                 <div
-//                   className="simplebar-offset"
-//                   style={{ right: "0px", bottom: "0px" }}
-//                 >
-//                   <div
-//                     className="simplebar-content-wrapper"
-//                     tabIndex="0"
-//                     role="region"
-//                     aria-label="scrollable content"
-//                     style={{ height: "100%", overflow: "hidden scroll" }}
-//                   >
-//                     <div
-//                       className="simplebar-content"
-//                       style={{ padding: "10px 0px" }}
-//                     >
-//                       {" "}
-//                       <PerfectScrollbar>
-//                         {" "}
-//                         <ul className="dash-navbar">
-//                           {menuConfig.map((menu) => (
-//                             <li
-//                               key={menu.id}
-//                               className={`dash-item dash-hasmenu ${
-//                                 activeMenu === menu.id ? "active" : ""
-//                               }`}
-//                             >
-//                               <Link
-//                                 to={menu.link}
-//                                 className="dash-link"
-//                                 onClick={() => toggleMenu(menu.id)}
-//                               >
-//                                 <span className="dash-micon">
-//                                   {menu.iconClass}
-//                                 </span>
-//                                 <span className="dash-mtext">{menu.label}</span>
-//                                 {menu.subMenu && (
-//                                   <span
-//                                     className={`dash-arrow ${
-//                                       activeMenu === menu.id ? "active" : ""
-//                                     }`}
-//                                     style={{
-//                                       transform:
-//                                         activeMenu === menu.id
-//                                           ? "rotate(90deg)"
-//                                           : "rotate(0deg)",
-//                                       transition: "transform 0.3s ease",
-//                                     }}
-//                                   >
-//                                     <IoIosArrowForward />
-//                                   </span>
-//                                 )}
-//                               </Link>
-//                               {menu.subMenu &&
-//                                 activeMenu === menu.id &&
-//                                 renderSubMenu(menu.subMenu)}
-//                             </li>
-//                           ))}
-//                         </ul>
-//                       </PerfectScrollbar>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//               <div
-//                 className="simplebar-placeholder"
-//                 style={{ width: "auto", height: "1502px" }}
-//               ></div>
-//             </div>
-//             <div
-//               className="simplebar-track simplebar-horizontal"
-//               style={{ visibility: "hidden" }}
-//             >
-//               <div
-//                 className="simplebar-scrollbar"
-//                 style={{ width: "0px", display: "none" }}
-//               ></div>
-//             </div>
-//             <div
-//               className="simplebar-track simplebar-vertical"
-//               style={{ visibility: "visible" }}
-//             >
-//               <div
-//                 className="simplebar-scrollbar"
-//                 style={{
-//                   height: "260px",
-//                   transform: "translate3d(0px, 0px, 0px)",
-//                   display: "block",
-//                 }}
-//               ></div>
-//             </div>
-//           </div>
-//         </div>
-//       </nav>
-//       {/* Overlay: Visible only when sidebarVisible is true */}
-//       {sidebarVisible && (
-//         <div className="dash-menu-overlay" onClick={toggleSidebar}></div>
-//       )}
-//     </>
-//   );
-// };
-
-// export default Sidebar;
+export default Sidebar;
