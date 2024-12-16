@@ -13,6 +13,13 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+  <!-- Include CSS files from libs -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/assets/libs/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="%PUBLIC_URL%/assets/libs/simplebar/simplebar.css">
+  <link rel="stylesheet" href="%PUBLIC_URL%/assets/libs/node-waves/waves.min.css">
+  <link rel="stylesheet" href="%PUBLIC_URL%/assets/libs/feather-icons/feather.css">
+
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -38,6 +45,35 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+
+  <!-- Include JavaScript files from libs -->
+
+
+  <!-- particles app js -->
+
+  <script src="%PUBLIC_URL%/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/libs/simplebar/simplebar.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/libs/node-waves/waves.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/libs/feather-icons/feather.min.js"></script>
+  <!-- Include any other JS files needed -->
+
+  <!-- Include your main app script -->
+  <script src="%PUBLIC_URL%/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
+  <script src="%PUBLIC_URL%/assets/js/plugins.js"></script>
+
+  <!-- particles js -->
+  <script src="%PUBLIC_URL%/assets/libs/particles.js/particles.js"></script>
+  <script src="%PUBLIC_URL%/assets/js/pages/particles.app.js"></script>
+  <!-- Initialize particles -->
+  <script>
+    particlesJS.load('particles-js', '%PUBLIC_URL%/assets/js/pages/particles.json', function () {
+      console.log('callback - particles.js config loaded');
+    });
+  </script>
+
+  <!-- Additional scripts -->
+  <script src="%PUBLIC_URL%/assets/js/pages/password-addon.init.js"></script>
+
 </body>
 
 </html>
