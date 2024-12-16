@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
 
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
@@ -8,7 +7,12 @@ import Footer from "../Footer/Footer";
 const DashboardMain = () => {
   return (
     <>
-      <Sidebar />
+      <div id="layout-wrapper">
+        <Sidebar />
+        {/* here in outlet i want to show dashboard, registration etc page dynamically so that sidebar and footer will be same the content will be change according to Page change */}
+        <Outlet />
+        <Footer />
+      </div>
     </>
   );
 };

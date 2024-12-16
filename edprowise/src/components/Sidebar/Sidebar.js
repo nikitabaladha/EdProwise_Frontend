@@ -5,6 +5,8 @@ import brandLogo from "./logo.png";
 const Sidebar = () => {
   // State to track the expanded/collapsed status of each menu
   const [expandedMenus, setExpandedMenus] = useState({});
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
 
   // Function to toggle the state of a parent menu
   const toggleMenu = (menuId) => {
@@ -14,22 +16,26 @@ const Sidebar = () => {
     }));
   };
 
+  // on page load the dashboard will be shown
   const menuData = [
     {
       id: "dashboard",
       title: "Dashboards",
       icon: "ri-dashboard-2-line",
-      link: "",
+      link: "/dashboard",
     },
     {
       id: "formMenu",
       title: "Form",
       icon: "mdi mdi-compare-vertical",
       subMenus: [
-        { title: "Registration Form", link: "" },
-        { title: "Admission Form", link: "" },
-        { title: "TC Form", link: "" },
-        { title: "Concession Form", link: "" },
+        {
+          title: "Registration Form",
+          link: "/dashboard/formMenu/registrationForm",
+        },
+        { title: "Admission Form", link: "/admissionForm" },
+        { title: "TC Form", link: "/tcForm" },
+        { title: "Concession Form", link: "/concessionForm" },
       ],
     },
     {
@@ -37,9 +43,9 @@ const Sidebar = () => {
       title: "Fees Receipts",
       icon: "mdi mdi-compare-vertical",
       subMenus: [
-        { title: "School Fees", link: "" },
-        { title: "Board Registration Fees", link: "" },
-        { title: "Board Exam Fees", link: "" },
+        { title: "School Fees", link: "/schoolFees" },
+        { title: "Board Registration Fees", link: "boardRegistrationFees" },
+        { title: "Board Exam Fees", link: "boardExamFees" },
       ],
     },
 
@@ -48,19 +54,31 @@ const Sidebar = () => {
       title: "Reports",
       icon: "mdi mdi-compare-vertical",
       subMenus: [
-        { title: "Daily Collection", link: "" },
-        { title: "Defaulter Fees", link: "" },
-        { title: "Loss of fees due to left Students", link: "" },
-        { title: "Loss of fees due to Late Admission", link: "" },
-        { title: "Arrear Fees Received Report", link: "" },
-        { title: "Advance Fees Report", link: "" },
-        { title: "Fees Concession Report", link: "" },
-        { title: "Registration Fee Report", link: "" },
-        { title: "Admission Fee Report", link: "" },
-        { title: "Board Registration Fees Report", link: "" },
-        { title: "Board Exam Fees Report", link: "" },
-        { title: "Fees Structure", link: "" },
-        { title: " Student Master", link: "" },
+        { title: "Daily Collection", link: "/dailyCollection" },
+        { title: "Defaulter Fees", link: "/defaulterFees" },
+        {
+          title: "Loss of fees due to left Students",
+          link: "/lossOfFeesDueToLeftStudents",
+        },
+        {
+          title: "Loss of fees due to Late Admission",
+          link: "/lossOfFeesDueToLateAdmission",
+        },
+        {
+          title: "Arrear Fees Received Report",
+          link: "/arrearFeesReceivedReport",
+        },
+        { title: "Advance Fees Report", link: "/advanceFeesReport" },
+        { title: "Fees Concession Report", link: "/feesConcessionReport" },
+        { title: "Registration Fee Report", link: "/registrationFeeReport" },
+        { title: "Admission Fee Report", link: "/admissionFeeReport" },
+        {
+          title: "Board Registration Fees Report",
+          link: "/boardRegistrationFeesReport",
+        },
+        { title: "Board Exam Fees Report", link: "/boardExamFeesReport" },
+        { title: "Fees Structure", link: "/feesStructure" },
+        { title: " Student Master", link: "/studentMaster" },
       ],
     },
 
@@ -69,11 +87,17 @@ const Sidebar = () => {
       title: "Audit Documentation",
       icon: "mdi mdi-compare-vertical",
       subMenus: [
-        { title: "Fees Reconciliation (Headcount)", link: "" },
-        { title: " Fees Reconciliation (Fees wise)", link: "" },
+        {
+          title: "Fees Reconciliation (Headcount)",
+          link: "/feesReconciliationHeadcount",
+        },
+        {
+          title: " Fees Reconciliation (Fees wise)",
+          link: "/feesReconciliationFeesWise",
+        },
         {
           title: "Fees Reconciliation (Fees Module vs Finance Module)",
-          link: "",
+          link: "/feeReconciliationFeesModuleFinanceModule",
         },
       ],
     },
@@ -83,15 +107,15 @@ const Sidebar = () => {
       title: "Admin Setting",
       icon: "mdi mdi-compare-vertical",
       subMenus: [
-        { title: "Fees Structure", link: "" },
-        { title: "Class", link: "" },
+        { title: "Fees Structure", link: "/feesStructure" },
+        { title: "Class", link: "/class" },
         {
           title: " Shift",
-          link: "",
+          link: "/shift",
         },
         {
           title: "Section",
-          link: "",
+          link: "/section",
         },
       ],
     },
@@ -101,15 +125,15 @@ const Sidebar = () => {
       title: "Support",
       icon: "mdi mdi-compare-vertical",
       subMenus: [
-        { title: "Profile", link: "" },
-        { title: "User Manual", link: "" },
+        { title: "Profile", link: "/profile" },
+        { title: "User Manual", link: "/userManual" },
         {
           title: "Raise Ticket",
-          link: "",
+          link: "/raiseTicket",
         },
         {
           title: "FAQ",
-          link: "",
+          link: "/faq",
         },
       ],
     },
@@ -117,12 +141,9 @@ const Sidebar = () => {
       id: "logOut",
       title: "Logout",
       icon: "mdi mdi-logout",
-      link: "",
+      link: "/logout",
     },
   ];
-
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [activeSubMenu, setActiveSubMenu] = useState(null);
 
   return (
     <div
