@@ -9,7 +9,6 @@ const DashboardMain = () => {
     <>
       <div id="layout-wrapper">
         <Sidebar />
-        {/* here in outlet dashboard, registration etc page dynamically so that sidebar and footer will be same the content will be change according to Page change */}
 
         <Outlet />
 

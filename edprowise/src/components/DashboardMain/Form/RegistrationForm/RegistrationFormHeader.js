@@ -1,6 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const RegistrationForm = () => {
+const RegistrationFormHeader = () => {
+  const navigate = useNavigate();
+
+  const navigateToAddNewRegistration = (event) => {
+    // Here i want to navigate to the new registration  form page
+    event.preventDefault();
+    navigate(`/dashboard/formMenu/registrationForm/create`);
+  };
   return (
     <>
       <header id="page-topbar">
@@ -79,6 +87,7 @@ const RegistrationForm = () => {
                 <button
                   type="button"
                   className="btn rounded-pill btn-primary waves-effect waves-light"
+                  onClick={(event) => navigateToAddNewRegistration(event)}
                 >
                   Add New Registration
                 </button>
@@ -148,4 +157,4 @@ const RegistrationForm = () => {
   );
 };
 
-export default RegistrationForm;
+export default RegistrationFormHeader;
