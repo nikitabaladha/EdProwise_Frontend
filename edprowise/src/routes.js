@@ -56,6 +56,7 @@
 
 // export default AppRoutes;
 
+// =================================================================================================
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login/Login";
@@ -104,7 +105,7 @@ const AppRoutes = () => {
         <Route index element={<Dashboard />} />
         <Route
           path="formMenu/registrationForm"
-          element={<RegistrationForm />} // This should render the RegistrationForm component
+          element={<RegistrationForm />}
         />
       </Route>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />

@@ -30,6 +30,7 @@ const Sidebar = () => {
       icon: "mdi mdi-compare-vertical",
       subMenus: [
         {
+          // why i am not able to navigate to registration form page
           title: "Registration Form",
           link: "/dashboard/formMenu/registrationForm",
         },

@@ -1,13 +1,12 @@
-// EdProwise_Frontend\edprowise\src\components\DashboardMain\Form\RegistrationForm\RegistrationForm.js
-
 import React from "react";
-
-// this page must be seen
+import RegistrationFormHeader from "./RegistrationFormHeader";
+import RegistrationFormTable from "./RegistrationFormTable";
 
 const RegistrationForm = () => {
   return (
     <>
-      <div>This is Registration form page...</div>
+      <RegistrationFormHeader />
+      <RegistrationFormTable />
     </>
   );
 };
