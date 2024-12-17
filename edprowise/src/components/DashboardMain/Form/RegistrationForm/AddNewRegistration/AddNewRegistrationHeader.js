@@ -1,13 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
-const RegistrationFormHeader = () => {
-  const navigate = useNavigate();
-
-  const navigateToAddNewRegistration = (event) => {
-    event.preventDefault();
-    navigate(`/dashboard/formMenu/registrationForm/create`);
-  };
+const AddNewRegistrationHeader = () => {
   return (
     <>
       <header id="page-topbar">
@@ -18,30 +11,46 @@ const RegistrationFormHeader = () => {
               <div className="navbar-brand-box horizontal-logo">
                 <a href="index.php" className="logo logo-dark">
                   <span className="logo-sm">
+                    {/*?php if($u_company_logo!='') { ?*/}
                     <img
-                      src="../img/placeholder_logo.png"
+                      src="../img/<?php echo $u_company_logo; ?>"
                       style={{ height: 22 }}
                     />
+                    {/*?php } else { ?*/}
+                    <img src="logo.png" alt="" height={22} />
+                    {/*?php } ?*/}
                   </span>
                   <span className="logo-lg">
+                    {/*?php if($u_company_logo!='') { ?*/}
                     <img
-                      src="../img/placeholder_logo.png"
+                      src="../img/<?php echo $u_company_logo; ?>"
                       style={{ height: 17 }}
                     />
+                    {/*?php } else { ?*/}
+                    <img src="logo.png" alt="" height={22} />
+                    {/*?php } ?*/}
                   </span>
                 </a>
                 <a href="index.php" className="logo logo-light">
                   <span className="logo-sm">
+                    {/*?php if($u_company_logo!='') { ?*/}
                     <img
-                      src="../img/placeholder_logo.png"
+                      src="../img/<?php echo $u_company_logo; ?>"
                       style={{ height: 22 }}
                     />
+                    {/*?php } else { ?*/}
+                    <img src="logo.png" alt="" height={22} />
+                    {/*?php } ?*/}
                   </span>
                   <span className="logo-lg">
+                    {/*?php if($u_company_logo!='') { ?*/}
                     <img
-                      src="../img/placeholder_logo.png"
+                      src="../img/<?php echo $u_company_logo; ?>"
                       style={{ height: 17 }}
                     />
+                    {/*?php } else { ?*/}
+                    <img src="logo.png" alt="" height={22} />
+                    {/*?php } ?*/}
                   </span>
                 </a>
               </div>
@@ -61,20 +70,11 @@ const RegistrationFormHeader = () => {
                 style={{ marginLeft: 80, marginTop: 19 }}
               >
                 <span style={{ width: "100%" }}>
-                  <b>REGISTRATION DETAILS</b>
+                  <b>REGISTRATION FORM</b>
                 </span>
               </span>
             </div>
             <div className="d-flex align-items-center">
-              <a href="RegistrationForm_add.php">
-                <button
-                  type="button"
-                  className="btn rounded-pill btn-primary waves-effect waves-light"
-                  onClick={(event) => navigateToAddNewRegistration(event)}
-                >
-                  Add New Registration
-                </button>
-              </a>
               <div className="ms-1 header-item d-sm-flex">
                 <button
                   type="button"
@@ -84,7 +84,7 @@ const RegistrationFormHeader = () => {
                   <i className="bx bx-fullscreen fs-22" />
                 </button>
               </div>
-              <div className="ms-1 header-item d-sm-flex">
+              <div className="ms-1 header-item  d-sm-flex">
                 <button
                   type="button"
                   className="btn btn-icon btn-topbar material-shadow-none btn-ghost-secondary rounded-circle light-dark-mode"
@@ -93,10 +93,7 @@ const RegistrationFormHeader = () => {
                 </button>
               </div>
               {/* ========== App Menu ========== */}
-              {/* Static content from 'hedder-top.php' should be included here */}
-              <div className="header-top">
-                {/* Replace this comment with static HTML content from 'hedder-top.php' */}
-              </div>
+              {/*?php include('hedder-top.php'); ?*/}
             </div>
           </div>
         </div>
@@ -105,4 +102,4 @@ const RegistrationFormHeader = () => {
   );
 };
 
-export default RegistrationFormHeader;
+export default AddNewRegistrationHeader;
