@@ -1,338 +1,166 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
-import brandLogo from "./logo.png";
-const Sidebar = () => {
-  // State to track the expanded/collapsed status of each menu
-  const [expandedMenus, setExpandedMenus] = useState({});
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [activeSubMenu, setActiveSubMenu] = useState(null);
+import "./Sidebar.css";
+import { Icon } from "@iconify/react";
 
-  // Function to toggle the state of a parent menu
+const Sidebar = () => {
+  const [openMenu, setOpenMenu] = useState(null);
+  const [rotatedMenu, setRotatedMenu] = useState(null);
+
   const toggleMenu = (menuId) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [menuId]: !prev[menuId], // Toggle the state of the clicked menu
-    }));
+    setOpenMenu((prev) => (prev === menuId ? null : menuId));
+    setRotatedMenu((prev) => (prev === menuId ? null : menuId));
   };
 
-  // on page load the dashboard will be shown
-  const menuData = [
+  const menuItems = [
     {
       id: "dashboard",
-      title: "Dashboards",
-      icon: "ri-dashboard-2-line",
-      link: "/dashboard",
+      label: "Dashboard",
+      icon: "solar:widget-5-bold-duotone",
+      link: "",
     },
     {
-      id: "formMenu",
-      title: "Form",
-      icon: "mdi mdi-compare-vertical",
-      subMenus: [
-        {
-          // why i am not able to navigate to registration form page
-          title: "Registration Form",
-          link: "/dashboard/formMenu/registrationForm",
-        },
-        { title: "Admission Form", link: "/admissionForm" },
-        { title: "TC Form", link: "/tcForm" },
-        { title: "Concession Form", link: "/concessionForm" },
+      id: "client",
+      label: "Clients",
+      icon: "solar:users-group-rounded-bold-duotone",
+      children: [
+        { label: "Add New Client", link: "" },
+        { label: "Clients", link: "" },
+        // here table of all clients and give button for view all client detail and update client detail
       ],
     },
     {
-      id: "feesMenu",
-      title: "Fees Receipts",
-      icon: "mdi mdi-compare-vertical",
-      subMenus: [
-        { title: "School Fees", link: "/schoolFees" },
-        { title: "Board Registration Fees", link: "boardRegistrationFees" },
-        { title: "Board Exam Fees", link: "boardExamFees" },
+      id: "subscriptions",
+      label: "Subscriptions",
+      icon: "solar:wallet-money-bold",
+      children: [
+        { label: "Add New Subscription", link: "" },
+        { label: "Subscriptions", link: "" },
+        // here table of all subscriptions will be seen  and give button for view all detail of that perticular subscription and update Subscription detail
       ],
     },
 
     {
-      id: "reportMenus",
-      title: "Reports",
-      icon: "mdi mdi-compare-vertical",
-      subMenus: [
-        { title: "Daily Collection", link: "/dailyCollection" },
-        { title: "Defaulter Fees", link: "/defaulterFees" },
-        {
-          title: "Loss of fees due to left Students",
-          link: "/lossOfFeesDueToLeftStudents",
-        },
-        {
-          title: "Loss of fees due to Late Admission",
-          link: "/lossOfFeesDueToLateAdmission",
-        },
-        {
-          title: "Arrear Fees Received Report",
-          link: "/arrearFeesReceivedReport",
-        },
-        { title: "Advance Fees Report", link: "/advanceFeesReport" },
-        { title: "Fees Concession Report", link: "/feesConcessionReport" },
-        { title: "Registration Fee Report", link: "/registrationFeeReport" },
-        { title: "Admission Fee Report", link: "/admissionFeeReport" },
-        {
-          title: "Board Registration Fees Report",
-          link: "/boardRegistrationFeesReport",
-        },
-        { title: "Board Exam Fees Report", link: "/boardExamFeesReport" },
-        { title: "Fees Structure", link: "/feesStructure" },
-        { title: " Student Master", link: "/studentMaster" },
-      ],
-    },
+      id: "feesManagement",
+      label: "Fees Management",
+      icon: "solar:hand-stars-bold",
+      children: [
+        { label: " Fees Login", link: "" },
 
-    {
-      id: "auditDocumentation",
-      title: "Audit Documentation",
-      icon: "mdi mdi-compare-vertical",
-      subMenus: [
-        {
-          title: "Fees Reconciliation (Headcount)",
-          link: "/feesReconciliationHeadcount",
-        },
-        {
-          title: " Fees Reconciliation (Fees wise)",
-          link: "/feesReconciliationFeesWise",
-        },
-        {
-          title: "Fees Reconciliation (Fees Module vs Finance Module)",
-          link: "/feeReconciliationFeesModuleFinanceModule",
-        },
+        // here table of all fees will be seen  and give button for update that perticular fee and block button to block that fee
       ],
     },
+    {
+      id: "payrollManagement",
+      label: "Payroll Management",
+      icon: "solar:hand-money-bold",
+      children: [
+        { label: "Payroll Login", link: "" },
 
-    {
-      id: "adminSetting",
-      title: "Admin Setting",
-      icon: "mdi mdi-compare-vertical",
-      subMenus: [
-        { title: "Fees Structure", link: "/feesStructure" },
-        { title: "Class", link: "/class" },
-        {
-          title: " Shift",
-          link: "/shift",
-        },
-        {
-          title: "Section",
-          link: "/section",
-        },
+        // here table of all Payroll  will be seen  and give button for update that perticular Payroll  and block button to block that Payroll
       ],
     },
+    {
+      id: "finance",
+      label: "Finance Management",
+      icon: "solar:graph-up-bold",
+      children: [
+        { label: "Finance Login", link: "" },
 
-    {
-      id: "support",
-      title: "Support",
-      icon: "mdi mdi-compare-vertical",
-      subMenus: [
-        { title: "Profile", link: "/profile" },
-        { title: "User Manual", link: "/userManual" },
-        {
-          title: "Raise Ticket",
-          link: "/raiseTicket",
-        },
-        {
-          title: "FAQ",
-          link: "/faq",
-        },
+        // here table of all Finance  will be seen  and give button for update that perticular Finance  and block button to block that Finance
       ],
     },
     {
-      id: "logOut",
-      title: "Logout",
-      icon: "mdi mdi-logout",
-      link: "/logout",
+      id: "schoolManagement",
+      label: "School Management",
+      icon: "solar:buildings-2-bold-duotone",
+      children: [
+        { label: "School Management Login", link: "" },
+
+        // here table of all School Management Login will be seen  and given button for update that perticular School Management Login and block button to block that School Management
+
+        // on click of student button table of students will be shown
+        // onclick of employee button table of employees will be shown
+        // on click of Hrms button table of Hrms will be shown
+      ],
     },
   ];
 
   return (
-    <div
-      className="app-menu navbar-menu"
-      style={{
-        backgroundColor: " #7c50f5",
-        borderRadius: 25,
-        marginLeft: 10,
-      }}
-    >
-      <div className="navbar-brand-box">
-        {/* Dark Logo*/}
-        <a href="index.php" className="logo logo-dark">
-          <span className="logo-sm">
-            <img src={brandLogo} style={{ height: 22 }} alt="" />
+    <div className="main-nav">
+      {/* Sidebar Logo */}
+      <div className="logo-box">
+        <Link to="" className="logo-dark">
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+            className="logo-sm"
+            alt="logo sm"
+          />
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+            className="logo-lg"
+            alt="logo dark"
+          />
+        </Link>
+        <Link to="" className="logo-light">
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+            className="logo-sm"
+            alt="logo sm"
+          />
+          <span>
+            <img
+              src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+              className="logo-lg"
+              alt="logo light"
+              style={{ height: "40px", marginRight: "20px" }}
+            />
+            <span className="logo-font">EdProwise</span>
           </span>
-          <span className="logo-lg">
-            <img src={brandLogo} style={{ height: 17 }} alt="" />
-          </span>
-        </a>
-        {/* Light Logo*/}
-        <a href="index.php" className="logo logo-light">
-          <span className="logo-sm">
-            <img src={brandLogo} style={{ height: 22 }} alt="" />
-          </span>
-          <span className="logo-lg">
-            <img src={brandLogo} style={{ height: 17 }} alt="" />
-          </span>
-        </a>
-        <button
-          type="button"
-          className="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
-          id="vertical-hover"
-        >
-          <i className="ri-record-circle-line" />
-        </button>
+        </Link>
       </div>
 
-      <div
-        id="scrollbar"
-        data-simplebar="init"
-        className="h-100 simplebar-scrollable-y"
-      >
-        <div className="simplebar-wrapper" style={{ margin: 0 }}>
-          <div className="simplebar-height-auto-observer-wrapper">
-            <div className="simplebar-height-auto-observer" />
-          </div>
-          <div className="simplebar-mask">
-            <div className="simplebar-offset" style={{ right: 0, bottom: 0 }}>
-              <div
-                className="simplebar-content-wrapper"
-                tabIndex={0}
-                role="region"
-                aria-label="scrollable content"
-                style={{ height: "100%", overflow: "hidden scroll" }}
-              >
-                <div className="simplebar-content" style={{ padding: 0 }}>
-                  <div className="container-fluid">
-                    <ul className="navbar-nav" id="navbar-nav">
-                      <li className="menu-title">
-                        <span data-key="t-menu" style={{ color: "white" }}>
-                          Menu
-                        </span>
-                      </li>
-
-                      {menuData.map((menu) => (
-                        <li key={menu.id} className="nav-item">
-                          {menu.subMenus ? (
-                            <>
-                              {/* Parent Menu */}
-                              <div
-                                className="nav-link menu-link"
-                                onClick={() => toggleMenu(menu.id)}
-                                style={{
-                                  cursor: "pointer",
-                                  background: "none",
-                                }}
-                                aria-expanded={expandedMenus[menu.id] || false}
-                              >
-                                <i
-                                  className={menu.icon}
-                                  style={{ color: "white" }}
-                                />{" "}
-                                <span
-                                  data-key="t-authentication"
-                                  style={{
-                                    fontFamily:
-                                      "var(--vz-headings-font-family)",
-                                    color: "white",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <b>{menu.title}</b>
-                                  <span
-                                    className={`dash-arrow ${
-                                      activeSubMenu === menu.id ? "active" : ""
-                                    }`}
-                                    style={{
-                                      transform: expandedMenus[menu.id]
-                                        ? "rotate(90deg)"
-                                        : "rotate(0deg)",
-                                      transition: "transform 0.3s ease",
-                                    }}
-                                  >
-                                    <IoIosArrowForward />
-                                  </span>
-                                </span>
-                              </div>
-                              {/* Submenu */}
-                              <div
-                                className={`collapse menu-dropdown ${
-                                  expandedMenus[menu.id] ? "show" : ""
-                                }`}
-                              >
-                                <ul className="nav nav-sm flex-column">
-                                  {menu.subMenus.map((subMenu, index) => (
-                                    <li key={index} className="nav-item">
-                                      <Link
-                                        to={subMenu.link}
-                                        className="nav-link"
-                                        style={{
-                                          fontFamily:
-                                            "var(--vz-headings-font-family)",
-                                          color: "white",
-                                          fontStyle: "italic",
-                                        }}
-                                      >
-                                        {subMenu.title}
-                                      </Link>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            </>
-                          ) : (
-                            // Single Link Menu
-                            <Link className="nav-link menu-link" to={menu.link}>
-                              <i
-                                className={menu.icon}
-                                style={{ color: "white" }}
-                              />{" "}
-                              <span
-                                data-key="t-dashboards"
-                                style={{
-                                  fontFamily: "var(--vz-headings-font-family)",
-                                  color: "white",
-                                }}
-                              >
-                                <b>{menu.title}</b>
-                              </span>
-                            </Link>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
+      <div className="scrollbar" data-simplebar="">
+        <ul className="navbar-nav" id="navbar-nav">
+          {menuItems.map((item) => (
+            <li className="nav-item" key={item.id}>
+              {item.children ? (
+                <>
+                  <div
+                    className="nav-link menu-arrow collapsed"
+                    onClick={() => toggleMenu(item.id)}
+                  >
+                    <span className="nav-icon">
+                      <Icon icon={item.icon} />
+                    </span>
+                    <span className="nav-text"> {item.label} </span>
                   </div>
-                  {/* Sidebar */}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            className="simplebar-placeholder"
-            style={{ width: 249, height: 422 }}
-          />
-        </div>
-        <div
-          className="simplebar-track simplebar-horizontal"
-          style={{ visibility: "hidden" }}
-        >
-          <div
-            className="simplebar-scrollbar"
-            style={{ width: 0, display: "none" }}
-          />
-        </div>
-        <div
-          className="simplebar-track simplebar-vertical"
-          style={{ visibility: "visible" }}
-        >
-          <div
-            className="simplebar-scrollbar"
-            style={{
-              height: 351,
-              display: "block",
-              transform: "translate3d(0px, 33px, 0px)",
-            }}
-          />
-        </div>
+                  {openMenu === item.id && (
+                    <div className="collapse show">
+                      <ul className="nav sub-navbar-nav">
+                        {item.children.map((subItem, subIndex) => (
+                          <li className="sub-nav-item" key={subIndex}>
+                            <Link className="sub-nav-link" to={subItem.link}>
+                              {subItem.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link className="nav-link" to={item.link}>
+                  <span className="nav-icon">
+                    <Icon icon={item.icon} />
+                  </span>
+                  <span className="nav-text"> {item.label} </span>
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

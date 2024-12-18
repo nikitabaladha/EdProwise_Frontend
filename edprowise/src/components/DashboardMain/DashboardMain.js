@@ -7,12 +7,12 @@ import Footer from "../Footer/Footer";
 const DashboardMain = () => {
   return (
     <>
-      <div id="layout-wrapper">
-        {/* <Sidebar /> */}
+      <div className="wrapper">
+        <Sidebar />
 
         <Outlet />
 
-        {/* <Footer /> */}
+        <Footer />
       </div>
     </>
   );

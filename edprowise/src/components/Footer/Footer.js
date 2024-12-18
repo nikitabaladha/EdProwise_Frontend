@@ -6,10 +6,13 @@ const Footer = () => {
       <footer className="footer">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-sm-6">
+            <div className="col-12 text-center">
               {new Date().getFullYear()} © EdProwise.
+              <iconify-icon
+                icon="iconamoon:heart-duotone"
+                className="fs-18 align-middle text-danger"
+              />{" "}
             </div>
-            <div className="col-sm-6"></div>
           </div>
         </div>
       </footer>

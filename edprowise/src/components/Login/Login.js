@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import postAPI from "../../api/postAPI";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -55,16 +55,11 @@ const Login = () => {
     }
   };
 
-  const handleSignupRedirect = () => {
-    navigate("/signup");
-  };
-
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
   return (
     <>
-      {/* ------------------new------------------- */}
       <div className="form-body form-left">
         <div className="iofrm-layout">
           <div className="img-holder text-start">
@@ -90,7 +85,7 @@ const Login = () => {
                   <a href="index.html">
                     <div className="logo">
                       <img
-                        src={`${process.env.PUBLIC_URL}/assets/images/logo-yellow.svg`}
+                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
                         alt="Logo"
                         className="logo-size"
                       />
@@ -98,7 +93,7 @@ const Login = () => {
                   </a>
                 </div>
                 <h3 className="font-md">
-                  Get more things done with Loggin platform.
+                  Get more things done with EdProwise platform.
                 </h3>
                 <p>
                   Access to the most powerfull tool in the entire design and web
@@ -114,23 +109,47 @@ const Login = () => {
                     placeholder="E-mail Address"
                     required=""
                   />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    className="form-control pe-5 password-input"
-                    placeholder="Enter password"
-                    id="password-input"
-                  />
-                  <button
-                    type="button"
-                    id="password-addon"
-                    onClick={togglePasswordVisibility}
+
+                  <div
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      width: "100%",
+                    }}
                   >
-                    <FaEye className="{showPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'} align-middle}" />
-                  </button>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      className="form-control pe-5"
+                      placeholder="Enter password"
+                    />
+                    {showPassword ? (
+                      <FaEye
+                        onClick={togglePasswordVisibility}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                        }}
+                      />
+                    ) : (
+                      <FaEyeSlash
+                        onClick={togglePasswordVisibility}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                        }}
+                      />
+                    )}
+                  </div>
 
                   {generalError && (
                     <div className="alert alert-danger mt-3">
