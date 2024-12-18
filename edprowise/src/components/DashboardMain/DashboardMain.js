@@ -8,11 +8,11 @@ const DashboardMain = () => {
   return (
     <>
       <div id="layout-wrapper">
-        <Sidebar />
+        {/* <Sidebar /> */}
 
         <Outlet />
 
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </>
   );
