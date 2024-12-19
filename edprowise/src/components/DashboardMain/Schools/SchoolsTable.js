@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
-
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const SchoolsTable = () => {
+  const navigate = useNavigate();
+
+  const navigateToAddNewSchool = (event) => {
+    event.preventDefault();
+    navigate(`/dashboard/schools/add-new-school`);
+  };
+
   const [schools, setSchools] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolsPerPage] = useState(5);
@@ -81,8 +89,8 @@ const SchoolsTable = () => {
               <h4 className="custom-card-title card-title flex-grow-1">
                 All School List
               </h4>
-              <a
-                href="#!"
+              <Link
+                onClick={(event) => navigateToAddNewSchool(event)}
                 className="btn btn-sm btn-soft-primary"
                 style={{
                   backgroundColor: "#FFF0EA",
@@ -90,8 +98,8 @@ const SchoolsTable = () => {
                 }}
               >
                 <FaPlus className="bx bx-plus me-1" />
-                Create Order
-              </a>
+                Add New School
+              </Link>
             </div>
             <div>
               <div className="table-responsive">

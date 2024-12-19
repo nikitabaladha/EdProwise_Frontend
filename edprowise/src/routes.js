@@ -7,6 +7,7 @@ import Dashboard from "./components/DashboardMain/Dashboard/Dashboard";
 import RegistrationForm from "./components/DashboardMain/Form/RegistrationForm/RegistrationForm";
 import AddNewRegistration from "./components/DashboardMain/Form/RegistrationForm/AddNewRegistration/AddNewRegistration";
 import Schools from "./components/DashboardMain/Schools/Schools";
+import AddNewSchool from "./components/DashboardMain/Schools/AddNewSchool/AddNewSchool";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -53,7 +54,9 @@ const AppRoutes = () => {
           <Route path="create" element={<AddNewRegistration />} />
         </Route>
 
-        <Route path="schools" element={<Schools />}></Route>
+        <Route path="schools" element={<Schools />}>
+          <Route path="add-new-school" element={<AddNewSchool />} />
+        </Route>
       </Route>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
     </Routes>
