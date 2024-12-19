@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const DashboardHeader = () => {
   return (
     <>
-      <header className="topbar">
+      <header className="topbar mb-5">
         <div className="container-fluid">
           <div className="navbar-header">
             <div className="d-flex align-items-center">
@@ -89,7 +89,7 @@ const DashboardHeader = () => {
                           <img
                             src="assets/images/users/avatar-1.jpg"
                             className="img-fluid me-2 avatar-sm rounded-circle"
-                            alt="avatar-1"
+                            alt=""
                           />
                         </div>
                         <div className="flex-grow-1">
@@ -131,7 +131,7 @@ const DashboardHeader = () => {
                           <img
                             src="assets/images/users/avatar-3.jpg"
                             className="img-fluid me-2 avatar-sm rounded-circle"
-                            alt="avatar-3"
+                            alt=""
                           />
                         </div>
                         <div className="flex-grow-1">
@@ -168,7 +168,7 @@ const DashboardHeader = () => {
                           <img
                             src="assets/images/users/avatar-5.jpg"
                             className="img-fluid me-2 avatar-sm rounded-circle"
-                            alt="avatar-5"
+                            alt=""
                           />
                         </div>
                         <div className="flex-grow-1">
@@ -229,11 +229,19 @@ const DashboardHeader = () => {
                   aria-expanded="false"
                 >
                   <span className="d-flex align-items-center">
-                    <img
+                    {/* <img
                       className="rounded-circle"
                       width={32}
                       src="assets/images/users/avatar-1.jpg"
-                      alt="avatar-3"
+                      alt=""
+                    /> */}
+                    <img
+                      src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                      // className="logo-lg"
+                      className="rounded-circle"
+                      alt="logo light"
+                      // style={{ height: "30px" }}
+                      width={32}
                     />
                   </span>
                 </Link>

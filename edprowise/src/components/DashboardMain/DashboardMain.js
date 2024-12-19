@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import DashboardHeader from "./DashboardHeader";
 
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
@@ -10,7 +11,11 @@ const DashboardMain = () => {
       <div className="wrapper">
         <Sidebar />
 
-        <Outlet />
+        <DashboardHeader />
+
+        <div className="page-content">
+          <Outlet />
+        </div>
 
         <Footer />
       </div>

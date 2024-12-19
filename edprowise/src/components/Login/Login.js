@@ -82,23 +82,37 @@ const Login = () => {
             <div className="form-content justify-content-end">
               <div className="form-items">
                 <div className="website-logo-inside logo-normal">
-                  <a href="index.html">
-                    <div className="logo">
-                      <img
+                  <Link to="" className="custom-link">
+                    <div>
+                      {/* <img
                         src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
                         alt="Logo"
                         className="logo-size"
-                      />
+                      /> */}
+                      {/* <image
+                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                      /> */}
+                      {/* <img
+                        src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                        className="logo-lg"
+                        alt="logo light"
+                        style={{ height: "40px", marginRight: "20px" }}
+                      /> */}
+                      {/* <img
+                      src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                      className="logo light"
+                      alt="logo light"
+                      style={{ height: "40px", marginRight: "20px" }}
+                    /> */}
+                      <div className="login-logo-font">EdProwise</div>
                     </div>
-                  </a>
+                  </Link>
                 </div>
                 <h3 className="font-md">
-                  Get more things done with EdProwise platform.
+                  {/* Get more things done with EdProwise platform. */}
+                  Whatever You Need, We Provide
                 </h3>
-                <p>
-                  Access to the most powerfull tool in the entire design and web
-                  industry.
-                </p>
+                <p>We Listen...We Resolve...We Deliver</p>
                 <form onSubmit={handleSubmit}>
                   <input
                     className="form-control"
