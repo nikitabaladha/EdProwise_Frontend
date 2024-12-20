@@ -5,6 +5,12 @@
   font-size: 40px;
 }
 
+.custom-heading-font {
+  font-family: "Lato", sans-serif;
+  color: #ff6c2f !important;
+  font-weight: bold;
+}
+
 .custom-link {
   text-decoration: none;
 }
@@ -47,4 +53,22 @@
 
 .custom-table-body > tr > td {
   color: #313b5e !important;
+}
+
+.custom-table-body tr {
+  padding: 100px !important;
+}
+
+/* Submit Button */
+
+.custom-submit-button {
+  color: white !important;
+  background-color: #ff6c2f !important;
+  border-color: #ff6c2f !important;
+}
+
+.custom-submit-button:hover {
+  color: white !important;
+  background-color: #e6612a !important;
+  border-color: #e6612a !important;
 }

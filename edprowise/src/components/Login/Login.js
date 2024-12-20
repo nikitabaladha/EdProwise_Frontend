@@ -28,7 +28,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await postAPI("/login", formData, false);
+      const response = await postAPI("/admin-login", formData, false);
 
       if (!response.hasError) {
         localStorage.setItem(
