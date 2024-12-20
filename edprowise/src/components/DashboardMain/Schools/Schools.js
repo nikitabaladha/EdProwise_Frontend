@@ -7,6 +7,8 @@ import ViewSchool from "./ViewSchool/ViewSchool";
 const Schools = () => {
   const [schools, setSchools] = useState([]);
 
+  const [selectedSchool, setSelectedSchool] = useState(null);
+
   const location = useLocation();
   const isCreateRoute =
     location.pathname === "/dashboard/schools/add-new-school";
@@ -46,7 +48,12 @@ const Schools = () => {
         <ViewSchool schools={schools} />
       ) : (
         <>
-          <SchoolsTable schools={schools} />
+          <SchoolsTable
+            schools={schools}
+            setSchools={setSchools}
+            selectedSchool={selectedSchool}
+            setSelectedSchool={setSelectedSchool}
+          />
         </>
       )}
     </>
