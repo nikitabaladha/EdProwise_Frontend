@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import SchoolsTable from "./SchoolsTable";
 import { useLocation } from "react-router-dom";
-import AddNewSchool from "./AddNewSchool/AddNewSchool";
 import getAPI from "../../../api/getAPI";
+
+import SchoolsTable from "./SchoolsTable";
+import AddNewSchool from "./AddNewSchool/AddNewSchool";
 import ViewSchool from "./ViewSchool/ViewSchool";
+import UpdateSchool from "./UpdateSchool/UpdateSchool.js";
+
 const Schools = () => {
   const [schools, setSchools] = useState([]);
 
@@ -12,8 +15,9 @@ const Schools = () => {
   const location = useLocation();
   const isCreateRoute =
     location.pathname === "/dashboard/schools/add-new-school";
-
   const isViewRoute = location.pathname === "/dashboard/schools/view-school";
+  const isUpdateRoute =
+    location.pathname === "/dashboard/schools/update-school";
 
   const fetchSchoolData = async () => {
     try {
@@ -40,12 +44,22 @@ const Schools = () => {
     setSchools((prevSchools) => [...prevSchools, newSchool]);
   };
 
+  const updateSchool = (newUpdatedSchool) => {
+    setSchools((prevSchools) =>
+      prevSchools.map((school) =>
+        school._id === newUpdatedSchool._id ? newUpdatedSchool : school
+      )
+    );
+  };
+
   return (
     <>
       {isCreateRoute ? (
         <AddNewSchool addSchool={addSchool} />
       ) : isViewRoute ? (
         <ViewSchool schools={schools} />
+      ) : isUpdateRoute ? (
+        <UpdateSchool schools={schools} updateSchool={updateSchool} />
       ) : (
         <>
           <SchoolsTable

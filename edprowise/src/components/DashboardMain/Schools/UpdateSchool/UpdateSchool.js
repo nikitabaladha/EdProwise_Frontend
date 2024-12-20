@@ -1,66 +1,102 @@
-import React, { useState } from "react";
-import postAPI from "../../../../api/postAPI";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import putAPI from "../../../../api/putAPI";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const AddNewSchool = ({ addSchool }) => {
+const UpdateSchool = ({ updateSchool }) => {
+  const location = useLocation();
+  const school = location.state?.school;
+
+  console.log("School in UpdateSchool: ", school);
+
+  // in part part of profileImage, affiliation Certificate, and pan File i just want to show url nothing else but if uer want he can change the image, certificate etc
+
+  //   {
+  //     "_id": "6764ee63a04cca7f8460cc7a",
+  //     "schoolId": "SID00002",
+  //     "schoolName": "EFG School",
+  //     "schoolMobileNo": "1234567890",
+  //     "schoolEmail": "efg@gmail.com",
+  //     "schoolAddress": "B-503 Saaga Residency\r\nNear Zydus Corporate Park, Near Nirma University",
+  //     "schoolLocation": "Choice 1",
+  //     "profileImage": "/Images/SchoolProfile/profile_jpg_1734692847187.jpg",
+  //     "affiliationCertificate": "/Documents/SchoolAffiliationCertificate/certificate_pdf_1734692847187.pdf",
+  //     "affiliationUpto": "Pre-Primary",
+  //     "panNo": "AAAAA9999A",
+  //     "panFile": "/Documents/SchoolPanFile/certificate_pdf_1734692847187.pdf",
+  //     "createdAt": "2024-12-20T04:11:15.486Z",
+  //     "updatedAt": "2024-12-20T11:07:27.234Z",
+  //     "__v": 0
+  // }
+
   const [formData, setFormData] = useState({
     schoolName: "",
     schoolMobileNo: "",
     schoolEmail: "",
     schoolAddress: "",
     schoolLocation: "",
-    affiliationUpto: "",
-    panNo: "",
     profileImage: null,
     affiliationCertificate: null,
+    affiliationUpto: "",
+    panNo: "",
     panFile: null,
   });
 
+  useEffect(() => {
+    if (school) {
+      setFormData({
+        schoolName: school.schoolName || "",
+        schoolMobileNo: school.schoolMobileNo || "",
+        schoolEmail: school.schoolEmail || "",
+        schoolAddress: school.schoolAddress || "",
+        schoolLocation: school.schoolLocation || "",
+        profileImage: school.profileImage || null,
+        affiliationCertificate: school.affiliationCertificate || null,
+        affiliationUpto: school.affiliationUpto || "",
+        panNo: school.panNo || "",
+        panFile: school.panFile || null,
+      });
+    }
+  }, [school]);
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
     if (files) {
-      setFormData((prevState) => ({
-        ...prevState,
+      setFormData((prev) => ({
+        ...prev,
         [name]: files[0],
       }));
     } else {
-      setFormData((prevState) => ({
-        ...prevState,
+      setFormData((prev) => ({
+        ...prev,
         [name]: value,
       }));
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
 
+    const formDataToSend = new FormData();
+    for (const key in formData) {
+      formDataToSend.append(key, formData[key]);
+    }
+
     try {
-      const data = new FormData();
-      Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
-      });
-
-      for (let [key, value] of data.entries()) {
-        console.log(`${key}:`, value);
-      }
-
-      const response = await postAPI(
-        "/school",
-        data,
+      const response = await putAPI(
+        `/school/${school._id}`,
+        formDataToSend,
         {
           "Content-Type": "multipart/form-data",
         },
         true
       );
 
-      if (!response.hasError) {
-        toast.success("School added successfully");
+      if (!response.data.hasError) {
+        toast.success("School updated successfully!");
 
-        console.log(response.data.data);
-
-        const newSchool = {
+        const newUpdatedSchool = {
           id: response.data.data._id,
           schoolId: response.data.data.schoolId,
           schoolName: response.data.data.schoolName,
@@ -72,7 +108,7 @@ const AddNewSchool = ({ addSchool }) => {
           panNo: response.data.data.panNo,
         };
 
-        addSchool(newSchool);
+        updateSchool(newUpdatedSchool);
 
         setFormData({
           schoolName: "",
@@ -86,19 +122,27 @@ const AddNewSchool = ({ addSchool }) => {
           affiliationCertificate: null,
           panFile: null,
         });
-
         document.getElementById("profileImage").value = "";
         document.getElementById("affiliationCertificate").value = "";
         document.getElementById("panFile").value = "";
       } else {
-        toast.error(response.message || "Failed to add school");
+        toast.error("Failed to update School.");
       }
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          "An unexpected error occurred. Please try again."
-      );
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     }
+  };
+
+  const getBaseFileName = (url) => {
+    return url ? url.split("/").pop() : "";
   };
 
   return (
@@ -111,14 +155,13 @@ const AddNewSchool = ({ addSchool }) => {
                 <div className="container">
                   <div className="card-header mb-2">
                     <h4 className="card-title text-center custom-heading-font">
-                      Add New School
+                      Update School
                     </h4>
                   </div>
                 </div>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleUpdate}>
                   <div className="row">
                     <div className="col-md-6">
-                      {" "}
                       <div className="mb-3">
                         <label htmlFor="schoolName" className="form-label">
                           School Name
@@ -135,7 +178,6 @@ const AddNewSchool = ({ addSchool }) => {
                       </div>
                     </div>
                     <div className="col-md-3">
-                      {" "}
                       <div className="mb-3">
                         <label htmlFor="mobileNo" className="form-label">
                           School Mobile Number
@@ -224,13 +266,20 @@ const AddNewSchool = ({ addSchool }) => {
                           onChange={handleChange}
                           required
                         />
+                        {school.profileImage ? (
+                          <div>
+                            <small>
+                              Existing Profile Image:{" "}
+                              {getBaseFileName(school.profileImage)}
+                            </small>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="col-md-6">
-                      {" "}
                       <div className="mb-3">
                         <label
                           htmlFor="affiliationCertificate"
@@ -247,10 +296,18 @@ const AddNewSchool = ({ addSchool }) => {
                           onChange={handleChange}
                           required
                         />
+
+                        {school.affiliationCertificate ? (
+                          <div>
+                            <small>
+                              Existing Certificate:{" "}
+                              {getBaseFileName(school.affiliationCertificate)}
+                            </small>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                     <div className="col-md-6">
-                      {" "}
                       <div className="mb-3">
                         <label htmlFor="affiliationUpto" className="form-label">
                           Affiliation Upto
@@ -299,7 +356,6 @@ const AddNewSchool = ({ addSchool }) => {
                       </div>
                     </div>
                     <div className="col-md-6">
-                      {" "}
                       <div className="mb-3">
                         <label htmlFor="panFile" className="form-label">
                           PAN File
@@ -313,6 +369,14 @@ const AddNewSchool = ({ addSchool }) => {
                           onChange={handleChange}
                           required
                         />
+                        {school.panNo ? (
+                          <div>
+                            <small>
+                              Existing PAN File:{" "}
+                              {getBaseFileName(school.panFile)}
+                            </small>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -322,7 +386,7 @@ const AddNewSchool = ({ addSchool }) => {
                       type="submit"
                       className="btn btn-primary custom-submit-button"
                     >
-                      Add School
+                      Update School
                     </button>
                   </div>
                 </form>
@@ -335,4 +399,4 @@ const AddNewSchool = ({ addSchool }) => {
   );
 };
 
-export default AddNewSchool;
+export default UpdateSchool;

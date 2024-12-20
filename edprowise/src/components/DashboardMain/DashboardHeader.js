@@ -2,6 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const DashboardHeader = () => {
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userDetails");
+
+    window.location.href = "/login";
+  };
+
   return (
     <>
       <header className="topbar">
@@ -274,7 +281,9 @@ const DashboardHeader = () => {
                     href="auth-signin.html"
                   >
                     <i className="bx bx-log-out fs-18 align-middle me-1" />
-                    <span className="align-middle">Logout</span>
+                    <span className="align-middle" onClick={handleLogout}>
+                      Logout
+                    </span>
                   </Link>
                 </div>
               </div>

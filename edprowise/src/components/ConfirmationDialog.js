@@ -51,10 +51,18 @@ const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
     }
   };
 
+  const handleOverlayClick = (event) => {
+    if (event.target.id === "overlay") {
+      onClose();
+    }
+  };
+
   return (
     <div
+      id="overlay"
       className="swal2-container swal2-center swal2-backdrop-show"
       style={{ overflowY: "auto" }}
+      onClick={handleOverlayClick}
     >
       <div
         aria-labelledby="swal2-title"

@@ -41,6 +41,10 @@ const SchoolsTable = ({
     navigate(`/dashboard/schools/view-school`, { state: { school } });
   };
 
+  const navigateToUpdateSchool = (event, school) => {
+    event.preventDefault();
+    navigate(`/dashboard/schools/update-school`, { state: { school } });
+  };
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolsPerPage] = useState(5);
 
@@ -194,7 +198,9 @@ const SchoolsTable = ({
                                 />
                               </Link>
                               <Link
-                                to=""
+                                onClick={(event) =>
+                                  navigateToUpdateSchool(event, school)
+                                }
                                 className="btn btn-soft-primary btn-sm"
                               >
                                 <iconify-icon
@@ -203,16 +209,15 @@ const SchoolsTable = ({
                                 />
                               </Link>
                               <Link
-                                to=""
                                 className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openDeleteDialog(school);
+                                }}
                               >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    openDeleteDialog(school);
-                                  }}
                                 />
                               </Link>
                             </div>

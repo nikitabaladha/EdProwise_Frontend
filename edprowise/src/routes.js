@@ -1,14 +1,18 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+
 import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
+
 import DashboardMain from "./components/DashboardMain/DashboardMain";
 import Dashboard from "./components/DashboardMain/Dashboard/Dashboard";
 import RegistrationForm from "./components/DashboardMain/Form/RegistrationForm/RegistrationForm";
 import AddNewRegistration from "./components/DashboardMain/Form/RegistrationForm/AddNewRegistration/AddNewRegistration";
+
 import Schools from "./components/DashboardMain/Schools/Schools";
 import AddNewSchool from "./components/DashboardMain/Schools/AddNewSchool/AddNewSchool";
 import ViewSchool from "./components/DashboardMain/Schools/ViewSchool/ViewSchool";
+import UpdateSchool from "./components/DashboardMain/Schools/UpdateSchool/UpdateSchool";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -55,9 +59,11 @@ const AppRoutes = () => {
           <Route path="create" element={<AddNewRegistration />} />
         </Route>
 
+        {/* School Table page and it's Add, View, Update Routes */}
         <Route path="schools" element={<Schools />}>
           <Route path="add-new-school" element={<AddNewSchool />} />
           <Route path="view-school" element={<ViewSchool />} />
+          <Route path="update-school" element={<UpdateSchool />} />
         </Route>
       </Route>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
