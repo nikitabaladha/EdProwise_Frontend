@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { FaPlus } from "react-icons/fa6";
+import React, { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 const SchoolsTable = ({ schools }) => {
@@ -8,6 +8,11 @@ const SchoolsTable = ({ schools }) => {
   const navigateToAddNewSchool = (event) => {
     event.preventDefault();
     navigate(`/dashboard/schools/add-new-school`);
+  };
+
+  const navigateToViewSchool = (event, school) => {
+    event.preventDefault();
+    navigate(`/dashboard/schools/view-school`, { state: { school } });
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,58 +51,132 @@ const SchoolsTable = ({ schools }) => {
       <div className="row">
         <div className="col-xl-12">
           <div className="card">
-            <div className="card-header d-flex justify-content-between align-items-center gap-1 p-3">
-              <h4 className="custom-card-title card-title flex-grow-1">
-                All School List
-              </h4>
+            <div className="card-header d-flex justify-content-between align-items-center gap-1">
+              <h4 className="card-title flex-grow-1">All School List</h4>
               <Link
                 onClick={(event) => navigateToAddNewSchool(event)}
-                className="btn btn-sm btn-soft-primary custom-submit-button"
+                className="btn btn-sm btn-primary"
               >
-                <FaPlus className="bx bx-plus me-1" />
-                Add New School
+                Add School
               </Link>
+              <div className="dropdown">
+                <Link
+                  to=""
+                  className="dropdown-toggle btn btn-sm btn-outline-light"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  This Month
+                </Link>
+                <div className="dropdown-menu dropdown-menu-end">
+                  {/* item*/}
+                  <Link to="" className="dropdown-item">
+                    Download
+                  </Link>
+                  {/* item*/}
+                  <Link to="" className="dropdown-item">
+                    Export
+                  </Link>
+                  {/* item*/}
+                  <Link to="" className="dropdown-item">
+                    Import
+                  </Link>
+                </div>
+              </div>
             </div>
             <div>
               <div className="table-responsive">
                 <table className="table align-middle mb-0 table-hover table-centered">
-                  <thead className="bg-light-subtle custom-table-header">
+                  <thead className="bg-light-subtle">
                     <tr>
+                      <th style={{ width: 20 }}>
+                        <div className="form-check ms-1">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customCheck1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customCheck1"
+                          />
+                        </div>
+                      </th>
                       <th>School Id</th>
                       <th>School Name</th>
-                      <th>Mobile No</th>
+                      <th>School Mobile No</th>
+                      <th>School Email</th>
+                      <th>School PAN</th>
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody className="custom-table-body">
+                  <tbody>
                     {currentSchools.map((school) => (
                       <tr key={school._id}>
+                        <td>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id="customCheck2"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="customCheck2"
+                            >
+                              &nbsp;
+                            </label>
+                          </div>
+                        </td>
                         <td>{school.schoolId}</td>
-                        <td>{school.schoolName}</td>
+
+                        <td>
+                          <div className="d-flex align-items-center gap-2">
+                            <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                              <img
+                                src={`http://localhost:3001${school.profileImage}`}
+                                alt={`${school.schoolName} Profile`}
+                                className="avatar-md"
+                                style={{
+                                  objectFit: "cover",
+                                  width: "50px",
+                                  height: "50px",
+                                  borderRadius: "10px",
+                                }}
+                              />
+                            </div>
+                            <div>{school.schoolName}</div>
+                          </div>
+                        </td>
+
                         <td>{school.schoolMobileNo}</td>
+                        <td>{school.schoolEmail}</td>
+                        <td>{school.panNo}</td>
                         <td>
                           <div className="d-flex gap-2">
-                            <a href="#!" className="btn btn-light btn-sm">
+                            <Link
+                              onClick={(event) =>
+                                navigateToViewSchool(event, school)
+                              }
+                              className="btn btn-light btn-sm"
+                            >
                               <iconify-icon
                                 icon="solar:eye-broken"
                                 className="align-middle fs-18"
                               />
-                            </a>
-                            <a
-                              href="#!"
-                              className="btn btn-soft-primary btn-sm"
-                            >
+                            </Link>
+                            <Link to="" className="btn btn-soft-primary btn-sm">
                               <iconify-icon
                                 icon="solar:pen-2-broken"
                                 className="align-middle fs-18"
                               />
-                            </a>
-                            <a href="#!" className="btn btn-soft-danger btn-sm">
+                            </Link>
+                            <Link to="" className="btn btn-soft-danger btn-sm">
                               <iconify-icon
                                 icon="solar:trash-bin-minimalistic-2-broken"
                                 className="align-middle fs-18"
                               />
-                            </a>
+                            </Link>
                           </div>
                         </td>
                       </tr>

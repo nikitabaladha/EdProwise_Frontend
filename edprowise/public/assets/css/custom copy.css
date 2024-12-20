@@ -1,0 +1,74 @@
+/* Login Css */
+.login-logo-font {
+  font-family: "Poppins", sans-serif;
+  color: #ffc801;
+  font-size: 40px;
+}
+
+.custom-heading-font {
+  font-family: "Lato", sans-serif;
+  color: #ff6c2f !important;
+  font-weight: bold;
+}
+
+.custom-link {
+  text-decoration: none;
+}
+
+.custom-link:hover {
+  text-decoration: none;
+}
+
+/* Sidebar Css */
+.logo-light {
+  text-decoration: none;
+}
+
+.nav-link,
+.sub-nav-link {
+  text-decoration: none;
+}
+
+.logo-font {
+  font-family: "Poppins", sans-serif;
+  font-style: italic;
+  color: white;
+  text-decoration: none;
+  font-size: large;
+}
+
+.nav-icon {
+  transition: transform 0.3s ease;
+}
+
+/* Table Css */
+
+.custom-card-title {
+  color: #313b5e !important;
+}
+
+.custom-table-header > tr > th {
+  color: #5d7186 !important;
+}
+
+.custom-table-body > tr > td {
+  color: #313b5e !important;
+}
+
+.custom-table-body tr {
+  padding: 100px !important;
+}
+
+/* Submit Button */
+
+.custom-submit-button {
+  color: white !important;
+  background-color: #ff6c2f !important;
+  border-color: #ff6c2f !important;
+}
+
+.custom-submit-button:hover {
+  color: white !important;
+  background-color: #e6612a !important;
+  border-color: #e6612a !important;
+}

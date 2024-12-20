@@ -103,14 +103,18 @@ const AddNewSchool = ({ addSchool }) => {
 
   return (
     <>
-      <div className="container mb-5">
-        <h3 className="custom-heading-font text-center">Add New School </h3>
-      </div>
       <div className="container">
         <div className="row">
           <div className="col-xl-12">
-            <div className="card p-2 m-2">
+            <div className="card m-2">
               <div className="card-body">
+                <div className="container">
+                  <div className="card-header mb-2">
+                    <h4 className="card-title text-center custom-heading-font">
+                      All School List
+                    </h4>
+                  </div>
+                </div>
                 <form onSubmit={handleSubmit}>
                   <div className="row">
                     <div className="col-md-6">

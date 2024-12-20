@@ -3,12 +3,15 @@ import SchoolsTable from "./SchoolsTable";
 import { useLocation } from "react-router-dom";
 import AddNewSchool from "./AddNewSchool/AddNewSchool";
 import getAPI from "../../../api/getAPI";
+import ViewSchool from "./ViewSchool/ViewSchool";
 const Schools = () => {
   const [schools, setSchools] = useState([]);
 
   const location = useLocation();
   const isCreateRoute =
     location.pathname === "/dashboard/schools/add-new-school";
+
+  const isViewRoute = location.pathname === "/dashboard/schools/view-school";
 
   const fetchSchoolData = async () => {
     try {
@@ -39,6 +42,8 @@ const Schools = () => {
     <>
       {isCreateRoute ? (
         <AddNewSchool addSchool={addSchool} />
+      ) : isViewRoute ? (
+        <ViewSchool schools={schools} />
       ) : (
         <>
           <SchoolsTable schools={schools} />

@@ -9,9 +9,8 @@ const DashboardMain = () => {
   return (
     <>
       <div className="wrapper">
-        <Sidebar />
-
         <DashboardHeader />
+        <Sidebar />
 
         <div className="page-content">
           <Outlet />

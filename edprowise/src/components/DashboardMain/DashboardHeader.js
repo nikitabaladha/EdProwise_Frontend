@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const DashboardHeader = () => {
   return (
     <>
-      <header className="topbar mb-5">
+      <header className="topbar">
         <div className="container-fluid">
           <div className="navbar-header">
             <div className="d-flex align-items-center">
