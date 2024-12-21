@@ -1,5 +1,8 @@
 import React from "react";
-
+import { TbRadioactiveFilled } from "react-icons/tb";
+import { PiStudentDuotone } from "react-icons/pi";
+import { GiMoneyStack } from "react-icons/gi";
+import { BiSolidSchool } from "react-icons/bi";
 const DashboardInformationCards = () => {
   return (
     <>
@@ -11,10 +14,9 @@ const DashboardInformationCards = () => {
                 <div className="row">
                   <div className="col-6">
                     <div className="avatar-md bg-soft-primary rounded">
-                      <iconify-icon
-                        icon="solar:cart-5-bold-duotone"
-                        className="avatar-title fs-32 text-primary"
-                      />
+                      <div className="avatar-md bg-soft-primary rounded">
+                        <BiSolidSchool className="avatar-title fs-32 text-primary" />
+                      </div>
                     </div>
                   </div>{" "}
                   {/* end col */}
@@ -53,7 +55,7 @@ const DashboardInformationCards = () => {
                 <div className="row">
                   <div className="col-6">
                     <div className="avatar-md bg-soft-primary rounded">
-                      <i className="bx bx-dollar-circle avatar-title text-primary fs-24" />
+                      <TbRadioactiveFilled className="avatar-title fs-32 text-primary" />
                     </div>
                   </div>{" "}
                   {/* end col */}
@@ -92,7 +94,7 @@ const DashboardInformationCards = () => {
                 <div className="row">
                   <div className="col-6">
                     <div className="avatar-md bg-soft-primary rounded">
-                      <i className="bx bx-award avatar-title fs-24 text-primary" />
+                      <PiStudentDuotone className="bx bx-award avatar-title fs-24 text-primary" />
                     </div>
                   </div>{" "}
                   {/* end col */}
@@ -131,7 +133,7 @@ const DashboardInformationCards = () => {
                 <div className="row">
                   <div className="col-6">
                     <div className="avatar-md bg-soft-primary rounded">
-                      <i className="bx bxs-backpack avatar-title fs-24 text-primary" />
+                      <GiMoneyStack className="bx bxs-backpack avatar-title fs-24 text-primary" />
                     </div>
                   </div>{" "}
                   {/* end col */}

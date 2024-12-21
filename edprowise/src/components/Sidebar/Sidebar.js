@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
 
 import { Icon } from "@iconify/react";
@@ -8,11 +8,15 @@ import { GiMoneyStack } from "react-icons/gi";
 const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState(null);
   const [rotatedMenu, setRotatedMenu] = useState(null);
+  const location = useLocation();
 
   const toggleMenu = (menuId) => {
     setOpenMenu((prev) => (prev === menuId ? null : menuId));
     setRotatedMenu((prev) => (prev === menuId ? null : menuId));
   };
+
+  const currentRoute = location.pathname;
+  console.log(currentRoute);
 
   const menuItems = [
     {
@@ -20,18 +24,21 @@ const Sidebar = () => {
       label: "Dashboard",
       icon: "solar:widget-5-bold-duotone",
       link: "/dashboard",
+      className: currentRoute === "/dashboard" ? "active" : "",
     },
     {
       id: "client",
       label: "Schools",
       icon: "solar:users-group-rounded-bold-duotone",
       link: "/dashboard/schools",
+      className: currentRoute === "/dashboard/schools" ? "active" : "",
     },
     {
       id: "subscriptions",
       label: "Subscriptions",
       icon: "solar:wallet-money-bold",
       link: "/dashboard/subscriptions",
+      className: currentRoute === "/dashboard/subscriptions" ? "active" : "",
     },
 
     {
@@ -39,24 +46,29 @@ const Sidebar = () => {
       label: "Fees Management",
       icon: "game-icons:money-stack",
       link: "/dashboard/feesManagement",
+      className: currentRoute === "/dashboard/feesManagement" ? "active" : "",
     },
     {
       id: "payrollManagement",
       label: "Payroll Management",
       icon: "solar:hand-money-bold",
       link: "/dashboard/payrollManagement",
+      className:
+        currentRoute === "/dashboard/payrollManagement" ? "active" : "",
     },
     {
       id: "finance",
       label: "Finance Management",
       icon: "solar:graph-up-bold",
       link: "/dashboard/finance",
+      className: currentRoute === "/dashboard/finance" ? "active" : "",
     },
     {
       id: "schoolManagement",
       label: "School Management",
       icon: "solar:buildings-2-bold-duotone",
       link: "/dashboard/schoolManagement",
+      className: currentRoute === "/dashboard/schoolManagement" ? "active" : "",
     },
   ];
 
@@ -97,11 +109,11 @@ const Sidebar = () => {
       <div className="scrollbar" data-simplebar="">
         <ul className="navbar-nav" id="navbar-nav">
           {menuItems.map((item) => (
-            <li className="nav-item" key={item.id}>
+            <li className={`nav-item ${item.className}`} key={item.id}>
               {item.children ? (
                 <>
                   <div
-                    className="nav-link menu-arrow collapsed"
+                    className={`nav-link menu-arrow collapsed ${item.className}`}
                     onClick={() => toggleMenu(item.id)}
                   >
                     <span className="nav-icon">
@@ -124,7 +136,7 @@ const Sidebar = () => {
                   )}
                 </>
               ) : (
-                <Link className="nav-link" to={item.link}>
+                <Link className={`nav-link ${item.className}`} to={item.link}>
                   <span className="nav-icon">
                     <Icon icon={item.icon} />
                   </span>
