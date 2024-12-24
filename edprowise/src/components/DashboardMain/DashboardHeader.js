@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const DashboardHeader = () => {
+const DashboardHeader = ({ toggleSidebar }) => {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userDetails");
-
     window.location.href = "/login";
   };
 
@@ -15,9 +14,12 @@ const DashboardHeader = () => {
         <div className="container-fluid">
           <div className="navbar-header">
             <div className="d-flex align-items-center">
-              {/* Menu Toggle Button */}
               <div className="topbar-item">
-                <button type="button" className="button-toggle-menu me-2">
+                <button
+                  type="button"
+                  className="button-toggle-menu me-2"
+                  onClick={toggleSidebar}
+                >
                   <iconify-icon
                     icon="solar:hamburger-menu-broken"
                     className="fs-24 align-middle"
