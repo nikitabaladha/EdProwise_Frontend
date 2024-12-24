@@ -6,13 +6,17 @@ import getAPI from "../../../../api/getAPI";
 import { Link } from "react-router-dom";
 
 import AddConfirmationDialog from "../AddConfirmationDialog";
+import ConfirmationDialog from "../../../ConfirmationDialog";
 
 const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   const location = useLocation();
   const school = location.state?.school;
 
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteType, setDeleteType] = useState("");
 
   const fetchUserData = async () => {
     if (!school?._id) {
@@ -59,6 +63,21 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
 
   const handleAddConfirmed = (newUser) => {
     setUsers((prevUsers) => [...prevUsers, newUser]);
+  };
+
+  const openDeleteDialog = (user) => {
+    setSelectedUser(user);
+    setIsDeleteDialogOpen(true);
+    setDeleteType("user");
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleDeleteConfirmed = (_id) => {
+    setUsers((prevUsers) => prevUsers.filter((user) => user._id !== _id));
   };
 
   return (
@@ -274,16 +293,20 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-primary btn-sm">
+                              {/* <Link className="btn btn-soft-primary btn-sm">
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link>
+                              </Link> */}
                               <Link className="btn btn-soft-danger btn-sm">
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    openDeleteDialog(user);
+                                  }}
                                 />
                               </Link>
                             </div>
@@ -303,6 +326,15 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
           onClose={handleAddCancel}
           id={selectedSchool._id}
           onAdd={handleAddConfirmed}
+        />
+      )}
+
+      {isDeleteDialogOpen && (
+        <ConfirmationDialog
+          onClose={handleDeleteCancel}
+          deleteType={deleteType}
+          id={selectedUser._id}
+          onDeleted={handleDeleteConfirmed}
         />
       )}
     </>

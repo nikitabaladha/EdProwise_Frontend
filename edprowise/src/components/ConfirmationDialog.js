@@ -9,6 +9,12 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete school.",
     idKey: "schoolId",
   },
+  user: {
+    getEndpoint: (id) => `/user/${id}`,
+    successMessage: "User successfully deleted!",
+    errorMessage: "Failed to delete user.",
+    idKey: "schoolId",
+  },
 };
 
 const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {

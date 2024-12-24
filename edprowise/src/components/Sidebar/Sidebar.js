@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { IoIosArrowForward } from "react-icons/io";
 import { Icon } from "@iconify/react";
-import { GiMoneyStack } from "react-icons/gi";
-import "./Sidebar.css";
 
 const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
   const [openMenu, setOpenMenu] = useState(null);
