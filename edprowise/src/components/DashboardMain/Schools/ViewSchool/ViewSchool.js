@@ -7,13 +7,12 @@ import { Link } from "react-router-dom";
 
 import AddConfirmationDialog from "../AddConfirmationDialog";
 
-const ViewSchool = () => {
+const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   const location = useLocation();
   const school = location.state?.school;
 
   const [users, setUsers] = useState([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [selectedSchool, setSelectedSchool] = useState(null);
 
   const fetchUserData = async () => {
     if (!school?._id) {
@@ -48,20 +47,18 @@ const ViewSchool = () => {
     return <p>No school selected.</p>;
   }
 
-  const openAddDialog = (event) => {
-    event.preventDefault();
+  const openAddDialog = (school) => {
     setSelectedSchool(school);
     setIsAddDialogOpen(true);
   };
 
-  const handleAddCancel = (event) => {
-    event.preventDefault();
+  const handleAddCancel = () => {
     setIsAddDialogOpen(false);
     setSelectedSchool(null);
   };
 
-  const handleAddConfirmed = (_id) => {
-    setUsers((prevUsers) => prevUsers.filter((user) => user._id !== _id));
+  const handleAddConfirmed = (newUser) => {
+    setUsers((prevUsers) => [...prevUsers, newUser]);
   };
 
   return (
@@ -216,7 +213,10 @@ const ViewSchool = () => {
                   Users of {school.schoolName}{" "}
                 </h4>
                 <Link
-                  onClick={openAddDialog}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openAddDialog(school);
+                  }}
                   className="btn btn-sm btn-primary"
                 >
                   Add User
@@ -300,10 +300,9 @@ const ViewSchool = () => {
       </div>
       {isAddDialogOpen && (
         <AddConfirmationDialog
-          isOpen={isAddDialogOpen}
           onClose={handleAddCancel}
-          onConfirm={handleAddConfirmed}
-          school={selectedSchool}
+          id={selectedSchool._id}
+          onAdd={handleAddConfirmed}
         />
       )}
     </>

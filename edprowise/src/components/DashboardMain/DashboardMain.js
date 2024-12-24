@@ -9,7 +9,7 @@ const DashboardMain = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const toggleSidebar = () => {
-    setSidebarVisible(!sidebarVisible);
+    // setSidebarVisible(!sidebarVisible);
   };
   return (
     <>

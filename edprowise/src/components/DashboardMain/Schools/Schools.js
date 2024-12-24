@@ -57,7 +57,12 @@ const Schools = () => {
       {isCreateRoute ? (
         <AddNewSchool addSchool={addSchool} />
       ) : isViewRoute ? (
-        <ViewSchool schools={schools} />
+        <ViewSchool
+          schools={schools}
+          setSchools={setSchools}
+          selectedSchool={selectedSchool}
+          setSelectedSchool={setSelectedSchool}
+        />
       ) : isUpdateRoute ? (
         <UpdateSchool schools={schools} updateSchool={updateSchool} />
       ) : (

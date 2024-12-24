@@ -2,19 +2,20 @@ import React from "react";
 import { toast } from "react-toastify";
 import postAPI from "../../../api/postAPI";
 
-const AddConfirmationDialog = ({ onClose, onConfirm, school }) => {
-  const handleSubmit = async (e) => {
+const AddConfirmationDialog = ({ onClose, id, onAdd }) => {
+  const handleSubmit = async () => {
     try {
       const response = await postAPI(
         "/create-user",
-        { schoolId: school._id },
+        { schoolId: id },
 
         true
       );
 
       if (!response.hasError) {
         toast.success("User added successfully");
-        onConfirm(response.data.data);
+        onAdd(response.data.data);
+        onClose();
       } else {
         toast.error(response.message || "Failed to add User");
       }
@@ -69,7 +70,7 @@ const AddConfirmationDialog = ({ onClose, onConfirm, school }) => {
           id="swal2-title"
           style={{ display: "block" }}
         >
-          Are you sure?
+          Are you sure? You want to add
         </h2>
         <div
           className="swal2-html-container"
