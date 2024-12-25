@@ -175,7 +175,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                         Affiliation Certificate
                       </label>
                       {school.affiliationCertificate.endsWith(".pdf") ? (
-                        <Worker workerUrl={`${process.env.WORKER_URL}`}>
+                        <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
                           <div
                             style={{
                               border: "1px solid #ccc",
@@ -203,11 +203,11 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
 
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="panFile" className="form-label">
+                      <label htmlFor="panFile" className="form-lsabel">
                         PAN File
                       </label>
                       {school.panFile.endsWith(".pdf") ? (
-                        <Worker workerUrl={`${process.env.WORKER_URL}`}>
+                        <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
                           <div
                             style={{
                               border: "1px solid #ccc",
