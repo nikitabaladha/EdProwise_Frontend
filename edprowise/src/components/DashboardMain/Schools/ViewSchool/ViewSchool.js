@@ -100,7 +100,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                     <div className="d-flex align-items-center">
                       <div className="rounded bg-light d-flex align-items-center justify-content-center">
                         <img
-                          src={`http://localhost:3001${school.profileImage}`}
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`}
                           alt={`${school.schoolName} Profile`}
                           className="avatar-md"
                           style={{
@@ -175,7 +175,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                         Affiliation Certificate
                       </label>
                       {school.affiliationCertificate.endsWith(".pdf") ? (
-                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                        <Worker workerUrl={`${process.env.WORKER_URL}`}>
                           <div
                             style={{
                               border: "1px solid #ccc",
@@ -183,13 +183,13 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                             }}
                           >
                             <Viewer
-                              fileUrl={`http://localhost:3001${school.affiliationCertificate}`}
+                              fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
                             />
                           </div>
                         </Worker>
                       ) : (
                         <img
-                          src={`http://localhost:3001${school.affiliationCertificate}`}
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
                           alt="Affiliation Certificate"
                           style={{
                             width: "100%",
@@ -207,7 +207,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                         PAN File
                       </label>
                       {school.panFile.endsWith(".pdf") ? (
-                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                        <Worker workerUrl={`${process.env.WORKER_URL}`}>
                           <div
                             style={{
                               border: "1px solid #ccc",
@@ -215,13 +215,13 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                             }}
                           >
                             <Viewer
-                              fileUrl={`http://localhost:3001${school.panFile}`}
+                              fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
                             />
                           </div>
                         </Worker>
                       ) : (
                         <img
-                          src={`http://localhost:3001${school.panFile}`}
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
                           alt="PAN File"
                           style={{
                             width: "100%",

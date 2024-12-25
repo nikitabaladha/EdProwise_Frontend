@@ -28,6 +28,7 @@ const Schools = () => {
         Array.isArray(response.data.data)
       ) {
         setSchools(response.data.data);
+        console.log("school data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
