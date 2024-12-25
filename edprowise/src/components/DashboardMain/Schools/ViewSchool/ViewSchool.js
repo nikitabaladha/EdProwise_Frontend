@@ -172,40 +172,64 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                         htmlFor="affiliationCertificate"
                         className="form-label"
                       >
-                        Affiliation Certificate (PDF)
+                        Affiliation Certificate
                       </label>
-                      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-                        <div
+                      {school.affiliationCertificate.endsWith(".pdf") ? (
+                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                          <div
+                            style={{
+                              border: "1px solid #ccc",
+                              borderRadius: "10px",
+                            }}
+                          >
+                            <Viewer
+                              fileUrl={`http://localhost:3001${school.affiliationCertificate}`}
+                            />
+                          </div>
+                        </Worker>
+                      ) : (
+                        <img
+                          src={`http://localhost:3001${school.affiliationCertificate}`}
+                          alt="Affiliation Certificate"
                           style={{
-                            border: "1px solid #ccc",
+                            width: "100%",
                             borderRadius: "10px",
+                            marginTop: "10px",
                           }}
-                        >
-                          <Viewer
-                            fileUrl={`http://localhost:3001${school.affiliationCertificate}`}
-                          />
-                        </div>
-                      </Worker>
+                        />
+                      )}
                     </div>
                   </div>
 
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="panFile" className="form-label">
-                        PAN File(PDF)
+                        PAN File
                       </label>
-                      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-                        <div
+                      {school.panFile.endsWith(".pdf") ? (
+                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                          <div
+                            style={{
+                              border: "1px solid #ccc",
+                              borderRadius: "10px",
+                            }}
+                          >
+                            <Viewer
+                              fileUrl={`http://localhost:3001${school.panFile}`}
+                            />
+                          </div>
+                        </Worker>
+                      ) : (
+                        <img
+                          src={`http://localhost:3001${school.panFile}`}
+                          alt="PAN File"
                           style={{
-                            border: "1px solid #ccc",
+                            width: "100%",
                             borderRadius: "10px",
+                            marginTop: "10px",
                           }}
-                        >
-                          <Viewer
-                            fileUrl={`http://localhost:3001${school.panFile}`}
-                          />
-                        </div>
-                      </Worker>
+                        />
+                      )}
                     </div>
                   </div>
                 </div>

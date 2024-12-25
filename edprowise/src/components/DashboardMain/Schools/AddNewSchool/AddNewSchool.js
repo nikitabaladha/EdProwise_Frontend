@@ -243,7 +243,7 @@ const AddNewSchool = ({ addSchool }) => {
                           id="affiliationCertificate"
                           name="affiliationCertificate"
                           className="form-control"
-                          accept="application/pdf"
+                          accept="image/*,application/pdf"
                           onChange={handleChange}
                           required
                         />
@@ -309,7 +309,7 @@ const AddNewSchool = ({ addSchool }) => {
                           id="panFile"
                           name="panFile"
                           className="form-control"
-                          accept="application/pdf"
+                          accept="image/*,application/pdf"
                           onChange={handleChange}
                           required
                         />
