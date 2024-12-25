@@ -39,7 +39,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const response = await postAPI("/signup", formData, false);
+      const response = await postAPI("/admin-signup", formData, false);
 
       if (!response.hasError) {
         toast.success("Signup successful!");

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
-
+import "./Sidebar.css";
 import { Icon } from "@iconify/react";
 import { GiMoneyStack } from "react-icons/gi";
 
@@ -19,44 +19,72 @@ const Sidebar = () => {
       id: "dashboard",
       label: "Dashboard",
       icon: "solar:widget-5-bold-duotone",
-      link: "/dashboard",
+      link: "",
     },
     {
       id: "client",
-      label: "Schools",
+      label: "School",
       icon: "solar:users-group-rounded-bold-duotone",
-      link: "/dashboard/schools",
+      children: [
+        { label: "Add New Client", link: "" },
+        { label: "Clients", link: "" },
+        // here table of all clients and give button for view all client detail and update client detail view , edit , delete
+      ],
     },
     {
       id: "subscriptions",
       label: "Subscriptions",
       icon: "solar:wallet-money-bold",
-      link: "/dashboard/subscriptions",
+      children: [
+        { label: "Add New Subscription", link: "" },
+        { label: "Subscriptions", link: "" },
+        // here table of all subscriptions will be seen  and give button for view all detail of that perticular subscription and update Subscription detail
+      ],
     },
 
     {
       id: "feesManagement",
       label: "Fees Management",
       icon: "game-icons:money-stack",
-      link: "/dashboard/feesManagement",
+      children: [
+        { label: " Fees Management", link: "" },
+
+        // here table of all fees will be seen  and give button for update that perticular fee and block button to block that fee
+      ],
     },
     {
       id: "payrollManagement",
       label: "Payroll Management",
       icon: "solar:hand-money-bold",
-      link: "/dashboard/payrollManagement",
+      children: [
+        { label: "Payroll Login", link: "" },
+
+        // here table of all Payroll  will be seen  and give button for update that perticular Payroll  and block button to block that Payroll
+      ],
     },
     {
       id: "finance",
       label: "Finance Management",
       icon: "solar:graph-up-bold",
-      link: "/dashboard/finance",
+      children: [
+        { label: "Finance Login", link: "" },
+
+        // here table of all Finance  will be seen  and give button for update that perticular Finance  and block button to block that Finance
+      ],
     },
     {
       id: "schoolManagement",
       label: "School Management",
       icon: "solar:buildings-2-bold-duotone",
-      link: "/dashboard/schoolManagement",
+      children: [
+        { label: "School Management Login", link: "" },
+
+        // here table of all School Management Login will be seen  and given button for update that perticular School Management Login and block button to block that School Management
+
+        // on click of student button table of students will be shown
+        // onclick of employee button table of employees will be shown
+        // on click of Hrms button table of Hrms will be shown
+      ],
     },
   ];
 
