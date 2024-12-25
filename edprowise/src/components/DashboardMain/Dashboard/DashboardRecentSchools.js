@@ -120,7 +120,7 @@ const DashboardRecentSchools = ({
                           <div className="d-flex align-items-center gap-2">
                             <div className="rounded bg-light d-flex align-items-center justify-content-center">
                               <img
-                                src={`http://localhost:3001${school.profileImage}`}
+                                src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`}
                                 alt={`${school.schoolName} Profile`}
                                 className="avatar-md"
                                 style={{
