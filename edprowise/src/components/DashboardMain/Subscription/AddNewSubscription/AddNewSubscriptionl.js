@@ -164,7 +164,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                         {schools.map((school) => (
                           <option key={school._id} value={school._id}>
 
-                            {school.schoolName}
+                            ({school.schoolId})  {school.schoolName}
                           </option>
 
                         ))}

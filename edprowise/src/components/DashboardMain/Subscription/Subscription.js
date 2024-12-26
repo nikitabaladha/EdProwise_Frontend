@@ -9,7 +9,6 @@ import UpdateSubscription from "./UpdateSubscription/UpdateSubscription.js";
 
 const Subscription = () => {
   const [schools, setSchools] = useState([]);
-  const [selectedSchool, setSelectedSchool] = useState(null);
   const [subscription, setSubscription] = useState([]);
   const [selectedSubscription, setSelectedsubscription] = useState(null);
   const [loading, setLoading] = useState(true);

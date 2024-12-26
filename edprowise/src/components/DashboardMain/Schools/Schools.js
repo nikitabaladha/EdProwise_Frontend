@@ -9,6 +9,7 @@ import UpdateSchool from "./UpdateSchool/UpdateSchool.js";
 
 const Schools = () => {
   const [schools, setSchools] = useState([]);
+
   const [selectedSchool, setSelectedSchool] = useState(null);
 
   const location = useLocation();
@@ -27,6 +28,7 @@ const Schools = () => {
         Array.isArray(response.data.data)
       ) {
         setSchools(response.data.data);
+        console.log("school data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -56,7 +58,12 @@ const Schools = () => {
       {isCreateRoute ? (
         <AddNewSchool addSchool={addSchool} />
       ) : isViewRoute ? (
-        <ViewSchool schools={schools} />
+        <ViewSchool
+          schools={schools}
+          setSchools={setSchools}
+          selectedSchool={selectedSchool}
+          setSelectedSchool={setSelectedSchool}
+        />
       ) : isUpdateRoute ? (
         <UpdateSchool schools={schools} updateSchool={updateSchool} />
       ) : (

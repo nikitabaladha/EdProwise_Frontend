@@ -243,7 +243,7 @@ const AddNewSchool = ({ addSchool }) => {
                           id="affiliationCertificate"
                           name="affiliationCertificate"
                           className="form-control"
-                          accept="application/pdf"
+                          accept="image/*,application/pdf"
                           onChange={handleChange}
                           required
                         />
@@ -271,7 +271,7 @@ const AddNewSchool = ({ addSchool }) => {
                           <option value="Secondary (Upto Class 10)">
                             Secondary (Upto Class 10)
                           </option>
-                          <option value="Higher Secondary(Upto Class 12)">
+                          <option value="Higher Secondary (Upto Class 12)">
                             Higher Secondary (Upto Class 12)
                           </option>
                           <option value="College">College</option>
@@ -309,7 +309,7 @@ const AddNewSchool = ({ addSchool }) => {
                           id="panFile"
                           name="panFile"
                           className="form-control"
-                          accept="application/pdf"
+                          accept="image/*,application/pdf"
                           onChange={handleChange}
                           required
                         />

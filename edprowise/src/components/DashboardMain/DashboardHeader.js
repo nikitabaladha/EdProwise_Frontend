@@ -1,13 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React, {  useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const DashboardHeader = () => {
+const DashboardHeader = ({ toggleSidbar }) => {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userDetails");
-
     window.location.href = "/login";
   };
+
+  const toggleSidebar = () => {
+    const htmlElement = document.documentElement; // Selects the <html> tag
+    const bodyElement = document.body; // Selects the <body> tag
+
+    // Toggle the 'sidebar-enable' class on the <html> tag
+    htmlElement.classList.toggle("sidebar-enable");
+
+    // Toggle the 'overflow: hidden' style on the <body> element
+    if (bodyElement.style.overflow === "hidden") {
+      bodyElement.style.overflow = ""; // Remove the style
+    } else {
+      bodyElement.style.overflow = "hidden"; // Add the style
+    }
+  };
+
+  const handleDocumentClick = (event) => {
+    const htmlElement = document.documentElement; // Select the <html> tag
+    const mainNav = document.querySelector(".main-nav"); // Select the main-nav element
+
+    // Check if sidebar is enabled and click is outside the main-nav
+    if (
+      htmlElement.classList.contains("sidebar-enable") &&
+      mainNav &&
+      !mainNav.contains(event.target)
+    ) {
+      toggleSidebar();
+    }
+  };
+
+  useEffect(() => {
+    // Attach event listener for clicking outside the main-nav
+    document.addEventListener("click", handleDocumentClick);
+
+    return () => {
+      // Cleanup the event listener
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, []);
 
   return (
     <>
@@ -15,9 +53,15 @@ const DashboardHeader = () => {
         <div className="container-fluid">
           <div className="navbar-header">
             <div className="d-flex align-items-center">
-              {/* Menu Toggle Button */}
               <div className="topbar-item">
-                <button type="button" className="button-toggle-menu me-2">
+                <button
+                  type="button"
+                  className="button-toggle-menu me-2"
+                  onClick={(event) => {
+                    event.stopPropagation(); // Prevent propagation to document click
+                    toggleSidebar();
+                  }}
+                >
                   <iconify-icon
                     icon="solar:hamburger-menu-broken"
                     className="fs-24 align-middle"

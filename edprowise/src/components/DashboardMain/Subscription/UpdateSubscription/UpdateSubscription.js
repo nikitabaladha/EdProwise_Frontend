@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import putAPI from "../../../../api/putAPI";
 import { toast } from "react-toastify";
@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 const UpdateSubscription = ({schools,updateSubscription}) => {
   const location = useLocation();
   const subscription = location.state?.subscriptions;
-// console.log(subscription);
+console.log(subscription);
 
   const [formData, setFormData] = useState({
     schoolId:"",
@@ -20,7 +20,7 @@ const UpdateSubscription = ({schools,updateSubscription}) => {
   useEffect(() => {
       if (subscription) {
         setFormData({
-          schoolId: subscription.schoolId || "",
+          schoolId: subscription.schoolID || "",
           subscriptionFor: subscription.subscriptionFor || "",
           // subscriptionStartDate: subscription.subscriptionStartDate || "",
           subscriptionStartDate: subscription.subscriptionStartDate
@@ -118,12 +118,12 @@ const UpdateSubscription = ({schools,updateSubscription}) => {
 
                         required
                       >
-                        <option value="">{subscription.schoolName}</option>
+                        <option value={subscription.schoolID}>({subscription.schoolId}) {subscription.schoolName}</option>
                         <option value="">Select School.</option>
                         {schools.map((school) => (
                           <option key={school._id} value={school._id}>
 
-                            {school.schoolName}
+                           ({school.schoolId}) {school.schoolName}
                           </option>
 
                         ))}

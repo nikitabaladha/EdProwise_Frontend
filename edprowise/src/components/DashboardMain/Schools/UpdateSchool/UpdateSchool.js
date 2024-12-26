@@ -278,7 +278,7 @@ const UpdateSchool = ({ updateSchool }) => {
                         id="affiliationCertificate"
                         name="affiliationCertificate"
                         className="form-control"
-                        accept="application/pdf"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={affiliationCertificateRef}
                         // required
@@ -304,7 +304,7 @@ const UpdateSchool = ({ updateSchool }) => {
                         id="panFile"
                         name="panFile"
                         className="form-control"
-                        accept="application/pdf"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={panFileRef}
                       />

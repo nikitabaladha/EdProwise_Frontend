@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import deleteAPI from "../api/deleteAPI";
 
 const DELETE_CONFIG = {
-  subscriptions: {
+  subscription: {
     getEndpoint: (id) => `/subscription/${id}`,
     successMessage: "Subscription successfully deleted!",
     errorMessage: "Failed to delete subscription.",

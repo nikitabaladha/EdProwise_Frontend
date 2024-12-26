@@ -2,10 +2,8 @@ import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import ConfirmationDialog from "../../ConfirmationDialog";
 import ConfirmationDialogs from "../../ConfirmationDialogs";
 const SubscriptionTable = ({
-  schools,
   subscription,
   setSubscription,
   selectedSubscription,
@@ -22,14 +20,17 @@ const SubscriptionTable = ({
     setDeleteType("subscription");
   };
 
+  console.log(deleteType);
+  
+
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
     setSelectedsubscription(null);
   };
 
-  const handleDeleteConfirmed = (_id) => {
+  const handleDeleteConfirmed = (id) => {
     setSubscription((prevSubscription) =>
-      prevSubscription.filter((subscription) => subscription._id !== _id)
+      prevSubscription.filter((subscription) => subscription.id !== id)
     );
   };
 
@@ -43,7 +44,7 @@ const SubscriptionTable = ({
     navigate(`/dashboard/subscriptions/view-subscriptions`, { state: { subscriptions } });
   };
 
-  const navigateToUpdateSubscription = (event, subscriptions,Schools) => {
+  const navigateToUpdateSubscription = (event, subscriptions) => {
     event.preventDefault();
     navigate(`/dashboard/subscriptions/update-subscriptions`, { state: { subscriptions } });
   };
@@ -284,7 +285,7 @@ const SubscriptionTable = ({
         <ConfirmationDialogs
           onClose={handleDeleteCancel}
           deleteType={deleteType}
-          id={selectedSubscription._id}
+          id={selectedSubscription.id}
           onDeleted={handleDeleteConfirmed}
         />
       )}

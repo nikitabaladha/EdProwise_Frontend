@@ -1,6 +1,5 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 
 const ViewSubscriptions = () => {
@@ -62,7 +61,7 @@ const ViewSubscriptions = () => {
                     <label htmlFor="cityStateCountry" className="form-label">
                       Subscription Start Date
                     </label>
-                    <p className="form-control">{subscription.subscriptionStartDate}</p>
+                    <p className="form-control">{new Date(subscription.subscriptionStartDate).toISOString().split('T')[0]}</p>
                   </div>
                   {/* <div className="mb-3">
                     <label htmlFor="cityStateCountry" className="form-label">

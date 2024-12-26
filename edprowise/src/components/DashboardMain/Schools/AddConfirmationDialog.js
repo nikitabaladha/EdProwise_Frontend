@@ -1,62 +1,31 @@
 import React from "react";
 import { toast } from "react-toastify";
-import deleteAPI from "../api/deleteAPI";
+import postAPI from "../../../api/postAPI";
 
-const DELETE_CONFIG = {
-  school: {
-    getEndpoint: (id) => `/school/${id}`,
-    successMessage: "School successfully deleted!",
-    errorMessage: "Failed to delete school.",
-    idKey: "schoolId",
-  },
-  user: {
-    getEndpoint: (id) => `/user/${id}`,
-    successMessage: "User successfully deleted!",
-    errorMessage: "Failed to delete user.",
-    idKey: "schoolId",
-  },
-};
-
-const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
-  const handleDelete = async () => {
-    const config = DELETE_CONFIG[deleteType];
-
-    if (!config) {
-      console.error("Invalid delete type.");
-      toast.error("Invalid delete type.");
-      return;
-    }
-
-    if (!id) {
-      console.error(`${config.idKey} is missing.`);
-      toast.error(`${config.idKey} is required.`);
-      return;
-    }
-
-    const endpoint = config.getEndpoint(id);
-
+const AddConfirmationDialog = ({ onClose, id, onAdd }) => {
+  const handleSubmit = async () => {
     try {
-      const response = await deleteAPI(endpoint, {}, true);
+      const response = await postAPI(
+        "/create-user",
+        { schoolId: id },
+
+        true
+      );
 
       if (!response.hasError) {
-        console.log(`${deleteType} deleted successfully`, response.data);
-        toast.success(config.successMessage);
-
-        if (typeof onDeleted === "function") {
-          onDeleted(id);
-        }
-
+        toast.success("User added successfully");
+        onAdd(response.data.data);
         onClose();
       } else {
-        console.error(config.errorMessage, response.message);
-        toast.error(`${config.errorMessage}: ${response.message}`);
+        toast.error(response.message || "Failed to add User");
       }
     } catch (error) {
-      console.error(`Error while deleting ${deleteType}:`, error);
-      toast.error(`An error occurred while deleting the ${deleteType}.`);
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
     }
   };
-
   const handleOverlayClick = (event) => {
     if (event.target.id === "overlay") {
       onClose();
@@ -101,7 +70,7 @@ const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
           id="swal2-title"
           style={{ display: "block" }}
         >
-          Are you sure?
+          Are you sure? You want to add
         </h2>
         <div
           className="swal2-html-container"
@@ -143,9 +112,9 @@ const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
             className="swal2-confirm btn btn-primary w-xs me-2 mt-2"
             aria-label=""
             style={{ display: "inline-block" }}
-            onClick={handleDelete}
+            onClick={handleSubmit}
           >
-            Yes, delete it!
+            Yes, add it!
           </button>
           <button
             type="button"
@@ -177,4 +146,4 @@ const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
   );
 };
 
-export default ConfirmationDialog;
+export default AddConfirmationDialog;
