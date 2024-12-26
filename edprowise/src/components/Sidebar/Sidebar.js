@@ -32,62 +32,89 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
     };
   }, [sidebarVisible, toggleSidebar]);
 
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const userRole = userDetails?.role || "Guest";
+
   const currentRoute = location.pathname;
   console.log(currentRoute);
 
-  const menuItems = [
-    {
-      id: "dashboard",
-      label: "Dashboard",
-      icon: "solar:widget-5-bold-duotone",
-      link: "/dashboard",
-      className: currentRoute === "/dashboard" ? "active" : "",
-    },
-    {
-      id: "school",
-      label: "Schools",
-      icon: "solar:users-group-rounded-bold-duotone",
-      link: "/dashboard/schools",
-      className: currentRoute === "/dashboard/schools" ? "active" : "",
-    },
-    {
-      id: "subscriptions",
-      label: "Subscriptions",
-      icon: "solar:wallet-money-bold",
-      link: "/dashboard/subscriptions",
-      className: currentRoute === "/dashboard/subscriptions" ? "active" : "",
-    },
-
-    {
-      id: "feesManagement",
-      label: "Fees Management",
-      icon: "game-icons:money-stack",
-      link: "/dashboard/feesManagement",
-      className: currentRoute === "/dashboard/feesManagement" ? "active" : "",
-    },
-    {
-      id: "payrollManagement",
-      label: "Payroll Management",
-      icon: "solar:hand-money-bold",
-      link: "/dashboard/payrollManagement",
-      className:
-        currentRoute === "/dashboard/payrollManagement" ? "active" : "",
-    },
-    {
-      id: "finance",
-      label: "Finance Management",
-      icon: "solar:graph-up-bold",
-      link: "/dashboard/finance",
-      className: currentRoute === "/dashboard/finance" ? "active" : "",
-    },
-    {
-      id: "schoolManagement",
-      label: "School Management",
-      icon: "solar:buildings-2-bold-duotone",
-      link: "/dashboard/schoolManagement",
-      className: currentRoute === "/dashboard/schoolManagement" ? "active" : "",
-    },
-  ];
+  const menuConfig = {
+    Admin: [
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        icon: "solar:widget-5-bold-duotone",
+        link: "/admin-dashboard",
+        className: currentRoute === "/admin-dashboard" ? "active" : "",
+      },
+      {
+        id: "school",
+        label: "Schools",
+        icon: "solar:users-group-rounded-bold-duotone",
+        link: "/admin-dashboard/schools",
+        className: currentRoute === "/admin-dashboard/schools" ? "active" : "",
+      },
+      {
+        id: "subscriptions",
+        label: "Subscriptions",
+        icon: "solar:wallet-money-bold",
+        link: "/admin-dashboard/subscriptions",
+        className:
+          currentRoute === "/admin-dashboard/subscriptions" ? "active" : "",
+      },
+      {
+        id: "feesManagement",
+        label: "Fees Management",
+        icon: "game-icons:money-stack",
+        link: "/admin-dashboard/feesManagement",
+        className:
+          currentRoute === "/admin-dashboard/feesManagement" ? "active" : "",
+      },
+      {
+        id: "payrollManagement",
+        label: "Payroll Management",
+        icon: "solar:hand-money-bold",
+        link: "/admin-dashboard/payrollManagement",
+        className:
+          currentRoute === "/admin-dashboard/payrollManagement" ? "active" : "",
+      },
+      {
+        id: "finance",
+        label: "Finance Management",
+        icon: "solar:graph-up-bold",
+        link: "/admin-dashboard/finance",
+        className: currentRoute === "/admin-dashboard/finance" ? "active" : "",
+      },
+      {
+        id: "schoolManagement",
+        label: "School Management",
+        icon: "solar:buildings-2-bold-duotone",
+        link: "/admin-dashboard/schoolManagement",
+        className:
+          currentRoute === "/admin-dashboard/schoolManagement" ? "active" : "",
+      },
+    ],
+    School: [
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        icon: "solar:widget-5-bold-duotone",
+        link: "/school-dashboard",
+        className: currentRoute === "/school-dashboard" ? "active" : "",
+      },
+      {
+        id: "school",
+        label: "Form",
+        icon: "solar:users-group-rounded-bold-duotone",
+        link: "/school-dashboard/form",
+        className: currentRoute === "/school-dashboard/form" ? "active" : "",
+      },
+    ],
+    Guest: [
+      { id: "login", label: "Login", icon: "solar:login-bold", link: "/login" },
+    ],
+  };
+  const menuItems = menuConfig[userRole] || menuConfig["Guest"];
 
   return (
     <>

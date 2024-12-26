@@ -1,18 +1,22 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import Login from "./components/Login/Login";
+import AdminLogin from "./components/Login/AdminLogin";
+import UserLogin from "./components/Login/UserLogin";
+
 import Signup from "./components/Signup/Signup";
 
-import DashboardMain from "./components/DashboardMain/DashboardMain";
-import Dashboard from "./components/DashboardMain/Dashboard/Dashboard";
-import RegistrationForm from "./components/DashboardMain/Form/RegistrationForm/RegistrationForm";
-import AddNewRegistration from "./components/DashboardMain/Form/RegistrationForm/AddNewRegistration/AddNewRegistration";
+import AdminDashboardMain from "./components/DashboardMainForAdmin/AdminDashboardMain";
+import Dashboard from "./components/DashboardMainForAdmin/Dashboard/Dashboard";
 
-import Schools from "./components/DashboardMain/Schools/Schools";
-import AddNewSchool from "./components/DashboardMain/Schools/AddNewSchool/AddNewSchool";
-import ViewSchool from "./components/DashboardMain/Schools/ViewSchool/ViewSchool";
-import UpdateSchool from "./components/DashboardMain/Schools/UpdateSchool/UpdateSchool";
+import Schools from "./components/DashboardMainForAdmin/Schools/Schools";
+import AddNewSchool from "./components/DashboardMainForAdmin/Schools/AddNewSchool/AddNewSchool";
+import ViewSchool from "./components/DashboardMainForAdmin/Schools/ViewSchool/ViewSchool";
+import UpdateSchool from "./components/DashboardMainForAdmin/Schools/UpdateSchool/UpdateSchool";
+
+// =============================================School Routes==============================================
+import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
+import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -31,7 +35,15 @@ const AppRoutes = () => {
         path="/login"
         element={
           <PublicRoute>
-            <Login />
+            <UserLogin />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/login/admin"
+        element={
+          <PublicRoute>
+            <AdminLogin />
           </PublicRoute>
         }
       />
@@ -44,20 +56,15 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/dashboard"
+        path="/admin-dashboard"
         element={
           <PrivateRoute>
-            <DashboardMain />
+            <AdminDashboardMain />
           </PrivateRoute>
         }
       >
         {/* Main Dashboard Route */}
         <Route index element={<Dashboard />} />
-
-        {/* Registration Form and its children Route */}
-        <Route path="formMenu/registrationForm" element={<RegistrationForm />}>
-          <Route path="create" element={<AddNewRegistration />} />
-        </Route>
 
         {/* School Table page and it's Add, View, Update Routes */}
         <Route path="schools" element={<Schools />}>
@@ -66,7 +73,26 @@ const AppRoutes = () => {
           <Route path="update-school" element={<UpdateSchool />} />
         </Route>
       </Route>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+      <Route
+        path="/school-dashboard"
+        element={
+          <PrivateRoute>
+            <SchoolDashboardMain />
+          </PrivateRoute>
+        }
+      >
+        {/* Main Dashboard Route */}
+        <Route index element={<SchoolDashboard />} />
+
+        {/* School Table page and it's Add, View, Update Routes */}
+        <Route path="schools" element={<Schools />}>
+          <Route path="add-new-school" element={<AddNewSchool />} />
+          <Route path="view-school" element={<ViewSchool />} />
+          <Route path="update-school" element={<UpdateSchool />} />
+        </Route>
+      </Route>
+      <Route path="/" element={<Navigate to="/school-dashboard" replace />} />
     </Routes>
   );
 };
