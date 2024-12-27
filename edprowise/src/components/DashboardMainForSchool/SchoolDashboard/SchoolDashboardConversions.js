@@ -1,6 +1,6 @@
 import React from "react";
 
-const DashboardConversions = () => {
+const SchoolDashboardConversions = () => {
   return (
     <>
       <div className="col-lg-4">
@@ -131,4 +131,4 @@ const DashboardConversions = () => {
   );
 };
 
-export default DashboardConversions;
+export default SchoolDashboardConversions;

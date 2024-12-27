@@ -106,8 +106,11 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         id: "school",
         label: "Form",
         icon: "solar:users-group-rounded-bold-duotone",
-        link: "/school-dashboard/form",
-        className: currentRoute === "/school-dashboard/form" ? "active" : "",
+        link: "/school-dashboard/registration-form",
+        className:
+          currentRoute === "/school-dashboard/registration-form"
+            ? "active"
+            : "",
       },
     ],
     Guest: [

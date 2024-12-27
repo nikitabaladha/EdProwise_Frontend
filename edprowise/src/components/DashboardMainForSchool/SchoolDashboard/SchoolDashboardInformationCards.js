@@ -44,7 +44,7 @@ const cardData = [
   },
 ];
 
-const DashboardInformationCards = () => {
+const SchoolDashboardInformationCards = () => {
   return (
     <div className="col-xxl-12">
       <div className="row">
@@ -96,4 +96,4 @@ const DashboardInformationCards = () => {
   );
 };
 
-export default DashboardInformationCards;
+export default SchoolDashboardInformationCards;

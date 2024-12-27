@@ -1,6 +1,6 @@
 import React from "react";
 
-const DashboardPerformance = () => {
+const SchoolDashboardPerformance = () => {
   return (
     <div className="col-xxl-8">
       <div className="card">
@@ -37,4 +37,4 @@ const DashboardPerformance = () => {
   );
 };
 
-export default DashboardPerformance;
+export default SchoolDashboardPerformance;
