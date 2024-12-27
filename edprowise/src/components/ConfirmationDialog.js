@@ -15,6 +15,12 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete user.",
     idKey: "schoolId",
   },
+  subscription: {
+    getEndpoint: (id) => `/subscription/${id}`,
+    successMessage: "Subscription successfully deleted!",
+    errorMessage: "Failed to delete subscription.",
+    idKey: "schoolId",
+  },
 };
 
 const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {

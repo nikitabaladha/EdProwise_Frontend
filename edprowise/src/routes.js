@@ -16,6 +16,11 @@ import AddNewSchool from "./components/DashboardMainForAdmin/Schools/AddNewSchoo
 import ViewSchool from "./components/DashboardMainForAdmin/Schools/ViewSchool/ViewSchool";
 import UpdateSchool from "./components/DashboardMainForAdmin/Schools/UpdateSchool/UpdateSchool";
 
+import Subscriptions from "./components/DashboardMainForAdmin/Subscription/Subscription";
+import AddNewSubscription from "./components/DashboardMainForAdmin/Subscription/AddNewSubscription/AddNewSubscription";
+import ViewSubscriptions from "./components/DashboardMainForAdmin/Subscription/ViewSubscription/ViewSubscription";
+import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/UpdateSubscription/UpdateSubscription";
+
 // =============================================School Routes==============================================
 import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
@@ -77,6 +82,16 @@ const AppRoutes = () => {
           <Route path="view-school" element={<ViewSchool />} />
           <Route path="update-school" element={<UpdateSchool />} />
         </Route>
+
+        {/* Subscriptions Table page and it's Add, View, Update Routes */}
+        <Route path="subscriptions" element={<Subscriptions />}>
+          <Route
+            path="add-new-subscriptions"
+            element={<AddNewSubscription />}
+          />
+          <Route path="view-subscriptions" element={<ViewSubscriptions />} />
+          <Route path="update-subscriptions" element={<UpdateSubscription />} />
+        </Route>
       </Route>
 
       {/* School Routes */}
@@ -93,8 +108,7 @@ const AppRoutes = () => {
         <Route index element={<SchoolDashboard />} />
         <Route path="registration-form" element={<RegistrationForm />}></Route>
       </Route>
-      {/* <Route path="/" element={<Navigate to="/school-dashboard" replace />} /> */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Navigate to="/school-dashboard" replace />} />
     </Routes>
   );
 };

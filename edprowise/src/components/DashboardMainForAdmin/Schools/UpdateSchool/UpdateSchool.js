@@ -87,7 +87,7 @@ const UpdateSchool = ({ updateSchool }) => {
         toast.success("School updated successfully!");
 
         const newUpdatedSchool = {
-          id: response.data.data._id,
+          _id: response.data.data._id,
           schoolId: response.data.data.schoolId,
           schoolName: response.data.data.schoolName,
           schoolMobileNo: response.data.data.schoolMobileNo,

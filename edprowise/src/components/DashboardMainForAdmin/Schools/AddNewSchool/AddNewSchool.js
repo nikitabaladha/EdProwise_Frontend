@@ -66,10 +66,8 @@ const AddNewSchool = ({ addSchool }) => {
       if (!response.hasError) {
         toast.success("School added successfully");
 
-        console.log(response.data.data);
-
         const newSchool = {
-          id: response.data.data._id,
+          _id: response.data.data._id,
           schoolId: response.data.data.schoolId,
           schoolName: response.data.data.schoolName,
           schoolMobileNo: response.data.data.schoolMobileNo,
@@ -78,6 +76,7 @@ const AddNewSchool = ({ addSchool }) => {
           schoolLocation: response.data.data.schoolLocation,
           affiliationUpto: response.data.data.affiliationUpto,
           panNo: response.data.data.panNo,
+          profileImage: response.data.data.profileImage,
         };
 
         addSchool(newSchool);
