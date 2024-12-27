@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { CgProfile } from "react-icons/cg";
+import { BiMessageDots } from "react-icons/bi";
+import { IoWalletOutline } from "react-icons/io5";
+import { IoMdHelpCircleOutline } from "react-icons/io";
+import { PiLockKeyBold } from "react-icons/pi";
+import { BiLogOut } from "react-icons/bi";
 
 const AdminDashboardHeader = () => {
   const handleLogout = () => {
@@ -303,23 +309,23 @@ const AdminDashboardHeader = () => {
                   {/* item*/}
                   <h6 className="dropdown-header">Welcome Gaston!</h6>
                   <Link className="dropdown-item" href="pages-profile.html">
-                    <i className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
+                    <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Profile</span>
                   </Link>
                   <Link className="dropdown-item" href="apps-chat.html">
-                    <i className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
+                    <BiMessageDots className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Messages</span>
                   </Link>
                   <Link className="dropdown-item" href="pages-pricing.html">
-                    <i className="bx bx-wallet text-muted fs-18 align-middle me-1" />
+                    <IoWalletOutline className="bx bx-wallet text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Pricing</span>
                   </Link>
                   <Link className="dropdown-item" href="pages-faqs.html">
-                    <i className="bx bx-help-circle text-muted fs-18 align-middle me-1" />
+                    <IoMdHelpCircleOutline className="bx bx-help-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Help</span>
                   </Link>
                   <Link className="dropdown-item" href="auth-lock-screen.html">
-                    <i className="bx bx-lock text-muted fs-18 align-middle me-1" />
+                    <PiLockKeyBold className="bx bx-lock text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Lock screen</span>
                   </Link>
                   <div className="dropdown-divider my-1" />
@@ -327,7 +333,7 @@ const AdminDashboardHeader = () => {
                     className="dropdown-item text-danger"
                     href="auth-signin.html"
                   >
-                    <i className="bx bx-log-out fs-18 align-middle me-1" />
+                    <BiLogOut className="bx bx-log-out fs-18 align-middle me-1" />
                     <span className="align-middle" onClick={handleLogout}>
                       Logout
                     </span>

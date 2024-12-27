@@ -3,10 +3,13 @@ import { useLocation } from "react-router-dom";
 import putAPI from "../../../../api/putAPI";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import CityData from "../../../CityData.json";
 
 const UpdateSchool = ({ updateSchool }) => {
   const location = useLocation();
   const school = location.state?.school;
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     schoolName: "",
@@ -20,6 +23,10 @@ const UpdateSchool = ({ updateSchool }) => {
     affiliationCertificate: null,
     panFile: null,
   });
+
+  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
+    cities.map((city) => `${city}, ${state}, India`)
+  );
 
   const profileImageRef = useRef(null);
   const affiliationCertificateRef = useRef(null);
@@ -114,6 +121,8 @@ const UpdateSchool = ({ updateSchool }) => {
         profileImageRef.current.value = "";
         affiliationCertificateRef.current.value = "";
         panFileRef.current.value = "";
+
+        navigate(-1);
       } else {
         toast.error("Failed to update School.");
       }
@@ -231,9 +240,11 @@ const UpdateSchool = ({ updateSchool }) => {
                         required
                       >
                         <option value="">Select City-State-Country</option>
-                        <option value="Choice 1">Choice 1</option>
-                        <option value="Choice 2">Choice 2</option>
-                        <option value="Choice 3">Choice 3</option>
+                        {cityOptions.map((option, index) => (
+                          <option key={index} value={option}>
+                            {option}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -267,6 +278,22 @@ const UpdateSchool = ({ updateSchool }) => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">
+                      <label htmlFor="affiliationUpto" className="form-label">
+                        Affiliation Upto
+                      </label>
+                      <input
+                        type="text"
+                        id="affiliationUpto"
+                        name="affiliationUpto"
+                        className="form-control"
+                        value={formData.affiliationUpto}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
                       <label
                         htmlFor="affiliationCertificate"
                         className="form-label"
@@ -293,6 +320,25 @@ const UpdateSchool = ({ updateSchool }) => {
                       ) : null}
                     </div>
                   </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="panNo" className="form-label">
+                        PAN Number
+                      </label>
+                      <input
+                        type="text"
+                        id="panNo"
+                        name="panNo"
+                        className="form-control"
+                        value={formData.panNo}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
 
                   <div className="col-md-6">
                     <div className="mb-3">
@@ -315,42 +361,6 @@ const UpdateSchool = ({ updateSchool }) => {
                           </small>
                         </div>
                       ) : null}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="affiliationUpto" className="form-label">
-                        Affiliation Upto
-                      </label>
-                      <input
-                        type="text"
-                        id="affiliationUpto"
-                        name="affiliationUpto"
-                        className="form-control"
-                        value={formData.affiliationUpto}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="panNo" className="form-label">
-                        PAN Number
-                      </label>
-                      <input
-                        type="text"
-                        id="panNo"
-                        name="panNo"
-                        className="form-control"
-                        value={formData.panNo}
-                        onChange={handleChange}
-                        required
-                      />
                     </div>
                   </div>
                 </div>

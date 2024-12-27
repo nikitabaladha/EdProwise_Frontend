@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ConfirmationDialog from "../../ConfirmationDialog";
+import { MdKeyboardArrowDown } from "react-icons/md";
 const SchoolsTable = ({
   schools,
   setSchools,
@@ -92,14 +93,13 @@ const SchoolsTable = ({
                   Add School
                 </Link>
                 <div className="dropdown">
-                  <Link
-                    to=""
-                    className="dropdown-toggle btn btn-sm btn-outline-light"
+                  <button
+                    className="btn btn-sm btn-primary"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    This Month
-                  </Link>
+                    This Month <MdKeyboardArrowDown />
+                  </button>
                   <div className="dropdown-menu dropdown-menu-end">
                     {/* item*/}
                     <Link to="" className="dropdown-item">

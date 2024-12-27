@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 const DashboardRecentSchools = ({
   schools,
@@ -47,14 +48,13 @@ const DashboardRecentSchools = ({
               <h4 className="card-title flex-grow-1">Recent Schools</h4>
 
               <div className="dropdown">
-                <Link
-                  to=""
+                <button
                   className="btn btn-sm btn-primary"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  This Month
-                </Link>
+                  This Month <MdKeyboardArrowDown />
+                </button>
                 <div className="dropdown-menu dropdown-menu-end">
                   {/* item*/}
                   <Link to="" className="dropdown-item">

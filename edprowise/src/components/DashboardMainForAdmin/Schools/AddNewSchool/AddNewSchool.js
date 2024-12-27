@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import postAPI from "../../../../api/postAPI";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import CityData from "../../../CityData.json";
 
 const AddNewSchool = ({ addSchool }) => {
   const [formData, setFormData] = useState({
@@ -16,6 +18,12 @@ const AddNewSchool = ({ addSchool }) => {
     affiliationCertificate: null,
     panFile: null,
   });
+
+  const navigate = useNavigate();
+
+  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
+    cities.map((city) => `${city}, ${state}, India`)
+  );
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -90,6 +98,8 @@ const AddNewSchool = ({ addSchool }) => {
         document.getElementById("profileImage").value = "";
         document.getElementById("affiliationCertificate").value = "";
         document.getElementById("panFile").value = "";
+
+        navigate(-1);
       } else {
         toast.error(response.message || "Failed to add school");
       }
@@ -195,6 +205,7 @@ const AddNewSchool = ({ addSchool }) => {
                         >
                           City-State-Country
                         </label>
+
                         <select
                           id="cityStateCountry"
                           name="schoolLocation"
@@ -204,9 +215,11 @@ const AddNewSchool = ({ addSchool }) => {
                           required
                         >
                           <option value="">Select City-State-Country</option>
-                          <option value="Choice 1">Choice 1</option>
-                          <option value="Choice 2">Choice 2</option>
-                          <option value="Choice 3">Choice 3</option>
+                          {cityOptions.map((option, index) => (
+                            <option key={index} value={option}>
+                              {option}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
@@ -229,26 +242,6 @@ const AddNewSchool = ({ addSchool }) => {
                   </div>
 
                   <div className="row">
-                    <div className="col-md-6">
-                      {" "}
-                      <div className="mb-3">
-                        <label
-                          htmlFor="affiliationCertificate"
-                          className="form-label"
-                        >
-                          Affiliation Certificate
-                        </label>
-                        <input
-                          type="file"
-                          id="affiliationCertificate"
-                          name="affiliationCertificate"
-                          className="form-control"
-                          accept="image/*,application/pdf"
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
-                    </div>
                     <div className="col-md-6">
                       {" "}
                       <div className="mb-3">
@@ -277,6 +270,26 @@ const AddNewSchool = ({ addSchool }) => {
                           <option value="College">College</option>
                           <option value="University">University</option>
                         </select>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      {" "}
+                      <div className="mb-3">
+                        <label
+                          htmlFor="affiliationCertificate"
+                          className="form-label"
+                        >
+                          Affiliation Certificate
+                        </label>
+                        <input
+                          type="file"
+                          id="affiliationCertificate"
+                          name="affiliationCertificate"
+                          className="form-control"
+                          accept="image/*,application/pdf"
+                          onChange={handleChange}
+                          required
+                        />
                       </div>
                     </div>
                   </div>
