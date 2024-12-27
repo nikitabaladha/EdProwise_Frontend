@@ -237,7 +237,6 @@ const SchoolsTable = ({
                         className="page-link"
                         onClick={handlePreviousPage}
                         disabled={currentPage === 1}
-                        style={{ color: "#424e5a" }}
                       >
                         Previous
                       </button>
@@ -267,7 +266,6 @@ const SchoolsTable = ({
                         className="page-link"
                         onClick={handleNextPage}
                         disabled={currentPage === totalPages}
-                        style={{ color: "#424e5a" }}
                       >
                         Next
                       </button>

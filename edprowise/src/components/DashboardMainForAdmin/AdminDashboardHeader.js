@@ -15,7 +15,6 @@ const AdminDashboardHeader = () => {
   };
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-  console.log("userDetails", userDetails);
 
   const toggleSidebar = () => {
     const htmlElement = document.documentElement; // Selects the <html> tag
@@ -56,6 +55,18 @@ const AdminDashboardHeader = () => {
     };
   }, []);
 
+  const [theme, setTheme] = useState("light");
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    document.documentElement.setAttribute("data-bs-theme", newTheme);
+  };
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-bs-theme", theme);
+  }, [theme]);
+
   return (
     <>
       <header className="topbar">
@@ -91,6 +102,7 @@ const AdminDashboardHeader = () => {
                   type="button"
                   className="topbar-button"
                   id="light-dark-mode"
+                  onClick={toggleTheme}
                 >
                   <iconify-icon
                     icon="solar:moon-bold-duotone"
@@ -289,25 +301,19 @@ const AdminDashboardHeader = () => {
                   aria-expanded="false"
                 >
                   <span className="d-flex align-items-center">
-                    {/* <img
-                      className="rounded-circle"
-                      width={32}
-                      src="assets/images/users/avatar-1.jpg"
-                      alt=""
-                    /> */}
                     <img
                       src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
-                      // className="logo-lg"
                       className="rounded-circle"
                       alt="logo light"
-                      // style={{ height: "30px" }}
                       width={32}
                     />
                   </span>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-end">
                   {/* item*/}
-                  <h6 className="dropdown-header">Welcome Gaston!</h6>
+                  <h6 className="dropdown-header">
+                    Welcome {userDetails?.firstName} {userDetails?.lastName}
+                  </h6>
                   <Link className="dropdown-item" href="pages-profile.html">
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Profile</span>

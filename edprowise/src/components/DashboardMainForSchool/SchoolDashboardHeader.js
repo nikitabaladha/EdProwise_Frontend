@@ -1,5 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { CgProfile } from "react-icons/cg";
+import { BiMessageDots } from "react-icons/bi";
+import { IoWalletOutline } from "react-icons/io5";
+import { IoMdHelpCircleOutline } from "react-icons/io";
+import { PiLockKeyBold } from "react-icons/pi";
+import { BiLogOut } from "react-icons/bi";
 
 const SchoolDashboardHeader = () => {
   const handleLogout = () => {
@@ -12,22 +18,25 @@ const SchoolDashboardHeader = () => {
   console.log("userDetails", userDetails);
 
   const toggleSidebar = () => {
-    const htmlElement = document.documentElement;
-    const bodyElement = document.body;
+    const htmlElement = document.documentElement; // Selects the <html> tag
+    const bodyElement = document.body; // Selects the <body> tag
 
+    // Toggle the 'sidebar-enable' class on the <html> tag
     htmlElement.classList.toggle("sidebar-enable");
 
+    // Toggle the 'overflow: hidden' style on the <body> element
     if (bodyElement.style.overflow === "hidden") {
-      bodyElement.style.overflow = "";
+      bodyElement.style.overflow = ""; // Remove the style
     } else {
-      bodyElement.style.overflow = "hidden";
+      bodyElement.style.overflow = "hidden"; // Add the style
     }
   };
 
   const handleDocumentClick = (event) => {
-    const htmlElement = document.documentElement;
-    const mainNav = document.querySelector(".main-nav");
+    const htmlElement = document.documentElement; // Select the <html> tag
+    const mainNav = document.querySelector(".main-nav"); // Select the main-nav element
 
+    // Check if sidebar is enabled and click is outside the main-nav
     if (
       htmlElement.classList.contains("sidebar-enable") &&
       mainNav &&
@@ -38,12 +47,26 @@ const SchoolDashboardHeader = () => {
   };
 
   useEffect(() => {
+    // Attach event listener for clicking outside the main-nav
     document.addEventListener("click", handleDocumentClick);
 
     return () => {
+      // Cleanup the event listener
       document.removeEventListener("click", handleDocumentClick);
     };
   }, []);
+
+  const [theme, setTheme] = useState("light");
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    document.documentElement.setAttribute("data-bs-theme", newTheme);
+  };
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-bs-theme", theme);
+  }, [theme]);
 
   return (
     <>
@@ -69,7 +92,7 @@ const SchoolDashboardHeader = () => {
               {/* Menu Toggle Button */}
               <div className="topbar-item">
                 <h4 className="fw-bold topbar-button pe-none text-uppercase mb-0">
-                  Welcome!
+                  Welcome! {userDetails?.firstName} {userDetails?.lastName}
                 </h4>
               </div>
             </div>
@@ -80,6 +103,7 @@ const SchoolDashboardHeader = () => {
                   type="button"
                   className="topbar-button"
                   id="light-dark-mode"
+                  onClick={toggleTheme}
                 >
                   <iconify-icon
                     icon="solar:moon-bold-duotone"
@@ -280,35 +304,35 @@ const SchoolDashboardHeader = () => {
                   <span className="d-flex align-items-center">
                     <img
                       src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
-                      // className="logo-lg"
                       className="rounded-circle"
                       alt="logo light"
-                      // style={{ height: "30px" }}
                       width={32}
                     />
                   </span>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-end">
                   {/* item*/}
-                  <h6 className="dropdown-header">Welcome Gaston!</h6>
+                  <h6 className="dropdown-header">
+                    Welcome {userDetails?.firstName} {userDetails?.lastName}
+                  </h6>
                   <Link className="dropdown-item" href="pages-profile.html">
-                    <i className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
+                    <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Profile</span>
                   </Link>
                   <Link className="dropdown-item" href="apps-chat.html">
-                    <i className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
+                    <BiMessageDots className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Messages</span>
                   </Link>
                   <Link className="dropdown-item" href="pages-pricing.html">
-                    <i className="bx bx-wallet text-muted fs-18 align-middle me-1" />
+                    <IoWalletOutline className="bx bx-wallet text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Pricing</span>
                   </Link>
                   <Link className="dropdown-item" href="pages-faqs.html">
-                    <i className="bx bx-help-circle text-muted fs-18 align-middle me-1" />
+                    <IoMdHelpCircleOutline className="bx bx-help-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Help</span>
                   </Link>
                   <Link className="dropdown-item" href="auth-lock-screen.html">
-                    <i className="bx bx-lock text-muted fs-18 align-middle me-1" />
+                    <PiLockKeyBold className="bx bx-lock text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Lock screen</span>
                   </Link>
                   <div className="dropdown-divider my-1" />
@@ -316,7 +340,7 @@ const SchoolDashboardHeader = () => {
                     className="dropdown-item text-danger"
                     href="auth-signin.html"
                   >
-                    <i className="bx bx-log-out fs-18 align-middle me-1" />
+                    <BiLogOut className="bx bx-log-out fs-18 align-middle me-1" />
                     <span className="align-middle" onClick={handleLogout}>
                       Logout
                     </span>
