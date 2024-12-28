@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import postAPI from "../../../api/postAPI";
 
 const AddConfirmationDialog = ({ onClose, id, onAdd }) => {
+  console.log("Add ConfirmationDialog", id);
   const handleSubmit = async () => {
     try {
       const response = await postAPI(
@@ -14,7 +15,16 @@ const AddConfirmationDialog = ({ onClose, id, onAdd }) => {
 
       if (!response.hasError) {
         toast.success("User added successfully");
-        onAdd(response.data.data);
+
+        const newUser = {
+          _id: response.data.data.id,
+          schoolId: response.data.data.schoolId,
+          userId: response.data.data.userId,
+          role: response.data.data.role,
+        };
+
+        onAdd(newUser);
+
         onClose();
       } else {
         toast.error(response.message || "Failed to add User");

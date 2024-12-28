@@ -281,15 +281,28 @@ const UpdateSchool = ({ updateSchool }) => {
                       <label htmlFor="affiliationUpto" className="form-label">
                         Affiliation Upto
                       </label>
-                      <input
-                        type="text"
+                      <select
                         id="affiliationUpto"
                         name="affiliationUpto"
                         className="form-control"
                         value={formData.affiliationUpto}
                         onChange={handleChange}
                         required
-                      />
+                      >
+                        <option value="">Select Affiliation</option>
+                        <option value="Pre-Primary">Pre-Primary</option>
+                        <option value="Primary (Upto Class 5)">
+                          Primary (Upto Class 5)
+                        </option>
+                        <option value="Secondary (Upto Class 10)">
+                          Secondary (Upto Class 10)
+                        </option>
+                        <option value="Higher Secondary (Upto Class 12)">
+                          Higher Secondary (Upto Class 12)
+                        </option>
+                        <option value="College">College</option>
+                        <option value="University">University</option>
+                      </select>
                     </div>
                   </div>
                   <div className="col-md-6">

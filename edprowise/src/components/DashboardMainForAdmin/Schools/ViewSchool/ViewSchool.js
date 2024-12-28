@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
+import { useNavigate } from "react-router-dom";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import getAPI from "../../../../api/getAPI";
 import { Link } from "react-router-dom";
@@ -12,11 +13,14 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   const location = useLocation();
   const school = location.state?.school;
 
+  const navigate = useNavigate();
+
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
+  const [subscriptions, setSubscriptions] = useState([]);
 
   const fetchUserData = async () => {
     if (!school?._id) {
@@ -35,6 +39,29 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
         Array.isArray(response.data.data)
       ) {
         setUsers(response.data.data);
+        console.log("all users", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching User:", err);
+    }
+  };
+
+  const fetchSubscriptionData = async () => {
+    if (!school?._id) {
+      console.error("School ID is missing.");
+      return;
+    }
+    try {
+      const response = await getAPI(`/subscription/${school._id}`, {}, true);
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setSubscriptions(response.data.data);
+        console.log("All setSubscriptions", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -45,6 +72,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
 
   useEffect(() => {
     fetchUserData();
+    fetchSubscriptionData();
   }, [school]);
 
   if (!school) {
@@ -77,7 +105,43 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   };
 
   const handleDeleteConfirmed = (_id) => {
+    console.log("_id", _id);
     setUsers((prevUsers) => prevUsers.filter((user) => user._id !== _id));
+  };
+
+  const navigateToAddNewSubscription = (event) => {
+    event.preventDefault();
+    navigate(`/admin-dashboard/subscriptions/add-new-subscriptions`);
+  };
+
+  const navigateToViewSubscription = async (event, subscription) => {
+    event.preventDefault();
+
+    try {
+      const response = await getAPI(
+        `/subscription-by-id/${subscription._id}`,
+        {},
+        true
+      );
+      if (!response.hasError && response.data) {
+        console.log("response data from navigate function", response.data.data);
+        // Navigate to the view subscription page with the fetched subscription data
+        navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
+          state: { subscription: response.data.data }, // Pass the fetched subscription data
+        });
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching subscription:", err);
+    }
+  };
+
+  const navigateToUpdateSubscription = (event, subscription) => {
+    event.preventDefault();
+    navigate(`/admin-dashboard/subscriptions/update-subscriptions`, {
+      state: { subscription },
+    });
   };
 
   return (
@@ -174,29 +238,37 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                       >
                         Affiliation Certificate
                       </label>
-                      {school.affiliationCertificate.endsWith(".pdf") ? (
-                        <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
+                      {school.affiliationCertificate ? (
+                        school.affiliationCertificate.endsWith(".pdf") ? (
+                          <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
+                            <div
+                              style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <Viewer
+                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
+                              />
+                            </div>
+                          </Worker>
+                        ) : (
                           <div
                             style={{
                               border: "1px solid #ccc",
                               borderRadius: "10px",
+                              overflow: "hidden",
                             }}
                           >
-                            <Viewer
-                              fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
+                            <img
+                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
+                              alt="Affiliation Certificate"
+                              style={{ width: "100%", height: "auto" }}
                             />
                           </div>
-                        </Worker>
+                        )
                       ) : (
-                        <img
-                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
-                          alt="Affiliation Certificate"
-                          style={{
-                            width: "100%",
-                            borderRadius: "10px",
-                            marginTop: "10px",
-                          }}
-                        />
+                        <p>No affiliation certificate available</p>
                       )}
                     </div>
                   </div>
@@ -206,29 +278,37 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                       <label htmlFor="panFile" className="form-lsabel">
                         PAN File
                       </label>
-                      {school.panFile.endsWith(".pdf") ? (
-                        <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
+                      {school.panFile ? (
+                        school.panFile.endsWith(".pdf") ? (
+                          <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
+                            <div
+                              style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <Viewer
+                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
+                              />
+                            </div>
+                          </Worker>
+                        ) : (
                           <div
                             style={{
                               border: "1px solid #ccc",
                               borderRadius: "10px",
+                              overflow: "hidden",
                             }}
                           >
-                            <Viewer
-                              fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
+                            <img
+                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
+                              alt="Affiliation Certificate"
+                              style={{ width: "100%", height: "auto" }}
                             />
                           </div>
-                        </Worker>
+                        )
                       ) : (
-                        <img
-                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
-                          alt="PAN File"
-                          style={{
-                            width: "100%",
-                            borderRadius: "10px",
-                            marginTop: "10px",
-                          }}
-                        />
+                        <p>No PAN File available</p>
                       )}
                     </div>
                   </div>
@@ -311,18 +391,18 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                           <td>******</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link className="btn btn-light btn-sm">
+                              <Link
+                                className="btn btn-light btn-sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                }}
+                              >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              {/* <Link className="btn btn-soft-primary btn-sm">
-                                <iconify-icon
-                                  icon="solar:pen-2-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link> */}
+
                               <Link className="btn btn-soft-danger btn-sm">
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
@@ -344,6 +424,129 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
             </div>
           </div>
         </div>
+
+        {subscriptions.length > 0 ? (
+          <div className="row">
+            <div className="col-xl-12">
+              <div className="card">
+                <div className="card-header d-flex justify-content-between align-items-center gap-1">
+                  <h4 className="card-title flex-grow-1">
+                    All Subscription List
+                  </h4>
+                  <Link
+                    onClick={(event) => navigateToAddNewSubscription(event)}
+                    className="btn btn-sm btn-primary"
+                  >
+                    Add Subscription
+                  </Link>
+                </div>
+                <div>
+                  <div className="table-responsive">
+                    <table className="table align-middle mb-0 table-hover table-centered">
+                      <thead className="bg-light-subtle">
+                        <tr>
+                          <th style={{ width: 20 }}>
+                            <div className="form-check ms-1">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="customCheck1"
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="customCheck1"
+                              />
+                            </div>
+                          </th>
+                          <th>Subscription Module</th>
+                          <th>Subscription Start Date</th>
+                          <th>No. Of Months</th>
+                          <th>Monthly Rate</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {subscriptions.map((subscription) => (
+                          <tr key={subscription._id}>
+                            <td>
+                              <div className="form-check ms-1">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customCheck2"
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="customCheck2"
+                                >
+                                  &nbsp;
+                                </label>
+                              </div>
+                            </td>
+                            <td>{subscription.subscriptionFor}</td>
+                            <td>
+                              {new Date(
+                                subscription.subscriptionStartDate
+                              ).toLocaleDateString()}
+                            </td>
+                            <td>{subscription.subscriptionNoOfMonth}</td>
+                            <td>{subscription.monthlyRate}</td>
+                            <td>
+                              <div className="d-flex gap-2">
+                                <Link
+                                  className="btn btn-light btn-sm"
+                                  onClick={(event) =>
+                                    navigateToViewSubscription(
+                                      event,
+                                      subscription
+                                    )
+                                  }
+                                >
+                                  <iconify-icon
+                                    icon="solar:eye-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+
+                                <Link
+                                  className="btn btn-soft-primary btn-sm"
+                                  onClick={(event) =>
+                                    navigateToUpdateSubscription(
+                                      event,
+                                      subscription
+                                    )
+                                  }
+                                >
+                                  <iconify-icon
+                                    icon="solar:pen-2-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                                <Link
+                                  className="btn btn-soft-danger btn-sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                >
+                                  <iconify-icon
+                                    icon="solar:trash-bin-minimalistic-2-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="row"></div>
+        )}
       </div>
       {isAddDialogOpen && (
         <AddConfirmationDialog

@@ -77,6 +77,8 @@ const AddNewSchool = ({ addSchool }) => {
           affiliationUpto: response.data.data.affiliationUpto,
           panNo: response.data.data.panNo,
           profileImage: response.data.data.profileImage,
+          affiliationCertificate: response.data.data.affiliationCertificate,
+          panFile: response.data.data.panFile,
         };
 
         addSchool(newSchool);

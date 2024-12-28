@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import ConfirmationDialog from "../../ConfirmationDialog";
 const SubscriptionTable = ({
   subscription,
@@ -105,14 +106,14 @@ const SubscriptionTable = ({
                   Add Subscription
                 </Link>
                 <div className="dropdown">
-                  <Link
-                    to=""
-                    className="dropdown-toggle btn btn-sm btn-outline-light"
+                  <button
+                    className="btn btn-sm btn-outline-light"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    This Month
-                  </Link>
+                    This Month <MdKeyboardArrowDown />
+                  </button>
+
                   <div className="dropdown-menu dropdown-menu-end">
                     {/* item*/}
                     <Link to="" className="dropdown-item">

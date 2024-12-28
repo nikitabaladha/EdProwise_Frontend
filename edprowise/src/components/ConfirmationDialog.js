@@ -13,7 +13,7 @@ const DELETE_CONFIG = {
     getEndpoint: (id) => `/user/${id}`,
     successMessage: "User successfully deleted!",
     errorMessage: "Failed to delete user.",
-    idKey: "schoolId",
+    idKey: "userId",
   },
   subscription: {
     getEndpoint: (id) => `/subscription/${id}`,
