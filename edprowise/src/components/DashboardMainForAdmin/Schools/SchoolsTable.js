@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import { exportToExcel } from "../../export-excel";
+
 import ConfirmationDialog from "../../ConfirmationDialog";
 const SchoolsTable = ({
   schools,
@@ -11,6 +12,25 @@ const SchoolsTable = ({
   setSelectedSchool,
 }) => {
   const navigate = useNavigate();
+
+  const handleExport = () => {
+    const filteredData = schools.map((school) => ({
+      Id: school._id,
+      SchoolId: school.schoolId,
+      SchoolName: school.schoolName,
+      MobileNo: school.schoolMobileNo,
+      Email: school.schoolEmail,
+      Address: school.schoolAddress,
+      Location: school.schoolLocation,
+      ProfileImage: school.profileImage,
+      AffiliationCertificate: school.affiliationCertificate,
+      AffiliationUpto: school.affiliationUpto,
+      PANNumber: school.panNo,
+      PanFile: school.panFile,
+    }));
+
+    exportToExcel(filteredData, "Schools", "Schools Data");
+  };
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
@@ -92,29 +112,14 @@ const SchoolsTable = ({
                 >
                   Add School
                 </Link>
-                <div className="dropdown">
-                  <button
-                    className="btn btn-sm btn-outline-light"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    This Month <MdKeyboardArrowDown />
-                  </button>
 
-                  <div className="dropdown-menu dropdown-menu-end">
-                    {/* item*/}
-                    <Link to="" className="dropdown-item">
-                      Download
-                    </Link>
-                    {/* item*/}
-                    <Link to="" className="dropdown-item">
-                      Export
-                    </Link>
-                    {/* item*/}
-                    <Link to="" className="dropdown-item">
-                      Import
-                    </Link>
-                  </div>
+                <div className="text-end">
+                  <Link
+                    onClick={handleExport}
+                    className="btn btn-sm btn-outline-light"
+                  >
+                    Export
+                  </Link>
                 </div>
               </div>
               <div>

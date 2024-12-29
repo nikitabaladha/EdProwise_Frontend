@@ -2,68 +2,58 @@ import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+import { MdKeyboardArrowDown } from "react-icons/md";
 import ConfirmationDialog from "../../ConfirmationDialog";
-import { exportToExcel } from "../../export-excel";
-const SubscriptionTable = ({
-  subscription,
-  setSubscription,
-  selectedSubscription,
-  setSelectedsubscription,
+const SchoolsTable = ({
+  schools,
+  setSchools,
+  selectedSchool,
+  setSelectedSchool,
 }) => {
   const navigate = useNavigate();
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
 
-  const openDeleteDialog = (subscription) => {
-    setSelectedsubscription(subscription);
+  const openDeleteDialog = (school) => {
+    setSelectedSchool(school);
     setIsDeleteDialogOpen(true);
-    setDeleteType("subscription");
-  };
-
-  const handleDeleteConfirmed = (id) => {
-    setSubscription((prevSubscription) =>
-      prevSubscription.filter((subscription) => subscription.id !== id)
-    );
+    setDeleteType("school");
   };
 
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
-    setSelectedsubscription(null);
+    setSelectedSchool(null);
+  };
+
+  const handleDeleteConfirmed = (_id) => {
+    setSchools((prevSchools) =>
+      prevSchools.filter((school) => school._id !== _id)
+    );
   };
 
   const navigateToAddNewSchool = (event) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/subscriptions/add-new-subscriptions`);
+    navigate(`/admin-dashboard/schools/add-new-school`);
   };
 
-  const navigateToViewSubscription = (event, subscriptions) => {
+  const navigateToViewSchool = (event, school) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
-      state: { subscriptions },
-    });
+    navigate(`/admin-dashboard/schools/view-school`, { state: { school } });
   };
 
-  const navigateToUpdateSubscription = (event, subscriptions) => {
+  const navigateToUpdateSchool = (event, school) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/subscriptions/update-subscriptions`, {
-      state: { subscriptions },
-    });
+    navigate(`/admin-dashboard/schools/update-school`, { state: { school } });
   };
-
   const [currentPage, setCurrentPage] = useState(1);
-  const [subscriptionPerPage] = useState(5);
+  const [schoolsPerPage] = useState(5);
 
-  const indexOfLastSubscription = currentPage * subscriptionPerPage;
-  const indexOfFirstSubscription =
-    indexOfLastSubscription - subscriptionPerPage;
-  const currentSubscription = subscription.slice(
-    indexOfFirstSubscription,
-    indexOfLastSubscription
-  );
+  const indexOfLastSchool = currentPage * schoolsPerPage;
+  const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
+  const currentSchools = schools.slice(indexOfFirstSchool, indexOfLastSchool);
 
-  const totalPages = Math.ceil(subscription.length / subscriptionPerPage);
+  const totalPages = Math.ceil(schools.length / schoolsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -87,25 +77,6 @@ const SubscriptionTable = ({
     (_, index) => startPage + index
   );
 
-  const handleExport = () => {
-    const filteredData = subscription.map((sus) => ({
-      Id: sus.id,
-      SubscriptionFor: sus.subscriptionFor,
-      StartDate: sus.subscriptionStartDate,
-      NoOfMonth: sus.subscriptionNoOfMonth,
-      MonthlyRate: sus.monthlyRate,
-      SchoolId: sus.schoolId,
-      sID: sus.sID,
-      SchoolName: sus.schoolName,
-      SchoolMobileNo: sus.schoolMobileNo,
-      SchoolEmail: sus.schoolEmail,
-      SchoolAddress: sus.schoolAddress,
-      SchoolLocation: sus.schoolLocation,
-    }));
-
-    exportToExcel(filteredData, "Subscriptions", "Subscriptions Data");
-  };
-
   return (
     <>
       {" "}
@@ -114,23 +85,36 @@ const SubscriptionTable = ({
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">
-                  All Subscription List
-                </h4>
+                <h4 className="card-title flex-grow-1">All School List</h4>
                 <Link
                   onClick={(event) => navigateToAddNewSchool(event)}
                   className="btn btn-sm btn-primary"
                 >
-                  Add Subscription
+                  Add School
                 </Link>
-
-                <div className="text-end">
-                  <Link
-                    onClick={handleExport}
+                <div className="dropdown">
+                  <button
                     className="btn btn-sm btn-outline-light"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
                   >
-                    Export
-                  </Link>
+                    This Month <MdKeyboardArrowDown />
+                  </button>
+
+                  <div className="dropdown-menu dropdown-menu-end">
+                    {/* item*/}
+                    <Link to="" className="dropdown-item">
+                      Download
+                    </Link>
+                    {/* item*/}
+                    <Link to="" className="dropdown-item">
+                      Export
+                    </Link>
+                    {/* item*/}
+                    <Link to="" className="dropdown-item">
+                      Import
+                    </Link>
+                  </div>
                 </div>
               </div>
               <div>
@@ -154,13 +138,14 @@ const SubscriptionTable = ({
                         <th>School Id</th>
                         <th>School Name</th>
                         <th>School Mobile No</th>
-                        <th>Subscription Module</th>
+                        <th>School Email</th>
+                        <th>School PAN</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {currentSubscription.map((subscriptions) => (
-                        <tr key={subscriptions.id}>
+                      {currentSchools.map((school) => (
+                        <tr key={school._id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
@@ -176,14 +161,14 @@ const SubscriptionTable = ({
                               </label>
                             </div>
                           </td>
-                          <td>{subscriptions.sID}</td>
+                          <td>{school.schoolId}</td>
 
                           <td>
                             <div className="d-flex align-items-center gap-2">
                               <div className="rounded bg-light d-flex align-items-center justify-content-center">
                                 <img
-                                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${subscriptions.profileImage}`}
-                                  alt={`${subscriptions.schoolName} Profile`}
+                                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`}
+                                  alt={`${school.schoolName} Profile`}
                                   className="avatar-md"
                                   style={{
                                     objectFit: "cover",
@@ -193,20 +178,18 @@ const SubscriptionTable = ({
                                   }}
                                 />
                               </div>
-                              <div>{subscriptions.schoolName}</div>
+                              <div>{school.schoolName}</div>
                             </div>
                           </td>
-                          <td>{subscriptions.schoolMobileNo}</td>
-                          <td>{subscriptions.subscriptionFor}</td>
 
+                          <td>{school.schoolMobileNo}</td>
+                          <td>{school.schoolEmail}</td>
+                          <td>{school.panNo}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
                                 onClick={(event) =>
-                                  navigateToViewSubscription(
-                                    event,
-                                    subscriptions
-                                  )
+                                  navigateToViewSchool(event, school)
                                 }
                                 className="btn btn-light btn-sm"
                               >
@@ -217,10 +200,7 @@ const SubscriptionTable = ({
                               </Link>
                               <Link
                                 onClick={(event) =>
-                                  navigateToUpdateSubscription(
-                                    event,
-                                    subscriptions
-                                  )
+                                  navigateToUpdateSchool(event, school)
                                 }
                                 className="btn btn-soft-primary btn-sm"
                               >
@@ -230,11 +210,11 @@ const SubscriptionTable = ({
                                 />
                               </Link>
                               <Link
+                                className="btn btn-soft-danger btn-sm"
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  openDeleteDialog(subscriptions);
+                                  openDeleteDialog(school);
                                 }}
-                                className="btn btn-soft-danger btn-sm"
                               >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
@@ -301,12 +281,12 @@ const SubscriptionTable = ({
         <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
-          id={selectedSubscription.id}
-          onDeleted={() => handleDeleteConfirmed(selectedSubscription.id)}
+          id={selectedSchool._id}
+          onDeleted={handleDeleteConfirmed}
         />
       )}
     </>
   );
 };
 
-export default SubscriptionTable;
+export default SchoolsTable;

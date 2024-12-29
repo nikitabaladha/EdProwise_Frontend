@@ -127,7 +127,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
       );
       if (!response.hasError && response.data) {
         navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
-          state: { subscriptions: response.data.data }, // Pass the fetched subscription data
+          state: { subscriptions: response.data.data },
         });
       } else {
         console.error("Invalid response format or error in response");
