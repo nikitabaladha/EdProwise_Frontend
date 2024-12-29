@@ -63,7 +63,6 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
         );
         if (!schoolDetails.hasError) {
           const schoolData = schoolDetails.data.data;
-          console.log("schoolData", schoolData);
 
           const newSubscription = {
             id: response.data.data._id,

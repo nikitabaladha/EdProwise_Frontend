@@ -10,8 +10,6 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
   const location = useLocation();
   const subscription = location.state?.subscriptions;
 
-  console.log("subscription from update page", subscription);
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({

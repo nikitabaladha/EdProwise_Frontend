@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 import postAPI from "../../../api/postAPI";
 
 const AddConfirmationDialog = ({ onClose, id, onAdd }) => {
-  console.log("Add ConfirmationDialog", id);
   const handleSubmit = async () => {
     try {
       const response = await postAPI(

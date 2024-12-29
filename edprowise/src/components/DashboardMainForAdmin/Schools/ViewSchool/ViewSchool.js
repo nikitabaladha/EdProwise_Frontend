@@ -108,7 +108,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   };
 
   const handleDeleteConfirmed = (_id) => {
-    console.log("_id", _id);
     setUsers((prevUsers) => prevUsers.filter((user) => user._id !== _id));
   };
 
@@ -118,7 +117,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   };
 
   const navigateToViewSubscription = async (event, subscriptions) => {
-    console.log("navigateToViewSubscription from view school", subscriptions);
     event.preventDefault();
 
     try {
@@ -128,8 +126,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
         true
       );
       if (!response.hasError && response.data) {
-        console.log("response data from navigate function", response.data.data);
-        // Navigate to the view subscription page with the fetched subscription data
         navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
           state: { subscriptions: response.data.data }, // Pass the fetched subscription data
         });
@@ -142,7 +138,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   };
 
   const navigateToUpdateSubscription = (event, subscriptions) => {
-    console.log("navigateToUpdateSubscription from view school", subscriptions);
     event.preventDefault();
     navigate(`/admin-dashboard/subscriptions/update-subscriptions`, {
       state: { subscriptions },

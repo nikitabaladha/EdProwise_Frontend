@@ -5,9 +5,7 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 const ViewSubscriptions = () => {
   const location = useLocation();
   const subscription = location.state?.subscriptions;
-  console.log(subscription);
 
-  // correct below part for if no subscription
   if (!subscription) {
     return <p>No subscription details available.</p>;
   }

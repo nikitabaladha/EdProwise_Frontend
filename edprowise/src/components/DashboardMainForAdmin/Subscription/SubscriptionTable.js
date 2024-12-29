@@ -12,8 +12,6 @@ const SubscriptionTable = ({
 }) => {
   const navigate = useNavigate();
 
-  console.log("subscription data ", subscription);
-
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
 
