@@ -17,13 +17,10 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
 
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedSubscription, setSelectedsubscription] = useState(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isSubscriptionDeleteDialogOpen, setIsSubscriptionDeleteDialogOpen] =
-    useState(false);
   const [deleteType, setDeleteType] = useState("");
-  const [subscription, setSubscription] = useState([]);
+  const [subscriptions, setSubscriptions] = useState([]);
 
   const fetchUserData = async () => {
     if (!school?._id) {
@@ -63,7 +60,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
         response.data &&
         Array.isArray(response.data.data)
       ) {
-        setSubscription(response.data.data);
+        setSubscriptions(response.data.data);
         console.log("All setSubscriptions", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
@@ -117,13 +114,12 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
     navigate(`/admin-dashboard/subscriptions/add-new-subscriptions`);
   };
 
-  const navigateToViewSubscription = async (event, subscriptions) => {
-    console.log("navigateToViewSubscription from view school", subscriptions);
+  const navigateToViewSubscription = async (event, subscription) => {
     event.preventDefault();
 
     try {
       const response = await getAPI(
-        `/subscription-by-id/${subscriptions.id}`,
+        `/subscription-by-id/${subscription._id}`,
         {},
         true
       );
@@ -131,7 +127,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
         console.log("response data from navigate function", response.data.data);
         // Navigate to the view subscription page with the fetched subscription data
         navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
-          state: { subscriptions: response.data.data }, // Pass the fetched subscription data
+          state: { subscription: response.data.data }, // Pass the fetched subscription data
         });
       } else {
         console.error("Invalid response format or error in response");
@@ -141,29 +137,11 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
     }
   };
 
-  const navigateToUpdateSubscription = (event, subscriptions) => {
-    console.log("navigateToUpdateSubscription from view school", subscriptions);
+  const navigateToUpdateSubscription = (event, subscription) => {
     event.preventDefault();
     navigate(`/admin-dashboard/subscriptions/update-subscriptions`, {
-      state: { subscriptions },
+      state: { subscription },
     });
-  };
-
-  const openDeleteSubscriptionDialog = (subscription) => {
-    setSelectedsubscription(subscription);
-    setIsSubscriptionDeleteDialogOpen(true);
-    setDeleteType("subscription");
-  };
-
-  const handleDeleteSubscriptionConfirmed = (id) => {
-    setSubscription((prevSubscription) =>
-      prevSubscription.filter((subscription) => subscription.id !== id)
-    );
-  };
-
-  const handleDeleteSubscriptionCancel = () => {
-    setIsSubscriptionDeleteDialogOpen(false);
-    setSelectedsubscription(null);
   };
 
   return (
@@ -447,7 +425,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
           </div>
         </div>
 
-        {subscription.length > 0 ? (
+        {subscriptions.length > 0 ? (
           <div className="row">
             <div className="col-xl-12">
               <div className="card">
@@ -488,8 +466,8 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {subscription.map((subscriptions) => (
-                          <tr key={subscriptions.id}>
+                        {subscriptions.map((subscription) => (
+                          <tr key={subscription._id}>
                             <td>
                               <div className="form-check ms-1">
                                 <input
@@ -505,14 +483,14 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                                 </label>
                               </div>
                             </td>
-                            <td>{subscriptions.subscriptionFor}</td>
+                            <td>{subscription.subscriptionFor}</td>
                             <td>
                               {new Date(
-                                subscriptions.subscriptionStartDate
+                                subscription.subscriptionStartDate
                               ).toLocaleDateString()}
                             </td>
-                            <td>{subscriptions.subscriptionNoOfMonth}</td>
-                            <td>{subscriptions.monthlyRate}</td>
+                            <td>{subscription.subscriptionNoOfMonth}</td>
+                            <td>{subscription.monthlyRate}</td>
                             <td>
                               <div className="d-flex gap-2">
                                 <Link
@@ -520,7 +498,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                                   onClick={(event) =>
                                     navigateToViewSubscription(
                                       event,
-                                      subscriptions
+                                      subscription
                                     )
                                   }
                                 >
@@ -535,7 +513,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                                   onClick={(event) =>
                                     navigateToUpdateSubscription(
                                       event,
-                                      subscriptions
+                                      subscription
                                     )
                                   }
                                 >
@@ -545,11 +523,10 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                                   />
                                 </Link>
                                 <Link
+                                  className="btn btn-soft-danger btn-sm"
                                   onClick={(e) => {
                                     e.preventDefault();
-                                    openDeleteSubscriptionDialog(subscriptions);
                                   }}
-                                  className="btn btn-soft-danger btn-sm"
                                 >
                                   <iconify-icon
                                     icon="solar:trash-bin-minimalistic-2-broken"
@@ -585,17 +562,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
           deleteType={deleteType}
           id={selectedUser._id}
           onDeleted={handleDeleteConfirmed}
-        />
-      )}
-
-      {isSubscriptionDeleteDialogOpen && (
-        <ConfirmationDialog
-          onClose={handleDeleteSubscriptionCancel}
-          deleteType={deleteType}
-          id={selectedSubscription.id}
-          onDeleted={() =>
-            handleDeleteSubscriptionConfirmed(selectedSubscription.id)
-          }
         />
       )}
     </>

@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import putAPI from "../../../../api/putAPI";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+
+import postAPI from "../../../../api/postAPI";
 import getAPI from "../../../../api/getAPI";
+import { useNavigate } from "react-router-dom";
 
-const UpdateSubscription = ({ schools, updatedSubscription }) => {
-  const location = useLocation();
-  const subscription = location.state?.subscriptions;
+import { toast } from "react-toastify";
 
-  console.log("subscription from update page", subscription);
+import "react-toastify/dist/ReactToastify.css";
 
-  const navigate = useNavigate();
-
+const AddNewSubscription = ({ addSubscription, schools }) => {
   const [formData, setFormData] = useState({
     schoolId: "",
     subscriptionFor: "",
@@ -22,63 +17,56 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
     monthlyRate: "",
   });
 
-  useEffect(() => {
-    if (subscription) {
-      setFormData({
-        schoolId: subscription.schoolId || "",
-        subscriptionFor: subscription.subscriptionFor || "",
-        subscriptionStartDate: subscription.subscriptionStartDate
-          ? new Date(subscription.subscriptionStartDate)
-              .toISOString()
-              .split("T")[0]
-          : "",
-        subscriptionNoOfMonth: subscription.subscriptionNoOfMonth || "",
-        monthlyRate: subscription.monthlyRate || "",
-      });
-    }
-  }, [subscription]);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
+
+    setFormData((prevState) => ({
+      ...prevState,
+
       [name]: value,
     }));
   };
 
-  const handleUpdate = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formDataToSend = new FormData();
-    for (const key in formData) {
-      if (formData[key] instanceof File) {
-        formDataToSend.append(key, formData[key]);
-      } else {
-        formDataToSend.append(key, formData[key] || "");
-      }
+    if (formData.subscriptionNoOfMonth <= 0 || formData.monthlyRate <= 0) {
+      toast.error(
+        "Please enter valid values for number of months and monthly rate."
+      );
+      return;
     }
 
     try {
-      const response = await putAPI(
-        `/subscription/${subscription.id}`,
-        formDataToSend,
+      const response = await postAPI(
+        "/subscription",
+        {
+          schoolId: formData.schoolId,
+          subscriptionFor: formData.subscriptionFor,
+          subscriptionStartDate: formData.subscriptionStartDate,
+          subscriptionNoOfMonth: formData.subscriptionNoOfMonth,
+          monthlyRate: formData.monthlyRate,
+        },
         true
       );
 
-      if (!response.data.hasError) {
-        toast.success("Subscription updated successfully!");
+      if (!response.hasError) {
+        toast.success("Subscription added successfully");
 
-        // Fetch school details using the schoolId
-        const schoolResponse = await getAPI(
+        // Fetch additional school details
+        const schoolDetails = await getAPI(
           `/school/${formData.schoolId}`,
           {},
           true
         );
-        if (!schoolResponse.hasError) {
-          const schoolData = schoolResponse.data.data;
+        if (!schoolDetails.hasError) {
+          const schoolData = schoolDetails.data.data;
+          console.log("schoolData", schoolData);
 
-          const newUpdatedSubscription = {
-            id: response.data.data._id,
+          const newSubscription = {
+            _id: response.data.data._id,
             subscriptionFor: response.data.data.subscriptionFor,
             subscriptionStartDate: response.data.data.subscriptionStartDate,
             subscriptionNoOfMonth: response.data.data.subscriptionNoOfMonth,
@@ -86,45 +74,50 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
             schoolMobileNo: schoolData.schoolMobileNo,
             profileImage: schoolData.profileImage,
             schoolName: schoolData.schoolName,
-            sID: schoolData.schoolId,
+            schoolId: schoolData.schoolId,
             schoolEmail: schoolData.schoolEmail,
-            schoolId: schoolData._id,
+            schoolID: schoolData._id,
           };
 
-          updatedSubscription(newUpdatedSubscription);
+          addSubscription(newSubscription);
+
+          setFormData({
+            schoolId: "",
+            subscriptionFor: "",
+            subscriptionStartDate: "",
+            subscriptionNoOfMonth: "",
+            monthlyRate: "",
+          });
+
           navigate(-1);
         } else {
-          toast.error("Failed to fetch school details.");
+          toast.error("Failed to fetch school details");
         }
       } else {
-        toast.error(response.data.message || "Failed to update subscription.");
+        toast.error(response.message || "Failed to add subscription");
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("An unexpected error occurred. Please try again.");
-      }
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
     }
   };
+
   return (
     <div className="container">
       <div className="row">
         <div className="col-xl-12">
           <div className="card m-2">
-            <div className="card-body custom-heading-padding">
+            <div className="card-body">
               <div className="container">
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
-                    Update Subscription
+                    Add Subscription
                   </h4>
                 </div>
               </div>
-              <form onSubmit={handleUpdate}>
+              <form onSubmit={handleSubmit}>
                 <div className="row mb-3">
                   <div className="col-md-12">
                     <div className="mb-6">
@@ -139,9 +132,11 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
                         onChange={handleChange}
                         required
                       >
+                        <option value="">Select School</option>
+
                         {schools.map((school) => (
                           <option key={school._id} value={school._id}>
-                            {school.schoolName}
+                            ({school.schoolId}) {school.schoolName}
                           </option>
                         ))}
                       </select>
@@ -239,7 +234,7 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
                     type="submit"
                     className="btn btn-primary custom-submit-button"
                   >
-                    Update Subscription
+                    Add Subscription
                   </button>
                 </div>
               </form>
@@ -251,4 +246,4 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
   );
 };
 
-export default UpdateSubscription;
+export default AddNewSubscription;

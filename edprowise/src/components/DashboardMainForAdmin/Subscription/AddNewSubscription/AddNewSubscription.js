@@ -66,7 +66,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
           console.log("schoolData", schoolData);
 
           const newSubscription = {
-            _id: response.data.data._id,
+            id: response.data.data._id,
             subscriptionFor: response.data.data.subscriptionFor,
             subscriptionStartDate: response.data.data.subscriptionStartDate,
             subscriptionNoOfMonth: response.data.data.subscriptionNoOfMonth,
@@ -74,9 +74,9 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
             schoolMobileNo: schoolData.schoolMobileNo,
             profileImage: schoolData.profileImage,
             schoolName: schoolData.schoolName,
-            schoolId: schoolData.schoolId,
+            sID: schoolData.schoolId,
             schoolEmail: schoolData.schoolEmail,
-            schoolID: schoolData._id,
+            schoolId: schoolData._id,
           };
 
           addSubscription(newSubscription);

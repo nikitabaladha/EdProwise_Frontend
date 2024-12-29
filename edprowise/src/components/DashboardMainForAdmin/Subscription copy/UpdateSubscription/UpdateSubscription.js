@@ -10,8 +10,6 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
   const location = useLocation();
   const subscription = location.state?.subscriptions;
 
-  console.log("subscription from update page", subscription);
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -25,7 +23,7 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
   useEffect(() => {
     if (subscription) {
       setFormData({
-        schoolId: subscription.schoolId || "",
+        schoolId: subscription.schoolID || "",
         subscriptionFor: subscription.subscriptionFor || "",
         subscriptionStartDate: subscription.subscriptionStartDate
           ? new Date(subscription.subscriptionStartDate)
@@ -60,7 +58,7 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
 
     try {
       const response = await putAPI(
-        `/subscription/${subscription.id}`,
+        `/subscription/${subscription._id}`,
         formDataToSend,
         true
       );
@@ -78,7 +76,7 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
           const schoolData = schoolResponse.data.data;
 
           const newUpdatedSubscription = {
-            id: response.data.data._id,
+            _id: response.data.data._id,
             subscriptionFor: response.data.data.subscriptionFor,
             subscriptionStartDate: response.data.data.subscriptionStartDate,
             subscriptionNoOfMonth: response.data.data.subscriptionNoOfMonth,
@@ -86,9 +84,9 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
             schoolMobileNo: schoolData.schoolMobileNo,
             profileImage: schoolData.profileImage,
             schoolName: schoolData.schoolName,
-            sID: schoolData.schoolId,
+            schoolId: schoolData.schoolId,
             schoolEmail: schoolData.schoolEmail,
-            schoolId: schoolData._id,
+            schoolID: schoolData._id,
           };
 
           updatedSubscription(newUpdatedSubscription);

@@ -71,7 +71,7 @@ const Subscription = () => {
   const updatedSubscription = (newUpdatedSubscription) => {
     setSubscription((prevSubscription) =>
       prevSubscription.map((subscription) =>
-        subscription.id === newUpdatedSubscription.id
+        subscription._id === newUpdatedSubscription._id
           ? newUpdatedSubscription
           : subscription
       )

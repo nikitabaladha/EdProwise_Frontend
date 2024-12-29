@@ -23,9 +23,9 @@ const SubscriptionTable = ({
     setDeleteType("subscription");
   };
 
-  const handleDeleteConfirmed = (id) => {
+  const handleDeleteConfirmed = (_id) => {
     setSubscription((prevSubscription) =>
-      prevSubscription.filter((subscription) => subscription.id !== id)
+      prevSubscription.filter((subscription) => subscription._id !== _id)
     );
   };
 
@@ -40,10 +40,6 @@ const SubscriptionTable = ({
   };
 
   const navigateToViewSubscription = (event, subscriptions) => {
-    console.log(
-      "navigateToViewSubscription from Subscription Table",
-      subscriptions
-    );
     event.preventDefault();
     navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
       state: { subscriptions },
@@ -52,10 +48,6 @@ const SubscriptionTable = ({
 
   const navigateToUpdateSubscription = (event, subscriptions) => {
     event.preventDefault();
-    console.log(
-      "navigateToUpdateSubscription from Subscription school",
-      subscriptions
-    );
     navigate(`/admin-dashboard/subscriptions/update-subscriptions`, {
       state: { subscriptions },
     });
@@ -181,7 +173,7 @@ const SubscriptionTable = ({
                               </label>
                             </div>
                           </td>
-                          <td>{subscriptions.sID}</td>
+                          <td>{subscriptions.schoolId}</td>
 
                           <td>
                             <div className="d-flex align-items-center gap-2">
@@ -308,8 +300,8 @@ const SubscriptionTable = ({
         <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
-          id={selectedSubscription.id}
-          onDeleted={() => handleDeleteConfirmed(selectedSubscription.id)}
+          id={selectedSubscription._id}
+          onDeleted={() => handleDeleteConfirmed(selectedSubscription._id)}
         />
       )}
     </>
