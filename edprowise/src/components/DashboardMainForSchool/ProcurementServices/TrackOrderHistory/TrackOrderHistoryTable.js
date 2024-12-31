@@ -2,103 +2,113 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
-const ViewAllQuoteTable = () => {
+
+const TrackOrderHistoryTable = () => {
   const navigate = useNavigate();
 
-  const [quotes, setQuotes] = useState([
+  const [orders, setOrders] = useState([
     {
       id: 1,
+      orderNumber: "ORD12345678",
       nameOfSupplier: "Supplier A",
-      dateOfQuoteSubmitted: "2023-12-01",
-      quotedAmount: "₹500.00",
-      description: "This is a test description for the quote from Supplier A.",
-      remarksFromSupplier: "Ready for delivery",
+      orderDate: "2023-12-01",
+      status: "Pending",
       expectedDeliveryDate: "2023-12-05",
-      paymentTerms: "50% upfront, 50% on delivery",
-      advancesRequiredAmount: "₹100.00",
-      placeOrder: "Quote Accepted",
-      commentFromBuyer: "Check quality before accepting",
+      actualDeliveryDate: null,
+      invoice: "INV-001",
+      invoiceAmount: "₹500.00",
+      advanceAdjustment: "₹100.00",
+      tdsDeduction: "₹10.00",
+      finalPayableAmount: "₹390.00",
     },
     {
       id: 2,
+      orderNumber: "ORD12345678",
       nameOfSupplier: "Supplier B",
-      dateOfQuoteSubmitted: "2023-12-02",
-      quotedAmount: "₹750.00",
-      description: "This is a test description for the quote from Supplier B.",
-      remarksFromSupplier: "Pending confirmation",
+      orderDate: "2023-12-02",
+      status: "Completed",
       expectedDeliveryDate: "2023-12-10",
-      paymentTerms: "Full payment upon delivery",
-      advancesRequiredAmount: "₹150.00",
-      placeOrder: "Quote Pending",
-      commentFromBuyer: "Need to negotiate price",
+      actualDeliveryDate: "2023-12-09",
+      invoice: "INV-002",
+      invoiceAmount: "₹750.00",
+      advanceAdjustment: "₹150.00",
+      tdsDeduction: "₹15.00",
+      finalPayableAmount: "₹585.00",
     },
     {
       id: 3,
+      orderNumber: "ORD12345678",
       nameOfSupplier: "Supplier C",
-      dateOfQuoteSubmitted: "2023-12-03",
-      quotedAmount: "₹300.00",
-      description: "This is a test description for the quote from Supplier C.",
-      remarksFromSupplier: "Available stock",
+      orderDate: "2023-12-03",
+      status: "In Progress",
       expectedDeliveryDate: "2023-12-15",
-      paymentTerms: "30% upfront, 70% on delivery",
-      advancesRequiredAmount: "₹50.00",
-      placeOrder: "Quote Accepted",
-      commentFromBuyer: "Confirm delivery date",
+      actualDeliveryDate: null,
+      invoice: "INV-003",
+      invoiceAmount: "₹300.00",
+      advanceAdjustment: "₹50.00",
+      tdsDeduction: "₹5.00",
+      finalPayableAmount: "₹245.00",
+      payOnline: "",
     },
     {
       id: 4,
+      orderNumber: "ORD12345678",
       nameOfSupplier: "Supplier D",
-      dateOfQuoteSubmitted: "2023-12-04",
-      quotedAmount: "₹1,200.00",
-      description: "This is a test description for the quote from Supplier D.",
-      remarksFromSupplier: "In production",
+      orderDate: "2023-12-04",
+      status: "Pending",
       expectedDeliveryDate: "2023-12-20",
-      paymentTerms: "50% upfront, 50% after inspection",
-      advancesRequiredAmount: "₹200.00",
-      placeOrder: "Quote Accepted",
-      commentFromBuyer: "Ensure timely delivery",
+      actualDeliveryDate: null,
+      invoice: "INV-004",
+      invoiceAmount: "₹1,200.00",
+      advanceAdjustment: "₹200.00",
+      tdsDeduction: "₹20.00",
+      finalPayableAmount: "₹980.00",
+      payOnline: "",
     },
     {
       id: 5,
+      orderNumber: "ORD12345678",
       nameOfSupplier: "Supplier E",
-      dateOfQuoteSubmitted: "2023-12-05",
-      quotedAmount: "₹1,000.00",
-      description: "This is a test description for the quote from Supplier E.",
-      remarksFromSupplier: "Ready for shipment",
+      orderDate: "2023-12-05",
+      status: "Completed",
       expectedDeliveryDate: "2023-12-25",
-      paymentTerms: "Full payment before shipment",
-      advancesRequiredAmount: "₹250.00",
-      placeOrder: "Quote Pending",
-      commentFromBuyer: "Review terms before acceptance",
+      actualDeliveryDate: "2023-12-24",
+      invoice: "INV-005",
+      invoiceAmount: "₹1,000.00",
+      advanceAdjustment: "₹250.00",
+      tdsDeduction: "₹25.00",
+      finalPayableAmount: "₹725.00",
+      payOnline: "",
     },
   ]);
 
-  const navigateToViewQuote = (event, quote) => {
+  const navigateToViewOrder = (event, order) => {
     event.preventDefault();
-    navigate(`/school-dashboard/procurement-services/view-quote`, {
-      state: { quote },
+    navigate(`/school-dashboard/procurement-services/view-order`, {
+      state: { order },
     });
   };
 
   const handleExport = () => {
-    const filteredData = quotes.map((quote) => ({
-      "Supplier Name": quote.nameOfSupplier,
-      "Date of Quote Submitted": quote.dateOfQuoteSubmitted,
-      "Expected Delivery Date": quote.expectedDeliveryDate,
-      "Quoted Amount": quote.quotedAmount,
-      Description: quote.description,
-      "Remarks from Supplier": quote.remarksFromSupplier,
-      "Payment Terms": quote.paymentTerms,
-      "Advances Required Amount": quote.advancesRequiredAmount,
-      "Place Order Status": quote.placeOrder,
-      "Comment from Buyer": quote.commentFromBuyer,
+    const filteredData = orders.map((order) => ({
+      "Order Number": order.orderNumber,
+      "Name of Supplier": order.nameOfSupplier,
+      "Order Date": order.orderDate,
+      Status: order.status,
+      "Expected Delivery Date": order.expectedDeliveryDate,
+      "Actual Delivery Date": order.actualDeliveryDate,
+      Invoice: order.invoice,
+      "Invoice Amount": order.invoiceAmount,
+      "Advance Adjustment": order.advanceAdjustment,
+      "TDS Deduction": order.tdsDeduction,
+      "Final Payable Amount": order.finalPayableAmount,
     }));
 
-    exportToExcel(filteredData, "Quotes", "Quotes Data");
+    exportToExcel(filteredData, "Track Order History", "Order History Data");
   };
 
-  if (!quotes || quotes.length === 0) {
-    return <div>No quotes available</div>;
+  if (!orders || orders.length === 0) {
+    return <div>No orders available</div>;
   }
 
   return (
@@ -108,9 +118,9 @@ const ViewAllQuoteTable = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">View All Quote List</h4>
-                <Link className="btn btn-sm btn-primary">
-                  {/* Request Quote */}
+                <h4 className="card-title flex-grow-1">View All Orders List</h4>
+                <Link className="btn btn-sm btn-primary" to="/request-order">
+                  Request Order
                 </Link>
                 <div className="text-end">
                   <Link
@@ -139,45 +149,56 @@ const ViewAllQuoteTable = () => {
                             />
                           </div>
                         </th>
+                        <th>Order Number</th>
                         <th>Name of Supplier</th>
-                        <th>Expected Delivery Date (Mention by Seller)</th>
-                        <th>Quoted Amount</th>
-                        <th>Remarks from Supplier</th>
-                        <th>Comment from Buyer</th>
-                        <th>Advances Required Amt</th>
+                        <th>Order Date</th>
+                        <th>Status</th>
+                        <th>Expected Delivery Date</th>
+                        <th>Actual Delivery Date</th>
+                        <th>Invoice</th>
+                        <th>Invoice Amount</th>
+                        <th>Advance Adjustment</th>
+                        <th>TDS/Any Other Deduction</th>
+                        <th>Final Payable Amount</th>
+                        <th>Pay Online</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {quotes.map((quote) => (
-                        <tr key={quote.id}>
+                      {orders.map((order) => (
+                        <tr key={order.id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${quote.id}`}
+                                id={`customCheck${order.id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${quote.id}`}
+                                htmlFor={`customCheck${order.id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{quote.nameOfSupplier}</td>
-                          <td>{quote.expectedDeliveryDate}</td>
-                          <td>{quote.quotedAmount}</td>
-                          <td>{quote.remarksFromSupplier}</td>
-                          <td>{quote.commentFromBuyer}</td>
-                          <td>{quote.advancesRequiredAmount}</td>
-
+                          <td>{order.orderNumber}</td>
+                          <td>{order.nameOfSupplier}</td>
+                          <td>{order.orderDate}</td>
+                          <td>{order.status}</td>
+                          <td>{order.expectedDeliveryDate}</td>
+                          <td>{order.actualDeliveryDate || "N/A"}</td>
+                          <td>{order.invoice}</td>
+                          <td>{order.invoiceAmount}</td>
+                          <td>{order.advanceAdjustment}</td>
+                          <td>{order.tdsDeduction}</td>
+                          <td>{order.finalPayableAmount}</td>
+                          <td>{order.payOnline}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
                                 onClick={(event) =>
-                                  navigateToViewQuote(event, quote)
+                                  navigateToViewOrder(event, order)
                                 }
                                 className="btn btn-light btn-sm"
                               >
@@ -252,4 +273,4 @@ const ViewAllQuoteTable = () => {
   );
 };
 
-export default ViewAllQuoteTable;
+export default TrackOrderHistoryTable;

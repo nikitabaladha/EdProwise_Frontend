@@ -67,7 +67,6 @@ const TrackQuoteTable = () => {
       Quantity: product.qty,
       DeliveryExpectedDate: product.deliveryExpectedDate,
       Status: product.status,
-      OrderNo: product.oderNo,
       QuoteReceivedDate: product.quoteReceivedDate,
     }));
 
@@ -125,7 +124,6 @@ const TrackQuoteTable = () => {
                         <th>Quote Requested Date</th>
                         <th>Delivery Expected Date</th>
                         <th>Quote Received</th>
-                        <th>Order No.</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -175,7 +173,7 @@ const TrackQuoteTable = () => {
                           <td>{product.quoteRequestedDate}</td>
                           <td>{product.deliveryExpectedDate}</td>
                           <td>{product.quoteReceivedDate}</td>
-                          <td>{product.oderNo}</td>
+
                           <td>{product.status}</td>
 
                           <td>

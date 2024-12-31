@@ -355,6 +355,11 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             link: "/school-dashboard/procurement-services/view-all-quote",
             icon: "solar:users-group-rounded-bold-duotone",
           },
+          {
+            label: "Track Order & Order History",
+            link: "/school-dashboard/procurement-services/track-order-history",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
         ],
       },
     ],

@@ -31,6 +31,8 @@ import RequestQuote from "./components/DashboardMainForSchool/ProcurementService
 import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/ViewQuotes/ViewAllQuoteTable";
 import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/ViewQuotes/ViewQuote/ViewQuote";
 
+import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
+
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -127,6 +129,11 @@ const AppRoutes = () => {
           element={<ViewAllQuoteTable />}
         />
         <Route path="procurement-services/view-quote" element={<ViewQuote />} />
+
+        <Route
+          path="procurement-services/track-order-history"
+          element={<TrackOrderHistoryTable />}
+        />
       </Route>
 
       <Route path="/" element={<Navigate to="/school-dashboard" replace />} />
