@@ -38,7 +38,6 @@ const Sidebar = () => {
       children: [
         { label: "Add New Subscription", link: "" },
         { label: "Subscriptions", link: "" },
-        // here table of all subscriptions will be seen  and give button for view all detail of that perticular subscription and update Subscription detail
       ],
     },
 

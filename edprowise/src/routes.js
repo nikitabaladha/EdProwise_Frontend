@@ -25,8 +25,8 @@ import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/
 import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
 
-import ProcurementServices from "./components/DashboardMainForSchool/ProcurementServices/ProcurementServices";
-import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/RequestQuote/RequestQuote";
+import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuote/TrackQuoteTable";
+import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuote/RequestQuote/RequestQuote";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -108,10 +108,16 @@ const AppRoutes = () => {
       >
         {/*School Dashboard Route */}
         <Route index element={<SchoolDashboard />} />
-        <Route path="procurement-services" element={<ProcurementServices />}>
-          {" "}
-          <Route path="request-quote" element={<RequestQuote />} />
-        </Route>
+
+        <Route
+          path="procurement-services/track-quote"
+          element={<TrackQuoteTable />}
+        />
+
+        <Route
+          path="procurement-services/request-quote"
+          element={<RequestQuote />}
+        />
       </Route>
 
       <Route path="/" element={<Navigate to="/school-dashboard" replace />} />

@@ -1,14 +1,14 @@
 import React from "react";
-import TrackQuote from "./TrackQuote";
+import TrackQuoteTable from "./TrackQuoteTable";
 import RequestQuote from "./RequestQuote/RequestQuote";
 import { useLocation } from "react-router-dom";
 
-const ProcurementServices = () => {
+const TrackQuote = () => {
   const location = useLocation();
   const isCreateRoute =
     location.pathname ===
     "/school-dashboard/procurement-services/request-quote";
-  return <>{isCreateRoute ? <RequestQuote /> : <TrackQuote />}</>;
+  return <>{isCreateRoute ? <RequestQuote /> : <TrackQuoteTable />}</>;
 };
 
-export default ProcurementServices;
+export default TrackQuote;

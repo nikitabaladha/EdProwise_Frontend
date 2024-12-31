@@ -105,18 +105,12 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       {
         id: "procurementServices",
         label: "Procurement Services",
-        icon: "solar:wallet-money-bold",
+        icon: "solar:users-group-rounded-bold-duotone",
+        link: "/school-dashboard/procurement-services",
         className:
-          currentRoute === "/school-dashboard/procurement-services/track-quote"
+          currentRoute === "/school-dashboard/procurement-services"
             ? "active"
             : "",
-        children: [
-          {
-            label: "Track Quote",
-            link: "/school-dashboard/procurement-services/track-quote",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
-        ],
       },
     ],
     Guest: [

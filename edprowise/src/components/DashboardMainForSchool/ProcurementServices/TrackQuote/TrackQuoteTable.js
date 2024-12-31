@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "../../export-excel";
-const TrackQuote = () => {
+import { exportToExcel } from "../../../export-excel";
+const TrackQuoteTable = () => {
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -252,4 +252,4 @@ const TrackQuote = () => {
   );
 };
 
-export default TrackQuote;
+export default TrackQuoteTable;
