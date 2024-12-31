@@ -24,7 +24,9 @@ import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/
 // =============================================School Routes==============================================
 import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
-import RegistrationForm from "./components/DashboardMainForSchool/RegistrationForm/RegistrationForm";
+
+import ProcurementServices from "./components/DashboardMainForSchool/ProcurementServices/ProcurementServices";
+import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/RequestQuote/RequestQuote";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -106,8 +108,12 @@ const AppRoutes = () => {
       >
         {/*School Dashboard Route */}
         <Route index element={<SchoolDashboard />} />
-        <Route path="registration-form" element={<RegistrationForm />}></Route>
+        <Route path="procurement-services" element={<ProcurementServices />}>
+          {" "}
+          <Route path="request-quote" element={<RequestQuote />} />
+        </Route>
       </Route>
+
       <Route path="/" element={<Navigate to="/school-dashboard" replace />} />
     </Routes>
   );

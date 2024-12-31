@@ -103,12 +103,12 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         className: currentRoute === "/school-dashboard" ? "active" : "",
       },
       {
-        id: "school",
-        label: "Form",
+        id: "procurementServices",
+        label: "Procurement Services",
         icon: "solar:users-group-rounded-bold-duotone",
-        link: "/school-dashboard/registration-form",
+        link: "/school-dashboard/procurement-services",
         className:
-          currentRoute === "/school-dashboard/registration-form"
+          currentRoute === "/school-dashboard/procurement-services"
             ? "active"
             : "",
       },

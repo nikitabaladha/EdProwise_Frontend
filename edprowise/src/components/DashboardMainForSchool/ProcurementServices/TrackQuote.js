@@ -1,0 +1,255 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { exportToExcel } from "../../export-excel";
+const TrackQuote = () => {
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      subCategory: "Chair",
+      productDescription: "We want chair",
+      quoteRequestedDate: "12 / 12 / 2024",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "12 / 18 / 2024",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "12 / 12 / 2024",
+    },
+    {
+      id: 2,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      subCategory: "Table",
+      productDescription: "We want Table",
+      quoteRequestedDate: "12 / 12 / 2024",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "12 / 18 / 2024",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "12 / 12 / 2024",
+    },
+    {
+      id: 3,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      subCategory: "Board",
+      productDescription: "We want board",
+      quoteRequestedDate: "12 / 12 / 2024",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "12 / 18 / 2024",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "12 / 12 / 2024",
+    },
+  ]);
+
+  const navigate = useNavigate();
+
+  const navigateToRequestQuote = (event) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/procurement-services/request-quote`);
+  };
+
+  const handleExport = () => {
+    const filteredData = products.map((product) => ({
+      Id: product.id,
+      EnquiryNo: product.enquiryNo,
+      ProductImage: product.imageUrl,
+      ProductName: product.subCategory,
+      ProductDescription: product.productDescription,
+      QuoteRequestedDate: product.quoteRequestedDate,
+      Unit: product.unit,
+      Quantity: product.qty,
+      DeliveryExpectedDate: product.deliveryExpectedDate,
+      Status: product.status,
+      OrderNo: product.oderNo,
+      QuoteReceivedDate: product.quoteReceivedDate,
+    }));
+
+    exportToExcel(filteredData, "Products", "Products Data");
+  };
+
+  return (
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-xl-12">
+            <div className="card">
+              <div className="card-header d-flex justify-content-between align-items-center gap-1">
+                <h4 className="card-title flex-grow-1">
+                  All Request Quote List
+                </h4>
+                <Link
+                  onClick={(event) => navigateToRequestQuote(event)}
+                  className="btn btn-sm btn-primary"
+                >
+                  Request Quote
+                </Link>
+                <div className="text-end">
+                  <Link
+                    onClick={handleExport}
+                    className="btn btn-sm btn-outline-light"
+                  >
+                    Export
+                  </Link>
+                </div>
+              </div>
+              <div>
+                <div className="table-responsive">
+                  <table className="table align-middle mb-0 table-hover table-centered">
+                    <thead className="bg-light-subtle">
+                      <tr>
+                        <th style={{ width: 20 }}>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id="customCheck1"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="customCheck1"
+                            />
+                          </div>
+                        </th>
+                        <th>Enquiry No.</th>
+                        <th>Product Required Image & Name</th>
+                        <th>Product Description</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Quote Requested Date</th>
+                        <th>Delivery Expected Date</th>
+                        <th>Quote Received</th>
+                        <th>Order No.</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {products.map((product) => (
+                        <tr key={product.id}>
+                          <td>
+                            <div className="form-check ms-1">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id={`customCheck${product.id}`}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor={`customCheck${product.id}`}
+                              >
+                                &nbsp;
+                              </label>
+                            </div>
+                          </td>
+                          <td>{product.enquiryNo}</td>
+                          <td>
+                            <div className="d-flex align-items-center gap-2">
+                              <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                <img
+                                  src={product.imageUrl}
+                                  alt={product.subCategory}
+                                  className="avatar-md"
+                                />
+                              </div>
+                              <div>
+                                <a
+                                  href="#!"
+                                  className="text-dark fw-medium fs-15"
+                                >
+                                  {product.subCategory}
+                                </a>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td>{product.productDescription}</td>
+                          <td>{product.qty}</td>
+                          <td>{product.unit}</td>
+                          <td>{product.quoteRequestedDate}</td>
+                          <td>{product.deliveryExpectedDate}</td>
+                          <td>{product.quoteReceivedDate}</td>
+                          <td>{product.oderNo}</td>
+                          <td>{product.status}</td>
+
+                          <td>
+                            <div className="d-flex gap-2">
+                              <a href="#!" className="btn btn-light btn-sm">
+                                <iconify-icon
+                                  icon="solar:eye-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </a>
+                              <a
+                                href="#!"
+                                className="btn btn-soft-primary btn-sm"
+                              >
+                                <iconify-icon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </a>
+                              <a
+                                href="#!"
+                                className="btn btn-soft-danger btn-sm"
+                              >
+                                <iconify-icon
+                                  icon="solar:trash-bin-minimalistic-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {/* end table-responsive */}
+              </div>
+              <div className="card-footer border-top">
+                <nav aria-label="Page navigation example">
+                  <ul className="pagination justify-content-end mb-0">
+                    <li className="page-item">
+                      <a className="page-link" href="javascript:void(0);">
+                        Previous
+                      </a>
+                    </li>
+                    <li className="page-item active">
+                      <a className="page-link" href="javascript:void(0);">
+                        1
+                      </a>
+                    </li>
+                    <li className="page-item">
+                      <a className="page-link" href="javascript:void(0);">
+                        2
+                      </a>
+                    </li>
+                    <li className="page-item">
+                      <a className="page-link" href="javascript:void(0);">
+                        3
+                      </a>
+                    </li>
+                    <li className="page-item">
+                      <a className="page-link" href="javascript:void(0);">
+                        Next
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default TrackQuote;
