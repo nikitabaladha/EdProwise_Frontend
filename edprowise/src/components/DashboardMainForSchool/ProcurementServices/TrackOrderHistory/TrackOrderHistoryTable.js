@@ -14,7 +14,7 @@ const TrackOrderHistoryTable = () => {
       orderDate: "2023-12-01",
       status: "Pending",
       expectedDeliveryDate: "2023-12-05",
-      actualDeliveryDate: null,
+      actualDeliveryDate: "2023-12-10",
       invoice: "INV-001",
       invoiceAmount: "₹500.00",
       advanceAdjustment: "₹100.00",
@@ -42,7 +42,7 @@ const TrackOrderHistoryTable = () => {
       orderDate: "2023-12-03",
       status: "In Progress",
       expectedDeliveryDate: "2023-12-15",
-      actualDeliveryDate: null,
+      actualDeliveryDate: "2023-12-09",
       invoice: "INV-003",
       invoiceAmount: "₹300.00",
       advanceAdjustment: "₹50.00",
@@ -57,7 +57,7 @@ const TrackOrderHistoryTable = () => {
       orderDate: "2023-12-04",
       status: "Pending",
       expectedDeliveryDate: "2023-12-20",
-      actualDeliveryDate: null,
+      actualDeliveryDate: "2023-12-09",
       invoice: "INV-004",
       invoiceAmount: "₹1,200.00",
       advanceAdjustment: "₹200.00",
@@ -84,7 +84,7 @@ const TrackOrderHistoryTable = () => {
 
   const navigateToViewOrder = (event, order) => {
     event.preventDefault();
-    navigate(`/school-dashboard/procurement-services/view-order`, {
+    navigate(`/school-dashboard/procurement-services/view-order-history`, {
       state: { order },
     });
   };
@@ -120,7 +120,7 @@ const TrackOrderHistoryTable = () => {
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">View All Orders List</h4>
                 <Link className="btn btn-sm btn-primary" to="/request-order">
-                  Request Order
+                  {/* Request Order */}
                 </Link>
                 <div className="text-end">
                   <Link
@@ -151,16 +151,9 @@ const TrackOrderHistoryTable = () => {
                         </th>
                         <th>Order Number</th>
                         <th>Name of Supplier</th>
-                        <th>Order Date</th>
-                        <th>Status</th>
                         <th>Expected Delivery Date</th>
                         <th>Actual Delivery Date</th>
-                        <th>Invoice</th>
-                        <th>Invoice Amount</th>
-                        <th>Advance Adjustment</th>
-                        <th>TDS/Any Other Deduction</th>
                         <th>Final Payable Amount</th>
-                        <th>Pay Online</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -184,16 +177,9 @@ const TrackOrderHistoryTable = () => {
                           </td>
                           <td>{order.orderNumber}</td>
                           <td>{order.nameOfSupplier}</td>
-                          <td>{order.orderDate}</td>
-                          <td>{order.status}</td>
                           <td>{order.expectedDeliveryDate}</td>
                           <td>{order.actualDeliveryDate || "N/A"}</td>
-                          <td>{order.invoice}</td>
-                          <td>{order.invoiceAmount}</td>
-                          <td>{order.advanceAdjustment}</td>
-                          <td>{order.tdsDeduction}</td>
                           <td>{order.finalPayableAmount}</td>
-                          <td>{order.payOnline}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -238,29 +224,19 @@ const TrackOrderHistoryTable = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        Previous
-                      </a>
+                      <Link className="page-link">Previous</Link>
                     </li>
                     <li className="page-item active">
-                      <a className="page-link" href="javascript:void(0);">
-                        1
-                      </a>
+                      <Link className="page-link">1</Link>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        2
-                      </a>
+                      <Link className="page-link">2</Link>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        3
-                      </a>
+                      <Link className="page-link">3</Link>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        Next
-                      </a>
+                      <Link className="page-link">Next</Link>
                     </li>
                   </ul>
                 </nav>

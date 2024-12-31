@@ -186,19 +186,13 @@ const ViewAllQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                href="#!"
-                                className="btn btn-soft-primary btn-sm"
-                              >
+                              <Link className="btn btn-soft-primary btn-sm">
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                href="#!"
-                                className="btn btn-soft-danger btn-sm"
-                              >
+                              <Link className="btn btn-soft-danger btn-sm">
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -217,29 +211,19 @@ const ViewAllQuoteTable = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        Previous
-                      </a>
+                      <Link className="page-link">Previous</Link>
                     </li>
                     <li className="page-item active">
-                      <a className="page-link" href="javascript:void(0);">
-                        1
-                      </a>
+                      <Link className="page-link">1</Link>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        2
-                      </a>
+                      <Link className="page-link">2</Link>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        3
-                      </a>
+                      <Link className="page-link">3</Link>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        Next
-                      </a>
+                      <Link className="page-link">Next</Link>
                     </li>
                   </ul>
                 </nav>

@@ -118,13 +118,13 @@ const TrackQuoteTable = () => {
                         </th>
                         <th>Enquiry No.</th>
                         <th>Product Required Image & Name</th>
-                        <th>Product Description</th>
+
                         <th>Quantity</th>
                         <th>Unit</th>
                         <th>Quote Requested Date</th>
-                        <th>Delivery Expected Date</th>
-                        <th>Quote Received</th>
-                        <th>Status</th>
+
+                        <th>Quote Received Date</th>
+
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -167,41 +167,30 @@ const TrackQuoteTable = () => {
                             </div>
                           </td>
 
-                          <td>{product.productDescription}</td>
                           <td>{product.qty}</td>
                           <td>{product.unit}</td>
                           <td>{product.quoteRequestedDate}</td>
-                          <td>{product.deliveryExpectedDate}</td>
                           <td>{product.quoteReceivedDate}</td>
-
-                          <td>{product.status}</td>
-
                           <td>
                             <div className="d-flex gap-2">
-                              <a href="#!" className="btn btn-light btn-sm">
+                              <Link className="btn btn-light btn-sm">
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
-                              </a>
-                              <a
-                                href="#!"
-                                className="btn btn-soft-primary btn-sm"
-                              >
+                              </Link>
+                              <Link className="btn btn-soft-primary btn-sm">
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
-                              </a>
-                              <a
-                                href="#!"
-                                className="btn btn-soft-danger btn-sm"
-                              >
+                              </Link>
+                              <Link className="btn btn-soft-danger btn-sm">
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
                                 />
-                              </a>
+                              </Link>
                             </div>
                           </td>
                         </tr>
@@ -215,29 +204,19 @@ const TrackQuoteTable = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        Previous
-                      </a>
+                      <Link className="page-link">Previous</Link>
                     </li>
                     <li className="page-item active">
-                      <a className="page-link" href="javascript:void(0);">
-                        1
-                      </a>
+                      <Link className="page-link">1</Link>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        2
-                      </a>
+                      <Link className="page-link">2</Link>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        3
-                      </a>
+                      <Link className="page-link">3</Link>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="javascript:void(0);">
-                        Next
-                      </a>
+                      <Link className="page-link">Next</Link>
                     </li>
                   </ul>
                 </nav>

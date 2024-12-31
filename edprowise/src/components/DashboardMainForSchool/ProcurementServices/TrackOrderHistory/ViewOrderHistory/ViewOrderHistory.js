@@ -1,12 +1,12 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 
-const ViewQuote = () => {
+const ViewOrderHistory = () => {
   const location = useLocation();
-  const quote = location.state?.quote;
+  const order = location.state?.order;
 
-  if (!quote) {
-    return <div>No quote details available.</div>;
+  if (!order) {
+    return <div>No order details available.</div>;
   }
 
   return (
@@ -18,7 +18,7 @@ const ViewQuote = () => {
               <div className="container">
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
-                    Quote Details
+                    Order Details
                   </h4>
                 </div>
               </div>
@@ -26,24 +26,35 @@ const ViewQuote = () => {
               <div className="row">
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="supplierName" className="form-label">
-                      Supplier Name
+                    <label htmlFor="orderNumber" className="form-label">
+                      Order Number
                     </label>
-                    <p className="form-control">{quote.nameOfSupplier}</p>
+                    <p className="form-control">{order.orderNumber}</p>
                   </div>
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="nameOfSupplier" className="form-label">
+                      Name Of Supplier
+                    </label>
+                    <p className="form-control">{order.nameOfSupplier}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label
                       htmlFor="dateOfQuoteSubmitted"
                       className="form-label"
                     >
-                      Date of Quote Submitted
+                      Order Date
                     </label>
-                    <p className="form-control">{quote.dateOfQuoteSubmitted}</p>
+                    <p className="form-control">{order.orderDate}</p>
                   </div>
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label
                       htmlFor="expectedDeliveryDate"
@@ -51,7 +62,16 @@ const ViewQuote = () => {
                     >
                       Expected Delivery Date
                     </label>
-                    <p className="form-control">{quote.expectedDeliveryDate}</p>
+                    <p className="form-control">{order.expectedDeliveryDate}</p>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  {" "}
+                  <div className="mb-3">
+                    <label htmlFor="actualDeliveryDate" className="form-label">
+                      Actual Delivery Date
+                    </label>
+                    <p className="form-control">{order.actualDeliveryDate}</p>
                   </div>
                 </div>
               </div>
@@ -60,73 +80,59 @@ const ViewQuote = () => {
                 <div className="col-md-6">
                   {" "}
                   <div className="mb-3">
-                    <label htmlFor="quotedAmount" className="form-label">
-                      Quoted Amount
+                    <label htmlFor="invoice" className="form-label">
+                      Invoice
                     </label>
-                    <p className="form-control">{quote.quotedAmount}</p>
+                    <p className="form-control">{order.invoice}</p>
                   </div>
                 </div>
                 <div className="col-md-6">
-                  {" "}
+                  <div className="mb-3">
+                    <label htmlFor="quotedAmount" className="form-label">
+                      Invoice Amount
+                    </label>
+                    <p className="form-control">{order.invoiceAmount}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label
                       htmlFor="advancesRequiredAmount"
                       className="form-label"
                     >
-                      Advances Required Amount
+                      Advance Adjustment
                     </label>
-                    <p className="form-control">
-                      {quote.advancesRequiredAmount}
-                    </p>
+                    <p className="form-control">{order.advanceAdjustment}</p>
                   </div>
                 </div>
-              </div>
-
-              <div className="row">
                 <div className="col-md-6">
-                  {" "}
                   <div className="mb-3">
                     <label htmlFor="commentFromBuyer" className="form-label">
-                      Comment from Buyer
+                      TDS/Any Other Deduction
                     </label>
-                    <p className="form-control">{quote.commentFromBuyer}</p>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="remarksFromSupplier" className="form-label">
-                      Remarks from Supplier
-                    </label>
-                    <p className="form-control">{quote.remarksFromSupplier}</p>
+                    <p className="form-control">{order.tdsDeduction}</p>
                   </div>
                 </div>
               </div>
 
               <div className="row">
-                <div className="col-md-12">
-                  <div className="mb-3">
-                    <label htmlFor="description" className="form-label">
-                      Description
-                    </label>
-                    <p className="form-control">{quote.description}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="paymentTerms" className="form-label">
-                      Payment Terms
+                    <label htmlFor="finalPayableAmount" className="form-label">
+                      Final Payable Amt
                     </label>
-                    <p className="form-control">{quote.paymentTerms}</p>
+                    <p className="form-control">{order.finalPayableAmount}</p>
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="placeOrder" className="form-label">
-                      Place Order Status
+                    <label htmlFor="finalPayableAmount" className="form-label">
+                      Status
                     </label>
-                    <p className="form-control">{quote.placeOrder}</p>
+                    <p className="form-control">{order.status}</p>
                   </div>
                 </div>
               </div>
@@ -135,9 +141,8 @@ const ViewQuote = () => {
                 <button
                   type="button"
                   className="btn btn-primary custom-submit-button"
-                  onClick={() => window.history.back()}
                 >
-                  Go Back
+                  Pay Online
                 </button>
               </div>
             </div>
@@ -148,4 +153,4 @@ const ViewQuote = () => {
   );
 };
 
-export default ViewQuote;
+export default ViewOrderHistory;
