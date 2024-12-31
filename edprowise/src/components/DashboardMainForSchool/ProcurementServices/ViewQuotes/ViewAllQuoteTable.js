@@ -2,77 +2,100 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
-const TrackQuoteTable = () => {
-  const [products, setProducts] = useState([
+const ViewAllQuoteTable = () => {
+  const navigate = useNavigate();
+
+  const [quotes, setQuotes] = useState([
     {
       id: 1,
-      enquiryNo: "ENQ1234567890",
-      imageUrl: "assets/images/product/p-1.png",
-      subCategory: "Chair",
-      productDescription: "We want chair",
-      quoteRequestedDate: "12 / 12 / 2024",
-      unit: "Pieces",
-      qty: 8,
-      deliveryExpectedDate: "12 / 18 / 2024",
-      status: "Quote Requested",
-      oderNo: "ORD1234567890",
-      quoteReceivedDate: "12 / 12 / 2024",
+      nameOfSupplier: "Supplier A",
+      dateOfQuoteSubmitted: "2023-12-01",
+      quotedAmount: "₹500.00",
+      description: "This is a test description for the quote from Supplier A.",
+      remarksFromSupplier: "Ready for delivery",
+      expectedDeliveryDate: "2023-12-05",
+      paymentTerms: "50% upfront, 50% on delivery",
+      advancesRequiredAmount: "₹100.00",
+      placeOrder: "Quote Accepted",
+      commentFromBuyer: "Check quality before accepting",
     },
     {
       id: 2,
-      enquiryNo: "ENQ1234567890",
-      imageUrl: "assets/images/product/p-1.png",
-      subCategory: "Table",
-      productDescription: "We want Table",
-      quoteRequestedDate: "12 / 12 / 2024",
-      unit: "Pieces",
-      qty: 8,
-      deliveryExpectedDate: "12 / 18 / 2024",
-      status: "Quote Requested",
-      oderNo: "ORD1234567890",
-      quoteReceivedDate: "12 / 12 / 2024",
+      nameOfSupplier: "Supplier B",
+      dateOfQuoteSubmitted: "2023-12-02",
+      quotedAmount: "₹750.00",
+      description: "This is a test description for the quote from Supplier B.",
+      remarksFromSupplier: "Pending confirmation",
+      expectedDeliveryDate: "2023-12-10",
+      paymentTerms: "Full payment upon delivery",
+      advancesRequiredAmount: "₹150.00",
+      placeOrder: "Quote Pending",
+      commentFromBuyer: "Need to negotiate price",
     },
     {
       id: 3,
-      enquiryNo: "ENQ1234567890",
-      imageUrl: "assets/images/product/p-1.png",
-      subCategory: "Board",
-      productDescription: "We want board",
-      quoteRequestedDate: "12 / 12 / 2024",
-      unit: "Pieces",
-      qty: 8,
-      deliveryExpectedDate: "12 / 18 / 2024",
-      status: "Quote Requested",
-      oderNo: "ORD1234567890",
-      quoteReceivedDate: "12 / 12 / 2024",
+      nameOfSupplier: "Supplier C",
+      dateOfQuoteSubmitted: "2023-12-03",
+      quotedAmount: "₹300.00",
+      description: "This is a test description for the quote from Supplier C.",
+      remarksFromSupplier: "Available stock",
+      expectedDeliveryDate: "2023-12-15",
+      paymentTerms: "30% upfront, 70% on delivery",
+      advancesRequiredAmount: "₹50.00",
+      placeOrder: "Quote Accepted",
+      commentFromBuyer: "Confirm delivery date",
+    },
+    {
+      id: 4,
+      nameOfSupplier: "Supplier D",
+      dateOfQuoteSubmitted: "2023-12-04",
+      quotedAmount: "₹1,200.00",
+      description: "This is a test description for the quote from Supplier D.",
+      remarksFromSupplier: "In production",
+      expectedDeliveryDate: "2023-12-20",
+      paymentTerms: "50% upfront, 50% after inspection",
+      advancesRequiredAmount: "₹200.00",
+      placeOrder: "Quote Accepted",
+      commentFromBuyer: "Ensure timely delivery",
+    },
+    {
+      id: 5,
+      nameOfSupplier: "Supplier E",
+      dateOfQuoteSubmitted: "2023-12-05",
+      quotedAmount: "₹1,000.00",
+      description: "This is a test description for the quote from Supplier E.",
+      remarksFromSupplier: "Ready for shipment",
+      expectedDeliveryDate: "2023-12-25",
+      paymentTerms: "Full payment before shipment",
+      advancesRequiredAmount: "₹250.00",
+      placeOrder: "Quote Pending",
+      commentFromBuyer: "Review terms before acceptance",
     },
   ]);
 
-  const navigate = useNavigate();
-
-  const navigateToRequestQuote = (event) => {
+  const navigateToViewQuote = (event, quote) => {
     event.preventDefault();
-    navigate(`/school-dashboard/procurement-services/request-quote`);
+    navigate(`/school-dashboard/procurement-services/view-quote`, {
+      state: { quote },
+    });
   };
 
   const handleExport = () => {
-    const filteredData = products.map((product) => ({
-      Id: product.id,
-      EnquiryNo: product.enquiryNo,
-      ProductImage: product.imageUrl,
-      ProductName: product.subCategory,
-      ProductDescription: product.productDescription,
-      QuoteRequestedDate: product.quoteRequestedDate,
-      Unit: product.unit,
-      Quantity: product.qty,
-      DeliveryExpectedDate: product.deliveryExpectedDate,
-      Status: product.status,
-      OrderNo: product.oderNo,
-      QuoteReceivedDate: product.quoteReceivedDate,
+    const filteredData = quotes.map((quote) => ({
+      Supplier: quote.nameOfSupplier,
+      "Expected Delivery Date": quote.expectedDeliveryDate,
+      "Quoted Amount": quote.quotedAmount,
+      "Remarks from Supplier": quote.remarksFromSupplier,
+      "Comment from Buyer": quote.commentFromBuyer,
+      "Advances Required Amount": quote.advancesRequiredAmount,
     }));
 
-    exportToExcel(filteredData, "Products", "Products Data");
+    exportToExcel(filteredData, "Quotes", "Quotes Data");
   };
+
+  if (!quotes || quotes.length === 0) {
+    return <div>No quotes available</div>;
+  }
 
   return (
     <>
@@ -81,14 +104,9 @@ const TrackQuoteTable = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">
-                  All Request Quote List
-                </h4>
-                <Link
-                  onClick={(event) => navigateToRequestQuote(event)}
-                  className="btn btn-sm btn-primary"
-                >
-                  Request Quote
+                <h4 className="card-title flex-grow-1">View All Quote List</h4>
+                <Link className="btn btn-sm btn-primary">
+                  {/* Request Quote */}
                 </Link>
                 <div className="text-end">
                   <Link
@@ -117,76 +135,54 @@ const TrackQuoteTable = () => {
                             />
                           </div>
                         </th>
-                        <th>Enquiry No.</th>
-                        <th>Product Required Image & Name</th>
-                        <th>Product Description</th>
-                        <th>Quantity</th>
-                        <th>Unit</th>
-                        <th>Quote Requested Date</th>
-                        <th>Delivery Expected Date</th>
-                        <th>Quote Received</th>
-                        <th>Order No.</th>
-                        <th>Status</th>
+                        <th>Name of Supplier</th>
+                        <th>Expected Delivery Date (Mention by Seller)</th>
+                        <th>Quoted Amount</th>
+                        <th>Remarks from Supplier</th>
+                        <th>Comment from Buyer</th>
+                        <th>Advances Required Amt</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {products.map((product) => (
-                        <tr key={product.id}>
+                      {quotes.map((quote) => (
+                        <tr key={quote.id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${product.id}`}
+                                id={`customCheck${quote.id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${product.id}`}
+                                htmlFor={`customCheck${quote.id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{product.enquiryNo}</td>
-                          <td>
-                            <div className="d-flex align-items-center gap-2">
-                              <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                <img
-                                  src={product.imageUrl}
-                                  alt={product.subCategory}
-                                  className="avatar-md"
-                                />
-                              </div>
-                              <div>
-                                <a
-                                  href="#!"
-                                  className="text-dark fw-medium fs-15"
-                                >
-                                  {product.subCategory}
-                                </a>
-                              </div>
-                            </div>
-                          </td>
-
-                          <td>{product.productDescription}</td>
-                          <td>{product.qty}</td>
-                          <td>{product.unit}</td>
-                          <td>{product.quoteRequestedDate}</td>
-                          <td>{product.deliveryExpectedDate}</td>
-                          <td>{product.quoteReceivedDate}</td>
-                          <td>{product.oderNo}</td>
-                          <td>{product.status}</td>
+                          <td>{quote.nameOfSupplier}</td>
+                          <td>{quote.expectedDeliveryDate}</td>
+                          <td>{quote.quotedAmount}</td>
+                          <td>{quote.remarksFromSupplier}</td>
+                          <td>{quote.commentFromBuyer}</td>
+                          <td>{quote.advancesRequiredAmount}</td>
 
                           <td>
                             <div className="d-flex gap-2">
-                              <a href="#!" className="btn btn-light btn-sm">
+                              <Link
+                                onClick={(event) =>
+                                  navigateToViewQuote(event, quote)
+                                }
+                                className="btn btn-light btn-sm"
+                              >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
-                              </a>
-                              <a
+                              </Link>
+                              <Link
                                 href="#!"
                                 className="btn btn-soft-primary btn-sm"
                               >
@@ -194,8 +190,8 @@ const TrackQuoteTable = () => {
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
-                              </a>
-                              <a
+                              </Link>
+                              <Link
                                 href="#!"
                                 className="btn btn-soft-danger btn-sm"
                               >
@@ -203,7 +199,7 @@ const TrackQuoteTable = () => {
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
                                 />
-                              </a>
+                              </Link>
                             </div>
                           </td>
                         </tr>
@@ -252,4 +248,4 @@ const TrackQuoteTable = () => {
   );
 };
 
-export default TrackQuoteTable;
+export default ViewAllQuoteTable;

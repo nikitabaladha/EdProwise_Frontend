@@ -3,7 +3,7 @@ import TrackQuoteTable from "./TrackQuoteTable";
 import RequestQuote from "./RequestQuote/RequestQuote";
 import { useLocation } from "react-router-dom";
 
-const TrackQuote = () => {
+const TrackQuotes = () => {
   const location = useLocation();
   const isCreateRoute =
     location.pathname ===
@@ -11,4 +11,4 @@ const TrackQuote = () => {
   return <>{isCreateRoute ? <RequestQuote /> : <TrackQuoteTable />}</>;
 };
 
-export default TrackQuote;
+export default TrackQuotes;

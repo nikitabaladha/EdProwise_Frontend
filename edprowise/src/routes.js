@@ -25,8 +25,11 @@ import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/
 import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
 
-import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuote/TrackQuoteTable";
-import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuote/RequestQuote/RequestQuote";
+import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/TrackQuoteTable";
+import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/RequestQuote/RequestQuote";
+
+import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/ViewQuotes/ViewAllQuoteTable";
+import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/ViewQuotes/ViewQuote/ViewQuote";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -118,6 +121,12 @@ const AppRoutes = () => {
           path="procurement-services/request-quote"
           element={<RequestQuote />}
         />
+
+        <Route
+          path="procurement-services/view-all-quote"
+          element={<ViewAllQuoteTable />}
+        />
+        <Route path="procurement-services/view-quote" element={<ViewQuote />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/school-dashboard" replace />} />
