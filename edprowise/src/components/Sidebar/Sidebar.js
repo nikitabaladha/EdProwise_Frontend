@@ -93,6 +93,33 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         // className:
         // currentRoute === "/admin-dashboard/schoolManagement" ? "active" : "",
       },
+      {
+        id: "procurementServices",
+        label: "Procurement Services",
+        icon: "solar:wallet-money-bold",
+        // className:
+        //   currentRoute === "/school-dashboard/procurement-services/track-quote"
+        //     ? "active"
+        //     : "",
+
+        children: [
+          {
+            label: "Track Quotes",
+            link: "/admin-dashboard/procurement-services/track-quote",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "View Quotes",
+            link: "/admin-dashboard/procurement-services/view-all-quote",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Track Order & Order History",
+            link: "/admin-dashboard/procurement-services/track-order-history",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+        ],
+      },
     ],
     School: [
       {

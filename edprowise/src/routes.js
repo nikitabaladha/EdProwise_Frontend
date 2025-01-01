@@ -21,6 +21,17 @@ import AddNewSubscription from "./components/DashboardMainForAdmin/Subscription/
 import ViewSubscriptions from "./components/DashboardMainForAdmin/Subscription/ViewSubscription/ViewSubscription";
 import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/UpdateSubscription/UpdateSubscription";
 
+import TrackQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/TrackQuoteTable";
+import RequestQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/RequestQuote/RequestQuote";
+import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
+import UpdateRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/UpdateRequestedQuote/UpdateRequestedQuote";
+
+import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ViewQuotes/ViewAllQuoteTable";
+import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ViewQuotes/ViewQuote/ViewQuote";
+
+import TrackOrderHistoryTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/TrackOrderHistoryTable";
+import ViewOrderHistoryForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
+
 // =============================================School Routes==============================================
 import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
@@ -74,7 +85,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Admin Routes */}
+      {/* ===================================================Admin Routes==================================== */}
       <Route
         path="/admin-dashboard"
         element={
@@ -102,9 +113,44 @@ const AppRoutes = () => {
           <Route path="view-subscriptions" element={<ViewSubscriptions />} />
           <Route path="update-subscriptions" element={<UpdateSubscription />} />
         </Route>
+
+        <Route
+          path="procurement-services/track-quote"
+          element={<TrackQuoteTableForAdmin />}
+        />
+        <Route
+          path="procurement-services/request-quote"
+          element={<RequestQuoteForAdmin />}
+        />
+        <Route
+          path="procurement-services/view-requested-quote"
+          element={<ViewRequestedQuoteForAdmin />}
+        />
+        <Route
+          path="procurement-services/update-requested-quote"
+          element={<UpdateRequestedQuoteForAdmin />}
+        />
+
+        <Route
+          path="procurement-services/view-all-quote"
+          element={<ViewAllQuoteTableForAdmin />}
+        />
+        <Route
+          path="procurement-services/view-quote"
+          element={<ViewQuoteForAdmin />}
+        />
+
+        <Route
+          path="procurement-services/track-order-history"
+          element={<TrackOrderHistoryTableForAdmin />}
+        />
+        <Route
+          path="procurement-services/view-order-history"
+          element={<ViewOrderHistoryForAdmin />}
+        />
       </Route>
 
-      {/* School Routes */}
+      {/*==============================================School Routes============================================== */}
 
       <Route
         path="/school-dashboard"
