@@ -114,6 +114,7 @@ const AppRoutes = () => {
           <Route path="update-subscriptions" element={<UpdateSubscription />} />
         </Route>
 
+        {/* Procurement Services Routes */}
         <Route
           path="procurement-services/track-quote"
           element={<TrackQuoteTableForAdmin />}

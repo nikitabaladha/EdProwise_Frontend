@@ -11,6 +11,10 @@ const ViewRequestedQuote = () => {
 
   console.log("Product view", product);
 
+  // id: 1,
+
+  //     NameOfBuyer: "ABC School",
+
   return (
     <div className="container">
       <div className="row">
@@ -43,7 +47,6 @@ const ViewRequestedQuote = () => {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  {" "}
                   <div className="mb-3">
                     <label htmlFor="enquiryNo" className="form-label">
                       Enquiry Number
@@ -53,14 +56,22 @@ const ViewRequestedQuote = () => {
                 </div>
                 <div className="col-md-4">
                   <div className="mb-3">
+                    <label htmlFor="enquiryNo" className="form-label">
+                      Name Of Buyer
+                    </label>
+                    <p className="form-control">{product.nameOfBuyer}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
                     <label htmlFor="productName" className="form-label">
                       Product Name
                     </label>
                     <p className="form-control">{product.subCategory}</p>
                   </div>
                 </div>
-              </div>
-              <div className="row">
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="productDescription" className="form-label">
@@ -69,7 +80,9 @@ const ViewRequestedQuote = () => {
                     <p className="form-control">{product.productDescription}</p>
                   </div>
                 </div>
-                <div className="col-md-3">
+              </div>
+              <div className="row">
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="unit" className="form-label">
                       Unit
@@ -77,7 +90,7 @@ const ViewRequestedQuote = () => {
                     <p className="form-control">{product.unit}</p>
                   </div>
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="qty" className="form-label">
                       Quantity
@@ -86,7 +99,6 @@ const ViewRequestedQuote = () => {
                   </div>
                 </div>
               </div>
-
               <div className="row">
                 <div className="col-md-4">
                   <div className="mb-3">

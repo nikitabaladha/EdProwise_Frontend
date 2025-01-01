@@ -126,6 +126,9 @@ const TrackOrderHistoryTable = () => {
                   <Link
                     onClick={handleExport}
                     className="btn btn-sm btn-outline-light"
+                    title="Export Excel File"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
                   >
                     Export
                   </Link>
@@ -187,6 +190,9 @@ const TrackOrderHistoryTable = () => {
                                   navigateToViewOrder(event, order)
                                 }
                                 className="btn btn-light btn-sm"
+                                title="View"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
@@ -194,7 +200,9 @@ const TrackOrderHistoryTable = () => {
                                 />
                               </Link>
                               <Link
-                                href="#!"
+                                title="Update"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                                 className="btn btn-soft-primary btn-sm"
                               >
                                 <iconify-icon
@@ -203,7 +211,9 @@ const TrackOrderHistoryTable = () => {
                                 />
                               </Link>
                               <Link
-                                href="#!"
+                                title="Delete"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                                 className="btn btn-soft-danger btn-sm"
                               >
                                 <iconify-icon

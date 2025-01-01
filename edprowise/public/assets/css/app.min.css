@@ -180,7 +180,7 @@ html[data-bs-theme="dark"][data-topbar-color="light"] {
   --bs-tertiary-bg: #f8f9fa;
   --bs-tertiary-bg-rgb: 248, 249, 250;
   --bs-heading-color: var(--bs-headings-color);
-  --bs-link-color: #8486a7;
+  --bs-link-color: black;
   --bs-link-color-rgb: 132, 134, 167;
   --bs-link-decoration: none;
   --bs-link-hover-color: #d95c28;

@@ -7,44 +7,67 @@ const TrackQuoteTable = () => {
     {
       id: 1,
       enquiryNo: "ENQ1234567890",
-      imageUrl: "assets/images/product/p-1.png",
+      nameOfBuyer: "ABC School",
+      quoteRequestedDate: "2023-12-01",
       subCategory: "Chair",
       productDescription: "We want chair",
-      quoteRequestedDate: "2023-12-01",
-      unit: "Pieces",
       qty: 8,
-      deliveryExpectedDate: "2023-12-01",
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-05",
+      imageUrl: "assets/images/product/p-1.png",
       status: "Quote Requested",
-      oderNo: "ORD1234567890",
-      quoteReceivedDate: "2023-12-01",
     },
     {
       id: 2,
-      enquiryNo: "ENQ1234567890",
-      imageUrl: "assets/images/product/p-1.png",
-      subCategory: "Table",
-      productDescription: "We want Table",
-      quoteRequestedDate: "2023-12-01",
+      enquiryNo: "ENQ1234567891",
+      nameOfBuyer: "XYZ Academy",
+      quoteRequestedDate: "2023-12-02",
+      subCategory: "Desk",
+      productDescription: "Need 10 wooden desks.",
+      qty: 10,
       unit: "Pieces",
-      qty: 8,
-      deliveryExpectedDate: "2023-12-01",
+      deliveryExpectedDate: "2023-12-10",
+      imageUrl: "assets/images/product/p-2.png",
       status: "Quote Requested",
-      oderNo: "ORD1234567890",
-      quoteReceivedDate: "2023-12-01",
     },
     {
       id: 3,
-      enquiryNo: "ENQ1234567890",
-      imageUrl: "assets/images/product/p-1.png",
-      subCategory: "Board",
-      productDescription: "We want board",
-      quoteRequestedDate: "2023-12-01",
+      enquiryNo: "ENQ1234567892",
+      nameOfBuyer: "LMN School",
+      quoteRequestedDate: "2023-12-03",
+      subCategory: "Whiteboard",
+      productDescription: "Request for 5 whiteboards.",
+      qty: 5,
       unit: "Pieces",
-      qty: 8,
-      deliveryExpectedDate: "2023-12-01",
+      deliveryExpectedDate: "2023-12-12",
+      imageUrl: "assets/images/product/p-3.png",
       status: "Quote Requested",
-      oderNo: "ORD1234567890",
-      quoteReceivedDate: "2023-12-01",
+    },
+    {
+      id: 4,
+      enquiryNo: "ENQ1234567893",
+      nameOfBuyer: "PQR Institute",
+      quoteRequestedDate: "2023-12-04",
+      subCategory: "Projector",
+      productDescription: "Looking for a high-quality projector.",
+      qty: 2,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-15",
+      imageUrl: "assets/images/product/p-4.png",
+      status: "Quote Requested",
+    },
+    {
+      id: 5,
+      enquiryNo: "ENQ1234567894",
+      nameOfBuyer: "DEF School",
+      quoteRequestedDate: "2023-12-05",
+      subCategory: "Books",
+      productDescription: "Request for 100 textbooks.",
+      qty: 100,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-20",
+      imageUrl: "assets/images/product/p-5.png",
+      status: "Quote Requested",
     },
   ]);
 
@@ -106,6 +129,9 @@ const TrackQuoteTable = () => {
                   <Link
                     onClick={handleExport}
                     className="btn btn-sm btn-outline-light"
+                    title="Export Excel File"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
                   >
                     Export
                   </Link>
@@ -186,6 +212,9 @@ const TrackQuoteTable = () => {
                             <div className="d-flex gap-2">
                               <Link
                                 className="btn btn-light btn-sm"
+                                title="View"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                                 onClick={(event) =>
                                   navigateToViewRequestedQuote(event, product)
                                 }
@@ -195,8 +224,12 @@ const TrackQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
+
                               <Link
                                 className="btn btn-soft-primary btn-sm"
+                                title="Update"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                                 onClick={(event) =>
                                   navigateToUpdateRequestedQuote(event, product)
                                 }
@@ -206,7 +239,12 @@ const TrackQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-danger btn-sm">
+                              <Link
+                                className="btn btn-soft-danger btn-sm"
+                                title="Delete"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                              >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"

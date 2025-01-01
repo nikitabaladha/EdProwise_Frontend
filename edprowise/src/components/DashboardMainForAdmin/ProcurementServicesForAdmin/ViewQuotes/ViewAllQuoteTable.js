@@ -161,6 +161,9 @@ const ViewAllQuoteTable = () => {
                   <Link
                     onClick={handleExport}
                     className="btn btn-sm btn-outline-light"
+                    title="Export Excel File"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
                   >
                     Export
                   </Link>
@@ -224,6 +227,9 @@ const ViewAllQuoteTable = () => {
                                   navigateToViewQuote(event, quote)
                                 }
                                 className="btn btn-light btn-sm"
+                                title="View"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
@@ -233,7 +239,9 @@ const ViewAllQuoteTable = () => {
                               <Link
                                 onClick={() => handleDownloadPDF(quote)}
                                 className="btn btn-soft-info btn-sm"
-                                // on clicking on this i want to download the this quote in perfect way with better Ui
+                                title="Download PDF"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                               >
                                 <iconify-icon
                                   icon="solar:download-broken"
@@ -244,17 +252,28 @@ const ViewAllQuoteTable = () => {
                               <Link
                                 className="btn btn-success btn-sm"
                                 onClick={() => showSuccessMessage()}
+                                title="Accept"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                               >
                                 Accept
                               </Link>
                               <Link
                                 className="btn btn-danger btn-sm"
                                 onClick={() => showErrorMessage()}
+                                title="Reject"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                               >
                                 Reject
                               </Link>
 
-                              <Link className="btn btn-soft-danger btn-sm">
+                              <Link
+                                className="btn btn-soft-danger btn-sm"
+                                title="Delete"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                              >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"

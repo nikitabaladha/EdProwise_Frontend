@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { BiMessageDots } from "react-icons/bi";
@@ -6,6 +6,7 @@ import { IoWalletOutline } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { PiLockKeyBold } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
+import { ThemeContext } from "../ThemeProvider";
 
 const SchoolDashboardHeader = () => {
   const handleLogout = () => {
@@ -18,25 +19,22 @@ const SchoolDashboardHeader = () => {
   console.log("userDetails", userDetails);
 
   const toggleSidebar = () => {
-    const htmlElement = document.documentElement; // Selects the <html> tag
-    const bodyElement = document.body; // Selects the <body> tag
+    const htmlElement = document.documentElement;
+    const bodyElement = document.body;
 
-    // Toggle the 'sidebar-enable' class on the <html> tag
     htmlElement.classList.toggle("sidebar-enable");
 
-    // Toggle the 'overflow: hidden' style on the <body> element
     if (bodyElement.style.overflow === "hidden") {
-      bodyElement.style.overflow = ""; // Remove the style
+      bodyElement.style.overflow = "";
     } else {
-      bodyElement.style.overflow = "hidden"; // Add the style
+      bodyElement.style.overflow = "hidden";
     }
   };
 
   const handleDocumentClick = (event) => {
-    const htmlElement = document.documentElement; // Select the <html> tag
-    const mainNav = document.querySelector(".main-nav"); // Select the main-nav element
+    const htmlElement = document.documentElement;
+    const mainNav = document.querySelector(".main-nav");
 
-    // Check if sidebar is enabled and click is outside the main-nav
     if (
       htmlElement.classList.contains("sidebar-enable") &&
       mainNav &&
@@ -47,26 +45,14 @@ const SchoolDashboardHeader = () => {
   };
 
   useEffect(() => {
-    // Attach event listener for clicking outside the main-nav
     document.addEventListener("click", handleDocumentClick);
 
     return () => {
-      // Cleanup the event listener
       document.removeEventListener("click", handleDocumentClick);
     };
   }, []);
 
-  const [theme, setTheme] = useState("light");
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.setAttribute("data-bs-theme", newTheme);
-  };
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-bs-theme", theme);
-  }, [theme]);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
     <>

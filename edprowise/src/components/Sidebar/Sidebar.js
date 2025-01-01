@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
+import { IoIosArrowForward } from "react-icons/io";
 
 const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
   const [openMenu, setOpenMenu] = useState(null);
@@ -228,7 +229,7 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
                   {item.children ? (
                     <>
                       <div
-                        className={`nav-link menu-arrow collapsed ${
+                        className={`nav-link collapsed ${
                           isActive ? "active" : ""
                         }`}
                         onClick={() => toggleMenu(item.id)}
@@ -237,6 +238,17 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
                           <Icon icon={item.icon} />
                         </span>
                         <span className="nav-text"> {item.label} </span>
+
+                        <IoIosArrowForward
+                          style={{
+                            transition: "transform 0.3s ease",
+                            transform:
+                              openMenu === item.id
+                                ? "rotate(90deg)"
+                                : "rotate(0deg)",
+                          }}
+                        />
+                        {/* i want to rotate this icon 90 degree to show that this parent link is open */}
                       </div>
                       {openMenu === item.id && (
                         <div className="collapse show">
