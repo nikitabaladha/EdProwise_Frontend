@@ -55,6 +55,20 @@ const TrackQuoteTable = () => {
     navigate(`/school-dashboard/procurement-services/request-quote`);
   };
 
+  const navigateToViewRequestedQuote = (event, product) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/procurement-services/view-requested-quote`, {
+      state: { product },
+    });
+  };
+
+  const navigateToUpdateRequestedQuote = (event, product) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/procurement-services/update-requested-quote`, {
+      state: { product },
+    });
+  };
+
   const handleExport = () => {
     const filteredData = products.map((product) => ({
       Id: product.id,
@@ -67,7 +81,6 @@ const TrackQuoteTable = () => {
       Quantity: product.qty,
       DeliveryExpectedDate: product.deliveryExpectedDate,
       Status: product.status,
-      QuoteReceivedDate: product.quoteReceivedDate,
     }));
 
     exportToExcel(filteredData, "Products", "Products Data");
@@ -122,9 +135,7 @@ const TrackQuoteTable = () => {
                         <th>Quantity</th>
                         <th>Unit</th>
                         <th>Quote Requested Date</th>
-
-                        <th>Quote Received Date</th>
-
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -170,16 +181,26 @@ const TrackQuoteTable = () => {
                           <td>{product.qty}</td>
                           <td>{product.unit}</td>
                           <td>{product.quoteRequestedDate}</td>
-                          <td>{product.quoteReceivedDate}</td>
+                          <td>{product.status}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link className="btn btn-light btn-sm">
+                              <Link
+                                className="btn btn-light btn-sm"
+                                onClick={(event) =>
+                                  navigateToViewRequestedQuote(event, product)
+                                }
+                              >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-primary btn-sm">
+                              <Link
+                                className="btn btn-soft-primary btn-sm"
+                                onClick={(event) =>
+                                  navigateToUpdateRequestedQuote(event, product)
+                                }
+                              >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"

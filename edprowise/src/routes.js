@@ -27,6 +27,8 @@ import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard
 
 import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/TrackQuoteTable";
 import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/RequestQuote/RequestQuote";
+import ViewRequestedQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
+import UpdateRequestedQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/UpdateRequestedQuote/UpdateRequestedQuote";
 
 import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/ViewQuotes/ViewAllQuoteTable";
 import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/ViewQuotes/ViewQuote/ViewQuote";
@@ -119,10 +121,17 @@ const AppRoutes = () => {
           path="procurement-services/track-quote"
           element={<TrackQuoteTable />}
         />
-
         <Route
           path="procurement-services/request-quote"
           element={<RequestQuote />}
+        />
+        <Route
+          path="procurement-services/view-requested-quote"
+          element={<ViewRequestedQuote />}
+        />
+        <Route
+          path="procurement-services/update-requested-quote"
+          element={<UpdateRequestedQuote />}
         />
 
         <Route
