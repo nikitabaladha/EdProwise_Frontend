@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import autoTable from "jspdf-autotable";
+
+import jsPDF from "jspdf";
+
 const ViewAllQuoteTable = () => {
   const navigate = useNavigate();
 
@@ -18,6 +24,7 @@ const ViewAllQuoteTable = () => {
       advancesRequiredAmount: "₹100.00",
       placeOrder: "Quote Accepted",
       commentFromBuyer: "Check quality before accepting",
+      status: "Quote Received",
     },
     {
       id: 2,
@@ -31,6 +38,7 @@ const ViewAllQuoteTable = () => {
       advancesRequiredAmount: "₹150.00",
       placeOrder: "Quote Pending",
       commentFromBuyer: "Need to negotiate price",
+      status: "Quote Received",
     },
     {
       id: 3,
@@ -44,6 +52,7 @@ const ViewAllQuoteTable = () => {
       advancesRequiredAmount: "₹50.00",
       placeOrder: "Quote Accepted",
       commentFromBuyer: "Confirm delivery date",
+      status: "Quote Received",
     },
     {
       id: 4,
@@ -57,6 +66,7 @@ const ViewAllQuoteTable = () => {
       advancesRequiredAmount: "₹200.00",
       placeOrder: "Quote Accepted",
       commentFromBuyer: "Ensure timely delivery",
+      status: "Quote Received",
     },
     {
       id: 5,
@@ -70,6 +80,7 @@ const ViewAllQuoteTable = () => {
       advancesRequiredAmount: "₹250.00",
       placeOrder: "Quote Pending",
       commentFromBuyer: "Review terms before acceptance",
+      status: "Quote Received",
     },
   ]);
 
@@ -95,6 +106,40 @@ const ViewAllQuoteTable = () => {
     }));
 
     exportToExcel(filteredData, "Quotes", "Quotes Data");
+  };
+
+  const handleDownloadPDF = (quote) => {
+    const doc = new jsPDF();
+    doc.setFontSize(12);
+    doc.text("Quote Details", 14, 20);
+
+    // Add quote details to the PDF
+    autoTable(doc, {
+      head: [["Field", "Value"]],
+      body: [
+        ["Supplier Name", quote.nameOfSupplier],
+        ["Date of Quote Submitted", quote.dateOfQuoteSubmitted],
+        ["Expected Delivery Date", quote.expectedDeliveryDate],
+        ["Quoted Amount", quote.quotedAmount],
+        ["Description", quote.description],
+        ["Remarks from Supplier", quote.remarksFromSupplier],
+        ["Payment Terms", quote.paymentTerms],
+        ["Advances Required Amount", quote.advancesRequiredAmount],
+        ["Place Order Status", quote.placeOrder],
+        ["Comment from Buyer", quote.commentFromBuyer],
+        ["Status", quote.status],
+      ],
+    });
+
+    doc.save(`Quote_${quote.id}.pdf`);
+  };
+
+  const showSuccessMessage = () => {
+    toast.success("Order Placed Successfully!");
+  };
+
+  const showErrorMessage = () => {
+    toast.error("Quote Rejected!");
   };
 
   if (!quotes || quotes.length === 0) {
@@ -143,8 +188,7 @@ const ViewAllQuoteTable = () => {
                         <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
-                        <th>Comment from Buyer</th>
-                        <th>Advances Required Amt</th>
+                        <th> Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -170,8 +214,8 @@ const ViewAllQuoteTable = () => {
                           <td>{quote.expectedDeliveryDate}</td>
                           <td>{quote.quotedAmount}</td>
                           <td>{quote.remarksFromSupplier}</td>
-                          <td>{quote.commentFromBuyer}</td>
-                          <td>{quote.advancesRequiredAmount}</td>
+
+                          <td>{quote.status}</td>
 
                           <td>
                             <div className="d-flex gap-2">
@@ -186,12 +230,30 @@ const ViewAllQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-primary btn-sm">
+                              <Link
+                                onClick={() => handleDownloadPDF(quote)}
+                                className="btn btn-soft-info btn-sm"
+                                // on clicking on this i want to download the this quote in perfect way with better Ui
+                              >
                                 <iconify-icon
-                                  icon="solar:pen-2-broken"
+                                  icon="solar:download-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
+
+                              <Link
+                                className="btn btn-success btn-sm"
+                                onClick={() => showSuccessMessage()}
+                              >
+                                Accept
+                              </Link>
+                              <Link
+                                className="btn btn-danger btn-sm"
+                                onClick={() => showErrorMessage()}
+                              >
+                                Reject
+                              </Link>
+
                               <Link className="btn btn-soft-danger btn-sm">
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
