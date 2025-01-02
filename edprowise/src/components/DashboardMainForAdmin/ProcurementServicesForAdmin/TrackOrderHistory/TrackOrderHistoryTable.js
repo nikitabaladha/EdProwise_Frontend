@@ -20,6 +20,14 @@ const TrackOrderHistoryTable = () => {
       advanceAdjustment: "₹100.00",
       tdsDeduction: "₹10.00",
       finalPayableAmount: "₹390.00",
+      commentFromBuyer: "I need urgently",
+      taxInvoiceForBuyer: "TAX-INV-001",
+      invoiceAmtToBuyer: "₹500.00",
+      taxableValue: "₹400.00",
+      gstAmount: "₹40.00",
+      totalInvoiceAmt: "₹540.00",
+      OtherCharges: "₹50.00",
+      FinalReceivableFromEdProwise: "₹440.00",
     },
     {
       id: 2,
@@ -34,6 +42,14 @@ const TrackOrderHistoryTable = () => {
       advanceAdjustment: "₹150.00",
       tdsDeduction: "₹15.00",
       finalPayableAmount: "₹585.00",
+      commentFromBuyer: "I need urgently",
+      taxInvoiceForBuyer: "TAX-INV-001",
+      invoiceAmtToBuyer: "₹500.00",
+      taxableValue: "₹400.00",
+      gstAmount: "₹40.00",
+      totalInvoiceAmt: "₹540.00",
+      OtherCharges: "₹50.00",
+      FinalReceivableFromEdProwise: "₹440.00",
     },
     {
       id: 3,
@@ -48,7 +64,14 @@ const TrackOrderHistoryTable = () => {
       advanceAdjustment: "₹50.00",
       tdsDeduction: "₹5.00",
       finalPayableAmount: "₹245.00",
-      payOnline: "",
+      commentFromBuyer: "I need urgently",
+      taxInvoiceForBuyer: "TAX-INV-001",
+      invoiceAmtToBuyer: "₹500.00",
+      taxableValue: "₹400.00",
+      gstAmount: "₹40.00",
+      totalInvoiceAmt: "₹540.00",
+      OtherCharges: "₹50.00",
+      FinalReceivableFromEdProwise: "₹440.00",
     },
     {
       id: 4,
@@ -63,7 +86,14 @@ const TrackOrderHistoryTable = () => {
       advanceAdjustment: "₹200.00",
       tdsDeduction: "₹20.00",
       finalPayableAmount: "₹980.00",
-      payOnline: "",
+      commentFromBuyer: "I need urgently",
+      taxInvoiceForBuyer: "TAX-INV-001",
+      invoiceAmtToBuyer: "₹500.00",
+      taxableValue: "₹400.00",
+      gstAmount: "₹40.00",
+      totalInvoiceAmt: "₹540.00",
+      OtherCharges: "₹50.00",
+      FinalReceivableFromEdProwise: "₹440.00",
     },
     {
       id: 5,
@@ -78,7 +108,14 @@ const TrackOrderHistoryTable = () => {
       advanceAdjustment: "₹250.00",
       tdsDeduction: "₹25.00",
       finalPayableAmount: "₹725.00",
-      payOnline: "",
+      commentFromBuyer: "I need urgently",
+      taxInvoiceForBuyer: "TAX-INV-001",
+      invoiceAmtToBuyer: "₹500.00",
+      taxableValue: "₹400.00",
+      gstAmount: "₹40.00",
+      totalInvoiceAmt: "₹540.00",
+      OtherCharges: "₹50.00",
+      FinalReceivableFromEdProwise: "₹440.00",
     },
   ]);
 
@@ -199,7 +236,7 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
+                              {/* <Link
                                 title="Update"
                                 data-bs-toggle="popover"
                                 data-bs-trigger="hover"
@@ -209,6 +246,14 @@ const TrackOrderHistoryTable = () => {
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
+                              </Link> */}
+                              <Link
+                                className="btn btn-success btn-sm"
+                                title="Pay"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                              >
+                                Pay
                               </Link>
                               <Link
                                 title="Delete"

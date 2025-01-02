@@ -5,6 +5,17 @@ const ViewOrderHistory = () => {
   const location = useLocation();
   const order = location.state?.order;
 
+  // i also want to add this data also to the order history so add it for me
+
+  // commentFromBuyer: "I need urgently",
+  // taxInvoiceForBuyer: "TAX-INV-001",
+  // invoiceAmtToBuyer: "₹500.00",
+  // taxableValue: "₹400.00",
+  // gstAmount: "₹40.00",
+  // totalInvoiceAmt: "₹540.00",
+  // OtherCharges: "₹50.00",
+  // FinalReceivableFromEdProwise: "₹440.00",
+
   if (!order) {
     return <div>No order details available.</div>;
   }
@@ -133,6 +144,84 @@ const ViewOrderHistory = () => {
                       Status
                     </label>
                     <p className="form-control">{order.status}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="commentFromBuyer" className="form-label">
+                      Comment From Buyer
+                    </label>
+                    <p className="form-control">{order.commentFromBuyer}</p>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="taxInvoiceForBuyer" className="form-label">
+                      Tax Invoice For Buyer
+                    </label>
+                    <p className="form-control">{order.taxInvoiceForBuyer}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="invoiceAmtToBuyer" className="form-label">
+                      Invoice Amount To Buyer
+                    </label>
+                    <p className="form-control">{order.invoiceAmtToBuyer}</p>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="taxableValue" className="form-label">
+                      Taxable Value
+                    </label>
+                    <p className="form-control">{order.taxableValue}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="gstAmount" className="form-label">
+                      GST Amount
+                    </label>
+                    <p className="form-control">{order.gstAmount}</p>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="totalInvoiceAmt" className="form-label">
+                      Total Invoice Amount
+                    </label>
+                    <p className="form-control">{order.totalInvoiceAmt}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="otherCharges" className="form-label">
+                      Other Charges
+                    </label>
+                    <p className="form-control">{order.OtherCharges}</p>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="finalReceivable" className="form-label">
+                      Final Receivable From EdProwise
+                    </label>
+                    <p className="form-control">
+                      {order.FinalReceivableFromEdProwise}
+                    </p>
                   </div>
                 </div>
               </div>

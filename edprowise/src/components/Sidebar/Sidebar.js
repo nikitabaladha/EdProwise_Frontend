@@ -119,6 +119,11 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             link: "/admin-dashboard/procurement-services/track-order-history",
             icon: "solar:users-group-rounded-bold-duotone",
           },
+          {
+            label: "Define Goods & Services",
+            link: "/admin-dashboard/procurement-services/define-goods-services",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
         ],
       },
     ],

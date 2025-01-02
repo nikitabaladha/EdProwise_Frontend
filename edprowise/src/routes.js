@@ -32,6 +32,10 @@ import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementSer
 import TrackOrderHistoryTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
+import GoodsAndServicesTable from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/GoodsAndServicesTable";
+import AddGoodsAndServices from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/AddGoodsAndServices/AddGoodsAndServices";
+import UpdateGoodAndService from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/UpdateGoodAndService/UpdateGoodAndService";
+
 // =============================================School Routes==============================================
 import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
@@ -148,6 +152,19 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/view-order-history"
           element={<ViewOrderHistoryForAdmin />}
+        />
+
+        <Route
+          path="procurement-services/define-goods-services"
+          element={<GoodsAndServicesTable />}
+        />
+        <Route
+          path="procurement-services/add-good-services"
+          element={<AddGoodsAndServices />}
+        />
+        <Route
+          path="procurement-services/update-good-service"
+          element={<UpdateGoodAndService />}
         />
       </Route>
 

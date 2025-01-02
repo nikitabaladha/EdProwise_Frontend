@@ -11,10 +11,6 @@ const ViewRequestedQuote = () => {
 
   console.log("Product view", product);
 
-  // id: 1,
-
-  //     NameOfBuyer: "ABC School",
-
   return (
     <div className="container">
       <div className="row">
