@@ -73,11 +73,6 @@ const TrackQuoteTable = () => {
 
   const navigate = useNavigate();
 
-  const navigateToRequestQuote = (event) => {
-    event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/request-quote`);
-  };
-
   const navigateToViewRequestedQuote = (event, product) => {
     event.preventDefault();
     navigate(`/admin-dashboard/procurement-services/view-requested-quote`, {
@@ -119,12 +114,7 @@ const TrackQuoteTable = () => {
                 <h4 className="card-title flex-grow-1">
                   All Request Quote List
                 </h4>
-                <Link
-                  onClick={(event) => navigateToRequestQuote(event)}
-                  className="btn btn-sm btn-primary"
-                >
-                  Request Quote
-                </Link>
+
                 <div className="text-end">
                   <Link
                     onClick={handleExport}

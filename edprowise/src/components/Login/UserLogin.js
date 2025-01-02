@@ -44,6 +44,8 @@ const UserLogin = () => {
             return navigate("/auditor-dashboard");
           } else if (userDetails.role === "User") {
             return navigate("/user-dashboard");
+          } else if (userDetails.role === "Seller") {
+            return navigate("/seller-dashboard");
           } else {
             toast.error("No dashboard available for your role!");
           }

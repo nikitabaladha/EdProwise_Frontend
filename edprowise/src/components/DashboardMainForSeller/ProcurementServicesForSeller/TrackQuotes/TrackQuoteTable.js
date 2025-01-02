@@ -2,63 +2,83 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
-const GoodsAndServicesTable = () => {
-  const [goods, setGoods] = useState([
+const TrackQuoteTable = () => {
+  const [products, setProducts] = useState([
     {
       id: 1,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "School Desk & Bench - Wooden",
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      subCategory: "Chair",
+      productDescription: "We want chair",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
     },
     {
       id: 2,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "School Desk & Bench - Steel",
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      subCategory: "Table",
+      productDescription: "We want Table",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
     },
     {
       id: 3,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "School Desk & Bench - Wooden & Steel Combine",
-    },
-    {
-      id: 4,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "Others",
-    },
-    {
-      id: 5,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Play School & KG)",
-      subCategory: "Kids School Desk & Bench - Wooden",
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      subCategory: "Board",
+      productDescription: "We want board",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
     },
   ]);
 
   const navigate = useNavigate();
 
-  const navigateToAddGoodServices = (event) => {
+  const navigateToViewRequestedQuote = (event, product) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/add-good-services`);
+    navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
+      state: { product },
+    });
   };
 
-  const navigateToUpdateGoodServices = (event, good) => {
+  const navigateToUpdateRequestedQuote = (event, product) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/update-good-service`, {
-      state: { good },
+    navigate(`/seller-dashboard/procurement-services/update-requested-quote`, {
+      state: { product },
     });
   };
 
   const handleExport = () => {
-    const filteredData = goods.map((good) => ({
-      Id: good.id,
-      "Main Category": good.mainCategory,
-      Category: good.category,
-      "Sub Category": good.subCategory,
+    const filteredData = products.map((product) => ({
+      Id: product.id,
+      EnquiryNo: product.enquiryNo,
+      ProductImage: product.imageUrl,
+      ProductName: product.subCategory,
+      ProductDescription: product.productDescription,
+      QuoteRequestedDate: product.quoteRequestedDate,
+      Unit: product.unit,
+      Quantity: product.qty,
+      DeliveryExpectedDate: product.deliveryExpectedDate,
+      Status: product.status,
     }));
 
-    exportToExcel(filteredData, "Goods & Services", "Goods & Services Data");
+    exportToExcel(filteredData, "Products", "Products Data");
   };
 
   return (
@@ -69,22 +89,12 @@ const GoodsAndServicesTable = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">
-                  All Goods And Services List
+                  All Requested Quote List
                 </h4>
-                <Link
-                  className="btn btn-sm btn-primary"
-                  onClick={(event) => navigateToAddGoodServices(event)}
-                >
-                  Add New Good
-                </Link>
-
                 <div className="text-end">
                   <Link
                     onClick={handleExport}
                     className="btn btn-sm btn-outline-light"
-                    title="Export Excel File"
-                    data-bs-toggle="popover"
-                    data-bs-trigger="hover"
                   >
                     Export
                   </Link>
@@ -108,59 +118,76 @@ const GoodsAndServicesTable = () => {
                             />
                           </div>
                         </th>
-                        <th>Main Category </th>
-                        <th>Category</th>
-                        <th>Sub Category</th>
+                        <th>Enquiry No.</th>
+                        <th>Product Required Image & Name</th>
 
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Quote Requested Date</th>
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {goods.map((good) => (
-                        <tr key={good.id}>
+                      {products.map((product) => (
+                        <tr key={product.id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${good.id}`}
+                                id={`customCheck${product.id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${good.id}`}
+                                htmlFor={`customCheck${product.id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{good.mainCategory}</td>
-                          <td>{good.category}</td>
-                          <td>{good.subCategory}</td>
+                          <td>{product.enquiryNo}</td>
+                          <td>
+                            <div className="d-flex align-items-center gap-2">
+                              <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                <img
+                                  src={product.imageUrl}
+                                  alt={product.subCategory}
+                                  className="avatar-md"
+                                />
+                              </div>
+                              <div>
+                                <a
+                                  href="#!"
+                                  className="text-dark fw-medium fs-15"
+                                >
+                                  {product.subCategory}
+                                </a>
+                              </div>
+                            </div>
+                          </td>
 
+                          <td>{product.qty}</td>
+                          <td>{product.unit}</td>
+                          <td>{product.quoteRequestedDate}</td>
+                          <td>{product.status}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
                                 className="btn btn-light btn-sm"
-                                title="View"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
-                                // onClick={(event) =>
-                                //   navigateToViewGoodsAndServicesQuote(event, good)
-                                // }
+                                onClick={(event) =>
+                                  navigateToViewRequestedQuote(event, product)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-
                               <Link
                                 className="btn btn-soft-primary btn-sm"
-                                title="Update"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
                                 onClick={(event) =>
-                                  navigateToUpdateGoodServices(event, good)
+                                  navigateToUpdateRequestedQuote(event, product)
                                 }
                               >
                                 <iconify-icon
@@ -169,11 +196,14 @@ const GoodsAndServicesTable = () => {
                                 />
                               </Link>
                               <Link
-                                className="btn btn-soft-danger btn-sm"
-                                title="Delete"
+                                className="btn btn-success btn-sm"
+                                title="Submit"
                                 data-bs-toggle="popover"
                                 data-bs-trigger="hover"
                               >
+                                Submit
+                              </Link>
+                              <Link className="btn btn-soft-danger btn-sm">
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -217,4 +247,4 @@ const GoodsAndServicesTable = () => {
   );
 };
 
-export default GoodsAndServicesTable;
+export default TrackQuoteTable;

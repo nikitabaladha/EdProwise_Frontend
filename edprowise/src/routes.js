@@ -22,7 +22,6 @@ import ViewSubscriptions from "./components/DashboardMainForAdmin/Subscription/V
 import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/UpdateSubscription/UpdateSubscription";
 
 import TrackQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/TrackQuoteTable";
-import RequestQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/RequestQuote/RequestQuote";
 import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
 import UpdateRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/UpdateRequestedQuote/UpdateRequestedQuote";
 
@@ -50,6 +49,17 @@ import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/V
 
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
+
+// ================================================Seller Routes============================================
+import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
+import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
+
+import TrackQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/TrackQuoteTable";
+import ViewRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
+import UpdateRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/UpdateRequestedQuote/UpdateRequestedQuote";
+
+import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
+import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -122,10 +132,6 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/track-quote"
           element={<TrackQuoteTableForAdmin />}
-        />
-        <Route
-          path="procurement-services/request-quote"
-          element={<RequestQuoteForAdmin />}
         />
         <Route
           path="procurement-services/view-requested-quote"
@@ -211,6 +217,43 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/view-order-history"
           element={<ViewOrderHistory />}
+        />
+      </Route>
+
+      {/* =========================================Seller Routes============================================= */}
+
+      <Route
+        path="/seller-dashboard"
+        element={
+          <PrivateRoute>
+            <SellerDashboardMain />
+          </PrivateRoute>
+        }
+      >
+        {/*Seller Dashboard Route */}
+        <Route index element={<SellerDashboard />} />
+
+        {/* Procurement Services Routes */}
+        <Route
+          path="procurement-services/track-quote"
+          element={<TrackQuoteTableForSeller />}
+        />
+        <Route
+          path="procurement-services/view-requested-quote"
+          element={<ViewRequestedQuoteForSeller />}
+        />
+        <Route
+          path="procurement-services/update-requested-quote"
+          element={<UpdateRequestedQuoteForSeller />}
+        />
+
+        <Route
+          path="procurement-services/track-order-history"
+          element={<TrackOrderHistoryTableForSeller />}
+        />
+        <Route
+          path="procurement-services/view-order-history"
+          element={<ViewOrderHistoryForSeller />}
         />
       </Route>
 

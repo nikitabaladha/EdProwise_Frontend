@@ -10,10 +10,10 @@ const TrackQuotes = () => {
 
   const isViewRoute =
     location.pathname ===
-    "/admin-dashboard/procurement-services/view-requested-quote";
+    "/seller-dashboard/procurement-services/view-requested-quote";
 
   const isUpdateRoute =
-    "/admin-dashboard/procurement-services/update-requested-quote";
+    "/seller-dashboard/procurement-services/update-requested-quote";
 
   return (
     <>

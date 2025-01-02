@@ -163,6 +163,37 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         ],
       },
     ],
+    Seller: [
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        icon: "solar:widget-5-bold-duotone",
+        link: "/seller-dashboard",
+        // className: currentRoute === "/school-dashboard" ? "active" : "",
+      },
+      {
+        id: "procurementServices",
+        label: "Procurement Services",
+        icon: "solar:wallet-money-bold",
+        // className:
+        //   currentRoute === "/school-dashboard/procurement-services/track-quote"
+        //     ? "active"
+        //     : "",
+
+        children: [
+          {
+            label: "Track Quote Submission",
+            link: "/seller-dashboard/procurement-services/track-quote",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Track Order & Order History",
+            link: "/seller-dashboard/procurement-services/track-order-history",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+        ],
+      },
+    ],
     Guest: [
       { id: "login", label: "Login", icon: "solar:login-bold", link: "/login" },
     ],
