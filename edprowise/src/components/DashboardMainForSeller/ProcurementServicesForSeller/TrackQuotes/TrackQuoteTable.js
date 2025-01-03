@@ -63,13 +63,6 @@ const TrackQuoteTable = () => {
     });
   };
 
-  const navigateToUpdateRequestedQuote = (event, product) => {
-    event.preventDefault();
-    navigate(`/seller-dashboard/procurement-services/update-requested-quote`, {
-      state: { product },
-    });
-  };
-
   const handleExport = () => {
     const filteredData = products.map((product) => ({
       Id: product.id,
@@ -190,17 +183,7 @@ const TrackQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                className="btn btn-soft-primary btn-sm"
-                                onClick={(event) =>
-                                  navigateToUpdateRequestedQuote(event, product)
-                                }
-                              >
-                                <iconify-icon
-                                  icon="solar:pen-2-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
+
                               <Link
                                 className="btn btn-success btn-sm"
                                 title="Submit"

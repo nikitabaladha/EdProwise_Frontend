@@ -454,7 +454,7 @@ const PrepareQuoteForm = () => {
                     type="submit"
                     className="btn btn-primary custom-submit-button"
                   >
-                    Prepare Quote
+                    Submit
                   </button>
                 </div>
               </form>

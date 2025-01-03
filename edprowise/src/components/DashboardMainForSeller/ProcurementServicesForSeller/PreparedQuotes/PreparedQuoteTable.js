@@ -12,23 +12,23 @@ const PreparedQuoteTable = () => {
       slNo: 1,
       description: "School Bench",
       hsnSaac: "654321",
-      listingRate: "1,000.00",
-      edProwiseMargin: "12.50%",
+      listingRate: "100000",
+      edProwiseMargin: "12",
       qty: "100",
-      finalRateBeforeDiscount: "1,125.00",
-      discountPercentage: "15.00%",
-      finalRate: "956.25",
-      taxableValue: "95,625.00",
-      cgstRate: "6.25%",
-      cgstAmount: "5,976.56",
-      sgstRate: "6.25%",
-      sgstAmount: "5,976.56",
-      igstRate: "12.50%",
-      igstAmount: "11,953.13",
-      amountBeforeGSTAndDiscount: "112,500.00",
-      discountAmount: "16,875.00",
-      gstAmount: "11,953.13",
-      totalAmount: "124,382.82",
+      finalRateBeforeDiscount: "1125",
+      discountPercentage: "15",
+      finalRate: "956",
+      taxableValue: "95625",
+      cgstRate: "6",
+      cgstAmount: "5976",
+      sgstRate: "625",
+      sgstAmount: "5976",
+      igstRate: "12",
+      igstAmount: "11953",
+      amountBeforeGSTAndDiscount: "112500",
+      discountAmount: "16875",
+      gstAmount: "11953",
+      totalAmount: "124382",
       productImages: "images/product1.jpg",
     },
     {
@@ -36,23 +36,23 @@ const PreparedQuoteTable = () => {
       slNo: 2,
       description: "School Bench",
       hsnSaac: "654321",
-      listingRate: "1,000.00",
-      edProwiseMargin: "12.50%",
+      listingRate: "100000",
+      edProwiseMargin: "12",
       qty: "100",
-      finalRateBeforeDiscount: "1,125.00",
-      discountPercentage: "15.00%",
-      finalRate: "956.25",
-      taxableValue: "95,625.00",
-      cgstRate: "6.25%",
-      cgstAmount: "5,976.56",
-      sgstRate: "6.25%",
-      sgstAmount: "5,976.56",
-      igstRate: "12.50%",
-      igstAmount: "11,953.13",
-      amountBeforeGSTAndDiscount: "112,500.00",
-      discountAmount: "16,875.00",
-      gstAmount: "11,953.13",
-      totalAmount: "124,382.82",
+      finalRateBeforeDiscount: "1125",
+      discountPercentage: "15",
+      finalRate: "956",
+      taxableValue: "95625",
+      cgstRate: "6",
+      cgstAmount: "5976",
+      sgstRate: "625",
+      sgstAmount: "5976",
+      igstRate: "12",
+      igstAmount: "11953",
+      amountBeforeGSTAndDiscount: "112500",
+      discountAmount: "16875",
+      gstAmount: "11953",
+      totalAmount: "124382",
       productImages: "images/product1.jpg",
     },
   ]);
@@ -66,7 +66,7 @@ const PreparedQuoteTable = () => {
 
   const navigateToViewRequestedQuote = (event, product) => {
     event.preventDefault();
-    navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
+    navigate(`/seller-dashboard/procurement-services/view-prepared-quote`, {
       state: { product },
     });
   };
@@ -113,7 +113,7 @@ const PreparedQuoteTable = () => {
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center gap-1">
               <h4 className="card-title flex-grow-1">
-                All Submitted Quote List
+                All Prepared Quote List
               </h4>
               <div className="text-end">
                 <Link

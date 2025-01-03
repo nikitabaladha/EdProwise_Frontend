@@ -70,18 +70,26 @@ const UpdateRequestedQuote = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="imageUrl" className="form-label">
-                        Product Image URL
+                      <label htmlFor="productImages" className="form-label">
+                        Product Images
                       </label>
+
+                      {/* File Input for Upload */}
                       <input
-                        type="text"
-                        id="imageUrl"
-                        name="imageUrl"
+                        type="file"
+                        id="productImages"
+                        name="productImages"
                         className="form-control"
-                        value={formData.imageUrl}
-                        onChange={handleChange}
-                        required
+                        accept="image/*,application/pdf"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          setFormData((prev) => ({
+                            ...prev,
+                            productImages: file,
+                          }));
+                        }}
                       />
+                      <div>{formData.imageUrl}</div>
                     </div>
                   </div>
                   <div className="col-md-4">

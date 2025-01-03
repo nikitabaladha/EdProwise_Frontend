@@ -43,16 +43,16 @@ const SubmittedQuoteTable = () => {
     navigate(`/seller-dashboard/procurement-services/prepare-quote`);
   };
 
-  const navigateToViewRequestedQuote = (event, product) => {
+  const navigateToViewSubmittedQuote = (event, product) => {
     event.preventDefault();
-    navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
+    navigate(`/seller-dashboard/procurement-services/view-submitted-quote`, {
       state: { product },
     });
   };
 
-  const navigateToUpdateRequestedQuote = (event, product) => {
+  const navigateToUpdateSubmittedQuote = (event, product) => {
     event.preventDefault();
-    navigate(`/seller-dashboard/procurement-services/update-prepared-quote`, {
+    navigate(`/seller-dashboard/procurement-services/update-submitted-quote`, {
       state: { product },
     });
   };
@@ -151,7 +151,7 @@ const SubmittedQuoteTable = () => {
                             <Link
                               className="btn btn-light btn-sm"
                               onClick={(event) =>
-                                navigateToViewRequestedQuote(event, product)
+                                navigateToViewSubmittedQuote(event, product)
                               }
                             >
                               <iconify-icon
@@ -159,19 +159,11 @@ const SubmittedQuoteTable = () => {
                                 className="align-middle fs-18"
                               />
                             </Link>
-                            <Link
-                              className="btn btn-success btn-sm"
-                              title="Submit"
-                              data-bs-toggle="popover"
-                              data-bs-trigger="hover"
-                              onClick={(event) => navigateToPrepareQuote(event)}
-                            >
-                              Prepare Quote
-                            </Link>
+
                             <Link
                               className="btn btn-soft-primary btn-sm"
                               onClick={(event) =>
-                                navigateToUpdateRequestedQuote(event, product)
+                                navigateToUpdateSubmittedQuote(event, product)
                               }
                             >
                               <iconify-icon

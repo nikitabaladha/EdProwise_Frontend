@@ -63,9 +63,13 @@ import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
 import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
+import ViewSubmittedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/ViewSubmittedQuote/ViewSubmittedQuote";
+import UpdateSubmittedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/UpdateSubmittedQuote/UpdateSubmittedQuote";
+
 import PrepareQuoteForm from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/PrepareQuoteForm/PrepareQuoteForm";
 import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
 import UpdatePreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/UpdatePreparedQuote/UpdatePreparedQuote";
+import ViewPreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/ViewPreparedQuote/ViewPreparedQuote";
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -270,6 +274,15 @@ const AppRoutes = () => {
           element={<SubmittedQuoteTableForSeller />}
         />
         <Route
+          path="procurement-services/view-submitted-quote"
+          element={<ViewSubmittedQuote />}
+        />
+        <Route
+          path="procurement-services/update-submitted-quote"
+          element={<UpdateSubmittedQuote />}
+        />
+
+        <Route
           path="procurement-services/prepare-quote"
           element={<PrepareQuoteForm />}
         />
@@ -280,6 +293,10 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/update-prepared-quote"
           element={<UpdatePreparedQuote />}
+        />
+        <Route
+          path="procurement-services/view-prepared-quote"
+          element={<ViewPreparedQuote />}
         />
       </Route>
 
