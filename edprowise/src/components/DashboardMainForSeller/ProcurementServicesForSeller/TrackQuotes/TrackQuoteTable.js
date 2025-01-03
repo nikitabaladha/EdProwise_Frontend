@@ -56,6 +56,12 @@ const TrackQuoteTable = () => {
       state: { product },
     });
   };
+  const navigateToSubmitQuote = (event, product) => {
+    event.preventDefault();
+    navigate(`/seller-dashboard/procurement-services/submit-quote`, {
+      state: { product },
+    });
+  };
 
   const navigateToUpdateRequestedQuote = (event, product) => {
     event.preventDefault();
@@ -200,6 +206,9 @@ const TrackQuoteTable = () => {
                                 title="Submit"
                                 data-bs-toggle="popover"
                                 data-bs-trigger="hover"
+                                onClick={(event) =>
+                                  navigateToSubmitQuote(event, product)
+                                }
                               >
                                 Submit
                               </Link>

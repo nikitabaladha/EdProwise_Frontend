@@ -57,9 +57,13 @@ import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard
 import TrackQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/TrackQuoteTable";
 import ViewRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
 import UpdateRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/UpdateRequestedQuote/UpdateRequestedQuote";
+import SubmitQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/SubmitQuote/SubmitQuote";
 
 import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
+
+import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
+import PrepareQuoteForm from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/PrepareQuoteForm/PrepareQuoteForm";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -246,6 +250,10 @@ const AppRoutes = () => {
           path="procurement-services/update-requested-quote"
           element={<UpdateRequestedQuoteForSeller />}
         />
+        <Route
+          path="procurement-services/submit-quote"
+          element={<SubmitQuote />}
+        />
 
         <Route
           path="procurement-services/track-order-history"
@@ -254,6 +262,15 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/view-order-history"
           element={<ViewOrderHistoryForSeller />}
+        />
+
+        <Route
+          path="procurement-services/submitted-quote"
+          element={<SubmittedQuoteTableForSeller />}
+        />
+        <Route
+          path="procurement-services/prepare-quote"
+          element={<SubmittedQuoteTableForSeller />}
         />
       </Route>
 

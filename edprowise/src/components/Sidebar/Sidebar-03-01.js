@@ -182,13 +182,8 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
 
         children: [
           {
-            label: "Quote Enquiry ",
+            label: "Track Quote Submission",
             link: "/seller-dashboard/procurement-services/track-quote",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
-          {
-            label: "Submitted Quote ",
-            link: "/seller-dashboard/procurement-services/submitted-quote",
             icon: "solar:users-group-rounded-bold-duotone",
           },
 
