@@ -5,34 +5,55 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 
-const SubmittedQuoteTable = () => {
+const PreparedQuoteTable = () => {
   const [products, setProducts] = useState([
     {
       id: 1,
-      dateOfQuoteSubmitted: "2023-12-01",
-      quotedAmount: "1000",
-      remarksFromSupplier: "XYZ",
-      expectedDeliveryDateMentionedBySeller: "2023-12-01",
-      paymentTerms: "XYZ",
-      advancesRequiredAmount: "500",
+      slNo: 1,
+      description: "School Bench",
+      hsnSaac: "654321",
+      listingRate: "1,000.00",
+      edProwiseMargin: "12.50%",
+      qty: "100",
+      finalRateBeforeDiscount: "1,125.00",
+      discountPercentage: "15.00%",
+      finalRate: "956.25",
+      taxableValue: "95,625.00",
+      cgstRate: "6.25%",
+      cgstAmount: "5,976.56",
+      sgstRate: "6.25%",
+      sgstAmount: "5,976.56",
+      igstRate: "12.50%",
+      igstAmount: "11,953.13",
+      amountBeforeGSTAndDiscount: "112,500.00",
+      discountAmount: "16,875.00",
+      gstAmount: "11,953.13",
+      totalAmount: "124,382.82",
+      productImages: "images/product1.jpg",
     },
     {
       id: 2,
-      dateOfQuoteSubmitted: "2023-12-01",
-      quotedAmount: "1000",
-      remarksFromSupplier: "XYZ",
-      expectedDeliveryDateMentionedBySeller: "2023-12-01",
-      paymentTerms: "XYZ",
-      advancesRequiredAmount: "500",
-    },
-    {
-      id: 3,
-      dateOfQuoteSubmitted: "2023-12-01",
-      quotedAmount: "1000",
-      remarksFromSupplier: "XYZ",
-      expectedDeliveryDateMentionedBySeller: "2023-12-01",
-      paymentTerms: "XYZ",
-      advancesRequiredAmount: "500",
+      slNo: 2,
+      description: "School Bench",
+      hsnSaac: "654321",
+      listingRate: "1,000.00",
+      edProwiseMargin: "12.50%",
+      qty: "100",
+      finalRateBeforeDiscount: "1,125.00",
+      discountPercentage: "15.00%",
+      finalRate: "956.25",
+      taxableValue: "95,625.00",
+      cgstRate: "6.25%",
+      cgstAmount: "5,976.56",
+      sgstRate: "6.25%",
+      sgstAmount: "5,976.56",
+      igstRate: "12.50%",
+      igstAmount: "11,953.13",
+      amountBeforeGSTAndDiscount: "112,500.00",
+      discountAmount: "16,875.00",
+      gstAmount: "11,953.13",
+      totalAmount: "124,382.82",
+      productImages: "images/product1.jpg",
     },
   ]);
 
@@ -51,6 +72,7 @@ const SubmittedQuoteTable = () => {
   };
 
   const navigateToUpdateRequestedQuote = (event, product) => {
+    console.log("product form navigation to update", product);
     event.preventDefault();
     navigate(`/seller-dashboard/procurement-services/update-prepared-quote`, {
       state: { product },
@@ -60,12 +82,25 @@ const SubmittedQuoteTable = () => {
   const handleExport = () => {
     const filteredData = products.map((product) => ({
       Id: product.id,
-      DateOfQuoteSubmitted: product.dateOfQuoteSubmitted,
-      QuotedAmount: product.quotedAmount,
-      RemarksFromSupplier: product.remarksFromSupplier,
-      ExpectedDeliveryDate: product.expectedDeliveryDateMentionedBySeller,
-      PaymentTerms: product.paymentTerms,
-      AdvancesRequiredAmount: product.advancesRequiredAmount,
+      Description: product.description,
+      HSN_SAAC: product.hsnSaac,
+      Listing_Rate: product.listingRate,
+      Ed_Prowise_Margin: product.edProwiseMargin,
+      Quantity: product.qty,
+      Final_Rate_Before_Discount: product.finalRateBeforeDiscount,
+      Discount_Percentage: product.discountPercentage,
+      Final_Rate: product.finalRate,
+      Taxable_Value: product.taxableValue,
+      CGST_Rate: product.cgstRate,
+      CGST_Amount: product.cgstAmount,
+      SGST_Rate: product.sgstRate,
+      SGST_Amount: product.sgstAmount,
+      IGST_Rate: product.igstRate,
+      IGST_Amount: product.igstAmount,
+      Amount_Before_GST_And_Discount: product.amountBeforeGSTAndDiscount,
+      Discount_Amount: product.discountAmount,
+      GST_Amount: product.gstAmount,
+      Total_Amount: product.totalAmount,
     }));
 
     exportToExcel(filteredData, "Products", "Products Data");
@@ -80,12 +115,6 @@ const SubmittedQuoteTable = () => {
               <h4 className="card-title flex-grow-1">
                 All Submitted Quote List
               </h4>
-              {/* <Link
-                onClick={(event) => navigateToRequestQuote(event)}
-                className="btn btn-sm btn-primary"
-              >
-                Request Quote
-              </Link> */}
               <div className="text-end">
                 <Link
                   onClick={handleExport}
@@ -113,12 +142,26 @@ const SubmittedQuoteTable = () => {
                           />
                         </div>
                       </th>
-                      <th>Date of Quote Submitted</th>
-                      <th>Quoted Amount</th>
-                      <th>Remarks from Supplier</th>
-                      <th>Expected Delivery Date</th>
-                      <th>Payment Terms</th>
-                      <th>Advances Required Amount</th>
+                      <th>Sl No</th>
+                      <th>Description</th>
+                      <th>HSN/SAAC</th>
+                      <th>Listing Rate</th>
+                      <th>Ed Prowise Margin</th>
+                      <th>Quantity</th>
+                      <th>Final Rate Before Discount</th>
+                      <th>Discount Percentage</th>
+                      {/* <th>Final Rate</th>
+                      <th>Taxable Value</th>
+                      <th>CGST Rate</th>
+                      <th>CGST Amount</th>
+                      <th>SGST Rate</th>
+                      <th>SGST Amount</th>
+                      <th>IGST Rate</th>
+                      <th>IGST Amount</th>
+                      <th>Amount Before GST and Discount</th>
+                      <th>Discount Amount</th>
+                      <th>GST Amount</th>
+                      <th>Total Amount</th> */}
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -140,12 +183,26 @@ const SubmittedQuoteTable = () => {
                             </label>
                           </div>
                         </td>
-                        <td>{product.dateOfQuoteSubmitted}</td>
-                        <td>{product.quotedAmount}</td>
-                        <td>{product.remarksFromSupplier}</td>
-                        <td>{product.expectedDeliveryDateMentionedBySeller}</td>
-                        <td>{product.paymentTerms}</td>
-                        <td>{product.advancesRequiredAmount}</td>
+                        <td>{product.slNo}</td>
+                        <td>{product.description}</td>
+                        <td>{product.hsnSaac}</td>
+                        <td>{product.listingRate}</td>
+                        <td>{product.edProwiseMargin}</td>
+                        <td>{product.qty}</td>
+                        <td>{product.finalRateBeforeDiscount}</td>
+                        <td>{product.discountPercentage}</td>
+                        {/* <td>{product.finalRate}</td>
+                        <td>{product.taxableValue}</td>
+                        <td>{product.cgstRate}</td>
+                        <td>{product.cgstAmount}</td>
+                        <td>{product.sgstRate}</td>
+                        <td>{product.sgstAmount}</td>
+                        <td>{product.igstRate}</td>
+                        <td>{product.igstAmount}</td>
+                        <td>{product.amountBeforeGSTAndDiscount}</td>
+                        <td>{product.discountAmount}</td>
+                        <td>{product.gstAmount}</td>
+                        <td>{product.totalAmount}</td> */}
                         <td>
                           <div className="d-flex gap-2">
                             <Link
@@ -159,15 +216,7 @@ const SubmittedQuoteTable = () => {
                                 className="align-middle fs-18"
                               />
                             </Link>
-                            <Link
-                              className="btn btn-success btn-sm"
-                              title="Submit"
-                              data-bs-toggle="popover"
-                              data-bs-trigger="hover"
-                              onClick={(event) => navigateToPrepareQuote(event)}
-                            >
-                              Prepare Quote
-                            </Link>
+
                             <Link
                               className="btn btn-soft-primary btn-sm"
                               onClick={(event) =>
@@ -221,4 +270,4 @@ const SubmittedQuoteTable = () => {
   );
 };
 
-export default SubmittedQuoteTable;
+export default PreparedQuoteTable;

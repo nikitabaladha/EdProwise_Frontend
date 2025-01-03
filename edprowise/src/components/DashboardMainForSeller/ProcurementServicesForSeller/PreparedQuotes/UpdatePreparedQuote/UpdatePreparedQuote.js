@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
 
-const PrepareQuoteForm = () => {
+const UpdatePreparedQuote = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const product = location.state?.product;
+  console.log("update page", product);
+  console.log("update location", location);
+
   const [formData, setFormData] = useState({
     slNo: "",
     description: "",
@@ -28,20 +34,95 @@ const PrepareQuoteForm = () => {
     productImages: null,
   });
 
-  const navigate = useNavigate();
+  //   {
+  //     "id": 1,
+  //     "slNo": 1,
+  //     "description": "School Bench",
+  //     "hsnSaac": "654321",
+  //     "listingRate": "1,000.00",
+  //     "edProwiseMargin": "12.50%",
+  //     "qty": "100",
+  //     "finalRateBeforeDiscount": "1,125.00",
+  //     "discountPercentage": "15.00%",
+  //     "finalRate": "956.25",
+  //     "taxableValue": "95,625.00",
+  //     "cgstRate": "6.25%",
+  //     "cgstAmount": "5,976.56",
+  //     "sgstRate": "6.25%",
+  //     "sgstAmount": "5,976.56",
+  //     "igstRate": "12.50%",
+  //     "igstAmount": "11,953.13",
+  //     "amountBeforeGSTAndDiscount": "112,500.00",
+  //     "discountAmount": "16,875.00",
+  //     "gstAmount": "11,953.13",
+  //     "totalAmount": "124,382.82",
+  //     "productImages": null
+  // }
+
+  useEffect(() => {
+    if (product) {
+      // setFormData({
+      //   slNo: product.slNo,
+      //   description: product.description,
+      //   hsnSaac: product.hsnSaac,
+      //   listingRate: product.listingRate,
+      //   edProwiseMargin: product.edProwiseMargin,
+      //   qty: product.qty,
+      //   finalRateBeforeDiscount: product.finalRateBeforeDiscount,
+      //   discountPercentage: product.discountPercentage,
+      //   finalRate: product.finalRate,
+      //   taxableValue: product.taxableValue,
+      //   cgstRate: product.cgstRate,
+      //   cgstAmount: product.cgstAmount,
+      //   sgstRate: product.sgstRate,
+      //   sgstAmount: product.sgstAmount,
+      //   igstRate: product.igstRate,
+      //   igstAmount: product.igstAmount,
+      //   amountBeforeGSTAndDiscount: product.amountBeforeGSTAndDiscount,
+      //   discountAmount: product.discountAmount,
+      //   gstAmount: product.gstAmount,
+      //   totalAmount: product.totalAmount,
+      //   productImages: product.productImages,
+      // });
+
+      setFormData({
+        ...product,
+        listingRate: product.listingRate.replace(/,/g, ""),
+        edProwiseMargin: product.edProwiseMargin.replace(/%/g, ""),
+        finalRateBeforeDiscount: product.finalRateBeforeDiscount.replace(
+          /,/g,
+          ""
+        ),
+        discountPercentage: product.discountPercentage.replace(/%/g, ""),
+        taxableValue: product.taxableValue.replace(/,/g, ""),
+        cgstRate: product.cgstRate.replace(/%/g, ""),
+        cgstAmount: product.cgstAmount.replace(/,/g, ""),
+        sgstRate: product.sgstRate.replace(/%/g, ""),
+        sgstAmount: product.sgstAmount.replace(/,/g, ""),
+        igstRate: product.igstRate.replace(/%/g, ""),
+        igstAmount: product.igstAmount.replace(/,/g, ""),
+        amountBeforeGSTAndDiscount: product.amountBeforeGSTAndDiscount.replace(
+          /,/g,
+          ""
+        ),
+        discountAmount: product.discountAmount.replace(/,/g, ""),
+        gstAmount: product.gstAmount.replace(/,/g, ""),
+        totalAmount: product.totalAmount.replace(/,/g, ""),
+      });
+    }
+  }, [product]);
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === "file" ? files[0] : value,
-    }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Prepare Quote Data:", formData);
-    toast.success("Quote prepared successfully!");
+    console.log(`Updating form data:`, formData);
+
+    toast.success("Quote updated successfully!");
+
     setFormData({
       slNo: "",
       description: "",
@@ -65,6 +146,7 @@ const PrepareQuoteForm = () => {
       totalAmount: "",
       productImages: null,
     });
+
     navigate(-1);
   };
 
@@ -77,7 +159,7 @@ const PrepareQuoteForm = () => {
               <div className="container">
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
-                    Prepare New Quote
+                    Update Prepared Quote
                   </h4>
                 </div>
               </div>
@@ -193,7 +275,8 @@ const PrepareQuoteForm = () => {
                         htmlFor="finalRateBeforeDiscount"
                         className="form-label"
                       >
-                        Final Rate Before Discount
+                        Final Rate Before Discount{" "}
+                        {formData.finalRateBeforeDiscount}
                       </label>
                       <input
                         type="number"
@@ -213,7 +296,7 @@ const PrepareQuoteForm = () => {
                         htmlFor="discountPercentage"
                         className="form-label"
                       >
-                        Discount Percentage
+                        Discount Percentage {formData.discountPercentage}
                       </label>
                       <input
                         type="number"
@@ -248,7 +331,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="taxableValue" className="form-label">
-                        Taxable Value
+                        Taxable Value {formData.taxableValue}
                       </label>
                       <input
                         type="number"
@@ -264,7 +347,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="cgstRate" className="form-label">
-                        CGST Rate
+                        CGST Rate {formData.cgstRate}
                       </label>
                       <input
                         type="number"
@@ -280,7 +363,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="cgstAmount" className="form-label">
-                        CGST Amount
+                        CGST Amount {formData.cgstAmount}
                       </label>
                       <input
                         type="number"
@@ -298,7 +381,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="sgstRate" className="form-label">
-                        SGST Rate
+                        SGST Rate {formData.sgstRate}
                       </label>
                       <input
                         type="number"
@@ -314,7 +397,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="sgstAmount" className="form-label">
-                        SGST Amount
+                        SGST Amount {formData.sgstAmount}
                       </label>
                       <input
                         type="number"
@@ -330,7 +413,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="igstRate" className="form-label">
-                        IGST Rate
+                        IGST Rate {formData.igstRate}
                       </label>
                       <input
                         type="number"
@@ -348,7 +431,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="igstAmount" className="form-label">
-                        IGST Amount
+                        IGST Amount {formData.igstAmount}
                       </label>
                       <input
                         type="number"
@@ -365,7 +448,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="discountAmount" className="form-label">
-                        Discount Amount
+                        Discount Amount {formData.discountAmount}
                       </label>
                       <input
                         type="number"
@@ -381,7 +464,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="gstAmount" className="form-label">
-                        GST Amount
+                        GST Amount {formData.gstAmount}
                       </label>
                       <input
                         type="number"
@@ -403,7 +486,8 @@ const PrepareQuoteForm = () => {
                         htmlFor="amountBeforeGSTAndDiscount"
                         className="form-label"
                       >
-                        Amount Before GST and Discount
+                        Amount Before GST and Discount{" "}
+                        {formData.amountBeforeGSTAndDiscount}
                       </label>
                       <input
                         type="number"
@@ -419,7 +503,7 @@ const PrepareQuoteForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="totalAmount" className="form-label">
-                        Total Amount
+                        Total Amount {formData.totalAmount}
                       </label>
                       <input
                         type="number"
@@ -432,7 +516,7 @@ const PrepareQuoteForm = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  {/* <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="productImages" className="form-label">
                         Product Images
@@ -444,6 +528,52 @@ const PrepareQuoteForm = () => {
                         className="form-control"
                         accept="image/*,application/pdf"
                         onChange={handleChange}
+                        value={formData.productImages}
+                      />
+                    </div>
+                  </div> */}
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="productImages" className="form-label">
+                        Product Images
+                      </label>
+
+                      {/* Display Existing Image or File */}
+                      {formData.productImages && (
+                        <>
+                          {formData.productImages.endsWith(".pdf") ? (
+                            <a
+                              href={formData.productImages}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View PDF
+                            </a>
+                          ) : (
+                            <img
+                              src={formData.productImages}
+                              alt="Existing Product"
+                              className="img-thumbnail"
+                              style={{ maxWidth: "100px", maxHeight: "100px" }}
+                            />
+                          )}
+                        </>
+                      )}
+
+                      {/* File Input for Upload */}
+                      <input
+                        type="file"
+                        id="productImages"
+                        name="productImages"
+                        className="form-control"
+                        accept="image/*,application/pdf"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          setFormData((prev) => ({
+                            ...prev,
+                            productImages: file,
+                          }));
+                        }}
                       />
                     </div>
                   </div>
@@ -454,7 +584,7 @@ const PrepareQuoteForm = () => {
                     type="submit"
                     className="btn btn-primary custom-submit-button"
                   >
-                    Prepare Quote
+                    Request Quote
                   </button>
                 </div>
               </form>
@@ -466,4 +596,4 @@ const PrepareQuoteForm = () => {
   );
 };
 
-export default PrepareQuoteForm;
+export default UpdatePreparedQuote;

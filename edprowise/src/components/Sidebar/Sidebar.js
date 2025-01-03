@@ -191,7 +191,11 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             link: "/seller-dashboard/procurement-services/submitted-quote",
             icon: "solar:users-group-rounded-bold-duotone",
           },
-
+          {
+            label: "View Prepared Quote",
+            link: "/seller-dashboard/procurement-services/prepared-quote",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
           {
             label: "Track Order & Order History",
             link: "/seller-dashboard/procurement-services/track-order-history",

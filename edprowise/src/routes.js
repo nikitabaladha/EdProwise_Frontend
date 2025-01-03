@@ -64,7 +64,8 @@ import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/Procu
 
 import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
 import PrepareQuoteForm from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/PrepareQuoteForm/PrepareQuoteForm";
-
+import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
+import UpdatePreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/UpdatePreparedQuote/UpdatePreparedQuote";
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -270,7 +271,15 @@ const AppRoutes = () => {
         />
         <Route
           path="procurement-services/prepare-quote"
-          element={<SubmittedQuoteTableForSeller />}
+          element={<PrepareQuoteForm />}
+        />
+        <Route
+          path="procurement-services/prepared-quote"
+          element={<PreparedQuote />}
+        />
+        <Route
+          path="procurement-services/update-prepared-quote"
+          element={<UpdatePreparedQuote />}
         />
       </Route>
 

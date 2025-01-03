@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
 
-const PrepareQuoteForm = () => {
+const UpdatePreparedQuote = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const product = location.state?.product;
+
   const [formData, setFormData] = useState({
     slNo: "",
     description: "",
@@ -28,20 +32,23 @@ const PrepareQuoteForm = () => {
     productImages: null,
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (product) {
+      setFormData({});
+    }
+  }, [product]);
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === "file" ? files[0] : value,
-    }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Prepare Quote Data:", formData);
-    toast.success("Quote prepared successfully!");
+    console.log(`Updating form data:`, formData);
+
+    toast.success("Quote updated successfully!");
+
     setFormData({
       slNo: "",
       description: "",
@@ -65,6 +72,7 @@ const PrepareQuoteForm = () => {
       totalAmount: "",
       productImages: null,
     });
+
     navigate(-1);
   };
 
@@ -77,7 +85,7 @@ const PrepareQuoteForm = () => {
               <div className="container">
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
-                    Prepare New Quote
+                    Update Requested Quote
                   </h4>
                 </div>
               </div>
@@ -454,7 +462,7 @@ const PrepareQuoteForm = () => {
                     type="submit"
                     className="btn btn-primary custom-submit-button"
                   >
-                    Prepare Quote
+                    Request Quote
                   </button>
                 </div>
               </form>
@@ -466,4 +474,4 @@ const PrepareQuoteForm = () => {
   );
 };
 
-export default PrepareQuoteForm;
+export default UpdatePreparedQuote;

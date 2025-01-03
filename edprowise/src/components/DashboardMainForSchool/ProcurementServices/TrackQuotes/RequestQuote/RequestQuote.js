@@ -84,6 +84,7 @@ const RequestQuote = () => {
       qty: "",
       deliveryExpectedDate: "",
     });
+    navigate(-1);
   };
 
   const subCategoryOptions = categories[formData.category] || [];

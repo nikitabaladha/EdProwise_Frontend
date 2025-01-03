@@ -2,7 +2,7 @@ import React from "react";
 import SubmittedQuoteTable from "./SubmittedQuoteTable";
 
 // import ViewRequestedQuote from "./ViewRequestedQuote/ViewRequestedQuote";
-// import UpdateRequestedQuote from "./UpdateRequestedQuote/UpdateRequestedQuote";
+import UpdatePreparedQuote from "./UpdatePreparedQuote/UpdatePreparedQuote";
 // import SubmitQuote from "./SubmitQuote/SubmitQuote";
 import PrepareQuoteForm from "./PrepareQuoteForm/PrepareQuoteForm";
 import { useLocation } from "react-router-dom";
