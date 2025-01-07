@@ -146,7 +146,7 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
 
         children: [
           {
-            label: "Quotes",
+            label: "Track Quotes",
             link: "/school-dashboard/procurement-services/track-quote",
             icon: "solar:users-group-rounded-bold-duotone",
           },

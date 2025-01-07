@@ -42,10 +42,9 @@ import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard
 import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/TrackQuoteTable";
 import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/RequestQuote/RequestQuote";
 import ViewRequestedQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
-import UpdateRequestedQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/UpdateRequestedQuote/UpdateRequestedQuote";
 
-import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/ViewQuotes/ViewAllQuoteTable";
-import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/ViewQuotes/ViewQuote/ViewQuote";
+import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewQuote/ViewQuote";
+import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewAllQuoteQuoteTable/ViewAllQuoteTable";
 
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
@@ -118,6 +117,7 @@ const AppRoutes = () => {
         }
       >
         {/* Main Dashboard Route */}
+
         <Route index element={<Dashboard />} />
 
         {/* School Table page and it's Add, View, Update Routes */}
@@ -208,16 +208,12 @@ const AppRoutes = () => {
           path="procurement-services/view-requested-quote"
           element={<ViewRequestedQuote />}
         />
-        <Route
-          path="procurement-services/update-requested-quote"
-          element={<UpdateRequestedQuote />}
-        />
 
+        <Route path="procurement-services/view-quote" element={<ViewQuote />} />
         <Route
-          path="procurement-services/view-all-quote"
+          path="procurement-services/view-quote-table"
           element={<ViewAllQuoteTable />}
         />
-        <Route path="procurement-services/view-quote" element={<ViewQuote />} />
 
         <Route
           path="procurement-services/track-order-history"

@@ -51,22 +51,6 @@ const TrackQuoteTable = () => {
     },
   ]);
 
-  const [quotes, setQuotes] = useState([
-    {
-      id: 1,
-      nameOfSupplier: "Supplier A",
-      dateOfQuoteSubmitted: "2023-12-01",
-      quotedAmount: "₹500.00",
-      description: "This is a test description for the quote from Supplier A.",
-      remarksFromSupplier: "Ready for delivery",
-      expectedDeliveryDate: "2023-12-05",
-      paymentTerms: "50% upfront, 50% on delivery",
-      advancesRequiredAmount: "₹100.00",
-      placeOrder: "Quote Accepted",
-      commentFromBuyer: "Check quality before accepting",
-      status: "Quote Received",
-    },
-  ]);
   const navigate = useNavigate();
 
   const navigateToRequestQuote = (event) => {
@@ -81,12 +65,13 @@ const TrackQuoteTable = () => {
     });
   };
 
-  const navigateToViewQuoteTable = (event, quotes) => {
+  const navigateToUpdateRequestedQuote = (event, product) => {
     event.preventDefault();
-    navigate(`/school-dashboard/procurement-services/view-quote-table`, {
-      state: { quotes },
+    navigate(`/school-dashboard/procurement-services/update-requested-quote`, {
+      state: { product },
     });
   };
+
   const handleExport = () => {
     const filteredData = products.map((product) => ({
       Id: product.id,
@@ -148,10 +133,12 @@ const TrackQuoteTable = () => {
                           </div>
                         </th>
                         <th>Enquiry No.</th>
-                        <th>Product Required Image & Name</th>
+                        <th>Product Required Image</th>
                         <th>Product Required (Category)</th>
+                        <th>Product Required ( Sub Category)</th>
                         <th>Quantity</th>
                         <th>Unit</th>
+                        {/* <th>Quote Requested Date</th> */}
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -184,14 +171,36 @@ const TrackQuoteTable = () => {
                                   className="avatar-md"
                                 />
                               </div>
-                              <div>
-                                <Link className="text-dark fw-medium fs-15">
+                              {/* <div>
+                                <a
+                                  href="#!"
+                                  className="text-dark fw-medium fs-15"
+                                >
                                   {product.subCategory}
-                                </Link>
+                                </a>
+                              </div> */}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="d-flex align-items-center gap-2">
+                              {/* <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                <img
+                                  src={product.imageUrl}
+                                  alt={product.subCategory}
+                                  className="avatar-md"
+                                />
+                              </div> */}
+                              <div>
+                                <a
+                                  href="#!"
+                                  className="text-dark fw-medium fs-15"
+                                >
+                                  {product.category}
+                                </a>
                               </div>
                             </div>
                           </td>
-                          <td>{product.category}</td>
+                          <td>{product.subCategory}</td>
                           <td>{product.qty}</td>
                           <td>{product.unit}</td>
                           <td>{product.status}</td>
@@ -208,15 +217,23 @@ const TrackQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <button
-                                type="button"
-                                className="btn btn-primary custom-submit-button"
+                              <Link
+                                className="btn btn-soft-primary btn-sm"
                                 onClick={(event) =>
-                                  navigateToViewQuoteTable(event, quotes)
+                                  navigateToUpdateRequestedQuote(event, product)
                                 }
                               >
-                                View Quote
-                              </button>
+                                <iconify-icon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
+                              <Link className="btn btn-soft-danger btn-sm">
+                                <iconify-icon
+                                  icon="solar:trash-bin-minimalistic-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
                             </div>
                           </td>
                         </tr>

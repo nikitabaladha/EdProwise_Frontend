@@ -443,7 +443,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
         </div>
 
         {subscription.length > 0 ? (
-          <div className="row">
+          <div className="row p-2">
             <div className="col-xl-12">
               <div className="card">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">

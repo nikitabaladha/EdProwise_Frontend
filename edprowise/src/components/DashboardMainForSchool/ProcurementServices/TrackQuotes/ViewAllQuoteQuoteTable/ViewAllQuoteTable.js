@@ -1,19 +1,14 @@
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import autoTable from "jspdf-autotable";
+
 import jsPDF from "jspdf";
 
-const ViewRequestedQuote = () => {
-  const location = useLocation();
-  const product = location.state?.product;
-
+const ViewAllQuoteTable = () => {
   const navigate = useNavigate();
 
   const [quotes, setQuotes] = useState([
@@ -31,9 +26,64 @@ const ViewRequestedQuote = () => {
       commentFromBuyer: "Check quality before accepting",
       status: "Quote Received",
     },
+    {
+      id: 2,
+      nameOfSupplier: "Supplier B",
+      dateOfQuoteSubmitted: "2023-12-02",
+      quotedAmount: "₹750.00",
+      description: "This is a test description for the quote from Supplier B.",
+      remarksFromSupplier: "Pending confirmation",
+      expectedDeliveryDate: "2023-12-10",
+      paymentTerms: "Full payment upon delivery",
+      advancesRequiredAmount: "₹150.00",
+      placeOrder: "Quote Pending",
+      commentFromBuyer: "Need to negotiate price",
+      status: "Quote Received",
+    },
+    {
+      id: 3,
+      nameOfSupplier: "Supplier C",
+      dateOfQuoteSubmitted: "2023-12-03",
+      quotedAmount: "₹300.00",
+      description: "This is a test description for the quote from Supplier C.",
+      remarksFromSupplier: "Available stock",
+      expectedDeliveryDate: "2023-12-15",
+      paymentTerms: "30% upfront, 70% on delivery",
+      advancesRequiredAmount: "₹50.00",
+      placeOrder: "Quote Accepted",
+      commentFromBuyer: "Confirm delivery date",
+      status: "Quote Received",
+    },
+    {
+      id: 4,
+      nameOfSupplier: "Supplier D",
+      dateOfQuoteSubmitted: "2023-12-04",
+      quotedAmount: "₹1,200.00",
+      description: "This is a test description for the quote from Supplier D.",
+      remarksFromSupplier: "In production",
+      expectedDeliveryDate: "2023-12-20",
+      paymentTerms: "50% upfront, 50% after inspection",
+      advancesRequiredAmount: "₹200.00",
+      placeOrder: "Quote Accepted",
+      commentFromBuyer: "Ensure timely delivery",
+      status: "Quote Received",
+    },
+    {
+      id: 5,
+      nameOfSupplier: "Supplier E",
+      dateOfQuoteSubmitted: "2023-12-05",
+      quotedAmount: "₹1,000.00",
+      description: "This is a test description for the quote from Supplier E.",
+      remarksFromSupplier: "Ready for shipment",
+      expectedDeliveryDate: "2023-12-25",
+      paymentTerms: "Full payment before shipment",
+      advancesRequiredAmount: "₹250.00",
+      placeOrder: "Quote Pending",
+      commentFromBuyer: "Review terms before acceptance",
+      status: "Quote Received",
+    },
   ]);
 
-  const [isQuoteTableVisible, setIsQuoteTableVisible] = useState(false);
   const navigateToViewQuote = (event, quote) => {
     event.preventDefault();
     navigate(`/school-dashboard/procurement-services/view-quote`, {
@@ -41,14 +91,7 @@ const ViewRequestedQuote = () => {
     });
   };
 
-  const handleExport = (event) => {
-    event.preventDefault();
-
-    if (!quotes || quotes.length === 0) {
-      toast.error("No quotes available to export.");
-      return;
-    }
-
+  const handleExport = () => {
     const filteredData = quotes.map((quote) => ({
       "Supplier Name": quote.nameOfSupplier,
       "Date of Quote Submitted": quote.dateOfQuoteSubmitted,
@@ -63,19 +106,14 @@ const ViewRequestedQuote = () => {
     }));
 
     exportToExcel(filteredData, "Quotes", "Quotes Data");
-
-    navigate("/school-dashboard/procurement-services/view-requested-quote", {
-      state: { product },
-    });
   };
 
-  const handleDownloadPDF = (event, quote) => {
-    event.preventDefault();
-
+  const handleDownloadPDF = (quote) => {
     const doc = new jsPDF();
     doc.setFontSize(12);
     doc.text("Quote Details", 14, 20);
 
+    // Add quote details to the PDF
     autoTable(doc, {
       head: [["Field", "Value"]],
       body: [
@@ -94,175 +132,34 @@ const ViewRequestedQuote = () => {
     });
 
     doc.save(`Quote_${quote.id}.pdf`);
-
-    navigate("/school-dashboard/procurement-services/view-requested-quote", {
-      state: { product },
-    });
   };
 
-  const showSuccessMessage = (event) => {
-    event.preventDefault();
+  const showSuccessMessage = () => {
     toast.success("Order Placed Successfully!");
-    navigate("/school-dashboard/procurement-services/view-requested-quote", {
-      state: { product },
-    });
   };
 
-  const showErrorMessage = (event) => {
-    event.preventDefault();
+  const showErrorMessage = () => {
     toast.error("Quote Rejected!");
-    navigate("/school-dashboard/procurement-services/view-requested-quote", {
-      state: { product },
-    });
   };
 
   if (!quotes || quotes.length === 0) {
     return <div>No quotes available</div>;
   }
 
-  if (!product) {
-    return <div>No product details available.</div>;
-  }
-
-  console.log("Product view", product);
-
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-xl-12">
-          <div className="card m-2">
-            <div className="card-body custom-heading-padding">
-              <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Requested Quote Details
-                  </h4>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="productImage" className="form-label">
-                      Product Image
-                    </label>
-                    <div>
-                      <img
-                        src={product.imageUrl}
-                        alt="Product"
-                        className="img-fluid"
-                        style={{ maxHeight: "200px", objectFit: "cover" }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="enquiryNo" className="form-label">
-                      Enquiry Number
-                    </label>
-                    <p className="form-control">{product.enquiryNo}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="productName" className="form-label">
-                      Product Name
-                    </label>
-                    <p className="form-control">{product.subCategory}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="productDescription" className="form-label">
-                      Product Description
-                    </label>
-                    <p className="form-control">{product.productDescription}</p>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="mb-3">
-                    <label htmlFor="unit" className="form-label">
-                      Unit
-                    </label>
-                    <p className="form-control">{product.unit}</p>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="mb-3">
-                    <label htmlFor="qty" className="form-label">
-                      Quantity
-                    </label>
-                    <p className="form-control">{product.qty}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="quoteRequestedDate" className="form-label">
-                      Quote Requested Date
-                    </label>
-                    <p className="form-control">{product.quoteRequestedDate}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="deliveryExpectedDate"
-                      className="form-label"
-                    >
-                      Delivery Expected Date
-                    </label>
-                    <p className="form-control">
-                      {product.deliveryExpectedDate}
-                    </p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="status" className="form-label">
-                      Status
-                    </label>
-                    <p className="form-control">{product.status}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-between">
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                  onClick={() => setIsQuoteTableVisible(!isQuoteTableVisible)}
-                >
-                  {isQuoteTableVisible ? "Hide Quote" : "View Quote"}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                  onClick={() => window.history.back()}
-                >
-                  Go Back
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {isQuoteTableVisible && quotes.length > 0 ? (
-        <div className="row p-2">
+    <>
+      <div className="container-fluid">
+        <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1"> All Quote List</h4>
+                <h4 className="card-title flex-grow-1">View All Quote List</h4>
+                <Link className="btn btn-sm btn-primary">
+                  {/* Request Quote */}
+                </Link>
                 <div className="text-end">
                   <Link
-                    onClick={(event) => handleExport(event)}
+                    onClick={handleExport}
                     className="btn btn-sm btn-outline-light"
                   >
                     Export
@@ -288,9 +185,10 @@ const ViewRequestedQuote = () => {
                           </div>
                         </th>
                         <th>Name of Supplier</th>
+                        <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
-                        <th>Expected Delivery Date</th>
-                        <th>Status</th>
+                        <th>Remarks from Supplier</th>
+                        <th> Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -313,8 +211,9 @@ const ViewRequestedQuote = () => {
                             </div>
                           </td>
                           <td>{quote.nameOfSupplier}</td>
-                          <td>{quote.quotedAmount}</td>
                           <td>{quote.expectedDeliveryDate}</td>
+                          <td>{quote.quotedAmount}</td>
+                          <td>{quote.remarksFromSupplier}</td>
                           <td>{quote.status}</td>
                           <td>
                             <div className="d-flex gap-2">
@@ -360,15 +259,35 @@ const ViewRequestedQuote = () => {
                     </tbody>
                   </table>
                 </div>
+                {/* end table-responsive */}
+              </div>
+              <div className="card-footer border-top">
+                <nav aria-label="Page navigation example">
+                  <ul className="pagination justify-content-end mb-0">
+                    <li className="page-item">
+                      <Link className="page-link">Previous</Link>
+                    </li>
+                    <li className="page-item active">
+                      <Link className="page-link">1</Link>
+                    </li>
+                    <li className="page-item">
+                      <Link className="page-link">2</Link>
+                    </li>
+                    <li className="page-item">
+                      <Link className="page-link">3</Link>
+                    </li>
+                    <li className="page-item">
+                      <Link className="page-link">Next</Link>
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </div>
           </div>
         </div>
-      ) : (
-        <div className="row"></div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 
-export default ViewRequestedQuote;
+export default ViewAllQuoteTable;
