@@ -75,7 +75,7 @@ const ViewQuote = () => {
               <div className="container">
                 <div className="card-header mb-2">
                   <div className="d-flex justify-content-between">
-                    <h4 className="card-title text-center custom-heading-font">
+                    <h4 className="card-title text-center custom-heading-font align-content-center">
                       Quote Details
                     </h4>
                     <div className="">

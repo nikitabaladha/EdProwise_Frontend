@@ -104,23 +104,7 @@ const RequestQuote = () => {
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="row">
-                  {/* <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="productRequired" className="form-label">
-                        Product Required
-                      </label>
-                      <input
-                        type="text"
-                        id="productRequired"
-                        name="productRequired"
-                        className="form-control"
-                        value={formData.productRequired}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div> */}
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="category" className="form-label">
                         Product Required – Select category
@@ -142,7 +126,7 @@ const RequestQuote = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="subCategory" className="form-label">

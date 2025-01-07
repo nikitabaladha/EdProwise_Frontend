@@ -3,6 +3,54 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 const TrackQuoteTable = () => {
+  // const [products, setProducts] = useState([
+  //   {
+  //     id: 1,
+  //     enquiryNo: "ENQ1234567890",
+  //     imageUrl: "assets/images/product/p-1.png",
+  //     category: "Office Furniture",
+  //     subCategory: "Office Chair",
+  //     productDescription: "We want chair",
+  //     quoteRequestedDate: "2023-12-01",
+  //     unit: "Pieces",
+  //     qty: 8,
+  //     deliveryExpectedDate: "2023-12-01",
+  //     status: "Quote Requested",
+  //     oderNo: "ORD1234567890",
+  //     quoteReceivedDate: "2023-12-01",
+  //   },
+  //   {
+  //     id: 2,
+  //     enquiryNo: "ENQ1234567890",
+  //     imageUrl: "assets/images/product/p-1.png",
+  //     category: "Office Furniture",
+  //     subCategory: "Table",
+  //     productDescription: "We want Table",
+  //     quoteRequestedDate: "2023-12-01",
+  //     unit: "Pieces",
+  //     qty: 8,
+  //     deliveryExpectedDate: "2023-12-01",
+  //     status: "Quote Requested",
+  //     oderNo: "ORD1234567890",
+  //     quoteReceivedDate: "2023-12-01",
+  //   },
+  //   {
+  //     id: 3,
+  //     enquiryNo: "ENQ1234567890",
+  //     imageUrl: "assets/images/product/p-1.png",
+  //     category: "Classroom Board",
+  //     subCategory: "Board",
+  //     productDescription: "We want board",
+  //     quoteRequestedDate: "2023-12-01",
+  //     unit: "Pieces",
+  //     qty: 8,
+  //     deliveryExpectedDate: "2023-12-01",
+  //     status: "Quote Requested",
+  //     oderNo: "ORD1234567890",
+  //     quoteReceivedDate: "2023-12-01",
+  //   },
+  // ]);
+
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -50,7 +98,6 @@ const TrackQuoteTable = () => {
       quoteReceivedDate: "2023-12-01",
     },
   ]);
-
   const [quotes, setQuotes] = useState([
     {
       id: 1,

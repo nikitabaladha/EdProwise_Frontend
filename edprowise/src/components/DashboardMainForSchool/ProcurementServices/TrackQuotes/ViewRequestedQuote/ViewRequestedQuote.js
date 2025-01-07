@@ -12,7 +12,54 @@ import jsPDF from "jspdf";
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
-  const product = location.state?.product;
+
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      category: "Office Furniture",
+      subCategory: "Office Chair",
+      productDescription: "We want chair",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
+    },
+    {
+      id: 2,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      category: "Office Furniture",
+      subCategory: "Table",
+      productDescription: "We want Table",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
+    },
+    {
+      id: 3,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      category: "Classroom Board",
+      subCategory: "Board",
+      productDescription: "We want board",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
+    },
+  ]);
 
   const navigate = useNavigate();
 
@@ -27,7 +74,7 @@ const ViewRequestedQuote = () => {
       expectedDeliveryDate: "2023-12-05",
       paymentTerms: "50% upfront, 50% on delivery",
       advancesRequiredAmount: "₹100.00",
-      placeOrder: "Quote Accepted",
+      placeOrderStatus: "Pending",
       commentFromBuyer: "Check quality before accepting",
       status: "Quote Received",
     },
@@ -65,7 +112,7 @@ const ViewRequestedQuote = () => {
     exportToExcel(filteredData, "Quotes", "Quotes Data");
 
     navigate("/school-dashboard/procurement-services/view-requested-quote", {
-      state: { product },
+      state: { products },
     });
   };
 
@@ -96,7 +143,7 @@ const ViewRequestedQuote = () => {
     doc.save(`Quote_${quote.id}.pdf`);
 
     navigate("/school-dashboard/procurement-services/view-requested-quote", {
-      state: { product },
+      state: { products },
     });
   };
 
@@ -104,7 +151,7 @@ const ViewRequestedQuote = () => {
     event.preventDefault();
     toast.success("Order Placed Successfully!");
     navigate("/school-dashboard/procurement-services/view-requested-quote", {
-      state: { product },
+      state: { products },
     });
   };
 
@@ -112,7 +159,7 @@ const ViewRequestedQuote = () => {
     event.preventDefault();
     toast.error("Quote Rejected!");
     navigate("/school-dashboard/procurement-services/view-requested-quote", {
-      state: { product },
+      state: { products },
     });
   };
 
@@ -120,11 +167,11 @@ const ViewRequestedQuote = () => {
     return <div>No quotes available</div>;
   }
 
-  if (!product) {
+  if (!products) {
     return <div>No product details available.</div>;
   }
 
-  console.log("Product view", product);
+  console.log("Product view", products);
 
   return (
     <div className="container">
@@ -140,100 +187,86 @@ const ViewRequestedQuote = () => {
                 </div>
               </div>
 
-              <div className="row">
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="productImage" className="form-label">
-                      Product Image
-                    </label>
-                    <div>
-                      <img
-                        src={product.imageUrl}
-                        alt="Product"
-                        className="img-fluid"
-                        style={{ maxHeight: "200px", objectFit: "cover" }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="enquiryNo" className="form-label">
-                      Enquiry Number
-                    </label>
-                    <p className="form-control">{product.enquiryNo}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="productName" className="form-label">
-                      Product Name
-                    </label>
-                    <p className="form-control">{product.subCategory}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="productDescription" className="form-label">
-                      Product Description
-                    </label>
-                    <p className="form-control">{product.productDescription}</p>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="mb-3">
-                    <label htmlFor="unit" className="form-label">
-                      Unit
-                    </label>
-                    <p className="form-control">{product.unit}</p>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="mb-3">
-                    <label htmlFor="qty" className="form-label">
-                      Quantity
-                    </label>
-                    <p className="form-control">{product.qty}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="quoteRequestedDate" className="form-label">
-                      Quote Requested Date
-                    </label>
-                    <p className="form-control">{product.quoteRequestedDate}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="deliveryExpectedDate"
-                      className="form-label"
-                    >
-                      Delivery Expected Date
-                    </label>
-                    <p className="form-control">
-                      {product.deliveryExpectedDate}
-                    </p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="status" className="form-label">
-                      Status
-                    </label>
-                    <p className="form-control">{product.status}</p>
-                  </div>
-                </div>
+              <div className="table-responsive">
+                <table className="table align-middle mb-0 table-hover table-centered table-nowrap">
+                  <thead className="bg-light-subtle">
+                    <tr>
+                      <th style={{ width: 20 }}>
+                        <div className="form-check ms-1">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customCheck1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customCheck1"
+                          />
+                        </div>
+                      </th>
+                      <th>Enquiry No.</th>
+                      <th>Product Required Image & Name</th>
+                      <th>Product Required (Category)</th>
+                      <th>Quantity</th>
+                      <th>Unit</th>
+                      <th>Status</th>
+                      <th>Product Description</th>
+                      <th>QuoteRequested Date</th>
+                      <th>DeliveryExpectedDate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product) => (
+                      <tr key={product.id}>
+                        <td>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id={`customCheck${product.id}`}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`customCheck${product.id}`}
+                            >
+                              &nbsp;
+                            </label>
+                          </div>
+                        </td>
+                        <td>{product.enquiryNo}</td>
+                        <td>
+                          <div className="d-flex align-items-center gap-2">
+                            <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                              <img
+                                src={product.imageUrl}
+                                alt={product.subCategory}
+                                className="avatar-md"
+                              />
+                            </div>
+                            <div>
+                              <Link className="text-dark fw-medium fs-15">
+                                {product.subCategory}
+                              </Link>
+                            </div>
+                          </div>
+                        </td>
+                        <td>{product.category}</td>
+                        <td>{product.qty}</td>
+                        <td>{product.unit}</td>
+                        <td>{product.status}</td>
+                        <td>{product.productDescription}</td>
+                        <td>{product.quoteReceivedDate}</td>
+                        <td>{product.deliveryExpectedDate}</td>
+                        <td>{product.placeOrderStatus}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
-              <div className="d-flex justify-content-between">
+              {/* end table-responsive */}
+
+              <div className="d-flex justify-content-between mt-2">
                 <button
                   type="button"
                   className="btn btn-primary custom-submit-button"
@@ -271,7 +304,7 @@ const ViewRequestedQuote = () => {
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered">
+                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -291,6 +324,13 @@ const ViewRequestedQuote = () => {
                         <th>Quoted Amount</th>
                         <th>Expected Delivery Date</th>
                         <th>Status</th>
+                        <th>Date Of QuoteSubmitted</th>
+                        <th>Description</th>
+                        <th>Remarks From Supplier</th>
+                        <th>Payment Terms</th>
+                        <th>Advances Required Amount</th>
+                        <th>Place Order Status</th>
+                        <th>Comment From Buyer</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -316,19 +356,15 @@ const ViewRequestedQuote = () => {
                           <td>{quote.quotedAmount}</td>
                           <td>{quote.expectedDeliveryDate}</td>
                           <td>{quote.status}</td>
+                          <td>{quote.dateOfQuoteSubmitted}</td>
+                          <td>{quote.description}</td>
+                          <td>{quote.remarksFromSupplier}</td>
+                          <td>{quote.paymentTerms}</td>
+                          <td>{quote.advancesRequiredAmount}</td>
+                          <td>{quote.placeOrderStatus}</td>
+                          <td>{quote.commentFromBuyer}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link
-                                onClick={(event) =>
-                                  navigateToViewQuote(event, quote)
-                                }
-                                className="btn btn-light btn-sm"
-                              >
-                                <iconify-icon
-                                  icon="solar:eye-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
                               <Link
                                 onClick={(event) =>
                                   handleDownloadPDF(event, quote)
