@@ -23,10 +23,11 @@ import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/
 
 import TrackQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/TrackQuoteTable";
 import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
-import UpdateRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/UpdateRequestedQuote/UpdateRequestedQuote";
 
-import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ViewQuotes/ViewAllQuoteTable";
-import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ViewQuotes/ViewQuote/ViewQuote";
+// import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ViewQuotes/ViewAllQuoteTable";
+// import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ViewQuotes/ViewQuote/ViewQuote";
+import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
+import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewQuote/ViewQuote";
 
 import TrackOrderHistoryTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
@@ -41,10 +42,11 @@ import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard
 
 import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/TrackQuoteTable";
 import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/RequestQuote/RequestQuote";
+
 import ViewRequestedQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
 
 import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewQuote/ViewQuote";
-import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewAllQuoteQuoteTable/ViewAllQuoteTable";
+import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
@@ -119,16 +121,13 @@ const AppRoutes = () => {
         }
       >
         {/* Main Dashboard Route */}
-
         <Route index element={<Dashboard />} />
-
         {/* School Table page and it's Add, View, Update Routes */}
         <Route path="schools" element={<Schools />}>
           <Route path="add-new-school" element={<AddNewSchool />} />
           <Route path="view-school" element={<ViewSchool />} />
           <Route path="update-school" element={<UpdateSchool />} />
         </Route>
-
         {/* Subscriptions Table page and it's Add, View, Update Routes */}
         <Route path="subscriptions" element={<Subscriptions />}>
           <Route
@@ -138,7 +137,6 @@ const AppRoutes = () => {
           <Route path="view-subscriptions" element={<ViewSubscriptions />} />
           <Route path="update-subscriptions" element={<UpdateSubscription />} />
         </Route>
-
         {/* Procurement Services Routes */}
         <Route
           path="procurement-services/track-quote"
@@ -149,12 +147,7 @@ const AppRoutes = () => {
           element={<ViewRequestedQuoteForAdmin />}
         />
         <Route
-          path="procurement-services/update-requested-quote"
-          element={<UpdateRequestedQuoteForAdmin />}
-        />
-
-        <Route
-          path="procurement-services/view-all-quote"
+          path="procurement-services/view-quote-table"
           element={<ViewAllQuoteTableForAdmin />}
         />
         <Route
@@ -170,7 +163,6 @@ const AppRoutes = () => {
           path="procurement-services/view-order-history"
           element={<ViewOrderHistoryForAdmin />}
         />
-
         <Route
           path="procurement-services/define-goods-services"
           element={<GoodsAndServicesTable />}

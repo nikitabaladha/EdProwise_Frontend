@@ -9,8 +9,7 @@ const TrackQuoteTable = () => {
       enquiryNo: "ENQ1234567890",
       nameOfBuyer: "ABC School",
       quoteRequestedDate: "2023-12-01",
-      category: "Office Furniture",
-      subCategory: "Office Chair",
+      subCategory: "Chair",
       productDescription: "We want chair",
       qty: 8,
       unit: "Pieces",
@@ -23,8 +22,7 @@ const TrackQuoteTable = () => {
       enquiryNo: "ENQ1234567891",
       nameOfBuyer: "XYZ Academy",
       quoteRequestedDate: "2023-12-02",
-      category: "Office Furniture",
-      subCategory: "Office Chair",
+      subCategory: "Desk",
       productDescription: "Need 10 wooden desks.",
       qty: 10,
       unit: "Pieces",
@@ -37,8 +35,7 @@ const TrackQuoteTable = () => {
       enquiryNo: "ENQ1234567892",
       nameOfBuyer: "LMN School",
       quoteRequestedDate: "2023-12-03",
-      category: "Office Furniture",
-      subCategory: "Office Chair",
+      subCategory: "Whiteboard",
       productDescription: "Request for 5 whiteboards.",
       qty: 5,
       unit: "Pieces",
@@ -46,24 +43,34 @@ const TrackQuoteTable = () => {
       imageUrl: "assets/images/product/p-3.png",
       status: "Quote Requested",
     },
-  ]);
-
-  const [quotes, setQuotes] = useState([
     {
-      id: 1,
-      nameOfSupplier: "Supplier A",
-      dateOfQuoteSubmitted: "2023-12-01",
-      quotedAmount: "₹500.00",
-      description: "This is a test description for the quote from Supplier A.",
-      remarksFromSupplier: "Ready for delivery",
-      expectedDeliveryDate: "2023-12-05",
-      paymentTerms: "50% upfront, 50% on delivery",
-      advancesRequiredAmount: "₹100.00",
-      placeOrder: "Quote Accepted",
-      commentFromBuyer: "Check quality before accepting",
-      status: "Quote Received",
+      id: 4,
+      enquiryNo: "ENQ1234567893",
+      nameOfBuyer: "PQR Institute",
+      quoteRequestedDate: "2023-12-04",
+      subCategory: "Projector",
+      productDescription: "Looking for a high-quality projector.",
+      qty: 2,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-15",
+      imageUrl: "assets/images/product/p-4.png",
+      status: "Quote Requested",
+    },
+    {
+      id: 5,
+      enquiryNo: "ENQ1234567894",
+      nameOfBuyer: "DEF School",
+      quoteRequestedDate: "2023-12-05",
+      subCategory: "Books",
+      productDescription: "Request for 100 textbooks.",
+      qty: 100,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-20",
+      imageUrl: "assets/images/product/p-5.png",
+      status: "Quote Requested",
     },
   ]);
+
   const navigate = useNavigate();
 
   const navigateToViewRequestedQuote = (event, product) => {
@@ -73,10 +80,10 @@ const TrackQuoteTable = () => {
     });
   };
 
-  const navigateToViewQuoteTable = (event, quotes) => {
+  const navigateToUpdateRequestedQuote = (event, product) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/view-quote-table`, {
-      state: { quotes },
+    navigate(`/admin-dashboard/procurement-services/update-requested-quote`, {
+      state: { product },
     });
   };
 
@@ -112,6 +119,9 @@ const TrackQuoteTable = () => {
                   <Link
                     onClick={handleExport}
                     className="btn btn-sm btn-outline-light"
+                    title="Export Excel File"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
                   >
                     Export
                   </Link>
@@ -137,11 +147,10 @@ const TrackQuoteTable = () => {
                         </th>
                         <th>Enquiry No.</th>
                         <th>Product Required Image & Name</th>
-                        {/* <th>Product Required (Category)</th> */}
-                        <th>Name Of Buyer</th>
-                        <th>Quote Requested Date</th>
+
                         <th>Quantity</th>
                         <th>Unit</th>
+                        <th>Quote Requested Date</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -175,23 +184,27 @@ const TrackQuoteTable = () => {
                                 />
                               </div>
                               <div>
-                                <Link className="text-dark fw-medium fs-15">
+                                <a
+                                  href="#!"
+                                  className="text-dark fw-medium fs-15"
+                                >
                                   {product.subCategory}
-                                </Link>
+                                </a>
                               </div>
                             </div>
                           </td>
 
-                          {/* <td>{product.category}</td> */}
-                          <td>{product.nameOfBuyer}</td>
-                          <td>{product.quoteRequestedDate}</td>
                           <td>{product.qty}</td>
                           <td>{product.unit}</td>
+                          <td>{product.quoteRequestedDate}</td>
                           <td>{product.status}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
                                 className="btn btn-light btn-sm"
+                                title="View"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                                 onClick={(event) =>
                                   navigateToViewRequestedQuote(event, product)
                                 }
@@ -201,15 +214,32 @@ const TrackQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <button
-                                type="button"
-                                className="btn btn-primary custom-submit-button"
+
+                              <Link
+                                className="btn btn-soft-primary btn-sm"
+                                title="Update"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                                 onClick={(event) =>
-                                  navigateToViewQuoteTable(event, quotes)
+                                  navigateToUpdateRequestedQuote(event, product)
                                 }
                               >
-                                View Quote
-                              </button>
+                                <iconify-icon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
+                              <Link
+                                className="btn btn-soft-danger btn-sm"
+                                title="Delete"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                              >
+                                <iconify-icon
+                                  icon="solar:trash-bin-minimalistic-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
                             </div>
                           </td>
                         </tr>

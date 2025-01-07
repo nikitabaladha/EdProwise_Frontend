@@ -2,9 +2,8 @@ import React from "react";
 import TrackQuoteTable from "./TrackQuoteTable";
 
 import ViewRequestedQuote from "./ViewRequestedQuote/ViewRequestedQuote";
+import UpdateRequestedQuote from "./UpdateRequestedQuote/UpdateRequestedQuote";
 import { useLocation } from "react-router-dom";
-import ViewQuote from "./ViewQuote/ViewQuote";
-import ViewAllQuoteTable from "./ViewAllQuoteTable/ViewAllQuoteTable";
 
 const TrackQuotes = () => {
   const location = useLocation();
@@ -13,21 +12,15 @@ const TrackQuotes = () => {
     location.pathname ===
     "/admin-dashboard/procurement-services/view-requested-quote";
 
-  const isViewQuoteRoute =
-    location.pathname === "/admin-dashboard/procurement-services/view-quote";
-
-  const isViewAllQuoteTableRoute =
-    location.pathname ===
-    "/admin-dashboard/procurement-services/view-quote-table";
+  const isUpdateRoute =
+    "/admin-dashboard/procurement-services/update-requested-quote";
 
   return (
     <>
       {isViewRoute ? (
         <ViewRequestedQuote />
-      ) : isViewQuoteRoute ? (
-        <ViewQuote />
-      ) : isViewAllQuoteTableRoute ? (
-        <ViewAllQuoteTable />
+      ) : isUpdateRoute ? (
+        <UpdateRequestedQuote />
       ) : (
         <TrackQuoteTable />
       )}

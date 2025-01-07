@@ -15,7 +15,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-05",
       actualDeliveryDate: "2023-12-10",
-      invoiceNo: "INV-001",
+      invoice: "INV-001",
       invoiceAmount: "₹500.00",
       advanceAdjustment: "₹100.00",
       tdsDeduction: "₹10.00",
@@ -37,7 +37,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-10",
       actualDeliveryDate: "2023-12-09",
-      invoiceNo: "INV-002",
+      invoice: "INV-002",
       invoiceAmount: "₹750.00",
       advanceAdjustment: "₹150.00",
       tdsDeduction: "₹15.00",
@@ -49,6 +49,7 @@ const TrackOrderHistoryTable = () => {
       gstAmount: "₹40.00",
       totalInvoiceAmt: "₹540.00",
       OtherCharges: "₹50.00",
+      FinalReceivableFromEdProwise: "₹440.00",
     },
     {
       id: 3,
@@ -58,7 +59,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-15",
       actualDeliveryDate: "2023-12-09",
-      invoiceNo: "INV-003",
+      invoice: "INV-003",
       invoiceAmount: "₹300.00",
       advanceAdjustment: "₹50.00",
       tdsDeduction: "₹5.00",
@@ -70,6 +71,7 @@ const TrackOrderHistoryTable = () => {
       gstAmount: "₹40.00",
       totalInvoiceAmt: "₹540.00",
       OtherCharges: "₹50.00",
+      FinalReceivableFromEdProwise: "₹440.00",
     },
     {
       id: 4,
@@ -79,7 +81,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-20",
       actualDeliveryDate: "2023-12-09",
-      invoiceNO: "INV-004",
+      invoice: "INV-004",
       invoiceAmount: "₹1,200.00",
       advanceAdjustment: "₹200.00",
       tdsDeduction: "₹20.00",
@@ -91,6 +93,7 @@ const TrackOrderHistoryTable = () => {
       gstAmount: "₹40.00",
       totalInvoiceAmt: "₹540.00",
       OtherCharges: "₹50.00",
+      FinalReceivableFromEdProwise: "₹440.00",
     },
     {
       id: 5,
@@ -100,7 +103,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-25",
       actualDeliveryDate: "2023-12-24",
-      invoiceNo: "INV-005",
+      invoice: "INV-005",
       invoiceAmount: "₹1,000.00",
       advanceAdjustment: "₹250.00",
       tdsDeduction: "₹25.00",
@@ -112,6 +115,7 @@ const TrackOrderHistoryTable = () => {
       gstAmount: "₹40.00",
       totalInvoiceAmt: "₹540.00",
       OtherCharges: "₹50.00",
+      FinalReceivableFromEdProwise: "₹440.00",
     },
   ]);
 
@@ -190,7 +194,6 @@ const TrackOrderHistoryTable = () => {
                         <th>Expected Delivery Date</th>
                         <th>Actual Delivery Date</th>
                         <th>Final Payable Amount</th>
-                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -215,9 +218,8 @@ const TrackOrderHistoryTable = () => {
                           <td>{order.orderNumber}</td>
                           <td>{order.nameOfSupplier}</td>
                           <td>{order.expectedDeliveryDate}</td>
-                          <td>{order.actualDeliveryDate}</td>
+                          <td>{order.actualDeliveryDate || "N/A"}</td>
                           <td>{order.finalPayableAmount}</td>
-                          <td>{order.status}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -234,6 +236,17 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
+                              {/* <Link
+                                title="Update"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                                className="btn btn-soft-primary btn-sm"
+                              >
+                                <iconify-icon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link> */}
                               <Link
                                 className="btn btn-success btn-sm"
                                 title="Pay"
@@ -241,6 +254,17 @@ const TrackOrderHistoryTable = () => {
                                 data-bs-trigger="hover"
                               >
                                 Pay
+                              </Link>
+                              <Link
+                                title="Delete"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                                className="btn btn-soft-danger btn-sm"
+                              >
+                                <iconify-icon
+                                  icon="solar:trash-bin-minimalistic-2-broken"
+                                  className="align-middle fs-18"
+                                />
                               </Link>
                             </div>
                           </td>

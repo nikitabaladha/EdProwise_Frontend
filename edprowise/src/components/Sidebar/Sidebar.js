@@ -63,37 +63,37 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         // className:
         // currentRoute === "/admin-dashboard/subscriptions" ? "active" : "",
       },
-      {
-        id: "feesManagement",
-        label: "Fees Management",
-        icon: "game-icons:money-stack",
-        link: "/admin-dashboard/feesManagement",
-        // className:
-        // currentRoute === "/admin-dashboard/feesManagement" ? "active" : "",
-      },
-      {
-        id: "payrollManagement",
-        label: "Payroll Management",
-        icon: "solar:hand-money-bold",
-        link: "/admin-dashboard/payrollManagement",
-        // className:
-        // currentRoute === "/admin-dashboard/payrollManagement" ? "active" : "",
-      },
-      {
-        id: "finance",
-        label: "Finance Management",
-        icon: "solar:graph-up-bold",
-        // link: "/admin-dashboard/finance",
-        // className: currentRoute === "/admin-dashboard/finance" ? "active" : "",
-      },
-      {
-        id: "schoolManagement",
-        label: "School Management",
-        icon: "solar:buildings-2-bold-duotone",
-        link: "/admin-dashboard/schoolManagement",
-        // className:
-        // currentRoute === "/admin-dashboard/schoolManagement" ? "active" : "",
-      },
+      // {
+      //   id: "feesManagement",
+      //   label: "Fees Management",
+      //   icon: "game-icons:money-stack",
+      //   link: "/admin-dashboard/feesManagement",
+      //   // className:
+      //   // currentRoute === "/admin-dashboard/feesManagement" ? "active" : "",
+      // },
+      // {
+      //   id: "payrollManagement",
+      //   label: "Payroll Management",
+      //   icon: "solar:hand-money-bold",
+      //   link: "/admin-dashboard/payrollManagement",
+      //   // className:
+      //   // currentRoute === "/admin-dashboard/payrollManagement" ? "active" : "",
+      // },
+      // {
+      //   id: "finance",
+      //   label: "Finance Management",
+      //   icon: "solar:graph-up-bold",
+      //   // link: "/admin-dashboard/finance",
+      //   // className: currentRoute === "/admin-dashboard/finance" ? "active" : "",
+      // },
+      // {
+      //   id: "schoolManagement",
+      //   label: "School Management",
+      //   icon: "solar:buildings-2-bold-duotone",
+      //   link: "/admin-dashboard/schoolManagement",
+      //   // className:
+      //   // currentRoute === "/admin-dashboard/schoolManagement" ? "active" : "",
+      // },
       {
         id: "procurementServices",
         label: "Procurement Services",
@@ -105,15 +105,15 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
 
         children: [
           {
-            label: "Track Quotes",
+            label: "Quotes",
             link: "/admin-dashboard/procurement-services/track-quote",
             icon: "solar:users-group-rounded-bold-duotone",
           },
-          {
-            label: "View Quotes",
-            link: "/admin-dashboard/procurement-services/view-all-quote",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
+          // {
+          //   label: "View Quotes",
+          //   link: "/admin-dashboard/procurement-services/view-all-quote",
+          //   icon: "solar:users-group-rounded-bold-duotone",
+          // },
           {
             label: "Track Order & Order History",
             link: "/admin-dashboard/procurement-services/track-order-history",

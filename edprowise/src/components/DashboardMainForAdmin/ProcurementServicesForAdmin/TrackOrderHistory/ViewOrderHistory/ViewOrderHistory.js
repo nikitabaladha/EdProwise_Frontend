@@ -37,18 +37,18 @@ const ViewOrderHistory = () => {
               <div className="row">
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="orderNumber" className="form-label">
-                      Order Number
-                    </label>
-                    <p className="form-control">{order.orderNumber}</p>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
                     <label htmlFor="nameOfSupplier" className="form-label">
                       Name Of Supplier
                     </label>
                     <p className="form-control">{order.nameOfSupplier}</p>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="orderNumber" className="form-label">
+                      Order Number
+                    </label>
+                    <p className="form-control">{order.orderNumber}</p>
                   </div>
                 </div>
               </div>
@@ -92,9 +92,9 @@ const ViewOrderHistory = () => {
                   {" "}
                   <div className="mb-3">
                     <label htmlFor="invoice" className="form-label">
-                      Invoice
+                      Invoice Number
                     </label>
-                    <p className="form-control">{order.invoice}</p>
+                    <p className="form-control">{order.invoiceNo}</p>
                   </div>
                 </div>
                 <div className="col-md-6">
@@ -212,16 +212,6 @@ const ViewOrderHistory = () => {
                       Other Charges
                     </label>
                     <p className="form-control">{order.OtherCharges}</p>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="finalReceivable" className="form-label">
-                      Final Receivable From EdProwise
-                    </label>
-                    <p className="form-control">
-                      {order.FinalReceivableFromEdProwise}
-                    </p>
                   </div>
                 </div>
               </div>
