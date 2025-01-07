@@ -49,6 +49,8 @@ import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementSe
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
+import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/PayToEdProwise/PayToEdProwise";
+
 // ================================================Seller Routes============================================
 import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
 import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
@@ -222,6 +224,10 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/view-order-history"
           element={<ViewOrderHistory />}
+        />
+        <Route
+          path="procurement-services/Pay-to-edprowise"
+          element={<PayToEdProwise />}
         />
       </Route>
 

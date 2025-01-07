@@ -1,9 +1,16 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ViewOrderHistory = () => {
+  const navigate = useNavigate();
+
   const location = useLocation();
   const order = location.state?.order;
+
+  const handleNavigation = () => {
+    navigate("/school-dashboard/procurement-services/pay-to-edprowise");
+  };
 
   if (!order) {
     return <div>No order details available.</div>;
@@ -77,16 +84,32 @@ const ViewOrderHistory = () => {
               </div>
 
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
                   {" "}
                   <div className="mb-3">
                     <label htmlFor="invoice" className="form-label">
-                      Invoice
+                      Invoice No
                     </label>
-                    <p className="form-control">{order.invoice}</p>
+                    <p className="form-control">{order.invoiceNo}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
+                  <div className="mb-3">
+                    <label htmlFor="invoice" className="form-label">
+                      Download Invoice
+                    </label>
+                    <div className="form-control p-0">
+                      <a
+                        href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                        download="Invoice.pdf"
+                        className="btn btn-link"
+                      >
+                        <i className="bi bi-download"></i> Download Invoice
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label htmlFor="quotedAmount" className="form-label">
                       Invoice Amount
@@ -141,8 +164,9 @@ const ViewOrderHistory = () => {
                 <button
                   type="button"
                   className="btn btn-primary custom-submit-button"
+                  onClick={handleNavigation}
                 >
-                  Pay Online
+                  Pay to EdProwise
                 </button>
               </div>
             </div>

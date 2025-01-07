@@ -15,7 +15,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-05",
       actualDeliveryDate: "2023-12-10",
-      invoice: "INV-001",
+      invoiceNo: "INV-001",
       invoiceAmount: "₹500.00",
       advanceAdjustment: "₹100.00",
       tdsDeduction: "₹10.00",
@@ -29,7 +29,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-10",
       actualDeliveryDate: "2023-12-09",
-      invoice: "INV-002",
+      invoiceNo: "INV-002",
       invoiceAmount: "₹750.00",
       advanceAdjustment: "₹150.00",
       tdsDeduction: "₹15.00",
@@ -43,7 +43,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-15",
       actualDeliveryDate: "2023-12-09",
-      invoice: "INV-003",
+      invoiceNo: "INV-003",
       invoiceAmount: "₹300.00",
       advanceAdjustment: "₹50.00",
       tdsDeduction: "₹5.00",
@@ -58,7 +58,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-20",
       actualDeliveryDate: "2023-12-09",
-      invoice: "INV-004",
+      invoiceNo: "INV-004",
       invoiceAmount: "₹1,200.00",
       advanceAdjustment: "₹200.00",
       tdsDeduction: "₹20.00",
@@ -73,7 +73,7 @@ const TrackOrderHistoryTable = () => {
       status: "Order Placed",
       expectedDeliveryDate: "2023-12-25",
       actualDeliveryDate: "2023-12-24",
-      invoice: "INV-005",
+      invoiceNo: "INV-005",
       invoiceAmount: "₹1,000.00",
       advanceAdjustment: "₹250.00",
       tdsDeduction: "₹25.00",
@@ -193,7 +193,7 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
+                              {/* <Link
                                 href="#!"
                                 className="btn btn-soft-primary btn-sm"
                               >
@@ -201,8 +201,8 @@ const TrackOrderHistoryTable = () => {
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link>
-                              <Link
+                              </Link> */}
+                              {/* <Link
                                 href="#!"
                                 className="btn btn-soft-danger btn-sm"
                               >
@@ -210,7 +210,7 @@ const TrackOrderHistoryTable = () => {
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link>
+                              </Link> */}
                             </div>
                           </td>
                         </tr>
