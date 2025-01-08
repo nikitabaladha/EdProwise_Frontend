@@ -122,10 +122,9 @@ const TrackQuoteTable = () => {
                         </th>
                         <th>Enquiry No.</th>
                         <th>Product Required Image & Name</th>
-                        <th>Product Required (Sub Category)</th>
+                        {/* <th>Product Required (Category)</th> */}
                         <th>Quantity</th>
                         <th>Unit</th>
-                        {/* <th>Quote Requested Date</th> */}
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -168,7 +167,7 @@ const TrackQuoteTable = () => {
                               </div>
                             </div>
                           </td>
-                          <td> {product.category}</td>
+                          {/* <td> {product.category}</td> */}
                           <td>{product.qty}</td>
                           <td>{product.unit}</td>
                           {/* <td>{product.quoteRequestedDate}</td> */}
@@ -188,6 +187,18 @@ const TrackQuoteTable = () => {
                               </Link>
 
                               <Link
+                                className="btn btn-danger btn-sm"
+                                title="Submit"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                                onClick={(event) =>
+                                  navigateToViewRequestedQuote(event, product)
+                                }
+                              >
+                                Prepare Quote
+                              </Link>
+
+                              <Link
                                 className="btn btn-success btn-sm"
                                 title="Submit"
                                 data-bs-toggle="popover"
@@ -196,13 +207,7 @@ const TrackQuoteTable = () => {
                                   navigateToSubmitQuote(event, product)
                                 }
                               >
-                                Submit
-                              </Link>
-                              <Link className="btn btn-soft-danger btn-sm">
-                                <iconify-icon
-                                  icon="solar:trash-bin-minimalistic-2-broken"
-                                  className="align-middle fs-18"
-                                />
+                                Submit Quote
                               </Link>
                             </div>
                           </td>

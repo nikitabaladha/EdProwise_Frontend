@@ -216,24 +216,6 @@ const PreparedQuoteTable = () => {
                                 className="align-middle fs-18"
                               />
                             </Link>
-
-                            <Link
-                              className="btn btn-soft-primary btn-sm"
-                              onClick={(event) =>
-                                navigateToUpdateRequestedQuote(event, product)
-                              }
-                            >
-                              <iconify-icon
-                                icon="solar:pen-2-broken"
-                                className="align-middle fs-18"
-                              />
-                            </Link>
-                            <Link className="btn btn-soft-danger btn-sm">
-                              <iconify-icon
-                                icon="solar:trash-bin-minimalistic-2-broken"
-                                className="align-middle fs-18"
-                              />
-                            </Link>
                           </div>
                         </td>
                       </tr>

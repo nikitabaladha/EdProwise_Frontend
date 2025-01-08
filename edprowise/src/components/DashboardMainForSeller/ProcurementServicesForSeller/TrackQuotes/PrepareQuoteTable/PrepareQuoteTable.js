@@ -6,7 +6,7 @@ const PrepareQuoteTable = ({
   handleRemoveProduct,
   handleAddProduct,
   handleChange,
-  handleImageChange, // New prop for handling image uploads
+  handleImageChange,
   handleSubmit,
 }) => {
   return (

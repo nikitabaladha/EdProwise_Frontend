@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import PrepareQuoteTable from "../PrepareQuoteTable/PrepareQuoteTable";
 
 const ViewRequestedQuote = () => {
@@ -89,14 +92,6 @@ const ViewRequestedQuote = () => {
     event.preventDefault();
   };
 
-  const showSuccessMessage = (event) => {
-    event.preventDefault();
-  };
-
-  const showErrorMessage = (event) => {
-    event.preventDefault();
-  };
-
   const handleChange = (index, e) => {
     const { name, value, files } = e.target;
     const updatedProducts = [...prepareProducts];
@@ -151,8 +146,9 @@ const ViewRequestedQuote = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Prepare Quote Data:", prepareProducts);
-    // toast.success("Quote prepared successfully!");
-    // onClose();
+    toast.success("Quote prepared successfully!");
+
+    navigate("/seller-dashboard/procurement-services/submit-quote");
   };
 
   if (!requestedProducts) {
@@ -242,7 +238,6 @@ const ViewRequestedQuote = () => {
                         <td>{product.category}</td>
                         <td>{product.qty}</td>
                         <td>{product.unit}</td>
-
                         <td>{product.productDescription}</td>
                         <td>{product.quoteRequestedDate}</td>
                         <td>{product.deliveryExpectedDate}</td>
@@ -284,7 +279,7 @@ const ViewRequestedQuote = () => {
           handleRemoveProduct={handleRemoveProduct}
           handleAddProduct={handleAddProduct}
           handleChange={handleChange}
-          handleImageChange={handleImageChange} // Pass the handleImageChange function
+          handleImageChange={handleImageChange}
           handleSubmit={handleSubmit}
         />
       )}

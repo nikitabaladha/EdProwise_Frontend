@@ -34,27 +34,16 @@ const ViewOrderHistory = () => {
                 </div>
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="nameOfSupplier" className="form-label">
-                      Name Of Supplier
-                    </label>
-                    <p className="form-control">{order.nameOfSupplier}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="dateOfQuoteSubmitted"
-                      className="form-label"
-                    >
+                    <label htmlFor="orderDate" className="form-label">
                       Order Date
                     </label>
                     <p className="form-control">{order.orderDate}</p>
                   </div>
                 </div>
-                <div className="col-md-4">
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label
                       htmlFor="expectedDeliveryDate"
@@ -65,8 +54,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.expectedDeliveryDate}</p>
                   </div>
                 </div>
-                <div className="col-md-4">
-                  {" "}
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="actualDeliveryDate" className="form-label">
                       Actual Delivery Date
@@ -78,20 +66,24 @@ const ViewOrderHistory = () => {
 
               <div className="row">
                 <div className="col-md-6">
-                  {" "}
                   <div className="mb-3">
-                    <label htmlFor="invoice" className="form-label">
-                      Invoice
+                    <label htmlFor="taxInvoiceForBuyer" className="form-label">
+                      Tax Invoice for Buyer
                     </label>
-                    <p className="form-control">{order.invoice}</p>
+                    <p className="form-control">{order.taxInvoiceForBuyer}</p>
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="quotedAmount" className="form-label">
-                      Invoice Amount
+                    <label
+                      htmlFor="taxInvoiceForEdProwise"
+                      className="form-label"
+                    >
+                      Tax Invoice for EdProwise
                     </label>
-                    <p className="form-control">{order.invoiceAmount}</p>
+                    <p className="form-control">
+                      {order.taxInvoiceForEdProwise}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -100,20 +92,20 @@ const ViewOrderHistory = () => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label
-                      htmlFor="advancesRequiredAmount"
+                      htmlFor="invoiceAmountToBuyer"
                       className="form-label"
                     >
-                      Advance Adjustment
+                      Invoice Amount to Buyer
                     </label>
-                    <p className="form-control">{order.advanceAdjustment}</p>
+                    <p className="form-control">{order.invoiceAmountToBuyer}</p>
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="commentFromBuyer" className="form-label">
-                      TDS/Any Other Deduction
+                    <label htmlFor="taxableValue" className="form-label">
+                      Taxable Value
                     </label>
-                    <p className="form-control">{order.tdsDeduction}</p>
+                    <p className="form-control">{order.taxableValue}</p>
                   </div>
                 </div>
               </div>
@@ -121,18 +113,72 @@ const ViewOrderHistory = () => {
               <div className="row">
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="finalPayableAmount" className="form-label">
-                      Final Payable Amt
+                    <label htmlFor="gstAmount" className="form-label">
+                      GST Amount
                     </label>
-                    <p className="form-control">{order.finalPayableAmount}</p>
+                    <p className="form-control">{order.gstAmount}</p>
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="finalPayableAmount" className="form-label">
+                    <label htmlFor="totalInvoiceAmount" className="form-label">
+                      Total Invoice Amount
+                    </label>
+                    <p className="form-control">{order.totalInvoiceAmount}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="advanceAdjustment" className="form-label">
+                      Advance Adjustment
+                    </label>
+                    <p className="form-control">{order.advanceAdjustment}</p>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="otherCharges" className="form-label">
+                      Other Charges
+                    </label>
+                    <p className="form-control">{order.otherCharges}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label
+                      htmlFor="finalReceivableFromEdProwise"
+                      className="form-label"
+                    >
+                      Final Receivable from EdProwise
+                    </label>
+                    <p className="form-control">
+                      {order.finalReceivableFromEdProwise}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="status" className="form-label">
                       Status
                     </label>
                     <p className="form-control">{order.status}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="mb-3">
+                    <label htmlFor="commentFromBuyer" className="form-label">
+                      Comment From Buyer
+                    </label>
+                    <p className="form-control">{order.commentFromBuyer}</p>
                   </div>
                 </div>
               </div>

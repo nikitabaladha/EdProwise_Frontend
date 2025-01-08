@@ -118,7 +118,7 @@ const ViewSubmittedQuote = () => {
                 </div>
               </div>
               <div className="text-end">
-                <button
+                {/* <button
                   type="button"
                   className="btn btn-primary custom-submit-button"
                   onClick={(event) => navigateToPrepareQuote(event)}
@@ -127,7 +127,17 @@ const ViewSubmittedQuote = () => {
                   data-bs-trigger="hover"
                 >
                   Prepare Quote
-                </button>
+                </button> */}
+
+                <div className="text-end">
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={() => window.history.back()}
+                  >
+                    Go Back
+                  </button>
+                </div>
               </div>
             </div>
           </div>
