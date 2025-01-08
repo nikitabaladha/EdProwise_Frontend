@@ -124,6 +124,11 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             link: "/admin-dashboard/procurement-services/define-goods-services",
             icon: "solar:users-group-rounded-bold-duotone",
           },
+          {
+            label: "Bank Details",
+            link: "/admin-dashboard/procurement-services/bank-details",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
         ],
       },
     ],

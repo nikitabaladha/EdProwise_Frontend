@@ -89,6 +89,10 @@ const TrackOrderHistoryTable = () => {
     });
   };
 
+  const handleNavigation = () => {
+    navigate("/school-dashboard/procurement-services/pay-to-edprowise");
+  };
+
   const handleExport = () => {
     const filteredData = orders.map((order) => ({
       "Order Number": order.orderNumber,
@@ -195,24 +199,15 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              {/* <Link
-                                href="#!"
-                                className="btn btn-soft-primary btn-sm"
+                              <button
+                                className="btn btn-success btn-sm"
+                                title="Pay"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                                onClick={handleNavigation}
                               >
-                                <iconify-icon
-                                  icon="solar:pen-2-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link> */}
-                              {/* <Link
-                                href="#!"
-                                className="btn btn-soft-danger btn-sm"
-                              >
-                                <iconify-icon
-                                  icon="solar:trash-bin-minimalistic-2-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link> */}
+                                Pay
+                              </button>
                             </div>
                           </td>
                         </tr>

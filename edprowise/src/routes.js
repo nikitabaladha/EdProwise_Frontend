@@ -24,10 +24,12 @@ import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/
 import TrackQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/TrackQuoteTable";
 import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
 
-// import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ViewQuotes/ViewAllQuoteTable";
-// import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ViewQuotes/ViewQuote/ViewQuote";
 import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewQuote/ViewQuote";
+
+import BankDetailsTable from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/BankDetailsTable";
+import AddNewBankDetail from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/AddNewBankDetail/AddNewBankDetail";
+import UpdateBankDetail from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/UpdateBankDetail/UpdateBankDetail";
 
 import TrackOrderHistoryTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
@@ -154,7 +156,6 @@ const AppRoutes = () => {
           path="procurement-services/view-quote"
           element={<ViewQuoteForAdmin />}
         />
-
         <Route
           path="procurement-services/track-order-history"
           element={<TrackOrderHistoryTableForAdmin />}
@@ -174,6 +175,19 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/update-good-service"
           element={<UpdateGoodAndService />}
+        />
+
+        <Route
+          path="procurement-services/bank-details"
+          element={<BankDetailsTable />}
+        />
+        <Route
+          path="procurement-services/add-bank-detail"
+          element={<AddNewBankDetail />}
+        />
+        <Route
+          path="procurement-services/update-bank-detail"
+          element={<UpdateBankDetail />}
         />
       </Route>
 

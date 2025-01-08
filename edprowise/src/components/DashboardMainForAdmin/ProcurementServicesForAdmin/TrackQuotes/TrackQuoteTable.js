@@ -119,7 +119,7 @@ const TrackQuoteTable = () => {
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered">
+                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -136,8 +136,7 @@ const TrackQuoteTable = () => {
                           </div>
                         </th>
                         <th>Enquiry No.</th>
-                        <th>Product Required Image & Name</th>
-                        {/* <th>Product Required (Category)</th> */}
+                        <th>Product Image & Name</th>
                         <th>Name Of Buyer</th>
                         <th>Quote Requested Date</th>
                         <th>Quantity</th>
