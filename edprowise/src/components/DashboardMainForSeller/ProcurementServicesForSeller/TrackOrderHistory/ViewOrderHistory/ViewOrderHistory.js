@@ -1,9 +1,16 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ViewOrderHistory = () => {
   const location = useLocation();
   const order = location.state?.order;
+
+  const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    navigate("/seller-dashboard/procurement-services/pay-to-edprowise");
+  };
 
   if (!order) {
     return <div>No order details available.</div>;
@@ -24,7 +31,7 @@ const ViewOrderHistory = () => {
               </div>
 
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label htmlFor="orderNumber" className="form-label">
                       Order Number
@@ -32,7 +39,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.orderNumber}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label htmlFor="orderDate" className="form-label">
                       Order Date
@@ -40,10 +47,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.orderDate}</p>
                   </div>
                 </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label
                       htmlFor="expectedDeliveryDate"
@@ -54,7 +58,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.expectedDeliveryDate}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label htmlFor="actualDeliveryDate" className="form-label">
                       Actual Delivery Date
@@ -64,8 +68,10 @@ const ViewOrderHistory = () => {
                 </div>
               </div>
 
+              <div className="row"></div>
+
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label htmlFor="taxInvoiceForBuyer" className="form-label">
                       Tax Invoice for Buyer
@@ -73,7 +79,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.taxInvoiceForBuyer}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label
                       htmlFor="taxInvoiceForEdProwise"
@@ -86,10 +92,7 @@ const ViewOrderHistory = () => {
                     </p>
                   </div>
                 </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label
                       htmlFor="invoiceAmountToBuyer"
@@ -100,7 +103,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.invoiceAmountToBuyer}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label htmlFor="taxableValue" className="form-label">
                       Taxable Value
@@ -111,7 +114,7 @@ const ViewOrderHistory = () => {
               </div>
 
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label htmlFor="gstAmount" className="form-label">
                       GST Amount
@@ -119,7 +122,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.gstAmount}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label htmlFor="totalInvoiceAmount" className="form-label">
                       Total Invoice Amount
@@ -127,10 +130,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.totalInvoiceAmount}</p>
                   </div>
                 </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label htmlFor="advanceAdjustment" className="form-label">
                       Advance Adjustment
@@ -138,7 +138,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.advanceAdjustment}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label htmlFor="otherCharges" className="form-label">
                       Other Charges
@@ -187,8 +187,9 @@ const ViewOrderHistory = () => {
                 <button
                   type="button"
                   className="btn btn-primary custom-submit-button"
+                  onClick={handleNavigation}
                 >
-                  Pay Online
+                  Pay To EdProwise
                 </button>
               </div>
             </div>

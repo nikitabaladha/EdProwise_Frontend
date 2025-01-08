@@ -1,77 +1,132 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const PayToEdProwise = () => {
-  const [bankDetails] = useState({
-    accountNo: "1234567890",
-    bankName: "ABC Bank",
-    ifscCode: "ABCDO12345",
-    accountType: "Current",
-  });
+  const [bankDetails] = useState([
+    {
+      id: 1,
+      accountNo: "1234567890",
+      bankName: "State Bank of India",
+      ifscCode: "SBIN0001234",
+      typeOfAccount: "Savings",
+    },
+    {
+      id: 2,
+      accountNo: "9876543210",
+      bankName: "HDFC Bank",
+      ifscCode: "HDFC0005678",
+      typeOfAccount: "Current",
+    },
+    {
+      id: 3,
+      accountNo: "1122334455",
+      bankName: "ICICI Bank",
+      ifscCode: "ICIC0009876",
+      typeOfAccount: "Savings",
+    },
+  ]);
 
   return (
-    <div className="container">
+    <div className="container-fluid">
       <div className="row">
         <div className="col-xl-12">
-          <div className="card m-2">
-            <div className="card-body custom-heading-padding">
-              <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Details of EdProwise Bank Account
-                  </h4>
-                </div>
+          <div className="card">
+            <div className="card-header d-flex justify-content-between align-items-center gap-1">
+              <h4 className="card-title flex-grow-1">EdProwise Bank List</h4>
+            </div>
+            <div>
+              <div className="table-responsive">
+                <table className="table align-middle mb-0 table-hover table-centered">
+                  <thead className="bg-light-subtle">
+                    <tr>
+                      <th style={{ width: 20 }}>
+                        <div className="form-check ms-1">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="selectAll"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="selectAll"
+                          />
+                        </div>
+                      </th>
+                      <th>#</th>
+                      <th>Account Number</th>
+                      <th>Bank Name</th>
+                      <th>IFSC Code</th>
+                      <th>Type of Account</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bankDetails.map((bankDetail, index) => (
+                      <tr key={bankDetail.id}>
+                        <td>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id={`customCheck${bankDetail.id}`}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`customCheck${bankDetail.id}`}
+                            >
+                              &nbsp;
+                            </label>
+                          </div>
+                        </td>
+                        <td>{index + 1}</td>
+                        <td>{bankDetail.accountNo}</td>
+                        <td>{bankDetail.bankName}</td>
+                        <td>{bankDetail.ifscCode}</td>
+                        <td>{bankDetail.typeOfAccount}</td>
+                        <td>
+                          <div className="d-flex gap-2">
+                            <button
+                              type="button"
+                              className="btn btn-primary custom-submit-button"
+                            >
+                              Pay
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="accountNo" className="form-label">
-                      Account No.
-                    </label>
-                    <p className="form-control">{bankDetails.accountNo}</p>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="bankName" className="form-label">
-                      Bank Name
-                    </label>
-                    <p className="form-control">{bankDetails.bankName}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="ifscCode" className="form-label">
-                      IFSC Code
-                    </label>
-                    <p className="form-control">{bankDetails.ifscCode}</p>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="accountType" className="form-label">
-                      Type of Account
-                    </label>
-                    <p className="form-control">{bankDetails.accountType}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-end">
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                >
-                  Pay Online
-                </button>
-              </div>
+              {/* end table-responsive */}
+            </div>
+            <div className="card-footer border-top">
+              <nav aria-label="Page navigation example">
+                <ul className="pagination justify-content-end mb-0">
+                  <li className="page-item">
+                    <Link className="page-link">Previous</Link>
+                  </li>
+                  <li className="page-item active">
+                    <Link className="page-link">1</Link>
+                  </li>
+                  <li className="page-item">
+                    <Link className="page-link">2</Link>
+                  </li>
+                  <li className="page-item">
+                    <Link className="page-link">3</Link>
+                  </li>
+                  <li className="page-item">
+                    <Link className="page-link">Next</Link>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </div>
+          {/* end card */}
         </div>
+        {/* end col */}
       </div>
+      {/* end row */}
     </div>
   );
 };

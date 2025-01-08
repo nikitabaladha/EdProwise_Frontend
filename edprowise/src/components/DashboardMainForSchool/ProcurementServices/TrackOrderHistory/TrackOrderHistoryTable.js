@@ -123,9 +123,9 @@ const TrackOrderHistoryTable = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">View All Orders List</h4>
-                <Link className="btn btn-sm btn-primary" to="/request-order">
-                  {/* Request Order */}
-                </Link>
+                {/* <Link className="btn btn-sm btn-primary" to="/request-order">
+                  Request Order
+                </Link> */}
                 <div className="text-end">
                   <Link
                     onClick={handleExport}

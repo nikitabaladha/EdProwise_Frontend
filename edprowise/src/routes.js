@@ -53,7 +53,7 @@ import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementSe
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
-import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/PayToEdProwise/PayToEdProwise";
+import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/PayToEdProwise/PayToEdProwise";
 
 // ================================================Seller Routes============================================
 import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
@@ -61,19 +61,19 @@ import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard
 
 import TrackQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/TrackQuoteTable";
 import ViewRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
-// import UpdateRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/UpdateRequestedQuote/UpdateRequestedQuote";
+
 import SubmitQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/SubmitQuote/SubmitQuote";
 
 import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
+import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/PayToEdProwise/PayToEdProwise";
 
 import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
 import ViewSubmittedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/ViewSubmittedQuote/ViewSubmittedQuote";
-// import UpdateSubmittedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/UpdateSubmittedQuote/UpdateSubmittedQuote";
 
 import PrepareQuoteForm from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/PrepareQuoteForm/PrepareQuoteForm";
 import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
-// import UpdatePreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/UpdatePreparedQuote/UpdatePreparedQuote";
+
 import ViewPreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/ViewPreparedQuote/ViewPreparedQuote";
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -233,7 +233,7 @@ const AppRoutes = () => {
         />
         <Route
           path="procurement-services/Pay-to-edprowise"
-          element={<PayToEdProwise />}
+          element={<PayToEdProwiseForSchool />}
         />
       </Route>
 
@@ -259,10 +259,7 @@ const AppRoutes = () => {
           path="procurement-services/view-requested-quote"
           element={<ViewRequestedQuoteForSeller />}
         />
-        {/* <Route
-          path="procurement-services/update-requested-quote"
-          element={<UpdateRequestedQuoteForSeller />}
-        /> */}
+
         <Route
           path="procurement-services/submit-quote"
           element={<SubmitQuote />}
@@ -276,6 +273,10 @@ const AppRoutes = () => {
           path="procurement-services/view-order-history"
           element={<ViewOrderHistoryForSeller />}
         />
+        <Route
+          path="procurement-services/Pay-to-edprowise"
+          element={<PayToEdProwiseForSeller />}
+        />
 
         <Route
           path="procurement-services/submitted-quote"
@@ -285,10 +286,6 @@ const AppRoutes = () => {
           path="procurement-services/view-submitted-quote"
           element={<ViewSubmittedQuote />}
         />
-        {/* <Route
-          path="procurement-services/update-submitted-quote"
-          element={<UpdateSubmittedQuote />}
-        /> */}
 
         <Route
           path="procurement-services/prepare-quote"
@@ -298,10 +295,7 @@ const AppRoutes = () => {
           path="procurement-services/prepared-quote"
           element={<PreparedQuote />}
         />
-        {/* <Route
-          path="procurement-services/update-prepared-quote"
-          element={<UpdatePreparedQuote />}
-        /> */}
+
         <Route
           path="procurement-services/view-prepared-quote"
           element={<ViewPreparedQuote />}
