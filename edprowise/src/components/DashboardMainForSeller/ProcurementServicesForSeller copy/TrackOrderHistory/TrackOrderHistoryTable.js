@@ -2,64 +2,114 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
-const GoodsAndServicesTable = () => {
-  const [goods, setGoods] = useState([
+
+const TrackOrderHistoryTable = () => {
+  const navigate = useNavigate();
+
+  const [orders, setOrders] = useState([
     {
       id: 1,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "School Desk & Bench - Wooden",
+      orderNumber: "ORD12345678",
+      nameOfSupplier: "Supplier A",
+      orderDate: "2023-12-01",
+      status: "Order Placed",
+      expectedDeliveryDate: "2023-12-05",
+      actualDeliveryDate: "2023-12-10",
+      invoice: "INV-001",
+      invoiceAmount: "₹500.00",
+      advanceAdjustment: "₹100.00",
+      tdsDeduction: "₹10.00",
+      finalPayableAmount: "₹390.00",
     },
     {
       id: 2,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "School Desk & Bench - Steel",
+      orderNumber: "ORD12345678",
+      nameOfSupplier: "Supplier B",
+      orderDate: "2023-12-02",
+      status: "Order Placed",
+      expectedDeliveryDate: "2023-12-10",
+      actualDeliveryDate: "2023-12-09",
+      invoice: "INV-002",
+      invoiceAmount: "₹750.00",
+      advanceAdjustment: "₹150.00",
+      tdsDeduction: "₹15.00",
+      finalPayableAmount: "₹585.00",
     },
     {
       id: 3,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "School Desk & Bench - Wooden & Steel Combine",
+      orderNumber: "ORD12345678",
+      nameOfSupplier: "Supplier C",
+      orderDate: "2023-12-03",
+      status: "Order Placed",
+      expectedDeliveryDate: "2023-12-15",
+      actualDeliveryDate: "2023-12-09",
+      invoice: "INV-003",
+      invoiceAmount: "₹300.00",
+      advanceAdjustment: "₹50.00",
+      tdsDeduction: "₹5.00",
+      finalPayableAmount: "₹245.00",
+      payOnline: "",
     },
     {
       id: 4,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "Others",
+      orderNumber: "ORD12345678",
+      nameOfSupplier: "Supplier D",
+      orderDate: "2023-12-04",
+      status: "Order Placed",
+      expectedDeliveryDate: "2023-12-20",
+      actualDeliveryDate: "2023-12-09",
+      invoice: "INV-004",
+      invoiceAmount: "₹1,200.00",
+      advanceAdjustment: "₹200.00",
+      tdsDeduction: "₹20.00",
+      finalPayableAmount: "₹980.00",
+      payOnline: "",
     },
     {
       id: 5,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Play School & KG)",
-      subCategory: "Kids School Desk & Bench - Wooden",
+      orderNumber: "ORD12345678",
+      nameOfSupplier: "Supplier E",
+      orderDate: "2023-12-05",
+      status: "Order Placed",
+      expectedDeliveryDate: "2023-12-25",
+      actualDeliveryDate: "2023-12-24",
+      invoice: "INV-005",
+      invoiceAmount: "₹1,000.00",
+      advanceAdjustment: "₹250.00",
+      tdsDeduction: "₹25.00",
+      finalPayableAmount: "₹725.00",
+      payOnline: "",
     },
   ]);
 
-  const navigate = useNavigate();
-
-  const navigateToAddGoodServices = (event) => {
+  const navigateToViewOrder = (event, order) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/add-good-services`);
-  };
-
-  const navigateToUpdateGoodServices = (event, good) => {
-    event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/update-good-service`, {
-      state: { good },
+    navigate(`/seller-dashboard/procurement-services/view-order-history`, {
+      state: { order },
     });
   };
 
   const handleExport = () => {
-    const filteredData = goods.map((good) => ({
-      Id: good.id,
-      "Main Category": good.mainCategory,
-      Category: good.category,
-      "Sub Category": good.subCategory,
+    const filteredData = orders.map((order) => ({
+      "Order Number": order.orderNumber,
+      "Name of Supplier": order.nameOfSupplier,
+      "Order Date": order.orderDate,
+      Status: order.status,
+      "Expected Delivery Date": order.expectedDeliveryDate,
+      "Actual Delivery Date": order.actualDeliveryDate,
+      Invoice: order.invoice,
+      "Invoice Amount": order.invoiceAmount,
+      "Advance Adjustment": order.advanceAdjustment,
+      "TDS Deduction": order.tdsDeduction,
+      "Final Payable Amount": order.finalPayableAmount,
     }));
 
-    exportToExcel(filteredData, "Goods & Services", "Goods & Services Data");
+    exportToExcel(filteredData, "Track Order History", "Order History Data");
   };
+
+  if (!orders || orders.length === 0) {
+    return <div>No orders available</div>;
+  }
 
   return (
     <>
@@ -68,23 +118,14 @@ const GoodsAndServicesTable = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">
-                  All Goods And Services List
-                </h4>
-                <Link
-                  className="btn btn-sm btn-primary"
-                  onClick={(event) => navigateToAddGoodServices(event)}
-                >
-                  Add New Good
+                <h4 className="card-title flex-grow-1">View All Orders List</h4>
+                <Link className="btn btn-sm btn-primary" to="/request-order">
+                  {/* Request Order */}
                 </Link>
-
                 <div className="text-end">
                   <Link
                     onClick={handleExport}
                     className="btn btn-sm btn-outline-light"
-                    title="Export Excel File"
-                    data-bs-toggle="popover"
-                    data-bs-trigger="hover"
                   >
                     Export
                   </Link>
@@ -108,60 +149,53 @@ const GoodsAndServicesTable = () => {
                             />
                           </div>
                         </th>
-                        <th>Main Category </th>
-                        <th>Category</th>
-                        <th>Sub Category</th>
-
+                        <th>Order Number</th>
+                        <th>Name of Supplier</th>
+                        <th>Expected Delivery Date</th>
+                        <th>Actual Delivery Date</th>
+                        <th>Final Payable Amount</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {goods.map((good) => (
-                        <tr key={good.id}>
+                      {orders.map((order) => (
+                        <tr key={order.id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${good.id}`}
+                                id={`customCheck${order.id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${good.id}`}
+                                htmlFor={`customCheck${order.id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{good.mainCategory}</td>
-                          <td>{good.category}</td>
-                          <td>{good.subCategory}</td>
-
+                          <td>{order.orderNumber}</td>
+                          <td>{order.nameOfSupplier}</td>
+                          <td>{order.expectedDeliveryDate}</td>
+                          <td>{order.actualDeliveryDate || "N/A"}</td>
+                          <td>{order.finalPayableAmount}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              {/* <Link
-                                className="btn btn-light btn-sm"
-                                title="View"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
+                              <Link
                                 onClick={(event) =>
-                                  navigateToViewGoodsAndServicesQuote(event, good)
+                                  navigateToViewOrder(event, order)
                                 }
+                                className="btn btn-light btn-sm"
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link> */}
-
+                              </Link>
                               <Link
+                                href="#!"
                                 className="btn btn-soft-primary btn-sm"
-                                title="Update"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
-                                onClick={(event) =>
-                                  navigateToUpdateGoodServices(event, good)
-                                }
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
@@ -169,10 +203,8 @@ const GoodsAndServicesTable = () => {
                                 />
                               </Link>
                               <Link
+                                href="#!"
                                 className="btn btn-soft-danger btn-sm"
-                                title="Delete"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
                               >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
@@ -217,4 +249,4 @@ const GoodsAndServicesTable = () => {
   );
 };
 
-export default GoodsAndServicesTable;
+export default TrackOrderHistoryTable;

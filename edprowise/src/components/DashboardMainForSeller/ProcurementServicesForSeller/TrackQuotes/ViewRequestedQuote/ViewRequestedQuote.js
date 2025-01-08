@@ -1,15 +1,165 @@
-import React from "react";
 import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PrepareQuoteTable from "../PrepareQuoteTable/PrepareQuoteTable";
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
-  const product = location.state?.product;
 
-  if (!product) {
+  const [requestedProducts, setRequestedProducts] = useState([
+    {
+      id: 1,
+      enquiryNo: "ENQ1234567890",
+      quoteRequestedDate: "2023-12-01",
+      category: "Office Furniture",
+      subCategory: "Office Chair",
+      productDescription: "We want chair",
+      qty: 8,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-05",
+      imageUrl: "assets/images/product/p-1.png",
+      status: "Quote Requested",
+    },
+    {
+      id: 2,
+      enquiryNo: "ENQ1234567890",
+      quoteRequestedDate: "2023-12-01",
+      category: "Office Furniture",
+      subCategory: "Office Chair",
+      productDescription: "Need 10 wooden desks.",
+      qty: 10,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-10",
+      imageUrl: "assets/images/product/p-2.png",
+      status: "Quote Requested",
+    },
+    {
+      id: 3,
+      enquiryNo: "ENQ1234567890",
+      quoteRequestedDate: "2023-12-01",
+      category: "Office Furniture",
+      subCategory: "Office Chair",
+      productDescription: "Request for 5 whiteboards.",
+      qty: 5,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-12",
+      imageUrl: "assets/images/product/p-3.png",
+      status: "Quote Requested",
+    },
+  ]);
+
+  const [prepareProducts, setPrepareProducts] = useState(
+    requestedProducts.map((product) => ({
+      slNo: "",
+      description: "",
+      hsnSaac: "",
+      listingRate: "",
+      edProwiseMargin: "",
+      qty: "",
+      finalRateBeforeDiscount: "",
+      discountPercentage: "",
+      finalRate: "",
+      taxableValue: "",
+      cgstRate: "",
+      cgstAmount: "",
+      sgstRate: "",
+      sgstAmount: "",
+      igstRate: "",
+      igstAmount: "",
+      amountBeforeGST: "",
+      discountAmount: "",
+      gstAmount: "",
+      totalAmount: "",
+      productImages: null,
+    }))
+  );
+
+  const navigate = useNavigate();
+
+  const [isPrepareQuoteTableVisible, setIsPrepareQuoteTableVisible] =
+    useState(false);
+
+  const handleExport = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDownloadPDF = (event, quote) => {
+    event.preventDefault();
+  };
+
+  const showSuccessMessage = (event) => {
+    event.preventDefault();
+  };
+
+  const showErrorMessage = (event) => {
+    event.preventDefault();
+  };
+
+  const handleChange = (index, e) => {
+    const { name, value, files } = e.target;
+    const updatedProducts = [...prepareProducts];
+    updatedProducts[index] = {
+      ...updatedProducts[index],
+      [name]: files ? files[0] : value,
+    };
+    setPrepareProducts(updatedProducts);
+  };
+
+  const handleImageChange = (index, event) => {
+    const file = event.target.files[0];
+    const updatedProducts = [...prepareProducts];
+    updatedProducts[index].productImages = file; // Store the image file
+    setPrepareProducts(updatedProducts);
+  };
+
+  const handleAddProduct = () => {
+    setPrepareProducts([
+      ...prepareProducts,
+      {
+        slNo: "",
+        description: "",
+        hsnSaac: "",
+        listingRate: "",
+        edProwiseMargin: "",
+        qty: "",
+        finalRateBeforeDiscount: "",
+        discountPercentage: "",
+        finalRate: "",
+        taxableValue: "",
+        cgstRate: "",
+        cgstAmount: "",
+        sgstRate: "",
+        sgstAmount: "",
+        igstRate: "",
+        igstAmount: "",
+        amountBeforeGST: "",
+        discountAmount: "",
+        gstAmount: "",
+        totalAmount: "",
+        productImages: null,
+      },
+    ]);
+  };
+
+  const handleRemoveProduct = (index) => {
+    const updatedProducts = prepareProducts.filter((_, i) => i !== index);
+    setPrepareProducts(updatedProducts);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Prepare Quote Data:", prepareProducts);
+    // toast.success("Quote prepared successfully!");
+    // onClose();
+  };
+
+  if (!requestedProducts) {
     return <div>No product details available.</div>;
   }
 
-  console.log("Product view", product);
+  console.log("Product view", requestedProducts);
 
   return (
     <div className="container">
@@ -25,101 +175,96 @@ const ViewRequestedQuote = () => {
                 </div>
               </div>
 
-              <div className="row">
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="productImage" className="form-label">
-                      Product Image
-                    </label>
-                    <div>
-                      <img
-                        src={product.imageUrl}
-                        alt="Product"
-                        className="img-fluid"
-                        style={{ maxHeight: "200px", objectFit: "cover" }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="enquiryNo" className="form-label">
-                      Enquiry Number
-                    </label>
-                    <p className="form-control">{product.enquiryNo}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="productName" className="form-label">
-                      Product Name
-                    </label>
-                    <p className="form-control">{product.subCategory}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="productDescription" className="form-label">
-                      Product Description
-                    </label>
-                    <p className="form-control">{product.productDescription}</p>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="mb-3">
-                    <label htmlFor="unit" className="form-label">
-                      Unit
-                    </label>
-                    <p className="form-control">{product.unit}</p>
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <div className="mb-3">
-                    <label htmlFor="qty" className="form-label">
-                      Quantity
-                    </label>
-                    <p className="form-control">{product.qty}</p>
-                  </div>
-                </div>
+              <div className="table-responsive">
+                <table className="table align-middle mb-0 table-hover table-centered table-nowrap">
+                  <thead className="bg-light-subtle">
+                    <tr>
+                      <th style={{ width: 20 }}>
+                        <div className="form-check ms-1">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customCheck1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customCheck1"
+                          />
+                        </div>
+                      </th>
+                      <th>Enquiry No.</th>
+                      <th>Product Required Image & Name</th>
+                      <th>Product Required (Category)</th>
+                      <th>Quantity</th>
+                      <th>Unit</th>
+                      <th>Product Description</th>
+                      <th>Quote Requested Date</th>
+                      <th>DeliveryExpectedDate</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {requestedProducts.map((product) => (
+                      <tr key={product.id}>
+                        <td>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id={`customCheck${product.id}`}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`customCheck${product.id}`}
+                            >
+                              &nbsp;
+                            </label>
+                          </div>
+                        </td>
+                        <td>{product.enquiryNo}</td>
+                        <td>
+                          <div className="d-flex align-items-center gap-2">
+                            <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                              <img
+                                src={product.imageUrl}
+                                alt={product.subCategory}
+                                className="avatar-md"
+                              />
+                            </div>
+                            <div>
+                              <Link className="text-dark fw-medium fs-15">
+                                {product.subCategory}
+                              </Link>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td>{product.category}</td>
+                        <td>{product.qty}</td>
+                        <td>{product.unit}</td>
+
+                        <td>{product.productDescription}</td>
+                        <td>{product.quoteRequestedDate}</td>
+                        <td>{product.deliveryExpectedDate}</td>
+                        <td>{product.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
-              <div className="row">
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="quoteRequestedDate" className="form-label">
-                      Quote Requested Date
-                    </label>
-                    <p className="form-control">{product.quoteRequestedDate}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="deliveryExpectedDate"
-                      className="form-label"
-                    >
-                      Delivery Expected Date
-                    </label>
-                    <p className="form-control">
-                      {product.deliveryExpectedDate}
-                    </p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="status" className="form-label">
-                      Status
-                    </label>
-                    <p className="form-control">{product.status}</p>
-                  </div>
-                </div>
-              </div>
+              {/* end table-responsive */}
 
-              <div className="text-end">
+              <div className="d-flex justify-content-between mt-2">
+                <button
+                  type="button"
+                  className="btn btn-primary custom-submit-button"
+                  onClick={() =>
+                    setIsPrepareQuoteTableVisible(!isPrepareQuoteTableVisible)
+                  }
+                >
+                  {isPrepareQuoteTableVisible ? "Hide Quote" : "Prepare Quote"}
+                </button>
                 <button
                   type="button"
                   className="btn btn-primary custom-submit-button"
@@ -132,6 +277,17 @@ const ViewRequestedQuote = () => {
           </div>
         </div>
       </div>
+
+      {isPrepareQuoteTableVisible && (
+        <PrepareQuoteTable
+          products={prepareProducts}
+          handleRemoveProduct={handleRemoveProduct}
+          handleAddProduct={handleAddProduct}
+          handleChange={handleChange}
+          handleImageChange={handleImageChange} // Pass the handleImageChange function
+          handleSubmit={handleSubmit}
+        />
+      )}
     </div>
   );
 };

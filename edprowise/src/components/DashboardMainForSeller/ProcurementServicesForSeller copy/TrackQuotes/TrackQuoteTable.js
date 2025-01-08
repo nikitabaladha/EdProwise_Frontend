@@ -21,7 +21,7 @@ const TrackQuoteTable = () => {
     },
     {
       id: 2,
-      enquiryNo: "ENQ1234567891",
+      enquiryNo: "ENQ1234567890",
       imageUrl: "assets/images/product/p-1.png",
       subCategory: "Table",
       category: "Office Table",
@@ -36,7 +36,7 @@ const TrackQuoteTable = () => {
     },
     {
       id: 3,
-      enquiryNo: "ENQ1234567892",
+      enquiryNo: "ENQ1234567890",
       imageUrl: "assets/images/product/p-1.png",
       subCategory: "Board",
       category: "Class Board",

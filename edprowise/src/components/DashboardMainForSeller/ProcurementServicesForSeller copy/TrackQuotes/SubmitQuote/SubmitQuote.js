@@ -199,6 +199,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import PrepareQuoteForm from "../PrepareQuoteForm/PrepareQuoteForm";
 
 const SubmitQuote = () => {
   const [formData, setFormData] = useState({
@@ -374,6 +375,7 @@ const SubmitQuote = () => {
                     type="submit"
                     className="btn btn-primary custom-submit-button"
                   >
+                    {/* when i click on this button i want to open a form with name "Prepare Quote below " */}
                     Submit Quote
                   </button>
                 </div>
