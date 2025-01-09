@@ -137,7 +137,7 @@ const TrackOrderHistoryTable = () => {
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered">
+                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -157,7 +157,7 @@ const TrackOrderHistoryTable = () => {
                         <th>Name of Supplier</th>
                         <th>Expected Delivery Date</th>
                         <th>Actual Delivery Date</th>
-                        <th>Final Payable Amount</th>
+                        <th>Invoice Amount</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -184,7 +184,7 @@ const TrackOrderHistoryTable = () => {
                           <td>{order.nameOfSupplier}</td>
                           <td>{order.expectedDeliveryDate}</td>
                           <td>{order.actualDeliveryDate}</td>
-                          <td>{order.finalPayableAmount}</td>
+                          <td>{order.invoiceAmount}</td>
                           <td>{order.status}</td>
                           <td>
                             <div className="d-flex gap-2">
@@ -199,7 +199,7 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <button
+                              {/* <button
                                 className="btn btn-success btn-sm"
                                 title="Pay"
                                 data-bs-toggle="popover"
@@ -207,7 +207,7 @@ const TrackOrderHistoryTable = () => {
                                 onClick={handleNavigation}
                               >
                                 Pay
-                              </button>
+                              </button> */}
                             </div>
                           </td>
                         </tr>

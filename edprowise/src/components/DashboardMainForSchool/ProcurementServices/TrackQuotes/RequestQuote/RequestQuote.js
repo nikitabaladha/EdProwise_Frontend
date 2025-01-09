@@ -191,67 +191,7 @@ const RequestQuote = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-md-12">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="deliveryAddress" className="form-label">
-                        Address for Delivery
-                      </label>
-                      <textarea
-                        className="form-control"
-                        id="deliveryAddress"
-                        name="deliveryAddress"
-                        rows={3}
-                        value={formData.deliveryAddress}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="deliveryLocation" className="form-label">
-                        City-State-Country
-                      </label>
-                      <select
-                        id="deliveryLocation"
-                        name="deliveryLocation"
-                        className="form-control"
-                        value={formData.deliveryLocation}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select City-State-Country</option>
-                        {cityOptions.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="pinCode" className="form-label">
-                        Pin Code
-                      </label>
-                      <input
-                        type="text"
-                        id="pinCode"
-                        name="pinCode"
-                        className="form-control"
-                        value={formData.pinCode}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
                   <div className="col-md-4">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="unit" className="form-label">
                         Unit
@@ -307,6 +247,65 @@ const RequestQuote = () => {
                         name="deliveryExpectedDate"
                         className="form-control"
                         value={formData.deliveryExpectedDate}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="deliveryAddress" className="form-label">
+                        Address for Delivery
+                      </label>
+                      <textarea
+                        className="form-control"
+                        id="deliveryAddress"
+                        name="deliveryAddress"
+                        rows={3}
+                        value={formData.deliveryAddress}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="deliveryLocation" className="form-label">
+                        City-State-Country
+                      </label>
+                      <select
+                        id="deliveryLocation"
+                        name="deliveryLocation"
+                        className="form-control"
+                        value={formData.deliveryLocation}
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="">Select City-State-Country</option>
+                        {cityOptions.map((option, index) => (
+                          <option key={index} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="pinCode" className="form-label">
+                        Pin Code
+                      </label>
+                      <input
+                        type="text"
+                        id="pinCode"
+                        name="pinCode"
+                        className="form-control"
+                        value={formData.pinCode}
                         onChange={handleChange}
                         required
                       />

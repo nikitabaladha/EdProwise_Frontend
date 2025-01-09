@@ -117,7 +117,7 @@ const ViewAllQuoteTable = () => {
     autoTable(doc, {
       head: [["Field", "Value"]],
       body: [
-        ["Supplier Name", quote.nameOfSupplier],
+        ["Name Of Supplier", quote.nameOfSupplier],
         ["Date of Quote Submitted", quote.dateOfQuoteSubmitted],
         ["Expected Delivery Date", quote.expectedDeliveryDate],
         ["Quoted Amount", quote.quotedAmount],
@@ -154,9 +154,9 @@ const ViewAllQuoteTable = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">View All Quote List</h4>
-                <Link className="btn btn-sm btn-primary">
-                  {/* Request Quote */}
-                </Link>
+                {/* <Link className="btn btn-sm btn-primary">
+                  Request Quote
+                </Link> */}
                 <div className="text-end">
                   <Link
                     onClick={handleExport}

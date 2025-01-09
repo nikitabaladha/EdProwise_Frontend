@@ -57,7 +57,6 @@ const PayToEdProwise = () => {
                       <th>Bank Name</th>
                       <th>IFSC Code</th>
                       <th>Type of Account</th>
-                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -83,16 +82,6 @@ const PayToEdProwise = () => {
                         <td>{bankDetail.bankName}</td>
                         <td>{bankDetail.ifscCode}</td>
                         <td>{bankDetail.typeOfAccount}</td>
-                        <td>
-                          <div className="d-flex gap-2">
-                            <button
-                              type="button"
-                              className="btn btn-primary custom-submit-button"
-                            >
-                              Pay
-                            </button>
-                          </div>
-                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -101,25 +90,14 @@ const PayToEdProwise = () => {
               {/* end table-responsive */}
             </div>
             <div className="card-footer border-top">
-              <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-end mb-0">
-                  <li className="page-item">
-                    <Link className="page-link">Previous</Link>
-                  </li>
-                  <li className="page-item active">
-                    <Link className="page-link">1</Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link">2</Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link">3</Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link">Next</Link>
-                  </li>
-                </ul>
-              </nav>
+              <div className="d-flex gap-2">
+                <button
+                  type="button"
+                  className="btn btn-primary custom-submit-button"
+                >
+                  Pay Online
+                </button>
+              </div>
             </div>
           </div>
           {/* end card */}

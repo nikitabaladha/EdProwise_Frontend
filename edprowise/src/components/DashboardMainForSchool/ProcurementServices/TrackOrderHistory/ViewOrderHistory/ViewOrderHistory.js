@@ -31,7 +31,7 @@ const ViewOrderHistory = () => {
               </div>
 
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label htmlFor="orderNumber" className="form-label">
                       Order Number
@@ -39,7 +39,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.orderNumber}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label htmlFor="nameOfSupplier" className="form-label">
                       Name Of Supplier
@@ -47,9 +47,6 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.nameOfSupplier}</p>
                   </div>
                 </div>
-              </div>
-
-              <div className="row">
                 <div className="col-md-4">
                   <div className="mb-3">
                     <label
@@ -59,6 +56,17 @@ const ViewOrderHistory = () => {
                       Order Date
                     </label>
                     <p className="form-control">{order.orderDate}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-4">
+                  <div className="mb-3">
+                    <label htmlFor="finalPayableAmount" className="form-label">
+                      Status
+                    </label>
+                    <p className="form-control">{order.status}</p>
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -120,7 +128,7 @@ const ViewOrderHistory = () => {
               </div>
 
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label
                       htmlFor="advancesRequiredAmount"
@@ -131,7 +139,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.advanceAdjustment}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label htmlFor="commentFromBuyer" className="form-label">
                       TDS/Any Other Deduction
@@ -139,10 +147,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.tdsDeduction}</p>
                   </div>
                 </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label htmlFor="finalPayableAmount" className="form-label">
                       Final Payable Amt
@@ -150,16 +155,7 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.finalPayableAmount}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="finalPayableAmount" className="form-label">
-                      Status
-                    </label>
-                    <p className="form-control">{order.status}</p>
-                  </div>
-                </div>
               </div>
-
               <div className="text-end">
                 <button
                   type="button"

@@ -53,7 +53,7 @@ import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementSe
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
-import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/PayToEdProwise/PayToEdProwise";
+import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
 
 // ================================================Seller Routes============================================
 import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
@@ -69,12 +69,10 @@ import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/Procu
 import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/PayToEdProwise/PayToEdProwise";
 
 import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
-import ViewSubmittedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/ViewSubmittedQuote/ViewSubmittedQuote";
 
-import PrepareQuoteForm from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/PrepareQuoteForm/PrepareQuoteForm";
 import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
+import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
 
-import ViewPreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/ViewPreparedQuote/ViewPreparedQuote";
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -282,23 +280,14 @@ const AppRoutes = () => {
           path="procurement-services/submitted-quote"
           element={<SubmittedQuoteTableForSeller />}
         />
-        <Route
+        {/* <Route
           path="procurement-services/view-submitted-quote"
           element={<ViewSubmittedQuote />}
-        />
+        /> */}
 
-        <Route
-          path="procurement-services/prepare-quote"
-          element={<PrepareQuoteForm />}
-        />
         <Route
           path="procurement-services/prepared-quote"
           element={<PreparedQuote />}
-        />
-
-        <Route
-          path="procurement-services/view-prepared-quote"
-          element={<ViewPreparedQuote />}
         />
       </Route>
 

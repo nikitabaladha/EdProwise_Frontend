@@ -211,8 +211,8 @@ const ViewRequestedQuote = () => {
                       <th>Unit</th>
                       <th>Status</th>
                       <th>Product Description</th>
-                      <th>QuoteRequested Date</th>
-                      <th>DeliveryExpectedDate</th>
+                      <th>Quote Requested Date</th>
+                      <th>Delivery Expected Date</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -321,14 +321,14 @@ const ViewRequestedQuote = () => {
                           </div>
                         </th>
                         <th>Name of Supplier</th>
-                        <th>Quoted Amount</th>
-                        <th>Expected Delivery Date</th>
-                        <th>Status</th>
                         <th>Date Of QuoteSubmitted</th>
+                        <th>Quoted Amount</th>
                         <th>Description</th>
                         <th>Remarks From Supplier</th>
+                        <th>Expected Delivery Date</th>
                         <th>Payment Terms</th>
                         <th>Advances Required Amount</th>
+                        <th>Status</th>
                         <th>Place Order Status</th>
                         <th>Comment From Buyer</th>
                         <th>Action</th>
@@ -353,14 +353,14 @@ const ViewRequestedQuote = () => {
                             </div>
                           </td>
                           <td>{quote.nameOfSupplier}</td>
-                          <td>{quote.quotedAmount}</td>
-                          <td>{quote.expectedDeliveryDate}</td>
-                          <td>{quote.status}</td>
                           <td>{quote.dateOfQuoteSubmitted}</td>
+                          <td>{quote.quotedAmount}</td>
                           <td>{quote.description}</td>
                           <td>{quote.remarksFromSupplier}</td>
+                          <td>{quote.expectedDeliveryDate}</td>
                           <td>{quote.paymentTerms}</td>
                           <td>{quote.advancesRequiredAmount}</td>
+                          <td>{quote.status}</td>
                           <td>{quote.placeOrderStatus}</td>
                           <td>{quote.commentFromBuyer}</td>
                           <td>

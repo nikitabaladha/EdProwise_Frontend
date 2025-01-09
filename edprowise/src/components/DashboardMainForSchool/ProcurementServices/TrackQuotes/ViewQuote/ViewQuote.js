@@ -25,7 +25,7 @@ const ViewQuote = () => {
     autoTable(doc, {
       head: [["Field", "Value"]],
       body: [
-        ["Supplier Name", quote.nameOfSupplier],
+        ["Name Of Supplier", quote.nameOfSupplier],
         ["Date of Quote Submitted", quote.dateOfQuoteSubmitted],
         ["Expected Delivery Date", quote.expectedDeliveryDate],
         ["Quoted Amount", quote.quotedAmount],
@@ -109,15 +109,15 @@ const ViewQuote = () => {
               </div>
 
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label htmlFor="supplierName" className="form-label">
-                      Supplier Name
+                      Name Of Supplier
                     </label>
                     <p className="form-control">{quote.nameOfSupplier}</p>
                   </div>
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label
                       htmlFor="dateOfQuoteSubmitted"
@@ -128,7 +128,19 @@ const ViewQuote = () => {
                     <p className="form-control">{quote.dateOfQuoteSubmitted}</p>
                   </div>
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-4">
+                  {" "}
+                  <div className="mb-3">
+                    <label htmlFor="quotedAmount" className="form-label">
+                      Quoted Amount
+                    </label>
+                    <p className="form-control">{quote.quotedAmount}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-4">
                   <div className="mb-3">
                     <label
                       htmlFor="expectedDeliveryDate"
@@ -139,19 +151,15 @@ const ViewQuote = () => {
                     <p className="form-control">{quote.expectedDeliveryDate}</p>
                   </div>
                 </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-6">
-                  {" "}
+                <div className="col-md-4">
                   <div className="mb-3">
-                    <label htmlFor="quotedAmount" className="form-label">
-                      Quoted Amount
+                    <label htmlFor="paymentTerms" className="form-label">
+                      Payment Terms
                     </label>
-                    <p className="form-control">{quote.quotedAmount}</p>
+                    <p className="form-control">{quote.paymentTerms}</p>
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
                   {" "}
                   <div className="mb-3">
                     <label
@@ -198,14 +206,6 @@ const ViewQuote = () => {
                 </div>
               </div>
               <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="paymentTerms" className="form-label">
-                      Payment Terms
-                    </label>
-                    <p className="form-control">{quote.paymentTerms}</p>
-                  </div>
-                </div>
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="placeOrder" className="form-label">

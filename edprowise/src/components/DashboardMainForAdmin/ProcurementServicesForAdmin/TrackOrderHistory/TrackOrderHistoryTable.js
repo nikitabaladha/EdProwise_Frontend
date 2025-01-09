@@ -152,9 +152,9 @@ const TrackOrderHistoryTable = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">View All Orders List</h4>
-                <Link className="btn btn-sm btn-primary" to="/request-order">
-                  {/* Request Order */}
-                </Link>
+                {/* <Link className="btn btn-sm btn-primary" to="/request-order">
+                  Request Order
+                </Link> */}
                 <div className="text-end">
                   <Link
                     onClick={handleExport}
@@ -189,7 +189,7 @@ const TrackOrderHistoryTable = () => {
                         <th>Name of Supplier</th>
                         <th>Expected Delivery Date</th>
                         <th>Actual Delivery Date</th>
-                        <th>Final Payable Amount</th>
+                        <th>Invoice Amount</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -216,7 +216,7 @@ const TrackOrderHistoryTable = () => {
                           <td>{order.nameOfSupplier}</td>
                           <td>{order.expectedDeliveryDate}</td>
                           <td>{order.actualDeliveryDate}</td>
-                          <td>{order.finalPayableAmount}</td>
+                          <td>{order.invoiceAmount}</td>
                           <td>{order.status}</td>
                           <td>
                             <div className="d-flex gap-2">
@@ -234,14 +234,14 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
+                              {/* <Link
                                 className="btn btn-success btn-sm"
                                 title="Pay"
                                 data-bs-toggle="popover"
                                 data-bs-trigger="hover"
                               >
                                 Pay
-                              </Link>
+                              </Link> */}
                             </div>
                           </td>
                         </tr>

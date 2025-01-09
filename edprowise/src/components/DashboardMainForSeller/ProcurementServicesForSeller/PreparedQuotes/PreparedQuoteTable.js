@@ -126,7 +126,7 @@ const PreparedQuoteTable = () => {
             </div>
             <div>
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered">
+                <table className="table align-middle mb-0 table-hover table-centered table-nowrap">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th style={{ width: 20 }}>
@@ -150,7 +150,7 @@ const PreparedQuoteTable = () => {
                       <th>Quantity</th>
                       <th>Final Rate Before Discount</th>
                       <th>Discount Percentage</th>
-                      {/* <th>Final Rate</th>
+                      <th>Final Rate</th>
                       <th>Taxable Value</th>
                       <th>CGST Rate</th>
                       <th>CGST Amount</th>
@@ -161,8 +161,7 @@ const PreparedQuoteTable = () => {
                       <th>Amount Before GST and Discount</th>
                       <th>Discount Amount</th>
                       <th>GST Amount</th>
-                      <th>Total Amount</th> */}
-                      <th>Action</th>
+                      <th>Total Amount</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -191,7 +190,7 @@ const PreparedQuoteTable = () => {
                         <td>{product.qty}</td>
                         <td>{product.finalRateBeforeDiscount}</td>
                         <td>{product.discountPercentage}</td>
-                        {/* <td>{product.finalRate}</td>
+                        <td>{product.finalRate}</td>
                         <td>{product.taxableValue}</td>
                         <td>{product.cgstRate}</td>
                         <td>{product.cgstAmount}</td>
@@ -202,48 +201,12 @@ const PreparedQuoteTable = () => {
                         <td>{product.amountBeforeGSTAndDiscount}</td>
                         <td>{product.discountAmount}</td>
                         <td>{product.gstAmount}</td>
-                        <td>{product.totalAmount}</td> */}
-                        <td>
-                          <div className="d-flex gap-2">
-                            <Link
-                              className="btn btn-light btn-sm"
-                              onClick={(event) =>
-                                navigateToViewRequestedQuote(event, product)
-                              }
-                            >
-                              <iconify-icon
-                                icon="solar:eye-broken"
-                                className="align-middle fs-18"
-                              />
-                            </Link>
-                          </div>
-                        </td>
+                        <td>{product.totalAmount}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
-            <div className="card-footer border-top">
-              <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-end mb-0">
-                  <li className="page-item">
-                    <Link className="page-link">Previous</Link>
-                  </li>
-                  <li className="page-item active">
-                    <Link className="page-link">1</Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link">2</Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link">3</Link>
-                  </li>
-                  <li className="page-item">
-                    <Link className="page-link">Next</Link>
-                  </li>
-                </ul>
-              </nav>
             </div>
           </div>
         </div>

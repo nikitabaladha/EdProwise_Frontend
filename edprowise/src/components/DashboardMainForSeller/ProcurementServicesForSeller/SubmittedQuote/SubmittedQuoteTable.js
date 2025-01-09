@@ -11,24 +11,7 @@ const SubmittedQuoteTable = () => {
       id: 1,
       dateOfQuoteSubmitted: "2023-12-01",
       quotedAmount: "1000",
-      remarksFromSupplier: "XYZ",
-      expectedDeliveryDateMentionedBySeller: "2023-12-01",
-      paymentTerms: "XYZ",
-      advancesRequiredAmount: "500",
-    },
-    {
-      id: 2,
-      dateOfQuoteSubmitted: "2023-12-01",
-      quotedAmount: "1000",
-      remarksFromSupplier: "XYZ",
-      expectedDeliveryDateMentionedBySeller: "2023-12-01",
-      paymentTerms: "XYZ",
-      advancesRequiredAmount: "500",
-    },
-    {
-      id: 3,
-      dateOfQuoteSubmitted: "2023-12-01",
-      quotedAmount: "1000",
+      description: "XYZ",
       remarksFromSupplier: "XYZ",
       expectedDeliveryDateMentionedBySeller: "2023-12-01",
       paymentTerms: "XYZ",
@@ -66,6 +49,7 @@ const SubmittedQuoteTable = () => {
       ExpectedDeliveryDate: product.expectedDeliveryDateMentionedBySeller,
       PaymentTerms: product.paymentTerms,
       AdvancesRequiredAmount: product.advancesRequiredAmount,
+      description: product.description,
     }));
 
     exportToExcel(filteredData, "Products", "Products Data");
@@ -97,7 +81,7 @@ const SubmittedQuoteTable = () => {
             </div>
             <div>
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered">
+                <table className="table align-middle mb-0 table-hover table-centered table-nowrap">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th style={{ width: 20 }}>
@@ -115,11 +99,12 @@ const SubmittedQuoteTable = () => {
                       </th>
                       <th>Date of Quote Submitted</th>
                       <th>Quoted Amount</th>
+                      <th>Description</th>
                       <th>Remarks from Supplier</th>
                       <th>Expected Delivery Date</th>
                       <th>Payment Terms</th>
                       <th>Advances Required Amount</th>
-                      <th>Action</th>
+                      {/* <th>Action</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -142,11 +127,12 @@ const SubmittedQuoteTable = () => {
                         </td>
                         <td>{product.dateOfQuoteSubmitted}</td>
                         <td>{product.quotedAmount}</td>
+                        <td>{product.description}</td>
                         <td>{product.remarksFromSupplier}</td>
                         <td>{product.expectedDeliveryDateMentionedBySeller}</td>
                         <td>{product.paymentTerms}</td>
                         <td>{product.advancesRequiredAmount}</td>
-                        <td>
+                        {/* <td>
                           <div className="d-flex gap-2">
                             <Link
                               className="btn btn-light btn-sm"
@@ -160,7 +146,7 @@ const SubmittedQuoteTable = () => {
                               />
                             </Link>
 
-                            {/* <Link
+                            <Link
                               className="btn btn-soft-primary btn-sm"
                               onClick={(event) =>
                                 navigateToUpdateSubmittedQuote(event, product)
@@ -170,22 +156,22 @@ const SubmittedQuoteTable = () => {
                                 icon="solar:pen-2-broken"
                                 className="align-middle fs-18"
                               />
-                            </Link> */}
-                            {/* <Link className="btn btn-soft-danger btn-sm">
+                            </Link>
+                            <Link className="btn btn-soft-danger btn-sm">
                               <iconify-icon
                                 icon="solar:trash-bin-minimalistic-2-broken"
                                 className="align-middle fs-18"
                               />
-                            </Link> */}
+                            </Link>
                           </div>
-                        </td>
+                        </td> */}
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-            <div className="card-footer border-top">
+            {/* <div className="card-footer border-top">
               <nav aria-label="Page navigation example">
                 <ul className="pagination justify-content-end mb-0">
                   <li className="page-item">
@@ -205,7 +191,7 @@ const SubmittedQuoteTable = () => {
                   </li>
                 </ul>
               </nav>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
