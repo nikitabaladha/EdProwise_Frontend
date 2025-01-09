@@ -97,6 +97,22 @@ const SubmitQuote = () => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">
+                      <label htmlFor="description" className="form-label">
+                        Description
+                      </label>
+                      <textarea
+                        id="description"
+                        name="description"
+                        className="form-control"
+                        rows={2}
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
                       <label
                         htmlFor="remarksFromSupplier"
                         className="form-label"
@@ -109,22 +125,6 @@ const SubmitQuote = () => {
                         className="form-control"
                         rows={2}
                         value={formData.remarksFromSupplier}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="description" className="form-label">
-                        Description
-                      </label>
-                      <textarea
-                        id="description"
-                        name="description"
-                        className="form-control"
-                        rows={2}
-                        value={formData.description}
                         onChange={handleChange}
                         required
                       />

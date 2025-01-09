@@ -33,6 +33,14 @@ const PayToEdProwise = () => {
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center gap-1">
               <h4 className="card-title flex-grow-1">EdProwise Bank List</h4>
+              <div className="d-flex gap-2">
+                <button
+                  type="button"
+                  className="btn btn-primary custom-submit-button"
+                >
+                  Pay Online
+                </button>
+              </div>
             </div>
             <div>
               <div className="table-responsive">
@@ -52,7 +60,7 @@ const PayToEdProwise = () => {
                           />
                         </div>
                       </th>
-                      <th>#</th>
+                      <th>Sr No</th>
                       <th>Account Number</th>
                       <th>Bank Name</th>
                       <th>IFSC Code</th>
@@ -88,16 +96,6 @@ const PayToEdProwise = () => {
                 </table>
               </div>
               {/* end table-responsive */}
-            </div>
-            <div className="card-footer border-top">
-              <div className="d-flex gap-2">
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                >
-                  Pay Online
-                </button>
-              </div>
             </div>
           </div>
           {/* end card */}

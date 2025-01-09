@@ -447,6 +447,11 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             link: "/seller-dashboard/procurement-services/track-order-history",
             icon: "solar:users-group-rounded-bold-duotone",
           },
+          {
+            label: "Pay To EdProwise",
+            link: "/seller-dashboard/procurement-services/pay-to-edprowise",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
         ],
       },
     ],

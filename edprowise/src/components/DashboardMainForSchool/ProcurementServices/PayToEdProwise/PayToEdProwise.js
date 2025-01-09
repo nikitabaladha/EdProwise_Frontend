@@ -60,7 +60,7 @@ const PayToEdProwise = () => {
                           />
                         </div>
                       </th>
-                      <th>#</th>
+                      <th>Sr No</th>
                       <th>Account Number</th>
                       <th>Bank Name</th>
                       <th>IFSC Code</th>

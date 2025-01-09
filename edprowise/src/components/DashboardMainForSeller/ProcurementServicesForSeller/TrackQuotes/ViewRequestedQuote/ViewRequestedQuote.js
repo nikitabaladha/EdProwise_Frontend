@@ -189,12 +189,13 @@ const ViewRequestedQuote = () => {
                         </div>
                       </th>
                       <th>Enquiry No.</th>
+
                       <th>Product Required Image & Name</th>
                       <th>Product Required (Category)</th>
+                      <th>Quote Requested Date</th>
+                      <th>Product Description</th>
                       <th>Quantity</th>
                       <th>Unit</th>
-                      <th>Product Description</th>
-                      <th>Quote Requested Date</th>
                       <th>DeliveryExpectedDate</th>
                       <th>Status</th>
                     </tr>
@@ -236,10 +237,10 @@ const ViewRequestedQuote = () => {
                         </td>
 
                         <td>{product.category}</td>
+                        <td>{product.quoteRequestedDate}</td>
+                        <td>{product.productDescription}</td>
                         <td>{product.qty}</td>
                         <td>{product.unit}</td>
-                        <td>{product.productDescription}</td>
-                        <td>{product.quoteRequestedDate}</td>
                         <td>{product.deliveryExpectedDate}</td>
                         <td>{product.status}</td>
                       </tr>

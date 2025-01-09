@@ -66,7 +66,7 @@ import SubmitQuote from "./components/DashboardMainForSeller/ProcurementServices
 
 import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
-import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/PayToEdProwise/PayToEdProwise";
+import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
 
 import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
 

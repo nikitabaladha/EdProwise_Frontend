@@ -34,12 +34,12 @@ const PrepareQuoteTable = ({
                 <thead className="bg-light-subtle">
                   <tr>
                     <th>Action</th>
-                    <th>S.L. No.</th>
+                    <th>Sr No.</th>
                     <th>Description</th>
                     <th>HSN/SAAC</th>
                     <th>Listing Rate</th>
                     <th>EdProwise Margin%</th>
-                    <th>Qty</th>
+                    <th>Quantity</th>
                     <th>Final Rate Before Discount</th>
                     <th>Discount %</th>
                     <th>Final Rate</th>

@@ -142,7 +142,7 @@ const PreparedQuoteTable = () => {
                           />
                         </div>
                       </th>
-                      <th>Sl No</th>
+                      <th>Sr No</th>
                       <th>Description</th>
                       <th>HSN/SAAC</th>
                       <th>Listing Rate</th>

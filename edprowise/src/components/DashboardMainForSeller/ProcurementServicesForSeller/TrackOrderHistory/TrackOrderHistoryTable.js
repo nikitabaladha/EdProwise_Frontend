@@ -202,13 +202,13 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <button
+                              {/* <button
                                 type="button"
                                 className="btn btn-primary custom-submit-button"
                                 onClick={handleNavigation}
                               >
                                 Pay To EdProwise
-                              </button>
+                              </button> */}
                             </div>
                           </td>
                         </tr>
