@@ -432,16 +432,16 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             link: "/seller-dashboard/procurement-services/track-quote",
             icon: "solar:users-group-rounded-bold-duotone",
           },
-          {
-            label: "Submitted Quote",
-            link: "/seller-dashboard/procurement-services/submitted-quote",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
-          {
-            label: "View Prepared Quote",
-            link: "/seller-dashboard/procurement-services/prepared-quote",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
+          // {
+          //   label: "Submitted Quote",
+          //   link: "/seller-dashboard/procurement-services/submitted-quote",
+          //   icon: "solar:users-group-rounded-bold-duotone",
+          // },
+          // {
+          //   label: "View Prepared Quote",
+          //   link: "/seller-dashboard/procurement-services/prepared-quote",
+          //   icon: "solar:users-group-rounded-bold-duotone",
+          // },
           {
             label: "Track Order & Order History",
             link: "/seller-dashboard/procurement-services/track-order-history",
@@ -450,6 +450,11 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
           {
             label: "Pay To EdProwise",
             link: "/seller-dashboard/procurement-services/pay-to-edprowise",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Test",
+            link: "/seller-dashboard/procurement-services/test",
             icon: "solar:users-group-rounded-bold-duotone",
           },
         ],

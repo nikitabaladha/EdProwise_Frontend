@@ -71,7 +71,9 @@ import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/Procure
 import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
 
 import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
-import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
+
+import Test from "./components/DashboardMainForSeller/ProcurementServicesForSeller/Test/Test";
+// import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -289,6 +291,7 @@ const AppRoutes = () => {
           path="procurement-services/prepared-quote"
           element={<PreparedQuote />}
         />
+        <Route path="procurement-services/test" element={<Test />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/school-dashboard" replace />} />
