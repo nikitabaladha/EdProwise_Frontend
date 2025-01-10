@@ -152,7 +152,8 @@ const TrackOrderHistoryTable = () => {
                         {/* <th>Total Invoice Amount</th> */}
                         {/* <th>Advance Adjustment</th> */}
                         {/* <th>Other Charges</th> */}
-                        <th>Final Receivable from EdProwise</th>
+                        <th>Invoice Amount</th>
+                        <th>Tax Invoice</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -188,7 +189,16 @@ const TrackOrderHistoryTable = () => {
                           {/* <td>{order.totalInvoiceAmount}</td> */}
                           {/* <td>{order.advanceAdjustment}</td> */}
                           {/* <td>{order.otherCharges}</td> */}
-                          <td>{order.finalReceivableFromEdProwise}</td>
+                          <td>{order.invoiceAmountToBuyer}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-primary custom-submit-button"
+                              // onClick={handleNavigation}
+                            >
+                              Prepare Invoice
+                            </button>{" "}
+                          </td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link

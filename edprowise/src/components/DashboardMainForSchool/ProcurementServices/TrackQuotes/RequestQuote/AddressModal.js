@@ -32,7 +32,7 @@ const AddressModal = ({ onClose }) => {
 
   const handleSave = () => {
     setIsEditing(false);
-    onClose(); // Close modal after saving
+    onClose();
   };
 
   return (

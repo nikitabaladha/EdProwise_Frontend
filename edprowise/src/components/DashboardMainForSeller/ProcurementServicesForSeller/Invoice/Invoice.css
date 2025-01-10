@@ -1,0 +1,17 @@
+/* Add borders between sections and rows */
+/* .border-end {
+  border-right: 500px solid red;
+}
+
+.border-bottom {
+  border-bottom: 2px solid red;
+} */
+
+.row {
+  margin: 0;
+}
+
+.border-end {
+  height: 100%;
+  border-right: 2px solid black;
+}

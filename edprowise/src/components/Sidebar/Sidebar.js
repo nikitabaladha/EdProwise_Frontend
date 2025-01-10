@@ -453,8 +453,13 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             icon: "solar:users-group-rounded-bold-duotone",
           },
           {
-            label: "Test",
-            link: "/seller-dashboard/procurement-services/test",
+            label: "Invoice",
+            link: "/seller-dashboard/procurement-services/invoice",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Prepare Invoice",
+            link: "/seller-dashboard/procurement-services/prepare-invoice",
             icon: "solar:users-group-rounded-bold-duotone",
           },
         ],
