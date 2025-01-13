@@ -453,13 +453,23 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             icon: "solar:users-group-rounded-bold-duotone",
           },
           {
-            label: "Invoice",
-            link: "/seller-dashboard/procurement-services/invoice",
+            label: "Invoice For EdProwise",
+            link: "/seller-dashboard/procurement-services/invoice-for-edprowise",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Invoice For Buyer",
+            link: "/seller-dashboard/procurement-services/invoice-for-buyer",
             icon: "solar:users-group-rounded-bold-duotone",
           },
           {
             label: "Prepare Invoice",
             link: "/seller-dashboard/procurement-services/prepare-invoice",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Quote/Proposal",
+            link: "/seller-dashboard/procurement-services/quote-proposal",
             icon: "solar:users-group-rounded-bold-duotone",
           },
         ],

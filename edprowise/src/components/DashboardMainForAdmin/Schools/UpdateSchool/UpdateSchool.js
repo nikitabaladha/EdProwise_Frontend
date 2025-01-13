@@ -65,6 +65,7 @@ const UpdateSchool = ({ updateSchool }) => {
     e.preventDefault();
 
     const formDataToSend = new FormData();
+
     for (const key in formData) {
       if (formData[key] instanceof File) {
         formDataToSend.append(key, formData[key]);

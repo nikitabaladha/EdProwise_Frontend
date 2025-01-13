@@ -2,9 +2,8 @@ import React, { useRef } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { useState } from "react";
-import "./Invoice.css";
 
-const Invoice = () => {
+const InvoiceForBuyer = () => {
   const [products] = useState([
     {
       id: 1,
@@ -101,107 +100,435 @@ const Invoice = () => {
             width: "100%",
           }}
         >
-          <div
-            className="row"
+          <table
             style={{
+              width: "100%",
               marginBottom: "20px",
+              borderCollapse: "collapse",
             }}
           >
-            <div className="col-md-9">
-              <div
-                style={{
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                }}
-              >
-                Tax Invoice
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div
-                style={{
-                  textAlign: "end",
-                  // marginBottom: "20px",
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                }}
-              >
-                (Original for Recepient)
-              </div>
-            </div>
-          </div>
+            <tbody>
+              <tr>
+                {/* Tax Invoice Column */}
+                <td
+                  style={{
+                    width: "60%",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                    border: "none",
+                  }}
+                >
+                  Tax Invoice
+                </td>
 
-          <div className="row p-1 border">
-            {/* Left Section */}
-            <div className="col-md-8 border-end ">
-              <div className="row g-0">
-                <div className="col-md-12">
-                  <strong>Supplier</strong>
-                </div>
-                <div className="col-md-12">Name:</div>
-                <div className="col-md-12">Address:</div>
-                <div className="col-md-6">City:</div>
-                <div className="col-md-6">State:</div>
-              </div>
-            </div>
-
-            {/* Right Section */}
-            <div className="col-md-4">
-              <div className="row g-0">
-                <div className="col-md-12">GSTIN :</div>
-                <div className="col-md-12">PAN :</div>
-                <div className="col-md-12">Contact No :</div>
-                <div className="col-md-12">Email ID :</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="row p-1 border">
-            {/* Left Section */}
-            <div className="col-md-8 border-end">
-              <div className="row g-0 pb-1">
-                <div className="col-md-12">
-                  <strong>Consignee</strong>
-                </div>
-                <div className="col-md-12">Name: EdProwise Tech Pvt. Ltd</div>
-                <div className="col-md-12">Address :</div>
-                <div className="col-md-6">City :</div>
-                <div className="col-md-6">State :</div>
-                <div className="col-md-6">Contact No. :</div>
-                <div className="col-md-6">Email ID :</div>
-              </div>
-              <div className="row g-0">
-                <div className="col-md-12">
-                  <strong>Buyer:</strong>
-                </div>
-                <div className="col-md-12">Name : EdProwise Tech Pvt. Ltd</div>
-                <div className="col-md-12">Address :</div>
-                <div className="col-md-6">City :</div>
-                <div className="col-md-6">State :</div>
-              </div>
-            </div>
-
-            {/* Right Section */}
-            <div className="col-md-4">
-              <div className="row g-0">
-                <div className="col-md-12">Invoice No. :</div>
-                <div className="col-md-12">Invoice Date :</div>
-                <div className="col-md-12">Payment Terms :</div>
-                <div className="col-md-12">Advance Amount Received :</div>
-                <div className="col-md-6">GSTIN :</div>
-                <div className="col-md-6">Buyer GSTIN :</div>
-                <div className="col-md-6">PAN :</div>
-                <div className="col-md-6">Buyer PAN :</div>
-                <div className="col-md-12">All Amount are in INR :</div>
-              </div>
-            </div>
-          </div>
-
+                {/* (Original for Recipient) Column */}
+                <td
+                  style={{
+                    width: "40%",
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                    border: "none",
+                  }}
+                >
+                  (Original for Recipient)
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <table
             style={{
               width: "100%",
               borderCollapse: "collapse",
+              marginBottom: "20px",
+              margin: "0",
+              padding: "0",
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    borderLeft: "none",
+                    borderTop: "1px solid #ddd",
+                    borderRight: "1px solid #ddd",
+                    borderBottom: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "60%",
+                  }}
+                  colSpan="2"
+                >
+                  <strong>Supplier</strong>
+                </th>
+                <th
+                  style={{
+                    borderTop: "1px solid #ddd",
+                    borderBottom: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "40%",
+                    fontWeight: "normal",
+                  }}
+                >
+                  GSTIN
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td
+                  style={{
+                    borderTop: "none",
+                    borderBottom: "none",
+
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                  colSpan="2"
+                >
+                  EdProwise Tech Pvt. Ltd
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    borderLeft: "1px solid #ddd",
+                    borderTop: "none",
+                    borderBottom: "none",
+                  }}
+                >
+                  PAN:
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    border: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                  colSpan="2"
+                >
+                  Chawri Bazaar, New Delhi
+                </td>
+
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    borderLeft: "1px solid #ddd",
+                    borderTop: "none",
+                    borderBottom: "none",
+                  }}
+                >
+                  Contact No.:
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
+                    borderRight: "1px solid #ddd",
+                  }}
+                  colSpan="2"
+                >
+                  Delhi, 110006, India
+                </td>
+
+                <td
+                  style={{
+                    borderRight: "none",
+                    borderTop: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                    borderBottom: " 1px solid #ddd",
+                  }}
+                >
+                  Email ID:
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              marginBottom: "20px",
+              margin: "0",
+              padding: "0",
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    borderLeft: "none",
+                    borderTop: "1px solid #ddd",
+                    borderRight: "1px solid #ddd",
+                    borderBottom: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "60%",
+                  }}
+                  colSpan="2"
+                >
+                  <strong>Consignee</strong>
+                </th>
+                <th
+                  style={{
+                    borderBottom: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                    fontWeight: "normal",
+                  }}
+                >
+                  Invoice No.
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td
+                  style={{
+                    borderTop: "none",
+                    borderBottom: "none",
+
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                  colSpan="2"
+                >
+                  Name: EdProwise Tech Pvt. Ltd
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    borderLeft: "1px solid #ddd",
+                    borderTop: "none",
+                    borderBottom: "none",
+                  }}
+                >
+                  Invoice Date :
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                  colSpan="2"
+                >
+                  Address:
+                </td>
+
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    borderLeft: "1px solid #ddd",
+                    borderTop: "none",
+                    borderBottom: "none",
+                  }}
+                >
+                  Payment Terms :
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
+                    border: "none",
+                  }}
+                >
+                  City:
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    borderBottom: "none",
+                    borderTop: "none",
+                    borderLeft: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                >
+                  State:
+                </td>
+                <td
+                  style={{
+                    borderRight: "none",
+                    borderTop: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                >
+                  Advance Amount Received :
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    border: "none",
+                  }}
+                >
+                  Contact No:
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    borderBottom: "none",
+                    borderTop: "none",
+                    borderLeft: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                >
+                  Email ID:
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    border: "none",
+                    width: "20%",
+                  }}
+                >
+                  GSTIN :
+                </td>
+                <td
+                  style={{
+                    border: "none",
+                    padding: "8px",
+                    width: "20%",
+                  }}
+                >
+                  Buyer GSTIN
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              marginBottom: "20px",
+              margin: "0",
+              padding: "0",
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    borderLeft: "none",
+                    borderTop: "none",
+                    borderRight: "1px solid #ddd",
+                    borderBottom: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "60%",
+                  }}
+                  colSpan="2"
+                >
+                  Buyer:
+                </th>
+                <td
+                  style={{
+                    padding: "8px",
+                    width: "20%",
+                  }}
+                >
+                  PAN
+                </td>
+                <td
+                  style={{
+                    border: "none",
+                    padding: "8px",
+                    width: "20%",
+                  }}
+                >
+                  Buyer PAN
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td
+                  style={{
+                    borderTop: "none",
+                    borderBottom: "none",
+
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                  colSpan="2"
+                >
+                  Name: EdProwise Tech Pvt. Ltd
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    borderLeft: "1px solid #ddd",
+                    borderTop: "none",
+                    borderBottom: "none",
+                  }}
+                >
+                  All Amount are in INR :
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    borderRight: "1px solid #ddd",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                  colSpan="2"
+                >
+                  Address:
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
+                    border: "none",
+                  }}
+                >
+                  City:
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    borderBottom: "none",
+                    borderTop: "none",
+                    borderLeft: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                >
+                  State:
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              textAlign: "center",
             }}
           >
             <thead>
@@ -339,13 +666,74 @@ const Invoice = () => {
                   </td>
                 </tr>
               ))}
+              <tr>
+                <td
+                  style={{
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                ></td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Total
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {/* Calculate total taxable value */}
+                  {products.reduce((sum, item) => sum + item.taxableValue, 0)}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {products.reduce((sum, item) => sum + item.gstAmount, 0)}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {products.reduce((sum, item) => sum + item.totalAmount, 0)}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {products.reduce((sum, item) => sum + item.totalAmount, 0)}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {products.reduce((sum, item) => sum + item.totalAmount, 0)}
+                </td>
+              </tr>
             </tbody>
           </table>
-
           <table
             style={{
-              border: "1px solid #ddd",
+              borderBottom: "none",
               width: "100%",
+              textAlign: "left",
             }}
           >
             <div className="row pt-2">
@@ -359,13 +747,14 @@ const Invoice = () => {
               width: "100%",
               borderCollapse: "collapse",
               marginBottom: "20px",
+              textAlign: "center",
             }}
           >
             <thead>
               <tr>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "none",
                     padding: "8px",
                   }}
                   colspan="2"
@@ -406,7 +795,7 @@ const Invoice = () => {
                 <th
                   style={{
                     width: "5%",
-                    border: "1px solid #ddd",
+                    border: "none",
                     padding: "8px",
                   }}
                 ></th>
@@ -577,7 +966,6 @@ const Invoice = () => {
                   style={{
                     border: "1px solid #ddd",
                     padding: "8px",
-                    textAlign: "left",
                   }}
                 >
                   <strong>Total</strong>
@@ -645,11 +1033,11 @@ const Invoice = () => {
           <table
             style={{
               width: "100%",
-              marginBottom: "20px",
+              marginBottom: "60px",
             }}
           >
-            <div style={{ height: "100px" }} className="row p-2">
-              <div style={{ marginBottom: "20px" }}>
+            <div style={{ height: "100px" }} className="row">
+              <div style={{ marginBottom: "80px" }}>
                 <p className="text-end">
                   <strong>For EdProwise Tech Pvt. Ltd</strong>
                 </p>
@@ -677,4 +1065,4 @@ const Invoice = () => {
   );
 };
 
-export default Invoice;
+export default InvoiceForBuyer;

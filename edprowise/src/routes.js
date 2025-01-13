@@ -73,8 +73,10 @@ import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/Pr
 import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
 
 // import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
-import Invoice from "./components/DashboardMainForSeller/ProcurementServicesForSeller/Invoice/Invoice";
+import InvoiceForEdProwise from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForEdProwise/InvoiceForEdProwise";
+import InvoiceForBuyer from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForBuyer/InvoiceForBuyer";
 import PrepareInvoice from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PrepareInvoice/PrepareInvoice";
+import QuoteProposal from "./components/DashboardMainForSeller/ProcurementServicesForSeller/QuoteProposal/QuoteProposal";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -292,7 +294,19 @@ const AppRoutes = () => {
           path="procurement-services/prepared-quote"
           element={<PreparedQuote />}
         />
-        <Route path="procurement-services/invoice" element={<Invoice />} />
+        <Route
+          path="procurement-services/invoice-for-edprowise"
+          element={<InvoiceForEdProwise />}
+        />
+
+        <Route
+          path="procurement-services/invoice-for-buyer"
+          element={<InvoiceForBuyer />}
+        />
+        <Route
+          path="procurement-services/quote-proposal"
+          element={<QuoteProposal />}
+        />
         <Route
           path="procurement-services/prepare-invoice"
           element={<PrepareInvoice />}
