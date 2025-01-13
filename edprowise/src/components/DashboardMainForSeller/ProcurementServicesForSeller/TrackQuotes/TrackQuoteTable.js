@@ -104,7 +104,7 @@ const TrackQuoteTable = () => {
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap">
+                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -150,7 +150,7 @@ const TrackQuoteTable = () => {
                           <td>{product.enquiryNo}</td>
                           <td>
                             <div className="d-flex align-items-center gap-2">
-                              <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                              <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-start">
                                 <img
                                   src={product.imageUrl}
                                   alt={product.subCategory}

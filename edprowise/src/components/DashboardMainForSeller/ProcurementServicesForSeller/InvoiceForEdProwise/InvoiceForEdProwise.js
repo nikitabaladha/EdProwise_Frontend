@@ -747,7 +747,7 @@ const InvoiceForEdProwise = () => {
               textAlign: "left",
             }}
           >
-            <div className="row pt-2">
+            <div className="row p-2">
               <p>
                 <strong>Amount In Words :</strong>
               </p>
@@ -1047,7 +1047,7 @@ const InvoiceForEdProwise = () => {
               marginBottom: "60px",
             }}
           >
-            <div style={{ height: "100px" }} className="row">
+            <div style={{ height: "100px" }} className="row p-2">
               <div style={{ marginBottom: "80px" }}>
                 <p className="text-end">
                   <strong>For EdProwise Tech Pvt. Ltd</strong>

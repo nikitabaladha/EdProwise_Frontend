@@ -93,7 +93,7 @@ const BankDetailsTable = () => {
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered">
+                  <table className="table align-middle mb-0 table-hover table-centered tax-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
