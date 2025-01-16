@@ -93,7 +93,7 @@ const BankDetailsTable = () => {
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered tax-center">
+                  <table className="table align-middle mb-0 table-hover table-centered text-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -113,7 +113,7 @@ const BankDetailsTable = () => {
                         <th>Bank Name</th>
                         <th>IFSC Code</th>
                         <th>Type of Account</th>
-                        <th>Action</th>
+                        <th className="text-start">Action</th>
                       </tr>
                     </thead>
                     <tbody>

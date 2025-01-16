@@ -124,7 +124,7 @@ const SchoolsTable = ({
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered tax-center">
+                  <table className="table align-middle mb-0 table-hover table-centered text-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -141,7 +141,7 @@ const SchoolsTable = ({
                           </div>
                         </th>
                         <th>School Id</th>
-                        <th>School Name</th>
+                        <th className="text-start">School Name</th>
                         <th>School Mobile No</th>
                         <th>School Email</th>
                         <th>School PAN</th>

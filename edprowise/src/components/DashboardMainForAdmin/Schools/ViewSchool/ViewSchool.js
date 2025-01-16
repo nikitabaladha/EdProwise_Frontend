@@ -32,7 +32,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
     }
     try {
       const response = await getAPI(
-        `/get-all-user-by-school-Id/${school._id}`,
+        `/get-all-user-by-school-id/${school._id}`,
         {},
         true
       );
@@ -365,7 +365,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
 
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered tax-center">
+                  <table className="table align-middle mb-0 table-hover table-centered text-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -384,7 +384,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                         <th>Role</th>
                         <th>User Id</th>
                         <th>Password</th>
-                        <th>Action</th>
+                        <th className="text-start">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -459,7 +459,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                 </div>
                 <div>
                   <div className="table-responsive">
-                    <table className="table align-middle mb-0 table-hover table-centered tax-center">
+                    <table className="table align-middle mb-0 table-hover table-centered text-center">
                       <thead className="bg-light-subtle">
                         <tr>
                           <th style={{ width: 20 }}>
@@ -479,7 +479,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                           <th>Subscription Start Date</th>
                           <th>No. Of Months</th>
                           <th>Monthly Rate</th>
-                          <th>Action</th>
+                          <th className="text-start">Action</th>
                         </tr>
                       </thead>
                       <tbody>

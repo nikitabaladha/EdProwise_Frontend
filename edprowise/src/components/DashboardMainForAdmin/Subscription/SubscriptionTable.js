@@ -135,7 +135,7 @@ const SubscriptionTable = ({
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered tax-center">
+                  <table className="table align-middle mb-0 table-hover table-centered text-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -152,10 +152,10 @@ const SubscriptionTable = ({
                           </div>
                         </th>
                         <th>School Id</th>
-                        <th>School Name</th>
+                        <th className="text-start">School Name</th>
                         <th>School Mobile No</th>
                         <th>Subscription Module</th>
-                        <th>Action</th>
+                        <th className="text-start">Action</th>
                       </tr>
                     </thead>
                     <tbody>
