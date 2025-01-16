@@ -334,18 +334,23 @@ const SchoolDashboardHeader = () => {
                 >
                   <span className="d-flex align-items-center">
                     <img
-                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+                      // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+                      src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
+                      // src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseFavicon.png`}
                       className="rounded-circle"
                       alt="logo light"
                       width={32}
+                      style={{
+                        height: "40px",
+                        width: "80px",
+                        objectFit: "contain",
+                      }}
                     />
                   </span>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-end">
                   {/* item*/}
-                  <h6 className="dropdown-header">
-                    Welcome! {school?.schoolName}
-                  </h6>
+                  <h6 className="dropdown-header">{school?.schoolName}</h6>
                   <Link
                     className="dropdown-item"
                     onClick={(event) =>

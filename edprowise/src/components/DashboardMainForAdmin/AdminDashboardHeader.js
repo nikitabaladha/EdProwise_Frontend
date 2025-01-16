@@ -288,7 +288,7 @@ const AdminDashboardHeader = () => {
                 >
                   <span className="d-flex align-items-center">
                     <img
-                      src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                      src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
                       className="rounded-circle"
                       alt="logo light"
                       width={32}

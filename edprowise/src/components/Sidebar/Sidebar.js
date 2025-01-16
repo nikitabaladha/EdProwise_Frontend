@@ -230,30 +230,34 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       <div className="logo-box">
         <Link to="" className="logo-dark">
           <img
-            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+            // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
             className="logo-sm"
             alt={`${school?.schoolName} Profile`}
           />
           <img
-            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+            // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+
+            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
             className="logo-lg"
             alt={`${school?.schoolName} Profile`}
           />
         </Link>
         <Link to="" className="logo-light">
           <img
-            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+            // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
             className="logo-sm"
             alt={`${school?.schoolName} Profile`}
           />
           <span>
             <img
-              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+              // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+              src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
               className="logo-lg"
               alt={`${school?.schoolName} Profile`}
-              style={{ height: "40px", marginRight: "20px" }}
+              style={{ height: "80px", width: "160px" }}
             />
-            <span className="logo-font">{school?.schoolName}</span>
           </span>
         </Link>
       </div>
