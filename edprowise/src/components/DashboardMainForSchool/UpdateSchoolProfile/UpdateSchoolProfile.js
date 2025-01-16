@@ -211,7 +211,7 @@ const UpdateSchoolProfile = () => {
                   </div>
                   <form onSubmit={handleUpdate}>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="schoolName" className="form-label">
                             School Name
@@ -227,7 +227,7 @@ const UpdateSchoolProfile = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label
                             htmlFor="contactPersonName"
@@ -246,7 +246,7 @@ const UpdateSchoolProfile = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="principalName" className="form-label">
                             Principal Name
@@ -262,23 +262,26 @@ const UpdateSchoolProfile = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
+                    </div>
+
+                    <div className="row">
+                      <div className="col-md-4">
                         <div className="mb-3">
-                          <label htmlFor="principalName" className="form-label">
-                            Number Of Students
+                          <label htmlFor="email" className="form-label">
+                            School Email
                           </label>
                           <input
-                            type="number"
-                            id="numberOfStudents"
-                            name="numberOfStudents"
+                            type="email"
+                            id="email"
+                            name="schoolEmail"
                             className="form-control"
-                            value={formData.numberOfStudents}
+                            value={formData.schoolEmail}
                             onChange={handleChange}
                             required
                           />
                         </div>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="mobileNo" className="form-label">
                             School Mobile Number
@@ -294,7 +297,7 @@ const UpdateSchoolProfile = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label
                             htmlFor="schoolAlternateContactNo"
@@ -313,23 +316,25 @@ const UpdateSchoolProfile = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-3">
-                        <div className="mb-3">
-                          <label htmlFor="email" className="form-label">
-                            School Email
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            name="schoolEmail"
-                            className="form-control"
-                            value={formData.schoolEmail}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="principalName" className="form-label">
+                          Number Of Students
+                        </label>
+                        <input
+                          type="number"
+                          id="numberOfStudents"
+                          name="numberOfStudents"
+                          className="form-control"
+                          value={formData.numberOfStudents}
+                          onChange={handleChange}
+                          required
+                        />
                       </div>
                     </div>
+
                     <div className="row">
                       <div className="mb-3">
                         <label htmlFor="address" className="form-label">
@@ -347,7 +352,7 @@ const UpdateSchoolProfile = () => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label
                             htmlFor="schoolLocation"
@@ -373,6 +378,140 @@ const UpdateSchoolProfile = () => {
                         </div>
                       </div>
 
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="panNo" className="form-label">
+                            Land Mark
+                          </label>
+                          <input
+                            type="text"
+                            id="landMark"
+                            name="landMark"
+                            className="form-control"
+                            value={formData.landMark}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="panNo" className="form-label">
+                            School Pin Code
+                          </label>
+                          <input
+                            type="text"
+                            id="schoolPincode"
+                            name="schoolPincode"
+                            className="form-control"
+                            value={formData.schoolPincode}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryAddress" className="form-label">
+                          Delivery Address
+                        </label>
+                        <input
+                          type="text"
+                          id="deliveryAddress"
+                          name="deliveryAddress"
+                          className="form-control"
+                          value={formData.deliveryAddress}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label
+                            htmlFor="deliveryLocation"
+                            className="form-label"
+                          >
+                            Delivery Location
+                          </label>
+                          <select
+                            id="deliveryLocation"
+                            name="deliveryLocation"
+                            className="form-control"
+                            value={formData.deliveryLocation}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="">Select City-State-Country</option>
+                            {cityOptions.map((option, index) => (
+                              <option key={index} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label
+                            htmlFor="deliveryLandMark"
+                            className="form-label"
+                          >
+                            Delivery LandMark
+                          </label>
+                          <input
+                            type="text"
+                            id="deliveryLandMark"
+                            name="deliveryLandMark"
+                            className="form-control"
+                            value={formData.deliveryLandMark}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label
+                            htmlFor="deliveryPincode"
+                            className="form-label"
+                          >
+                            Delivery Pin Code
+                          </label>
+                          <input
+                            type="text"
+                            id="deliveryPincode"
+                            name="deliveryPincode"
+                            className="form-control"
+                            value={formData.deliveryPincode}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="principalName" className="form-label">
+                            Number Of Students
+                          </label>
+                          <input
+                            type="number"
+                            id="numberOfStudents"
+                            name="numberOfStudents"
+                            className="form-control"
+                            value={formData.numberOfStudents}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="profileImage" className="form-label">
@@ -461,7 +600,6 @@ const UpdateSchoolProfile = () => {
                         </div>
                       </div>
                     </div>
-
                     <div className="row">
                       <div className="col-md-6">
                         <div className="mb-3">
@@ -504,131 +642,7 @@ const UpdateSchoolProfile = () => {
                         </div>
                       </div>
                     </div>
-                    {/* ===================== */}
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="panNo" className="form-label">
-                            Land Mark
-                          </label>
-                          <input
-                            type="text"
-                            id="landMark"
-                            name="landMark"
-                            className="form-control"
-                            value={formData.landMark}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="panNo" className="form-label">
-                            School Pin Code
-                          </label>
-                          <input
-                            type="text"
-                            id="schoolPincode"
-                            name="schoolPincode"
-                            className="form-control"
-                            value={formData.schoolPincode}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label
-                            htmlFor="deliveryAddress"
-                            className="form-label"
-                          >
-                            Delivery Address
-                          </label>
-                          <input
-                            type="text"
-                            id="deliveryAddress"
-                            name="deliveryAddress"
-                            className="form-control"
-                            value={formData.deliveryAddress}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label
-                            htmlFor="deliveryLocation"
-                            className="form-label"
-                          >
-                            Delivery Location
-                          </label>
-                          <select
-                            id="deliveryLocation"
-                            name="deliveryLocation"
-                            className="form-control"
-                            value={formData.deliveryLocation}
-                            onChange={handleChange}
-                            required
-                          >
-                            <option value="">Select City-State-Country</option>
-                            {cityOptions.map((option, index) => (
-                              <option key={index} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label
-                            htmlFor="deliveryLandMark"
-                            className="form-label"
-                          >
-                            Delivery LandMark
-                          </label>
-                          <input
-                            type="text"
-                            id="deliveryLandMark"
-                            name="deliveryLandMark"
-                            className="form-control"
-                            value={formData.deliveryLandMark}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label
-                            htmlFor="deliveryPincode"
-                            className="form-label"
-                          >
-                            Delivery Pin Code
-                          </label>
-                          <input
-                            type="text"
-                            id="deliveryPincode"
-                            name="deliveryPincode"
-                            className="form-control"
-                            value={formData.deliveryPincode}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
+
                     <div className="text-end">
                       <button
                         type="submit"

@@ -37,7 +37,6 @@ const ViewSchoolProfile = () => {
           "school data from view school profile page",
           response.data.data
         );
-        console.log("School location", response.data.data.schoolLocation);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -83,111 +82,7 @@ const ViewSchoolProfile = () => {
                   </div>
 
                   <div className="row">
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label htmlFor="landMark" className="form-label">
-                          School Land Mark
-                        </label>
-                        <p className="form-control">{school.landMark}</p>
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="schoolPincode" className="form-label">
-                          School Pin Code
-                        </label>
-                        <p className="form-control">{school.schoolPincode}</p>
-                      </div>
-
-                      <div className="mb-3">
-                        <label htmlFor="deliveryAddress" className="form-label">
-                          School Delivery Address
-                        </label>
-                        <p className="form-control">{school.deliveryAddress}</p>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="deliveryLocation"
-                          className="form-label"
-                        >
-                          School Delivery Location
-                        </label>
-                        <p className="form-control">
-                          {school.deliveryLocation}
-                        </p>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="deliveryLandMark"
-                          className="form-label"
-                        >
-                          Delivery Land Mark
-                        </label>
-                        <p className="form-control">
-                          {school.deliveryLandMark}
-                        </p>
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="deliveryPincode" className="form-label">
-                          Delivery Pin Code
-                        </label>
-                        <p className="form-control">{school.deliveryPincode}</p>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="schoolAlternateContactNo"
-                          className="form-label"
-                        >
-                          School Alter Nate Contact Number
-                        </label>
-                        <p className="form-control">
-                          {school.schoolAlternateContactNo}
-                        </p>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="contactPersonName"
-                          className="form-label"
-                        >
-                          Contact Person Name
-                        </label>
-                        <p className="form-control">
-                          {school.contactPersonName}
-                        </p>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="numberOfStudents"
-                          className="form-label"
-                        >
-                          Number Of Students
-                        </label>
-                        <p className="form-control">
-                          {school.numberOfStudents}
-                        </p>
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="principalName" className="form-label">
-                          Principal Name
-                        </label>
-                        <p className="form-control">{school.principalName}</p>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="mobileNo" className="form-label">
-                          School Mobile Number
-                        </label>
-                        <p className="form-control">{school.schoolMobileNo}</p>
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="email" className="form-label">
-                          School Email
-                        </label>
-                        <p className="form-control">{school.schoolEmail}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                       <div className="d-flex align-items-center">
                         <div className="rounded bg-light d-flex align-items-center justify-content-center">
                           <img
@@ -204,28 +99,20 @@ const ViewSchoolProfile = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label htmlFor="schoolName" className="form-label">
-                          School Name
-                        </label>
-                        <p className="form-control">{school.schoolName}</p>
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="schoolAddress" className="form-label">
-                          School Address
-                        </label>
-                        <p className="form-control">{school.schoolAddress}</p>
-                      </div>
 
+                    <div className="col-md-4">
                       <div className="mb-3">
-                        <label htmlFor="schoolLocation" className="form-label">
-                          City-State-Country
+                        <label htmlFor="schoolId" className="form-label">
+                          School ID
                         </label>
-                        <p className="form-control">{school.schoolLocation}</p>
+                        <p className="form-control">{school.schoolId}</p>
                       </div>
-                    </div>
-                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="principalName" className="form-label">
+                          Principal Name
+                        </label>
+                        <p className="form-control">{school.principalName}</p>
+                      </div>
                       <div className="mb-3">
                         <label htmlFor="schoolMobileNo" className="form-label">
                           School Mobile Number
@@ -239,6 +126,134 @@ const ViewSchoolProfile = () => {
                         <p className="form-control">{school.schoolEmail}</p>
                       </div>
                     </div>
+
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="schoolName" className="form-label">
+                          School Name
+                        </label>
+                        <p className="form-control">{school.schoolName}</p>
+                      </div>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="contactPersonName"
+                          className="form-label"
+                        >
+                          Contact Person Name
+                        </label>
+                        <p className="form-control">
+                          {school.contactPersonName}
+                        </p>
+                      </div>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="schoolAlternateContactNo"
+                          className="form-label"
+                        >
+                          School Alter Nate Contact Number
+                        </label>
+                        <p className="form-control">
+                          {school.schoolAlternateContactNo}
+                        </p>
+                      </div>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="numberOfStudents"
+                          className="form-label"
+                        >
+                          Number Of Students
+                        </label>
+                        <p className="form-control">
+                          {school.numberOfStudents}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="mb-3">
+                      <label htmlFor="schoolAddress" className="form-label">
+                        School Address
+                      </label>
+                      <p className="form-control">{school.schoolAddress}</p>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="schoolLocation" className="form-label">
+                          City-State-Country
+                        </label>
+                        <p className="form-control">{school.schoolLocation}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="landMark" className="form-label">
+                          School Land Mark
+                        </label>
+                        <p className="form-control">{school.landMark}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="schoolPincode" className="form-label">
+                          School Pin Code
+                        </label>
+                        <p className="form-control">{school.schoolPincode}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="mb-3">
+                      <label htmlFor="deliveryAddress" className="form-label">
+                        School Delivery Address
+                      </label>
+                      <p className="form-control">{school.deliveryAddress}</p>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="deliveryLocation"
+                          className="form-label"
+                        >
+                          School Delivery Location
+                        </label>
+                        <p className="form-control">
+                          {school.deliveryLocation}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="deliveryLandMark"
+                          className="form-label"
+                        >
+                          Delivery Land Mark
+                        </label>
+                        <p className="form-control">
+                          {school.deliveryLandMark}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryPincode" className="form-label">
+                          Delivery Pin Code
+                        </label>
+                        <p className="form-control">{school.deliveryPincode}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-6"></div>
                   </div>
 
                   <div className="row">
