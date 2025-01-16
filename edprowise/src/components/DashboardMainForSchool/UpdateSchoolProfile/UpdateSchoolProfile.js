@@ -1,17 +1,36 @@
+import React, { useState, useEffect, useRef } from "react";
+
 import getAPI from "../../../api/getAPI";
 import putAPI from "../../../api/putAPI";
 
 import "react-toastify/dist/ReactToastify.css";
-import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import CityData from "../../CityData.json";
 
-const SchoolProfile = () => {
+const UpdateSchoolProfile = () => {
+  const location = useLocation();
+  const schoolId = location.state?._id;
+
   const navigate = useNavigate();
+
   const [school, setSchool] = useState(null);
+
+  useEffect(() => {
+    if (schoolId) {
+      fetchSchoolData();
+    } else {
+      console.error("No school ID provided");
+    }
+  }, [schoolId]);
+
+  useEffect(() => {
+    fetchSchoolData();
+  }, []);
+
   const [formData, setFormData] = useState({
     schoolName: "",
     panFile: null,
@@ -40,14 +59,6 @@ const SchoolProfile = () => {
   const panFileRef = useRef(null);
 
   const fetchSchoolData = async () => {
-    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-    const schoolId = userDetails?.schoolId;
-
-    if (!schoolId) {
-      console.error("School ID not found in localStorage");
-      return;
-    }
-
     try {
       const response = await getAPI(`/school-profile/${schoolId}`, {}, true);
 
@@ -82,7 +93,7 @@ const SchoolProfile = () => {
         console.error("Invalid response format or error in response");
       }
     } catch (err) {
-      console.error("Error fetching School List:", err);
+      console.error("Error fetching School:", err);
     }
   };
 
@@ -108,10 +119,6 @@ const SchoolProfile = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-
-    const userId = userDetails?.id;
-
     const formDataToSend = new FormData();
 
     for (const key in formData) {
@@ -133,15 +140,6 @@ const SchoolProfile = () => {
       );
 
       if (!response.data.hasError) {
-        const updatedUserResponse = await getAPI(`get-user-by-id/${userId}`);
-
-        if (!updatedUserResponse.hasError) {
-          localStorage.setItem(
-            "userDetails",
-            JSON.stringify(updatedUserResponse.data.data)
-          );
-        }
-
         // Reset formData state
         setFormData({
           schoolName: "",
@@ -207,7 +205,7 @@ const SchoolProfile = () => {
                   <div className="container">
                     <div className="card-header mb-2">
                       <h4 className="card-title text-center custom-heading-font">
-                        Complete Your Profile
+                        Update Your Profile
                       </h4>
                     </div>
                   </div>
@@ -650,4 +648,4 @@ const SchoolProfile = () => {
   );
 };
 
-export default SchoolProfile;
+export default UpdateSchoolProfile;

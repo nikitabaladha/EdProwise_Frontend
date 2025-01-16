@@ -35,20 +35,20 @@ const UserLogin = () => {
         localStorage.setItem("accessToken", JSON.stringify(token));
         localStorage.setItem("userDetails", JSON.stringify(userDetails));
 
-        //   {
-        //     "id": "678777bb0f9a698f80296170",
-        //     "schoolId": "678777bb0f9a698f8029616e",
-        //     "userId": "SAdmin_SID00002",
-        //     "role": "School",
-        //     "status": "Pending"
-        // }
-
         toast.success("Login successful!");
+
+        //   {
+        //     "id": "6788475e9c214f03da147dbe",
+        //     "schoolId": "6788475e9c214f03da147dbc",
+        //     "userId": "SAdmin_SID00001",
+        //     "role": "School",
+        //     "status": "Completed"
+        // }
 
         setTimeout(() => {
           if (userDetails && userDetails.role === "School") {
             if (userDetails.status === "Pending") {
-              return navigate(`/update-school-profile`);
+              return navigate(`/complete-school-profile`);
             } else if (userDetails.status === "Completed") {
               return navigate("/school-dashboard");
             }

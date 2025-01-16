@@ -2,8 +2,38 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { IoIosArrowForward } from "react-icons/io";
+import getAPI from "../../api/getAPI";
 
 const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
+  const [school, setSchool] = useState(null);
+  const fetchSchoolData = async () => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const schoolId = userDetails?.schoolId;
+
+    if (!schoolId) {
+      console.error("School ID not found in localStorage");
+      return;
+    }
+
+    try {
+      const response = await getAPI(`/school-profile/${schoolId}`, {}, true);
+
+      if (!response.hasError && response.data && response.data.data) {
+        setSchool(response.data.data);
+
+        console.log("school data from heder", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching School:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSchoolData();
+  }, []);
+
   const [openMenu, setOpenMenu] = useState(null);
   const location = useLocation();
 
@@ -200,30 +230,30 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       <div className="logo-box">
         <Link to="" className="logo-dark">
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
             className="logo-sm"
-            alt="logo sm"
+            alt={`${school?.schoolName} Profile`}
           />
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
             className="logo-lg"
-            alt="logo dark"
+            alt={`${school?.schoolName} Profile`}
           />
         </Link>
         <Link to="" className="logo-light">
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
             className="logo-sm"
-            alt="logo sm"
+            alt={`${school?.schoolName} Profile`}
           />
           <span>
             <img
-              src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
               className="logo-lg"
-              alt="logo light"
+              alt={`${school?.schoolName} Profile`}
               style={{ height: "40px", marginRight: "20px" }}
             />
-            <span className="logo-font">EdProwise</span>
+            <span className="logo-font">{school?.schoolName}</span>
           </span>
         </Link>
       </div>

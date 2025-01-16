@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
+
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { BiMessageDots } from "react-icons/bi";
@@ -8,7 +9,16 @@ import { PiLockKeyBold } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
 import { ThemeContext } from "../ThemeProvider";
 
+import getAPI from "../../api/getAPI";
+
+import "react-toastify/dist/ReactToastify.css";
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+
 const SchoolDashboardHeader = () => {
+  const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userDetails");
@@ -17,6 +27,41 @@ const SchoolDashboardHeader = () => {
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   console.log("userDetails", userDetails);
+
+  const [school, setSchool] = useState(null);
+
+  const fetchSchoolData = async () => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const schoolId = userDetails?.schoolId;
+
+    if (!schoolId) {
+      console.error("School ID not found in localStorage");
+      return;
+    }
+
+    try {
+      const response = await getAPI(`/school-profile/${schoolId}`, {}, true);
+
+      if (!response.hasError && response.data && response.data.data) {
+        setSchool(response.data.data);
+
+        console.log("school data from heder", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching School:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSchoolData();
+  }, []);
+
+  const navigateToViewSchoolProfile = (event, _id) => {
+    event.preventDefault();
+    navigate("/school-dashboard/view-school-profile", { state: { _id } });
+  };
 
   const toggleSidebar = () => {
     const htmlElement = document.documentElement;
@@ -78,7 +123,7 @@ const SchoolDashboardHeader = () => {
               {/* Menu Toggle Button */}
               <div className="topbar-item">
                 <h4 className="fw-bold topbar-button pe-none text-uppercase mb-0">
-                  Welcome! {userDetails?.firstName} {userDetails?.lastName}
+                  Welcome! {school?.schoolName}
                 </h4>
               </div>
             </div>
@@ -146,9 +191,9 @@ const SchoolDashboardHeader = () => {
                       <div className="d-flex">
                         <div className="flex-shrink-0">
                           <img
-                            src="assets/images/users/avatar-1.jpg"
+                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+                            alt={`${school?.schoolName} Profile`}
                             className="img-fluid me-2 avatar-sm rounded-circle"
-                            alt=""
                           />
                         </div>
                         <div className="flex-grow-1">
@@ -188,7 +233,7 @@ const SchoolDashboardHeader = () => {
                       <div className="d-flex">
                         <div className="flex-shrink-0">
                           <img
-                            src="assets/images/users/avatar-3.jpg"
+                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
                             className="img-fluid me-2 avatar-sm rounded-circle"
                             alt=""
                           />
@@ -225,7 +270,7 @@ const SchoolDashboardHeader = () => {
                       <div className="d-flex">
                         <div className="flex-shrink-0">
                           <img
-                            src="assets/images/users/avatar-5.jpg"
+                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
                             className="img-fluid me-2 avatar-sm rounded-circle"
                             alt=""
                           />
@@ -289,7 +334,7 @@ const SchoolDashboardHeader = () => {
                 >
                   <span className="d-flex align-items-center">
                     <img
-                      src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
                       className="rounded-circle"
                       alt="logo light"
                       width={32}
@@ -299,9 +344,14 @@ const SchoolDashboardHeader = () => {
                 <div className="dropdown-menu dropdown-menu-end">
                   {/* item*/}
                   <h6 className="dropdown-header">
-                    Welcome {userDetails?.firstName} {userDetails?.lastName}
+                    Welcome! {school?.schoolName}
                   </h6>
-                  <Link className="dropdown-item" href="pages-profile.html">
+                  <Link
+                    className="dropdown-item"
+                    onClick={(event) =>
+                      navigateToViewSchoolProfile(event, school?._id)
+                    }
+                  >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Profile</span>
                   </Link>
