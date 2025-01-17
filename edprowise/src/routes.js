@@ -61,6 +61,7 @@ import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementSer
 import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
 
 // ================================================Seller Routes============================================
+import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
 import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
 
@@ -125,6 +126,14 @@ const AppRoutes = () => {
         element={
           <PrivateRoute>
             <CompleteSchoolProfile />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/complete-seller-profile"
+        element={
+          <PrivateRoute>
+            <CompleteSellerProfile />
           </PrivateRoute>
         }
       />

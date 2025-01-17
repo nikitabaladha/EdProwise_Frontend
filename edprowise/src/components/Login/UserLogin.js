@@ -37,14 +37,6 @@ const UserLogin = () => {
 
         toast.success("Login successful!");
 
-        //   {
-        //     "id": "6788475e9c214f03da147dbe",
-        //     "schoolId": "6788475e9c214f03da147dbc",
-        //     "userId": "SAdmin_SID00001",
-        //     "role": "School",
-        //     "status": "Completed"
-        // }
-
         setTimeout(() => {
           if (userDetails && userDetails.role === "School") {
             if (userDetails.status === "Pending") {
@@ -56,8 +48,12 @@ const UserLogin = () => {
             return navigate("/auditor-dashboard");
           } else if (userDetails.role === "User") {
             return navigate("/user-dashboard");
-          } else if (userDetails.role === "Seller") {
-            return navigate("/seller-dashboard");
+          } else if (userDetails && userDetails.role === "Seller") {
+            if (userDetails.status === "Pending") {
+              return navigate(`/complete-seller-profile`);
+            } else if (userDetails.status === "Completed") {
+              return navigate("/seller-dashboard");
+            }
           } else {
             toast.error("No dashboard available for your role!");
           }
