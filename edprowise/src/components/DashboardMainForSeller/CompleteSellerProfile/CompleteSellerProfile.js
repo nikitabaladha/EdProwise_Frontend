@@ -633,80 +633,95 @@ const CompleteSellerProfile = () => {
                     Dealing Products
                   </h4>
                   <hr></hr>
-                  {dealingProducts.map((product, index) => (
-                    <div key={index} className="mb-3">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <label>Category</label>
-                          <select
-                            className="form-control"
-                            value={product.categoryId}
-                            onChange={(e) =>
-                              handleDealingProductChange(
-                                index,
-                                "categoryId",
-                                e.target.value
-                              )
-                            }
-                          >
-                            <option value="">Select Category</option>
-                            {categories.map((category) => (
-                              <option key={category.id} value={category.id}>
-                                {category.categoryName}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className="col-md-6">
-                          <label>Subcategories</label>
-                          <div>
-                            {(subCategories[product.categoryId] || []).map(
-                              (subCategory) => (
-                                <div key={subCategory.id}>
-                                  <input
-                                    type="checkbox"
-                                    id={`subCategory-${subCategory.id}`}
-                                    value={subCategory.id}
-                                    checked={product.subCategoryIds.includes(
-                                      subCategory.id
-                                    )}
-                                    onChange={(e) => {
-                                      const selectedSubCategories = e.target
-                                        .checked
-                                        ? [
-                                            ...product.subCategoryIds,
-                                            subCategory.id,
-                                          ]
-                                        : product.subCategoryIds.filter(
-                                            (id) => id !== subCategory.id
-                                          );
-                                      handleDealingProductChange(
-                                        index,
-                                        "subCategoryIds",
-                                        selectedSubCategories
-                                      );
-                                    }}
-                                  />
-                                  <label
-                                    htmlFor={`subCategory-${subCategory.id}`}
+                  <div className="row">
+                    {dealingProducts.map((product, index) => (
+                      <div key={index} className="mb-3">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <label htmlFor="category" className="form-label">
+                              Category
+                            </label>
+                            <select
+                              className="form-control"
+                              value={product.categoryId}
+                              onChange={(e) =>
+                                handleDealingProductChange(
+                                  index,
+                                  "categoryId",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              <option value="">Select Category</option>
+                              {categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                  {category.categoryName}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-md-6">
+                            <label
+                              htmlFor="subCategories"
+                              className="form-label"
+                            >
+                              Subcategories
+                            </label>
+                            <div>
+                              {(subCategories[product.categoryId] || []).map(
+                                (subCategory) => (
+                                  <div
+                                    key={subCategory.id}
+                                    className="form-check ms-1"
                                   >
-                                    {subCategory.subCategoryName}
-                                  </label>
-                                </div>
-                              )
-                            )}
+                                    <input
+                                      type="checkbox"
+                                      id={`subCategory-${subCategory.id}`}
+                                      value={subCategory.id}
+                                      checked={product.subCategoryIds.includes(
+                                        subCategory.id
+                                      )}
+                                      onChange={(e) => {
+                                        const selectedSubCategories = e.target
+                                          .checked
+                                          ? [
+                                              ...product.subCategoryIds,
+                                              subCategory.id,
+                                            ]
+                                          : product.subCategoryIds.filter(
+                                              (id) => id !== subCategory.id
+                                            );
+                                        handleDealingProductChange(
+                                          index,
+                                          "subCategoryIds",
+                                          selectedSubCategories
+                                        );
+                                      }}
+                                      className="form-check-input"
+                                    />
+                                    <label
+                                      htmlFor={`subCategory-${subCategory.id}`}
+                                      className="form-label"
+                                    >
+                                      {subCategory.subCategoryName}
+                                    </label>
+                                  </div>
+                                )
+                              )}
+                            </div>
                           </div>
                         </div>
+                        <button
+                          type="button"
+                          className="btn btn-danger mt-2"
+                          onClick={() => removeDealingProduct(index)}
+                        >
+                          Remove
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        className="btn btn-danger mt-2"
-                        onClick={() => removeDealingProduct(index)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+
                   <button
                     type="button"
                     className="btn btn-secondary mb-3"
