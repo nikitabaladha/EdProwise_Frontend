@@ -62,6 +62,7 @@ import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/Procure
 
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
+import ViewSellerProfile from "./components/DashboardMainForSeller/ViewSellerProfile/ViewSellerProfile";
 import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
 import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
 
@@ -277,6 +278,8 @@ const AppRoutes = () => {
       >
         {/*Seller Dashboard Route */}
         <Route index element={<SellerDashboard />} />
+
+        <Route path="view-seller-profile" element={<ViewSellerProfile />} />
 
         {/* Procurement Services Routes */}
         <Route

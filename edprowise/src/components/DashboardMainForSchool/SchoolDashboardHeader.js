@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+
 import { CgProfile } from "react-icons/cg";
 import { BiMessageDots } from "react-icons/bi";
 import { IoWalletOutline } from "react-icons/io5";
@@ -11,12 +13,6 @@ import { ThemeContext } from "../ThemeProvider";
 
 import getAPI from "../../api/getAPI";
 
-import "react-toastify/dist/ReactToastify.css";
-
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
-
 const SchoolDashboardHeader = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -24,9 +20,6 @@ const SchoolDashboardHeader = () => {
     localStorage.removeItem("userDetails");
     window.location.href = "/login";
   };
-
-  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-  console.log("userDetails", userDetails);
 
   const [school, setSchool] = useState(null);
 
@@ -334,9 +327,7 @@ const SchoolDashboardHeader = () => {
                 >
                   <span className="d-flex align-items-center">
                     <img
-                      // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
-                      src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
-                      // src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseFavicon.png`}
+                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
                       className="rounded-circle"
                       alt="logo light"
                       width={32}

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { BiMessageDots } from "react-icons/bi";
@@ -6,17 +6,40 @@ import { IoWalletOutline } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { PiLockKeyBold } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
+import { BsKey } from "react-icons/bs";
 import { ThemeContext } from "../ThemeProvider";
+import getAPI from "../../api/getAPI";
+import { useNavigate } from "react-router-dom";
 
 const SellerDashboardHeader = () => {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userDetails");
     window.location.href = "/login";
   };
+  const [sellerProfile, setSellerProfile] = useState(null);
 
-  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-  console.log("userDetails", userDetails);
+  const fetchSellerProfileData = async () => {
+    try {
+      const response = await getAPI(`/seller-profile`, {}, true);
+
+      if (!response.hasError && response.data && response.data.data) {
+        setSellerProfile(response.data.data);
+
+        console.log("seller data from heder", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Seller data:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSellerProfileData();
+  }, []);
 
   const toggleSidebar = () => {
     const htmlElement = document.documentElement;
@@ -54,6 +77,13 @@ const SellerDashboardHeader = () => {
 
   const { theme, toggleTheme } = useContext(ThemeContext);
 
+  const navigateToViewSellerProfile = (event, sellerProfile) => {
+    event.preventDefault();
+    navigate("/seller-dashboard/view-seller-profile", {
+      state: { sellerProfile },
+    });
+  };
+
   return (
     <>
       <header className="topbar">
@@ -78,7 +108,7 @@ const SellerDashboardHeader = () => {
               {/* Menu Toggle Button */}
               <div className="topbar-item">
                 <h4 className="fw-bold topbar-button pe-none text-uppercase mb-0">
-                  Welcome! {userDetails?.firstName} {userDetails?.lastName}
+                  Welcome! {sellerProfile?.companyName}
                 </h4>
               </div>
             </div>
@@ -289,7 +319,7 @@ const SellerDashboardHeader = () => {
                 >
                   <span className="d-flex align-items-center">
                     <img
-                      src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.sellerProfile}`}
                       className="rounded-circle"
                       alt="logo light"
                       width={32}
@@ -299,11 +329,23 @@ const SellerDashboardHeader = () => {
                 <div className="dropdown-menu dropdown-menu-end">
                   {/* item*/}
                   <h6 className="dropdown-header">
-                    Welcome {userDetails?.firstName} {userDetails?.lastName}
+                    {sellerProfile?.companyName}
                   </h6>
-                  <Link className="dropdown-item" href="pages-profile.html">
+
+                  <Link
+                    className="dropdown-item"
+                    href="pages-profile.html"
+                    onClick={(event) =>
+                      navigateToViewSellerProfile(event, sellerProfile)
+                    }
+                  >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Profile</span>
+                  </Link>
+
+                  <Link className="dropdown-item" href="apps-chat.html">
+                    <BsKey className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
+                    <span className="align-middle">Change Password</span>
                   </Link>
                   <Link className="dropdown-item" href="apps-chat.html">
                     <BiMessageDots className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
