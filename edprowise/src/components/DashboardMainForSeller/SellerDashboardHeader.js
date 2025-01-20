@@ -6,7 +6,7 @@ import { IoWalletOutline } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { PiLockKeyBold } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
-import { BsKey } from "react-icons/bs";
+import { IoKeyOutline } from "react-icons/io5";
 import { ThemeContext } from "../ThemeProvider";
 import getAPI from "../../api/getAPI";
 import { useNavigate } from "react-router-dom";
@@ -80,6 +80,13 @@ const SellerDashboardHeader = () => {
   const navigateToViewSellerProfile = (event, sellerProfile) => {
     event.preventDefault();
     navigate("/seller-dashboard/view-seller-profile", {
+      state: { sellerProfile },
+    });
+  };
+
+  const navigateToChangeSellerPassword = (event, sellerProfile) => {
+    event.preventDefault();
+    navigate("/seller-dashboard/change-seller-password", {
       state: { sellerProfile },
     });
   };
@@ -334,7 +341,6 @@ const SellerDashboardHeader = () => {
 
                   <Link
                     className="dropdown-item"
-                    href="pages-profile.html"
                     onClick={(event) =>
                       navigateToViewSellerProfile(event, sellerProfile)
                     }
@@ -343,8 +349,13 @@ const SellerDashboardHeader = () => {
                     <span className="align-middle">Profile</span>
                   </Link>
 
-                  <Link className="dropdown-item" href="apps-chat.html">
-                    <BsKey className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
+                  <Link
+                    className="dropdown-item"
+                    onClick={(event) =>
+                      navigateToChangeSellerPassword(event, sellerProfile)
+                    }
+                  >
+                    <IoKeyOutline className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Change Password</span>
                   </Link>
                   <Link className="dropdown-item" href="apps-chat.html">

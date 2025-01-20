@@ -43,6 +43,7 @@ import UpdateGoodAndService from "./components/DashboardMainForAdmin/Procurement
 import CompleteSchoolProfile from "./components/DashboardMainForSchool/CompleteSchoolProfile/CompleteSchoolProfile";
 import UpdateSchoolProfile from "./components/DashboardMainForSchool/UpdateSchoolProfile/UpdateSchoolProfile";
 import ViewSchoolProfile from "./components/DashboardMainForSchool/ViewSchoolProfile/ViewSchoolProfile";
+import ChangePasswordForSchoolAdmin from "./components/DashboardMainForSchool/ChangePassword/ChangePassword";
 
 import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
@@ -63,6 +64,7 @@ import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/Procure
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 import ViewSellerProfile from "./components/DashboardMainForSeller/ViewSellerProfile/ViewSellerProfile";
+import ChangePasswordForSeller from "./components/DashboardMainForSeller/ChangePassword/ChangePassword";
 import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
 import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
 
@@ -230,6 +232,10 @@ const AppRoutes = () => {
         {/*School Dashboard Route */}
         <Route path="view-school-profile" element={<ViewSchoolProfile />} />
         <Route path="update-school-profile" element={<UpdateSchoolProfile />} />
+        <Route
+          path="change-school-admin-password"
+          element={<ChangePasswordForSchoolAdmin />}
+        />
 
         <Route index element={<SchoolDashboard />} />
 
@@ -280,6 +286,11 @@ const AppRoutes = () => {
         <Route index element={<SellerDashboard />} />
 
         <Route path="view-seller-profile" element={<ViewSellerProfile />} />
+
+        <Route
+          path="change-seller-password"
+          element={<ChangePasswordForSeller />}
+        />
 
         {/* Procurement Services Routes */}
         <Route

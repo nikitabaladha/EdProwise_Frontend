@@ -9,6 +9,7 @@ import { IoWalletOutline } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { PiLockKeyBold } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
+import { IoKeyOutline } from "react-icons/io5";
 import { ThemeContext } from "../ThemeProvider";
 
 import getAPI from "../../api/getAPI";
@@ -54,6 +55,13 @@ const SchoolDashboardHeader = () => {
   const navigateToViewSchoolProfile = (event, _id) => {
     event.preventDefault();
     navigate("/school-dashboard/view-school-profile", { state: { _id } });
+  };
+
+  const navigateToChangeSchoolPassword = (event, school) => {
+    event.preventDefault();
+    navigate("/school-dashboard/change-school-admin-password", {
+      state: { school },
+    });
   };
 
   const toggleSidebar = () => {
@@ -331,11 +339,6 @@ const SchoolDashboardHeader = () => {
                       className="rounded-circle"
                       alt="logo light"
                       width={32}
-                      style={{
-                        height: "40px",
-                        width: "80px",
-                        objectFit: "contain",
-                      }}
                     />
                   </span>
                 </Link>
@@ -350,6 +353,16 @@ const SchoolDashboardHeader = () => {
                   >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Profile</span>
+                  </Link>
+
+                  <Link
+                    className="dropdown-item"
+                    onClick={(event) =>
+                      navigateToChangeSchoolPassword(event, school)
+                    }
+                  >
+                    <IoKeyOutline className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
+                    <span className="align-middle">Change Password</span>
                   </Link>
                   <Link className="dropdown-item" href="apps-chat.html">
                     <BiMessageDots className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
