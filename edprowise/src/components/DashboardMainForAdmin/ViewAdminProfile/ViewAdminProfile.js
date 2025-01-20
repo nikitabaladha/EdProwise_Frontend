@@ -1,14 +1,52 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
+import getAPI from "../../../api/getAPI";
+
 const ViewAdminProfile = () => {
-  const { state } = useLocation();
-  const adminProfile = state?.adminProfile;
+  const location = useLocation();
+  const profileId = location.state?._id;
+
   const navigate = useNavigate();
+
+  const [adminProfile, setAdminProfile] = useState(null);
+
+  useEffect(() => {
+    if (profileId) {
+      fetchProfileData();
+    } else {
+      console.error("No profile ID provided");
+    }
+  }, [profileId]);
+
+  const fetchProfileData = async () => {
+    try {
+      const response = await getAPI(`/edprowise-profile`, {}, true);
+
+      if (!response.hasError && response.data && response.data.data) {
+        setAdminProfile(response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Admin Profile:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const navigateToUpdateAdminProfile = (event, _id) => {
+    event.preventDefault();
+    navigate(`/admin-dashboard/update-admin-profile`, {
+      state: { _id },
+    });
+  };
 
   return (
     <>
@@ -22,6 +60,17 @@ const ViewAdminProfile = () => {
                     <h4 className="card-title text-center custom-heading-font card-title">
                       Your Profile Details
                     </h4>
+                    <Link
+                      onClick={(event) =>
+                        navigateToUpdateAdminProfile(event, adminProfile?._id)
+                      }
+                      className="btn btn-soft-primary btn-sm"
+                    >
+                      <iconify-icon
+                        icon="solar:pen-2-broken"
+                        className="align-middle fs-18"
+                      />
+                    </Link>
                   </div>
                 </div>
                 <h4 className="card-title text-center custom-heading-font">

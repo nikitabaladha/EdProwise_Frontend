@@ -82,10 +82,10 @@ const AdminDashboardHeader = () => {
     fetchSellerProfileData();
   }, []);
 
-  const navigateToViewAdminProfile = (event, adminProfile) => {
+  const navigateToViewAdminProfile = (event, _id) => {
     event.preventDefault();
     navigate("/admin-dashboard/view-admin-profile", {
-      state: { adminProfile },
+      state: { _id },
     });
   };
 
@@ -346,7 +346,7 @@ const AdminDashboardHeader = () => {
                   <Link
                     className="dropdown-item"
                     onClick={(event) =>
-                      navigateToViewAdminProfile(event, adminProfile)
+                      navigateToViewAdminProfile(event, adminProfile?._id)
                     }
                   >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
