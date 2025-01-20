@@ -37,13 +37,7 @@ const AdminLogin = () => {
 
         toast.success("Login successful!");
 
-        if (userDetails?.role === "Admin") {
-          navigate(
-            userDetails.status === "Pending"
-              ? "/complete-admin-profile"
-              : "/admin-dashboard"
-          );
-        }
+        navigate("/admin-dashboard");
       } else {
         setGeneralError(response.data.message);
       }

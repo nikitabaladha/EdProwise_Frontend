@@ -8,6 +8,8 @@ import Signup from "./components/Signup/Signup";
 
 // ==================================Admin Routes =================================
 
+import CompleteEdprowiseProfile from "./components/DashboardMainForAdmin/CompleteEdprowiseProfile/CompleteEdprowiseProfile";
+
 import AdminDashboardMain from "./components/DashboardMainForAdmin/AdminDashboardMain";
 import Dashboard from "./components/DashboardMainForAdmin/Dashboard/Dashboard";
 
@@ -124,6 +126,15 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+
+      <Route
+        path="/complete-admin-profile"
+        element={
+          <PrivateRoute>
+            <CompleteEdprowiseProfile />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/complete-school-profile"
         element={
@@ -132,6 +143,7 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       />
+
       <Route
         path="/complete-seller-profile"
         element={

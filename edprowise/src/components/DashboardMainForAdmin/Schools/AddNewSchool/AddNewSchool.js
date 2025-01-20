@@ -50,10 +50,6 @@ const AddNewSchool = ({ addSchool }) => {
         data.append(key, formData[key]);
       });
 
-      for (let [key, value] of data.entries()) {
-        console.log(`${key}:`, value);
-      }
-
       const response = await postAPI(
         "/school",
         data,
