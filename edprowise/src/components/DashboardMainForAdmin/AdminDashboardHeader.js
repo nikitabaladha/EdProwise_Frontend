@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { BiMessageDots } from "react-icons/bi";
@@ -6,9 +6,16 @@ import { IoWalletOutline } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { PiLockKeyBold } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
+import { IoKeyOutline } from "react-icons/io5";
+
 import { ThemeContext } from "../ThemeProvider";
 
+import getAPI from "../../api/getAPI";
+import { useNavigate } from "react-router-dom";
+
 const AdminDashboardHeader = () => {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userDetails");
@@ -52,6 +59,42 @@ const AdminDashboardHeader = () => {
   }, []);
 
   const { theme, toggleTheme } = useContext(ThemeContext);
+
+  const [adminProfile, setAdminProfile] = useState(null);
+
+  const fetchSellerProfileData = async () => {
+    try {
+      const response = await getAPI(`/edprowise-profile`, {}, true);
+
+      if (!response.hasError && response.data && response.data.data) {
+        setAdminProfile(response.data.data);
+
+        console.log("Admin data from heder", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Admin data:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSellerProfileData();
+  }, []);
+
+  const navigateToViewAdminProfile = (event, adminProfile) => {
+    event.preventDefault();
+    navigate("/admin-dashboard/view-admin-profile", {
+      state: { adminProfile },
+    });
+  };
+
+  const navigateToChangeAdminPassword = (event, adminProfile) => {
+    event.preventDefault();
+    navigate("/admin-dashboard/change-admin-password", {
+      state: { adminProfile },
+    });
+  };
 
   return (
     <>
@@ -288,7 +331,7 @@ const AdminDashboardHeader = () => {
                 >
                   <span className="d-flex align-items-center">
                     <img
-                      src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
+                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${adminProfile?.edprowiseProfile}`}
                       className="rounded-circle"
                       alt="logo light"
                       width={32}
@@ -298,11 +341,26 @@ const AdminDashboardHeader = () => {
                 <div className="dropdown-menu dropdown-menu-end">
                   {/* item*/}
                   <h6 className="dropdown-header">
-                    Welcome {userDetails?.firstName} {userDetails?.lastName}
+                    {userDetails?.firstName} {userDetails?.lastName}
                   </h6>
-                  <Link className="dropdown-item" href="pages-profile.html">
+                  <Link
+                    className="dropdown-item"
+                    onClick={(event) =>
+                      navigateToViewAdminProfile(event, adminProfile)
+                    }
+                  >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Profile</span>
+                  </Link>
+
+                  <Link
+                    className="dropdown-item"
+                    onClick={(event) =>
+                      navigateToChangeAdminPassword(event, adminProfile)
+                    }
+                  >
+                    <IoKeyOutline className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
+                    <span className="align-middle">Change Password</span>
                   </Link>
                   <Link className="dropdown-item" href="apps-chat.html">
                     <BiMessageDots className="bx bx-message-dots text-muted fs-18 align-middle me-1" />

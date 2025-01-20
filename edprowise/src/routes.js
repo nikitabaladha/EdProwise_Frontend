@@ -9,6 +9,7 @@ import Signup from "./components/Signup/Signup";
 // ==================================Admin Routes =================================
 
 import CompleteEdprowiseProfile from "./components/DashboardMainForAdmin/CompleteEdprowiseProfile/CompleteEdprowiseProfile";
+import ViewAdminProfile from "./components/DashboardMainForAdmin/ViewAdminProfile/ViewAdminProfile";
 
 import AdminDashboardMain from "./components/DashboardMainForAdmin/AdminDashboardMain";
 import Dashboard from "./components/DashboardMainForAdmin/Dashboard/Dashboard";
@@ -164,6 +165,9 @@ const AppRoutes = () => {
       >
         {/* Main Dashboard Route */}
         <Route index element={<Dashboard />} />
+
+        <Route path="view-admin-profile" element={<ViewAdminProfile />} />
+
         {/* School Table page and it's Add, View, Update Routes */}
         <Route path="schools" element={<Schools />}>
           <Route path="add-new-school" element={<AddNewSchool />} />
