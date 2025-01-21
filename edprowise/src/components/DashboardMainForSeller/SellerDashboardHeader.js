@@ -77,10 +77,10 @@ const SellerDashboardHeader = () => {
 
   const { theme, toggleTheme } = useContext(ThemeContext);
 
-  const navigateToViewSellerProfile = (event, sellerProfile) => {
+  const navigateToViewSellerProfile = (event, _id) => {
     event.preventDefault();
     navigate("/seller-dashboard/view-seller-profile", {
-      state: { sellerProfile },
+      state: { _id },
     });
   };
 
@@ -342,7 +342,7 @@ const SellerDashboardHeader = () => {
                   <Link
                     className="dropdown-item"
                     onClick={(event) =>
-                      navigateToViewSellerProfile(event, sellerProfile)
+                      navigateToViewSellerProfile(event, sellerProfile?._id)
                     }
                   >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />

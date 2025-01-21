@@ -91,7 +91,7 @@ const AdminDashboardHeader = () => {
 
   const navigateToChangeAdminPassword = (event, adminProfile) => {
     event.preventDefault();
-    navigate("/admin-dashboard/change-admin-password", {
+    navigate("/admin-dashboard/change-edprowise-admin-password", {
       state: { adminProfile },
     });
   };

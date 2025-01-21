@@ -1,14 +1,58 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import getAPI from "../../../api/getAPI";
+
+import { Link } from "react-router-dom";
 
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { Worker, Viewer } from "@react-pdf-viewer/core";
 
 import "react-toastify/dist/ReactToastify.css";
 
 const ViewSellerProfile = () => {
-  const { state } = useLocation();
-  const sellerProfile = state?.sellerProfile;
+  const location = useLocation();
+
+  const profileId = location.state?._id;
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (profileId) {
+      fetchSellerProfileData();
+    } else {
+      console.error("No profile ID provided");
+    }
+  }, [profileId]);
+
+  const [sellerProfile, setSellerProfile] = useState(null);
+
+  const fetchSellerProfileData = async () => {
+    try {
+      const response = await getAPI(`/seller-profile`, {}, true);
+
+      if (!response.hasError && response.data && response.data.data) {
+        setSellerProfile(response.data.data);
+
+        console.log("seller data from heder", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Seller data:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSellerProfileData();
+  }, []);
+
+  const navigateToUpdateSellerProfile = (event, _id) => {
+    event.preventDefault();
+    navigate(`/seller-dashboard/update-seller-profile`, {
+      state: { _id },
+    });
+  };
 
   return (
     <>
@@ -22,6 +66,17 @@ const ViewSellerProfile = () => {
                     <h4 className="card-title text-center custom-heading-font card-title">
                       Seller Details
                     </h4>
+                    <Link
+                      onClick={(event) =>
+                        navigateToUpdateSellerProfile(event, sellerProfile?._id)
+                      }
+                      className="btn btn-soft-primary btn-sm"
+                    >
+                      <iconify-icon
+                        icon="solar:pen-2-broken"
+                        className="align-middle fs-18"
+                      />
+                    </Link>
                   </div>
                 </div>
                 <h4 className="card-title text-center custom-heading-font">
@@ -260,13 +315,34 @@ const ViewSellerProfile = () => {
 
                 {sellerProfile?.dealingProducts &&
                   sellerProfile.dealingProducts.map((product, index) => (
-                    <div key={index}>
-                      <h5>{product.categoryId.categoryName}</h5>
-                      <ul>
-                        {product.subCategoryIds.map((subCategory, subIndex) => (
-                          <li key={subIndex}>{subCategory.subCategoryName}</li>
-                        ))}
-                      </ul>
+                    <div key={index} className="row">
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="categoryName" className="form-label">
+                            Category Name
+                          </label>
+                          <h5>{product.categoryId.categoryName}</h5>
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label
+                            htmlFor="subCategoryName"
+                            className="form-label"
+                          >
+                            Subcategory Name
+                          </label>
+                          <ul>
+                            {product.subCategoryIds.map(
+                              (subCategory, subIndex) => (
+                                <li key={subIndex}>
+                                  {subCategory.subCategoryName}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                   ))}
 

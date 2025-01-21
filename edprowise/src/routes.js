@@ -7,6 +7,7 @@ import UserLogin from "./components/Login/UserLogin";
 import Signup from "./components/Signup/Signup";
 
 // ==================================Admin Routes =================================
+import ChangePasswordForAdmin from "./components/DashboardMainForAdmin/ChangePassword/ChangePassword";
 
 import CompleteEdprowiseProfile from "./components/DashboardMainForAdmin/CompleteEdprowiseProfile/CompleteEdprowiseProfile";
 import ViewAdminProfile from "./components/DashboardMainForAdmin/ViewAdminProfile/ViewAdminProfile";
@@ -68,6 +69,7 @@ import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/Procure
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 import ViewSellerProfile from "./components/DashboardMainForSeller/ViewSellerProfile/ViewSellerProfile";
+import UpdateSellerProfile from "./components/DashboardMainForSeller/UpdateSellerProfile/UpdateSellerProfile";
 import ChangePasswordForSeller from "./components/DashboardMainForSeller/ChangePassword/ChangePassword";
 import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
 import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
@@ -170,6 +172,11 @@ const AppRoutes = () => {
         <Route path="view-admin-profile" element={<ViewAdminProfile />} />
 
         <Route path="update-admin-profile" element={<UpdateAdminProfile />} />
+
+        <Route
+          path="change-edprowise-admin-password"
+          element={<ChangePasswordForAdmin />}
+        />
 
         {/* School Table page and it's Add, View, Update Routes */}
         <Route path="schools" element={<Schools />}>
@@ -305,6 +312,7 @@ const AppRoutes = () => {
         <Route index element={<SellerDashboard />} />
 
         <Route path="view-seller-profile" element={<ViewSellerProfile />} />
+        <Route path="update-seller-profile" element={<UpdateSellerProfile />} />
 
         <Route
           path="change-seller-password"
