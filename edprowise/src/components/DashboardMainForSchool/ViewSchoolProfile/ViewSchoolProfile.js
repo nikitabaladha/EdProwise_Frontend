@@ -65,7 +65,7 @@ const ViewSchoolProfile = () => {
                   <div className="container">
                     <div className="card-header mb-2 d-flex justify-content-between align-items-center">
                       <h4 className="card-title text-center custom-heading-font card-title">
-                        School Details
+                        Your Profile Details
                       </h4>
                       <Link
                         onClick={(event) =>
@@ -80,6 +80,10 @@ const ViewSchoolProfile = () => {
                       </Link>
                     </div>
                   </div>
+
+                  <h4 className="card-title text-center custom-heading-font mb-3">
+                    School Details
+                  </h4>
 
                   <div className="row">
                     <div className="col-md-4">
@@ -170,6 +174,11 @@ const ViewSchoolProfile = () => {
                     </div>
                   </div>
 
+                  <h4 className="card-title text-center custom-heading-font">
+                    School Address Details
+                  </h4>
+                  <hr></hr>
+
                   <div className="row">
                     <div className="mb-3">
                       <label htmlFor="schoolAddress" className="form-label">
@@ -178,7 +187,6 @@ const ViewSchoolProfile = () => {
                       <p className="form-control">{school.schoolAddress}</p>
                     </div>
                   </div>
-
                   <div className="row">
                     <div className="col-md-4">
                       <div className="mb-3">
@@ -206,6 +214,10 @@ const ViewSchoolProfile = () => {
                     </div>
                   </div>
 
+                  <h4 className="card-title text-center custom-heading-font">
+                    Delivery Address Details
+                  </h4>
+                  <hr></hr>
                   <div className="row">
                     <div className="mb-3">
                       <label htmlFor="deliveryAddress" className="form-label">
@@ -252,9 +264,10 @@ const ViewSchoolProfile = () => {
                     </div>
                   </div>
 
-                  <div className="row">
-                    <div className="col-md-6"></div>
-                  </div>
+                  <h4 className="card-title text-center custom-heading-font">
+                    School Certificate Details
+                  </h4>
+                  <hr></hr>
 
                   <div className="row">
                     <div className="col-md-3">

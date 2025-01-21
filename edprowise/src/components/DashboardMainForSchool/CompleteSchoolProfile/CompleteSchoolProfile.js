@@ -228,12 +228,16 @@ const CompleteSchoolProfile = () => {
                 <div className="card-body custom-heading-padding">
                   <div className="container">
                     <div className="card-header mb-2">
-                      <h4 className="card-title text-center custom-heading-font">
+                      <h4 className="card-title custom-heading-font">
                         Complete Your Profile
                       </h4>
                     </div>
                   </div>
                   <form onSubmit={handleUpdate}>
+                    <h4 className="card-title text-center custom-heading-font">
+                      School Details
+                    </h4>
+                    <hr></hr>
                     <div className="row">
                       <div className="col-md-4">
                         <div className="mb-3">
@@ -340,6 +344,12 @@ const CompleteSchoolProfile = () => {
                         </div>
                       </div>
                     </div>
+
+                    <h4 className="card-title text-center custom-heading-font">
+                      School Address Details
+                    </h4>
+                    <hr></hr>
+
                     <div className="row">
                       <div className="mb-3">
                         <label htmlFor="schoolAddress" className="form-label">
@@ -416,11 +426,12 @@ const CompleteSchoolProfile = () => {
                       </div>
                     </div>
                     <div className="d-flex justify-content-between align-items-center gap-1">
-                      <h4 className="card-title flex-grow-1">
+                      <h4 className="card-title flex-grow-1 custom-heading-font mb-3">
                         Delivery Address Details
                       </h4>
-                      <h4> Same As Above</h4>
-                      <th style={{ width: 20 }}>
+                      <h4 className="mb-3"> Same As Above</h4>
+
+                      <th style={{ width: 20 }} className="mb-3">
                         <div className="form-check ms-1">
                           <input
                             type="checkbox"
@@ -582,6 +593,11 @@ const CompleteSchoolProfile = () => {
                         </div>
                       </div>
                     </div>
+
+                    <h4 className="card-title text-center custom-heading-font">
+                      School Certificate Details
+                    </h4>
+                    <hr></hr>
 
                     <div className="row">
                       <div className="col-md-6">

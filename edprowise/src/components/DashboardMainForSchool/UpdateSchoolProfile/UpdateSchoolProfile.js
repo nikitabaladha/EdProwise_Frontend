@@ -204,12 +204,16 @@ const UpdateSchoolProfile = () => {
                 <div className="card-body custom-heading-padding">
                   <div className="container">
                     <div className="card-header mb-2">
-                      <h4 className="card-title text-center custom-heading-font">
+                      <h4 className="card-title custom-heading-font">
                         Update Your Profile
                       </h4>
                     </div>
                   </div>
                   <form onSubmit={handleUpdate}>
+                    <h4 className="card-title text-center custom-heading-font mb-3">
+                      School Details
+                    </h4>
+
                     <div className="row">
                       <div className="col-md-4">
                         <div className="mb-3">
@@ -318,23 +322,10 @@ const UpdateSchoolProfile = () => {
                       </div>
                     </div>
 
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label htmlFor="principalName" className="form-label">
-                          Number Of Students
-                        </label>
-                        <input
-                          type="number"
-                          id="numberOfStudents"
-                          name="numberOfStudents"
-                          className="form-control"
-                          value={formData.numberOfStudents}
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
-                    </div>
-
+                    <h4 className="card-title text-center custom-heading-font">
+                      School Address Details
+                    </h4>
+                    <hr></hr>
                     <div className="row">
                       <div className="mb-3">
                         <label htmlFor="address" className="form-label">
@@ -412,6 +403,11 @@ const UpdateSchoolProfile = () => {
                         </div>
                       </div>
                     </div>
+
+                    <h4 className="card-title text-center custom-heading-font">
+                      Delivery Address Details
+                    </h4>
+                    <hr></hr>
 
                     <div className="row">
                       <div className="mb-3">
@@ -495,6 +491,10 @@ const UpdateSchoolProfile = () => {
                       </div>
                     </div>
 
+                    <h4 className="card-title text-center custom-heading-font">
+                      School Certificate Details
+                    </h4>
+                    <hr></hr>
                     <div className="row">
                       <div className="col-md-6">
                         <div className="mb-3">

@@ -76,6 +76,7 @@ const ViewAdminProfile = () => {
                 <h4 className="card-title text-center custom-heading-font">
                   Company Detail
                 </h4>
+                <hr></hr>
 
                 <div className="row">
                   <div className="col-md-4">
@@ -108,13 +109,13 @@ const ViewAdminProfile = () => {
                     </div>
                     <div className="mb-3">
                       <label htmlFor="gstin" className="form-label">
-                        GSTIN
+                        Company GSTIN
                       </label>
                       <p className="form-control">{adminProfile?.gstin}</p>
                     </div>
                     <div className="mb-3">
                       <label htmlFor="tan" className="form-label">
-                        TAN Number
+                        Company TAN Number
                       </label>
                       <p className="form-control">{adminProfile?.tan}</p>
                     </div>
@@ -130,13 +131,13 @@ const ViewAdminProfile = () => {
                     </div>
                     <div className="mb-3">
                       <label htmlFor="pan" className="form-label">
-                        PAN Number
+                        Company PAN Number
                       </label>
                       <p className="form-control">{adminProfile?.pan}</p>
                     </div>
                     <div className="mb-3">
                       <label htmlFor="cin" className="form-label">
-                        CIN Number
+                        Company CIN Number
                       </label>
                       <p className="form-control">{adminProfile?.cin}</p>
                     </div>

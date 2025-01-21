@@ -79,7 +79,7 @@ const ViewSellerProfile = () => {
                     </Link>
                   </div>
                 </div>
-                <h4 className="card-title text-center custom-heading-font">
+                <h4 className="card-title text-center custom-heading-font mb-3">
                   Company Detail
                 </h4>
 
