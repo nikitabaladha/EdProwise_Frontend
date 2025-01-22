@@ -1,95 +1,34 @@
-import React, { useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
-import AddressModal from "./AddressModal";
-import CityData from "../../../../CityData.json";
+import React, { useState, useEffect } from "react";
 
-const categories = {
-  "School Desk & Bench (Senior School)": [
-    "School Desk & Bench - Wooden",
-    "School Desk & Bench - Steel",
-    "School Desk & Bench - Wooden & Steel Combine",
-    "Others",
-  ],
-  "School Desk & Bench (Play School & KG)": [
-    "Kids School Desk & Bench - Wooden",
-    "Kids School Desk & Bench - Steel",
-    "Kids School Desk & Bench - Wooden & Steel Combine",
-    "Others",
-  ],
-  "Office Furniture": [
-    "Plastic Chair",
-    "Waiting Chair - 2 Seater",
-    "Waiting Chair - 3 Seater",
-    "Office Table",
-    "Office Chair",
-    "Sofa Set - 1 Seater",
-    "Sofa Set - 2 Seater",
-    "Sofa Set - 3 Seater",
-    "Others",
-  ],
-};
+import getAPI from "../../../../../api/getAPI";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import AddressModal from "./AddressModal";
 
 const RequestQuote = () => {
   const [formData, setFormData] = useState({
-    category: "",
-    subCategory: "",
-    productDescription: "",
+    categoryId: "",
+    subCategoryId: "",
+    description: "",
     productImage: null,
     unit: "",
-    qty: "",
-    deliveryExpectedDate: "",
+    quantity: "",
   });
   const [cart, setCart] = useState([]);
   const [isFormValid, setIsFormValid] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "productImage") {
       setFormData((prev) => ({ ...prev, productImage: files[0] }));
-    } else if (name === "category") {
-      setFormData((prev) => ({
-        ...prev,
-        category: value,
-        subCategory: "",
-      }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-  };
-
-  const handleAddToCart = (e) => {
-    e.preventDefault();
-    if (
-      !formData.category ||
-      !formData.subCategory ||
-      !formData.productDescription ||
-      !formData.unit ||
-      !formData.qty ||
-      !formData.deliveryExpectedDate
-    ) {
-      toast.error("Please fill all required fields");
-      setIsFormValid(false);
-      return;
-    }
-    setCart((prevCart) => [
-      ...prevCart,
-      { ...formData, id: prevCart.length + 1 },
-    ]);
-    setFormData({
-      category: "",
-      subCategory: "",
-      productDescription: "",
-      productImage: null,
-      unit: "",
-      qty: "",
-      deliveryExpectedDate: "",
-    });
-    toast.success("Product added to cart!");
-    setIsFormValid(true);
+    console.log(formData);
   };
 
   const handleOpenModal = () => {
@@ -100,7 +39,100 @@ const RequestQuote = () => {
     setIsModalOpen(false);
   };
 
-  const subCategoryOptions = categories[formData.category] || [];
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+
+    if (
+      !formData.categoryId ||
+      !formData.subCategoryId ||
+      !formData.description ||
+      !formData.unit ||
+      !formData.quantity
+    ) {
+      toast.error("Please fill all required fields");
+      setIsFormValid(false);
+      return;
+    }
+
+    const selectedCategory = categories.find(
+      (cat) => cat.id === formData.categoryId
+    );
+
+    const selectedSubCategory = subCategories.find(
+      (subCat) => subCat.id === formData.subCategoryId
+    );
+
+    setCart((prevCart) => [
+      ...prevCart,
+      {
+        ...formData,
+        id: prevCart.length + 1,
+        categoryName: selectedCategory ? selectedCategory.categoryName : "",
+        subCategoryName: selectedSubCategory
+          ? selectedSubCategory.subCategoryName
+          : "",
+      },
+    ]);
+
+    setFormData({
+      categoryId: "",
+      subCategoryId: "",
+      description: "",
+      productImage: null,
+      unit: "",
+      quantity: "",
+    });
+    document.getElementById("productImage").value = "";
+
+    toast.success("Product added to cart!");
+    setIsFormValid(true);
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getAPI("/category", {}, true);
+        if (!response.hasError && Array.isArray(response.data.data)) {
+          setCategories(response.data.data);
+        } else {
+          console.error("Error fetching categories.");
+        }
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleCategoryChange = async (e) => {
+    const selectedCategoryId = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      categoryId: selectedCategoryId,
+      subCategoryId: "",
+    }));
+
+    if (selectedCategoryId) {
+      try {
+        const response = await getAPI(
+          `/sub-category/${selectedCategoryId}`,
+          {},
+          true
+        );
+        if (!response.hasError && Array.isArray(response.data.data)) {
+          setSubCategories(response.data.data);
+        } else {
+          console.error("Error fetching subcategories.");
+          setSubCategories([]);
+        }
+      } catch (err) {
+        console.error("Error fetching subcategories:", err);
+        setSubCategories([]);
+      }
+    } else {
+      setSubCategories([]);
+    }
+  };
 
   return (
     <div className="container">
@@ -124,40 +156,40 @@ const RequestQuote = () => {
                       </label>
                       <select
                         id="category"
-                        name="category"
+                        name="categoryId"
                         className="form-control"
-                        value={formData.category}
-                        onChange={handleChange}
+                        value={formData.categoryId}
+                        onChange={handleCategoryChange}
                         required
                       >
                         <option value="">Select Category</option>
-                        {Object.keys(categories).map((category) => (
-                          <option key={category} value={category}>
-                            {category}
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.categoryName}
                           </option>
                         ))}
                       </select>
                     </div>
                   </div>
                   <div className="col-md-6">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="subCategory" className="form-label">
                         Product Required – Select sub category
                       </label>
+
                       <select
                         id="subCategory"
-                        name="subCategory"
+                        name="subCategoryId"
                         className="form-control"
-                        value={formData.subCategory}
+                        value={formData.subCategoryId}
                         onChange={handleChange}
                         required
-                        disabled={!subCategoryOptions.length}
+                        disabled={subCategories.length === 0}
                       >
                         <option value="">Select Sub Category</option>
-                        {subCategoryOptions.map((subCategory) => (
-                          <option key={subCategory} value={subCategory}>
-                            {subCategory}
+                        {subCategories.map((subCategory) => (
+                          <option key={subCategory.id} value={subCategory.id}>
+                            {subCategory.subCategoryName}
                           </option>
                         ))}
                       </select>
@@ -166,7 +198,6 @@ const RequestQuote = () => {
                 </div>
                 <div className="row">
                   <div className="col-md-6">
-                    {" "}
                     <div className="mb-3">
                       <label
                         htmlFor="productDescription"
@@ -177,9 +208,9 @@ const RequestQuote = () => {
                       <input
                         type="text"
                         id="productDescription"
-                        name="productDescription"
+                        name="description"
                         className="form-control"
-                        value={formData.productDescription}
+                        value={formData.description}
                         onChange={handleChange}
                         required
                       />
@@ -197,13 +228,12 @@ const RequestQuote = () => {
                         className="form-control"
                         accept="image/*,application/pdf"
                         onChange={handleChange}
-                        required
                       />
                     </div>
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="unit" className="form-label">
                         Unit
@@ -227,40 +257,20 @@ const RequestQuote = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    {" "}
+                  <div className="col-md-6">
                     <div className="mb-3">
-                      <label htmlFor="qty" className="form-label">
+                      <label htmlFor="quantity" className="form-label">
                         Quantity
                       </label>
                       <input
                         type="number"
-                        id="qty"
-                        name="qty"
+                        id="quantity"
+                        name="quantity"
                         className="form-control"
-                        value={formData.qty}
+                        value={formData.quantity}
                         onChange={handleChange}
                         required
                         min="1"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="deliveryExpectedDate"
-                        className="form-label"
-                      >
-                        Delivery Expected Date
-                      </label>
-                      <input
-                        type="date"
-                        id="deliveryExpectedDate"
-                        name="deliveryExpectedDate"
-                        className="form-control"
-                        value={formData.deliveryExpectedDate}
-                        onChange={handleChange}
-                        required
                       />
                     </div>
                   </div>
@@ -278,6 +288,7 @@ const RequestQuote = () => {
           </div>
         </div>
       </div>
+
       {isFormValid && (
         <div className="row p-2">
           <div className="col-xl-12">
@@ -305,27 +316,30 @@ const RequestQuote = () => {
                         <th>Product Image</th>
                         <th>Unit</th>
                         <th>Quantity</th>
-                        <th>Delivery Expected Date</th>
                       </tr>
                     </thead>
                     <tbody>
                       {cart.map((item, index) => (
                         <tr key={index}>
-                          <td>{item.category}</td>
-                          <td>{item.subCategory}</td>
-                          <td>{item.productDescription}</td>
-                          <div className="d-flex align-items-center">
-                            <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                              <img
-                                src={item.productImage}
-                                alt={item.subCategory}
-                                className="avatar-md"
-                              />
+                          <td>{item.categoryName} </td>
+                          <td>{item.subCategoryName}</td>
+                          <td>{item.description}</td>
+
+                          <td>
+                            <div className="d-flex align-items-center">
+                              <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                {item.productImage && (
+                                  <img
+                                    src={URL.createObjectURL(item.productImage)}
+                                    alt={item.description}
+                                    className="avatar-md"
+                                  />
+                                )}
+                              </div>
                             </div>
-                          </div>
+                          </td>
                           <td>{item.unit}</td>
-                          <td>{item.qty}</td>
-                          <td>{item.deliveryExpectedDate}</td>
+                          <td>{item.quantity}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -336,7 +350,13 @@ const RequestQuote = () => {
           </div>
         </div>
       )}
-      {isModalOpen && <AddressModal onClose={handleCloseModal} />}
+      {isModalOpen && (
+        <AddressModal
+          onClose={handleCloseModal}
+          cart={cart}
+          formData={formData}
+        />
+      )}
     </div>
   );
 };
