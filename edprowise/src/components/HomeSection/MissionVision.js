@@ -73,21 +73,23 @@ const VisionMissionSection = () => {
       ),
       title: "Mission",
       description:
-        "bffjadjdbfh bfa bfjnvv jjv njvn nj cc ajkdkc ccjacj bjaajk nonee jenen",
+        "To empower individuals through innovative education and exceptional learning experiences.",
     },
     {
       id: 2,
       className: "visionn",
       icon: <div className="cart-vm-icon">👁️</div>,
       title: "Vision",
-      description: "bffjadjdbfh bfa bfjnvv jjv njvn njbabhj anbcjka",
+      description:
+        "To be a leader in providing transformative learning opportunities globally.",
     },
     {
       id: 3,
       className: "valuee",
       icon: <div className="cart-vm-icon">💎</div>,
       title: "Value",
-      description: "bffjadjdbfh bfa bfjnvv jjv njvn nj",
+      description:
+        "We value integrity, excellence, and collaboration in all our endeavors.",
     },
   ];
 

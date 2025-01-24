@@ -33,40 +33,40 @@ const WebsiteMain = () => {
 
   return (
     <>
-      <div>
+      <div className="font-family-web">
         <Navbar />
-        <div className="page-wrapper font-family-web">
+        <div className="page-wrapper">
           <Outlet />
         </div>
         <DashboardFooter />
-
-        {showBackToTop && (
-          <button
-            className="back-to-top"
-            onClick={scrollToTop}
-            style={{
-              position: "fixed",
-              bottom: "20px",
-              right: "20px",
-              zIndex: "1000",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "2px solid blue",
-              borderRadius: "50%",
-              width: "50px",
-              height: "50px",
-              cursor: "pointer",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              opacity: 0.9,
-            }}
-          >
-            ↑
-          </button>
-        )}
       </div>
+
+      {showBackToTop && (
+        <button
+          className="back-to-top"
+          onClick={scrollToTop}
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            zIndex: "1000",
+            backgroundColor: "#007bff",
+            color: "white",
+            border: "2px solid blue",
+            borderRadius: "50%",
+            width: "50px",
+            height: "50px",
+            cursor: "pointer",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: 0.9,
+          }}
+        >
+          ↑
+        </button>
+      )}
     </>
   );
 };

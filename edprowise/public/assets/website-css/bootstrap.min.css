@@ -586,7 +586,7 @@ progress {
 }
 @media (max-width: 2000px) {
   .container-big {
-    max-width: 1800px;
+    max-width: 1800px !important;
   }
 }
 .row-web {
@@ -6545,6 +6545,9 @@ fieldset:disabled .btn {
   padding: 0.25rem !important;
 }
 .p-2 {
+  padding: 0.5rem !important;
+}
+.p-2-web {
   padding: 0.5rem !important;
 }
 .p-3 {

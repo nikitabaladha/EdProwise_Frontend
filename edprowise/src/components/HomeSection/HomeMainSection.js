@@ -89,11 +89,11 @@ const HomeMainSection = () => {
     {
       id: 1,
       icon: "fi flaticon-training-1",
-      title: "10+ Happy Client",
+      title: "10+ Happy Clients",
       description:
-        "We are providing the best Courses. That help you be expert.",
+        "We take pride in our ability to deliver tailored courses and comprehensive training programs that effectively meet the unique and evolving needs of each client, ensuring satisfaction, measurable outcomes, and sustainable, long-term growth opportunities.",
       hiddenDescription:
-        "We are providing the best Courses. That help you be expert.",
+        "We take pride in our ability to deliver tailored courses and comprehensive training programs that effectively meet the unique and evolving needs of each client, ensuring satisfaction, measurable outcomes, and sustainable, long-term growth opportunities.",
       link: "#",
     },
     {
@@ -101,29 +101,29 @@ const HomeMainSection = () => {
       icon: "fi flaticon-team",
       title: "100% Client Retention",
       description:
-        "We are providing the best Courses. That help you be expert.",
+        "Our dedication to building long-term relationships, delivering exceptional services, and providing unmatched value has resulted in a perfect client retention rate, demonstrating trust, reliability, and client satisfaction.",
       hiddenDescription:
-        "We are providing the best Courses. That help you be expert.",
+        "Our dedication to building long-term relationships, delivering exceptional services, and providing unmatched value has resulted in a perfect client retention rate, demonstrating trust, reliability, and client satisfaction.",
       link: "#",
     },
     {
       id: 3,
       icon: "fi flaticon-video-lesson",
-      title: "20K+ User",
+      title: "20K+ Users",
       description:
-        "We are providing the best Courses. That help you be expert.",
+        "Join our community of over 20,000 users who trust our platform to learn, grow, and achieve their goals with high-quality courses, valuable resources, expert guidance, personalized assistance, and continuous support.",
       hiddenDescription:
-        "We are providing the best Courses. That help you be expert.",
+        "Join our community of over 20,000 users who trust our platform to learn, grow, and achieve their goals with high-quality courses, valuable resources, expert guidance, personalized assistance, and continuous support.",
       link: "#",
     },
     {
       id: 4,
       icon: "fi flaticon-training",
-      title: "100+ Dashboard & Reports",
+      title: "100+ Dashboards & Reports",
       description:
-        "We are providing the best Courses. That help you be expert.",
+        "Unlock powerful insights with our 100+ dashboards and reports designed to provide actionable data for informed, strategic decision-making and improved overall performance outcomes and efficiency.",
       hiddenDescription:
-        "We are providing the best Courses. That help you be expert.",
+        "Unlock powerful insights with our 100+ dashboards and reports designed to provide actionable data for informed, strategic decision-making and improved overall performance outcomes and efficiency.",
       link: "#",
     },
   ];
@@ -135,7 +135,7 @@ const HomeMainSection = () => {
           <div className="slide-track" ref={slideTrackRef}>
             {slideNames.map((name, index) => (
               <div key={index} className="slidee">
-                <div className="fw-bold p-2">{name}</div>
+                <div className="fw-bold p-2-web">{name}</div>
               </div>
             ))}
           </div>
@@ -151,12 +151,9 @@ const HomeMainSection = () => {
                   <h2 className="font-family-web">
                     Build Your First Step Of
                     <span>
-                      {/* <small id="changing" className="fade-in" key={counter}>
-                        {words[counter]}
-                      </small> */}
                       <small
                         id="changing"
-                        className="fade-in hf-size"
+                        className="fade-in hf-size fw-bold"
                         key={counter}
                       >
                         {words[counter]}

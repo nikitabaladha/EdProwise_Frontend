@@ -25,6 +25,15 @@ const UserLogin = () => {
     setGeneralError("");
   };
 
+  const navigateToHome = (event) => {
+    event.preventDefault();
+    navigate("/");
+  };
+  const navigateToSignup = (event) => {
+    event.preventDefault();
+    navigate("/signup");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -72,11 +81,6 @@ const UserLogin = () => {
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
-
-  const navigateToHome = (event) => {
-    event.preventDefault(); // Prevent the default link behavior
-    navigate("/"); // Navigate programmatically
-  };
   return (
     <>
       <div className="form-body form-left">
@@ -101,7 +105,7 @@ const UserLogin = () => {
             <div className="form-content justify-content-end">
               <div className="form-items">
                 <div className="website-logo-inside logo-normal">
-                  <Link to="" className="custom-link">
+                  <Link to="/" className="custom-link">
                     <div>
                       <div className="login-logo-font">EdProwise</div>
                     </div>
@@ -176,13 +180,19 @@ const UserLogin = () => {
                         borderColor: "#ffc801",
                       }}
                     >
-                      Login
+                      Sign In
                     </button>
                   </div>
+                  <Link to="/" onClick={navigateToHome}>
+                    {" "}
+                    Go to Home{" "}
+                  </Link>
+                  <div className=" mt-3 text-center">
+                    <Link onClick={navigateToSignup}>
+                      If you are not Register, Sign Up Here
+                    </Link>
+                  </div>
                 </form>
-                <Link to="/" onClick={navigateToHome}>
-                  Go to Home
-                </Link>
               </div>
             </div>
           </div>

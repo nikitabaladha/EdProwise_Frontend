@@ -3,7 +3,7 @@ import React from "react";
 const BusinessSection = () => {
   const courses = [
     {
-      id: "s1",
+      id: "1",
       icon: "fi flaticon-user-experience",
       title: "PF & ESI Consultancy",
       description:
@@ -11,7 +11,7 @@ const BusinessSection = () => {
       link: "#",
     },
     {
-      id: "s2",
+      id: "2",
       icon: "fi flaticon-megaphone",
       title: "Student Stationery",
       description:
@@ -19,7 +19,7 @@ const BusinessSection = () => {
       link: "#",
     },
     {
-      id: "s3",
+      id: "3",
       icon: "fi flaticon-code",
       title: "Online Marketing",
       description:
@@ -27,7 +27,7 @@ const BusinessSection = () => {
       link: "#",
     },
     {
-      id: "s4",
+      id: "4",
       icon: "fi flaticon-knowledge",
       title: "Consultancy",
       description:

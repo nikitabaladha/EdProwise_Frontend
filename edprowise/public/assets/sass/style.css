@@ -12,7 +12,7 @@ Version:        1.0.0
 	1.2 Global Elements
 
 2. header
-	2.1 topbar
+	2.1 topbar-web
 	2.2 navigation
 
 3. content
@@ -93,6 +93,8 @@ Version:        1.0.0
 /*------------------------------------------------------------------
 1. General
 ----------------------------------------------------------------*/
+
+/* My custom changes */
 .font-family-web * {
   font-family: "Urbanist" !important;
 }
@@ -101,6 +103,7 @@ Version:        1.0.0
 .font-weight-web-h2 a {
   font-weight: 600 !important;
 }
+
 .job-card .details h3 {
   font-weight: 500 !important;
 }
@@ -110,6 +113,12 @@ Version:        1.0.0
 
 .read-moree {
   font-size: 1.2rem;
+}
+
+/* =========================== */
+
+.static-hero-s2 .hero-content .slide-title h2 span {
+  margin: 0px 5px 0px 8px;
 }
 
 /* teams styles */
@@ -663,7 +672,7 @@ body {
   color: #625f71;
   background-color: #fff;
   font-size: 18px;
-  font-size: 1.2rem;
+  font-size: 1.2rem !important;
   overflow-x: hidden;
 }
 
@@ -2031,11 +2040,11 @@ img {
   z-index: -1;
 }
 
-.blog-sidebar .about-widget .img-holder {
+.blog-sidebar .about-widget .img-holder-web {
   margin-bottom: 25px;
 }
 
-.blog-sidebar .about-widget .img-holder img {
+.blog-sidebar .about-widget .img-holder-web img {
   border-radius: 50%;
   width: 100%;
   max-width: 200px;
@@ -2159,12 +2168,12 @@ img {
   padding-top: 15px;
 }
 
-.blog-sidebar .recent-post-widget .post .img-holder {
+.blog-sidebar .recent-post-widget .post .img-holder-web {
   width: 90px;
   float: left;
 }
 
-.blog-sidebar .recent-post-widget .post .img-holder img {
+.blog-sidebar .recent-post-widget .post .img-holder-web img {
   border-radius: 6px;
 }
 
@@ -2440,14 +2449,14 @@ img {
 /*--------------------------------------------------------------
 2. header
 --------------------------------------------------------------*/
-/*-- 2.1 topbar --*/
-.topbar {
+/*-- 2.1 topbar-web --*/
+.topbar-web {
   background: #4540e1;
   padding: 0 60px;
 }
 
 @media (max-width: 991px) {
-  .topbar {
+  .topbar-web {
     text-align: center;
     padding: 0;
   }
@@ -2460,13 +2469,13 @@ img {
   }
 }
 
-.topbar {
+.topbar-web {
   font-size: 16px;
   color: #e5e3e3;
   margin: 0;
 }
 
-.topbar ul {
+.topbar-web ul {
   overflow: hidden;
   list-style: none;
   float: right;
@@ -2474,7 +2483,7 @@ img {
 }
 
 @media (max-width: 991px) {
-  .topbar ul {
+  .topbar-web ul {
     float: none;
     display: inline-block;
     display: -webkit-box;
@@ -2489,7 +2498,7 @@ img {
   }
 }
 
-.topbar ul li {
+.topbar-web ul li {
   font-size: 15px;
   float: left;
   padding: 10px 10px;
@@ -2498,53 +2507,54 @@ img {
 }
 
 @media (max-width: 991px) {
-  .topbar ul li {
+  .topbar-web ul li {
     padding: 15px 10px;
   }
 }
 
-.topbar .contact-info ul li a {
+.topbar-web .contact-info ul li a {
   color: #fff;
 }
 
-.topbar .contact-info ul li a:hover {
+.topbar-web .contact-info ul li a:hover {
   color: #4540e1;
 }
 
-.topbar ul li:first-child {
+.topbar-web ul li:first-child {
   padding-left: 0;
 }
 
-.topbar .contact-intro ul {
+.topbar-web .contact-intro ul {
   float: left;
   margin-bottom: 0;
+  padding-left: 0px !important;
 }
 
 @media (max-width: 991px) {
-  .topbar .contact-intro ul {
+  .topbar-web .contact-intro ul {
     float: none;
     justify-content: center;
   }
 }
 
 @media (max-width: 1200px) {
-  .topbar ul li {
+  .topbar-web ul li {
     font-size: 11px;
     padding: 15px 10px;
   }
 }
 
 @media (max-width: 991px) {
-  .topbar ul li {
+  .topbar-web ul li {
     font-size: 13px;
   }
-  .topbar {
+  .topbar-web {
     padding: 10px 0;
   }
 }
 
 @media (max-width: 767px) {
-  .topbar ul li {
+  .topbar-web ul li {
     float: left;
     border: none;
     padding: 8px 6px;
@@ -2553,13 +2563,13 @@ img {
 }
 
 @media (max-width: 590px) {
-  .topbar ul li {
+  .topbar-web ul li {
     float: none;
   }
-  .topbar .contact-info ul li {
+  .topbar-web .contact-info ul li {
     float: left;
   }
-  .topbar ul {
+  .topbar-web ul {
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
   }
@@ -2571,7 +2581,13 @@ img {
   }
 }
 
-.topbar .theme-btn-s2 {
+@media (max-width: 993px) {
+  .contact-location {
+    display: none;
+  }
+}
+
+.topbar-web .theme-btn-s2 {
   padding: 15px 20px;
   font-size: 14px;
   font-weight: 600;
@@ -2579,14 +2595,14 @@ img {
   color: #fff !important;
 }
 
-.topbar ul .fi {
+.topbar-web ul .fi {
   position: relative;
   top: 2px;
   display: inline-block;
   padding-right: 6px;
 }
 
-.topbar ul .fi:before {
+.topbar-web ul .fi:before {
   font-size: 15px;
   font-size: 1rem;
   color: #fff;
@@ -2896,9 +2912,13 @@ img {
 .wpo-site-header .header-right .close-form .login {
   font-size: 18px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 600 !important;
   color: #1a1729;
   margin-right: 20px;
+}
+
+.login-weight {
+  font-weight: 600 !important;
 }
 
 @media (max-width: 1399px) {
@@ -7605,6 +7625,7 @@ img {
   .wpo-about-section-s4 .wpo-about-wrap .wpo-about-text,
   .wpo-about-section-s5 .wpo-about-wrap .wpo-about-text {
     margin-top: 30px;
+    padding-bottom: 30px;
   }
 }
 
@@ -8568,25 +8589,25 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.s1
+  .grid-web.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.s1
+  .grid-web.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.s1
+  .grid-web.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.s1
+  .grid-web.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -8595,25 +8616,25 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.s2
+  .grid-web.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.s2
+  .grid-web.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.s2
+  .grid-web.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.s2
+  .grid-web.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -8622,25 +8643,25 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.s3
+  .grid-web.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.s3
+  .grid-web.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.s3
+  .grid-web.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.s3
+  .grid-web.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -8649,25 +8670,25 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.s4
+  .grid-web.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.s4
+  .grid-web.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.s4
+  .grid-web.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.s4
+  .grid-web.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -8676,25 +8697,25 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.s5
+  .grid-web.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.s5
+  .grid-web.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.s5
+  .grid-web.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.s5
+  .grid-web.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -8703,87 +8724,87 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.s6
+  .grid-web.s6
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.s6
+  .grid-web.s6
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.s6
+  .grid-web.s6
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.s6
+  .grid-web.s6
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
   background: #ff4c27;
 }
 
-.wpo-courses-section .wpo-courses-wrap .grid:hover .wpo-courses-item,
-.wpo-courses-section .wpo-courses-wrap .grid.active .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid:hover .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid.active .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid:hover .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid.active .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid:hover .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid.active .wpo-courses-item {
+.wpo-courses-section .wpo-courses-wrap .grid-web:hover .wpo-courses-item,
+.wpo-courses-section .wpo-courses-wrap .grid-web.active .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web:hover .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web.active .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web:hover .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web.active .wpo-courses-item,
+.wpo-courses-section-s5 .wpo-courses-wrap .grid-web:hover .wpo-courses-item,
+.wpo-courses-section-s5 .wpo-courses-wrap .grid-web.active .wpo-courses-item {
   background: #ff4c27;
 }
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2 {
@@ -8792,56 +8813,56 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2
   a,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2
   a,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2
   a,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2
   a,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2
   a,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2
   a,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2
   a,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2
@@ -8851,56 +8872,56 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2
   a:hover,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2
   a:hover,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2
   a:hover,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2
   a:hover,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2
   a:hover,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2
   a:hover,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   h2
   a:hover,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   h2
@@ -8910,49 +8931,49 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   p,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   p,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   p,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   p,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   p,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   p,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   p,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   p {
@@ -8961,49 +8982,49 @@ img {
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active
+  .grid-web.active
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -9011,62 +9032,65 @@ img {
   color: #ff4c27;
 }
 
-.wpo-courses-section .wpo-courses-wrap .grid:hover.s1 .wpo-courses-item,
-.wpo-courses-section .wpo-courses-wrap .grid.active.s1 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid:hover.s1 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid.active.s1 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid:hover.s1 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid.active.s1 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid:hover.s1 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid.active.s1 .wpo-courses-item {
+.wpo-courses-section .wpo-courses-wrap .grid-web:hover.s1 .wpo-courses-item,
+.wpo-courses-section .wpo-courses-wrap .grid-web.active.s1 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web:hover.s1 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web.active.s1 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web:hover.s1 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web.active.s1 .wpo-courses-item,
+.wpo-courses-section-s5 .wpo-courses-wrap .grid-web:hover.s1 .wpo-courses-item,
+.wpo-courses-section-s5
+  .wpo-courses-wrap
+  .grid-web.active.s1
+  .wpo-courses-item {
   background: #f2bc00;
 }
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover.s1
+  .grid-web:hover.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active.s1
+  .grid-web.active.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover.s1
+  .grid-web:hover.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active.s1
+  .grid-web.active.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover.s1
+  .grid-web:hover.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active.s1
+  .grid-web.active.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover.s1
+  .grid-web:hover.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active.s1
+  .grid-web.active.s1
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -9074,62 +9098,65 @@ img {
   color: #f2bc00;
 }
 
-.wpo-courses-section .wpo-courses-wrap .grid:hover.s2 .wpo-courses-item,
-.wpo-courses-section .wpo-courses-wrap .grid.active.s2 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid:hover.s2 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid.active.s2 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid:hover.s2 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid.active.s2 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid:hover.s2 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid.active.s2 .wpo-courses-item {
+.wpo-courses-section .wpo-courses-wrap .grid-web:hover.s2 .wpo-courses-item,
+.wpo-courses-section .wpo-courses-wrap .grid-web.active.s2 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web:hover.s2 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web.active.s2 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web:hover.s2 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web.active.s2 .wpo-courses-item,
+.wpo-courses-section-s5 .wpo-courses-wrap .grid-web:hover.s2 .wpo-courses-item,
+.wpo-courses-section-s5
+  .wpo-courses-wrap
+  .grid-web.active.s2
+  .wpo-courses-item {
   background: #15a280;
 }
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover.s2
+  .grid-web:hover.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active.s2
+  .grid-web.active.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover.s2
+  .grid-web:hover.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active.s2
+  .grid-web.active.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover.s2
+  .grid-web:hover.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active.s2
+  .grid-web.active.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover.s2
+  .grid-web:hover.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active.s2
+  .grid-web.active.s2
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -9137,62 +9164,65 @@ img {
   color: #15a280;
 }
 
-.wpo-courses-section .wpo-courses-wrap .grid:hover.s3 .wpo-courses-item,
-.wpo-courses-section .wpo-courses-wrap .grid.active.s3 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid:hover.s3 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid.active.s3 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid:hover.s3 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid.active.s3 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid:hover.s3 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid.active.s3 .wpo-courses-item {
+.wpo-courses-section .wpo-courses-wrap .grid-web:hover.s3 .wpo-courses-item,
+.wpo-courses-section .wpo-courses-wrap .grid-web.active.s3 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web:hover.s3 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web.active.s3 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web:hover.s3 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web.active.s3 .wpo-courses-item,
+.wpo-courses-section-s5 .wpo-courses-wrap .grid-web:hover.s3 .wpo-courses-item,
+.wpo-courses-section-s5
+  .wpo-courses-wrap
+  .grid-web.active.s3
+  .wpo-courses-item {
   background: #4540e1;
 }
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover.s3
+  .grid-web:hover.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active.s3
+  .grid-web.active.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover.s3
+  .grid-web:hover.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active.s3
+  .grid-web.active.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover.s3
+  .grid-web:hover.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active.s3
+  .grid-web.active.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover.s3
+  .grid-web:hover.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active.s3
+  .grid-web.active.s3
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -9200,62 +9230,65 @@ img {
   color: #4540e1;
 }
 
-.wpo-courses-section .wpo-courses-wrap .grid:hover.s4 .wpo-courses-item,
-.wpo-courses-section .wpo-courses-wrap .grid.active.s4 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid:hover.s4 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid.active.s4 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid:hover.s4 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid.active.s4 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid:hover.s4 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid.active.s4 .wpo-courses-item {
+.wpo-courses-section .wpo-courses-wrap .grid-web:hover.s4 .wpo-courses-item,
+.wpo-courses-section .wpo-courses-wrap .grid-web.active.s4 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web:hover.s4 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web.active.s4 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web:hover.s4 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web.active.s4 .wpo-courses-item,
+.wpo-courses-section-s5 .wpo-courses-wrap .grid-web:hover.s4 .wpo-courses-item,
+.wpo-courses-section-s5
+  .wpo-courses-wrap
+  .grid-web.active.s4
+  .wpo-courses-item {
   background: #f9406c;
 }
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover.s4
+  .grid-web:hover.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active.s4
+  .grid-web.active.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover.s4
+  .grid-web:hover.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active.s4
+  .grid-web.active.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover.s4
+  .grid-web:hover.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active.s4
+  .grid-web.active.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover.s4
+  .grid-web:hover.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active.s4
+  .grid-web.active.s4
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -9263,62 +9296,65 @@ img {
   color: #f9406c;
 }
 
-.wpo-courses-section .wpo-courses-wrap .grid:hover.s5 .wpo-courses-item,
-.wpo-courses-section .wpo-courses-wrap .grid.active.s5 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid:hover.s5 .wpo-courses-item,
-.wpo-courses-section-s2 .wpo-courses-wrap .grid.active.s5 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid:hover.s5 .wpo-courses-item,
-.wpo-courses-section-s4 .wpo-courses-wrap .grid.active.s5 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid:hover.s5 .wpo-courses-item,
-.wpo-courses-section-s5 .wpo-courses-wrap .grid.active.s5 .wpo-courses-item {
+.wpo-courses-section .wpo-courses-wrap .grid-web:hover.s5 .wpo-courses-item,
+.wpo-courses-section .wpo-courses-wrap .grid-web.active.s5 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web:hover.s5 .wpo-courses-item,
+.wpo-courses-section-s2 .wpo-courses-wrap .grid-web.active.s5 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web:hover.s5 .wpo-courses-item,
+.wpo-courses-section-s4 .wpo-courses-wrap .grid-web.active.s5 .wpo-courses-item,
+.wpo-courses-section-s5 .wpo-courses-wrap .grid-web:hover.s5 .wpo-courses-item,
+.wpo-courses-section-s5
+  .wpo-courses-wrap
+  .grid-web.active.s5
+  .wpo-courses-item {
   background: #0467fd;
 }
 
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid:hover.s5
+  .grid-web:hover.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section
   .wpo-courses-wrap
-  .grid.active.s5
+  .grid-web.active.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid:hover.s5
+  .grid-web:hover.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s2
   .wpo-courses-wrap
-  .grid.active.s5
+  .grid-web.active.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid:hover.s5
+  .grid-web:hover.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s4
   .wpo-courses-wrap
-  .grid.active.s5
+  .grid-web.active.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid:hover.s5
+  .grid-web:hover.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon,
 .wpo-courses-section-s5
   .wpo-courses-wrap
-  .grid.active.s5
+  .grid-web.active.s5
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -9814,6 +9850,7 @@ img {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+  padding-left: 0px !important;
 }
 
 .wpo-popular-area
@@ -11179,8 +11216,8 @@ img {
   }
 }
 
-.wpo-choose-section .wpo-choose-wrap .grid,
-.wpo-choose-section-s2 .wpo-choose-wrap .grid {
+.wpo-choose-section .wpo-choose-wrap .grid-web,
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
   width: 50%;
   float: left;
   position: relative;
@@ -11190,22 +11227,22 @@ img {
 }
 
 @media (max-width: 767px) {
-  .wpo-choose-section .wpo-choose-wrap .grid,
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid {
+  .wpo-choose-section .wpo-choose-wrap .grid-web,
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
     width: 50%;
   }
 }
 
 @media (max-width: 575px) {
-  .wpo-choose-section .wpo-choose-wrap .grid,
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid {
+  .wpo-choose-section .wpo-choose-wrap .grid-web,
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
     width: 100%;
     text-align: center;
   }
 }
 
-.wpo-choose-section .wpo-choose-wrap .grid .icon,
-.wpo-choose-section-s2 .wpo-choose-wrap .grid .icon {
+.wpo-choose-section .wpo-choose-wrap .grid-web .icon,
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web .icon {
   width: 70px;
   height: 70px;
   line-height: 70px;
@@ -11218,30 +11255,30 @@ img {
 }
 
 @media (max-width: 575px) {
-  .wpo-choose-section .wpo-choose-wrap .grid .icon,
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid .icon {
+  .wpo-choose-section .wpo-choose-wrap .grid-web .icon,
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web .icon {
     margin: 0 auto;
     margin-bottom: 20px;
   }
 }
 
-.wpo-choose-section .wpo-choose-wrap .grid:nth-child(2) .icon,
-.wpo-choose-section-s2 .wpo-choose-wrap .grid:nth-child(2) .icon {
+.wpo-choose-section .wpo-choose-wrap .grid-web:nth-child(2) .icon,
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web:nth-child(2) .icon {
   background-color: #15a280;
 }
 
-.wpo-choose-section .wpo-choose-wrap .grid:nth-child(3) .icon,
-.wpo-choose-section-s2 .wpo-choose-wrap .grid:nth-child(3) .icon {
+.wpo-choose-section .wpo-choose-wrap .grid-web:nth-child(3) .icon,
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web:nth-child(3) .icon {
   background-color: #0467fd;
 }
 
-.wpo-choose-section .wpo-choose-wrap .grid:nth-child(4) .icon,
-.wpo-choose-section-s2 .wpo-choose-wrap .grid:nth-child(4) .icon {
+.wpo-choose-section .wpo-choose-wrap .grid-web:nth-child(4) .icon,
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web:nth-child(4) .icon {
   background-color: #f9406c;
 }
 
-.wpo-choose-section .wpo-choose-wrap .grid h3,
-.wpo-choose-section-s2 .wpo-choose-wrap .grid-web h3 {
+.wpo-choose-section .wpo-choose-wrap .grid-web h3,
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web-web h3 {
   font-size: 25px;
   font-style: normal;
   font-weight: 700;
@@ -11251,20 +11288,20 @@ img {
 }
 
 @media (max-width: 1199px) {
-  .wpo-choose-section .wpo-choose-wrap .grid h3,
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid h3 {
+  .wpo-choose-section .wpo-choose-wrap .grid-web h3,
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web h3 {
     font-size: 20px;
     font-size: 1.33333rem;
   }
 }
 
-.wpo-choose-section .wpo-choose-wrap .grid h3 span,
-.wpo-choose-section-s2 .wpo-choose-wrap .grid h3 span {
+.wpo-choose-section .wpo-choose-wrap .grid-web h3 span,
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web h3 span {
   font-family: "Urbanist";
 }
 
-.wpo-choose-section .wpo-choose-wrap .grid h3 + p,
-.wpo-choose-section-s2 .wpo-choose-wrap .grid h3 + p {
+.wpo-choose-section .wpo-choose-wrap .grid-web h3 + p,
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web h3 + p {
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
@@ -11275,8 +11312,8 @@ img {
 }
 
 @media (max-width: 1399px) {
-  .wpo-choose-section .wpo-choose-wrap .grid h3 + p,
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid h3 + p {
+  .wpo-choose-section .wpo-choose-wrap .grid-web h3 + p,
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web h3 + p {
     font-size: 16px;
     font-size: 1.06667rem;
   }
@@ -12457,35 +12494,35 @@ img {
   }
 }
 
-.wpo-choose-section-s2 .wpo-choose-wrap .grid {
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
   width: 25%;
   padding: 0 40px;
 }
 
 @media (max-width: 1399px) {
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid {
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
     padding: 0 15px;
   }
 }
 
 @media (max-width: 991px) {
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid {
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
     width: 50%;
   }
 }
 
 @media (max-width: 575px) {
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid {
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
     width: 100%;
   }
 }
 
-.wpo-choose-section-s2 .wpo-choose-wrap .grid .info {
+.wpo-choose-section-s2 .wpo-choose-wrap .grid-web .info {
   max-width: 270px;
 }
 
 @media (max-width: 575px) {
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid .info {
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web .info {
     margin: 0 auto;
   }
 }
@@ -12497,6 +12534,10 @@ img {
 
 .wpo-subscribe-section-s2 .container-fluid {
   padding: 0;
+}
+
+.container-fluid {
+  max-width: 100% !important;
 }
 
 .wpo-subscribe-section-s2 .container-fluid .wpo-subscribe-wrap {
@@ -13136,22 +13177,22 @@ img {
   }
 }
 
-.wpo-fun-fact-section .wpo-fun-fact-grids .grid,
-.wpo-fun-fact-section-s2 .wpo-fun-fact-grids .grid {
+.wpo-fun-fact-section .wpo-fun-fact-grids .grid-web,
+.wpo-fun-fact-section-s2 .wpo-fun-fact-grids .grid-web {
   width: 25%;
   float: left;
 }
 
 @media (max-width: 767px) {
-  .wpo-fun-fact-section .wpo-fun-fact-grids .grid,
-  .wpo-fun-fact-section-s2 .wpo-fun-fact-grids .grid {
+  .wpo-fun-fact-section .wpo-fun-fact-grids .grid-web,
+  .wpo-fun-fact-section-s2 .wpo-fun-fact-grids .grid-web {
     width: 50%;
     margin-bottom: 50px;
   }
 }
 
-.wpo-fun-fact-section .grid h3,
-.wpo-fun-fact-section-s2 .grid h3 {
+.wpo-fun-fact-section .grid-web h3,
+.wpo-fun-fact-section-s2 .grid-web h3 {
   font-size: 60px;
   font-weight: 700;
   line-height: normal;
@@ -13168,37 +13209,37 @@ img {
   justify-content: center;
 }
 
-.wpo-fun-fact-section .grid h3 span,
-.wpo-fun-fact-section-s2 .grid h3 span {
+.wpo-fun-fact-section .grid-web h3 span,
+.wpo-fun-fact-section-s2 .grid-web h3 span {
   font-family: "Urbanist";
 }
 
 @media (max-width: 1200px) {
-  .wpo-fun-fact-section .grid h3,
-  .wpo-fun-fact-section-s2 .grid h3 {
+  .wpo-fun-fact-section .grid-web h3,
+  .wpo-fun-fact-section-s2 .grid-web h3 {
     font-size: 50px;
     ont-size: 3.33333rem;
   }
 }
 
 @media (max-width: 991px) {
-  .wpo-fun-fact-section .grid h3,
-  .wpo-fun-fact-section-s2 .grid h3 {
+  .wpo-fun-fact-section .grid-web h3,
+  .wpo-fun-fact-section-s2 .grid-web h3 {
     font-size: 40px;
     font-size: 2.66667rem;
   }
 }
 
 @media (max-width: 767px) {
-  .wpo-fun-fact-section .grid h3,
-  .wpo-fun-fact-section-s2 .grid h3 {
+  .wpo-fun-fact-section .grid-web h3,
+  .wpo-fun-fact-section-s2 .grid-web h3 {
     font-size: 35px;
     font-size: 2.33333rem;
   }
 }
 
-.wpo-fun-fact-section .grid h3 + p,
-.wpo-fun-fact-section-s2 .grid h3 + p {
+.wpo-fun-fact-section .grid-web h3 + p,
+.wpo-fun-fact-section-s2 .grid-web h3 + p {
   font-size: 25px;
   font-style: normal;
   font-weight: 600;
@@ -13210,16 +13251,16 @@ img {
 }
 
 @media (max-width: 1200px) {
-  .wpo-fun-fact-section .grid h3 + p,
-  .wpo-fun-fact-section-s2 .grid h3 + p {
+  .wpo-fun-fact-section .grid-web h3 + p,
+  .wpo-fun-fact-section-s2 .grid-web h3 + p {
     font-size: 18px;
     font-size: 1.2rem;
   }
 }
 
 @media (max-width: 991px) {
-  .wpo-fun-fact-section .grid h3 + p,
-  .wpo-fun-fact-section-s2 .grid h3 + p {
+  .wpo-fun-fact-section .grid-web h3 + p,
+  .wpo-fun-fact-section-s2 .grid-web h3 + p {
     font-size: 16px;
     font-size: 1.06667rem;
   }
@@ -13245,13 +13286,16 @@ img {
   border: 1px solid #625f71;
 }
 
-.wpo-courses-section-s4 .row.wpo-courses-wrap .grid:hover .wpo-courses-item {
+.wpo-courses-section-s4
+  .row.wpo-courses-wrap
+  .grid-web:hover
+  .wpo-courses-item {
   background: #1a1729;
 }
 
 .wpo-courses-section-s4
   .row.wpo-courses-wrap
-  .grid:hover
+  .grid-web:hover
   .wpo-courses-item
   .wpo-courses-text
   .courses-icon {
@@ -13635,11 +13679,11 @@ img {
   padding: 0;
 }
 
-.wpo-fun-fact-section-s2 .wpo-fun-fact-grids .grid h3 {
+.wpo-fun-fact-section-s2 .wpo-fun-fact-grids .grid-web h3 {
   color: #fff;
 }
 
-.wpo-fun-fact-section-s2 .wpo-fun-fact-grids .grid p {
+.wpo-fun-fact-section-s2 .wpo-fun-fact-grids .grid-web p {
   color: #fff;
 }
 
@@ -15450,45 +15494,45 @@ img {
   margin: 0 -7.5px;
 }
 
-.wpo-portfolio-section .portfolio-grids .grid {
+.wpo-portfolio-section .portfolio-grids .grid-web {
   width: 33.33%;
   float: left;
   padding: 0 7.5px 15px;
 }
 
 @media (max-width: 1500px) {
-  .wpo-portfolio-section .portfolio-grids .grid {
+  .wpo-portfolio-section .portfolio-grids .grid-web {
     padding: 0 5.5px 10px;
   }
 }
 
 @media (max-width: 991px) {
-  .wpo-portfolio-section .portfolio-grids .grid {
+  .wpo-portfolio-section .portfolio-grids .grid-web {
     padding: 0 4.5px 8px;
   }
 }
 
 @media (max-width: 1199px) {
-  .wpo-portfolio-section .portfolio-grids .grid {
+  .wpo-portfolio-section .portfolio-grids .grid-web {
     width: 50%;
   }
 }
 
 @media (max-width: 600px) {
-  .wpo-portfolio-section .portfolio-grids .grid {
+  .wpo-portfolio-section .portfolio-grids .grid-web {
     width: 50%;
   }
 }
 
-.wpo-portfolio-section .portfolio-grids .grid img {
+.wpo-portfolio-section .portfolio-grids .grid-web img {
   width: 100%;
 }
 
-.wpo-portfolio-section .grid .img-holder {
+.wpo-portfolio-section .grid-web .img-holder-web {
   position: relative;
 }
 
-.wpo-portfolio-section .grid .img-holder .hover-content {
+.wpo-portfolio-section .grid-web .img-holder-web .hover-content {
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
   position: absolute;
@@ -15501,29 +15545,34 @@ img {
   width: 260px;
 }
 
-.wpo-portfolio-section .grid .img-holder .hover-content span {
+.hover-content-web {
+  color: white;
+  font-size: 30px;
+}
+
+.wpo-portfolio-section .grid-web .img-holder-web .hover-content span {
   color: #6788a7;
 }
 
-.wpo-portfolio-section .grid .img-holder .hover-content h4 {
+.wpo-portfolio-section .grid-web .img-holder-web .hover-content h4 {
   font-size: 30px;
   font-weight: 600;
 }
 
-.wpo-portfolio-section .grid .img-holder .hover-content h4 a {
+.wpo-portfolio-section .grid-web .img-holder-web .hover-content h4 a {
   color: #1a1729;
 }
 
-.wpo-portfolio-section .grid .img-holder .hover-content h4 a:hover {
+.wpo-portfolio-section .grid-web .img-holder-web .hover-content h4 a:hover {
   color: #4540e1;
 }
 
-.wpo-portfolio-section .grid .img-holder .hover-content i {
+.wpo-portfolio-section .grid-web .img-holder-web .hover-content i {
   font-size: 30px;
   color: #fff;
 }
 
-.wpo-portfolio-section .grid .img-holder:before {
+.wpo-portfolio-section .grid-web .img-holder-web:before {
   position: absolute;
   left: 2%;
   top: 2%;
@@ -15538,11 +15587,11 @@ img {
   transform: scale(0);
 }
 
-.wpo-portfolio-section .img-holder:hover .hover-content {
+.wpo-portfolio-section .img-holder-web:hover .hover-content {
   opacity: 1;
 }
 
-.wpo-portfolio-section .img-holder:hover:before {
+.wpo-portfolio-section .img-holder-web:hover:before {
   opacity: 0.8;
   -webkit-transform: scale(1);
   transform: scale(1);
@@ -15561,27 +15610,27 @@ img {
   }
 }
 
-.wpo-shop-section .grid {
+.wpo-shop-section .grid-web {
   width: calc(33.33% - 30px);
   float: left;
   margin: 0 15px 30px;
 }
 
 @media (max-width: 991px) {
-  .wpo-shop-section .grid {
+  .wpo-shop-section .grid-web {
     width: calc(50% - 30px);
   }
 }
 
 @media (max-width: 767px) {
-  .wpo-shop-section .grid {
+  .wpo-shop-section .grid-web {
     width: calc(50% - 15px);
     margin: 0 7px 15px;
   }
 }
 
 @media (max-width: 550px) {
-  .wpo-shop-section .grid {
+  .wpo-shop-section .grid-web {
     width: calc(100% - 15px);
     float: none;
   }
@@ -15664,7 +15713,7 @@ img {
   padding-left: 5px;
 }
 
-.wpo-shop-section .grid:hover .add-to-cart a {
+.wpo-shop-section .grid-web:hover .add-to-cart a {
   background-color: #4540e1;
   color: #fff;
 }
@@ -19450,3 +19499,45 @@ img {
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.13);
 }
 /*# sourceMappingURL=style.css.map */
+
+/* Modal styles */
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90vw; /* Adjust max-width to 90% of the viewport width */
+  max-height: 90vh; /* Adjust max-height to 90% of the viewport height */
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  overflow: hidden;
+}
+
+.modal-image {
+  width: 100%; /* Allow the image to expand to the full width of the modal */
+  height: 100%; /* Allow the image to expand to the full height of the modal */
+  object-fit: contain; /* Ensures the image maintains its aspect ratio while fitting inside */
+  max-width: 100%; /* Ensure the image does not overflow horizontally */
+  max-height: 100%; /* Ensure the image does not overflow vertically */
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  z-index: 10000;
+}

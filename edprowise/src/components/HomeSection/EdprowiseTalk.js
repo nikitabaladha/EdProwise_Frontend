@@ -116,7 +116,7 @@ const EdprowiseTalk = () => {
         <div className="wpo-choose-wrap ">
           <div className="wpo-choose-grids clearfix" ref={carouselRef}>
             {slides.map((slide, index) => (
-              <div className="grid" key={index}>
+              <div className="grid-web" key={index}>
                 <div className="icon">
                   <i className={slide.icon}></i>
                 </div>

@@ -52,7 +52,7 @@ const CompanyJourney = () => {
             {coursesData.map((course) => (
               <div
                 key={course.id}
-                className={`category-items col-lg-3 col-md-6 col-6 grid-web ${course.id}`}
+                className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.id}`}
               >
                 <div className="wpo-courses-item category-itemm">
                   <div className="wpo-courses-text">

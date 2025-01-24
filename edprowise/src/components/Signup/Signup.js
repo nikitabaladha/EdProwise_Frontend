@@ -14,6 +14,15 @@ const Signup = () => {
     role: "",
   });
 
+  const navigateToHomes = (event) => {
+    event.preventDefault();
+    navigate("/");
+  };
+  const navigateToLogin = (event) => {
+    event.preventDefault();
+    navigate("/login");
+  };
+
   const [generalError, setGeneralError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -188,6 +197,15 @@ const Signup = () => {
                     >
                       Sign Up
                     </button>
+                  </div>
+                  <Link to="/" onClick={navigateToHomes}>
+                    {" "}
+                    Go to Home{" "}
+                  </Link>
+                  <div className=" mt-3 text-center">
+                    <Link onClick={navigateToLogin}>
+                      If you are Registered, Sign In Here
+                    </Link>
                   </div>
                 </form>
               </div>

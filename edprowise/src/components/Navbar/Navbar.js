@@ -1,44 +1,44 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import Topbar from "./Topbar";
 
 const menuData = [
-  { name: "Home", link: "/", subMenu: [] },
+  { name: "HOME", link: "/", subMenu: [] },
   {
-    name: "About Us",
+    name: "ABOUT US",
     link: "/about-us",
     subMenu: [],
   },
   {
-    name: "Services",
-    link: "",
+    name: "SERVICES",
     subMenu: [
       {
-        name: "Digital Services",
+        name: "DIGITAL SERVICES",
         link: "/services/digital-services",
       },
-      { name: "Business Services", link: "/services/business-services" },
-      { name: "Recruitment Services", link: "/services/recruitment-services" },
-      { name: "Procurement Services", link: "/services/procurement-services" },
+      { name: "BUSINESS SERVICES", link: "/services/business-services" },
+      { name: "RECRUITMENT SERVICES", link: "/services/recruitment-services" },
+      { name: "PROCUREMENT SERVICES", link: "/services/procurement-services" },
     ],
   },
-  { name: "Orders", link: "#", subMenu: [] },
+  { name: "ORDERS", link: "#", subMenu: [] },
   {
-    name: "Community Connect",
-    link: "",
+    name: "COMMUNITY CONNECT",
     subMenu: [
-      { name: "Gallery", link: "/community-connect/gallery" },
-      { name: "EdProwise Talks", link: "/community-connect/edprowise-talks" },
-      { name: "Student Zone", link: "/community-connect/student-zone" },
-      { name: "Educator Zone", link: "/community-connect/educator-zone" },
+      { name: "GALLERY", link: "/community-connect/gallery" },
+      { name: "EDPROWISE TALKS", link: "/community-connect/edprowise-talks" },
+      { name: "STUDENT ZONE", link: "/community-connect/student-zone" },
+      { name: "EDUCATOR ZONE", link: "/community-connect/educator-zone" },
     ],
   },
-  { name: "Contact Us", link: "/contact-us", subMenu: [] },
+  { name: "CONTACT US", link: "/contact-us", subMenu: [] },
 ];
 
 const Header = () => {
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   const toggleSubMenu = (index) => {
     setOpenSubMenu(openSubMenu === index ? null : index);
@@ -75,6 +75,7 @@ const Header = () => {
 
   return (
     <header id="header">
+      {location.pathname === "/" && <Topbar />}
       <div className="wpo-site-header wpo-header-style-2">
         <nav className="navigation navbar navbar-expand-lg navbar-light">
           <div className="container-fluid">
@@ -114,7 +115,7 @@ const Header = () => {
                     {menuData.map((menu, index) => (
                       <li
                         key={index}
-                        className={`nav-item ${
+                        className={`menu-item-has-children ${
                           menu.subMenu.length > 0
                             ? "menu-item-has-children"
                             : ""
@@ -123,7 +124,7 @@ const Header = () => {
                         <Link
                           to={menu.link}
                           className="nav-link"
-                          onClick={(e) => handleMenuClick(menu, index, e)}
+                          onMouseEnter={(e) => handleMenuClick(menu, index, e)}
                         >
                           {menu.name}
                         </Link>
@@ -155,7 +156,9 @@ const Header = () => {
                       className="login"
                       onClick={(event) => handleSignUp(event)}
                     >
-                      <span className="text">Sign Up</span>
+                      <span className="text font-family-web login-weight">
+                        Sign Up
+                      </span>
                       <span className="mobile">
                         <i className="fi flaticon-charity"></i>
                       </span>
@@ -165,7 +168,9 @@ const Header = () => {
                       className="theme-btn"
                       onClick={(event) => handleSignIn(event)}
                     >
-                      <span className="text">Sign In</span>
+                      <span className="text font-family-web login-weight">
+                        Sign In
+                      </span>
                       <span className="mobile">
                         <i className="fi flaticon-charity"></i>
                       </span>
