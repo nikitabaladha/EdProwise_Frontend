@@ -225,7 +225,12 @@ const TrackQuoteTable = () => {
                       <Link className="page-link">Previous</Link>
                     </li>
                     <li className="page-item active">
-                      <Link className="page-link">1</Link>
+                      <Link
+                        className="page-link"
+                        style={{ backgroundColor: "red", borderColor: "red" }}
+                      >
+                        1
+                      </Link>
                     </li>
                     <li className="page-item">
                       <Link className="page-link">2</Link>

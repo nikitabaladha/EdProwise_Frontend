@@ -269,13 +269,10 @@ const SubscriptionTable = ({
                         }`}
                       >
                         <button
-                          className="page-link"
+                          className={`page-link pagination-button ${
+                            currentPage === page ? "active" : ""
+                          }`}
                           onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
                         >
                           {page}
                         </button>

@@ -122,7 +122,7 @@ const WhyChooseUs = () => {
                       <div className="courses-icon category-icons">
                         <i className={item.iconClass}></i>
                       </div>
-                      <h2 className="category-h2 font-family-web">
+                      <h2 className="category-h2 font-weight-web-h2">
                         <a>{item.title}</a>
                       </h2>
                       <p className="category-text font-family-web">
@@ -149,7 +149,7 @@ const WhyChooseUs = () => {
                       <div className="courses-icon category-icons">
                         <i className={item.iconClass}></i>
                       </div>
-                      <h2 className="category-h2 font-family-web">
+                      <h2 className="category-h2">
                         <a>{item.title}</a>
                       </h2>
                       <p className="category-text font-family-web">

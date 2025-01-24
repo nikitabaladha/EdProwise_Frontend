@@ -154,7 +154,11 @@ const HomeMainSection = () => {
                       {/* <small id="changing" className="fade-in" key={counter}>
                         {words[counter]}
                       </small> */}
-                      <small id="changing" className="fade-in" key={counter}>
+                      <small
+                        id="changing"
+                        className="fade-in hf-size"
+                        key={counter}
+                      >
                         {words[counter]}
                       </small>
                     </span>
@@ -247,10 +251,10 @@ const HomeMainSection = () => {
                         <i className={feature.icon}></i>
                       </div>
                       <div className="feature-text">
-                        <h2 className="font-family-web-h2">
+                        <h2 className="font-weight-web-h2">
                           <a href={feature.link}>{feature.title}</a>
                         </h2>
-                        <p className="font-family-web">{feature.description}</p>
+                        <p>{feature.description}</p>
                       </div>
                     </div>
                     <div className="feature-item-hidden">
@@ -258,12 +262,10 @@ const HomeMainSection = () => {
                         <i className={feature.icon}></i>
                       </div>
                       <div className="feature-text">
-                        <h2 className="font-family-web">
+                        <h2 className="font-weight-web-h2">
                           <a href={feature.link}>{feature.title}</a>
                         </h2>
-                        <p className="font-family-web">
-                          {feature.hiddenDescription}
-                        </p>
+                        <p>{feature.hiddenDescription}</p>
                         <a className="more font-family-web" href={feature.link}>
                           Read More...
                         </a>

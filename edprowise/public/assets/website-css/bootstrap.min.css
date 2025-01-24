@@ -184,6 +184,9 @@ strong {
 small {
   font-size: 0.875em;
 }
+.hf-size {
+  font-size: 0.875em !important;
+}
 .mark,
 mark {
   padding: 0.2em;

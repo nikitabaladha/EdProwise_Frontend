@@ -72,6 +72,11 @@ const UserLogin = () => {
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+
+  const navigateToHome = (event) => {
+    event.preventDefault(); // Prevent the default link behavior
+    navigate("/"); // Navigate programmatically
+  };
   return (
     <>
       <div className="form-body form-left">
@@ -175,6 +180,9 @@ const UserLogin = () => {
                     </button>
                   </div>
                 </form>
+                <Link to="/" onClick={navigateToHome}>
+                  Go to Home
+                </Link>
               </div>
             </div>
           </div>

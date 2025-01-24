@@ -59,7 +59,7 @@ const DashboardInformationCards = () => {
                     </div>
                   </div>
                   <div className="col-6 text-end">
-                    <p className="text-muted mb-0 text-truncate">
+                    <p className="text-muted mb-0 text-truncate custom-font-size-for-card">
                       {card.title}
                     </p>
                     <h4 className="text-dark mt-1 mb-0">{card.value}</h4>

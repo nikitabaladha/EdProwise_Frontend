@@ -163,7 +163,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
 
   return (
     <>
-      <div className="container">
+      <div className="container custom-font-size">
         <div className="row">
           <div className="col-xl-12">
             <div className="card m-2">

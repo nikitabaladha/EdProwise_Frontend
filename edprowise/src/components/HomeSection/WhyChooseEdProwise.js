@@ -131,7 +131,7 @@ const WhyChooseEdProwise = () => {
                   <div className="courses-icon">
                     <i className={item.iconClass}></i>
                   </div>
-                  <h2 className="font-family-web">
+                  <h2 className="font-weight-web-h2">
                     <a href="#">{item.title}</a>
                   </h2>
                   <p className="font-family-web">{item.description}</p>

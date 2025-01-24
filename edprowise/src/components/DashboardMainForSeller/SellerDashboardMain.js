@@ -13,7 +13,7 @@ const SellerDashboardMain = () => {
         <SellerDashboardHeader />
         <Sidebar />
 
-        <div className="page-content">
+        <div className="page-content custom-font-size">
           <Outlet />
         </div>
 

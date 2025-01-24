@@ -10,12 +10,16 @@ const SchoolDashboardConversions = () => {
             <div id="conversions" className="apex-charts mb-2 mt-n2" />
             <div className="row text-center">
               <div className="col-6">
-                <p className="text-muted mb-2">This Week</p>
+                <p className="text-muted mb-2 custom-font-size-for-card">
+                  This Week
+                </p>
                 <h3 className="text-dark mb-3">23.5k</h3>
               </div>{" "}
               {/* end col */}
               <div className="col-6">
-                <p className="text-muted mb-2">Last Week</p>
+                <p className="text-muted mb-2 custom-font-size-for-card">
+                  Last Week
+                </p>
                 <h3 className="text-dark mb-3">41.05k</h3>
               </div>{" "}
               {/* end col */}

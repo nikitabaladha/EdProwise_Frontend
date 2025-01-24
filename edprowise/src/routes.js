@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import WebsiteMain from "./components/WebsiteMain";
 import HomePage from "./components/HomeSection/HomePage";
-
 import AboutPage from "./components/AboutSection/AboutPage";
 import ContactUsPage from "./components/ContactUsSection/ContactUsPage";
 
@@ -18,6 +17,12 @@ import GallerySection from "./components/CommunitySection/SubSection/GallerySect
 import EdprowiseTalkSection from "./components/CommunitySection/SubSection/EdprowiseTalkSection.js";
 import StudentZoneSection from "./components/CommunitySection/SubSection/StudentZoneSection";
 import EducatorZoneSection from "./components/CommunitySection/SubSection/EducatorZoneSection.js";
+
+import SupplierPage from "./components/BecomeSupplier/SupplierPage.js";
+import FaqPage from "./components/FAQSection/FAQPage.js";
+import PrivacyPage from "./components/PrivacyPage/PrivacyPage.js";
+import CareerPage from "./components/CareerPage/CareerPage.js";
+import CareerForm from "./components/CareerPage/CareerForm.js";
 
 import AdminLogin from "./components/Login/AdminLogin";
 import UserLogin from "./components/Login/UserLogin";
@@ -424,6 +429,12 @@ const AppRoutes = () => {
           <Route path="student-zone" element={<StudentZoneSection />} />
           <Route path="educator-zone" element={<EducatorZoneSection />} />
         </Route>
+
+        <Route path="become-supplier" element={<SupplierPage />} />
+        <Route path="faq" element={<FaqPage />} />
+        <Route path="privacy-policy" element={<PrivacyPage />} />
+        <Route path="career" element={<CareerPage />} />
+        <Route path="career/:jobName" element={<CareerForm />} />
       </Route>
     </Routes>
   );

@@ -157,7 +157,10 @@ const UpdateSchool = ({ updateSchool }) => {
                   </h4>
                 </div>
               </div>
-              <form onSubmit={handleUpdate}>
+              <form
+                onSubmit={handleUpdate}
+                className="custom-font-size-for-form"
+              >
                 <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">

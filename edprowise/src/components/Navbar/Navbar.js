@@ -11,7 +11,7 @@ const menuData = [
   },
   {
     name: "Services",
-    link: "/services",
+    link: "",
     subMenu: [
       {
         name: "Digital Services",
@@ -25,7 +25,7 @@ const menuData = [
   { name: "Orders", link: "#", subMenu: [] },
   {
     name: "Community Connect",
-    link: "/community-connect",
+    link: "",
     subMenu: [
       { name: "Gallery", link: "/community-connect/gallery" },
       { name: "EdProwise Talks", link: "/community-connect/edprowise-talks" },
@@ -151,13 +151,6 @@ const Header = () => {
               <div className="col-lg-2 col-md-3 col-0">
                 <div className="header-right">
                   <div className="close-form">
-                    {/* <a className="login">
-                      <span className="text">Sign Up</span>
-                      <span className="mobile">
-                        <i className="fi flaticon-charity"></i>
-                      </span>
-                    </a> */}
-
                     <Link
                       className="login"
                       onClick={(event) => handleSignUp(event)}
@@ -167,13 +160,6 @@ const Header = () => {
                         <i className="fi flaticon-charity"></i>
                       </span>
                     </Link>
-
-                    {/* <a className="theme-btn">
-                      <span className="text">Sign In</span>
-                      <span className="mobile">
-                        <i className="fi flaticon-charity"></i>
-                      </span>
-                    </a> */}
 
                     <Link
                       className="theme-btn"

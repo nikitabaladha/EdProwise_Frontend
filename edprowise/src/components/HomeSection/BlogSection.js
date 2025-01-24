@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 const blogPosts = [
   {
@@ -37,15 +38,15 @@ const BlogItem = ({ date, author, title, image, link }) => (
         <ul>
           <li>{date}</li>
           <li>
-            By <a href={link}>{author}</a>
+            By <Link to={link}>{author}</Link>
           </li>
         </ul>
-        <h2 className="font-family-web-h2">
-          <a href="blog.html">{title}</a>
+        <h2 className="font-weight-web-h2">
+          <Link to="">{title}</Link>
         </h2>
-        <a href={link} className="more">
+        <Link to={link} className="more">
           Continue Reading
-        </a>
+        </Link>
       </div>
     </div>
   </div>
@@ -59,7 +60,7 @@ const BlogSection = () => {
     const items = carouselContainer.querySelectorAll(".carousel-item-blog");
     const totalItems = items.length;
     let currentIndex = 0;
-    const intervalTime = 4000; // Time between slides in milliseconds
+    const intervalTime = 4000;
     let autoplayInterval;
 
     // Update carousel position
