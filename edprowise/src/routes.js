@@ -1,10 +1,29 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import WebsiteMain from "./components/WebsiteMain";
+import HomePage from "./components/HomeSection/HomePage";
+
+import AboutPage from "./components/AboutSection/AboutPage";
+import ContactUsPage from "./components/ContactUsSection/ContactUsPage";
+
+import ServiceMainPage from "./components/ServiceSection/ServiceMainPage";
+import DigitalService from "./components/ServiceSection/SubSections/DigitalService";
+import BusinessSection from "./components/ServiceSection/SubSections/BusinessSection";
+import RecruitmentSection from "./components/ServiceSection/SubSections/RecruitmentSection";
+import ProcurementSection from "./components/ServiceSection/SubSections/ProcurementSection";
+
+import CommunityMainPage from "./components/CommunitySection/CommunityMainPage";
+import GallerySection from "./components/CommunitySection/SubSection/GallerySection";
+import EdprowiseTalkSection from "./components/CommunitySection/SubSection/EdprowiseTalkSection.js";
+import StudentZoneSection from "./components/CommunitySection/SubSection/StudentZoneSection";
+import EducatorZoneSection from "./components/CommunitySection/SubSection/EducatorZoneSection.js";
+
 import AdminLogin from "./components/Login/AdminLogin";
 import UserLogin from "./components/Login/UserLogin";
 
 import Signup from "./components/Signup/Signup";
+import AdminSignup from "./components/Signup/AdminSignup";
 
 // ==================================Admin Routes =================================
 import ChangePasswordForAdmin from "./components/DashboardMainForAdmin/ChangePassword/ChangePassword";
@@ -127,6 +146,14 @@ const AppRoutes = () => {
         element={
           <PublicRoute>
             <Signup />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup/admin"
+        element={
+          <PublicRoute>
+            <AdminSignup />
           </PublicRoute>
         }
       />
@@ -378,8 +405,26 @@ const AppRoutes = () => {
           element={<PrepareInvoice />}
         />
       </Route>
+      <Route path="/" element={<WebsiteMain />}>
+        <Route index element={<HomePage />} />
 
-      <Route path="/" element={<Navigate to="/school-dashboard" replace />} />
+        <Route path="about-us" element={<AboutPage />} />
+        <Route path="contact-us" element={<ContactUsPage />} />
+
+        <Route path="services" element={<ServiceMainPage />}>
+          <Route path="digital-services" element={<DigitalService />} />
+          <Route path="business-services" element={<BusinessSection />} />
+          <Route path="recruitment-services" element={<RecruitmentSection />} />
+          <Route path="procurement-services" element={<ProcurementSection />} />
+        </Route>
+
+        <Route path="community-connect" element={<CommunityMainPage />}>
+          <Route path="gallery" element={<GallerySection />} />
+          <Route path="edprowise-talks" element={<EdprowiseTalkSection />} />
+          <Route path="student-zone" element={<StudentZoneSection />} />
+          <Route path="educator-zone" element={<EducatorZoneSection />} />
+        </Route>
+      </Route>
     </Routes>
   );
 };

@@ -6,6 +6,8 @@ import { ToastContainer } from "react-toastify";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 
+// import "bootstrap/dist/css/bootstrap.min.css";
+
 import AppRoutes from "./routes";
 
 const App = () => {
