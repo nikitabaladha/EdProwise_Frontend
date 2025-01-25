@@ -86,7 +86,7 @@ const ProcurementSection = () => {
               <div className="courses-icon category-icons">
                 <i className={item.icon}></i>
               </div>
-              <h2 className="category-h2">
+              <h2 className="category-h2 font-weight-web-h2">
                 <a href="#">{item.title}</a>
               </h2>
               <p className="category-text">{item.description}</p>

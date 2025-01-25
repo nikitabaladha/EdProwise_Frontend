@@ -131,7 +131,7 @@ const Header = () => {
                       <div className="navbar-header">
                         <a className="navbar-brand fw-bold logo">
                           <img
-                            src="/assets/website-images/EdProwise Logo.png"
+                            src="/assets/images/EdProwiseLogoWhite.png"
                             alt="logo"
                           />
                         </a>
@@ -141,7 +141,7 @@ const Header = () => {
                       <RiCloseLargeFill className="close-icon" />
                     </button>
                   </div>
-                  <ul className="nav navbar-nav mb-2 mb-lg-0">
+                  {/* <ul className="nav navbar-nav mb-2 mb-lg-0">
                     {menuData.map((menu, index) => (
                       <li
                         key={index}
@@ -157,6 +157,46 @@ const Header = () => {
                           onMouseEnter={(e) => handleMenuClick(menu, index, e)}
                         >
                           {menu.name}
+                        </Link>
+                        {menu.subMenu.length > 0 && openSubMenu === index && (
+                          <ul className="sub-menu">
+                            {menu.subMenu.map((subItem, subIndex) => (
+                              <li key={subIndex}>
+                                <Link
+                                  to={subItem.link}
+                                  onClick={(e) =>
+                                    handleSubMenuClick(subItem, e)
+                                  }
+                                >
+                                  {subItem.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                  </ul> */}
+                  <ul className="nav navbar-nav mb-2 mb-lg-0">
+                    {menuData.map((menu, index) => (
+                      <li
+                        key={index}
+                        className={`menu-item ${
+                          menu.subMenu.length > 0
+                            ? "menu-item-has-children"
+                            : ""
+                        }`}
+                      >
+                        <Link
+                          to={menu.link}
+                          className="nav-link"
+                          onMouseEnter={(e) => handleMenuClick(menu, index, e)}
+                        >
+                          {menu.name}
+                          {/* Show caret only if the menu has subMenu */}
+                          {/* {menu.subMenu.length > 0 && (
+                            <span className="caret-icon"></span>
+                          )} */}
                         </Link>
                         {menu.subMenu.length > 0 && openSubMenu === index && (
                           <ul className="sub-menu">

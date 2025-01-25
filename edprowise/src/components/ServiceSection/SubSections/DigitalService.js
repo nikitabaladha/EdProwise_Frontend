@@ -112,7 +112,7 @@ const CourseItem = ({ iconClass, title, description, link, classid }) => {
           <div className="courses-icon category-icons">
             <i className={iconClass}></i>
           </div>
-          <h2 className="category-h2">
+          <h2 className="category-h2 font-weight-web-h2">
             <a>{title}</a>
           </h2>
           <p className="category-text">{description}</p>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const BusinessSection = () => {
   const courses = [
@@ -48,7 +49,7 @@ const BusinessSection = () => {
               <div className="courses-icon category-icons">
                 <i className={course.icon}></i>
               </div>
-              <h2 className="category-h2">
+              <h2 className="category-h2 font-weight-web-h2">
                 <a>{course.title}</a>
               </h2>
               <p className="category-text">{course.description}</p>
