@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import Topbar from "./Topbar";
 
+import { RiCloseLargeFill } from "react-icons/ri";
 const menuData = [
   { name: "HOME", link: "/", subMenu: [] },
   {
@@ -36,16 +37,18 @@ const menuData = [
 ];
 
 const Header = () => {
-  const [openSubMenu, setOpenSubMenu] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prevState) => !prevState);
+    console.log("Mobile menu toggled:", !isMobileMenuOpen);
+  };
+
+  const [openSubMenu, setOpenSubMenu] = useState(null);
   const location = useLocation();
 
   const toggleSubMenu = (index) => {
     setOpenSubMenu(openSubMenu === index ? null : index);
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   const handleMenuClick = (menu, index, e) => {
@@ -82,25 +85,37 @@ const Header = () => {
             <div className="row align-items-center">
               <div className="col-lg-3 col-3 d-lg-none dl-block">
                 <div className="mobail-menu">
-                  <button
-                    type="button"
-                    className="navbar-toggler open-btn"
-                    onClick={toggleMobileMenu}
-                  >
-                    <span className="sr-only">Toggle navigation</span>
-                    <span className="icon-bar first-angle"></span>
-                    <span className="icon-bar middle-angle"></span>
-                    <span className="icon-bar last-angle"></span>
-                  </button>
+                  {isMobileMenuOpen ? (
+                    <>
+                      <button
+                        type="button"
+                        className="menu-close"
+                        onClick={toggleMobileMenu}
+                      >
+                        <span className="sr-only">Toggle navigation</span>
+                        <span className="icon-bar first-angle"></span>
+                        <span className="icon-bar middle-angle"></span>
+                        <span className="icon-bar last-angle"></span>
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      className="navbar-toggler open-btn"
+                      onClick={toggleMobileMenu}
+                    >
+                      <span className="sr-only">Toggle navigation</span>
+                      <span className="icon-bar first-angle"></span>
+                      <span className="icon-bar middle-angle"></span>
+                      <span className="icon-bar last-angle"></span>
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="col-lg-2 col-9">
                 <div className="navbar-header">
                   <a className="navbar-brand fw-bold logo">
-                    <img
-                      src="/assets/website-images/EdProwise Logo.png"
-                      alt="logo"
-                    />
+                    <img src="/assets/images/EdProwiseLogo.png" alt="logo" />
                   </a>
                 </div>
               </div>
@@ -111,6 +126,21 @@ const Header = () => {
                     isMobileMenuOpen ? "show" : ""
                   }`}
                 >
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="sidebar-logo">
+                      <div className="navbar-header">
+                        <a className="navbar-brand fw-bold logo">
+                          <img
+                            src="/assets/website-images/EdProwise Logo.png"
+                            alt="logo"
+                          />
+                        </a>
+                      </div>
+                    </div>
+                    <button className="menu-close" onClick={toggleMobileMenu}>
+                      <RiCloseLargeFill className="close-icon" />
+                    </button>
+                  </div>
                   <ul className="nav navbar-nav mb-2 mb-lg-0">
                     {menuData.map((menu, index) => (
                       <li

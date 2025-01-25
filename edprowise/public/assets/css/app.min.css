@@ -20142,10 +20142,10 @@ input.form-control[type="range"] {
 body {
   overflow-x: hidden;
 }
-
+/* 
 .row > * {
   position: relative;
-}
+} */
 
 .container-fluid,
 .container-sm,
