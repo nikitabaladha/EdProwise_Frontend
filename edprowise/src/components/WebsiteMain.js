@@ -8,12 +8,9 @@ const WebsiteMain = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log("Scroll Y Position:", window.scrollY);
       if (window.scrollY > 500) {
-        console.log("Button should appear");
         setShowBackToTop(true);
       } else {
-        console.log("Button should disappear");
         setShowBackToTop(false);
       }
     };

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
+import { RiCloseLargeFill } from "react-icons/ri";
 import Topbar from "./Topbar";
 
-import { RiCloseLargeFill } from "react-icons/ri";
 const menuData = [
   { name: "HOME", link: "/", subMenu: [] },
   {
@@ -37,18 +37,18 @@ const menuData = [
 ];
 
 const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen((prevState) => !prevState);
-    console.log("Mobile menu toggled:", !isMobileMenuOpen);
-  };
+  const location = useLocation();
 
   const [openSubMenu, setOpenSubMenu] = useState(null);
-  const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
 
   const toggleSubMenu = (index) => {
     setOpenSubMenu(openSubMenu === index ? null : index);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prevState) => !prevState);
   };
 
   const handleMenuClick = (menu, index, e) => {
@@ -63,6 +63,33 @@ const Header = () => {
   const handleSubMenuClick = (subItem, e) => {
     toggleMobileMenu();
   };
+
+  const isActive = (path, hasSubMenu) => {
+    if (hasSubMenu) {
+      return (
+        location.pathname === path || location.pathname.startsWith(path + "/")
+      );
+    }
+
+    return location.pathname === path;
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      console.log("Scroll Y Position from use effect:", window.scrollY);
+      if (window.scrollY > 100 && !isSticky) {
+        setIsSticky(true);
+      } else if (window.scrollY <= 100 && isSticky) {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isSticky]);
 
   const navigate = useNavigate();
 
@@ -80,7 +107,11 @@ const Header = () => {
     <header id="header">
       {location.pathname === "/" && <Topbar />}
       <div className="wpo-site-header wpo-header-style-2">
-        <nav className="navigation navbar navbar-expand-lg navbar-light">
+        <nav
+          className={`navigation navbar navbar-expand-lg navbar-light ${
+            isSticky ? "sticky-header sticky-on" : ""
+          }`}
+        >
           <div className="container-fluid">
             <div className="row align-items-center">
               <div className="col-lg-3 col-3 d-lg-none dl-block">
@@ -141,42 +172,7 @@ const Header = () => {
                       <RiCloseLargeFill className="close-icon" />
                     </button>
                   </div>
-                  {/* <ul className="nav navbar-nav mb-2 mb-lg-0">
-                    {menuData.map((menu, index) => (
-                      <li
-                        key={index}
-                        className={`menu-item-has-children ${
-                          menu.subMenu.length > 0
-                            ? "menu-item-has-children"
-                            : ""
-                        }`}
-                      >
-                        <Link
-                          to={menu.link}
-                          className="nav-link"
-                          onMouseEnter={(e) => handleMenuClick(menu, index, e)}
-                        >
-                          {menu.name}
-                        </Link>
-                        {menu.subMenu.length > 0 && openSubMenu === index && (
-                          <ul className="sub-menu">
-                            {menu.subMenu.map((subItem, subIndex) => (
-                              <li key={subIndex}>
-                                <Link
-                                  to={subItem.link}
-                                  onClick={(e) =>
-                                    handleSubMenuClick(subItem, e)
-                                  }
-                                >
-                                  {subItem.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </li>
-                    ))}
-                  </ul> */}
+
                   <ul className="nav navbar-nav mb-2 mb-lg-0">
                     {menuData.map((menu, index) => (
                       <li
@@ -189,14 +185,14 @@ const Header = () => {
                       >
                         <Link
                           to={menu.link}
-                          className="nav-link"
                           onMouseEnter={(e) => handleMenuClick(menu, index, e)}
+                          className={`${
+                            isActive(menu.link, menu.subMenu.length > 0)
+                              ? "active"
+                              : ""
+                          }`}
                         >
                           {menu.name}
-                          {/* Show caret only if the menu has subMenu */}
-                          {/* {menu.subMenu.length > 0 && (
-                            <span className="caret-icon"></span>
-                          )} */}
                         </Link>
                         {menu.subMenu.length > 0 && openSubMenu === index && (
                           <ul className="sub-menu">
@@ -207,6 +203,9 @@ const Header = () => {
                                   onClick={(e) =>
                                     handleSubMenuClick(subItem, e)
                                   }
+                                  className={`${
+                                    isActive(subItem.link) ? "active" : ""
+                                  }`}
                                 >
                                   {subItem.name}
                                 </Link>

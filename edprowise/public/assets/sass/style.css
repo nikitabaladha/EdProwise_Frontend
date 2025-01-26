@@ -561,7 +561,8 @@ Version:        1.0.0
 
 @media (max-width: 570px) {
   .searchbox-wrap input {
-    padding: 15px 20px;
+    /* padding: 15px 20px; */
+    padding: 15px 5px 15px 10px;
     font-size: 1em;
   }
 
@@ -893,6 +894,11 @@ img {
     margin: 0 19%;
   }
 }
+@media (max-width: 420px) {
+  .cart-vm {
+    flex: 0 0 65%; /* Each item takes full width */
+  }
+}
 @media (max-width: 400px) {
   .cart-vm {
     flex: 0 0 72%; /* Each item takes full width */
@@ -901,6 +907,47 @@ img {
     margin: 0 15%;
   }
 }
+@media (max-width: 391px) {
+  .cart-vm {
+    flex: 0 0 70%; /* Each item takes full width */
+  }
+}
+@media (max-width: 380px) {
+  .cart-vm {
+    flex: 0 0 73%; /* Each item takes full width */
+  }
+}
+
+@media (max-width: 370px) {
+  .cart-vm {
+    flex: 0 0 75%; /* Each item takes full width */
+  }
+}
+
+/* @media (max-width: 536px) {
+  .cart-vm {
+    flex: 0 0 51%; 
+    display: flex;
+    flex-direction: column;
+    margin: 0 25%;
+  }
+}
+
+@media (max-width: 431px) {
+  .cart-vm {
+    flex: 0 0 62%; 
+    display: flex;
+    flex-direction: column;
+    margin: 0 19%;
+  }
+}
+@media (max-width: 400px) {
+  .cart-vm {
+    flex: 0 0 72%;     display: flex;
+    flex-direction: column;
+    margin: 0 15%;
+  }
+} */
 
 .pt-100 {
   padding-top: 100px;
@@ -2626,23 +2673,21 @@ img {
 }
 
 .sticky-header {
-  width: 100%;
-  position: fixed;
-  left: 0;
-  top: -400px;
-  z-index: 9999;
-  opacity: 0;
-  visibility: hidden;
-  -webkit-transition: all 1s;
-  transition: all 1s;
-  -webkit-box-shadow: 0 -5px 15px #086ad84a;
-  box-shadow: 0 -5px 15px #086ad84a;
+  width: 100% !important;
+  position: fixed !important;
+  left: 0 !important;
+  top: -400px !important;
+  z-index: 9999 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out !important;
+  box-shadow: 0 -5px 15px #086ad84a !important;
 }
 
 .sticky-on {
-  opacity: 1;
-  top: 0;
-  visibility: visible;
+  opacity: 1 !important;
+  top: 0 !important;
+  visibility: visible !important;
 }
 
 .wpo-site-header .navigation > .container {

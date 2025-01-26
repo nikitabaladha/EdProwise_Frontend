@@ -15,6 +15,7 @@ const HomeMainSection = () => {
   const carouselRef = useRef(null);
   // const intervalTime = 4000; // 4 seconds
   const [autoplay, setAutoplay] = useState(window.innerWidth <= 570);
+  const [activeIndex, setActiveIndex] = useState(1);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -65,6 +66,14 @@ const HomeMainSection = () => {
     if (!autoplay) {
       setCurrentIndex(index);
     }
+  };
+
+  const handleMouseEnter = (index) => {
+    setActiveIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setActiveIndex(1);
   };
 
   // Array of unique names for the slides
@@ -240,9 +249,14 @@ const HomeMainSection = () => {
                   className={`col col-lg-3 col-md-6 col-12 carousel-itemm ${
                     index === currentIndex ? "active" : "item"
                   }`}
-                  // onMouseEnter={() => handleHover(index)}
+                  onMouseEnter={() => handleMouseEnter(index)}
+                  onMouseLeave={handleMouseLeave}
                 >
-                  <div className="feature-item-wrap">
+                  <div
+                    className={`feature-item-wrap ${
+                      activeIndex === index ? "active" : ""
+                    }`}
+                  >
                     <div className="feature-item">
                       <div className="icon">
                         <i className={feature.icon}></i>
