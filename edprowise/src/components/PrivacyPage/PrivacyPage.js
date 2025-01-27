@@ -39,7 +39,7 @@ const PrivacyPage = () => {
               <div className="wpo-terms-wrap">
                 <div className="wpo-terms-img">
                   <img
-                    src="/assets/website-images/terms/terms.jpg"
+                    src="/assets/website-images/terms/terms.webp"
                     alt="Terms"
                   />
                 </div>
@@ -90,7 +90,7 @@ const PrivacyPage = () => {
                     <div className="col-md-6 col-sm-6 col-12">
                       <div className="pf-p-details-img">
                         <img
-                          src="/assets/website-images/terms/1.jpg"
+                          src="/assets/website-images/terms/1.webp"
                           alt="Terms Detail 1"
                         />
                       </div>
@@ -98,7 +98,7 @@ const PrivacyPage = () => {
                     <div className="col-md-6 col-sm-6 col-12">
                       <div className="pf-p-details-img">
                         <img
-                          src="/assets/website-images/terms/2.jpg"
+                          src="/assets/website-images/terms/2.webp"
                           alt="Terms Detail 2"
                         />
                       </div>

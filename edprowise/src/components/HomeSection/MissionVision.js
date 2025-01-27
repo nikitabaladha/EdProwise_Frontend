@@ -67,7 +67,7 @@ const VisionMissionSection = () => {
       icon: (
         <img
           className="cart-vm-iconn"
-          src="assets/website-images/mission-icon.png"
+          src="assets/website-images/mission-icon.webp"
           alt="Mission Icon"
         />
       ),

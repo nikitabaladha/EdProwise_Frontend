@@ -202,7 +202,7 @@ const HomeMainSection = () => {
 
               {/* Student Picture with Shapes */}
               <div className="student-pic">
-                <img src="assets/website-images/slider/2.png" alt="Student" />
+                <img src="assets/website-images/slider/2.webp" alt="Student" />
                 <div className="wp-shape-1">
                   <img
                     src="assets/website-images/slider/shape-1.svg"

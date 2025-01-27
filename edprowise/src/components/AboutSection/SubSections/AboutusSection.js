@@ -13,13 +13,13 @@ const AboutusSection = () => {
               <div className="col-lg-6 col-md-12 col-12">
                 <div className="wpo-about-img" style={{ textAlign: "center" }}>
                   <img
-                    src="assets/website-images/about/img-3.png"
+                    src="assets/website-images/about/img-3.webp"
                     alt=""
                     style={{ width: "70%" }}
                   />
                   <div className="back-shape">
                     <img
-                      src="assets/website-images/about/shape.png"
+                      src="assets/website-images/about/shape.webp"
                       alt=""
                       style={{ width: "70%" }}
                     />
@@ -62,12 +62,18 @@ const AboutusSection = () => {
                 <div className="wpo-about-img-wrap">
                   <div className="wpo-about-img-left">
                     <div className="wpo-about-img">
-                      <img src="assets/website-images/about/img-1.jpg" alt="" />
+                      <img
+                        src="assets/website-images/about/img-1.webp"
+                        alt=""
+                      />
                     </div>
                   </div>
                   <div className="wpo-about-img-right">
                     <div className="wpo-about-img-inner">
-                      <img src="assets/website-images/about/img-2.jpg" alt="" />
+                      <img
+                        src="assets/website-images/about/img-2.webp"
+                        alt=""
+                      />
                     </div>
                     <div className="exprience-wrap ">
                       <div className="exprience">

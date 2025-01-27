@@ -7,7 +7,7 @@ const blogPosts = [
     date: "25 Sep 2023",
     author: "Anne William",
     title: "The Surprising Reason College Tuition Is Crazy Expensive",
-    image: "assets/website-images/blog/img-1.jpg",
+    image: "assets/website-images/blog/img-1.webp",
     link: "blog-single.html",
   },
   {
@@ -15,7 +15,7 @@ const blogPosts = [
     date: "26 Sep 2023",
     author: "Robert Fox",
     title: "Become a great WordPress & PHP developer.",
-    image: "assets/website-images/blog/img-2.jpg",
+    image: "assets/website-images/blog/img-2.webp",
     link: "blog-single.html",
   },
   {
@@ -23,7 +23,7 @@ const blogPosts = [
     date: "28 Sep 2023",
     author: "Devon Lane",
     title: "A critical review of mobile learning integration",
-    image: "assets/website-images/blog/img-3.jpg",
+    image: "assets/website-images/blog/img-3.web",
     link: "blog-single.html",
   },
 ];

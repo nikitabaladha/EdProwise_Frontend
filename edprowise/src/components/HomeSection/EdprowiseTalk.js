@@ -103,7 +103,7 @@ const EdprowiseTalk = () => {
           </div>
         </div>
         <div className="right-img">
-          <img src="assets/website-images/choose2.jpg" alt="Choose Us" />
+          <img src="assets/website-images/choose2.webp" alt="Choose Us" />
           <a
             href="https://www.youtube.com/embed/r5sw-6lJmTA?autoplay=1"
             className="video-btn"

@@ -5,7 +5,7 @@ const TestimonialSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const testimonials = [
     {
-      img: "assets/website-images/testimonial/thumb1.png",
+      img: "assets/website-images/testimonial/thumb1.webp",
       name: "Leslie Alexander",
       role: "Students of UX/UI",
       rating: 5,
@@ -13,7 +13,7 @@ const TestimonialSection = () => {
         "I can't express enough gratitude for the awesome experience I had during my education journey. As a beginner, they supported me as much as possible.",
     },
     {
-      img: "assets/website-images/testimonial/thumb2.png",
+      img: "assets/website-images/testimonial/thumb2.webp",
       name: "Eleanor Pena",
       role: "Students of Graphic Designer",
       rating: 4,
@@ -21,7 +21,7 @@ const TestimonialSection = () => {
         "I can't express enough gratitude for the awesome experience I had during my education journey. As a beginner, they supported me as much as possible.",
     },
     {
-      img: "assets/website-images/testimonial/thumb3.png",
+      img: "assets/website-images/testimonial/thumb3.webp",
       name: "Annette Black",
       role: "Students of PHP",
       rating: 5,
@@ -103,10 +103,10 @@ const TestimonialSection = () => {
         </div>
       </div>
       <div className="shape-1">
-        <img src="assets/website-images/testimonial/shape-1.png" alt="" />
+        <img src="assets/website-images/testimonial/shape-1.webp" alt="" />
       </div>
       <div className="shape-2">
-        <img src="assets/website-images/testimonial/shape-2.png" alt="" />
+        <img src="assets/website-images/testimonial/shape-2.webp" alt="" />
       </div>
     </section>
   );

@@ -4,9 +4,9 @@ const AwardAchievement = () => {
   const courses = [
     {
       id: 1,
-      image: "assets/website-images/popular/img-1.jpg",
+      image: "assets/website-images/popular/img-1.webp",
       thumb: "$80",
-      avatar: "assets/website-images/popular/avater/img-1.jpg",
+      avatar: "assets/website-images/popular/avater/img-1.webp",
       instructor: "Robert Henry",
       courseLink: "course-single.html",
       courseName: "Learn WordPress & Elementor for Beginners",
@@ -16,9 +16,9 @@ const AwardAchievement = () => {
     },
     {
       id: 2,
-      image: "assets/website-images/popular/img-2.jpg",
+      image: "assets/website-images/popular/img-2.webp",
       thumb: "$200",
-      avatar: "assets/website-images/popular/avater/img-2.jpg",
+      avatar: "assets/website-images/popular/avater/img-2.webp",
       instructor: "Jenny Wilson",
       courseLink: "course-single.html",
       courseName: "The Complete Guide to Be a Graphics Designer.",
@@ -28,9 +28,9 @@ const AwardAchievement = () => {
     },
     {
       id: 3,
-      image: "assets/website-images/popular/img-3.jpg",
+      image: "assets/website-images/popular/img-3.webp",
       thumb: "$90",
-      avatar: "assets/website-images/popular/avater/img-3.jpg",
+      avatar: "assets/website-images/popular/avater/img-3.webp",
       instructor: "Jerome Bell",
       courseLink: "course-single.html",
       courseName: "Learning How To Write As A Professional Author",

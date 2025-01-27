@@ -95,11 +95,15 @@ const Header = () => {
 
   const handleSignIn = (event) => {
     event.preventDefault();
+    event.stopPropagation(); // Prevent event bubbling
+    console.log("Sign In Clicked");
     navigate(`/login`);
   };
 
   const handleSignUp = (event) => {
     event.preventDefault();
+    event.stopPropagation(); // Prevent event bubbling
+    console.log("Sign Up Clicked");
     navigate(`/signup`);
   };
 
@@ -146,7 +150,10 @@ const Header = () => {
               <div className="col-lg-2 col-9">
                 <div className="navbar-header">
                   <a className="navbar-brand fw-bold logo">
-                    <img src="/assets/images/EdProwiseLogo.png" alt="logo" />
+                    <img
+                      src="/assets/website-images/EdProwiseLogo.webp"
+                      alt="logo"
+                    />
                   </a>
                 </div>
               </div>
@@ -162,7 +169,7 @@ const Header = () => {
                       <div className="navbar-header">
                         <a className="navbar-brand fw-bold logo">
                           <img
-                            src="/assets/images/EdProwiseLogoWhite.png"
+                            src="/assets/website-images/EdProwiseLogoWhite.webp"
                             alt="logo"
                           />
                         </a>
@@ -216,6 +223,8 @@ const Header = () => {
                       </li>
                     ))}
                   </ul>
+
+                  {/* Signup Login Button */}
                 </div>
               </div>
               <div className="col-lg-2 col-md-3 col-0">

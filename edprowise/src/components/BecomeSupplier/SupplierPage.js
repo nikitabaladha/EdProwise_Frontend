@@ -41,7 +41,7 @@ const SupplierPage = () => {
                   <div className="teacher-img-wrap">
                     <div className="volunter-img">
                       <img
-                        src="assets/website-images/teacher.jpg"
+                        src="assets/website-images/teacher.webp"
                         alt="Teacher"
                       />
                     </div>

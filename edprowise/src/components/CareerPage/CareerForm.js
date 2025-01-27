@@ -84,15 +84,19 @@ const CareerForm = () => {
               <div className="col-lg-10">
                 <div className="teacher-item">
                   <div className="teacher-img-wrap">
-                  <div className="volunter-img">
-                    <img src="/assets/images/teacher.jpg" alt="Teacher" />
-                  </div>
+                    <div className="volunter-img">
+                      <img src="/assets/images/teacher.webp" alt="Teacher" />
+                    </div>
                   </div>
                 </div>
                 <div className="teacher-contact">
                   <div className="teacher-contact-form">
                     <h2>Apply for the Job</h2>
-                    <form onSubmit={handleSubmit} id="contact-form-main" className="contact-validation-active" >
+                    <form
+                      onSubmit={handleSubmit}
+                      id="contact-form-main"
+                      className="contact-validation-active"
+                    >
                       <div className="row">
                         <div className="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
                           <input
@@ -185,7 +189,9 @@ const CareerForm = () => {
                         </div>
                       </div>
                       <div className="clearfix error-handling-messages">
-                        {success && <div id="success">Thank you for applying!</div>}
+                        {success && (
+                          <div id="success">Thank you for applying!</div>
+                        )}
                         {error && <div id="error">{error}</div>}
                       </div>
                     </form>

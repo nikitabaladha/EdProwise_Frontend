@@ -5,7 +5,7 @@ const TeamSection = () => {
     {
       name: "Jenny Wilson",
       role: "Graphic Designer",
-      image: "assets/website-images/team/1.jpg",
+      image: "assets/website-images/team/1.webp",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
@@ -17,7 +17,7 @@ const TeamSection = () => {
     {
       name: "Dianne Russell",
       role: "UX Designer",
-      image: "assets/website-images/team/2.jpg",
+      image: "assets/website-images/team/2.webp",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
@@ -29,7 +29,7 @@ const TeamSection = () => {
     {
       name: "Courtney Henry",
       role: "Senior Marketer",
-      image: "assets/website-images/team/3.jpg",
+      image: "assets/website-images/team/3.webp",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
@@ -41,7 +41,7 @@ const TeamSection = () => {
     {
       name: "Annette Black",
       role: "Web Developer",
-      image: "assets/website-images/team/4.jpg",
+      image: "assets/website-images/team/4.webp",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {

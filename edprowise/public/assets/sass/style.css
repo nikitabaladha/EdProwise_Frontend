@@ -3870,7 +3870,7 @@ img {
 
 @media (max-width: 370px) {
   .wpo-site-header .navbar-header .navbar-brand img {
-    max-width: 40px;
+    max-width: 150px;
   }
 }
 
