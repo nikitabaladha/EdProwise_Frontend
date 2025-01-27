@@ -17,8 +17,6 @@
     });
   }
 
-  toggleMobileNavigation();
-
   // Function for toggle class for small menu
   function toggleClassForSmallNav() {
     var windowWidth = window.innerWidth;
