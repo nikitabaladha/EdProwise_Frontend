@@ -50,7 +50,7 @@ const AwardAchievement = () => {
           <div className="row">
             {courses.map((course) => (
               <div
-                className="col col-lg-4 col-md-6 col-6 category-items"
+                className="col col-lg-4 col-md-6 category-items"
                 key={course.id}
               >
                 <div className="wpo-popular-single">

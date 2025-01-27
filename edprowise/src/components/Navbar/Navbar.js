@@ -5,35 +5,35 @@ import { RiCloseLargeFill } from "react-icons/ri";
 import Topbar from "./Topbar";
 
 const menuData = [
-  { name: "HOME", link: "/", subMenu: [] },
+  { name: "Home", link: "/", subMenu: [] },
   {
-    name: "ABOUT US",
+    name: "About Us",
     link: "/about-us",
     subMenu: [],
   },
   {
-    name: "SERVICES",
+    name: "Services",
     subMenu: [
       {
-        name: "DIGITAL SERVICES",
+        name: "Digital Services",
         link: "/services/digital-services",
       },
-      { name: "BUSINESS SERVICES", link: "/services/business-services" },
-      { name: "RECRUITMENT SERVICES", link: "/services/recruitment-services" },
-      { name: "PROCUREMENT SERVICES", link: "/services/procurement-services" },
+      { name: "Business Services", link: "/services/business-services" },
+      { name: "Recruitment Services", link: "/services/recruitment-services" },
+      { name: "Procurment Services", link: "/services/procurement-services" },
     ],
   },
-  { name: "ORDERS", link: "#", subMenu: [] },
+  { name: "Orders", link: "#", subMenu: [] },
   {
-    name: "COMMUNITY CONNECT",
+    name: "Community Connect",
     subMenu: [
-      { name: "GALLERY", link: "/community-connect/gallery" },
-      { name: "EDPROWISE TALKS", link: "/community-connect/edprowise-talks" },
-      { name: "STUDENT ZONE", link: "/community-connect/student-zone" },
-      { name: "EDUCATOR ZONE", link: "/community-connect/educator-zone" },
+      { name: "Gallery", link: "/community-connect/gallery" },
+      { name: "EdProwise Talks", link: "/community-connect/edprowise-talks" },
+      { name: "Student Zone", link: "/community-connect/student-zone" },
+      { name: "Educator Zone", link: "/community-connect/educator-zone" },
     ],
   },
-  { name: "CONTACT US", link: "/contact-us", subMenu: [] },
+  { name: "Contact Us", link: "/contact-us", subMenu: [] },
 ];
 
 const Header = () => {
@@ -76,7 +76,6 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log("Scroll Y Position from use effect:", window.scrollY);
       if (window.scrollY > 100 && !isSticky) {
         setIsSticky(true);
       } else if (window.scrollY <= 100 && isSticky) {
