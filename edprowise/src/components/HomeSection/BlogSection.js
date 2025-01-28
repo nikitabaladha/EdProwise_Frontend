@@ -23,7 +23,7 @@ const blogPosts = [
     date: "28 Sep 2023",
     author: "Devon Lane",
     title: "A critical review of mobile learning integration",
-    image: "assets/website-images/blog/img-3.web",
+    image: "assets/website-images/blog/img-3.webp",
     link: "blog-single.html",
   },
 ];
