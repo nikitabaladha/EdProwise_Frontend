@@ -106,6 +106,16 @@ const Header = () => {
     navigate(`/signup`);
   };
 
+  const toggleMobileNavigation = (e) => {
+    var navbar = window.$(".navigation-holder");
+    var openBtn = window.$(".mobail-menu .open-btn");
+    var xbutton = window.$(".mobail-menu .navbar-toggler");
+    // e.stopImmediatePropagation();
+    navbar.toggleClass("slideInn");
+    xbutton.toggleClass("x-close");
+    return false;
+  };
+
   return (
     <header id="header">
       {location.pathname === "/" && <Topbar />}
@@ -136,7 +146,8 @@ const Header = () => {
                     <button
                       type="button"
                       className="navbar-toggler open-btn"
-                      onClick={toggleMobileMenu}
+                      // onClick={toggleMobileMenu}
+                      onClick={toggleMobileNavigation}
                     >
                       <span className="sr-only">Toggle navigation</span>
                       <span className="icon-bar first-angle"></span>

@@ -4,17 +4,14 @@
   $(".select").niceSelect();
 
   // Toggle mobile navigation
-  function toggleMobileNavigation() {
+  function toggleMobileNavigation(e) {
     var navbar = $(".navigation-holder");
     var openBtn = $(".mobail-menu .open-btn");
     var xbutton = $(".mobail-menu .navbar-toggler");
-
-    openBtn.on("click", function (e) {
-      e.stopImmediatePropagation();
-      navbar.toggleClass("slideInn");
-      xbutton.toggleClass("x-close");
-      return false;
-    });
+    e.stopImmediatePropagation();
+    navbar.toggleClass("slideInn");
+    xbutton.toggleClass("x-close");
+    return false;
   }
 
   // Function for toggle class for small menu
@@ -751,7 +748,7 @@
 
     sortingGallery();
 
-    toggleMobileNavigation();
+    // toggleMobileNavigation();
 
     smallNavFunctionality();
   });
