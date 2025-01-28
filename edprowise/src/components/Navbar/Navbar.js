@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Links } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { RiCloseLargeFill } from "react-icons/ri";
 import Topbar from "./Topbar";
@@ -109,7 +109,7 @@ const Header = () => {
   const toggleMobileNavigation = (e) => {
     var navbar = window.$(".navigation-holder");
     var openBtn = window.$(".mobail-menu .open-btn");
-    var xbutton = window.$(".mobail-menu .navbar-toggler");
+    var xbutton = window.$(" .navbar-toggler");
     // e.stopImmediatePropagation();
     navbar.toggleClass("slideInn");
     xbutton.toggleClass("x-close");
@@ -133,7 +133,7 @@ const Header = () => {
                     <>
                       <button
                         type="button"
-                        className="menu-close"
+                        className="menu-close "
                         onClick={toggleMobileMenu}
                       >
                         <span className="sr-only">Toggle navigation</span>
@@ -211,6 +211,7 @@ const Header = () => {
                         >
                           {menu.name}
                         </Link>
+
                         {menu.subMenu.length > 0 && openSubMenu === index && (
                           <ul className="sub-menu">
                             {menu.subMenu.map((subItem, subIndex) => (
@@ -232,6 +233,16 @@ const Header = () => {
                         )}
                       </li>
                     ))}
+                    {window.innerWidth <= 992 ? (
+                      <>
+                        <li className="menu-item mobile-signup-btn mb-2">
+                          <Link to="/signup">Sign Up</Link>
+                        </li>
+                        <li className="menu-item mobile-signin-btn">
+                          <Link to="/login">Sign In</Link>
+                        </li>
+                      </>
+                    ) : null}
                   </ul>
 
                   {/* Signup Login Button */}

@@ -1,7 +1,7 @@
 (function ($) {
   "use strict";
 
-  $(".select").niceSelect();
+  // $(".select").niceSelect();
 
   // Toggle mobile navigation
   function toggleMobileNavigation() {

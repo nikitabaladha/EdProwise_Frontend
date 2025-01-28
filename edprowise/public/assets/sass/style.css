@@ -94,6 +94,23 @@ Version:        1.0.0
 1. General
 ----------------------------------------------------------------*/
 
+@media (max-width: 991px) {
+  .mobile-signin-btn,
+  .mobile-signup-btn {
+    width: fit-content;
+    -webkit-transition: opacity 0.5s ease-out;
+    transition: opacity 0.5s ease-out;
+    border-radius: 30px;
+    margin: 0 0 0 15px;
+  }
+  .mobile-signin-btn {
+    background: #e8b400;
+  }
+  .mobile-signup-btn {
+    background: #04d4d4;
+  }
+}
+
 .carousel img {
   width: 70px;
   max-height: 70px;

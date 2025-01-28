@@ -830,7 +830,7 @@ class ThemeLayout {
   initConfig() {
     this.config = window.config
       ? JSON.parse(JSON.stringify(window.config))
-      : {};
+      : null;
     this.setSwitchFromConfig();
   }
 
