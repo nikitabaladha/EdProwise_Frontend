@@ -161,7 +161,8 @@ const Header = () => {
                 <div className="navbar-header">
                   <a className="navbar-brand fw-bold logo">
                     <img
-                      src="/assets/website-images/EdProwiseLogo.webp"
+                      // src="/assets/website-images/EdProwiseLogo.webp"
+                      src="/assets/website-images/EdProwiseLogo.png"
                       alt="logo"
                     />
                   </a>
@@ -179,7 +180,8 @@ const Header = () => {
                       <div className="navbar-header">
                         <a className="navbar-brand fw-bold logo">
                           <img
-                            src="/assets/website-images/EdProwiseLogoWhite.webp"
+                            // src="/assets/website-images/EdProwiseLogoWhite.webp"
+                            src="/assets/website-images/EdProwiseLogoWhite.png"
                             alt="logo"
                           />
                         </a>
