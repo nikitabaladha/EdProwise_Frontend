@@ -2,46 +2,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=Play:wght@400;700&amp;display=swap");
 /* Root Prefix Variable */
 
-/* Custom css Start*/
-
-.table-responsive .table > :not(:last-child) > :last-child > * {
-  border-bottom-color: #d8dfe7;
-}
-
-.card-body .custom-font-size-for-card {
-  font-size: 1rem !important;
-}
-
-.custom-font-size {
-  font-size: 1rem !important;
-}
-
-.pagination .page-link.pagination-button-border {
-  border-color: #ff6c2f!important;
-}
-
-.pagination .page-link.pagination-button {
-  background-color: transparent; 
-  color: #424e5a; 
-  border: 1px solid transparent; 
-}
-
-.pagination .page-link.pagination-button.active {
-  background-color: #ff947d; 
-  color: #fff; 
-  border-color: #ff6c2f; 
-}
-
-.pagination .page-link.pagination-button:hover {
-  background-color: #ff947d;
-  color: #fff; 
-  border-color: #ff6c2f; 
-}
-
- 
-
-/* Custom css End */
-
 :root {
   --bs-logo-lg-height: 24px;
   --bs-logo-sm-height: 26px;
@@ -220,7 +180,7 @@ html[data-bs-theme="dark"][data-topbar-color="light"] {
   --bs-tertiary-bg: #f8f9fa;
   --bs-tertiary-bg-rgb: 248, 249, 250;
   --bs-heading-color: var(--bs-headings-color);
-  --bs-link-color: black;
+  --bs-link-color: #8486a7;
   --bs-link-color-rgb: 132, 134, 167;
   --bs-link-decoration: none;
   --bs-link-hover-color: #d95c28;
@@ -20142,10 +20102,10 @@ input.form-control[type="range"] {
 body {
   overflow-x: hidden;
 }
-/* 
+
 .row > * {
   position: relative;
-} */
+}
 
 .container-fluid,
 .container-sm,
