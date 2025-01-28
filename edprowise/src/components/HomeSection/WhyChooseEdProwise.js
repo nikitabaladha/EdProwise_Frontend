@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const WhyChooseEdProwise = () => {
   const carouselRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
 
   const chooseData = [
     {
@@ -58,24 +59,71 @@ const WhyChooseEdProwise = () => {
     const carouselContainer = carouselRef.current;
     const items = carouselContainer.querySelectorAll(".carousel-item-choose");
     const totalItems = items.length;
-    let currentIndex = 0;
+
+    let currentIndex = 1; // Start at the first real item
     const intervalTime = 4000; // Time between slides in milliseconds
     let autoplayInterval;
 
+    // Clone first and last items for infinite loop effect
+    const firstClone = items[0].cloneNode(true);
+    const lastClone = items[totalItems - 1].cloneNode(true);
+
+    // Add clones to the DOM for mobile view
+    if (isMobile) {
+      carouselContainer.appendChild(firstClone);
+      carouselContainer.insertBefore(lastClone, items[0]);
+    }
+
     // Update carousel position
     function updateCarousel() {
-      carouselContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+      const itemWidth = items[0].offsetWidth;
+      carouselContainer.style.transition = "transform 0.5s ease-in-out";
+      carouselContainer.style.transform = `translateX(-${
+        currentIndex * itemWidth
+      }px)`;
     }
 
     // Move to the next slide
     function moveToNextSlide() {
-      currentIndex = (currentIndex + 1) % totalItems;
+      const itemWidth = items[0].offsetWidth;
+      currentIndex++;
       updateCarousel();
+
+      if (currentIndex === totalItems + 1) {
+        // Reset to the first real item
+        setTimeout(() => {
+          carouselContainer.style.transition = "none";
+          currentIndex = 1;
+          carouselContainer.style.transform = `translateX(-${
+            currentIndex * itemWidth
+          }px)`;
+        }, 500); // Match transition duration
+      }
     }
 
-    // Start autoplay
+    // Move to the previous slide
+    function moveToPrevSlide() {
+      const itemWidth = items[0].offsetWidth;
+      currentIndex--;
+      updateCarousel();
+
+      if (currentIndex === 0) {
+        // Reset to the last real item
+        setTimeout(() => {
+          carouselContainer.style.transition = "none";
+          currentIndex = totalItems;
+          carouselContainer.style.transform = `translateX(-${
+            currentIndex * itemWidth
+          }px)`;
+        }, 500); // Match transition duration
+      }
+    }
+
+    // Start autoplay only for mobile
     function startAutoplay() {
-      autoplayInterval = setInterval(moveToNextSlide, intervalTime);
+      if (isMobile) {
+        autoplayInterval = setInterval(moveToNextSlide, intervalTime);
+      }
     }
 
     // Stop autoplay
@@ -85,18 +133,12 @@ const WhyChooseEdProwise = () => {
 
     // Handle window resize
     const handleResize = () => {
-      if (window.innerWidth > 570) {
-        stopAutoplay();
-        carouselContainer.style.transform = "translateX(0)"; // Reset the carousel to the first item on larger screens
-      } else {
-        startAutoplay();
-      }
+      setIsMobile(window.innerWidth <= 992);
     };
 
-    // Initialize autoplay based on screen width
-    if (window.innerWidth <= 570) {
+    // Initialize autoplay if mobile
+    if (isMobile) {
       startAutoplay();
-      updateCarousel();
     }
 
     window.addEventListener("resize", handleResize);
@@ -105,11 +147,11 @@ const WhyChooseEdProwise = () => {
       stopAutoplay();
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <section className="wpo-courses-section-s2 section-padding">
-      <div className="container">
+      <div className="container edprowise-choose-container">
         <div className="row-web">
           <div className="col-12">
             <div className="wpo-section-title-s2">

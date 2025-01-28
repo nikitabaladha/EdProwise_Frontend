@@ -14,7 +14,6 @@ const EdprowiseTalk = () => {
       description:
         "We have highly expert mentors for our student’s best support.",
     },
-
     {
       icon: "fi flaticon-support",
       title: "Dedicated Support",
@@ -36,17 +35,32 @@ const EdprowiseTalk = () => {
   ];
 
   const carouselRef = useRef(null);
+
   useEffect(() => {
     const carouselContainer = carouselRef.current;
     const items = carouselContainer.querySelectorAll(".grid-web");
     const totalItems = items.length;
     let currentIndex = 0;
-    const intervalTime = 4000;
+    const intervalTime = 4000; // 4 seconds for autoplay
     let autoplayInterval;
+
+    // Determine slide width based on screen size
+    const getSlideWidthPercentage = () => {
+      if (window.innerWidth <= 575) {
+        return 100; // Full width for small screens
+      } else if (window.innerWidth <= 991) {
+        return 50; // Half width for medium screens
+      }
+      return 100; // Default for larger screens (no sliding)
+    };
 
     // Update carousel position
     const updateCarousel = () => {
-      carouselContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+      const slideWidthPercentage = getSlideWidthPercentage();
+      carouselContainer.style.transition = "transform 0.5s ease-in-out";
+      carouselContainer.style.transform = `translateX(-${
+        currentIndex * slideWidthPercentage
+      }%)`;
     };
 
     // Move to the next slide
@@ -67,18 +81,19 @@ const EdprowiseTalk = () => {
 
     // Handle window resize
     const handleResize = () => {
-      console.log("Handling resize");
-      if (window.innerWidth > 570) {
+      if (window.innerWidth > 991) {
         stopAutoplay();
+        carouselContainer.style.transition = "none";
         carouselContainer.style.transform = "translateX(0)"; // Reset to the first item
         currentIndex = 0; // Reset index
       } else {
         startAutoplay();
+        updateCarousel();
       }
     };
 
-    // Initialize autoplay based on screen width
-    if (window.innerWidth <= 570) {
+    // Initialize autoplay for smaller screens
+    if (window.innerWidth <= 991) {
       startAutoplay();
       updateCarousel();
     }
@@ -93,11 +108,10 @@ const EdprowiseTalk = () => {
 
   return (
     <section className="wpo-choose-section-s2 section-padding">
-      <div className="container">
+      <div className="container edprowise-choose-container">
         <div className="row">
           <div className="col-12">
             <div className="wpo-section-title-s2">
-              {/* <small>Our Courses</small> */}
               <h2 className="font-family-web">Edprowise Talk</h2>
             </div>
           </div>
@@ -107,13 +121,12 @@ const EdprowiseTalk = () => {
           <a
             href="https://www.youtube.com/embed/r5sw-6lJmTA?autoplay=1"
             className="video-btn"
-            data-type="iframe"
             onClick={handleVideoClick}
           >
             <i className="fi flaticon-play-1"></i>
           </a>
         </div>
-        <div className="wpo-choose-wrap ">
+        <div className="wpo-choose-wrap">
           <div className="wpo-choose-grids clearfix" ref={carouselRef}>
             {slides.map((slide, index) => (
               <div className="grid-web" key={index}>

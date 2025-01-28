@@ -96,9 +96,9 @@ html[data-bs-theme="dark"][data-menu-color="light"] {
 /* Topbar Light */
 
 html[data-topbar-color="light"] {
-  --bs-topbar-bg: #262d34;
-  --bs-topbar-item-color: #9097a7;
-  --bs-topbar-search-bg: #eae8e8;
+  --bs-topbar-bg: #262d34 !important;
+  --bs-topbar-item-color: #9097a7 !important;
+  --bs-topbar-search-bg: #eae8e8 !important;
 }
 
 /* Topbar Dark */

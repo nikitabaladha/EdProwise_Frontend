@@ -94,6 +94,60 @@ Version:        1.0.0
 1. General
 ----------------------------------------------------------------*/
 
+.carousel img {
+  width: 70px;
+  max-height: 70px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  overflow: hidden;
+}
+
+.carousel-innerr {
+  display: flex;
+  padding: 1em;
+  overflow: hidden;
+  width: 100%; /* Ensure full-width for small screens */
+}
+
+.carousel-itemm {
+  display: block;
+  margin-right: 0;
+  flex: 0 0 100%; /* Full width for a single item on small screens */
+}
+
+@media screen and (min-width: 576px) {
+  .carousel-innerr {
+    width: 90%;
+    margin-inline: auto;
+    padding: 1em 0;
+  }
+  .carousel-itemm {
+    flex: 0 0 calc(100% / 2); /* Two items per view */
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .carousel-itemm {
+    flex: 0 0 calc(100% / 3); /* Three items per view */
+  }
+}
+
+.carousel .card {
+  margin: 0 0.5em;
+  border: 0;
+  box-shadow: 0px 2px 8px 0px rgba(0, 12, 55, 0.1);
+}
+
+.carousel-control-prevvv,
+.carousel-control-nexttt {
+  width: 3rem;
+  height: 3rem;
+  background-color: grey;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 /* My custom changes */
 .font-family-web * {
   font-family: "Urbanist" !important;
@@ -172,6 +226,21 @@ Version:        1.0.0
     flex-wrap: nowrap;
     display: flex;
     transition: transform 0.5s ease-in-out;
+  }
+}
+
+/* Responsive behavior for carousel */
+@media (max-width: 992px) {
+  .features-wrapp,
+  .choose-wrapp,
+  .wpo-choose-wrapp {
+    flex-wrap: nowrap;
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .edprowise-choose-container {
+    overflow: hidden;
   }
 }
 
@@ -879,12 +948,52 @@ img {
   }
 }
 
-@media (max-width: 536px) {
+@media (max-width: 575px) {
   .cart-vm {
-    flex: 0 0 51%; /* Each item takes full width */
+    flex: 0 0 47%; /* Each item takes full width */
     display: flex;
     flex-direction: column;
     margin: 0 25%;
+  }
+}
+
+@media (max-width: 552px) {
+  .cart-vm {
+    flex: 0 0 48%; /* Each item takes full width */
+  }
+}
+
+@media (max-width: 536px) {
+  .cart-vm {
+    flex: 0 0 51%; /* Each item takes full width */
+  }
+}
+@media (max-width: 512px) {
+  .cart-vm {
+    flex: 0 0 52%; /* Each item takes full width */
+  }
+}
+
+@media (max-width: 500px) {
+  .cart-vm {
+    flex: 0 0 54%; /* Each item takes full width */
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-vm {
+    flex: 0 0 56%; /* Each item takes full width */
+  }
+}
+@media (max-width: 465px) {
+  .cart-vm {
+    flex: 0 0 58%; /* Each item takes full width */
+  }
+}
+
+@media (max-width: 450px) {
+  .cart-vm {
+    flex: 0 0 60%; /* Each item takes full width */
   }
 }
 
@@ -925,31 +1034,6 @@ img {
     flex: 0 0 75%; /* Each item takes full width */
   }
 }
-
-/* @media (max-width: 536px) {
-  .cart-vm {
-    flex: 0 0 51%; 
-    display: flex;
-    flex-direction: column;
-    margin: 0 25%;
-  }
-}
-
-@media (max-width: 431px) {
-  .cart-vm {
-    flex: 0 0 62%; 
-    display: flex;
-    flex-direction: column;
-    margin: 0 19%;
-  }
-}
-@media (max-width: 400px) {
-  .cart-vm {
-    flex: 0 0 72%;     display: flex;
-    flex-direction: column;
-    margin: 0 15%;
-  }
-} */
 
 .pt-100 {
   padding-top: 100px;
@@ -7149,13 +7233,19 @@ img {
 }
 
 @media (max-width: 991px) {
-  .wpo-about-section .wpo-about-wrap .wpo-about-img-wrap,
-  .wpo-about-section-s2 .wpo-about-wrap .wpo-about-img-wrap,
-  .wpo-about-section-s3 .wpo-about-wrap .wpo-about-img-wrap,
-  .wpo-about-section-s4 .wpo-about-wrap .wpo-about-img-wrap,
-  .wpo-about-section-s5 .wpo-about-wrap .wpo-about-img-wrap {
-    margin-left: 0px;
-    margin-right: 0;
+  .wpo-about-section .wpo-about-wrap .wpo-about-text p,
+  .wpo-about-section-s2 .wpo-about-wrap .wpo-about-text p,
+  .wpo-about-section-s3 .wpo-about-wrap .wpo-about-text p,
+  .wpo-about-section-s4 .wpo-about-wrap .wpo-about-text p,
+  .wpo-about-section-s5 .wpo-about-wrap .wpo-about-text p {
+    max-width: 100%;
+  }
+  .wpo-choose-grids.clearfix {
+    display: -webkit-inline-box;
+    transition: transform 0.3s ease-in-out;
+  }
+  .row-blog {
+    flex-wrap: nowrap !important;
   }
 }
 

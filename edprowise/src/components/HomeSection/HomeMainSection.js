@@ -52,8 +52,8 @@ const HomeMainSection = () => {
   // Update autoplay on screen resize
   useEffect(() => {
     const handleResize = () => {
-      setAutoplay(window.innerWidth <= 570);
-      if (window.innerWidth > 570) {
+      setAutoplay(window.innerWidth <= 991);
+      if (window.innerWidth > 991) {
         setCurrentIndex(0); // Reset carousel to first item on larger screens
       }
     };
@@ -234,19 +234,19 @@ const HomeMainSection = () => {
       </section>
       <section className="wpo-features-area section-padding pt-0">
         <div className="container-fluid">
-          <div
-            className="features-wrap"
-            ref={carouselRef}
-            style={{
-              transform: `translateX(-${currentIndex * 106}%)`,
-              transition: "transform 0.5s ease-in-out",
-            }}
-          >
-            <div className="row-web features-wrapp">
+          <div className="features-wrap">
+            <div
+              className="row-web features-wrapp"
+              ref={carouselRef}
+              style={{
+                transform: `translateX(-${currentIndex * 100}%)`,
+                transition: "transform 0.5s ease-in-out",
+              }}
+            >
               {featuresData.map((feature, index) => (
                 <div
                   key={feature.id}
-                  className={`col col-lg-3 col-md-6 col-12 carousel-itemm ${
+                  className={`col col-lg-3 col-md-12 col-12 carousel-itemm ${
                     index === currentIndex ? "active" : "item"
                   }`}
                   onMouseEnter={() => handleMouseEnter(index)}
@@ -254,7 +254,13 @@ const HomeMainSection = () => {
                 >
                   <div
                     className={`feature-item-wrap ${
-                      activeIndex === index ? "active" : ""
+                      window.innerWidth <= 992
+                        ? index === currentIndex
+                          ? "active"
+                          : ""
+                        : activeIndex === index
+                        ? "active"
+                        : ""
                     }`}
                   >
                     <div className="feature-item">

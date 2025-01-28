@@ -63,15 +63,38 @@ const BlogSection = () => {
     const intervalTime = 4000;
     let autoplayInterval;
 
+    // Determine slide width based on screen size
+    const getSlideWidthPercentage = () => {
+      if (window.innerWidth <= 767) {
+        return 100; // Full width for very small screens
+      } else if (window.innerWidth <= 991) {
+        return 50; // Half width for medium screens
+      }
+      return 0; // Default for larger screens (no sliding)
+    };
+
     // Update carousel position
     function updateCarousel() {
-      carouselContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+      const slideWidthPercentage = getSlideWidthPercentage();
+      carouselContainer.style.transition = "transform 0.5s ease-in-out";
+      carouselContainer.style.transform = `translateX(-${
+        (currentIndex + 1) * slideWidthPercentage
+      }%)`;
     }
 
     // Move to the next slide
     function moveToNextSlide() {
-      currentIndex = (currentIndex + 1) % totalItems;
+      currentIndex += 1;
       updateCarousel();
+
+      // Reset position for infinite loop
+      setTimeout(() => {
+        if (currentIndex >= totalItems) {
+          carouselContainer.style.transition = "none";
+          currentIndex = 0;
+          updateCarousel();
+        }
+      }, 500); // Match transition duration
     }
 
     // Start autoplay
@@ -84,33 +107,68 @@ const BlogSection = () => {
       clearInterval(autoplayInterval);
     }
 
-    // Handle window resize
-    const handleResize = () => {
-      if (window.innerWidth > 570) {
-        stopAutoplay();
-        carouselContainer.style.transform = "translateX(0)"; // Reset the carousel to the first item on larger screens
-      } else {
-        startAutoplay();
+    // Clone the first and last slides for smaller screens
+    const cloneSlides = () => {
+      const firstSlide = items[0].cloneNode(true);
+      const lastSlide = items[totalItems - 1].cloneNode(true);
+      carouselContainer.appendChild(firstSlide);
+      carouselContainer.insertBefore(lastSlide, items[0]);
+    };
+
+    // Remove cloned slides
+    const removeClonedSlides = () => {
+      const clonedSlides = carouselContainer.querySelectorAll(
+        ".carousel-item-blog"
+      );
+      if (clonedSlides.length > totalItems) {
+        clonedSlides.forEach((slide, index) => {
+          if (index === 0 || index === clonedSlides.length - 1) {
+            slide.remove();
+          }
+        });
       }
     };
 
-    // Initialize autoplay based on screen width
-    if (window.innerWidth <= 570) {
+    // Handle window resize
+    const handleResize = () => {
+      if (window.innerWidth > 992) {
+        stopAutoplay();
+        removeClonedSlides();
+        carouselContainer.style.transition = "none";
+        carouselContainer.style.transform = "translateX(0)"; // Reset to the first item
+        currentIndex = 0; // Reset index
+      } else {
+        startAutoplay();
+        updateCarousel();
+        if (carouselContainer.children.length === totalItems) {
+          cloneSlides();
+        }
+      }
+    };
+
+    // Initialize autoplay for smaller screens
+    if (window.innerWidth <= 991) {
       startAutoplay();
       updateCarousel();
+      cloneSlides();
     }
+
+    // Set initial position to the first clone
+    carouselContainer.style.transition = "none";
+    carouselContainer.style.transform = `translateX(-${getSlideWidthPercentage()}%)`;
 
     window.addEventListener("resize", handleResize);
 
     return () => {
       stopAutoplay();
+      removeClonedSlides();
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
     <section className="wpo-blog-section section-padding" id="blog">
-      <div className="container">
+      <div className="container edprowise-choose-container">
         <div className="wpo-section-title-s2">
           <small className="font-family-web">Our Blogs</small>
           <h2 className="font-family-web">Our Latest News</h2>
