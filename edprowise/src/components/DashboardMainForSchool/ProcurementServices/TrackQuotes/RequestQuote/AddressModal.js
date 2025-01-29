@@ -8,6 +8,8 @@ import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 
 const AddressModal = ({ onClose, cart, formData }) => {
+  console.log("productImage cart ", cart);
+
   const [school, setSchool] = useState(null);
   const [expectedDeliveryDate, setExpectedDeliveryDate] = useState("");
 
@@ -83,9 +85,12 @@ const AddressModal = ({ onClose, cart, formData }) => {
     const files = [];
 
     cart.forEach((item) => {
+      console.log("Item:", item);
       if (item.productImage) {
-        files.push(item.productImage);
+        console.log("Product Image:", item.productImage);
         formDataToSend.append("productImage", item.productImage);
+      } else {
+        console.log("No product image found for this item");
       }
     });
 
