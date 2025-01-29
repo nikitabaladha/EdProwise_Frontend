@@ -237,7 +237,6 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
           />
           <img
             // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
-
             src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
             className="logo-lg"
             alt={`${school?.schoolName} Profile`}
