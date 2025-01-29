@@ -4067,6 +4067,7 @@ img {
   left: 0;
   width: 100%;
   z-index: 99;
+  /* z-index: 0; */
   background: transparent;
 }
 
@@ -6950,7 +6951,8 @@ img {
   position: relative;
   font-size: 16px;
   overflow: hidden;
-  z-index: 1;
+  /* z-index: 1; */
+  z-index: 0;
   /*** contact-widget ***/
 }
 
@@ -7108,7 +7110,8 @@ img {
 
 .wpo-site-footer .link-widget ul li {
   position: relative;
-  z-index: 1;
+  /* z-index: 1; */
+  z-index: 0;
   padding: 8px 0;
   padding-left: 20px;
 }

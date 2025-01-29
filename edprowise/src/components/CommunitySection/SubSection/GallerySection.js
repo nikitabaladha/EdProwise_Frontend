@@ -84,7 +84,6 @@ const GallerySection = () => {
     setShuffledItems(shuffleArray([...portfolioItems]));
   }, []);
 
-  // Handle image click to show in the modal
   const handleImageClick = (image) => {
     setModalImage(image);
     setShowModal(true);

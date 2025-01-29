@@ -258,7 +258,6 @@ const WebsiteMain = () => {
         await loadScript(
           `${process.env.PUBLIC_URL}/assets/website-js/jquery.min.js`
         );
-
         await loadScript(
           `${process.env.PUBLIC_URL}/assets/website-js/jquery.nice-select.min.js`
         );
