@@ -126,15 +126,17 @@ const TrackQuoteTable = ({}) => {
                             <td>{quote.enquiryNumber}</td>
                             <td>
                               <div className="d-flex align-items-center gap-2">
-                                <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                  <img
-                                    alt={quote.subCategoryName}
-                                    className="avatar-md"
-                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote?.productImage}`}
-                                  />
-                                </div>
+                                {quote.productImage && (
+                                  <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                    <img
+                                      className="avatar-md"
+                                      alt={quote.subCategoryName}
+                                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote?.productImage}`}
+                                    />
+                                  </div>
+                                )}
                                 <div>
-                                  <Link className="text-dark fw-medium fs-15">
+                                  <Link className="text-dark fw-medium">
                                     {quote.subCategoryName}
                                   </Link>
                                 </div>

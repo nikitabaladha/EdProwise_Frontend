@@ -124,15 +124,19 @@ const ViewRequestedQuote = () => {
                           <td>
                             <div className="d-flex align-items-center gap-2">
                               {product.productImage && (
-                                <img
-                                  className="avatar-md"
-                                  alt={product.subCategoryName}
-                                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
-                                />
+                                <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                  <img
+                                    className="avatar-md"
+                                    alt={product.subCategoryName}
+                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                  />
+                                </div>
                               )}
-                              <Link className="text-dark fw-medium">
-                                {product.subCategoryName}
-                              </Link>
+                              <div>
+                                <Link className="text-dark fw-medium">
+                                  {product.subCategoryName}
+                                </Link>
+                              </div>
                             </div>
                           </td>
                           <td>{product.categoryName}</td>
