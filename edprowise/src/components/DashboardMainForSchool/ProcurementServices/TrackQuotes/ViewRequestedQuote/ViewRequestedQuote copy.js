@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { exportToExcel } from "../../../../export-excel";
@@ -10,54 +10,168 @@ import "react-toastify/dist/ReactToastify.css";
 import autoTable from "jspdf-autotable";
 import jsPDF from "jspdf";
 
-import getAPI from "../../../../../api/getAPI";
-
-import { format } from "date-fns";
-
-const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
-  return format(new Date(dateString), "dd/MM/yyyy");
-};
-
 const ViewRequestedQuote = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
+
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      category: "Office Furniture",
+      subCategory: "Office Chair",
+      productDescription: "We want chair",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
+    },
+    {
+      id: 2,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      category: "Office Furniture",
+      subCategory: "Table",
+      productDescription: "We want Table",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
+    },
+    {
+      id: 3,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      category: "Classroom Board",
+      subCategory: "Board",
+      productDescription: "We want board",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
+    },
+  ]);
 
   const navigate = useNavigate();
 
-  const [quote, setQuote] = useState([]);
-
-  useEffect(() => {
-    if (!enquiryNumber) return;
-    const fetchQuoteData = async () => {
-      try {
-        const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
-
-        if (!response.hasError && response.data.data.products) {
-          setQuote(response.data.data.products);
-          console.log(
-            "product data from function",
-            response.data.data.products
-          );
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching quote:", err);
-      }
-    };
-
-    fetchQuoteData();
-  }, [enquiryNumber]);
+  const [quotes, setQuotes] = useState([
+    {
+      id: 1,
+      nameOfSupplier: "Supplier A",
+      dateOfQuoteSubmitted: "2023-12-01",
+      quotedAmount: "₹500.00",
+      description: "This is a test description for the quote from Supplier A.",
+      remarksFromSupplier: "Ready for delivery",
+      expectedDeliveryDate: "2023-12-05",
+      paymentTerms: "50% upfront, 50% on delivery",
+      advancesRequiredAmount: "₹100.00",
+      placeOrderStatus: "Pending",
+      commentFromBuyer: "Check quality before accepting",
+      status: "Quote Received",
+    },
+  ]);
 
   const [isQuoteTableVisible, setIsQuoteTableVisible] = useState(false);
-
   const navigateToViewQuote = (event, quote) => {
     event.preventDefault();
     navigate(`/school-dashboard/procurement-services/view-quote`, {
       state: { quote },
     });
   };
+
+  const handleExport = (event) => {
+    event.preventDefault();
+
+    if (!quotes || quotes.length === 0) {
+      toast.error("No quotes available to export.");
+      return;
+    }
+
+    const filteredData = quotes.map((quote) => ({
+      "Supplier Name": quote.nameOfSupplier,
+      "Date of Quote Submitted": quote.dateOfQuoteSubmitted,
+      "Expected Delivery Date": quote.expectedDeliveryDate,
+      "Quoted Amount": quote.quotedAmount,
+      Description: quote.description,
+      "Remarks from Supplier": quote.remarksFromSupplier,
+      "Payment Terms": quote.paymentTerms,
+      "Advances Required Amount": quote.advancesRequiredAmount,
+      "Place Order Status": quote.placeOrder,
+      "Comment from Buyer": quote.commentFromBuyer,
+    }));
+
+    exportToExcel(filteredData, "Quotes", "Quotes Data");
+
+    navigate("/school-dashboard/procurement-services/view-requested-quote", {
+      state: { products },
+    });
+  };
+
+  const handleDownloadPDF = (event, quote) => {
+    event.preventDefault();
+
+    const doc = new jsPDF();
+    doc.setFontSize(12);
+    doc.text("Quote Details", 14, 20);
+
+    autoTable(doc, {
+      head: [["Field", "Value"]],
+      body: [
+        ["Supplier Name", quote.nameOfSupplier],
+        ["Date of Quote Submitted", quote.dateOfQuoteSubmitted],
+        ["Expected Delivery Date", quote.expectedDeliveryDate],
+        ["Quoted Amount", quote.quotedAmount],
+        ["Description", quote.description],
+        ["Remarks from Supplier", quote.remarksFromSupplier],
+        ["Payment Terms", quote.paymentTerms],
+        ["Advances Required Amount", quote.advancesRequiredAmount],
+        ["Place Order Status", quote.placeOrder],
+        ["Comment from Buyer", quote.commentFromBuyer],
+        ["Status", quote.status],
+      ],
+    });
+
+    doc.save(`Quote_${quote.id}.pdf`);
+
+    navigate("/school-dashboard/procurement-services/view-requested-quote", {
+      state: { products },
+    });
+  };
+
+  const showSuccessMessage = (event) => {
+    event.preventDefault();
+    toast.success("Order Placed Successfully!");
+    navigate("/school-dashboard/procurement-services/view-requested-quote", {
+      state: { products },
+    });
+  };
+
+  const showErrorMessage = (event) => {
+    event.preventDefault();
+    toast.error("Quote Rejected!");
+    navigate("/school-dashboard/procurement-services/view-requested-quote", {
+      state: { products },
+    });
+  };
+
+  if (!quotes || quotes.length === 0) {
+    return <div>No quotes available</div>;
+  }
+
+  if (!products) {
+    return <div>No product details available.</div>;
+  }
+
+  console.log("Product view", products);
 
   return (
     <div className="container">
@@ -102,51 +216,50 @@ const ViewRequestedQuote = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {quote.length > 0 ? (
-                      quote.map((product) => (
-                        <tr key={product.id}>
-                          <td>
-                            <div className="form-check ms-1">
-                              <input
-                                type="checkbox"
-                                className="form-check-input"
-                                id={`customCheck${product.id}`}
+                    {products.map((product) => (
+                      <tr key={product.id}>
+                        <td>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id={`customCheck${product.id}`}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`customCheck${product.id}`}
+                            >
+                              &nbsp;
+                            </label>
+                          </div>
+                        </td>
+                        <td>{product.enquiryNo}</td>
+                        <td>
+                          <div className="d-flex align-items-center gap-2">
+                            <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                              <img
+                                src={product.imageUrl}
+                                alt={product.subCategory}
+                                className="avatar-md"
                               />
-                              <label
-                                className="form-check-label"
-                                htmlFor={`customCheck${product.id}`}
-                              >
-                                &nbsp;
-                              </label>
                             </div>
-                          </td>
-                          <td>{product.enquiryNumber}</td>
-                          <td>
-                            <div className="d-flex align-items-center gap-2">
-                              {product.productImage && (
-                                <img
-                                  className="avatar-md"
-                                  alt={product.subCategoryName}
-                                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
-                                />
-                              )}
-                              <Link className="text-dark fw-medium">
-                                {product.subCategoryName}
+                            <div>
+                              <Link className="text-dark fw-medium fs-15">
+                                {product.subCategory}
                               </Link>
                             </div>
-                          </td>
-                          <td>{product.categoryName}</td>
-                          <td>{product.quantity}</td>
-                          <td>{product.unit}</td>
-                          <td>{product.buyerStatus}</td>
-                          <td>{product.description}</td>
-                          <td>{formatDate(product.createdAt)}</td>
-                          <td>{formatDate(product.expectedDeliveryDate)}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr></tr>
-                    )}
+                          </div>
+                        </td>
+                        <td>{product.category}</td>
+                        <td>{product.qty}</td>
+                        <td>{product.unit}</td>
+                        <td>{product.status}</td>
+                        <td>{product.productDescription}</td>
+                        <td>{product.quoteReceivedDate}</td>
+                        <td>{product.deliveryExpectedDate}</td>
+                        <td>{product.placeOrderStatus}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -174,7 +287,7 @@ const ViewRequestedQuote = () => {
         </div>
       </div>
 
-      {isQuoteTableVisible && quote.length > 0 ? (
+      {isQuoteTableVisible && quotes.length > 0 ? (
         <div className="row p-2">
           <div className="col-xl-12">
             <div className="card">
@@ -182,7 +295,7 @@ const ViewRequestedQuote = () => {
                 <h4 className="card-title flex-grow-1"> All Quote List</h4>
                 <div className="text-end">
                   <Link
-                    // onClick={(event) => handleExport(event)}
+                    onClick={(event) => handleExport(event)}
                     className="btn btn-sm btn-outline-light"
                   >
                     Export
@@ -222,7 +335,7 @@ const ViewRequestedQuote = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {/* {quotes.map((quote) => (
+                      {quotes.map((quote) => (
                         <tr key={quote.id}>
                           <td>
                             <div className="form-check ms-1">
@@ -279,7 +392,7 @@ const ViewRequestedQuote = () => {
                             </div>
                           </td>
                         </tr>
-                      ))} */}
+                      ))}
                     </tbody>
                   </table>
                 </div>
