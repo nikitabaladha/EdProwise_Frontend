@@ -1,58 +1,60 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
+
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import autoTable from "jspdf-autotable";
-import jsPDF from "jspdf";
-
 import PrepareQuoteTable from "../PrepareQuoteTable/PrepareQuoteTable";
-import { exportToExcel } from "../../../../export-excel";
-
-import getAPI from "../../../../../api/getAPI";
-
-import { format } from "date-fns";
-
-const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
-  return format(new Date(dateString), "dd/MM/yyyy");
-};
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
 
-  const navigate = useNavigate();
-
-  const [quote, setQuote] = useState([]);
-
-  useEffect(() => {
-    if (!enquiryNumber) return;
-    const fetchQuoteData = async () => {
-      try {
-        const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
-
-        if (!response.hasError && response.data.data.products) {
-          setQuote(response.data.data.products);
-          console.log(
-            "product data from function",
-            response.data.data.products
-          );
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching quote:", err);
-      }
-    };
-
-    fetchQuoteData();
-  }, [enquiryNumber]);
+  const [requestedProducts, setRequestedProducts] = useState([
+    {
+      id: 1,
+      enquiryNo: "ENQ1234567890",
+      quoteRequestedDate: "2023-12-01",
+      category: "Office Furniture",
+      subCategory: "Office Chair",
+      productDescription: "We want chair",
+      qty: 8,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-05",
+      imageUrl: "assets/images/product/p-1.png",
+      status: "Quote Requested",
+    },
+    {
+      id: 2,
+      enquiryNo: "ENQ1234567890",
+      quoteRequestedDate: "2023-12-01",
+      category: "Office Furniture",
+      subCategory: "Office Chair",
+      productDescription: "Need 10 wooden desks.",
+      qty: 10,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-10",
+      imageUrl: "assets/images/product/p-2.png",
+      status: "Quote Requested",
+    },
+    {
+      id: 3,
+      enquiryNo: "ENQ1234567890",
+      quoteRequestedDate: "2023-12-01",
+      category: "Office Furniture",
+      subCategory: "Office Chair",
+      productDescription: "Request for 5 whiteboards.",
+      qty: 5,
+      unit: "Pieces",
+      deliveryExpectedDate: "2023-12-12",
+      imageUrl: "assets/images/product/p-3.png",
+      status: "Quote Requested",
+    },
+  ]);
 
   const [prepareProducts, setPrepareProducts] = useState(
-    quote.map((product) => ({
+    requestedProducts.map((product) => ({
       slNo: "",
       description: "",
       hsnSaac: "",
@@ -76,6 +78,8 @@ const ViewRequestedQuote = () => {
       productImages: null,
     }))
   );
+
+  const navigate = useNavigate();
 
   const [isPrepareQuoteTableVisible, setIsPrepareQuoteTableVisible] =
     useState(false);
@@ -147,11 +151,11 @@ const ViewRequestedQuote = () => {
     navigate("/seller-dashboard/procurement-services/submit-quote");
   };
 
-  // if (!requestedProducts) {
-  //   return <div>No product details available.</div>;
-  // }
+  if (!requestedProducts) {
+    return <div>No product details available.</div>;
+  }
 
-  // console.log("Product view", requestedProducts);
+  console.log("Product view", requestedProducts);
 
   return (
     <div className="container">
@@ -185,6 +189,7 @@ const ViewRequestedQuote = () => {
                         </div>
                       </th>
                       <th>Enquiry No.</th>
+
                       <th>Product Required Image & Name</th>
                       <th>Product Required (Category)</th>
                       <th>Quote Requested Date</th>
@@ -196,55 +201,50 @@ const ViewRequestedQuote = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {quote.length > 0 ? (
-                      quote.map((product) => (
-                        <tr key={product.id}>
-                          <td>
-                            <div className="form-check ms-1">
-                              <input
-                                type="checkbox"
-                                className="form-check-input"
-                                id={`customCheck${product.id}`}
+                    {requestedProducts.map((product) => (
+                      <tr key={product.id}>
+                        <td>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id={`customCheck${product.id}`}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`customCheck${product.id}`}
+                            >
+                              &nbsp;
+                            </label>
+                          </div>
+                        </td>
+                        <td>{product.enquiryNo}</td>
+                        <td>
+                          <div className="d-flex align-items-center gap-2">
+                            <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                              <img
+                                src={product.imageUrl}
+                                alt={product.subCategory}
+                                className="avatar-md"
                               />
-                              <label
-                                className="form-check-label"
-                                htmlFor={`customCheck${product.id}`}
-                              >
-                                &nbsp;
-                              </label>
                             </div>
-                          </td>
-                          <td>{product.enquiryNumber}</td>
-                          <td>
-                            <div className="d-flex align-items-center gap-2">
-                              {product.productImage && (
-                                <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                  <img
-                                    className="avatar-md"
-                                    alt={product.subCategoryName}
-                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
-                                  />
-                                </div>
-                              )}
-                              <div>
-                                <Link className="text-dark fw-medium">
-                                  {product.subCategoryName}
-                                </Link>
-                              </div>
+                            <div>
+                              <Link className="text-dark fw-medium fs-15">
+                                {product.subCategory}
+                              </Link>
                             </div>
-                          </td>
-                          <td>{product.categoryName}</td>
-                          <td>{product.quantity}</td>
-                          <td>{product.unit}</td>
-                          <td>{product.buyerStatus}</td>
-                          <td>{product.description}</td>
-                          <td>{formatDate(product.createdAt)}</td>
-                          <td>{formatDate(product.expectedDeliveryDate)}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr></tr>
-                    )}
+                          </div>
+                        </td>
+
+                        <td>{product.category}</td>
+                        <td>{product.quoteRequestedDate}</td>
+                        <td>{product.productDescription}</td>
+                        <td>{product.qty}</td>
+                        <td>{product.unit}</td>
+                        <td>{product.deliveryExpectedDate}</td>
+                        <td>{product.status}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>

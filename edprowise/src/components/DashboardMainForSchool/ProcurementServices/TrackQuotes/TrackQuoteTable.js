@@ -10,7 +10,7 @@ const TrackQuoteTable = ({}) => {
   useEffect(() => {
     const fetchQuoteData = async () => {
       try {
-        const response = await getAPI(`/get-quote`, {}, true);
+        const response = await getAPI(`/get-quote-list-for-school`, {}, true);
         if (
           !response.hasError &&
           response.data &&
