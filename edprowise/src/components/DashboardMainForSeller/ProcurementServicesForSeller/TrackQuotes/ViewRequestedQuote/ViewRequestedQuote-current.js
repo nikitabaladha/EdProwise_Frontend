@@ -5,19 +5,18 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import autoTable from "jspdf-autotable";
+import jsPDF from "jspdf";
 
 import PrepareQuoteTable from "../PrepareQuoteTable/PrepareQuoteTable";
+import { exportToExcel } from "../../../../export-excel";
 
 import getAPI from "../../../../../api/getAPI";
-import postAPI from "../../../../../api/postAPI";
 
 import { format } from "date-fns";
 
-//This function takes a date string as an argument and returns a formatted date string
 const formatDate = (dateString) => {
-  //If the date string is not provided, return "N/A"
   if (!dateString) return "N/A";
-  //Otherwise, format the date string using the format function and return the formatted date string
   return format(new Date(dateString), "dd/MM/yyyy");
 };
 
@@ -58,10 +57,27 @@ const ViewRequestedQuote = () => {
 
   const [prepareProducts, setPrepareProducts] = useState(
     quote.map((product) => ({
-      srNo: "",
-      subCategoryName: "",
-      // quantity: "",
-      prepareQuoteImage: null,
+      slNo: "",
+      description: "",
+      hsnSaac: "",
+      listingRate: "",
+      edProwiseMargin: "",
+      qty: "",
+      finalRateBeforeDiscount: "",
+      discountPercentage: "",
+      finalRate: "",
+      taxableValue: "",
+      cgstRate: "",
+      cgstAmount: "",
+      sgstRate: "",
+      sgstAmount: "",
+      igstRate: "",
+      igstAmount: "",
+      amountBeforeGST: "",
+      discountAmount: "",
+      gstAmount: "",
+      totalAmount: "",
+      productImages: null,
     }))
   );
 
@@ -77,14 +93,12 @@ const ViewRequestedQuote = () => {
   };
 
   const handleChange = (index, e) => {
-    const { name, value, files, type } = e.target;
+    const { name, value, files } = e.target;
     const updatedProducts = [...prepareProducts];
-
     updatedProducts[index] = {
       ...updatedProducts[index],
-      [name]: type === "file" ? files[0] : value,
+      [name]: files ? files[0] : value,
     };
-
     setPrepareProducts(updatedProducts);
   };
 
@@ -98,10 +112,27 @@ const ViewRequestedQuote = () => {
   useEffect(() => {
     setPrepareProducts(
       quote.map((_, index) => ({
-        srNo: index + 1,
-        subCategoryName: "",
-        // quantity: "",
-        prepareQuoteImage: null,
+        slNo: index + 1,
+        description: "",
+        hsnSaac: "",
+        listingRate: "",
+        edProwiseMargin: "",
+        qty: "",
+        finalRateBeforeDiscount: "",
+        discountPercentage: "",
+        finalRate: "",
+        taxableValue: "",
+        cgstRate: "",
+        cgstAmount: "",
+        sgstRate: "",
+        sgstAmount: "",
+        igstRate: "",
+        igstAmount: "",
+        amountBeforeGST: "",
+        discountAmount: "",
+        gstAmount: "",
+        totalAmount: "",
+        productImages: null,
       }))
     );
   }, [quote]);
@@ -110,10 +141,27 @@ const ViewRequestedQuote = () => {
     setPrepareProducts((prev) => [
       ...prev,
       {
-        srNo: prev.length + 1,
-        subCategoryName: "",
-        // quantity: "",
-        prepareQuoteImage: null,
+        slNo: prev.length + 1,
+        description: "",
+        hsnSaac: "",
+        listingRate: "",
+        edProwiseMargin: "",
+        qty: "",
+        finalRateBeforeDiscount: "",
+        discountPercentage: "",
+        finalRate: "",
+        taxableValue: "",
+        cgstRate: "",
+        cgstAmount: "",
+        sgstRate: "",
+        sgstAmount: "",
+        igstRate: "",
+        igstAmount: "",
+        amountBeforeGST: "",
+        discountAmount: "",
+        gstAmount: "",
+        totalAmount: "",
+        productImages: null,
       },
     ]);
   };
@@ -123,63 +171,12 @@ const ViewRequestedQuote = () => {
     setPrepareProducts(updatedProducts);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Prepare Quote Data:", prepareProducts);
+    toast.success("Quote prepared successfully!");
 
-    try {
-      const data = {
-        enquiryNumber: enquiryNumber,
-        products: [],
-      };
-
-      prepareProducts.forEach((product) => {
-        data.products.push({
-          subcategoryName: product.subCategoryName,
-          prepareQuoteImage: product.prepareQuoteImage
-            ? product.prepareQuoteImage.name
-            : "",
-        });
-      });
-
-      console.log("Data being sent to backend:", data);
-
-      //   {
-      //     "enquiryNumber": "ENQ17382162277852603",
-      //     "products": [
-      //         {
-      //             "subcategoryName": "",
-      //             "prepareQuoteImage": ""
-      //         },
-      //         {
-      //             "subcategoryName": "",
-      //             "prepareQuoteImage": ""
-      //         }
-      //     ]
-      // }
-
-      const response = await postAPI(
-        "/prepare-quote",
-        data,
-        {
-          "Content-Type": "multipart/form-data",
-        },
-        true
-      );
-
-      if (response.hasError) {
-        toast.error(response.message || "Failed to Prepare Quote");
-      } else {
-        toast.success("Quote prepared successfully");
-      }
-
-      // Reset the form after submission
-      setPrepareProducts([]);
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          "An unexpected error occurred. Please try again."
-      );
-    }
+    navigate("/seller-dashboard/procurement-services/submit-quote");
   };
 
   return (
@@ -319,54 +316,3 @@ const ViewRequestedQuote = () => {
 };
 
 export default ViewRequestedQuote;
-
-// const handleSubmit = async (e) => {
-//   e.preventDefault();
-
-//   try {
-//     const data = new FormData();
-
-//     // Append the enquiry number first
-//     data.append("enquiryNumber", enquiryNumber);
-
-//     // Append each product to the FormData
-//     prepareProducts.forEach((product, index) => {
-//       data.append(
-//         `products[${index}].subcategoryName`,
-//         product.subCategoryName
-//       );
-//       if (product.prepareQuoteImage) {
-//         const reader = new FileReader();
-//         reader.onloadend = () => {
-//           data.append(`products[${index}].prepareQuoteImage`, reader.result);
-//         };
-//         reader.readAsDataURL(product.prepareQuoteImage);
-//       } else {
-//         data.append(`products[${index}].prepareQuoteImage`, "");
-//       }
-//     });
-
-//     const response = await postAPI(
-//       "/prepare-quote",
-//       data,
-//       {
-//         "Content-Type": "multipart/form-data",
-//       },
-//       true
-//     );
-
-//     if (response.hasError) {
-//       toast.error(response.message || "Failed to Prepare Quote");
-//     } else {
-//       toast.success("Quote prepared successfully");
-//     }
-
-//     // Reset the form after submission
-//     setPrepareProducts([]);
-//   } catch (error) {
-//     toast.error(
-//       error?.response?.data?.message ||
-//         "An unexpected error occurred. Please try again."
-//     );
-//   }
-// };
