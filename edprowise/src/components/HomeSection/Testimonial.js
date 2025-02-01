@@ -2,48 +2,45 @@ import React, { useEffect, useRef, useState } from "react";
 
 const testimonials = [
   {
-    text: "Some quick example quick example text to build on the card title and make up the bulk of the card's content.",
-    image: "https://codingyaar.com/wp-content/uploads/square-headshot-1.png",
-    name: "Jane Doe",
-    position: "CEO, Example Company",
-  },
-  {
-    text: "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    image: "https://codingyaar.com/wp-content/uploads/square-headshot-2.png",
-    name: "June Doe",
-    position: "CEO, Example Company",
-  },
-  {
-    text: "Some quick example quick example text to build on the card title and make up the bulk of the card's content.",
+    text: "EdProWise has completely transformed the way we manage our curriculum and student engagement. The intuitive platform and expert guidance have made a significant impact on our school's success.",
     image:
-      "https://codingyaar.com/wp-content/uploads/bootstrap-profile-card-image.jpg",
-    name: "John Doe",
-    position: "CEO, Example Company",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6NOoyAVaX8I76Q4Lre8gmxK5YbJIo_c_kcQ&s",
+    name: "Principal",
+    position: "Carmel convent school, Chandigarh",
   },
   {
-    text: "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    image: "https://codingyaar.com/wp-content/uploads/square-headshot-2.png",
-    name: "June Doe",
-    position: "CEO, Example Company",
-  },
-  {
-    text: "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    image: "https://codingyaar.com/wp-content/uploads/square-headshot-2.png",
-    name: "June Doe",
-    position: "CEO, Example Company",
-  },
-  {
-    text: "Some quick example quick example text to build on the card title and make up the bulk of the card's content.",
+    text: "EdProWise has revolutionized our administrative processes. From managing student data to optimizing lesson plans, everything is now efficient. It has truly been a game-changer for our school.",
     image:
-      "https://codingyaar.com/wp-content/uploads/bootstrap-profile-card-image.jpg",
-    name: "John Doe",
-    position: "CEO, Example Company",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREUWe7HmcsRfT2iV5uq4L0lzrsteFWTdQbdw&s",
+    name: "Principal",
+    position: "St francis de sales school, Janakpuri",
   },
   {
-    text: "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    image: "https://codingyaar.com/wp-content/uploads/square-headshot-2.png",
-    name: "June Doe",
-    position: "CEO, Example Company",
+    text: "EdProWise has elevated education quality at our institution, empowering teachers and students with the tools to succeed and fostering continuous improvement.",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-Y3xfkKX6PUMgfToucwy_YRgln8AKEWzctQ&s",
+    name: "Principal",
+    position: "Christ Raja Convent School, Jind",
+  },
+  {
+    text: "EdProWise has helped us transition smoothly into a more digital and data-driven education system. It has provided us with the structure and support needed to modernize our school operations.",
+    image: "",
+    name: "Principal",
+    position: "Mount Carmel School, Hoshiarpur",
+  },
+  {
+    text: "Managing a school comes with countless challenges, but EdProWise has simplified everything. From scheduling to resource allocation, our administrative workload has been significantly reduced.",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmPtbFn_Ai1BkZRCDHtfH_hNIY9wLL9qKCdg&s",
+    name: "Principal",
+    position: "St. Thomas Convent School, Bhopal",
+  },
+  {
+    text: "With EdProWise, we now have access to real-time analytics and insights that help us make informed decisions. It has significantly improved our ability to track student progress and teacher performance.",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeKq8qxdnDCddHIxt3FP4OvvfL8HCAifnRGbP4_jEF_fKz2kUn1EgU1P8cZuRFE1_l&usqp=CAU",
+    name: "Principal",
+    position: "Trinity Convent School, Vidisha",
   },
 ];
 
@@ -116,12 +113,13 @@ const TestimonialSection = () => {
     };
   }, [scrollPosition, itemsToShow]);
   return (
-    <section className="wpo-courses-section-s2 section-padding">
+    <section className="wpo-courses-section-s2 section-padding pt-0 pb-1">
       <div className="container-fluidd bg-body-tertiary pyy-3">
         <div className="row">
           <div className="col-12">
             <div className="wpo-section-title-s2">
-              <h2>Testimonials</h2>
+              {/* <h3>Testimonials</h3> */}
+              <h2>What Our Client Says About Us</h2>
             </div>
           </div>
         </div>
@@ -153,7 +151,7 @@ const TestimonialSection = () => {
                     </svg>
                   </div>
                   <div className="card-body">
-                    <p className="card-text">{testimonial.text}</p>
+                    <p className="card-text text-black">{testimonial.text}</p>
                     <div className="d-flex align-items-center pt-2">
                       <img
                         src={testimonial.image}

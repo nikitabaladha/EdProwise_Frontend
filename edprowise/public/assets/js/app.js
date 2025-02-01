@@ -71,7 +71,7 @@ class Components {
           // current working methods
           if (document.documentElement.requestFullscreen) {
             document.documentElement.requestFullscreen();
-          } else if (document.documentElement.mozRequcestFullScreen) {
+          } else if (document.documentElement.mozRequestFullScreen) {
             document.documentElement.mozRequestFullScreen();
           } else if (document.documentElement.webkitRequestFullscreen) {
             document.documentElement.webkitRequestFullscreen(
@@ -903,16 +903,16 @@ class ThemeLayout {
       });
 
     //TopBar Light Dark
-    // var themeColorToggle = document.getElementById("light-dark-mode");
-    // if (themeColorToggle) {
-    //   themeColorToggle.addEventListener("click", function (e) {
-    //     if (self.config.theme === "light") {
-    //       self.changeThemeMode("dark");
-    //     } else {
-    //       self.changeThemeMode("light");
-    //     }
-    //   });
-    // }
+    var themeColorToggle = document.getElementById("light-dark-mode");
+    if (themeColorToggle) {
+      themeColorToggle.addEventListener("click", function (e) {
+        if (self.config.theme === "light") {
+          self.changeThemeMode("dark");
+        } else {
+          self.changeThemeMode("light");
+        }
+      });
+    }
 
     var resetBtn = document.querySelector("#reset-layout");
     if (resetBtn) {
@@ -921,56 +921,27 @@ class ThemeLayout {
       });
     }
 
-    // var menuToggleBtn = document.querySelector(".button-toggle-menu");
-    // if (menuToggleBtn) {
-    //   menuToggleBtn.addEventListener("click", function () {
-    //     var configSize = self.config.menu.size;
-    //     var size = self.html.getAttribute("data-menu-size", configSize);
-
-    //     if (size !== "hidden") {
-    //       if (size === "condensed") {
-    //         self.changeMenuSize(
-    //           configSize == "condensed" ? "default" : configSize,
-    //           false
-    //         );
-    //       } else {
-    //         self.changeMenuSize("condensed", false);
-    //       }
-    //     } else {
-    //       self.showBackdrop();
-    //     }
-
-    //     // Todo: old implementation
-    //     self.html.classList.toggle("sidebar-enable");
-    //   });
-    // }
-
     var menuToggleBtn = document.querySelector(".button-toggle-menu");
     if (menuToggleBtn) {
       menuToggleBtn.addEventListener("click", function () {
-        // Check if self and self.config are defined
-        if (self && self.config && self.config.menu) {
-          var configSize = self.config.menu.size; // Safe to access now
-          var size = self.html.getAttribute("data-menu-size", configSize);
+        var configSize = self.config.menu.size;
+        var size = self.html.getAttribute("data-menu-size", configSize);
 
-          if (size !== "hidden") {
-            if (size === "condensed") {
-              self.changeMenuSize(
-                configSize === "condensed" ? "default" : configSize,
-                false
-              );
-            } else {
-              self.changeMenuSize("condensed", false);
-            }
+        if (size !== "hidden") {
+          if (size === "condensed") {
+            self.changeMenuSize(
+              configSize == "condensed" ? "default" : configSize,
+              false
+            );
           } else {
-            self.showBackdrop();
+            self.changeMenuSize("condensed", false);
           }
-
-          // Todo: old implementation
-          self.html.classList.toggle("sidebar-enable");
         } else {
-          console.error("Configuration or menu is not properly initialized");
+          self.showBackdrop();
         }
+
+        // Todo: old implementation
+        self.html.classList.toggle("sidebar-enable");
       });
     }
 
@@ -1023,30 +994,14 @@ class ThemeLayout {
     });
   }
 
-  // _adjustLayout() {
-  //   var self = this;
-
-  //   if (window.innerWidth <= 1140) {
-  //     self.changeMenuSize("hidden", false);
-  //   } else {
-  //     self.changeMenuSize(self.config.menu.size);
-  //     // self.changeLayoutMode(self.config.layout.mode);
-  //   }
-  // }
-
   _adjustLayout() {
     var self = this;
 
     if (window.innerWidth <= 1140) {
       self.changeMenuSize("hidden", false);
     } else {
-      // Check if self.config and self.config.menu are defined
-      if (self.config && self.config.menu) {
-        self.changeMenuSize(self.config.menu.size);
-        // self.changeLayoutMode(self.config.layout.mode);
-      } else {
-        console.error("Configuration or menu is not properly initialized");
-      }
+      // self.changeMenuSize(self.config.menu.size);
+      // self.changeLayoutMode(self.config.layout.mode);
     }
   }
 

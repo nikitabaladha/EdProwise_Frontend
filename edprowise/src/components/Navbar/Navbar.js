@@ -6,11 +6,7 @@ import Topbar from "./Topbar";
 
 const menuData = [
   { name: "Home", link: "/", subMenu: [] },
-  {
-    name: "About Us",
-    link: "/about-us",
-    subMenu: [],
-  },
+
   {
     name: "Services",
     subMenu: [
@@ -18,12 +14,20 @@ const menuData = [
         name: "Digital Services",
         link: "/services/digital-services",
       },
-      { name: "Business Services", link: "/services/business-services" },
-      { name: "Recruitment Services", link: "/services/recruitment-services" },
-      { name: "Procurment Services", link: "/services/procurement-services" },
+      { name: "Acadmic & Admin", link: "/services/business-services" },
+      {
+        name: "Get Goods For Your School",
+        link: "/services/procurement-services",
+      },
+      { name: "Hire School Teacher", link: "/services/recruitment-services" },
     ],
   },
   { name: "Orders", link: "#", subMenu: [] },
+  {
+    name: "About Us",
+    link: "/about-us",
+    subMenu: [],
+  },
   {
     name: "Community Connect",
     subMenu: [
@@ -64,14 +68,16 @@ const Header = () => {
     toggleMobileMenu();
   };
 
-  const isActive = (path, hasSubMenu) => {
-    if (hasSubMenu) {
-      return (
-        location.pathname === path || location.pathname.startsWith(path + "/")
-      );
+  const isActive = (path, subMenu) => {
+    if (location.pathname === path) {
+      return true;
     }
 
-    return location.pathname === path;
+    if (subMenu && subMenu.length > 0) {
+      return subMenu.some((subItem) => location.pathname === subItem.link);
+    }
+
+    return false;
   };
 
   useEffect(() => {
@@ -161,8 +167,7 @@ const Header = () => {
                 <div className="navbar-header">
                   <a className="navbar-brand fw-bold logo">
                     <img
-                      // src="/assets/website-images/EdProwiseLogo.webp"
-                      src="/assets/website-images/EdProwiseLogo.png"
+                      src="/assets/website-images/EdProwiseLogo.webp"
                       alt="logo"
                     />
                   </a>
@@ -180,8 +185,7 @@ const Header = () => {
                       <div className="navbar-header">
                         <a className="navbar-brand fw-bold logo">
                           <img
-                            // src="/assets/website-images/EdProwiseLogoWhite.webp"
-                            src="/assets/website-images/EdProwiseLogoWhite.png"
+                            src="/assets/website-images/EdProwiseLogoWhite.webp"
                             alt="logo"
                           />
                         </a>
@@ -205,10 +209,8 @@ const Header = () => {
                         <Link
                           to={menu.link}
                           onMouseEnter={(e) => handleMenuClick(menu, index, e)}
-                          className={`${
-                            isActive(menu.link, menu.subMenu.length > 0)
-                              ? "active"
-                              : ""
+                          className={`nav-item ${
+                            isActive(menu.link, menu.subMenu) ? "active" : ""
                           }`}
                         >
                           {menu.name}
@@ -237,10 +239,10 @@ const Header = () => {
                     ))}
                     {window.innerWidth <= 992 ? (
                       <>
-                        <li className="menu-item mobile-signup-btn mb-2">
+                        <li className="menu-item ">
                           <Link to="/signup">Sign Up</Link>
                         </li>
-                        <li className="menu-item mobile-signin-btn">
+                        <li className="menu-item">
                           <Link to="/login">Sign In</Link>
                         </li>
                       </>

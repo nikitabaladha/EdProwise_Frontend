@@ -10,27 +10,27 @@ const EdprowiseTalk = () => {
   const slides = [
     {
       icon: "fi flaticon-training",
-      title: "Experienced Mentor",
-      description:
-        "We have highly expert mentors for our student’s best support.",
+      title: "CRM Driven Process",
+      // description:
+      //   "We have highly expert mentors for our student’s best support.",
     },
     {
       icon: "fi flaticon-support",
-      title: "Dedicated Support",
-      description:
-        "We are always here to help our students and solve problems.",
+      title: "Instant User Support",
+      // description:
+      //   "We are always here to help our students and solve problems.",
     },
     {
       icon: "fi flaticon-e-learning",
-      title: "Digital Learning",
-      description:
-        "We have highly expert mentors for our student’s best support.",
+      title: "Guide, Manual & Training",
+      // description:
+      //   "We have highly expert mentors for our student’s best support.",
     },
     {
       icon: "fi flaticon-medal-1",
-      title: "Global Certificate",
-      description:
-        "We are always here to help our students and solve problems.",
+      title: "Highly Trained Team",
+      // description:
+      //   "We are always here to help our students and solve problems.",
     },
   ];
 
@@ -107,42 +107,64 @@ const EdprowiseTalk = () => {
   }, []);
 
   return (
-    <section className="wpo-choose-section-s2 section-padding">
-      <div className="container edprowise-choose-container">
-        <div className="row">
-          <div className="col-12">
-            <div className="wpo-section-title-s2">
-              <h2 className="font-family-web">Edprowise Talk</h2>
+    <>
+      <section className="wpo-choose-section-s2 section-padding pt-0 pb-1">
+        <div className="container edprowise-choose-container">
+          <div className="wpo-choose-wrap">
+            <div className="row ">
+              <div className="col-12">
+                <div className="wpo-section-title-s2">
+                  <h2 className="font-family-web">
+                    Support – We Listen..We Resolve..We Deliver
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div className="wpo-choose-grids clearfix" ref={carouselRef}>
+              {slides.map((slide, index) => (
+                <div
+                  className="grid-web"
+                  key={index}
+                  style={{ display: "inline-flex !important" }}
+                >
+                  <div className="icon">
+                    <i className={slide.icon}></i>
+                  </div>
+                  <div className="info">
+                    <h3>{slide.title}</h3>
+                    <p>{slide.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-        <div className="right-img">
-          <img src="assets/website-images/choose2.webp" alt="Choose Us" />
-          <a
-            href="https://www.youtube.com/embed/r5sw-6lJmTA?autoplay=1"
-            className="video-btn"
-            onClick={handleVideoClick}
-          >
-            <i className="fi flaticon-play-1"></i>
-          </a>
-        </div>
-        <div className="wpo-choose-wrap">
-          <div className="wpo-choose-grids clearfix" ref={carouselRef}>
-            {slides.map((slide, index) => (
-              <div className="grid-web" key={index}>
-                <div className="icon">
-                  <i className={slide.icon}></i>
-                </div>
-                <div className="info">
-                  <h3>{slide.title}</h3>
-                  <p>{slide.description}</p>
-                </div>
+      </section>
+      <section
+        className="wpo-choose-section-s2 section-padding pt-lg-0 pb-lg-3 "
+        style={{ background: "white" }}
+      >
+        <div className="container edprowise-choose-container">
+          <div className="row mb-2">
+            <div className="col-12">
+              <div className="wpo-section-title-s2 mb-2">
+                <h2 className="font-family-web">Edprowise Talk</h2>
               </div>
-            ))}
+            </div>
+          </div>
+          <div className="right-img mb-2">
+            <img src="assets/website-images/choose2.webp" alt="Choose Us" />
+            <a
+              href="https://www.youtube.com/embed/r5sw-6lJmTA?autoplay=1"
+              className="video-btn"
+              onClick={handleVideoClick}
+            >
+              <i className="fi flaticon-play-1"></i>
+            </a>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

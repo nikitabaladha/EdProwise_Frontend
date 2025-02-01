@@ -1,6 +1,6 @@
 import react, { useState } from "react";
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
+import FaqMainSection from "./FaqMainSection";
+import TestimonialSection from "../HomeSection/Testimonial";
 const FaqPage = () => {
   const faqData = [
     {
@@ -72,12 +72,6 @@ const FaqPage = () => {
             <div className="col col-xs-12">
               <div className="wpo-breadcumb-wrap">
                 <h2>FAQ</h2>
-                <ol className="wpo-breadcumb-wrap">
-                  <li>
-                    <a href="index.html">Home</a>
-                  </li>
-                  <li>FaqPage</li>
-                </ol>
               </div>
             </div>
           </div>
@@ -95,14 +89,18 @@ const FaqPage = () => {
           <img src="assets/website-images/shape/4.svg" alt="" />
         </div>
       </section>
-      <section className="wpo-faq-section section-padding">
+      <FaqMainSection />
+      <TestimonialSection />
+
+      {/* <section className="wpo-faq-section section-padding pt-lg-2 pb-lg-2">
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-8 offset-lg-2">
-              <div className="wpo-section-title">
+              <div className="wpo-section-title mb-lg-3">
                 <h2>Frequently Asked Question</h2>
               </div>
             </div>
+
             <div className="col-lg-8 offset-lg-2">
               <div className="wpo-faq-section">
                 <div className="row">
@@ -147,8 +145,8 @@ const FaqPage = () => {
             </div>
           </div>
         </div>
-      </section>
-      <div className="question-area section-padding">
+      </section> */}
+      {/* <div className="question-area section-padding">
         <div className="container">
           <div className="row">
             <div className="col-12">
@@ -238,7 +236,7 @@ const FaqPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

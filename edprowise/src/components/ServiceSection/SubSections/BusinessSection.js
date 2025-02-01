@@ -6,43 +6,59 @@ const BusinessSection = () => {
     {
       id: "1",
       icon: "fi flaticon-user-experience",
-      title: "PF & ESI Consultancy",
-      description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-      link: "#",
+      title: "PF Consultancy",
+      serviceid: "1",
     },
     {
       id: "2",
       icon: "fi flaticon-megaphone",
-      title: "Student Stationery",
-      description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-      link: "#",
+      title: "ESI Consultancy",
+      serviceid: "2",
     },
     {
       id: "3",
       icon: "fi flaticon-code",
-      title: "Online Marketing",
-      description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-      link: "#",
+      title: "Digital Marketing",
+      serviceid: "3",
     },
     {
       id: "4",
       icon: "fi flaticon-knowledge",
-      title: "Consultancy",
-      description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-      link: "#",
+      title: "Event Management",
+      serviceid: "4",
+    },
+    {
+      id: "5",
+      icon: "fi flaticon-knowledge",
+      title: "Affiliation Support",
+      serviceid: "5",
+    },
+    {
+      id: "6",
+      icon: "fi flaticon-code",
+      title: "International Tour Management",
+      serviceid: "6",
+    },
+    {
+      id: "7",
+      icon: "fi flaticon-megaphone",
+      title: "Student Counselling",
+      serviceid: "1",
+    },
+    {
+      id: "8",
+      icon: "fi flaticon-user-experience",
+      title: "Training & Workshop for Teacher",
+      serviceid: "2",
     },
   ];
 
   return (
-    <div className="row wpo-courses-wrap service-row">
+    <div className="row-web wpo-courses-wrap service-row">
       {courses.map((course) => (
         <div
           key={course.id}
-          className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.id}`}
+          className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.serviceid}`}
         >
           <div className="wpo-courses-item category-itemm">
             <div className="wpo-courses-text">
@@ -52,9 +68,8 @@ const BusinessSection = () => {
               <h2 className="category-h2 font-weight-web-h2">
                 <a>{course.title}</a>
               </h2>
-              <p className="category-text">{course.description}</p>
             </div>
-            <a className="all-info">Read More...</a>
+            <a className="all-info">Know More...</a>
           </div>
         </div>
       ))}

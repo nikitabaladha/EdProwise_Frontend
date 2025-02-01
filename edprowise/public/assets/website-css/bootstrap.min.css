@@ -647,7 +647,7 @@ progress {
   }
 }
 .row-web {
-  --bs-gutter-x: 1.5rem;
+  --bs-gutter-x: 0.75rem;
   --bs-gutter-y: 0;
   display: flex;
   flex-wrap: wrap;
@@ -3551,6 +3551,14 @@ fieldset:disabled .btn {
 .dropdown-menu.show {
   display: block;
 }
+.dropdown-header-web {
+  display: block;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+  white-space: nowrap;
+}
 .dropdown-header {
   display: block;
   padding: 0.5rem 1rem;
@@ -3593,6 +3601,9 @@ fieldset:disabled .btn {
   color: #dee2e6;
 }
 .dropdown-menu-dark .dropdown-header {
+  color: #adb5bd;
+}
+.dropdown-menu-dark .dropdown-header-web {
   color: #adb5bd;
 }
 .btn-group,
@@ -6072,6 +6083,10 @@ fieldset:disabled .btn {
 }
 .grid-web {
   display: inline-grid !important;
+}
+
+.grid-flex{
+  display: inline-flex;
 }
 .d-grid {
   display: grid !important;

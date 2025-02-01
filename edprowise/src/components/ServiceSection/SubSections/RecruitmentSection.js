@@ -1,53 +1,57 @@
 import React from "react";
 
 const RecruitmentSection = () => {
-  const courses = [
+  const items = [
     {
       id: "s1",
       icon: "fi flaticon-user-experience",
-      title: "ourUI/UX Design",
-      description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-      link: "#",
+      title: "End to End Hiring Solutions",
     },
     {
       id: "s2",
       icon: "fi flaticon-megaphone",
-      title: "ourDigital Marketing",
-      description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-      link: "course.html",
+      title: "Search & Hire Teacher",
     },
     {
       id: "s3",
       icon: "fi flaticon-code",
-      title: "ourDevelopment",
-      description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-      link: "course.html",
+      title: "Post Vacant Position",
+    },
+    {
+      id: "s4",
+      icon: "fi flaticon-knowledge",
+      title: "Manage & Track Job",
+    },
+    {
+      id: "s2",
+      icon: "fi flaticon-megaphone",
+      title: "Assessment of Candidate",
+    },
+    {
+      id: "s3",
+      icon: "fi flaticon-code",
+      title: "No Yearly Subscription, Pay as per usage",
     },
   ];
 
   return (
-    <div className="row wpo-courses-wrap service-row">
-      {courses.map((course) => (
+    <div className="row-web wpo-courses-wrap service-row">
+      {items.map((item, index) => (
         <div
-          key={course.id}
-          className={`category-items col-lg-3 col-md-6 col-6 grid-web ${course.id}`}
+          key={`${item.id}-${index}`}
+          className={`category-items col-lg-3 col-md-6 col-6 grid-web  ${item.id}`}
         >
           <div className="wpo-courses-item category-itemm">
             <div className="wpo-courses-text">
               <div className="courses-icon category-icons">
-                <i className={course.icon}></i>
+                <i className={item.icon}></i>
               </div>
               <h2 className="category-h2 font-weight-web-h2">
-                <a href={course.link}>{course.title}</a>
+                <a>{item.title}</a>
               </h2>
-              <p className="category-text">{course.description}</p>
+              {/* <p className="category-text">{item.description}</p> */}
+              <a className="all-info">Know More...</a>
             </div>
-            <a className="all-info" href={course.link}>
-              Read More...
-            </a>
           </div>
         </div>
       ))}

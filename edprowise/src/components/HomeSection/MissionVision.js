@@ -73,7 +73,7 @@ const VisionMissionSection = () => {
       ),
       title: "Mission",
       description:
-        "To empower individuals through innovative education and exceptional learning experiences.",
+        "To empower educational institutions with innovative solutions that enhance learning environments, streamline operations, and foster continuous growth and development.",
     },
     {
       id: 2,
@@ -81,7 +81,7 @@ const VisionMissionSection = () => {
       icon: <div className="cart-vm-icon">👁️</div>,
       title: "Vision",
       description:
-        "To be a leader in providing transformative learning opportunities globally.",
+        "Transforming education to drive societal progress & economic growth in India by delivering innovative, impactful solutions that empower institutions & inspire future leaders.",
     },
     {
       id: 3,
@@ -89,13 +89,13 @@ const VisionMissionSection = () => {
       icon: <div className="cart-vm-icon">💎</div>,
       title: "Value",
       description:
-        "We value integrity, excellence, and collaboration in all our endeavors.",
+        "At Edprowise, our values center around innovation, integrity, customer-centricity, collaboration, and continuous learning, empowering growth and success",
     },
   ];
 
   return (
     <section
-      className="wpo-courses-section-s2 section-padding"
+      className="wpo-courses-section-s2 section-padding pt-0 pb-3"
       style={{ background: "white" }}
     >
       <div className="container">
@@ -115,7 +115,9 @@ const VisionMissionSection = () => {
                 </div>
                 <div className="cart-vm-text">
                   <h2 className="font-family-web">{item.title}</h2>
-                  <p className="font-family-web">{item.description}</p>
+                  <p className="font-family-web text-black">
+                    {item.description}
+                  </p>
                 </div>
               </div>
             ))}

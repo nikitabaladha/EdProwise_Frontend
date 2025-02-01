@@ -29,25 +29,28 @@ const AboutusSection = () => {
               <div className="col-lg-6 col-md-12 col-12">
                 <div className="wpo-about-text">
                   <div className="wpo-section-title">
-                    <small>About Eduko</small>
-                    <h2>A New Different Way To Improve Your Skills.</h2>
+                    {/* <small>About Edprowise</small> */}
+                    <h2>Whatever You Need, We Provide.</h2>
                   </div>
-                  <p>
-                    Education is one of the most essential and valuable assets
-                    that an individual can possess. It plays a pivotal role in
-                    shaping the future of individuals, societies, and nations.
-                    The importance of education cannot be overstated,
-                    individuals development of nations.
+                  <p className="about-para-text">
+                    EdProwise is a startup company founded on the principle of
+                    empowering educational institutions, specializes in
+                    delivering various services to educational institution.
                   </p>
-                  <p>
-                    One of the primary benefits of education is its ability to
-                    empower individuals. Through education, individuals acquire
-                    knowledge, skills, and enable them to navigate the
-                    complexities of life.
+                  <p className="about-para-text">
+                    We brings deep expertise and understanding of the unique
+                    needs and challenges faced by educational institutions.
                   </p>
-                  <a href="about.html" className="theme-btn-ss">
+                  <p className="about-para-text">
+                    We offer a wide range of services including technology
+                    integration, administrative solutions, educational
+                    consultation, and professional development, providing
+                    holistic support tailored to enhance every aspect of
+                    educational operations.{" "}
+                  </p>
+                  {/* <a  className="theme-btn-ss">
                     Learn More About Us
-                  </a>
+                  </a> */}
                 </div>
               </div>
             </div>
@@ -81,7 +84,7 @@ const AboutusSection = () => {
                           <i className="fi flaticon-award"></i>
                         </div>
                         <div className="content">
-                          <h3>25+</h3>
+                          <h3>1+</h3>
                           <p>Years Of Experience</p>
                         </div>
                       </div>
@@ -92,7 +95,7 @@ const AboutusSection = () => {
               <div className="col-lg-6 col-md-12 col-12">
                 <div className="wpo-about-text">
                   <div className="wpo-section-title">
-                    <small>About Eduko</small>
+                    {/* <small>About Edprowise</small> */}
                     <h2>
                       A New Different Way To Improve Your
                       <span>
@@ -109,18 +112,16 @@ const AboutusSection = () => {
                       </span>
                     </h2>
                   </div>
-                  <p>
-                    Education is one of the most essential and valuable assets
-                    that an individual can possess. It plays a pivotal role in
-                    shaping the future of individuals, societies, and nations.
-                    The importance of education cannot be overstated,
-                    individuals development of nations.
+                  <p className="text-black">
+                    We offer a wide range of services including technology
+                    integration, administrative solutions, educational
+                    consultation, and professional development, providing
+                    holistic support tailored to enhance every aspect of
+                    educational operations.{" "}
                   </p>
-                  <p>
-                    One of the primary benefits of education is its ability to
-                    empower individuals. Through education, individuals acquire
-                    knowledge, skills, and enable them to navigate the
-                    complexities of life.
+                  <p className="text-black">
+                    We brings deep expertise and understanding of the unique
+                    needs and challenges faced by educational institutions.
                   </p>
                   <div className="wpo-about-features-wrap">
                     <div className="wpo-about-features-item">
@@ -130,7 +131,7 @@ const AboutusSection = () => {
                         </div>
                       </div>
                       <div className="wpo-about-features-text">
-                        <h5>1250+ Courses</h5>
+                        <h5>5+ Happy Clients</h5>
                       </div>
                     </div>
                     <div className="wpo-about-features-item">
@@ -140,7 +141,7 @@ const AboutusSection = () => {
                         </div>
                       </div>
                       <div className="wpo-about-features-text">
-                        <h5>500+ Free Class</h5>
+                        <h5>99% Client Retansion</h5>
                       </div>
                     </div>
                     <div className="wpo-about-features-item">
@@ -150,7 +151,7 @@ const AboutusSection = () => {
                         </div>
                       </div>
                       <div className="wpo-about-features-text">
-                        <h5>25k Students</h5>
+                        <h5>5k Users</h5>
                       </div>
                     </div>
                     <div className="wpo-about-features-item">
@@ -160,13 +161,13 @@ const AboutusSection = () => {
                         </div>
                       </div>
                       <div className="wpo-about-features-text">
-                        <h5>250+ Mentors</h5>
+                        <h5>100+ Reports</h5>
                       </div>
                     </div>
                   </div>
-                  <a href="about.html" className="theme-btn-ss">
+                  {/* <a  className="theme-btn-ss">
                     Learn More About Us
-                  </a>
+                  </a> */}
                 </div>
               </div>
             </div>

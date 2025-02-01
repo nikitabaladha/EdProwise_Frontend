@@ -53,12 +53,6 @@ const CareerForm = () => {
             <div className="col col-xs-12">
               <div className="wpo-breadcumb-wrap">
                 <h2>Career</h2>
-                <ol className="wpo-breadcumb-wrap">
-                  <li>
-                    <a href="/">Home</a>
-                  </li>
-                  <li>Career</li>
-                </ol>
               </div>
             </div>
           </div>
@@ -80,12 +74,15 @@ const CareerForm = () => {
       <div className="teacher-area pb-0">
         <div className="teacher-wrap">
           <div className="container">
-            <div className="row justify-content-center">
+            <div className="row-web justify-content-center">
               <div className="col-lg-10">
                 <div className="teacher-item">
                   <div className="teacher-img-wrap">
                     <div className="volunter-img">
-                      <img src="/assets/images/teacher.webp" alt="Teacher" />
+                      <img
+                        src="/assets/website-images/teacher.webp"
+                        alt="Teacher"
+                      />
                     </div>
                   </div>
                 </div>

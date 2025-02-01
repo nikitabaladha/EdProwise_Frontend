@@ -1,45 +1,46 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const coursesData = [
   {
     id: 1,
     icon: "fi flaticon-user-experience",
-    title: "UI/UX Design",
+    title: "Digital",
     description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+      "Offers comprehensive digital services including ERP software, custom websites, mobile apps, and digital solutions for enhanced business efficiency.",
+    link: "/services/digital-services",
   },
   {
     id: 2,
     icon: "fi flaticon-megaphone",
-    title: "Digital Marketing",
+    title: "Academic & Admin",
     description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+      "Offers PF and ESI management, international tours, student counseling, skill-based courses, and personalized solutions.",
+    link: "/services/business-services",
   },
   {
     id: 3,
     icon: "fi flaticon-code",
-    title: "Development",
+    title: "Procurement ",
     description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+      "EdProwise procurement services include bulk discounts, vendor management, quality assurance, timely delivery, easy ordering, customized solutions, and transparent pricing.",
+    link: "/services/procurement-services",
   },
   {
     id: 4,
     icon: "fi flaticon-knowledge",
-    title: "Self Improvement",
+    title: "Recruitment",
     description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+      "EdProwise offers recruitment services, including digital portals, candidate screening, job matching, interview scheduling, onboarding support, and efficient talent acquisition.",
+    link: "/services/recruitment-services",
   },
 ];
 
 const Category = () => {
   return (
-    <section className="wpo-courses-section-s2 section-padding">
+    <section className="wpo-courses-section-s2 section-padding pt-0 pb-1">
       <div className="container">
-        <div className="row">
+        <div className="row-web">
           <div className="col-12">
             <div className="wpo-section-title-s2">
               {/* <small>Our Courses</small> */}
@@ -47,24 +48,26 @@ const Category = () => {
             </div>
           </div>
         </div>
-        <div className="row wpo-courses-wrap">
+        <div className="row-web wpo-courses-wrap">
           {coursesData.map((course) => (
             <div
               key={course.id}
               className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.id}`}
             >
               <div className="wpo-courses-item category-itemm">
-                <div className="wpo-courses-text">
-                  <div className="courses-icon category-icons">
-                    <i className={course.icon}></i>
+                <Link to={course.link}>
+                  <div className="wpo-courses-text">
+                    <div className="courses-icon category-icons">
+                      <i className={course.icon}></i>
+                    </div>
+                    <h2 className="category-h2 font-weight-web-h2">
+                      <a>{course.title}</a>
+                    </h2>
+                    <p className="category-text font-family-web ">
+                      {course.description}
+                    </p>
                   </div>
-                  <h2 className="category-h2 font-weight-web-h2">
-                    <a href={course.link}>{course.title}</a>
-                  </h2>
-                  <p className="category-text font-family-web">
-                    {course.description}
-                  </p>
-                </div>
+                </Link>
               </div>
             </div>
           ))}

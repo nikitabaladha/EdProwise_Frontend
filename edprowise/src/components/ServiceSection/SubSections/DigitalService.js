@@ -4,105 +4,90 @@ const coursesData = [
   {
     id: 1,
     iconClass: "fi flaticon-user-experience",
-    title: "Fees Module",
-    description:
-      "We are providing you the best Fees Module guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "School Fees Management Software - Pixel Fees",
     classid: 1,
   },
   {
     id: 2,
     iconClass: "fi flaticon-megaphone",
-    title: "Payroll Module",
-    description:
-      "We are providing you the best Payroll guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "Payroll Management Software – Ease Payroll",
     classid: 2,
   },
   {
     id: 3,
     iconClass: "fi flaticon-code",
-    title: "Finance Module",
-    description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "Financial Management Software – Book Sync",
     classid: 3,
   },
   {
     id: 4,
     iconClass: "fi flaticon-knowledge",
-    title: "School Application",
-    description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "School Operational Management Software",
     classid: 4,
   },
   {
     id: 5,
     iconClass: "fi flaticon-user-experience",
-    title: "Digital Exam Result System",
-    description:
-      "We are providing you the best Fees Module guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "School Mobile Application",
     classid: 5,
   },
   {
     id: 6,
     iconClass: "fi flaticon-megaphone",
-    title: "Digital Staff Attendance",
-    description:
-      "We are providing you the best Payroll guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "School Website Design",
     classid: 6,
   },
   {
     id: 7,
     iconClass: "fi flaticon-code",
-    title: "Library Management",
-    description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "Digital Exam Result System",
     classid: 1,
   },
   {
     id: 8,
     iconClass: "fi flaticon-knowledge",
-    title: "Enquiry Management",
-    description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "Digital Student Attendance",
     classid: 2,
   },
   {
     id: 9,
     iconClass: "fi flaticon-megaphone",
-    title: "Entrance Exam Management",
-    description:
-      "We are providing you the best Payroll guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "Digital Staff Attendance",
     classid: 3,
   },
   {
     id: 10,
     iconClass: "fi flaticon-code",
-    title: "Online Fees Payment",
-    description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "Library Management Software",
     classid: 4,
   },
   {
     id: 11,
     iconClass: "fi flaticon-knowledge",
-    title: "Website Design",
-    description:
-      "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
-    link: "#",
+    title: "Entrance Management Software",
     classid: 5,
+  },
+  {
+    id: 12,
+    iconClass: "fi flaticon-knowledge",
+    title: "Entrance Management Software",
+    classid: 6,
+  },
+  {
+    id: 13,
+    iconClass: "fi flaticon-knowledge",
+    title: "Online Payment Gateway",
+    classid: 1,
+  },
+  {
+    id: 14,
+    iconClass: "fi flaticon-knowledge",
+    title: "SMS & Whats App Integration Services",
+    classid: 2,
   },
 ];
 
-const CourseItem = ({ iconClass, title, description, link, classid }) => {
+const CourseItem = ({ iconClass, title, classid }) => {
   return (
     <div
       className={` category-items col-lg-3 col-md-6 col-6 grid-web s${classid}`}
@@ -115,11 +100,8 @@ const CourseItem = ({ iconClass, title, description, link, classid }) => {
           <h2 className="category-h2 font-weight-web-h2">
             <a>{title}</a>
           </h2>
-          <p className="category-text">{description}</p>
         </div>
-        <a className="all-info" href={link}>
-          Read More...
-        </a>
+        <a className="all-info ">Know More...</a>
       </div>
     </div>
   );
@@ -127,14 +109,12 @@ const CourseItem = ({ iconClass, title, description, link, classid }) => {
 
 const DigitalSection = () => {
   return (
-    <div className="row wpo-courses-wrap service-row">
+    <div className="row-web wpo-courses-wrap service-row">
       {coursesData.map((course) => (
         <CourseItem
           key={course.id}
           iconClass={course.iconClass}
           title={course.title}
-          description={course.description}
-          link={course.link}
           classid={course.classid}
         />
       ))}

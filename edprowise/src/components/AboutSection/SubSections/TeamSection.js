@@ -3,64 +3,64 @@ import React from "react";
 const TeamSection = () => {
   const teamMembers = [
     {
-      name: "Jenny Wilson",
-      role: "Graphic Designer",
+      name: "Kunal Shah",
+      role: "CEO",
       image: "assets/website-images/team/1.webp",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
-        facebook: "#",
-        twitter: "#",
+        // facebook: "#",
+        // twitter: "#",
         linkedin: "#",
       },
     },
     {
-      name: "Dianne Russell",
-      role: "UX Designer",
+      name: "Jai Gupta",
+      role: "COO",
       image: "assets/website-images/team/2.webp",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
-        facebook: "#",
-        twitter: "#",
+        // facebook: "#",
+        // twitter: "#",
         linkedin: "#",
       },
     },
     {
-      name: "Courtney Henry",
-      role: "Senior Marketer",
+      name: "Dhiraj Zope",
+      role: "CTO",
       image: "assets/website-images/team/3.webp",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
-        facebook: "#",
-        twitter: "#",
+        // facebook: "#",
+        // twitter: "#",
         linkedin: "#",
       },
     },
     {
-      name: "Annette Black",
-      role: "Web Developer",
+      name: "Dhruv Anand",
+      role: "CFO",
       image: "assets/website-images/team/4.webp",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
-        facebook: "#",
-        twitter: "#",
+        // facebook: "#",
+        // twitter: "#",
         linkedin: "#",
       },
     },
   ];
 
   return (
-    <section className="wpo-team-section section-padding">
+    <section className="wpo-team-section section-padding pt-lg-3 pb-lg-3 pt-mb-2 pb-mb-2">
       <div className="container">
         <div className="wpo-section-title-s2">
-          <small>Our Professionals</small>
+          {/* <small>Our Professionals</small> */}
           <h2>
-            Meet our
+            Meet the
             <span>
-              Teachers
+              Exceptional
               <i className="shape">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +71,7 @@ const TeamSection = () => {
                 </svg>
               </i>
             </span>
+            Minds at Edprowise
           </h2>
         </div>
         <div className="wpo-team-wrap">
@@ -85,7 +86,7 @@ const TeamSection = () => {
                         <p className="team-para">{member.description}</p>
                       </div>
                       <ul>
-                        <li>
+                        {/* <li>
                           <a href={member.socialLinks.facebook}>
                             <i className="fi flaticon-facebook-app-symbol"></i>
                           </a>
@@ -94,7 +95,7 @@ const TeamSection = () => {
                           <a href={member.socialLinks.twitter}>
                             <i className="fi flaticon-twitter"></i>
                           </a>
-                        </li>
+                        </li> */}
                         <li>
                           <a href={member.socialLinks.linkedin}>
                             <i className="fi flaticon-linkedin"></i>

@@ -116,6 +116,8 @@ import InvoiceForEdProwise from "./components/DashboardMainForSeller/Procurement
 import InvoiceForBuyer from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForBuyer/InvoiceForBuyer";
 import PrepareInvoice from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PrepareInvoice/PrepareInvoice";
 import QuoteProposal from "./components/DashboardMainForSeller/ProcurementServicesForSeller/QuoteProposal/QuoteProposal";
+import TermsPage from "./components/PrivacyPage/TermsPage.js";
+import RequestDemoForm from "./components/HomeSection/RequestDemoForm.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -433,8 +435,10 @@ const AppRoutes = () => {
         <Route path="become-supplier" element={<SupplierPage />} />
         <Route path="faq" element={<FaqPage />} />
         <Route path="privacy-policy" element={<PrivacyPage />} />
+        <Route path="terms" element={<TermsPage />} />
         <Route path="career" element={<CareerPage />} />
         <Route path="career/:jobName" element={<CareerForm />} />
+        <Route path="request-demo" element={<RequestDemoForm />} />
       </Route>
     </Routes>
   );
