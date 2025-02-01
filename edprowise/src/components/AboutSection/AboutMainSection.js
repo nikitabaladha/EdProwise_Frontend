@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import AboutusSection from "./SubSections/AboutusSection"
 import TeamSection from "./SubSections/TeamSection";
 import PressMediaSection from "./SubSections/Press&MediaSection";
-import CompanyJourney from "./CompanyJourney";
-import AwardAchievement from "./AwardAchievement";
+import TestimonialSection from "../HomeSection/Testimonial";
+import AwardSection from "./SubSections/AwardSection";
+// import CompanyJourney from "./CompanyJourney";
+// import AwardAchievement from "./AwardAchievement";
 const BlogSection = () => {
   const [activeTab, setActiveTab] = useState("gallerySection");
 
@@ -33,7 +35,14 @@ const BlogSection = () => {
           className={`nav-tab ${activeTab === "studentSection" ? "active" : ""}`}
           onClick={() => showTab("studentSection")}
         >
-          Press&Media
+          Press & Media
+        </button>
+        <button
+          id="awardTab"
+          className={`nav-tab ${activeTab === "awardSection" ? "active" : ""}`}
+          onClick={() => showTab("awardSection")}
+        >
+          Awards
         </button>
         {/* <button id="educatorTab" className="nav-tab" onClick={() => showTab("educatorSection")}>
           Vision & Mission
@@ -42,6 +51,7 @@ const BlogSection = () => {
       <div className="wpo-blog-items">
         <div className={`show-tab ${activeTab === "gallerySection" ? "active" : ""}`} id="gallerySection">
           <AboutusSection/>
+          <TestimonialSection/>
         </div>
         <div className={`show-tab ${activeTab === "edprowiseSection" ? "active" : ""}`} id="edprowiseTab">
           <TeamSection/>
@@ -49,8 +59,11 @@ const BlogSection = () => {
         <div className={`show-tab ${activeTab === "studentSection" ? "active" : ""}`} id="studentTab">
         <PressMediaSection/>
         </div>
-        <CompanyJourney/>
-        <AwardAchievement/>
+        <div className={`show-tab ${activeTab === "awardSection" ? "active" : ""}`} id="studentTab">
+        <AwardSection/>
+        </div>
+        {/* <CompanyJourney/> */}
+        {/* <AwardAchievement/> */}
       </div>
     </section>
   );

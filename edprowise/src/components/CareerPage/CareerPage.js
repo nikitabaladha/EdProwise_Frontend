@@ -94,12 +94,7 @@ const CareerPage = () => {
             <div className="col col-xs-12">
               <div className="wpo-breadcumb-wrap">
                 <h2>Career</h2>
-                <ol className="wpo-breadcumb-wrap">
-                  <li>
-                    <a>Home</a>
-                  </li>
-                  <li>Career</li>
-                </ol>
+                
               </div>
             </div>
           </div>
@@ -189,7 +184,7 @@ const CareerPage = () => {
                 {expandedJob === job.id ? "Read Less" : "Read More"}
               </button>
               {expandedJob === job.id && (
-                <div className="job-description">
+                <div className="job-description mt-2">
                   <h3>{job.title}</h3>
                   <p>{job.description}</p>
                   <h3>Key Responsibilities</h3>

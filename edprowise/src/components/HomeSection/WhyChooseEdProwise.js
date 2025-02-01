@@ -9,49 +9,49 @@ const WhyChooseEdProwise = () => {
       id: 1,
       className: "s1",
       iconClass: "fi flaticon-user-experience",
-      title: "UI/UX Design",
+      title: "Connect Ecosystem",
       description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
+        "The Central Dashboard offers real-time access to vital information, including student performance, attendance, and fee status. This enhances communication and collaboration among principals, teachers, management, and parents, supporting student success.",
     },
     {
       id: 2,
       className: "s2",
       iconClass: "fi flaticon-megaphone",
-      title: "Digital Marketing",
+      title: "Marketplace For School",
       description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
+        "Marketplace for wide range of services including technology integration, administrative solutions, educational consultation, and professional development, providing holistic support tailored to enhanceevery aspect of educational operations",
     },
     {
       id: 3,
       className: "s3",
       iconClass: "fi flaticon-code",
-      title: "Development",
+      title: "Zero Leakage Of Fees",
       description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
+        "Through meticulous reconciliation of school fees, we guarantee zero leakage. Our detailed analysis identifies the gap between fees due and fees collected, enabling us to swiftly address any discrepancie",
     },
     {
       id: 4,
       className: "s4",
       iconClass: "fi flaticon-knowledge",
-      title: "Self Improvement",
+      title: "Expertise In Educational Solutions",
       description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
+        "With a dedicated focus on the education sector, we brings deep expertise and understanding of the unique needs and challenges faced by educational institutions.",
     },
     {
       id: 5,
-      className: "s1",
+      className: "s5",
       iconClass: "fi flaticon-user-experience",
-      title: "UI/UX Design",
+      title: "Commitment To Excellence",
       description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
+        "Our commitment to excellence is reflected in our mission to empower educational institutions with transformative solutions that enable them to achieve their goals effectively and sustainably",
     },
     {
       id: 6,
-      className: "s1",
-      iconClass: "fi flaticon-user-experience",
-      title: "UI/UX Design",
+      className: "s6",
+      iconClass: "fi flaticon-knowledge",
+      title: "Innovative Approach",
       description:
-        "We are providing you the best UI/UX design guideline. That help you be professional and talented designer.",
+        "We leverage innovative technologies and strategic insights to deliver solutions that drive efficiency, improve learning outcomes, and foster continuous improvement within educational setting.",
     },
   ];
 
@@ -150,7 +150,7 @@ const WhyChooseEdProwise = () => {
   }, [isMobile]);
 
   return (
-    <section className="wpo-courses-section-s2 section-padding">
+    <section className="wpo-courses-section-s2 section-padding pt-0 pb-1">
       <div className="container edprowise-choose-container">
         <div className="row-web">
           <div className="col-12">
@@ -176,7 +176,7 @@ const WhyChooseEdProwise = () => {
                   <h2 className="font-weight-web-h2">
                     <a href="#">{item.title}</a>
                   </h2>
-                  <p className="font-family-web">{item.description}</p>
+                  <p className="font-family-web  ">{item.description}</p>
                 </div>
               </div>
             </div>

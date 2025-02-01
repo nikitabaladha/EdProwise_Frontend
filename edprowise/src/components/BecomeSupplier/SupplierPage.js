@@ -35,7 +35,7 @@ const SupplierPage = () => {
       <div className="teacher-area pb-0">
         <div className="teacher-wrap">
           <div className="container">
-            <div className="row justify-content-center">
+            <div className="row-web justify-content-center">
               <div className="col-lg-10">
                 <div className="teacher-item">
                   <div className="teacher-img-wrap">

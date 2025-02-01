@@ -1,851 +1,107 @@
-// // import React, { useState, useEffect } from "react";
-// // import { useNavigate } from "react-router-dom";
-// // import { Link } from "react-router-dom";
-// // import getAPI from "../../../../api/getAPI";
-
-// // const TrackQuoteTable = ({}) => {
-// //   const [quotes, setQuotes] = useState([]);
-// //   // const location = useLocation();
-
-// //   useEffect(() => {
-// //     const fetchSchoolData = async () => {
-// //       try {
-// //         const response = await getAPI(`/get-quote`, {}, true);
-// //         if (
-// //           !response.hasError &&
-// //           response.data &&
-// //           Array.isArray(response.data.data)
-// //         ) {
-// //           setQuotes(response.data.data);
-// //           console.log("quote data", response.data.data);
-
-// //           //   [
-// //           //     {
-// //           //         "id": "679a07b447c9dbaf7828e2f5",
-// //           //         "schoolId": "6788dec3cf93c947d08b0b23",
-// //           //         "enquiryNumber": "ENQ17381477641296802",
-// //           //         "deliveryAddress": "PQR Street",
-// //           //         "deliveryLocation": "Faridabad, Haryana, India",
-// //           //         "deliveryLandMark": "Railway Station Road",
-// //           //         "deliveryPincode": "123456",
-// //           //         "expectedDeliveryDate": "2025-01-29T00:00:00.000Z",
-// //           //         "buyerStatus": "Quote Requested",
-// //           //         "supplierStatus": "Quote Requested From EdProwise",
-// //           //         "edprowiseStatus": "Quote Requested From Buyer",
-// //           //         "createdAt": "2025-01-29T10:49:24.239Z",
-// //           //         "updatedAt": "2025-01-29T10:49:24.239Z",
-// //           //         "products": [
-// //           //             {
-// //           //                 "_id": "679a07b447c9dbaf7828e2f1",
-// //           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-// //           //                 "categoryId": "6789a5497cf7927203f66171",
-// //           //                 "subCategoryId": "6789a69e7cf7927203f6617d",
-// //           //                 "description": "I want strong bench",
-// //           //                 "productImage": "/Images/ProductImage/school-bench_1738147764094.jpg",
-// //           //                 "unit": "Piece",
-// //           //                 "quantity": 10,
-// //           //                 "enquiryNumber": "ENQ17381477641296802",
-// //           //                 "createdAt": "2025-01-29T10:49:24.146Z",
-// //           //                 "updatedAt": "2025-01-29T10:49:24.146Z",
-// //           //                 "__v": 0
-// //           //             },
-// //           //             {
-// //           //                 "_id": "679a07b447c9dbaf7828e2f3",
-// //           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-// //           //                 "categoryId": "678f505c6e1ed92982459e88",
-// //           //                 "subCategoryId": "678f51f66e1ed92982459eb4",
-// //           //                 "description": "I want strong table",
-// //           //                 "productImage": "/Images/ProductImage/office-table_1738147764096.jpg",
-// //           //                 "unit": "Piece",
-// //           //                 "quantity": 2,
-// //           //                 "enquiryNumber": "ENQ17381477641296802",
-// //           //                 "createdAt": "2025-01-29T10:49:24.194Z",
-// //           //                 "updatedAt": "2025-01-29T10:49:24.194Z",
-// //           //                 "__v": 0
-// //           //             }
-// //           //         ]
-// //           //     },
-// //           //     {
-// //           //         "id": "679a08cde89a8882e9b3fd86",
-// //           //         "schoolId": "6788dec3cf93c947d08b0b23",
-// //           //         "enquiryNumber": "ENQ17381480456191726",
-// //           //         "deliveryAddress": "PQR Street",
-// //           //         "deliveryLocation": "Faridabad, Haryana, India",
-// //           //         "deliveryLandMark": "Railway Station Road",
-// //           //         "deliveryPincode": "123456",
-// //           //         "expectedDeliveryDate": "2025-01-29T00:00:00.000Z",
-// //           //         "buyerStatus": "Quote Requested",
-// //           //         "supplierStatus": "Quote Requested From EdProwise",
-// //           //         "edprowiseStatus": "Quote Requested From Buyer",
-// //           //         "createdAt": "2025-01-29T10:54:05.672Z",
-// //           //         "updatedAt": "2025-01-29T10:54:05.672Z",
-// //           //         "products": [
-// //           //             {
-// //           //                 "_id": "679a08cde89a8882e9b3fd84",
-// //           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-// //           //                 "categoryId": "678f506d6e1ed92982459e8a",
-// //           //                 "subCategoryId": "678f528d6e1ed92982459ec9",
-// //           //                 "description": "I want to make robust",
-// //           //                 "unit": "Project",
-// //           //                 "quantity": 1,
-// //           //                 "enquiryNumber": "ENQ17381480456191726",
-// //           //                 "createdAt": "2025-01-29T10:54:05.630Z",
-// //           //                 "updatedAt": "2025-01-29T10:54:05.630Z",
-// //           //                 "__v": 0
-// //           //             }
-// //           //         ]
-// //           //     },
-// //           //     {
-// //           //         "id": "679a0a5c80c9108ad9d094d3",
-// //           //         "schoolId": "6788dec3cf93c947d08b0b23",
-// //           //         "enquiryNumber": "ENQ17381484446202945",
-// //           //         "deliveryAddress": "PQR Street",
-// //           //         "deliveryLocation": "Faridabad, Haryana, India",
-// //           //         "deliveryLandMark": "Railway Station Road",
-// //           //         "deliveryPincode": "123456",
-// //           //         "expectedDeliveryDate": "2025-01-29T00:00:00.000Z",
-// //           //         "buyerStatus": "Quote Requested",
-// //           //         "supplierStatus": "Quote Requested From EdProwise",
-// //           //         "edprowiseStatus": "Quote Requested From Buyer",
-// //           //         "createdAt": "2025-01-29T11:00:44.746Z",
-// //           //         "updatedAt": "2025-01-29T11:00:44.746Z",
-// //           //         "products": [
-// //           //             {
-// //           //                 "_id": "679a0a5c80c9108ad9d094cf",
-// //           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-// //           //                 "categoryId": "678f505c6e1ed92982459e88",
-// //           //                 "subCategoryId": "678f52486e1ed92982459ec3",
-// //           //                 "description": "xyz",
-// //           //                 "productImage": "/Images/ProductImage/school-bench_1738148444598.jpg",
-// //           //                 "unit": "Piece",
-// //           //                 "quantity": 10,
-// //           //                 "enquiryNumber": "ENQ17381484446202945",
-// //           //                 "createdAt": "2025-01-29T11:00:44.641Z",
-// //           //                 "updatedAt": "2025-01-29T11:00:44.641Z",
-// //           //                 "__v": 0
-// //           //             },
-// //           //             {
-// //           //                 "_id": "679a0a5c80c9108ad9d094d1",
-// //           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-// //           //                 "categoryId": "678f506d6e1ed92982459e8a",
-// //           //                 "subCategoryId": "678f528d6e1ed92982459ec9",
-// //           //                 "description": "xyz",
-// //           //                 "unit": "Project",
-// //           //                 "quantity": 1,
-// //           //                 "enquiryNumber": "ENQ17381484446202945",
-// //           //                 "createdAt": "2025-01-29T11:00:44.698Z",
-// //           //                 "updatedAt": "2025-01-29T11:00:44.698Z",
-// //           //                 "__v": 0
-// //           //             }
-// //           //         ]
-// //           //     }
-// //           // ]
-// //         } else {
-// //           console.error("Invalid response format or error in response");
-// //         }
-// //       } catch (err) {
-// //         console.error("Error fetching quote:", err);
-// //       }
-// //     };
-
-// //     fetchSchoolData(); // Call the function to fetch data
-// //   }, []);
-
-// //   return (
-// //     <>
-// //       <div className="container-fluid">
-// //         <div className="row">
-// //           <div className="col-xl-12">
-// //             <div className="card">
-// //               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-// //                 <h4 className="card-title flex-grow-1">
-// //                   All Request Quote List
-// //                 </h4>
-// //                 <Link
-// //                   // onClick={(event) => navigateToRequestQuote(event)}
-// //                   className="btn btn-sm btn-primary"
-// //                 >
-// //                   Request Quote
-// //                 </Link>
-// //                 <div className="text-end">
-// //                   <Link className="btn btn-sm btn-outline-light">Export</Link>
-// //                 </div>
-// //               </div>
-// //               <div>
-// //                 {quotes.length > 0 ? (
-// //                   <div className="table-responsive">
-// //                     <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
-// //                       <thead className="bg-light-subtle">
-// //                         <tr>
-// //                           <th style={{ width: 20 }}>
-// //                             <div className="form-check ms-1">
-// //                               <input
-// //                                 type="checkbox"
-// //                                 className="form-check-input"
-// //                                 id="customCheck1"
-// //                               />
-// //                               <label
-// //                                 className="form-check-label"
-// //                                 htmlFor="customCheck1"
-// //                               />
-// //                             </div>
-// //                           </th>
-// //                           <th>Enquiry No.</th>
-// //                           <th className="text-start">
-// //                             Product Required Image & Name
-// //                           </th>
-// //                           <th>Product Required (Category)</th>
-// //                           <th>Quantity</th>
-// //                           <th>Unit</th>
-// //                           <th>Status</th>
-// //                           <th>Action</th>
-// //                         </tr>
-// //                       </thead>
-// //                       <tbody>
-// //                         {quotes.map((quote) => (
-// //                           <tr key={quote.id}>
-// //                             <td>
-// //                               <div className="form-check ms-1">
-// //                                 <input
-// //                                   type="checkbox"
-// //                                   className="form-check-input"
-// //                                   id={`customCheck${quote.id}`}
-// //                                 />
-// //                                 <label
-// //                                   className="form-check-label"
-// //                                   htmlFor={`customCheck${quote.id}`}
-// //                                 >
-// //                                   &nbsp;
-// //                                 </label>
-// //                               </div>
-// //                             </td>
-// //                             <td>{quote.enquiryNo}</td>
-
-// //                             {quote.products.map((product) => (
-// //                               <li key={product._id}>
-// //                                 <td>
-// //                                   <div className="d-flex align-items-center gap-2">
-// //                                     <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-// //                                       <img
-// //                                         src={product.productImage}
-// //                                         alt={product.subCategoryId}
-// //                                         className="avatar-md"
-// //                                       />
-// //                                     </div>
-// //                                     <div>
-// //                                       <Link className="text-dark fw-medium fs-15">
-// //                                         {product.subCategoryId}
-// //                                       </Link>
-// //                                     </div>
-// //                                   </div>
-// //                                 </td>
-// //                                 <td>{product.categoryId}</td>
-// //                                 <td>{product.quantity}</td>
-// //                                 <td>{product.unit}</td>
-// //                               </li>
-// //                             ))}
-
-// //                             <td>{quote.buyerStatus}</td>
-
-// //                             <td>
-// //                               <div className="d-flex gap-2">
-// //                                 <Link
-// //                                   className="btn btn-light btn-sm"
-// //                                   // onClick={(event) =>
-// //                                   // navigateToViewRequestedQuote(event, product)
-// //                                   // }
-// //                                 >
-// //                                   <iconify-icon
-// //                                     icon="solar:eye-broken"
-// //                                     className="align-middle fs-18"
-// //                                   />
-// //                                 </Link>
-// //                                 <button
-// //                                   type="button"
-// //                                   className="btn btn-primary custom-submit-button"
-// //                                   // onClick={(event) =>
-// //                                   // navigateToViewQuoteTable(event, quotes)
-// //                                   // }
-// //                                 >
-// //                                   View Quote
-// //                                 </button>
-// //                               </div>
-// //                             </td>
-// //                           </tr>
-// //                         ))}
-// //                       </tbody>
-// //                     </table>
-// //                   </div>
-// //                 ) : (
-// //                   <p>No quote requests available.</p>
-// //                 )}
-// //                 {/* end table-responsive */}
-// //               </div>
-// //               <div className="card-footer border-top">
-// //                 <nav aria-label="Page navigation example">
-// //                   <ul className="pagination justify-content-end mb-0">
-// //                     <li className="page-item">
-// //                       <Link className="page-link">Previous</Link>
-// //                     </li>
-// //                     <li className="page-item active">
-// //                       <Link className="page-link">1</Link>
-// //                     </li>
-// //                     <li className="page-item">
-// //                       <Link className="page-link">2</Link>
-// //                     </li>
-// //                     <li className="page-item">
-// //                       <Link className="page-link">3</Link>
-// //                     </li>
-// //                     <li className="page-item">
-// //                       <Link className="page-link">Next</Link>
-// //                     </li>
-// //                   </ul>
-// //                 </nav>
-// //               </div>
-// //             </div>
-// //           </div>
-// //         </div>
-// //       </div>
-// //     </>
-// //   );
-// // };
-
-// // export default TrackQuoteTable;
-
-// import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Link } from "react-router-dom";
-// import getAPI from "../../../../api/getAPI";
-
-// const TrackQuoteTable = ({}) => {
-//   const [quotes, setQuotes] = useState([]);
-
-//   useEffect(() => {
-//     const fetchSchoolData = async () => {
-//       try {
-//         const response = await getAPI(`/get-quote`, {}, true);
-//         if (
-//           !response.hasError &&
-//           response.data &&
-//           Array.isArray(response.data.data)
-//         ) {
-//           setQuotes(response.data.data);
-//           console.log("quote data", response.data.data);
-//         } else {
-//           console.error("Invalid response format or error in response");
-//         }
-//       } catch (err) {
-//         console.error("Error fetching quote:", err);
-//       }
-//     };
-
-//     fetchSchoolData(); // Call the function to fetch data
-//   }, []);
-
-//   return (
-//     <>
-//       <div className="container-fluid">
-//         <div className="row">
-//           <div className="col-xl-12">
-//             <div className="card">
-//               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-//                 <h4 className="card-title flex-grow-1">
-//                   All Request Quote List
-//                 </h4>
-//                 <Link
-//                   // onClick={(event) => navigateToRequestQuote(event)}
-//                   className="btn btn-sm btn-primary"
-//                 >
-//                   Request Quote
-//                 </Link>
-//                 <div className="text-end">
-//                   <Link className="btn btn-sm btn-outline-light">Export</Link>
-//                 </div>
-//               </div>
-//               <div>
-//                 {quotes.length > 0 ? (
-//                   <div className="table-responsive">
-//                     <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
-//                       <thead className="bg-light-subtle">
-//                         <tr>
-//                           <th style={{ width: 20 }}>
-//                             <div className="form-check ms-1">
-//                               <input
-//                                 type="checkbox"
-//                                 className="form-check-input"
-//                                 id="customCheck1"
-//                               />
-//                               <label
-//                                 className="form-check-label"
-//                                 htmlFor="customCheck1"
-//                               />
-//                             </div>
-//                           </th>
-//                           <th>Enquiry No.</th>
-//                           <th className="text-start">
-//                             Product Required Image & Name
-//                           </th>
-//                           <th>Product Required (Category)</th>
-//                           <th>Quantity</th>
-//                           <th>Unit</th>
-//                           <th>Status</th>
-//                           <th>Action</th>
-//                         </tr>
-//                       </thead>
-//                       <tbody>
-//                         {quotes.map((quote) => (
-//                           <tr key={quote.id}>
-//                             <td>
-//                               <div className="form-check ms-1">
-//                                 <input
-//                                   type="checkbox"
-//                                   className="form-check-input"
-//                                   id={`customCheck${quote.id}`}
-//                                 />
-//                                 <label
-//                                   className="form-check-label"
-//                                   htmlFor={`customCheck${quote.id}`}
-//                                 >
-//                                   &nbsp;
-//                                 </label>
-//                               </div>
-//                             </td>
-//                             <td>{quote.enquiryNumber}</td>
-
-//                             {quote.products.slice(0, 1).map((product) => (
-//                               <li key={product._id}>
-//                                 <td>
-//                                   <div className="d-flex align-items-center gap-2">
-//                                     <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-//                                       <img
-//                                         src={product.productImage}
-//                                         alt={product.subCategoryId}
-//                                         className="avatar-md"
-//                                       />
-//                                     </div>
-//                                     <div>
-//                                       <Link className="text-dark fw-medium fs-15">
-//                                         {product.subCategoryId}
-//                                       </Link>
-//                                     </div>
-//                                   </div>
-//                                 </td>
-//                                 <td>{product.categoryId}</td>
-//                                 <td>{product.quantity}</td>
-//                                 <td>{product.unit}</td>
-//                               </li>
-//                             ))}
-
-//                             <td>{quote.buyerStatus}</td>
-
-//                             <td>
-//                               <div className="d-flex gap-2">
-//                                 <Link
-//                                   className="btn btn-light btn-sm"
-//                                   // onClick={(event) =>
-//                                   // navigateToViewRequestedQuote(event, product)
-//                                   // }
-//                                 >
-//                                   <iconify-icon
-//                                     icon="solar:eye-broken"
-//                                     className="align-middle fs-18"
-//                                   />
-//                                 </Link>
-//                                 <button
-//                                   type="button"
-//                                   className="btn btn-primary custom-submit-button"
-//                                   // onClick={(event) =>
-//                                   // navigateToViewQuoteTable(event, quotes)
-//                                   // }
-//                                 >
-//                                   View Quote
-//                                 </button>
-//                               </div>
-//                             </td>
-//                           </tr>
-//                         ))}
-//                       </tbody>
-//                     </table>
-//                   </div>
-//                 ) : (
-//                   <p>No quote requests available.</p>
-//                 )}
-//                 {/* end table-responsive */}
-//               </div>
-//               <div className="card-footer border-top">
-//                 <nav aria-label="Page navigation example">
-//                   <ul className="pagination justify-content-end mb-0">
-//                     <li className="page-item">
-//                       <Link className="page-link">Previous</Link>
-//                     </li>
-//                     <li className="page-item active">
-//                       <Link className="page-link">1</Link>
-//                     </li>
-//                     <li className="page-item">
-//                       <Link className="page-link">2</Link>
-//                     </li>
-//                     <li className="page-item">
-//                       <Link className="page-link">3</Link>
-//                     </li>
-//                     <li className="page-item">
-//                       <Link className="page-link">Next</Link>
-//                     </li>
-//                   </ul>
-//                 </nav>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default TrackQuoteTable;
-
-// import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Link } from "react-router-dom";
-// import getAPI from "../../../../api/getAPI";
-
-// const TrackQuoteTable = ({}) => {
-//   const [quotes, setQuotes] = useState([]);
-//   // const location = useLocation();
-
-//   useEffect(() => {
-//     const fetchSchoolData = async () => {
-//       try {
-//         const response = await getAPI(`/get-quote`, {}, true);
-//         if (
-//           !response.hasError &&
-//           response.data &&
-//           Array.isArray(response.data.data)
-//         ) {
-//           setQuotes(response.data.data);
-//           console.log("quote data", response.data.data);
-
-//           //   [
-//           //     {
-//           //         "id": "679a07b447c9dbaf7828e2f5",
-//           //         "schoolId": "6788dec3cf93c947d08b0b23",
-//           //         "enquiryNumber": "ENQ17381477641296802",
-//           //         "deliveryAddress": "PQR Street",
-//           //         "deliveryLocation": "Faridabad, Haryana, India",
-//           //         "deliveryLandMark": "Railway Station Road",
-//           //         "deliveryPincode": "123456",
-//           //         "expectedDeliveryDate": "2025-01-29T00:00:00.000Z",
-//           //         "buyerStatus": "Quote Requested",
-//           //         "supplierStatus": "Quote Requested From EdProwise",
-//           //         "edprowiseStatus": "Quote Requested From Buyer",
-//           //         "createdAt": "2025-01-29T10:49:24.239Z",
-//           //         "updatedAt": "2025-01-29T10:49:24.239Z",
-//           //         "products": [
-//           //             {
-//           //                 "_id": "679a07b447c9dbaf7828e2f1",
-//           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-//           //                 "categoryId": "6789a5497cf7927203f66171",
-//           //                 "subCategoryId": "6789a69e7cf7927203f6617d",
-//           //                 "description": "I want strong bench",
-//           //                 "productImage": "/Images/ProductImage/school-bench_1738147764094.jpg",
-//           //                 "unit": "Piece",
-//           //                 "quantity": 10,
-//           //                 "enquiryNumber": "ENQ17381477641296802",
-//           //                 "createdAt": "2025-01-29T10:49:24.146Z",
-//           //                 "updatedAt": "2025-01-29T10:49:24.146Z",
-//           //                 "__v": 0
-//           //             },
-//           //             {
-//           //                 "_id": "679a07b447c9dbaf7828e2f3",
-//           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-//           //                 "categoryId": "678f505c6e1ed92982459e88",
-//           //                 "subCategoryId": "678f51f66e1ed92982459eb4",
-//           //                 "description": "I want strong table",
-//           //                 "productImage": "/Images/ProductImage/office-table_1738147764096.jpg",
-//           //                 "unit": "Piece",
-//           //                 "quantity": 2,
-//           //                 "enquiryNumber": "ENQ17381477641296802",
-//           //                 "createdAt": "2025-01-29T10:49:24.194Z",
-//           //                 "updatedAt": "2025-01-29T10:49:24.194Z",
-//           //                 "__v": 0
-//           //             }
-//           //         ]
-//           //     },
-//           //     {
-//           //         "id": "679a08cde89a8882e9b3fd86",
-//           //         "schoolId": "6788dec3cf93c947d08b0b23",
-//           //         "enquiryNumber": "ENQ17381480456191726",
-//           //         "deliveryAddress": "PQR Street",
-//           //         "deliveryLocation": "Faridabad, Haryana, India",
-//           //         "deliveryLandMark": "Railway Station Road",
-//           //         "deliveryPincode": "123456",
-//           //         "expectedDeliveryDate": "2025-01-29T00:00:00.000Z",
-//           //         "buyerStatus": "Quote Requested",
-//           //         "supplierStatus": "Quote Requested From EdProwise",
-//           //         "edprowiseStatus": "Quote Requested From Buyer",
-//           //         "createdAt": "2025-01-29T10:54:05.672Z",
-//           //         "updatedAt": "2025-01-29T10:54:05.672Z",
-//           //         "products": [
-//           //             {
-//           //                 "_id": "679a08cde89a8882e9b3fd84",
-//           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-//           //                 "categoryId": "678f506d6e1ed92982459e8a",
-//           //                 "subCategoryId": "678f528d6e1ed92982459ec9",
-//           //                 "description": "I want to make robust",
-//           //                 "unit": "Project",
-//           //                 "quantity": 1,
-//           //                 "enquiryNumber": "ENQ17381480456191726",
-//           //                 "createdAt": "2025-01-29T10:54:05.630Z",
-//           //                 "updatedAt": "2025-01-29T10:54:05.630Z",
-//           //                 "__v": 0
-//           //             }
-//           //         ]
-//           //     },
-//           //     {
-//           //         "id": "679a0a5c80c9108ad9d094d3",
-//           //         "schoolId": "6788dec3cf93c947d08b0b23",
-//           //         "enquiryNumber": "ENQ17381484446202945",
-//           //         "deliveryAddress": "PQR Street",
-//           //         "deliveryLocation": "Faridabad, Haryana, India",
-//           //         "deliveryLandMark": "Railway Station Road",
-//           //         "deliveryPincode": "123456",
-//           //         "expectedDeliveryDate": "2025-01-29T00:00:00.000Z",
-//           //         "buyerStatus": "Quote Requested",
-//           //         "supplierStatus": "Quote Requested From EdProwise",
-//           //         "edprowiseStatus": "Quote Requested From Buyer",
-//           //         "createdAt": "2025-01-29T11:00:44.746Z",
-//           //         "updatedAt": "2025-01-29T11:00:44.746Z",
-//           //         "products": [
-//           //             {
-//           //                 "_id": "679a0a5c80c9108ad9d094cf",
-//           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-//           //                 "categoryId": "678f505c6e1ed92982459e88",
-//           //                 "subCategoryId": "678f52486e1ed92982459ec3",
-//           //                 "description": "xyz",
-//           //                 "productImage": "/Images/ProductImage/school-bench_1738148444598.jpg",
-//           //                 "unit": "Piece",
-//           //                 "quantity": 10,
-//           //                 "enquiryNumber": "ENQ17381484446202945",
-//           //                 "createdAt": "2025-01-29T11:00:44.641Z",
-//           //                 "updatedAt": "2025-01-29T11:00:44.641Z",
-//           //                 "__v": 0
-//           //             },
-//           //             {
-//           //                 "_id": "679a0a5c80c9108ad9d094d1",
-//           //                 "schoolId": "6788dec3cf93c947d08b0b23",
-//           //                 "categoryId": "678f506d6e1ed92982459e8a",
-//           //                 "subCategoryId": "678f528d6e1ed92982459ec9",
-//           //                 "description": "xyz",
-//           //                 "unit": "Project",
-//           //                 "quantity": 1,
-//           //                 "enquiryNumber": "ENQ17381484446202945",
-//           //                 "createdAt": "2025-01-29T11:00:44.698Z",
-//           //                 "updatedAt": "2025-01-29T11:00:44.698Z",
-//           //                 "__v": 0
-//           //             }
-//           //         ]
-//           //     }
-//           // ]
-//         } else {
-//           console.error("Invalid response format or error in response");
-//         }
-//       } catch (err) {
-//         console.error("Error fetching quote:", err);
-//       }
-//     };
-
-//     fetchSchoolData(); // Call the function to fetch data
-//   }, []);
-
-//   return (
-//     <>
-//       <div className="container-fluid">
-//         <div className="row">
-//           <div className="col-xl-12">
-//             <div className="card">
-//               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-//                 <h4 className="card-title flex-grow-1">
-//                   All Request Quote List
-//                 </h4>
-//                 <Link
-//                   // onClick={(event) => navigateToRequestQuote(event)}
-//                   className="btn btn-sm btn-primary"
-//                 >
-//                   Request Quote
-//                 </Link>
-//                 <div className="text-end">
-//                   <Link className="btn btn-sm btn-outline-light">Export</Link>
-//                 </div>
-//               </div>
-//               <div>
-//                 {quotes.length > 0 ? (
-//                   <div className="table-responsive">
-//                     <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
-//                       <thead className="bg-light-subtle">
-//                         <tr>
-//                           <th style={{ width: 20 }}>
-//                             <div className="form-check ms-1">
-//                               <input
-//                                 type="checkbox"
-//                                 className="form-check-input"
-//                                 id="customCheck1"
-//                               />
-//                               <label
-//                                 className="form-check-label"
-//                                 htmlFor="customCheck1"
-//                               />
-//                             </div>
-//                           </th>
-//                           <th>Enquiry No.</th>
-//                           <th className="text-start">
-//                             Product Required Image & Name
-//                           </th>
-//                           <th>Product Required (Category)</th>
-//                           <th>Quantity</th>
-//                           <th>Unit</th>
-//                           <th>Status</th>
-//                           <th>Action</th>
-//                         </tr>
-//                       </thead>
-//                       <tbody>
-//                         {quotes.map((quote) => (
-//                           <tr key={quote.id}>
-//                             <td>
-//                               <div className="form-check ms-1">
-//                                 <input
-//                                   type="checkbox"
-//                                   className="form-check-input"
-//                                   id={`customCheck${quote.id}`}
-//                                 />
-//                                 <label
-//                                   className="form-check-label"
-//                                   htmlFor={`customCheck${quote.id}`}
-//                                 >
-//                                   &nbsp;
-//                                 </label>
-//                               </div>
-//                             </td>
-//                             <td>{quote.enquiryNo}</td>
-
-//                             {quote.products.map((product) => (
-//                               <li key={product._id}>
-//                                 <td>
-//                                   <div className="d-flex align-items-center gap-2">
-//                                     <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-//                                       <img
-//                                         src={product.productImage}
-//                                         alt={product.subCategoryId}
-//                                         className="avatar-md"
-//                                       />
-//                                     </div>
-//                                     <div>
-//                                       <Link className="text-dark fw-medium fs-15">
-//                                         {product.subCategoryId}
-//                                       </Link>
-//                                     </div>
-//                                   </div>
-//                                 </td>
-//                                 <td>{product.categoryId}</td>
-//                                 <td>{product.quantity}</td>
-//                                 <td>{product.unit}</td>
-//                               </li>
-//                             ))}
-
-//                             <td>{quote.buyerStatus}</td>
-
-//                             <td>
-//                               <div className="d-flex gap-2">
-//                                 <Link
-//                                   className="btn btn-light btn-sm"
-//                                   // onClick={(event) =>
-//                                   // navigateToViewRequestedQuote(event, product)
-//                                   // }
-//                                 >
-//                                   <iconify-icon
-//                                     icon="solar:eye-broken"
-//                                     className="align-middle fs-18"
-//                                   />
-//                                 </Link>
-//                                 <button
-//                                   type="button"
-//                                   className="btn btn-primary custom-submit-button"
-//                                   // onClick={(event) =>
-//                                   // navigateToViewQuoteTable(event, quotes)
-//                                   // }
-//                                 >
-//                                   View Quote
-//                                 </button>
-//                               </div>
-//                             </td>
-//                           </tr>
-//                         ))}
-//                       </tbody>
-//                     </table>
-//                   </div>
-//                 ) : (
-//                   <p>No quote requests available.</p>
-//                 )}
-//                 {/* end table-responsive */}
-//               </div>
-//               <div className="card-footer border-top">
-//                 <nav aria-label="Page navigation example">
-//                   <ul className="pagination justify-content-end mb-0">
-//                     <li className="page-item">
-//                       <Link className="page-link">Previous</Link>
-//                     </li>
-//                     <li className="page-item active">
-//                       <Link className="page-link">1</Link>
-//                     </li>
-//                     <li className="page-item">
-//                       <Link className="page-link">2</Link>
-//                     </li>
-//                     <li className="page-item">
-//                       <Link className="page-link">3</Link>
-//                     </li>
-//                     <li className="page-item">
-//                       <Link className="page-link">Next</Link>
-//                     </li>
-//                   </ul>
-//                 </nav>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default TrackQuoteTable;
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import getAPI from "../../../../api/getAPI";
+import { exportToExcel } from "../../../export-excel";
+const TrackQuoteTable = () => {
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      category: "Office Furniture",
+      subCategory: "Office Chair",
+      productDescription: "We want chair",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
+    },
+    {
+      id: 2,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      category: "Office Furniture",
+      subCategory: "Table",
+      productDescription: "We want Table",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
+    },
+    {
+      id: 3,
+      enquiryNo: "ENQ1234567890",
+      imageUrl: "assets/images/product/p-1.png",
+      category: "Classroom Board",
+      subCategory: "Board",
+      productDescription: "We want board",
+      quoteRequestedDate: "2023-12-01",
+      unit: "Pieces",
+      qty: 8,
+      deliveryExpectedDate: "2023-12-01",
+      status: "Quote Requested",
+      oderNo: "ORD1234567890",
+      quoteReceivedDate: "2023-12-01",
+    },
+  ]);
+  const [quotes, setQuotes] = useState([
+    {
+      id: 1,
+      nameOfSupplier: "Supplier A",
+      dateOfQuoteSubmitted: "2023-12-01",
+      quotedAmount: "₹500.00",
+      description: "This is a test description for the quote from Supplier A.",
+      remarksFromSupplier: "Ready for delivery",
+      expectedDeliveryDate: "2023-12-05",
+      paymentTerms: "50% upfront, 50% on delivery",
+      advancesRequiredAmount: "₹100.00",
+      placeOrder: "Quote Accepted",
+      commentFromBuyer: "Check quality before accepting",
+      status: "Quote Received",
+    },
+  ]);
+  const navigate = useNavigate();
 
-const TrackQuoteTable = ({}) => {
-  const [quotes, setQuotes] = useState([]);
+  const navigateToRequestQuote = (event) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/procurement-services/request-quote`);
+  };
 
-  useEffect(() => {
-    const fetchSchoolData = async () => {
-      try {
-        const response = await getAPI(`/get-quote`, {}, true);
-        if (
-          !response.hasError &&
-          response.data &&
-          Array.isArray(response.data.data)
-        ) {
-          setQuotes(response.data.data);
-          console.log("quote data", response.data.data);
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching quote:", err);
-      }
-    };
+  const navigateToViewRequestedQuote = (event, product) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/procurement-services/view-requested-quote`, {
+      state: { product },
+    });
+  };
 
-    fetchSchoolData(); // Call the function to fetch data
-  }, []);
+  const navigateToViewQuoteTable = (event, quotes) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/procurement-services/view-quote-table`, {
+      state: { quotes },
+    });
+  };
+  const handleExport = () => {
+    const filteredData = products.map((product) => ({
+      Id: product.id,
+      EnquiryNo: product.enquiryNo,
+      ProductImage: product.imageUrl,
+      ProductName: product.subCategory,
+      ProductDescription: product.productDescription,
+      QuoteRequestedDate: product.quoteRequestedDate,
+      Unit: product.unit,
+      Quantity: product.qty,
+      DeliveryExpectedDate: product.deliveryExpectedDate,
+      Status: product.status,
+    }));
+
+    exportToExcel(filteredData, "Products", "Products Data");
+  };
 
   return (
     <>
@@ -858,118 +114,117 @@ const TrackQuoteTable = ({}) => {
                   All Request Quote List
                 </h4>
                 <Link
-                  // onClick={(event) => navigateToRequestQuote(event)}
+                  onClick={(event) => navigateToRequestQuote(event)}
                   className="btn btn-sm btn-primary"
                 >
                   Request Quote
                 </Link>
                 <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
+                  <Link
+                    onClick={handleExport}
+                    className="btn btn-sm btn-outline-light"
+                  >
+                    Export
+                  </Link>
                 </div>
               </div>
               <div>
-                {quotes.length > 0 ? (
-                  <div className="table-responsive">
-                    <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
-                      <thead className="bg-light-subtle">
-                        <tr>
-                          <th style={{ width: 20 }}>
+                <div className="table-responsive">
+                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
+                    <thead className="bg-light-subtle">
+                      <tr>
+                        <th style={{ width: 20 }}>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id="customCheck1"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="customCheck1"
+                            />
+                          </div>
+                        </th>
+                        <th>Enquiry No.</th>
+                        <th className="text-start">
+                          Product Required Image & Name
+                        </th>
+                        <th>Product Required (Category)</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {products.map((product) => (
+                        <tr key={product.id}>
+                          <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id="customCheck1"
+                                id={`customCheck${product.id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor="customCheck1"
-                              />
+                                htmlFor={`customCheck${product.id}`}
+                              >
+                                &nbsp;
+                              </label>
                             </div>
-                          </th>
-                          <th>Enquiry No.</th>
-                          <th className="text-start">
-                            Product Required Image & Name
-                          </th>
-                          <th>Product Required (Category)</th>
-                          <th>Quantity</th>
-                          <th>Unit</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {quotes.map((quote) => (
-                          <tr key={quote.id}>
-                            <td>
-                              <div className="form-check ms-1">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`customCheck${quote.id}`}
+                          </td>
+                          <td>{product.enquiryNo}</td>
+                          <td>
+                            <div className="d-flex align-items-center gap-2">
+                              <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                <img
+                                  src={product.imageUrl}
+                                  alt={product.subCategory}
+                                  className="avatar-md"
                                 />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`customCheck${quote.id}`}
-                                >
-                                  &nbsp;
-                                </label>
                               </div>
-                            </td>
-                            <td>{quote.enquiryNumber}</td>
-                            <td>
-                              <div className="d-flex align-items-center gap-2">
-                                <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                  <img
-                                    src={quote.productImage}
-                                    alt={quote.subCategoryId}
-                                    className="avatar-md"
-                                  />
-                                </div>
-                                <div>
-                                  <Link className="text-dark fw-medium fs-15">
-                                    {quote.subCategoryId}
-                                  </Link>
-                                </div>
-                              </div>
-                            </td>
-                            <td>{quote.categoryId}</td>
-                            <td>{quote.quantity}</td>
-                            <td>{quote.unit}</td>
-
-                            <td>{quote.buyerStatus}</td>
-
-                            <td>
-                              <div className="d-flex gap-2">
-                                <Link
-                                  className="btn btn-light btn-sm"
-                                  // onClick={(event) =>
-                                  // navigateToViewRequestedQuote(event, product)
-                                  // }
-                                >
-                                  <iconify-icon
-                                    icon="solar:eye-broken"
-                                    className="align-middle fs-18"
-                                  />
+                              <div>
+                                <Link className="text-dark fw-medium fs-15">
+                                  {product.subCategory}
                                 </Link>
-                                <button
-                                  type="button"
-                                  className="btn btn-primary custom-submit-button"
-                                  // onClick={(event) =>
-                                  // navigateToViewQuoteTable(event, quotes)
-                                  // }
-                                >
-                                  View Quote
-                                </button>
                               </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p>No quote requests available.</p>
-                )}
+                            </div>
+                          </td>
+                          <td>{product.category}</td>
+                          <td>{product.qty}</td>
+                          <td>{product.unit}</td>
+                          <td>{product.status}</td>
+                          <td>
+                            <div className="d-flex gap-2">
+                              <Link
+                                className="btn btn-light btn-sm"
+                                onClick={(event) =>
+                                  navigateToViewRequestedQuote(event, product)
+                                }
+                              >
+                                <iconify-icon
+                                  icon="solar:eye-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
+                              <button
+                                type="button"
+                                className="btn btn-primary custom-submit-button"
+                                onClick={(event) =>
+                                  navigateToViewQuoteTable(event, quotes)
+                                }
+                              >
+                                View Quote
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
                 {/* end table-responsive */}
               </div>
               <div className="card-footer border-top">

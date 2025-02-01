@@ -1,26 +1,26 @@
 import React from "react";
 
-const EducatorZoneSection = () => {
+const AwardSection = () => {
   const blogPosts = [
     {
       date: "25 Sep 2023",
       author: "Anne William",
       title: "The Surprising Reason College Tuition Is Crazy Expensive",
-      image: "/assets/website-images/blog/img-1.webp",
+      image: "assets/website-images/blog/img-1.webp",
       link: "blog-single.html",
     },
     {
       date: "26 Sep 2023",
       author: "Robert Fox",
       title: "Become a great WordPress & PHP developer.",
-      image: "/assets/website-images/blog/img-2.webp",
+      image: "assets/website-images/blog/img-2.webp",
       link: "blog-single.html",
     },
     {
       date: "28 Sep 2023",
       author: "Devon Lane",
       title: "A critical review of mobile learning integration",
-      image: "/assets/website-images/blog/img-3.webp",
+      image: "assets/website-images/blog/img-3.webp",
       link: "blog-single.html",
     },
   ];
@@ -61,4 +61,4 @@ const EducatorZoneSection = () => {
   );
 };
 
-export default EducatorZoneSection;
+export default AwardSection;

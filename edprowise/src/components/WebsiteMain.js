@@ -1,14 +1,14 @@
 /* global $ */
-
+ 
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar/Navbar";
 import DashboardFooter from "./DashboardFooter/DashboardFooter";
 import { Outlet } from "react-router-dom";
-
+ 
 const WebsiteMain = () => {
   useEffect(() => {
     const scriptElements = [];
-
+ 
     const loadScript = (src) => {
       return new Promise((resolve, reject) => {
         const script = document.createElement("script");
@@ -23,12 +23,13 @@ const WebsiteMain = () => {
         document.body.appendChild(script);
       });
     };
-
+ 
     const loadScripts = async () => {
       try {
         await loadScript(
           `${process.env.PUBLIC_URL}/assets/website-js/jquery.min.js`
         );
+ 
         await loadScript(
           `${process.env.PUBLIC_URL}/assets/website-js/jquery.nice-select.min.js`
         );
@@ -47,9 +48,9 @@ const WebsiteMain = () => {
         console.error("Error loading scripts:", error);
       }
     };
-
+ 
     loadScripts();
-
+ 
     return () => {
       // Cleanup scripts on component unmount
       scriptElements.forEach((script) => {
@@ -57,24 +58,24 @@ const WebsiteMain = () => {
       });
     };
   }, []);
-
+ 
   const [showBackToTop, setShowBackToTop] = useState(false);
-
+ 
   useEffect(() => {
     const handleScroll = () => {
       setShowBackToTop(window.scrollY > 500);
     };
-
+ 
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
+ 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
+ 
   return (
     <>
       <div className="font-family-web">
@@ -84,7 +85,7 @@ const WebsiteMain = () => {
         </div>
         <DashboardFooter />
       </div>
-
+ 
       {showBackToTop && (
         <button
           className="back-to-top"
@@ -114,5 +115,6 @@ const WebsiteMain = () => {
     </>
   );
 };
-
+ 
 export default WebsiteMain;
+ 

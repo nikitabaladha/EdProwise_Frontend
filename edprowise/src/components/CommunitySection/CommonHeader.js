@@ -7,12 +7,12 @@ const CommonHeader = () => {
             <div className="col col-xs-12">
               <div className="wpo-breadcumb-wrap">
                 <h2>Community Connect</h2>
-                <ol className="wpo-breadcumb-wrap">
+                {/* <ol className="wpo-breadcumb-wrap">
                   <li>
                     <a href="index.html">Home</a>
                   </li>
                   <li>Community Connect</li>
-                </ol>
+                </ol> */}
               </div>
             </div>
           </div>

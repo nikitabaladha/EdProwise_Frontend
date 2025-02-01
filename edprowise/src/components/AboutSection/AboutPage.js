@@ -9,12 +9,12 @@ const AboutPage = () => {
             <div className="col col-xs-12">
               <div className="wpo-breadcumb-wrap">
                 <h2>About Us</h2>
-                <ol className="wpo-breadcumb-wrap">
+                {/* <ol className="wpo-breadcumb-wrap">
                   <li>
                     <a href="index.html">Home</a>
                   </li>
                   <li>About Us</li>
-                </ol>
+                </ol> */}
               </div>
             </div>
           </div>

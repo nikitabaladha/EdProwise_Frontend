@@ -53,16 +53,7 @@ const ServiceMainSection = () => {
           }`}
           onClick={() => showTab("businessSection")}
         >
-          Business Services
-        </button>
-        <button
-          id="recruitmentTab"
-          className={`nav-tab ${
-            activeTab === "recruitmentSection" ? "active" : ""
-          }`}
-          onClick={() => showTab("recruitmentSection")}
-        >
-          Recruitment Services
+          Academic & Admin
         </button>
         <button
           id="procurementTab"
@@ -71,7 +62,16 @@ const ServiceMainSection = () => {
           }`}
           onClick={() => showTab("procurementSection")}
         >
-          Procurement Services
+          Get Goods for your School
+        </button>
+        <button
+        id="recruitmentTab"
+          className={`nav-tab ${
+            activeTab === "recruitmentSection" ? "active" : ""
+          }`}
+          onClick={() => showTab("recruitmentSection")}
+        >
+          Hire School Teacher
         </button>
       </div>
       <div className="container section-padding">

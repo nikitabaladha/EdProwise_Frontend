@@ -1,14 +1,15 @@
 import react, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const HomeMainSection = () => {
   const slideTrackRef = useRef(null);
   const [counter, setCounter] = useState(0);
   const words = [
-    "Knowledge",
-    "Education",
-    "Experience",
-    "Improved",
-    "Free Class",
+    "Transforming",
+    "Unlocking",
+    "Redifining",
+    "Nurturing",
+    
   ];
   const intervalTime = 3000;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -16,7 +17,25 @@ const HomeMainSection = () => {
   // const intervalTime = 4000; // 4 seconds
   const [autoplay, setAutoplay] = useState(window.innerWidth <= 570);
   const [activeIndex, setActiveIndex] = useState(1);
+  const [translateValue, setTranslateValue] = useState(100); // Default to 100%
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setTranslateValue(100);
+      } else if (window.innerWidth <= 991) {
+        setTranslateValue(50);
+      } else {
+        setTranslateValue(100);
+      }
+    };
+  
+    handleResize(); // Call once to set initial value
+    window.addEventListener("resize", handleResize);
+  
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setCounter((prevCounter) => (prevCounter + 1) % words.length);
@@ -68,6 +87,9 @@ const HomeMainSection = () => {
     }
   };
 
+
+  
+
   const handleMouseEnter = (index) => {
     setActiveIndex(index);
   };
@@ -78,62 +100,62 @@ const HomeMainSection = () => {
 
   // Array of unique names for the slides
   const slideNames = [
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
-    "Digital Marketing",
+    "Fees Management",
+    "Payroll Management",
+    "Digital Exam Result",
+    "Student & Staff Attendance",
+    "Library Management",
+    "Admission Management",
+    "Website Design",
+    "PF & ESI Consultancy",
+    "Event Management",
+    "Affiliation Support",
+    "Student Counselling",
+    "Procurement Service",
+    "Hiring Solutions",
+    "Assessment of Candidate",
   ];
 
   const featuresData = [
     {
       id: 1,
       icon: "fi flaticon-training-1",
-      title: "10+ Happy Clients",
-      description:
-        "We take pride in our ability to deliver tailored courses and comprehensive training programs that effectively meet the unique and evolving needs of each client, ensuring satisfaction, measurable outcomes, and sustainable, long-term growth opportunities.",
-      hiddenDescription:
-        "We take pride in our ability to deliver tailored courses and comprehensive training programs that effectively meet the unique and evolving needs of each client, ensuring satisfaction, measurable outcomes, and sustainable, long-term growth opportunities.",
-      link: "#",
+      title: "5+ Happy Clients ",
+      // description:
+      //   "We take pride in our ability to deliver tailored courses and comprehensive training programs that effectively meet the unique and evolving needs of each client, ensuring satisfaction, measurable outcomes, and sustainable, long-term growth opportunities.",
+      // hiddenDescription:
+      //   "We take pride in our ability to deliver tailored courses and comprehensive training programs that effectively meet the unique and evolving needs of each client, ensuring satisfaction, measurable outcomes, and sustainable, long-term growth opportunities.",
+      
     },
     {
       id: 2,
       icon: "fi flaticon-team",
-      title: "100% Client Retention",
-      description:
-        "Our dedication to building long-term relationships, delivering exceptional services, and providing unmatched value has resulted in a perfect client retention rate, demonstrating trust, reliability, and client satisfaction.",
-      hiddenDescription:
-        "Our dedication to building long-term relationships, delivering exceptional services, and providing unmatched value has resulted in a perfect client retention rate, demonstrating trust, reliability, and client satisfaction.",
-      link: "#",
+      title: "99% Full Loyalty",
+      // description:
+      //   "Our dedication to building long-term relationships, delivering exceptional services, and providing unmatched value has resulted in a perfect client retention rate, demonstrating trust, reliability, and client satisfaction.",
+      // hiddenDescription:
+      //   "Our dedication to building long-term relationships, delivering exceptional services, and providing unmatched value has resulted in a perfect client retention rate, demonstrating trust, reliability, and client satisfaction.",
+      
     },
     {
       id: 3,
       icon: "fi flaticon-video-lesson",
-      title: "20K+ Users",
-      description:
-        "Join our community of over 20,000 users who trust our platform to learn, grow, and achieve their goals with high-quality courses, valuable resources, expert guidance, personalized assistance, and continuous support.",
-      hiddenDescription:
-        "Join our community of over 20,000 users who trust our platform to learn, grow, and achieve their goals with high-quality courses, valuable resources, expert guidance, personalized assistance, and continuous support.",
-      link: "#",
+      title: "5K+ Users",
+      // description:
+      //   "Join our community of over 20,000 users who trust our platform to learn, grow, and achieve their goals with high-quality courses, valuable resources, expert guidance, personalized assistance, and continuous support.",
+      // hiddenDescription:
+      //   "Join our community of over 20,000 users who trust our platform to learn, grow, and achieve their goals with high-quality courses, valuable resources, expert guidance, personalized assistance, and continuous support.",
+    
     },
     {
       id: 4,
       icon: "fi flaticon-training",
-      title: "100+ Dashboards & Reports",
-      description:
-        "Unlock powerful insights with our 100+ dashboards and reports designed to provide actionable data for informed, strategic decision-making and improved overall performance outcomes and efficiency.",
-      hiddenDescription:
-        "Unlock powerful insights with our 100+ dashboards and reports designed to provide actionable data for informed, strategic decision-making and improved overall performance outcomes and efficiency.",
-      link: "#",
+      title: "100+ Reports",
+      // description:
+      //   "Unlock powerful insights with our 100+ dashboards and reports designed to provide actionable data for informed, strategic decision-making and improved overall performance outcomes and efficiency.",
+      // hiddenDescription:
+        // "Unlock powerful insights with our 100+ dashboards and reports designed to provide actionable data for informed, strategic decision-making and improved overall performance outcomes and efficiency.",
+      
     },
   ];
 
@@ -158,7 +180,7 @@ const HomeMainSection = () => {
                 {/* Slide Title */}
                 <div data-swiper-parallax="300" className="slide-title">
                   <h2 className="font-family-web">
-                    Build Your First Step Of
+                  Empowering Schools,  
                     <span>
                       <small
                         id="changing"
@@ -168,16 +190,17 @@ const HomeMainSection = () => {
                         {words[counter]}
                       </small>
                     </span>
-                    with Eduko.
+                    Excellence 
                   </h2>
+                </div>
+                <div data-swiper-parallax="400" class="slide-text">
+                                <p className="text-black">Inspiring growth, fostering innovation, shaping the future, and cultivating success in education.</p>
                 </div>
 
                 {/* Slide Text */}
                 <div data-swiper-parallax="400" className="slide-text">
                   <p className="font-family-web">
-                    We are providing you the best tutor to enhance your
-                    knowledge and skill. Let’s get started and get a relaxing
-                    learning.
+                  
                   </p>
                 </div>
 
@@ -194,9 +217,9 @@ const HomeMainSection = () => {
 
                 {/* Call-to-Action Button */}
                 <div data-swiper-parallax="500" className="slide-btns">
-                  <a href="about.html" className="theme-btn">
-                    Get Started
-                  </a>
+                  <Link to="/request-demo" className="theme-btn">
+                    Request For Demo
+                  </Link>
                 </div>
               </div>
 
@@ -236,17 +259,19 @@ const HomeMainSection = () => {
         <div className="container-fluid">
           <div className="features-wrap">
             <div
-              className="row-web features-wrapp"
+              className="row-web features-wrapp back-color"
               ref={carouselRef}
               style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
+                transform: `translateX(-${currentIndex * translateValue}%)`,
                 transition: "transform 0.5s ease-in-out",
+                // background:"#A9FFFD",
+                borderRadius:"10px",
               }}
             >
               {featuresData.map((feature, index) => (
                 <div
                   key={feature.id}
-                  className={`col col-lg-3 col-md-12 col-12 carousel-itemm ${
+                  className={`col col-lg-3 col-md-6 col-12 carousel-itemm ${
                     index === currentIndex ? "active" : "item"
                   }`}
                   onMouseEnter={() => handleMouseEnter(index)}
@@ -263,29 +288,27 @@ const HomeMainSection = () => {
                         : ""
                     }`}
                   >
-                    <div className="feature-item">
+                    <div className="feature-item d-flex feature-itemm-small">
                       <div className="icon">
                         <i className={feature.icon}></i>
                       </div>
-                      <div className="feature-text">
-                        <h2 className="font-weight-web-h2">
-                          <a href={feature.link}>{feature.title}</a>
+                      <div className="feature-text align-content-center m-2">
+                        <h2 className="font-weight-web-h2 mb-0">
+                          <a className="feature-title-color" >{feature.title}</a>
                         </h2>
-                        <p>{feature.description}</p>
+                        {/* <p>{feature.description}</p> */}
                       </div>
                     </div>
-                    <div className="feature-item-hidden">
+                    <div className="feature-item-hidden d-flex feature-itemm-small">
                       <div className="icon">
                         <i className={feature.icon}></i>
                       </div>
-                      <div className="feature-text">
-                        <h2 className="font-weight-web-h2">
+                      <div className="feature-text align-content-center m-2">
+                        <h2 className="font-weight-web-h2 mb-0">
                           <a href={feature.link}>{feature.title}</a>
                         </h2>
-                        <p>{feature.hiddenDescription}</p>
-                        <a className="more font-family-web" href={feature.link}>
-                          Read More...
-                        </a>
+                        {/* <p>{feature.hiddenDescription}</p> */}
+                       
                       </div>
                     </div>
                   </div>

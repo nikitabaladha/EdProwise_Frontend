@@ -48,54 +48,42 @@ import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
 
 const AdminDashboardMain = () => {
-  // useEffect(() => {
-  //   const scriptSources = [
-  //     `${process.env.PUBLIC_URL}/assets/js/jquery.min.js`,
-  //     `${process.env.PUBLIC_URL}/assets/js/vendor.js`,
-  //     `${process.env.PUBLIC_URL}/assets/js/app.js`,
-  //     `${process.env.PUBLIC_URL}/assets/js/config.js`,
-  //   ];
+  useEffect(() => {
+    const scriptSources = [
+      `${process.env.PUBLIC_URL}/assets/js/app.js`,
+      `${process.env.PUBLIC_URL}/assets/js/config.js`,
+      `${process.env.PUBLIC_URL}/assets/js/apexchart-mixed.js`,
+      `${process.env.PUBLIC_URL}/assets/js/vendor.js`,
+      `${process.env.PUBLIC_URL}/assets/js/jquery.min.js`,
+    ];
 
-  //   // Function to load scripts dynamically
-  //   const loadScript = (src) => {
-  //     return new Promise((resolve, reject) => {
-  //       const script = document.createElement("script");
-  //       script.src = src;
-  //       script.async = true;
+    // Dynamically load each script
+    const scripts = scriptSources.map((src) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = true;
 
-  //       script.onload = () => {
-  //         console.log(`${src} loaded successfully`);
-  //         resolve();
-  //       };
+      script.onload = () => {
+        console.log(`${src} loaded successfully`);
+      };
 
-  //       script.onerror = () => {
-  //         console.error(`Error loading script: ${src}`);
-  //         reject(new Error(`Failed to load script: ${src}`));
-  //       };
+      script.onerror = () => {
+        console.error(`Error loading script: ${src}`);
+      };
 
-  //       document.body.appendChild(script);
-  //     });
-  //   };
+      document.body.appendChild(script);
+      return script;
+    });
 
-  //   // Load scripts sequentially
-  //   const loadScripts = async () => {
-  //     for (const src of scriptSources) {
-  //       await loadScript(src);
-  //     }
-  //   };
-
-  //   loadScripts().catch((error) => console.error(error));
-
-  //   // Cleanup the scripts when the component unmounts
-  //   return () => {
-  //     scriptSources.forEach((src) => {
-  //       const script = document.querySelector(`script[src="${src}"]`);
-  //       if (script) {
-  //         document.body.removeChild(script);
-  //       }
-  //     });
-  //   };
-  // }, []);
+    // Cleanup the scripts when the component unmounts
+    return () => {
+      scripts.forEach((script) => {
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
+      });
+    };
+  }, []);
 
   // Return the JSX to be rendered
   return (

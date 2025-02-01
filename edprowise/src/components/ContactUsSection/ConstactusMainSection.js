@@ -13,12 +13,12 @@ const ConstactusMainSection = () => {
                   <div className="office-info-item">
                     <div className="office-info-icon">
                       <div className="icon">
-                        <i className="fi flaticon-maps-and-flags"></i>
+                        <i className="fi flaticon-maps-and-flags text-black"></i>
                       </div>
                     </div>
                     <div className="office-info-text">
                       <h2>Address</h2>
-                      <p>7 Green Lake Street Crawfordsville, IN 47933</p>
+                      <p className="text-black">New Delhi, Delhi, India</p>
                     </div>
                   </div>
                 </div>
@@ -26,13 +26,13 @@ const ConstactusMainSection = () => {
                   <div className="office-info-item">
                     <div className="office-info-icon">
                       <div className="icon">
-                        <i className="fi flaticon-email"></i>
+                        <i className="fi flaticon-email text-black"></i>
                       </div>
                     </div>
                     <div className="office-info-text">
                       <h2>Email Us</h2>
-                      <p>Edprowise@gmail.com</p>
-                      <p>helloyou@gmail.com</p>
+                      <p className="text-black">info@edprowise.com</p>
+                      {/* <p>helloyou@gmail.com</p> */}
                     </div>
                   </div>
                 </div>
@@ -40,13 +40,13 @@ const ConstactusMainSection = () => {
                   <div className="office-info-item">
                     <div className="office-info-icon">
                       <div className="icon">
-                        <i className="fi flaticon-phone-call"></i>
+                        <i className="fi flaticon-phone-call text-black"></i>
                       </div>
                     </div>
                     <div className="office-info-text">
                       <h2>Call Now</h2>
-                      <p>+1 800 123 456 789</p>
-                      <p>+1 800 123 654 987</p>
+                      <p className="text-black">+91-9958528306</p>
+                      {/* <p>+1 800 123 654 987</p> */}
                     </div>
                   </div>
                 </div>
@@ -55,8 +55,7 @@ const ConstactusMainSection = () => {
             <div className="wpo-contact-title">
               <h2>Have Any Question?</h2>
               <p>
-                It is a long established fact that a reader will be distracted
-                content of a page when looking.
+              Want to get in touch? We'd love to hear from you. Here's how you can reach us..
               </p>
             </div>
             <div className="wpo-contact-form-area">
@@ -77,7 +76,7 @@ const ConstactusMainSection = () => {
                 <div>
                   <input
                     type="email"
-                    className="form-control"
+                    className="form-control "
                     name="email"
                     id="email"
                     placeholder="Your Email*"
@@ -130,7 +129,7 @@ const ConstactusMainSection = () => {
         </div>
       </div>
     </section>
-    <section className="wpo-contact-map-section">
+    {/* <section className="wpo-contact-map-section">
     <h2 className="hidden">Contact map</h2>
     <div className="wpo-contact-map">
       <iframe
@@ -140,7 +139,7 @@ const ConstactusMainSection = () => {
         title="Google Map"
       ></iframe>
     </div>
-  </section>
+  </section> */}
   </>
     
   );
