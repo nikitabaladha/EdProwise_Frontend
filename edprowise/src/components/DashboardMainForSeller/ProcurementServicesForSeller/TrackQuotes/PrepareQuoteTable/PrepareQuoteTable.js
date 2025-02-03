@@ -9,7 +9,6 @@ const PrepareQuoteTable = ({
   handleImageChange,
   handleSubmit,
 }) => {
-  console.log("products form prepare quote table", products);
   return (
     <div className="row p-2">
       <div className="col-md-12">
@@ -37,7 +36,24 @@ const PrepareQuoteTable = ({
                     <th>Action</th>
                     <th>Sr No.</th>
                     <th>Subcategory Name</th>
-                    {/* <th>Quantity</th> */}
+                    <th>HSN/SAAC</th>
+                    <th>Listing Rate</th>
+                    <th>EdProwise Margin %</th>
+                    <th>Quantity</th>
+                    <th>Final Rate Before Discount</th>
+                    <th>Discount %</th>
+                    <th>Final Rate</th>
+                    <th>Taxable Value</th>
+                    <th>CGST Rate</th>
+                    <th>CGST Amount</th>
+                    <th>SGST Rate</th>
+                    <th>SGST Amount</th>
+                    <th>IGST Rate</th>
+                    <th>IGST Amount</th>
+                    <th>Amount Before GST & Discount</th>
+                    <th>Discount Amount</th>
+                    <th>GST Amount</th>
+                    <th>Total Amount</th>
                     <th>Upload Sample Images of Products</th>
                   </tr>
                 </thead>
@@ -56,31 +72,180 @@ const PrepareQuoteTable = ({
                         )}
                       </td>
                       <td>{index + 1}</td>
-
                       <td>
                         <input
                           type="text"
-                          // name={`products[${index}].subcategoryName`}
-                          name="subcategoryName"
+                          name="subCategoryName"
                           className="form-control"
-                          value={product.subcategoryName}
+                          value={product.subCategoryName || ""}
                           onChange={(e) => handleChange(index, e)}
                         />
                       </td>
-                      {/* <td>
+                      <td>
                         <input
-                          type="number"
-                          name={`products[${index}].quantity`}
-                          // name="quantity"
+                          type="text"
+                          name="hsnSacc"
                           className="form-control"
-                          value={product.quantity}
+                          value={product.hsnSacc || ""}
                           onChange={(e) => handleChange(index, e)}
                         />
-                      </td> */}
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="listingRate"
+                          className="form-control"
+                          value={product.listingRate || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="edprowiseMargin"
+                          className="form-control"
+                          value={product.edprowiseMargin || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="quantity"
+                          className="form-control"
+                          value={product.quantity || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="finalRateBeforeDiscount"
+                          className="form-control"
+                          value={product.finalRateBeforeDiscount || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="discount"
+                          className="form-control"
+                          value={product.discount || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="finalRate"
+                          className="form-control"
+                          value={product.finalRate || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="taxableValue"
+                          className="form-control"
+                          value={product.taxableValue || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="cgstRate"
+                          className="form-control"
+                          value={product.cgstRate || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="cgstAmount"
+                          className="form-control"
+                          value={product.cgstAmount || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="sgstRate"
+                          className="form-control"
+                          value={product.sgstRate || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="sgstAmount"
+                          className="form-control"
+                          value={product.sgstAmount || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="igstRate"
+                          className="form-control"
+                          value={product.igstRate || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="igstAmount"
+                          className="form-control"
+                          value={product.igstAmount || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="amountBeforeGstAndProducts"
+                          className="form-control"
+                          value={product.amountBeforeGstAndProducts || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="discountAmount"
+                          className="form-control"
+                          value={product.discountAmount || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="gstAmount"
+                          className="form-control"
+                          value={product.gstAmount || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="totalAmount"
+                          className="form-control"
+                          value={product.totalAmount || ""}
+                          onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
                       <td>
                         <input
                           type="file"
-                          // name={`products[${index}].prepareQuoteImage`}
                           name="prepareQuoteImage"
                           className="form-control"
                           onChange={(e) => handleImageChange(index, e)}

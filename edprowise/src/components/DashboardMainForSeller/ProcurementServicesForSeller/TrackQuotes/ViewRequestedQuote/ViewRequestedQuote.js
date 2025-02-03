@@ -13,11 +13,8 @@ import postAPI from "../../../../../api/postAPI";
 
 import { format } from "date-fns";
 
-//This function takes a date string as an argument and returns a formatted date string
 const formatDate = (dateString) => {
-  //If the date string is not provided, return "N/A"
   if (!dateString) return "N/A";
-  //Otherwise, format the date string using the format function and return the formatted date string
   return format(new Date(dateString), "dd/MM/yyyy");
 };
 
@@ -60,8 +57,25 @@ const ViewRequestedQuote = () => {
     quote.map((product) => ({
       srNo: "",
       subCategoryName: "",
-      // quantity: "",
       prepareQuoteImage: null,
+      hsnSacc: "",
+      listingRate: "",
+      edprowiseMargin: "",
+      quantity: "",
+      finalRateBeforeDiscount: "",
+      discount: "",
+      finalRate: "",
+      taxableValue: "",
+      cgstRate: "",
+      cgstAmount: "",
+      sgstRate: "",
+      sgstAmount: "",
+      igstRate: "",
+      igstAmount: "",
+      amountBeforeGstAndProducts: "",
+      discountAmount: "",
+      gstAmount: "",
+      totalAmount: "",
     }))
   );
 
@@ -82,7 +96,7 @@ const ViewRequestedQuote = () => {
 
     updatedProducts[index] = {
       ...updatedProducts[index],
-      [name]: type === "file" ? files[0] : value,
+      [name]: type === "file" && files.length > 0 ? files[0] : value,
     };
 
     setPrepareProducts(updatedProducts);
@@ -91,7 +105,8 @@ const ViewRequestedQuote = () => {
   const handleImageChange = (index, event) => {
     const file = event.target.files[0];
     const updatedProducts = [...prepareProducts];
-    updatedProducts[index].productImages = file;
+
+    updatedProducts[index].prepareQuoteImage = file;
     setPrepareProducts(updatedProducts);
   };
 
@@ -100,8 +115,25 @@ const ViewRequestedQuote = () => {
       quote.map((_, index) => ({
         srNo: index + 1,
         subCategoryName: "",
-        // quantity: "",
         prepareQuoteImage: null,
+        hsnSacc: "",
+        listingRate: "",
+        edprowiseMargin: "",
+        quantity: "",
+        finalRateBeforeDiscount: "",
+        discount: "",
+        finalRate: "",
+        taxableValue: "",
+        cgstRate: "",
+        cgstAmount: "",
+        sgstRate: "",
+        sgstAmount: "",
+        igstRate: "",
+        igstAmount: "",
+        amountBeforeGstAndProducts: "",
+        discountAmount: "",
+        gstAmount: "",
+        totalAmount: "",
       }))
     );
   }, [quote]);
@@ -112,8 +144,25 @@ const ViewRequestedQuote = () => {
       {
         srNo: prev.length + 1,
         subCategoryName: "",
-        // quantity: "",
         prepareQuoteImage: null,
+        hsnSacc: "",
+        listingRate: "",
+        edprowiseMargin: "",
+        quantity: "",
+        finalRateBeforeDiscount: "",
+        discount: "",
+        finalRate: "",
+        taxableValue: "",
+        cgstRate: "",
+        cgstAmount: "",
+        sgstRate: "",
+        sgstAmount: "",
+        igstRate: "",
+        igstAmount: "",
+        amountBeforeGstAndProducts: "",
+        discountAmount: "",
+        gstAmount: "",
+        totalAmount: "",
       },
     ]);
   };
@@ -123,43 +172,59 @@ const ViewRequestedQuote = () => {
     setPrepareProducts(updatedProducts);
   };
 
+  // works to store image
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const data = {
-        enquiryNumber: enquiryNumber,
-        products: [],
+    const formData = new FormData();
+    formData.append("enquiryNumber", enquiryNumber);
+
+    const products = [];
+
+    prepareProducts.forEach((product, index) => {
+      const productData = {
+        subcategoryName: product.subCategoryName,
+        hsnSacc: product.hsnSacc,
+        listingRate: product.listingRate,
+        edprowiseMargin: product.edprowiseMargin,
+        quantity: product.quantity,
+        finalRateBeforeDiscount: product.finalRateBeforeDiscount,
+        discount: product.discount,
+        finalRate: product.finalRate,
+        taxableValue: product.taxableValue,
+        cgstRate: product.cgstRate,
+        cgstAmount: product.cgstAmount,
+        sgstRate: product.sgstRate,
+        sgstAmount: product.sgstAmount,
+        igstRate: product.igstRate,
+        igstAmount: product.igstAmount,
+        amountBeforeGstAndProducts: product.amountBeforeGstAndProducts,
+        discountAmount: product.discountAmount,
+        gstAmount: product.gstAmount,
+        totalAmount: product.totalAmount,
       };
 
-      prepareProducts.forEach((product) => {
-        data.products.push({
-          subcategoryName: product.subCategoryName,
-          prepareQuoteImage: product.prepareQuoteImage
-            ? product.prepareQuoteImage.name
-            : "",
-        });
-      });
+      products.push(productData);
 
-      console.log("Data being sent to backend:", data);
+      // Append the image file if it exists
+      if (product.prepareQuoteImage) {
+        formData.append(
+          `products[${index}][prepareQuoteImage]`,
+          product.prepareQuoteImage
+        );
+      }
+    });
 
-      //   {
-      //     "enquiryNumber": "ENQ17382162277852603",
-      //     "products": [
-      //         {
-      //             "subcategoryName": "",
-      //             "prepareQuoteImage": ""
-      //         },
-      //         {
-      //             "subcategoryName": "",
-      //             "prepareQuoteImage": ""
-      //         }
-      //     ]
-      // }
+    formData.append("products", JSON.stringify(products));
 
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    try {
       const response = await postAPI(
         "/prepare-quote",
-        data,
+        formData,
         {
           "Content-Type": "multipart/form-data",
         },
@@ -319,54 +384,3 @@ const ViewRequestedQuote = () => {
 };
 
 export default ViewRequestedQuote;
-
-// const handleSubmit = async (e) => {
-//   e.preventDefault();
-
-//   try {
-//     const data = new FormData();
-
-//     // Append the enquiry number first
-//     data.append("enquiryNumber", enquiryNumber);
-
-//     // Append each product to the FormData
-//     prepareProducts.forEach((product, index) => {
-//       data.append(
-//         `products[${index}].subcategoryName`,
-//         product.subCategoryName
-//       );
-//       if (product.prepareQuoteImage) {
-//         const reader = new FileReader();
-//         reader.onloadend = () => {
-//           data.append(`products[${index}].prepareQuoteImage`, reader.result);
-//         };
-//         reader.readAsDataURL(product.prepareQuoteImage);
-//       } else {
-//         data.append(`products[${index}].prepareQuoteImage`, "");
-//       }
-//     });
-
-//     const response = await postAPI(
-//       "/prepare-quote",
-//       data,
-//       {
-//         "Content-Type": "multipart/form-data",
-//       },
-//       true
-//     );
-
-//     if (response.hasError) {
-//       toast.error(response.message || "Failed to Prepare Quote");
-//     } else {
-//       toast.success("Quote prepared successfully");
-//     }
-
-//     // Reset the form after submission
-//     setPrepareProducts([]);
-//   } catch (error) {
-//     toast.error(
-//       error?.response?.data?.message ||
-//         "An unexpected error occurred. Please try again."
-//     );
-//   }
-// };
