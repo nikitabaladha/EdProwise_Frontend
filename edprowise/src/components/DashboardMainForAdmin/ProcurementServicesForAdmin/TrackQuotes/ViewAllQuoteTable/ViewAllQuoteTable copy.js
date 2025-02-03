@@ -1,55 +1,88 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import autoTable from "jspdf-autotable";
-import { useLocation } from "react-router-dom";
-import getAPI from "../../../../../api/getAPI";
 
 import jsPDF from "jspdf";
-import { format } from "date-fns";
-
-const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
-  return format(new Date(dateString), "dd/MM/yyyy");
-};
 
 const ViewAllQuoteTable = () => {
-  const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
-
-  console.log("enquiryNumber", enquiryNumber);
-
   const navigate = useNavigate();
 
-  const [submittedQuotes, setSubmittedQuotes] = useState([]);
-
-  useEffect(() => {
-    if (!enquiryNumber) return;
-    const fetchQuoteData = async () => {
-      try {
-        const response = await getAPI(
-          `/submit-quote/${enquiryNumber}`,
-          {},
-          true
-        );
-
-        if (!response.hasError && response.data) {
-          setSubmittedQuotes(response.data.data);
-
-          console.log("submitted quote data", response.data.data);
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching submitted-quote:", err);
-      }
-    };
-
-    fetchQuoteData();
-  }, [enquiryNumber]);
+  const [quotes, setQuotes] = useState([
+    {
+      id: 1,
+      nameOfSupplier: "Supplier A",
+      dateOfQuoteSubmitted: "2023-12-01",
+      quotedAmount: "₹500.00",
+      description: "This is a test description for the quote from Supplier A.",
+      remarksFromSupplier: "Ready for delivery",
+      expectedDeliveryDate: "2023-12-05",
+      paymentTerms: "50% upfront, 50% on delivery",
+      advancesRequiredAmount: "₹100.00",
+      placeOrder: "Quote Accepted",
+      commentFromBuyer: "Check quality before accepting",
+      status: "Quote Received",
+    },
+    {
+      id: 2,
+      nameOfSupplier: "Supplier B",
+      dateOfQuoteSubmitted: "2023-12-02",
+      quotedAmount: "₹750.00",
+      description: "This is a test description for the quote from Supplier B.",
+      remarksFromSupplier: "Pending confirmation",
+      expectedDeliveryDate: "2023-12-10",
+      paymentTerms: "Full payment upon delivery",
+      advancesRequiredAmount: "₹150.00",
+      placeOrder: "Quote Pending",
+      commentFromBuyer: "Need to negotiate price",
+      status: "Quote Received",
+    },
+    {
+      id: 3,
+      nameOfSupplier: "Supplier C",
+      dateOfQuoteSubmitted: "2023-12-03",
+      quotedAmount: "₹300.00",
+      description: "This is a test description for the quote from Supplier C.",
+      remarksFromSupplier: "Available stock",
+      expectedDeliveryDate: "2023-12-15",
+      paymentTerms: "30% upfront, 70% on delivery",
+      advancesRequiredAmount: "₹50.00",
+      placeOrder: "Quote Accepted",
+      commentFromBuyer: "Confirm delivery date",
+      status: "Quote Received",
+    },
+    {
+      id: 4,
+      nameOfSupplier: "Supplier D",
+      dateOfQuoteSubmitted: "2023-12-04",
+      quotedAmount: "₹1,200.00",
+      description: "This is a test description for the quote from Supplier D.",
+      remarksFromSupplier: "In production",
+      expectedDeliveryDate: "2023-12-20",
+      paymentTerms: "50% upfront, 50% after inspection",
+      advancesRequiredAmount: "₹200.00",
+      placeOrder: "Quote Accepted",
+      commentFromBuyer: "Ensure timely delivery",
+      status: "Quote Received",
+    },
+    {
+      id: 5,
+      nameOfSupplier: "Supplier E",
+      dateOfQuoteSubmitted: "2023-12-05",
+      quotedAmount: "₹1,000.00",
+      description: "This is a test description for the quote from Supplier E.",
+      remarksFromSupplier: "Ready for shipment",
+      expectedDeliveryDate: "2023-12-25",
+      paymentTerms: "Full payment before shipment",
+      advancesRequiredAmount: "₹250.00",
+      placeOrder: "Quote Pending",
+      commentFromBuyer: "Review terms before acceptance",
+      status: "Quote Received",
+    },
+  ]);
 
   const navigateToViewQuote = (event, quote) => {
     event.preventDefault();
@@ -58,7 +91,22 @@ const ViewAllQuoteTable = () => {
     });
   };
 
-  const handleExport = () => {};
+  const handleExport = () => {
+    const filteredData = quotes.map((quote) => ({
+      "Supplier Name": quote.nameOfSupplier,
+      "Date of Quote Submitted": quote.dateOfQuoteSubmitted,
+      "Expected Delivery Date": quote.expectedDeliveryDate,
+      "Quoted Amount": quote.quotedAmount,
+      Description: quote.description,
+      "Remarks from Supplier": quote.remarksFromSupplier,
+      "Payment Terms": quote.paymentTerms,
+      "Advances Required Amount": quote.advancesRequiredAmount,
+      "Place Order Status": quote.placeOrder,
+      "Comment from Buyer": quote.commentFromBuyer,
+    }));
+
+    exportToExcel(filteredData, "Quotes", "Quotes Data");
+  };
 
   const handleDownloadPDF = (quote) => {
     const doc = new jsPDF();
@@ -93,6 +141,10 @@ const ViewAllQuoteTable = () => {
   const showErrorMessage = () => {
     toast.error("Quote Rejected!");
   };
+
+  if (!quotes || quotes.length === 0) {
+    return <div>No quotes available</div>;
+  }
 
   return (
     <>
@@ -138,30 +190,28 @@ const ViewAllQuoteTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {submittedQuotes.map((quote) => (
-                        <tr key={quote._id}>
+                      {quotes.map((quote) => (
+                        <tr key={quote.id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${quote._id}`}
+                                id={`customCheck${quote.id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${quote._id}`}
+                                htmlFor={`customCheck${quote.id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{quote.companyName}</td>
-                          <td>
-                            {formatDate(quote.expectedDeliveryDateBySeller)}
-                          </td>
+                          <td>{quote.nameOfSupplier}</td>
+                          <td>{quote.expectedDeliveryDate}</td>
                           <td>{quote.quotedAmount}</td>
                           <td>{quote.remarksFromSupplier}</td>
-                          <td>{quote.edprowiseStatus}</td>
+                          <td>{quote.status}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link

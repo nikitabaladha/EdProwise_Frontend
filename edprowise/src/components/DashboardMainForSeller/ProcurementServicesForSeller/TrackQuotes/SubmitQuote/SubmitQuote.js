@@ -99,6 +99,25 @@ const SubmitQuote = () => {
                       />
                     </div>
                   </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="expectedDeliveryDateBySeller"
+                        className="form-label"
+                      >
+                        Expected Delivery Date by Seller
+                      </label>
+                      <input
+                        type="date"
+                        id="expectedDeliveryDateBySeller"
+                        name="expectedDeliveryDateBySeller"
+                        className="form-control"
+                        value={formData.expectedDeliveryDateBySeller}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="row">
@@ -139,26 +158,7 @@ const SubmitQuote = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="expectedDeliveryDateBySeller"
-                        className="form-label"
-                      >
-                        Expected Delivery Date by Seller
-                      </label>
-                      <input
-                        type="date"
-                        id="expectedDeliveryDateBySeller"
-                        name="expectedDeliveryDateBySeller"
-                        className="form-control"
-                        value={formData.expectedDeliveryDateBySeller}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="paymentTerms" className="form-label">
                         Payment Terms
@@ -174,7 +174,7 @@ const SubmitQuote = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label
                         htmlFor="advancesRequiredAmount"

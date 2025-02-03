@@ -114,7 +114,7 @@ const ViewQuote = () => {
                     <label htmlFor="supplierName" className="form-label">
                       Supplier Name
                     </label>
-                    <p className="form-control">{quote.nameOfSupplier}</p>
+                    <p className="form-control">{quote.companyName}</p>
                   </div>
                 </div>
                 <div className="col-md-3">
@@ -125,18 +125,20 @@ const ViewQuote = () => {
                     >
                       Date of Quote Submitted
                     </label>
-                    <p className="form-control">{quote.dateOfQuoteSubmitted}</p>
+                    <p className="form-control">{quote.createdAt}</p>
                   </div>
                 </div>
                 <div className="col-md-3">
                   <div className="mb-3">
                     <label
-                      htmlFor="expectedDeliveryDate"
+                      htmlFor="expectedDeliveryDateBySeller"
                       className="form-label"
                     >
                       Expected Delivery Date
                     </label>
-                    <p className="form-control">{quote.expectedDeliveryDate}</p>
+                    <p className="form-control">
+                      {quote.expectedDeliveryDateBySeller}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -155,20 +157,20 @@ const ViewQuote = () => {
                   {" "}
                   <div className="mb-3">
                     <label
-                      htmlFor="advancesRequiredAmount"
+                      htmlFor="advanceRequiredAmount"
                       className="form-label"
                     >
                       Advances Required Amount
                     </label>
                     <p className="form-control">
-                      {quote.advancesRequiredAmount}
+                      {quote.advanceRequiredAmount}
                     </p>
                   </div>
                 </div>
               </div>
 
               <div className="row">
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                   {" "}
                   <div className="mb-3">
                     <label htmlFor="commentFromBuyer" className="form-label">
@@ -176,7 +178,7 @@ const ViewQuote = () => {
                     </label>
                     <p className="form-control">{quote.commentFromBuyer}</p>
                   </div>
-                </div>
+                </div> */}
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="remarksFromSupplier" className="form-label">
@@ -185,10 +187,8 @@ const ViewQuote = () => {
                     <p className="form-control">{quote.remarksFromSupplier}</p>
                   </div>
                 </div>
-              </div>
 
-              <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="description" className="form-label">
                       Description
@@ -197,6 +197,7 @@ const ViewQuote = () => {
                   </div>
                 </div>
               </div>
+
               <div className="row">
                 <div className="col-md-6">
                   <div className="mb-3">
@@ -211,7 +212,7 @@ const ViewQuote = () => {
                     <label htmlFor="placeOrder" className="form-label">
                       Place Order Status
                     </label>
-                    <p className="form-control">{quote.placeOrder}</p>
+                    <p className="form-control">{quote.edprowiseStatus}</p>
                   </div>
                 </div>
               </div>

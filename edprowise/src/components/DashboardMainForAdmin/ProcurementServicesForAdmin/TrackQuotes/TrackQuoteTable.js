@@ -37,10 +37,11 @@ const TrackQuoteTable = ({}) => {
     });
   };
 
-  const navigateToViewQuoteTable = (event, quotes) => {
+  const navigateToViewQuoteTable = (event, enquiryNumber) => {
     event.preventDefault();
+    console.log("navigateToViewQuoteTable", enquiryNumber);
     navigate(`/admin-dashboard/procurement-services/view-quote-table`, {
-      state: { quotes },
+      state: { enquiryNumber },
     });
   };
 
@@ -119,7 +120,6 @@ const TrackQuoteTable = ({}) => {
                               </div>
                             </td>
                             <td>{quote.enquiryNumber}</td>
-
                             <td>
                               <div className="d-flex align-items-center gap-2">
                                 {quote.productImage && (
@@ -162,7 +162,10 @@ const TrackQuoteTable = ({}) => {
                                   type="button"
                                   className="btn btn-primary custom-submit-button"
                                   onClick={(event) =>
-                                    navigateToViewQuoteTable(event, quotes)
+                                    navigateToViewQuoteTable(
+                                      event,
+                                      quote?.enquiryNumber
+                                    )
                                   }
                                 >
                                   View Quote
