@@ -172,7 +172,6 @@ const ViewRequestedQuote = () => {
     setPrepareProducts(updatedProducts);
   };
 
-  // works to store image
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -206,7 +205,6 @@ const ViewRequestedQuote = () => {
 
       products.push(productData);
 
-      // Append the image file if it exists
       if (product.prepareQuoteImage) {
         formData.append(
           `products[${index}][prepareQuoteImage]`,
@@ -231,14 +229,16 @@ const ViewRequestedQuote = () => {
         true
       );
 
-      if (response.hasError) {
-        toast.error(response.message || "Failed to Prepare Quote");
-      } else {
-        toast.success("Quote prepared successfully");
-      }
+      if (!response.hasError) {
+        navigate("/seller-dashboard/procurement-services/submit-quote", {
+          state: { enquiryNumber },
+        });
 
-      // Reset the form after submission
-      setPrepareProducts([]);
+        toast.success("Quote prepared successfully");
+        setPrepareProducts([]);
+      } else {
+        toast.error(response.message || "Failed to Prepare Quote");
+      }
     } catch (error) {
       toast.error(
         error?.response?.data?.message ||
@@ -343,8 +343,6 @@ const ViewRequestedQuote = () => {
                   </tbody>
                 </table>
               </div>
-
-              {/* end table-responsive */}
 
               <div className="d-flex justify-content-between mt-2">
                 <button
