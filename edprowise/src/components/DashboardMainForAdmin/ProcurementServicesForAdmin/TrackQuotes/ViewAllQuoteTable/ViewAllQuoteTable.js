@@ -20,8 +20,6 @@ const ViewAllQuoteTable = () => {
   const location = useLocation();
   const enquiryNumber = location.state?.enquiryNumber;
 
-  console.log("enquiryNumber", enquiryNumber);
-
   const navigate = useNavigate();
 
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
@@ -39,7 +37,7 @@ const ViewAllQuoteTable = () => {
         if (!response.hasError && response.data) {
           setSubmittedQuotes(response.data.data);
 
-          console.log("submitted quote data", response.data.data);
+          console.log("submitted quote data 123456", response.data.data);
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -53,8 +51,14 @@ const ViewAllQuoteTable = () => {
 
   const navigateToViewQuote = (event, quote) => {
     event.preventDefault();
+
+    // i want to pass sellerId and enquiry number to this page of that perticular quote
     navigate(`/admin-dashboard/procurement-services/view-quote`, {
-      state: { quote },
+      state: {
+        sellerId: quote.sellerId,
+        enquiryNumber: quote.enquiryNumber,
+        quote: quote,
+      },
     });
   };
 
@@ -133,7 +137,7 @@ const ViewAllQuoteTable = () => {
                         <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
-                        <th> Status</th>
+                        <th>Vender Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -161,7 +165,7 @@ const ViewAllQuoteTable = () => {
                           </td>
                           <td>{quote.quotedAmount}</td>
                           <td>{quote.remarksFromSupplier}</td>
-                          <td>{quote.edprowiseStatus}</td>
+                          <td>{quote.venderStatus}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -186,7 +190,6 @@ const ViewAllQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-
                               <Link
                                 className="btn btn-success btn-sm"
                                 onClick={(event) => showSuccessMessage(event)}

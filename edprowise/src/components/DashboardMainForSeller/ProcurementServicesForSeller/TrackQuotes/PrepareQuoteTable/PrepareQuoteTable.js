@@ -210,9 +210,9 @@ const PrepareQuoteTable = ({
                       <td>
                         <input
                           type="number"
-                          name="amountBeforeGstAndProducts"
+                          name="amountBeforeGstAndDiscount"
                           className="form-control"
-                          value={product.amountBeforeGstAndProducts || ""}
+                          value={product.amountBeforeGstAndDiscount || ""}
                           onChange={(e) => handleChange(index, e)}
                         />
                       </td>
