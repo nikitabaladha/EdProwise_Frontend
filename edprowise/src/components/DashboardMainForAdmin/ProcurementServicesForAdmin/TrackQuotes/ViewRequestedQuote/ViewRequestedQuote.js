@@ -16,7 +16,6 @@ import { format } from "date-fns";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
-  //Otherwise, format the date string using the format function and return the formatted date string
   return format(new Date(dateString), "dd/MM/yyyy");
 };
 
@@ -53,10 +52,42 @@ const ViewRequestedQuote = () => {
 
   const [isQuoteTableVisible, setIsQuoteTableVisible] = useState(false);
 
+  const [submittedQuotes, setSubmittedQuotes] = useState([]);
+
+  useEffect(() => {
+    if (!enquiryNumber) return;
+    const fetchQuoteData = async () => {
+      try {
+        const response = await getAPI(
+          `/submit-quote/${enquiryNumber}`,
+          {},
+          true
+        );
+
+        if (!response.hasError && response.data) {
+          setSubmittedQuotes(response.data.data);
+
+          console.log("submitted quote data 123456", response.data.data);
+        } else {
+          console.error("Invalid response format or error in response");
+        }
+      } catch (err) {
+        console.error("Error fetching submitted-quote:", err);
+      }
+    };
+
+    fetchQuoteData();
+  }, [enquiryNumber]);
+
   const navigateToViewQuote = (event, quote) => {
     event.preventDefault();
+
     navigate(`/admin-dashboard/procurement-services/view-quote`, {
-      state: { quote },
+      state: {
+        sellerId: quote.sellerId,
+        enquiryNumber: quote.enquiryNumber,
+        quote: quote,
+      },
     });
   };
 
@@ -209,54 +240,55 @@ const ViewRequestedQuote = () => {
                           </div>
                         </th>
                         <th>Name of Supplier</th>
-                        <th>Date Of QuoteSubmitted</th>
+                        <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
-                        <th>Description</th>
-                        <th>Remarks From Supplier</th>
-                        <th>Expected Delivery Date</th>
-                        <th>Payment Terms</th>
-                        <th>Advances Required Amount</th>
-                        <th>Status</th>
-                        <th>Place Order Status</th>
-                        <th>Comment From Buyer</th>
+                        <th>Remarks from Supplier</th>
+                        <th>Vender Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {/* {quotes.map((quote) => (
-                        <tr key={quote.id}>
+                      {submittedQuotes.map((quote) => (
+                        <tr key={quote._id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${quote.id}`}
+                                id={`customCheck${quote._id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${quote.id}`}
+                                htmlFor={`customCheck${quote._id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{quote.nameOfSupplier}</td>
-                          <td>{quote.dateOfQuoteSubmitted}</td>
+                          <td>{quote.companyName}</td>
+                          <td>
+                            {formatDate(quote.expectedDeliveryDateBySeller)}
+                          </td>
                           <td>{quote.quotedAmount}</td>
-                          <td>{quote.description}</td>
                           <td>{quote.remarksFromSupplier}</td>
-                          <td>{quote.expectedDeliveryDate}</td>
-                          <td>{quote.paymentTerms}</td>
-                          <td>{quote.advancesRequiredAmount}</td>
-                          <td>{quote.status}</td>
-                          <td>{quote.placeOrderStatus}</td>
-                          <td>{quote.commentFromBuyer}</td>
+                          <td>{quote.venderStatus}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
                                 onClick={(event) =>
-                                  handleDownloadPDF(event, quote)
+                                  navigateToViewQuote(event, quote)
                                 }
+                                className="btn btn-light btn-sm"
+                              >
+                                <iconify-icon
+                                  icon="solar:eye-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
+                              <Link
+                                // onClick={(event) =>
+                                //   handleDownloadPDF(event, quote)
+                                // }
                                 className="btn btn-soft-info btn-sm"
                               >
                                 <iconify-icon
@@ -264,26 +296,47 @@ const ViewRequestedQuote = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-
                               <Link
                                 className="btn btn-success btn-sm"
-                                onClick={(event) => showSuccessMessage(event)}
+                                // onClick={(event) => showSuccessMessage(event)}
                               >
                                 Accept
                               </Link>
                               <Link
                                 className="btn btn-danger btn-sm"
-                                onClick={(event) => showErrorMessage(event)}
+                                // onClick={(event) => showErrorMessage(event)}
                               >
                                 Reject
                               </Link>
                             </div>
                           </td>
                         </tr>
-                      ))} */}
+                      ))}
                     </tbody>
                   </table>
                 </div>
+                {/* end table-responsive */}
+              </div>
+              <div className="card-footer border-top">
+                <nav aria-label="Page navigation example">
+                  <ul className="pagination justify-content-end mb-0">
+                    <li className="page-item">
+                      <Link className="page-link">Previous</Link>
+                    </li>
+                    <li className="page-item active">
+                      <Link className="page-link">1</Link>
+                    </li>
+                    <li className="page-item">
+                      <Link className="page-link">2</Link>
+                    </li>
+                    <li className="page-item">
+                      <Link className="page-link">3</Link>
+                    </li>
+                    <li className="page-item">
+                      <Link className="page-link">Next</Link>
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </div>
           </div>

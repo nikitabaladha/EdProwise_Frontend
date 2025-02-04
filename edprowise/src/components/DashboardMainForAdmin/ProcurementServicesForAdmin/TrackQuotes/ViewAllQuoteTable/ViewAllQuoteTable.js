@@ -52,7 +52,6 @@ const ViewAllQuoteTable = () => {
   const navigateToViewQuote = (event, quote) => {
     event.preventDefault();
 
-    // i want to pass sellerId and enquiry number to this page of that perticular quote
     navigate(`/admin-dashboard/procurement-services/view-quote`, {
       state: {
         sellerId: quote.sellerId,

@@ -39,7 +39,6 @@ const TrackQuoteTable = ({}) => {
 
   const navigateToViewQuoteTable = (event, enquiryNumber) => {
     event.preventDefault();
-    console.log("navigateToViewQuoteTable", enquiryNumber);
     navigate(`/admin-dashboard/procurement-services/view-quote-table`, {
       state: { enquiryNumber },
     });
