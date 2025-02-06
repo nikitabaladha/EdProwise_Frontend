@@ -36,19 +36,40 @@ const TrackQuoteTable = ({}) => {
   };
 
   const navigateToViewRequestedQuote = (event, enquiryNumber) => {
+    console.log(
+      "enquiryNumber from navigate function view requested quote",
+      enquiryNumber
+    );
+
     event.preventDefault();
     navigate(`/school-dashboard/procurement-services/view-requested-quote`, {
       state: { enquiryNumber },
     });
   };
 
-  const navigateToViewQuoteTable = (event, quotes) => {
+  const navigateToViewQuoteTable = (event, enquiryNumber) => {
     event.preventDefault();
+
+    console.log("viewQuoteTable navigation function", enquiryNumber);
+
     navigate(`/school-dashboard/procurement-services/view-quote-table`, {
-      state: { quotes },
+      state: { enquiryNumber },
     });
   };
 
+  // const navigateToViewQuoteTable = (event, quote) => {
+  //   event.preventDefault();
+
+  //   console.log("Quote object:", quote);
+
+  //   const enquiryNumberToPass = quote.enquiryNumber;
+
+  //   console.log("Enquiry Number from navigate function:", enquiryNumberToPass);
+
+  //   navigate(`/school-dashboard/procurement-services/view-quote-table`, {
+  //     state: { enquiryNumber: enquiryNumberToPass },
+  //   });
+  // };
   const handleExport = () => {
     const filteredData = quotes.map((quote) => ({}));
 
@@ -166,7 +187,10 @@ const TrackQuoteTable = ({}) => {
                                   type="button"
                                   className="btn btn-primary custom-submit-button"
                                   onClick={(event) =>
-                                    navigateToViewQuoteTable(event, quotes)
+                                    navigateToViewQuoteTable(
+                                      event,
+                                      quote?.enquiryNumber
+                                    )
                                   }
                                 >
                                   View Quote

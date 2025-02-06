@@ -9,62 +9,46 @@ import "react-toastify/dist/ReactToastify.css";
 import autoTable from "jspdf-autotable";
 import jsPDF from "jspdf";
 
+import ViewPrepareQuoteListFromSeller from "./ViewPrepareQuoteListFromSeller";
+
+import getAPI from "../../../../../api/getAPI";
+import putAPI from "../../../../../api/putAPI";
+
+import { format } from "date-fns";
+
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return format(new Date(dateString), "dd/MM/yyyy");
+};
+
 const ViewQuote = () => {
   const location = useLocation();
-  const quote = location.state?.quote;
+
+  const { quote, sellerId, enquiryNumber } = location.state || {};
+
+  const [currentQuote, setCurrentQuote] = useState(quote);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchQuoteData = async () => {
+    try {
+      const response = await getAPI(
+        `/submit-quote-by-status?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+      if (!response.hasError && response.data && response.data.data) {
+        setCurrentQuote(response.data.data);
+
+        console.log("Quote data fetched successfully:", response.data.data);
+      } else {
+        console.error("Error fetching quote data");
+      }
+    } catch (err) {
+      console.error("Error fetching quote data:", err);
+    }
+  };
 
   const navigate = useNavigate();
 
-  const handleDownloadPDF = (event, quote) => {
-    event.preventDefault();
-
-    const doc = new jsPDF();
-    doc.setFontSize(12);
-    doc.text("Quote Details", 14, 20);
-
-    autoTable(doc, {
-      head: [["Field", "Value"]],
-      body: [
-        ["Name Of Supplier", quote.nameOfSupplier],
-        ["Date of Quote Submitted", quote.dateOfQuoteSubmitted],
-        ["Expected Delivery Date", quote.expectedDeliveryDate],
-        ["Quoted Amount", quote.quotedAmount],
-        ["Description", quote.description],
-        ["Remarks from Supplier", quote.remarksFromSupplier],
-        ["Payment Terms", quote.paymentTerms],
-        ["Advances Required Amount", quote.advancesRequiredAmount],
-        ["Place Order Status", quote.placeOrder],
-        ["Comment from Buyer", quote.commentFromBuyer],
-        ["Status", quote.status],
-      ],
-    });
-
-    doc.save(`Quote_${quote.id}.pdf`);
-
-    navigate("/school-dashboard/procurement-services/view-quote", {
-      state: { quote },
-    });
-  };
-
-  const showSuccessMessage = (event) => {
-    event.preventDefault();
-    toast.success("Order Placed Successfully!");
-    navigate("/school-dashboard/procurement-services/view-quote", {
-      state: { quote },
-    });
-  };
-
-  const showErrorMessage = (event) => {
-    event.preventDefault();
-    toast.error("Quote Rejected!");
-    navigate("/school-dashboard/procurement-services/view-quote", {
-      state: { quote },
-    });
-  };
-
-  if (!quote) {
-    return <div>No quote details available.</div>;
-  }
+  const handleDownloadPDF = (event, quote) => {};
 
   return (
     <div className="container">
@@ -76,7 +60,7 @@ const ViewQuote = () => {
                 <div className="card-header mb-2">
                   <div className="d-flex justify-content-between">
                     <h4 className="card-title text-center custom-heading-font align-content-center">
-                      Quote Details
+                      Submitted Quote Details
                     </h4>
                     <div className="">
                       <Link
@@ -91,33 +75,75 @@ const ViewQuote = () => {
                           className="align-middle fs-18"
                         />
                       </Link>
-                      <Link
-                        className="btn btn-success btn-sm"
-                        onClick={(event) => showSuccessMessage(event)}
+
+                      {/* <Link
+                        onClick={openUpdateSubmittedQuoteModal}
+                        className="btn btn-soft-primary btn-sm"
+                        title="Edit"
+                        data-bs-toggle="popover"
+                        data-bs-trigger="hover"
                       >
-                        Accept
+                        <iconify-icon
+                          icon="solar:pen-2-broken"
+                          className="align-middle fs-18"
+                        />
                       </Link>
-                      <Link
-                        className="btn btn-danger btn-sm"
-                        onClick={(event) => showErrorMessage(event)}
-                      >
-                        Reject
-                      </Link>
+
+                      {currentQuote.venderStatus === "Pending" && (
+                        <>
+                          <button
+                            className="btn btn-success btn-sm"
+                            onClick={() =>
+                              handleVenderStatusUpdate("Quote Accepted")
+                            }
+                          >
+                            Accept
+                          </button>
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() =>
+                              handleVenderStatusUpdate("Quote Not Accepted")
+                            }
+                          >
+                            Reject
+                          </button>
+                        </>
+                      )}
+                      {currentQuote.venderStatus === "Quote Accepted" && (
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() =>
+                            handleVenderStatusUpdate("Quote Not Accepted")
+                          }
+                        >
+                          Reject
+                        </button>
+                      )}
+                      {currentQuote.venderStatus === "Quote Not Accepted" && (
+                        <button
+                          className="btn btn-success btn-sm"
+                          onClick={() =>
+                            handleVenderStatusUpdate("Quote Accepted")
+                          }
+                        >
+                          Accept
+                        </button>
+                      )} */}
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="row">
-                <div className="col-md-4">
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="supplierName" className="form-label">
-                      Name Of Supplier
+                      Supplier Name
                     </label>
-                    <p className="form-control">{quote.nameOfSupplier}</p>
+                    <p className="form-control">{currentQuote.companyName}</p>
                   </div>
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label
                       htmlFor="dateOfQuoteSubmitted"
@@ -125,51 +151,22 @@ const ViewQuote = () => {
                     >
                       Date of Quote Submitted
                     </label>
-                    <p className="form-control">{quote.dateOfQuoteSubmitted}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="quotedAmount" className="form-label">
-                      Quoted Amount
-                    </label>
-                    <p className="form-control">{quote.quotedAmount}</p>
-                  </div>
-                </div>
-              </div>
 
-              <div className="row">
-                <div className="col-md-4">
+                    <p className="form-control">
+                      {formatDate(currentQuote.createdAt)}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-3">
                   <div className="mb-3">
                     <label
-                      htmlFor="expectedDeliveryDate"
+                      htmlFor="expectedDeliveryDateBySeller"
                       className="form-label"
                     >
                       Expected Delivery Date
                     </label>
-                    <p className="form-control">{quote.expectedDeliveryDate}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="paymentTerms" className="form-label">
-                      Payment Terms
-                    </label>
-                    <p className="form-control">{quote.paymentTerms}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label
-                      htmlFor="advancesRequiredAmount"
-                      className="form-label"
-                    >
-                      Advances Required Amount
-                    </label>
                     <p className="form-control">
-                      {quote.advancesRequiredAmount}
+                      {formatDate(currentQuote.expectedDeliveryDateBySeller)}
                     </p>
                   </div>
                 </div>
@@ -179,39 +176,65 @@ const ViewQuote = () => {
                 <div className="col-md-6">
                   {" "}
                   <div className="mb-3">
-                    <label htmlFor="commentFromBuyer" className="form-label">
-                      Comment from Buyer
+                    <label htmlFor="quotedAmount" className="form-label">
+                      Quoted Amount
                     </label>
-                    <p className="form-control">{quote.commentFromBuyer}</p>
+                    <p className="form-control">{currentQuote.quotedAmount}</p>
                   </div>
                 </div>
                 <div className="col-md-6">
+                  {" "}
                   <div className="mb-3">
-                    <label htmlFor="remarksFromSupplier" className="form-label">
-                      Remarks from Supplier
+                    <label
+                      htmlFor="advanceRequiredAmount"
+                      className="form-label"
+                    >
+                      Advances Required Amount
                     </label>
-                    <p className="form-control">{quote.remarksFromSupplier}</p>
+                    <p className="form-control">
+                      {currentQuote.advanceRequiredAmount}
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="remarksFromSupplier" className="form-label">
+                      Remarks from Supplier
+                    </label>
+                    <p className="form-control">
+                      {currentQuote.remarksFromSupplier}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="description" className="form-label">
                       Description
                     </label>
-                    <p className="form-control">{quote.description}</p>
+                    <p className="form-control">{currentQuote.description}</p>
                   </div>
                 </div>
               </div>
+
               <div className="row">
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label htmlFor="placeOrder" className="form-label">
-                      Place Order Status
+                    <label htmlFor="paymentTerms" className="form-label">
+                      Payment Terms
                     </label>
-                    <p className="form-control">{quote.placeOrder}</p>
+                    <p className="form-control">{currentQuote.paymentTerms}</p>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="placeOrder" className="form-label">
+                      Status
+                    </label>
+                    <p className="form-control">{currentQuote.buyerStatus}</p>
                   </div>
                 </div>
               </div>
@@ -228,7 +251,10 @@ const ViewQuote = () => {
             </div>
           </div>
         </div>
+        <></>
       </div>
+
+      <ViewPrepareQuoteListFromSeller />
     </div>
   );
 };

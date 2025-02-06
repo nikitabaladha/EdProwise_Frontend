@@ -177,7 +177,6 @@ const ViewPrepareQuoteListFromSeller = () => {
                                   />
                                 ) : (
                                   <>
-                                    <span>{quote.subcategoryName}</span>
                                     {quote.prepareQuoteImage && (
                                       <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
                                         <img
@@ -193,6 +192,7 @@ const ViewPrepareQuoteListFromSeller = () => {
                                         />
                                       </div>
                                     )}
+                                    <span>{quote.subcategoryName}</span>
                                   </>
                                 )}
                               </div>

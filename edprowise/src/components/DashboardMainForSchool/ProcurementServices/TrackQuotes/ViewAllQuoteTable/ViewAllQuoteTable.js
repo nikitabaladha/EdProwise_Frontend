@@ -1,150 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import autoTable from "jspdf-autotable";
+import { useLocation } from "react-router-dom";
+import getAPI from "../../../../../api/getAPI";
 
 import jsPDF from "jspdf";
+import { format } from "date-fns";
+
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return format(new Date(dateString), "dd/MM/yyyy");
+};
 
 const ViewAllQuoteTable = () => {
+  const location = useLocation();
+  const enquiryNumber = location.state?.enquiryNumber;
+
   const navigate = useNavigate();
 
-  const [quotes, setQuotes] = useState([
-    {
-      id: 1,
-      nameOfSupplier: "Supplier A",
-      dateOfQuoteSubmitted: "2023-12-01",
-      quotedAmount: "₹500.00",
-      description: "This is a test description for the quote from Supplier A.",
-      remarksFromSupplier: "Ready for delivery",
-      expectedDeliveryDate: "2023-12-05",
-      paymentTerms: "50% upfront, 50% on delivery",
-      advancesRequiredAmount: "₹100.00",
-      placeOrder: "Quote Accepted",
-      commentFromBuyer: "Check quality before accepting",
-      status: "Quote Received",
-    },
-    {
-      id: 2,
-      nameOfSupplier: "Supplier B",
-      dateOfQuoteSubmitted: "2023-12-02",
-      quotedAmount: "₹750.00",
-      description: "This is a test description for the quote from Supplier B.",
-      remarksFromSupplier: "Pending confirmation",
-      expectedDeliveryDate: "2023-12-10",
-      paymentTerms: "Full payment upon delivery",
-      advancesRequiredAmount: "₹150.00",
-      placeOrder: "Quote Pending",
-      commentFromBuyer: "Need to negotiate price",
-      status: "Quote Received",
-    },
-    {
-      id: 3,
-      nameOfSupplier: "Supplier C",
-      dateOfQuoteSubmitted: "2023-12-03",
-      quotedAmount: "₹300.00",
-      description: "This is a test description for the quote from Supplier C.",
-      remarksFromSupplier: "Available stock",
-      expectedDeliveryDate: "2023-12-15",
-      paymentTerms: "30% upfront, 70% on delivery",
-      advancesRequiredAmount: "₹50.00",
-      placeOrder: "Quote Accepted",
-      commentFromBuyer: "Confirm delivery date",
-      status: "Quote Received",
-    },
-    {
-      id: 4,
-      nameOfSupplier: "Supplier D",
-      dateOfQuoteSubmitted: "2023-12-04",
-      quotedAmount: "₹1,200.00",
-      description: "This is a test description for the quote from Supplier D.",
-      remarksFromSupplier: "In production",
-      expectedDeliveryDate: "2023-12-20",
-      paymentTerms: "50% upfront, 50% after inspection",
-      advancesRequiredAmount: "₹200.00",
-      placeOrder: "Quote Accepted",
-      commentFromBuyer: "Ensure timely delivery",
-      status: "Quote Received",
-    },
-    {
-      id: 5,
-      nameOfSupplier: "Supplier E",
-      dateOfQuoteSubmitted: "2023-12-05",
-      quotedAmount: "₹1,000.00",
-      description: "This is a test description for the quote from Supplier E.",
-      remarksFromSupplier: "Ready for shipment",
-      expectedDeliveryDate: "2023-12-25",
-      paymentTerms: "Full payment before shipment",
-      advancesRequiredAmount: "₹250.00",
-      placeOrder: "Quote Pending",
-      commentFromBuyer: "Review terms before acceptance",
-      status: "Quote Received",
-    },
-  ]);
+  const [submittedQuotes, setSubmittedQuotes] = useState([]);
+
+  useEffect(() => {
+    if (!enquiryNumber) return;
+    fetchAllQuoteData();
+  }, [enquiryNumber]);
+
+  const fetchAllQuoteData = async () => {
+    try {
+      const response = await getAPI(
+        `/submit-quote-by-status/${enquiryNumber}`,
+        {},
+        true
+      );
+
+      if (!response.hasError && response.data) {
+        setSubmittedQuotes(response.data.data);
+        console.log("submitted quote data", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching submitted-quote:", err);
+    }
+  };
 
   const navigateToViewQuote = (event, quote) => {
     event.preventDefault();
+
     navigate(`/school-dashboard/procurement-services/view-quote`, {
-      state: { quote },
+      state: {
+        sellerId: quote.sellerId,
+        enquiryNumber: quote.enquiryNumber,
+        quote: quote,
+      },
     });
   };
 
-  const handleExport = () => {
-    const filteredData = quotes.map((quote) => ({
-      "Supplier Name": quote.nameOfSupplier,
-      "Date of Quote Submitted": quote.dateOfQuoteSubmitted,
-      "Expected Delivery Date": quote.expectedDeliveryDate,
-      "Quoted Amount": quote.quotedAmount,
-      Description: quote.description,
-      "Remarks from Supplier": quote.remarksFromSupplier,
-      "Payment Terms": quote.paymentTerms,
-      "Advances Required Amount": quote.advancesRequiredAmount,
-      "Place Order Status": quote.placeOrder,
-      "Comment from Buyer": quote.commentFromBuyer,
-    }));
+  const handleExport = () => {};
 
-    exportToExcel(filteredData, "Quotes", "Quotes Data");
-  };
-
-  const handleDownloadPDF = (quote) => {
-    const doc = new jsPDF();
-    doc.setFontSize(12);
-    doc.text("Quote Details", 14, 20);
-
-    // Add quote details to the PDF
-    autoTable(doc, {
-      head: [["Field", "Value"]],
-      body: [
-        ["Name Of Supplier", quote.nameOfSupplier],
-        ["Date of Quote Submitted", quote.dateOfQuoteSubmitted],
-        ["Expected Delivery Date", quote.expectedDeliveryDate],
-        ["Quoted Amount", quote.quotedAmount],
-        ["Description", quote.description],
-        ["Remarks from Supplier", quote.remarksFromSupplier],
-        ["Payment Terms", quote.paymentTerms],
-        ["Advances Required Amount", quote.advancesRequiredAmount],
-        ["Place Order Status", quote.placeOrder],
-        ["Comment from Buyer", quote.commentFromBuyer],
-        ["Status", quote.status],
-      ],
-    });
-
-    doc.save(`Quote_${quote.id}.pdf`);
-  };
-
-  const showSuccessMessage = () => {
-    toast.success("Order Placed Successfully!");
-  };
-
-  const showErrorMessage = () => {
-    toast.error("Quote Rejected!");
-  };
-
-  if (!quotes || quotes.length === 0) {
-    return <div>No quotes available</div>;
-  }
+  const handleDownloadPDF = (quote) => {};
 
   return (
     <>
@@ -154,9 +72,6 @@ const ViewAllQuoteTable = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">View All Quote List</h4>
-                {/* <Link className="btn btn-sm btn-primary">
-                  Request Quote
-                </Link> */}
                 <div className="text-end">
                   <Link
                     onClick={handleExport}
@@ -188,33 +103,35 @@ const ViewAllQuoteTable = () => {
                         <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
-                        <th> Status</th>
+                        <th>Vender Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {quotes.map((quote) => (
-                        <tr key={quote.id}>
+                      {submittedQuotes.map((quote) => (
+                        <tr key={quote._id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${quote.id}`}
+                                id={`customCheck${quote._id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${quote.id}`}
+                                htmlFor={`customCheck${quote._id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{quote.nameOfSupplier}</td>
-                          <td>{quote.expectedDeliveryDate}</td>
+                          <td>{quote.companyName}</td>
+                          <td>
+                            {formatDate(quote.expectedDeliveryDateBySeller)}
+                          </td>
                           <td>{quote.quotedAmount}</td>
                           <td>{quote.remarksFromSupplier}</td>
-                          <td>{quote.status}</td>
+                          <td>{quote.venderStatus}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -239,19 +156,58 @@ const ViewAllQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-
-                              <Link
-                                className="btn btn-success btn-sm"
-                                onClick={(event) => showSuccessMessage(event)}
-                              >
-                                Accept
-                              </Link>
-                              <Link
-                                className="btn btn-danger btn-sm"
-                                onClick={(event) => showErrorMessage(event)}
-                              >
-                                Reject
-                              </Link>
+                              {/* {quote.venderStatus === "Pending" && (
+                                <>
+                                  <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={() =>
+                                      handleVenderStatusUpdate(
+                                        quote.sellerId,
+                                        "Quote Accepted"
+                                      )
+                                    }
+                                  >
+                                    Accept
+                                  </button>
+                                  <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() =>
+                                      handleVenderStatusUpdate(
+                                        quote.sellerId,
+                                        "Quote Not Accepted"
+                                      )
+                                    }
+                                  >
+                                    Reject
+                                  </button>
+                                </>
+                              )}
+                              {quote.venderStatus === "Quote Accepted" && (
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() =>
+                                    handleVenderStatusUpdate(
+                                      quote.sellerId,
+                                      "Quote Not Accepted"
+                                    )
+                                  }
+                                >
+                                  Reject
+                                </button>
+                              )}
+                              {quote.venderStatus === "Quote Not Accepted" && (
+                                <button
+                                  className="btn btn-success btn-sm"
+                                  onClick={() =>
+                                    handleVenderStatusUpdate(
+                                      quote.sellerId,
+                                      "Quote Accepted"
+                                    )
+                                  }
+                                >
+                                  Accept
+                                </button>
+                              )} */}
                             </div>
                           </td>
                         </tr>

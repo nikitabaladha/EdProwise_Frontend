@@ -26,7 +26,6 @@ const ViewQuote = () => {
 
   const { quote, sellerId, enquiryNumber } = location.state || {};
 
-  console.log("Quote:", quote);
   const [currentQuote, setCurrentQuote] = useState(quote);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
