@@ -119,8 +119,7 @@ const ViewPrepareQuoteListFromSeller = () => {
                             />
                           </div>
                         </th>
-                        <th>Subcategory Name</th>
-                        <th>Prepare Quote Image</th>
+                        <th>Product Subcategory</th>
                         <th>HSN/SACC</th>
                         <th>Listing Rate</th>
                         <th>EdProwise Margin %</th>
@@ -161,37 +160,40 @@ const ViewPrepareQuoteListFromSeller = () => {
                                 </label>
                               </div>
                             </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="text"
-                                  name="subcategoryName"
-                                  value={editedQuote[quote._id].subcategoryName}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.subcategoryName
-                              )}
-                            </td>
+
                             <td>
                               <div className="d-flex align-items-center gap-2">
-                                {quote.prepareQuoteImage && (
-                                  <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                    <img
-                                      className="avatar-md"
-                                      alt={quote.subcategoryName}
-                                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.prepareQuoteImage}`}
-                                      style={{ cursor: "pointer" }}
-                                      onClick={() =>
-                                        handleImageClick(
-                                          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.prepareQuoteImage}`
-                                        )
-                                      }
-                                    />
-                                  </div>
+                                {editedQuote[quote._id] ? (
+                                  <input
+                                    type="text"
+                                    name="subcategoryName"
+                                    value={
+                                      editedQuote[quote._id].subcategoryName
+                                    }
+                                    onChange={(e) =>
+                                      handleInputChange(quote._id, e)
+                                    }
+                                    className="form-control"
+                                  />
+                                ) : (
+                                  <>
+                                    <span>{quote.subcategoryName}</span>
+                                    {quote.prepareQuoteImage && (
+                                      <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                        <img
+                                          className="avatar-md"
+                                          alt={quote.subcategoryName}
+                                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.prepareQuoteImage}`}
+                                          style={{ cursor: "pointer" }}
+                                          onClick={() =>
+                                            handleImageClick(
+                                              `${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.prepareQuoteImage}`
+                                            )
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                  </>
                                 )}
                               </div>
                             </td>

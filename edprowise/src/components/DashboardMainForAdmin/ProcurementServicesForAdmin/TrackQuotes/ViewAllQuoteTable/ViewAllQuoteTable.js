@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import autoTable from "jspdf-autotable";
 import { useLocation } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
+import putAPI from "../../../../../api/putAPI";
 
 import jsPDF from "jspdf";
 import { format } from "date-fns";
@@ -26,28 +27,44 @@ const ViewAllQuoteTable = () => {
 
   useEffect(() => {
     if (!enquiryNumber) return;
-    const fetchQuoteData = async () => {
-      try {
-        const response = await getAPI(
-          `/submit-quote/${enquiryNumber}`,
-          {},
-          true
-        );
-
-        if (!response.hasError && response.data) {
-          setSubmittedQuotes(response.data.data);
-
-          console.log("submitted quote data 123456", response.data.data);
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching submitted-quote:", err);
-      }
-    };
-
-    fetchQuoteData();
+    fetchAllQuoteData();
   }, [enquiryNumber]);
+
+  const fetchAllQuoteData = async () => {
+    try {
+      const response = await getAPI(`/submit-quote/${enquiryNumber}`, {}, true);
+
+      if (!response.hasError && response.data) {
+        setSubmittedQuotes(response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching submitted-quote:", err);
+    }
+  };
+
+  const handleVenderStatusUpdate = async (sellerId, newStatus) => {
+    try {
+      const response = await putAPI(
+        `/update-vender-status?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        { venderStatus: newStatus },
+        true
+      );
+
+      if (!response.hasError) {
+        toast.success(`Quote status updated to "${newStatus}" successfully!`);
+        fetchAllQuoteData();
+      } else {
+        toast.error(response.message || "Failed to update vender status");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
+    }
+  };
 
   const navigateToViewQuote = (event, quote) => {
     event.preventDefault();
@@ -63,31 +80,7 @@ const ViewAllQuoteTable = () => {
 
   const handleExport = () => {};
 
-  const handleDownloadPDF = (quote) => {
-    const doc = new jsPDF();
-    doc.setFontSize(12);
-    doc.text("Quote Details", 14, 20);
-
-    // Add quote details to the PDF
-    autoTable(doc, {
-      head: [["Field", "Value"]],
-      body: [
-        ["Supplier Name", quote.nameOfSupplier],
-        ["Date of Quote Submitted", quote.dateOfQuoteSubmitted],
-        ["Expected Delivery Date", quote.expectedDeliveryDate],
-        ["Quoted Amount", quote.quotedAmount],
-        ["Description", quote.description],
-        ["Remarks from Supplier", quote.remarksFromSupplier],
-        ["Payment Terms", quote.paymentTerms],
-        ["Advances Required Amount", quote.advancesRequiredAmount],
-        ["Place Order Status", quote.placeOrder],
-        ["Comment from Buyer", quote.commentFromBuyer],
-        ["Status", quote.status],
-      ],
-    });
-
-    doc.save(`Quote_${quote.id}.pdf`);
-  };
+  const handleDownloadPDF = (quote) => {};
 
   const showSuccessMessage = () => {
     toast.success("Order Placed Successfully!");
@@ -189,18 +182,58 @@ const ViewAllQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                className="btn btn-success btn-sm"
-                                onClick={(event) => showSuccessMessage(event)}
-                              >
-                                Accept
-                              </Link>
-                              <Link
-                                className="btn btn-danger btn-sm"
-                                onClick={(event) => showErrorMessage(event)}
-                              >
-                                Reject
-                              </Link>
+                              {quote.venderStatus === "Pending" && (
+                                <>
+                                  <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={() =>
+                                      handleVenderStatusUpdate(
+                                        quote.sellerId,
+                                        "Quote Accepted"
+                                      )
+                                    }
+                                  >
+                                    Accept
+                                  </button>
+                                  <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() =>
+                                      handleVenderStatusUpdate(
+                                        quote.sellerId,
+                                        "Quote Not Accepted"
+                                      )
+                                    }
+                                  >
+                                    Reject
+                                  </button>
+                                </>
+                              )}
+                              {quote.venderStatus === "Quote Accepted" && (
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() =>
+                                    handleVenderStatusUpdate(
+                                      quote.sellerId,
+                                      "Quote Not Accepted"
+                                    )
+                                  }
+                                >
+                                  Reject
+                                </button>
+                              )}
+                              {quote.venderStatus === "Quote Not Accepted" && (
+                                <button
+                                  className="btn btn-success btn-sm"
+                                  onClick={() =>
+                                    handleVenderStatusUpdate(
+                                      quote.sellerId,
+                                      "Quote Accepted"
+                                    )
+                                  }
+                                >
+                                  Accept
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
