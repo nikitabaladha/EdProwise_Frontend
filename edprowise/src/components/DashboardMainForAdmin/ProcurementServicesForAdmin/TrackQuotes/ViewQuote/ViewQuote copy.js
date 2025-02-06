@@ -11,7 +11,6 @@ import jsPDF from "jspdf";
 
 import ViewPrepareQuoteListFromSeller from "./ViewPrepareQuoteListFromSeller";
 import UpdateSubmittedQuoteModal from "./UpdateSubmittedQuoteModal";
-import getAPI from "../../../../../api/getAPI";
 
 import { format } from "date-fns";
 
@@ -24,24 +23,6 @@ const ViewQuote = () => {
   const location = useLocation();
 
   const { quote, sellerId, enquiryNumber } = location.state || {};
-
-  const [currentQuote, setCurrentQuote] = useState(quote);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const fetchQuoteData = async () => {
-    try {
-      const response = await getAPI(
-        `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
-      if (!response.hasError && response.data && response.data.data) {
-        setCurrentQuote(response.data.data);
-      } else {
-        console.error("Error fetching quote data");
-      }
-    } catch (err) {
-      console.error("Error fetching quote data:", err);
-    }
-  };
 
   const navigate = useNavigate();
 
@@ -93,6 +74,7 @@ const ViewQuote = () => {
   };
 
   // State to manage modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Function to open the modal
   const openUpdateSubmittedQuoteModal = (event) => {
@@ -103,11 +85,6 @@ const ViewQuote = () => {
   // Function to close the modal
   const closeUpdateSubmittedQuoteModal = () => {
     setIsModalOpen(false);
-  };
-
-  const handleQuoteUpdated = () => {
-    fetchQuoteData(); // Re-fetch the quote data after update
-    closeUpdateSubmittedQuoteModal(); // Close the modal
   };
 
   if (!quote) {
@@ -176,7 +153,7 @@ const ViewQuote = () => {
                       <label htmlFor="supplierName" className="form-label">
                         Supplier Name
                       </label>
-                      <p className="form-control">{currentQuote.companyName}</p>
+                      <p className="form-control">{quote.companyName}</p>
                     </div>
                   </div>
                   <div className="col-md-3">
@@ -189,7 +166,7 @@ const ViewQuote = () => {
                       </label>
 
                       <p className="form-control">
-                        {formatDate(currentQuote.createdAt)}
+                        {formatDate(quote.createdAt)}
                       </p>
                     </div>
                   </div>
@@ -202,7 +179,7 @@ const ViewQuote = () => {
                         Expected Delivery Date
                       </label>
                       <p className="form-control">
-                        {formatDate(currentQuote.expectedDeliveryDateBySeller)}
+                        {formatDate(quote.expectedDeliveryDateBySeller)}
                       </p>
                     </div>
                   </div>
@@ -215,9 +192,7 @@ const ViewQuote = () => {
                       <label htmlFor="quotedAmount" className="form-label">
                         Quoted Amount
                       </label>
-                      <p className="form-control">
-                        {currentQuote.quotedAmount}
-                      </p>
+                      <p className="form-control">{quote.quotedAmount}</p>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -230,7 +205,7 @@ const ViewQuote = () => {
                         Advances Required Amount
                       </label>
                       <p className="form-control">
-                        {currentQuote.advanceRequiredAmount}
+                        {quote.advanceRequiredAmount}
                       </p>
                     </div>
                   </div>
@@ -255,7 +230,7 @@ const ViewQuote = () => {
                         Remarks from Supplier
                       </label>
                       <p className="form-control">
-                        {currentQuote.remarksFromSupplier}
+                        {quote.remarksFromSupplier}
                       </p>
                     </div>
                   </div>
@@ -265,7 +240,7 @@ const ViewQuote = () => {
                       <label htmlFor="description" className="form-label">
                         Description
                       </label>
-                      <p className="form-control">{currentQuote.description}</p>
+                      <p className="form-control">{quote.description}</p>
                     </div>
                   </div>
                 </div>
@@ -276,9 +251,7 @@ const ViewQuote = () => {
                       <label htmlFor="paymentTerms" className="form-label">
                         Payment Terms
                       </label>
-                      <p className="form-control">
-                        {currentQuote.paymentTerms}
-                      </p>
+                      <p className="form-control">{quote.paymentTerms}</p>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -286,9 +259,7 @@ const ViewQuote = () => {
                       <label htmlFor="placeOrder" className="form-label">
                         Status
                       </label>
-                      <p className="form-control">
-                        {currentQuote.edprowiseStatus}
-                      </p>
+                      <p className="form-control">{quote.edprowiseStatus}</p>
                     </div>
                   </div>
                 </div>
@@ -316,7 +287,6 @@ const ViewQuote = () => {
         onClose={closeUpdateSubmittedQuoteModal}
         enquiryNumber={enquiryNumber}
         sellerId={sellerId}
-        onQuoteUpdated={handleQuoteUpdated}
       />
     </>
   );

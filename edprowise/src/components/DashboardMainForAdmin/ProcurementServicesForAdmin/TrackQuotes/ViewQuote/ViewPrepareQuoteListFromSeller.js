@@ -1,6 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import getAPI from "../../../../../api/getAPI";
@@ -13,31 +12,32 @@ const ViewPrepareQuoteListFromSeller = () => {
 
   const [preparedQuotes, setPreparedQuotes] = useState([]);
   const [editedQuote, setEditedQuote] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
-  // Fetch quotes on mount
   useEffect(() => {
     if (!sellerId || !enquiryNumber) return;
 
-    const fetchQuoteData = async () => {
-      try {
-        const response = await getAPI(
-          `prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
-          {},
-          true
-        );
-
-        if (!response.hasError && response.data.data) {
-          setPreparedQuotes(response.data.data);
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching prepared-quote:", err);
-      }
-    };
-
     fetchQuoteData();
   }, [sellerId, enquiryNumber]);
+
+  const fetchQuoteData = async () => {
+    try {
+      const response = await getAPI(
+        `prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        {},
+        true
+      );
+
+      if (!response.hasError && response.data.data) {
+        setPreparedQuotes(response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching prepared-quote:", err);
+    }
+  };
 
   const handleInputChange = (id, e) => {
     const { name, value } = e.target;
@@ -70,6 +70,7 @@ const ViewPrepareQuoteListFromSeller = () => {
       if (!response.data.hasError) {
         toast.success("Quote updated successfully!");
         setEditedQuote((prev) => ({ ...prev, [id]: null }));
+        fetchQuoteData();
       } else {
         toast.error("Failed to update quote.");
       }
@@ -85,9 +86,6 @@ const ViewPrepareQuoteListFromSeller = () => {
       }
     }
   };
-
-  const [showModal, setShowModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState("");
 
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
