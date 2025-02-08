@@ -222,7 +222,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="success" onClick={handleSubmit}>
-          Save Changes And Request Quote
+          Request Quote
         </Button>
         <Button variant="secondary" onClick={onClose}>
           Close

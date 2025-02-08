@@ -25,6 +25,7 @@ const ViewAllQuoteTable = () => {
 
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
   const [preparedQuotes, setPreparedQuotes] = useState([]);
+  const [selectedQuotes, setSelectedQuotes] = useState([]);
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -49,8 +50,6 @@ const ViewAllQuoteTable = () => {
     }
   };
 
-  // what ever the seller Id present in that perticular row according to that sellerId and enquiry number  fetch All prepared quote data
-
   const fetchAllPreparedQuoteData = async (sellerId) => {
     try {
       const response = await getAPI(
@@ -68,32 +67,51 @@ const ViewAllQuoteTable = () => {
     }
   };
 
-  // fetched prepared quote data must be pass to handle submit function
+  const handleCheckboxChange = (quote) => {
+    const isChecked = selectedQuotes.some((q) => q.sellerId === quote.sellerId);
+    if (isChecked) {
+      setSelectedQuotes(
+        selectedQuotes.filter((q) => q.sellerId !== quote.sellerId)
+      );
+    } else {
+      setSelectedQuotes([...selectedQuotes, quote]);
+      fetchAllPreparedQuoteData(quote.sellerId);
+    }
+  };
 
-  const handleSubmit = async (e, quote) => {
+  const handleSubmit = async (e) => {
     console.log("handleSubmit clicked");
     e.preventDefault();
 
-    try {
-      // Fetch prepared quotes for the specific sellerId
-      const preparedQuote = await getAPI(
-        `prepare-quote?sellerId=${quote.sellerId}&enquiryNumber=${enquiryNumber}`,
-        {},
-        true
-      );
+    if (selectedQuotes.length === 0) {
+      toast.error("No quotes selected!");
+      return;
+    }
 
-      if (preparedQuote.hasError || !preparedQuote.data.data) {
-        toast.error("Failed to fetch prepared quotes");
-        return;
+    try {
+      const cartData = [];
+
+      for (const quote of selectedQuotes) {
+        const preparedQuote = preparedQuotes.filter(
+          (pq) => pq.sellerId === quote.sellerId
+        );
+
+        preparedQuote.forEach((pq) => {
+          cartData.push({
+            prepareQuoteId: pq._id,
+          });
+        });
       }
 
-      const cartData = preparedQuote.data.data.map((pq) => ({
-        prepareQuoteId: pq._id,
-      }));
+      const uniqueCartData = Array.from(
+        new Map(cartData.map((item) => [item.prepareQuoteId, item])).values()
+      );
+
+      const enquiryNumber = selectedQuotes[0].enquiryNumber;
 
       const response = await postAPI(
         "/cart",
-        { enquiryNumber, products: cartData },
+        { enquiryNumber, products: uniqueCartData },
         true
       );
 
@@ -141,9 +159,15 @@ const ViewAllQuoteTable = () => {
                   >
                     Export
                   </Link>
-                  <Link className="btn btn-light btn-sm">
+                  <Link
+                    className="btn btn-light btn-sm"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleSubmit(event);
+                    }}
+                  >
                     <iconify-icon
-                      icon="solar:cart-large-minimalistic-broken"
+                      icon="solar:cart-check-broken"
                       className="align-middle fs-18"
                     />
                   </Link>
@@ -183,6 +207,10 @@ const ViewAllQuoteTable = () => {
                               <input
                                 type="checkbox"
                                 className="form-check-input"
+                                checked={selectedQuotes.some(
+                                  (q) => q.sellerId === quote.sellerId
+                                )}
+                                onChange={() => handleCheckboxChange(quote)}
                               />
                               <label className="form-check-label">&nbsp;</label>
                             </div>
@@ -215,18 +243,6 @@ const ViewAllQuoteTable = () => {
                               >
                                 <iconify-icon
                                   icon="solar:download-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
-                              <Link
-                                className="btn btn-light btn-sm"
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  handleSubmit(event, quote);
-                                }}
-                              >
-                                <iconify-icon
-                                  icon="solar:cart-plus-outline"
                                   className="align-middle fs-18"
                                 />
                               </Link>
