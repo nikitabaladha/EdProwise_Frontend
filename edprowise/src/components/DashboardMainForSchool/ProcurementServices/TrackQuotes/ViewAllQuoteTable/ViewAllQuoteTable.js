@@ -24,11 +24,12 @@ const ViewAllQuoteTable = () => {
   const navigate = useNavigate();
 
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
-  const [preparedQuotes, setPreparedQuotes] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     if (!enquiryNumber) return;
     fetchAllQuoteData();
+    fetchCartData();
   }, [enquiryNumber]);
 
   const fetchAllQuoteData = async () => {
@@ -49,33 +50,10 @@ const ViewAllQuoteTable = () => {
     }
   };
 
-  // what ever the seller Id present in that perticular row according to that sellerId and enquiry number  fetch All prepared quote data
-
-  const fetchAllPreparedQuoteData = async (sellerId) => {
-    try {
-      const response = await getAPI(
-        `prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
-        {},
-        true
-      );
-      if (!response.hasError && response.data.data) {
-        setPreparedQuotes((prev) => [...prev, ...response.data.data]);
-      } else {
-        console.error("Error fetching prepared quotes");
-      }
-    } catch (err) {
-      console.error("Error fetching prepared-quote:", err);
-    }
-  };
-
-  // fetched prepared quote data must be pass to handle submit function
-
   const handleSubmit = async (e, quote) => {
-    console.log("handleSubmit clicked");
     e.preventDefault();
 
     try {
-      // Fetch prepared quotes for the specific sellerId
       const preparedQuote = await getAPI(
         `prepare-quote?sellerId=${quote.sellerId}&enquiryNumber=${enquiryNumber}`,
         {},
@@ -99,7 +77,8 @@ const ViewAllQuoteTable = () => {
 
       if (!response.hasError) {
         toast.success("Cart data submitted successfully!");
-        navigate(-1);
+
+        fetchCartData();
       } else {
         toast.error(response.message || "Failed to add data to cart");
       }
@@ -107,6 +86,28 @@ const ViewAllQuoteTable = () => {
       toast.error(
         error?.response?.data?.message || "An unexpected error occurred."
       );
+    }
+  };
+
+  const fetchCartData = async () => {
+    try {
+      const response = await getAPI(
+        `cart?enquiryNumber=${enquiryNumber}`,
+        {},
+        true
+      );
+
+      if (!response.hasError && response.data.data) {
+        const cartData = response.data.data;
+
+        const totalCount = Object.keys(cartData).length;
+
+        setCartCount(totalCount);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching cart data:", err);
     }
   };
 
@@ -118,6 +119,16 @@ const ViewAllQuoteTable = () => {
         sellerId: quote.sellerId,
         enquiryNumber: quote.enquiryNumber,
         quote: quote,
+      },
+    });
+  };
+
+  const navigateToViewCart = (event, quote) => {
+    event.preventDefault();
+
+    navigate(`/school-dashboard/procurement-services/view-cart`, {
+      state: {
+        enquiryNumber: quote.enquiryNumber,
       },
     });
   };
@@ -141,11 +152,28 @@ const ViewAllQuoteTable = () => {
                   >
                     Export
                   </Link>
-                  <Link className="btn btn-light btn-sm">
+
+                  <Link
+                    className="btn btn-light btn-sm"
+                    onClick={(event) => {
+                      if (submittedQuotes.length > 0) {
+                        navigateToViewCart(event, submittedQuotes[0]);
+                      } else {
+                        toast.error("No quotes available to view cart.");
+                      }
+                    }}
+                  >
                     <iconify-icon
                       icon="solar:cart-large-minimalistic-broken"
                       className="align-middle fs-18"
                     />
+                    <span
+                      className="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill"
+                      style={{ top: "20px" }}
+                    >
+                      {cartCount}
+                      <span className="visually-hidden">unread messages</span>
+                    </span>
                   </Link>
                 </div>
               </div>
@@ -230,58 +258,6 @@ const ViewAllQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              {/* {quote.venderStatus === "Pending" && (
-                                <>
-                                  <button
-                                    className="btn btn-success btn-sm"
-                                    onClick={() =>
-                                      handleVenderStatusUpdate(
-                                        quote.sellerId,
-                                        "Quote Accepted"
-                                      )
-                                    }
-                                  >
-                                    Accept
-                                  </button>
-                                  <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() =>
-                                      handleVenderStatusUpdate(
-                                        quote.sellerId,
-                                        "Quote Not Accepted"
-                                      )
-                                    }
-                                  >
-                                    Reject
-                                  </button>
-                                </>
-                              )}
-                              {quote.venderStatus === "Quote Accepted" && (
-                                <button
-                                  className="btn btn-danger btn-sm"
-                                  onClick={() =>
-                                    handleVenderStatusUpdate(
-                                      quote.sellerId,
-                                      "Quote Not Accepted"
-                                    )
-                                  }
-                                >
-                                  Reject
-                                </button>
-                              )}
-                              {quote.venderStatus === "Quote Not Accepted" && (
-                                <button
-                                  className="btn btn-success btn-sm"
-                                  onClick={() =>
-                                    handleVenderStatusUpdate(
-                                      quote.sellerId,
-                                      "Quote Accepted"
-                                    )
-                                  }
-                                >
-                                  Accept
-                                </button>
-                              )} */}
                             </div>
                           </td>
                         </tr>

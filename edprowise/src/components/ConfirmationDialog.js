@@ -21,9 +21,53 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete subscription.",
     idKey: "schoolId",
   },
+  cart: {
+    getEndpoint: ({ enquiryNumber, sellerId }) =>
+      `/cart?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+    successMessage: "Cart successfully deleted!",
+    errorMessage: "Failed to delete Cart.",
+  },
 };
 
 const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
+  // const handleDelete = async () => {
+  //   const config = DELETE_CONFIG[deleteType];
+
+  //   if (!config) {
+  //     console.error("Invalid delete type.");
+  //     toast.error("Invalid delete type.");
+  //     return;
+  //   }
+
+  //   if (!id) {
+  //     console.error(`${config.idKey} is missing.`);
+  //     toast.error(`${config.idKey} is required.`);
+  //     return;
+  //   }
+
+  //   const endpoint = config.getEndpoint(id);
+
+  //   try {
+  //     const response = await deleteAPI(endpoint, {}, true);
+
+  //     if (!response.hasError) {
+  //       toast.success(config.successMessage);
+
+  //       if (typeof onDeleted === "function") {
+  //         onDeleted(id);
+  //       }
+
+  //       onClose();
+  //     } else {
+  //       console.error(config.errorMessage, response.message);
+  //       toast.error(`${config.errorMessage}: ${response.message}`);
+  //     }
+  //   } catch (error) {
+  //     console.error(`Error while deleting ${deleteType}:`, error);
+  //     toast.error(`An error occurred while deleting the ${deleteType}.`);
+  //   }
+  // };
+
   const handleDelete = async () => {
     const config = DELETE_CONFIG[deleteType];
 
@@ -33,19 +77,28 @@ const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
       return;
     }
 
-    if (!id) {
+    if (deleteType === "cart" && (!id?.enquiryNumber || !id?.sellerId)) {
+      console.error("Missing required delete parameters.");
+      toast.error("Required delete parameters are missing.");
+      return;
+    }
+
+    if (deleteType !== "cart" && !id) {
       console.error(`${config.idKey} is missing.`);
       toast.error(`${config.idKey} is required.`);
       return;
     }
 
     const endpoint = config.getEndpoint(id);
+    const payload =
+      deleteType === "cart"
+        ? { enquiryNumber: id.enquiryNumber, sellerId: id.sellerId }
+        : {};
 
     try {
-      const response = await deleteAPI(endpoint, {}, true);
+      const response = await deleteAPI(endpoint, payload, true);
 
       if (!response.hasError) {
-        console.log(`${deleteType} deleted successfully`, response.data);
         toast.success(config.successMessage);
 
         if (typeof onDeleted === "function") {

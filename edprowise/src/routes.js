@@ -61,6 +61,7 @@ import ViewRequestedQuote from "./components/DashboardMainForSchool/ProcurementS
 
 import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewQuote/ViewQuote";
 import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
+import ViewCart from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/Cart/ViewCart";
 
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
@@ -292,6 +293,8 @@ const AppRoutes = () => {
           path="procurement-services/view-quote-table"
           element={<ViewAllQuoteTable />}
         />
+
+        <Route path="procurement-services/view-cart" element={<ViewCart />} />
 
         <Route
           path="procurement-services/track-order-history"
