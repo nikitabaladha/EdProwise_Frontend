@@ -37,6 +37,7 @@ const ServiceMainSection = () => {
   return (
     <section className="wpo-courses-section-s2 section-padding p-0">
       <div className="nav-tabs-container">
+        
         <button
           id="digitalTab"
           className={`nav-tab ${

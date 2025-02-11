@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 const pixelFeesData = [
     {
       id: "pixelFeesOne",
@@ -83,34 +83,38 @@ const pixelFeesData = [
         "Pixel Fees Provides Daily Collection Register,  Fees Concession Report,  Defaulter Report , Report on loss of fees due to late admission,  Report on loss of fees left students,  Students ledger Fee wise collection report Admission Fees, Registration Fees, TC Fees ,Board Registration, Board Exam fees report Arrear fees received , Advance fees received report , Late Fees, Excess fees & Fees refund report Student Master & Fees Structure Other Multiple reports",
     },
   ];
-const PixelFeesFAQSection = () => {
+const PixelFeesFAQSection = () => {  
+    const [activeIndex, setActiveIndex] = useState(0); // State to track the active FAQ index
+  
+    const handleAccordionClick = (index) => {
+      setActiveIndex(index === activeIndex ? null : index); // Toggle the active index
+    };
     return (
       <section className="wpo-faq-section section-padding pt-lg-2 pb-lg-2">
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-lg-8 offset-lg-2">
-              <div className="wpo-section-title mb-lg-3">
-                <h2>Frequently Asked Questions</h2>
-              </div>
+      <div className="container">
+        <div className="row align-items-center">
+          <div className="col-lg-8 offset-lg-2">
+            <div className="wpo-section-title mb-lg-3">
+              <h2>Frequently Asked Questions</h2>
             </div>
-  
-            <div className="col-lg-8 offset-lg-2">
-              <div className="wpo-faq-section">
-                <div className="row">
-                  <div className="col-lg-12 col-12">
-                    <div className="wpo-benefits-item">
-                      <div className="accordion" id="accordionExample">
-                        {pixelFeesData.map((faq, index) => (
-                          <div className="accordion-item" key={index}>
+          </div>
+
+          <div className="col-lg-8 offset-lg-2">
+            <div className="wpo-faq-section">
+              <div className="row">
+                <div className="col-lg-12 col-12">
+                  <div className="wpo-benefits-item">
+                    <div className="accordion" id="accordionExample">
+                      {pixelFeesData.map((faq, index) => {
+                        const isActive = index === activeIndex; // Check if this item is active
+                        return (
+                          <div className="accordion-item" key={faq.id}>
                             <h3 className="accordion-header" id={faq.headingId}>
                               <button
-                                className={`accordion-button ${
-                                  index === 0 ? "" : "collapsed"
-                                }`}
+                                className={`text-black fw-bold accordion-button ${!isActive ? "collapsed" : ""}`}
                                 type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target={`#${faq.id}`}
-                                aria-expanded={index === 0 ? "true" : "false"}
+                                onClick={() => handleAccordionClick(index)}
+                                aria-expanded={isActive ? "true" : "false"}
                                 aria-controls={faq.id}
                               >
                                 {faq.question}
@@ -118,19 +122,17 @@ const PixelFeesFAQSection = () => {
                             </h3>
                             <div
                               id={faq.id}
-                              className={`accordion-collapse collapse ${
-                                index === 0 ? "show" : ""
-                              }`}
+                              className={`accordion-collapse collapse ${isActive ? "show" : ""}`}
                               aria-labelledby={faq.headingId}
                               data-bs-parent="#accordionExample"
                             >
                               <div className="accordion-body">
-                                <p>{faq.answer}</p>
+                                <p className="text-black">{faq.answer}</p>
                               </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -138,7 +140,8 @@ const PixelFeesFAQSection = () => {
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
     );
   };
   

@@ -37,6 +37,10 @@
   display: block;
 }
 
+.bg-bedcrum{
+background-color: #A9FFFD;
+}
+
 .carousel-control-nexttt,
 .carousel-control-prevvv {
   position: absolute;
@@ -600,6 +604,11 @@ progress {
   padding-left: var(--bs-gutter-x, 0.75rem);
   margin-right: auto;
   margin-left: auto;
+}
+
+.service-container{
+  padding-right: var(--bs-gutter-x, 0.75rem) !important;
+  padding-left: var(--bs-gutter-x, 0.75rem) !important;
 }
 @media (min-width: 576px) {
   .container,
@@ -4310,6 +4319,7 @@ fieldset:disabled .btn {
 .accordion-item {
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.75rem !important;
 }
 .accordion-item:first-of-type {
   border-top-left-radius: 0.25rem;

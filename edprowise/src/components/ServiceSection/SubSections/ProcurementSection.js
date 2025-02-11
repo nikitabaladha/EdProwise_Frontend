@@ -1,100 +1,115 @@
 import React from "react";
-
+import { PiDeskBold } from "react-icons/pi";
+import { TbDesk } from "react-icons/tb";
+import { GiDesk } from "react-icons/gi";
+import { IoConstructSharp } from "react-icons/io5";
+import { BsBuildingFillUp } from "react-icons/bs";
+import { RiArtboardLine } from "react-icons/ri";
+import { TbPlayFootball } from "react-icons/tb";
+import { FaFireExtinguisher } from "react-icons/fa";
+import { FaComputer } from "react-icons/fa6";
+import { IoLibrarySharp } from "react-icons/io5";
+import { TbAirConditioning } from "react-icons/tb";
+import { MdScience } from "react-icons/md";
+import { RiFilePaperLine } from "react-icons/ri";
+import { TiNews } from "react-icons/ti";
+import { FaChalkboardTeacher } from "react-icons/fa";
+import { RiBuilding2Line } from "react-icons/ri";
 const ProcurementSection = () => {
   const courses = [
     {
       id: "1",
-      icon: "fi flaticon-user-experience",
+      icon: <PiDeskBold />,
       title: "School Desk & Bench (Senior School)",
       classid:"1",
     },
     {
       id: "2",
-      icon: "fi flaticon-megaphone",
-      title: "School Desk & Bench (Senior School)",
+      icon: <TbDesk />,
+      title: "School Desk & Bench (Play School & KG)",
       classid:"2",
     },
     {
       id: "3",
-      icon: "fi flaticon-code",
+      icon: <GiDesk /> ,
       title: "Office Furniture",
       classid:"3",
     },
     {
       id: "4",
-      icon: "fi flaticon-knowledge",
+      icon: <IoConstructSharp />,
       title: "Building Construction",
       classid: "4",
     },
     {
       id: "5",
-      icon: "fi flaticon-user-experience",
+      icon: <BsBuildingFillUp />,
       title: "Building Architecture Services",
       classid: "5",
     },
     {
       id: "6",
-      icon: "fi flaticon-user-experience",
+      icon: <RiArtboardLine />,
       title: "Classroom Board",
       classid:"1",
     },
     {
       id: "7",
-      icon: "fi flaticon-megaphone",
+      icon: <TbPlayFootball />,
       title: "Playways Equipment",
       classid:"2",
     },
     {
       id: "8",
-      icon: "fi flaticon-code",
+      icon: <FaFireExtinguisher />,
       title: "Fire Extinguisher",
       classid:"3",
     },
     {
       id: "9",
-      icon: "fi flaticon-knowledge",
+      icon: <FaComputer />,
       title: "Computer & Its Accessories",
       classid: "4",
     },
     {
       id: "10",
-      icon: "fi flaticon-user-experience",
+      icon: <FaChalkboardTeacher />,
       title: "Smart Class Equipments",
       classid: "5",
     },
     {
       id: "11",
-      icon: "fi flaticon-user-experience",
+      icon: <TbAirConditioning />,
       title: "Air Cooling System",
       classid:"1",
     },
     {
       id: "12",
-      icon: "fi flaticon-megaphone",
+      icon: <RiBuilding2Line />,
       title: "Infrastructure Setup",
       classid:"2",
     },
     {
       id: "13",
-      icon: "fi flaticon-code",
+      icon: <MdScience />,
       title: "Science Lab Equipments",
       classid:"3",
     },
     {
       id: "14",
-      icon: "fi flaticon-knowledge",
+      icon: <IoLibrarySharp />,
       title: "Library Books",
       classid: "4",
     },
     {
       id: 15,
-      icon: "fi flaticon-user-experience",
+      icon: <RiFilePaperLine />,
       title: "Exam Writing Paper",
       classid: 5,
     },
     {
       id: 16,
-      icon: "fi flaticon-code",
+      icon: <TiNews />,
       title: "School Magazine & Prospectus",
       classid:1,
     },
@@ -111,7 +126,8 @@ const ProcurementSection = () => {
           <div className="wpo-courses-item category-itemm">
             <div className="wpo-courses-text">
               <div className="courses-icon category-icons">
-                <i className={course.icon}></i>
+              {course.icon}
+                {/* <i className={course.icon}></i> */}
               </div>
               <h2 className="category-h2 font-weight-web-h2">
                 <a >{course.title}</a>

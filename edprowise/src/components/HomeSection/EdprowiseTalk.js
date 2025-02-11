@@ -144,14 +144,15 @@ const EdprowiseTalk = () => {
           </div>
         </div>
         <div className="right-img mb-2">
-          <img src="assets/website-images/choose2.webp" alt="Choose Us" />
+          {/* <img src="assets/website-images/choose2.webp" alt="Choose Us" />
           <a
-            href="https://www.youtube.com/embed/r5sw-6lJmTA?autoplay=1"
+            href="https://youtu.be/KzMNx8h7RbY?si=v0iGavTuuw0RO9gs"
             className="video-btn"
             onClick={handleVideoClick}
           >
             <i className="fi flaticon-play-1"></i>
-          </a>
+          </a> */}
+          <iframe width="100%" height="325" src="https://www.youtube.com/embed/KzMNx8h7RbY?si=7eEmdFNCVHPkdYBp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         
       </div>

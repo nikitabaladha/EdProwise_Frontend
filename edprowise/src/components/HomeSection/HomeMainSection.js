@@ -1,6 +1,9 @@
 import react, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
+import { RiEmotionHappyLine } from "react-icons/ri";
+import { FaHandsHelping } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa6";
+import { TbReportSearch } from "react-icons/tb";
 const HomeMainSection = () => {
   const slideTrackRef = useRef(null);
   const [counter, setCounter] = useState(0);
@@ -9,7 +12,6 @@ const HomeMainSection = () => {
     "Unlocking",
     "Redifining",
     "Nurturing",
-    
   ];
   const intervalTime = 3000;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -119,7 +121,7 @@ const HomeMainSection = () => {
   const featuresData = [
     {
       id: 1,
-      icon: "fi flaticon-training-1",
+      icon: <RiEmotionHappyLine />,
       title: "5+ Happy Clients ",
       // description:
       //   "We take pride in our ability to deliver tailored courses and comprehensive training programs that effectively meet the unique and evolving needs of each client, ensuring satisfaction, measurable outcomes, and sustainable, long-term growth opportunities.",
@@ -129,7 +131,7 @@ const HomeMainSection = () => {
     },
     {
       id: 2,
-      icon: "fi flaticon-team",
+      icon: <FaHandsHelping />,
       title: "99% Full Loyalty",
       // description:
       //   "Our dedication to building long-term relationships, delivering exceptional services, and providing unmatched value has resulted in a perfect client retention rate, demonstrating trust, reliability, and client satisfaction.",
@@ -139,7 +141,7 @@ const HomeMainSection = () => {
     },
     {
       id: 3,
-      icon: "fi flaticon-video-lesson",
+      icon: <FaUsers />,
       title: "5K+ Users",
       // description:
       //   "Join our community of over 20,000 users who trust our platform to learn, grow, and achieve their goals with high-quality courses, valuable resources, expert guidance, personalized assistance, and continuous support.",
@@ -149,7 +151,7 @@ const HomeMainSection = () => {
     },
     {
       id: 4,
-      icon: "fi flaticon-training",
+      icon:<TbReportSearch /> ,
       title: "100+ Reports",
       // description:
       //   "Unlock powerful insights with our 100+ dashboards and reports designed to provide actionable data for informed, strategic decision-making and improved overall performance outcomes and efficiency.",
@@ -194,7 +196,7 @@ const HomeMainSection = () => {
                   </h2>
                 </div>
                 <div data-swiper-parallax="400" class="slide-text">
-                                <p className="text-black">Inspiring growth, fostering innovation, shaping the future, and cultivating success in education.</p>
+                <p className="text-black">Inspiring growth, fostering innovation, shaping the future, and cultivating success in education.</p>
                 </div>
 
                 {/* Slide Text */}
@@ -290,6 +292,10 @@ const HomeMainSection = () => {
                   >
                     <div className="feature-item d-flex feature-itemm-small">
                       <div className="icon">
+                      {/* <FontAwesomeIcon icon="fa-solid fa-face-smile" />        */}
+                      {/* <RiEmotionHappyLine /> */}
+                      {feature.icon}
+
                         <i className={feature.icon}></i>
                       </div>
                       <div className="feature-text align-content-center m-2">
@@ -301,7 +307,9 @@ const HomeMainSection = () => {
                     </div>
                     <div className="feature-item-hidden d-flex feature-itemm-small">
                       <div className="icon">
-                        <i className={feature.icon}></i>
+                      {feature.icon}
+                      
+                        {/* <i className={feature.icon}></i> */}
                       </div>
                       <div className="feature-text align-content-center m-2">
                         <h2 className="font-weight-web-h2 mb-0">

@@ -1,12 +1,19 @@
 import React, { useState } from "react";
-
+import { TbSortAZ } from "react-icons/tb";
+import { GiCutDiamond } from "react-icons/gi";
+import { MdOutlineManageHistory } from "react-icons/md";
+import { HiLightBulb } from "react-icons/hi";
+import { BsRocketFill } from "react-icons/bs";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { LuBoxes } from "react-icons/lu";
+import { FaShippingFast } from "react-icons/fa";
 const WhyChooseUs = () => {
   const [activeTab, setActiveTab] = useState("buyer");
 
   const chooseDataBuyer = [
     {
       id: 1,
-      iconClass: "fi flaticon-user-experience",
+      iconClass: <TbSortAZ />,
       title: "A to Z Services",
       description:
        "Marketplace for school. Whatever You Need, We Provide",
@@ -14,7 +21,7 @@ const WhyChooseUs = () => {
     },
     {
       id: 2,
-      iconClass: "fi flaticon-megaphone",
+      iconClass: <GiCutDiamond />,
       title: "Specialization",
       description:
        "Deep expertise & understanding of the unique needs & challenges faced by educational institutions .",
@@ -22,7 +29,7 @@ const WhyChooseUs = () => {
     },
     {
       id: 3,
-      iconClass: "fi flaticon-code",
+      iconClass: <MdOutlineManageHistory />,
       title: "Efficient Operation",
       description:
         "Streamlining operations with efficient management systems.",
@@ -30,7 +37,7 @@ const WhyChooseUs = () => {
     },
     {
       id: 4,
-      iconClass: "fi flaticon-knowledge",
+      iconClass: <HiLightBulb />,
       title: "Innovative Approach",
       description:
       "Innovative school management ERP & Dedicated to fostering.",
@@ -41,7 +48,7 @@ const WhyChooseUs = () => {
   const chooseDataSupplier = [
     {
       id: 1,
-      iconClass: "fi flaticon-user-experience",
+      iconClass: <BsRocketFill />,
       title: "Grow Your Business",
       description:
         "Get access to a global buyer base and grow 3X and more.",
@@ -49,7 +56,7 @@ const WhyChooseUs = () => {
     },
     {
       id: 2,
-      iconClass: "fi flaticon-megaphone",
+      iconClass: <FaMoneyBillTransfer />,
       title: "Advance Payments",
       description:
         "Get your payments upfront and let us worry about the credit.",
@@ -57,7 +64,7 @@ const WhyChooseUs = () => {
     },
     {
       id: 3,
-      iconClass: "fi flaticon-code",
+      iconClass: <LuBoxes />,
       title: "High Order Volumes",
       description:
         "Get bigger order volumes from our large global buyer base.",
@@ -65,7 +72,7 @@ const WhyChooseUs = () => {
     },
     {
       id: 4,
-      iconClass: "fi flaticon-knowledge",
+      iconClass:<FaShippingFast />,
       title: "Fulfillment Services",
       description:
        "End-to-end managed logistics while you focus on business.",
@@ -120,7 +127,8 @@ const WhyChooseUs = () => {
                   <div className="wpo-courses-item category-itemm">
                     <div className="wpo-courses-text">
                       <div className="courses-icon category-icons">
-                        <i className={item.iconClass}></i>
+                      {item.iconClass}
+                        {/* <i className={item.iconClass}></i> */}
                       </div>
                       <h2 className="category-h2 font-weight-web-h2">
                         <a>{item.title}</a>
@@ -147,7 +155,8 @@ const WhyChooseUs = () => {
                   <div className="wpo-courses-item category-itemm">
                     <div className="wpo-courses-text">
                       <div className="courses-icon category-icons">
-                        <i className={item.iconClass}></i>
+                      {item.iconClass}
+                        {/* <i className={item.iconClass}></i> */}
                       </div>
                       <h2 className="category-h2 font-weight-web-h2">
                         <a>{item.title}</a>

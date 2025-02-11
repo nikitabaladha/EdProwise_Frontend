@@ -71,7 +71,7 @@ const EdProwiseFAQSection = () => {
                           <div className="accordion-item" key={index}>
                             <h3 className="accordion-header" id={faq.headingId}>
                               <button
-                                className={`accordion-button ${
+                                className={`text-black fw-bold accordion-button  ${
                                   index === 0 ? "" : "collapsed"
                                 }`}
                                 type="button"
@@ -91,8 +91,8 @@ const EdProwiseFAQSection = () => {
                               aria-labelledby={faq.headingId}
                               data-bs-parent="#accordionExample"
                             >
-                              <div className="accordion-body">
-                                <p>{faq.answer}</p>
+                              <div className=" accordion-body">
+                                <p className="text-black">{faq.answer}</p>
                               </div>
                             </div>
                           </div>

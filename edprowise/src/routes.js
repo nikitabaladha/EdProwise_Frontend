@@ -118,6 +118,13 @@ import PrepareInvoice from "./components/DashboardMainForSeller/ProcurementServi
 import QuoteProposal from "./components/DashboardMainForSeller/ProcurementServicesForSeller/QuoteProposal/QuoteProposal";
 import TermsPage from "./components/PrivacyPage/TermsPage.js";
 import RequestDemoForm from "./components/HomeSection/RequestDemoForm.js";
+import ServiceFess from "./components/ServiceSection/ServiceDetails/FessPixal/ServiceFees.js";
+import PayrollService from "./components/ServiceSection/ServiceDetails/PayrollService/PayrollService.js";
+import TestingforPop from "./components/ServiceSection/SubSections/TestingforPop.js";
+import FinanceBook from "./components/ServiceSection/ServiceDetails/FinanceBook/FinanceBook.js";
+import SchoolOperation from "./components/ServiceSection/ServiceDetails/SchoolOperations/SchoolOperation.js";
+import SchoolApplication from "./components/ServiceSection/ServiceDetails/SchoolApplication/SchoolApplication.js";
+import SchoolWebsiteDesign from "./components/ServiceSection/ServiceDetails/SchoolWebsiteDesign/SchoolWebsiteDesign.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -419,10 +426,17 @@ const AppRoutes = () => {
         <Route path="contact-us" element={<ContactUsPage />} />
 
         <Route path="services" element={<ServiceMainPage />}>
-          <Route path="digital-services" element={<DigitalService />} />
+          <Route path="digital-services" element={<DigitalService />}/>
+                {/* <Route path="fees" element={<ServiceFess/>}/>
+                <Route path="payroll" element={<PayrollService/>}/>
+                <Route path="booksync" element={<FinanceBook/>}/> 
+                <Route path="schooloperation" element={<SchoolOperation/>}/>
+                <Route path="schoolApplication" element={<SchoolApplication/>}/>
+                <Route path="school-Website-Design" element={<SchoolWebsiteDesign/>}/> */}
+          
           <Route path="business-services" element={<BusinessSection />} />
           <Route path="recruitment-services" element={<RecruitmentSection />} />
-          <Route path="procurement-services" element={<ProcurementSection />} />
+          <Route path="procurement-services" element={<ProcurementSection />} />  
         </Route>
 
         <Route path="community-connect" element={<CommunityMainPage />}>
@@ -439,6 +453,12 @@ const AppRoutes = () => {
         <Route path="career" element={<CareerPage />} />
         <Route path="career/:jobName" element={<CareerForm />} />
         <Route path="request-demo" element={<RequestDemoForm/>}/>
+        <Route path="fees" element={<ServiceFess/>}/>
+        <Route path="payroll" element={<PayrollService/>}/>
+        <Route path="booksync" element={<FinanceBook/>}/> 
+        <Route path="schooloperation" element={<SchoolOperation/>}/>
+        <Route path="schoolApplication" element={<SchoolApplication/>}/>
+        <Route path="school-Website-Design" element={<SchoolWebsiteDesign/>}/>
       </Route>
     </Routes>
   );

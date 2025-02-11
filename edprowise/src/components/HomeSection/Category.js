@@ -1,10 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FaLaptopCode } from "react-icons/fa";
+import { PiHandshakeBold } from "react-icons/pi";
+import { BsCart4 } from "react-icons/bs";
+import { FcManager } from "react-icons/fc";
 
 const coursesData = [
   {
     id: 1,
-    icon: "fi flaticon-user-experience",
+    icon: <FaLaptopCode />,
     title: "Digital",
     description:
       "Offers comprehensive digital services including ERP software, custom websites, mobile apps, and digital solutions for enhanced business efficiency.",
@@ -12,7 +16,7 @@ const coursesData = [
   },
   {
     id: 2,
-    icon: "fi flaticon-megaphone",
+    icon:<PiHandshakeBold />,
     title: "Academic & Admin",
     description:
       "Offers PF and ESI management, international tours, student counseling, skill-based courses, and personalized solutions.",
@@ -20,7 +24,7 @@ const coursesData = [
   },
   {
     id: 3,
-    icon: "fi flaticon-code",
+    icon: <BsCart4 />,
     title: "Procurement ",
     description:
       "EdProwise procurement services include bulk discounts, vendor management, quality assurance, timely delivery, easy ordering, customized solutions, and transparent pricing.",
@@ -28,7 +32,7 @@ const coursesData = [
   },
   {
     id: 4,
-    icon: "fi flaticon-knowledge",
+    icon: <FcManager />,
     title: "Recruitment",
     description:
       "EdProwise offers recruitment services, including digital portals, candidate screening, job matching, interview scheduling, onboarding support, and efficient talent acquisition.",
@@ -59,7 +63,8 @@ const Category = () => {
                 <Link to={course.link}>
                 <div className="wpo-courses-text">
                   <div className="courses-icon category-icons">
-                    <i className={course.icon}></i>
+                  {course.icon}
+                    {/* <i className=></i> */}
                   </div>
                   <h2 className="category-h2 font-weight-web-h2">
                     <a>{course.title}</a>

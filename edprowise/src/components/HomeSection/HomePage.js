@@ -17,6 +17,7 @@ const HomePage = () => {
       <TestimonialSection />
       <EdprowiseTalk />
       <BlogSection />
+      
     </>
   );
 };

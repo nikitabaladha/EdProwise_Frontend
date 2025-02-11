@@ -35,11 +35,12 @@ const Footer = () => {
       name: "FAQ",
       link: "/faq",
     },
-    { name: "Become A Supplier", link: "/signup" },
     {
-      name: "Privacy & Policy",
-      link: "/privacy-policy",
+      name: "Download Brochure",
+      link: "#",
     },
+    { name: "Become A Supplier", link: "/signup" },
+   
   ];
   return (
     <footer className="wpo-site-footer">
@@ -50,13 +51,13 @@ const Footer = () => {
             <div className="col col-lg-3 col-md-6 col-12 col-sm-12 mt-0">
               <div className="widget about-widget">
                 <div className="logo widget-title">
-                  <a className="navbar-brand" href="index-2.html">
+                  <Link to="/" className="navbar-brand">
                     <img
                       src="/assets/website-images/EdProwiseLogoWhite.webp"
                       width="180px"
                       alt="EdProwise Logo"
                     />
-                  </a>
+                  </Link>
                 </div>
                 <p>
                 Startup founded on the principle of empowering educational institutions, specializes in delivering various services to educational institution

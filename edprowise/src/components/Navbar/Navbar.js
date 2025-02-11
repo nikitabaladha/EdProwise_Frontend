@@ -164,12 +164,12 @@ const Header = () => {
               </div>
               <div className="col-lg-2 col-9">
                 <div className="navbar-header">
-                  <a className="navbar-brand fw-bold logo">
+                  <Link to="/" className="navbar-brand fw-bold logo">
                     <img
                       src="/assets/website-images/EdProwiseLogo.webp"
                       alt="logo"
                     />
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="col-lg-8 col-md-1 col-0">
