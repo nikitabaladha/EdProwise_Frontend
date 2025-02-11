@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
 const StudentRegistrationForm = () => {
-  return (
-    <div>StudentRegistrationForm</div>
-  )
-}
+  return <div>StudentRegistrationForm</div>;
+};
 export default StudentRegistrationForm;

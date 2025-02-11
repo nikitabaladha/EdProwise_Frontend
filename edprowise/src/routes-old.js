@@ -92,30 +92,6 @@ import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/Procure
 
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
-import ViewSellerProfile from "./components/DashboardMainForSeller/ViewSellerProfile/ViewSellerProfile";
-import UpdateSellerProfile from "./components/DashboardMainForSeller/UpdateSellerProfile/UpdateSellerProfile";
-import ChangePasswordForSeller from "./components/DashboardMainForSeller/ChangePassword/ChangePassword";
-import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
-import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
-
-import TrackQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/TrackQuoteTable";
-import ViewRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
-
-import SubmitQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/SubmitQuote/SubmitQuote";
-
-import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
-import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
-import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
-
-import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
-
-import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
-
-// import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
-import InvoiceForEdProwise from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForEdProwise/InvoiceForEdProwise";
-import InvoiceForBuyer from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForBuyer/InvoiceForBuyer";
-import PrepareInvoice from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PrepareInvoice/PrepareInvoice";
-import QuoteProposal from "./components/DashboardMainForSeller/ProcurementServicesForSeller/QuoteProposal/QuoteProposal";
 import TermsPage from "./components/PrivacyPage/TermsPage.js";
 import RequestDemoForm from "./components/HomeSection/RequestDemoForm.js";
 import ServiceFess from "./components/ServiceSection/ServiceDetails/FessPixal/ServiceFees.js";
@@ -353,84 +329,6 @@ const AppRoutes = () => {
 
       {/* =========================================Seller Routes============================================= */}
 
-      <Route
-        path="/seller-dashboard"
-        element={
-          <PrivateRoute>
-            <SellerDashboardMain />
-          </PrivateRoute>
-        }
-      >
-        {/*Seller Dashboard Route */}
-        <Route index element={<SellerDashboard />} />
-
-        <Route path="view-seller-profile" element={<ViewSellerProfile />} />
-        <Route path="update-seller-profile" element={<UpdateSellerProfile />} />
-
-        <Route
-          path="change-seller-password"
-          element={<ChangePasswordForSeller />}
-        />
-
-        {/* Procurement Services Routes */}
-        <Route
-          path="procurement-services/track-quote"
-          element={<TrackQuoteTableForSeller />}
-        />
-        <Route
-          path="procurement-services/view-requested-quote"
-          element={<ViewRequestedQuoteForSeller />}
-        />
-
-        <Route
-          path="procurement-services/submit-quote"
-          element={<SubmitQuote />}
-        />
-
-        <Route
-          path="procurement-services/track-order-history"
-          element={<TrackOrderHistoryTableForSeller />}
-        />
-        <Route
-          path="procurement-services/view-order-history"
-          element={<ViewOrderHistoryForSeller />}
-        />
-        <Route
-          path="procurement-services/Pay-to-edprowise"
-          element={<PayToEdProwiseForSeller />}
-        />
-
-        <Route
-          path="procurement-services/submitted-quote"
-          element={<SubmittedQuoteTableForSeller />}
-        />
-        {/* <Route
-          path="procurement-services/view-submitted-quote"
-          element={<ViewSubmittedQuote />}
-        /> */}
-
-        <Route
-          path="procurement-services/prepared-quote"
-          element={<PreparedQuote />}
-        />
-        <Route
-          path="procurement-services/invoice-for-edprowise"
-          element={<InvoiceForEdProwise />}
-        />
-
-        <Route
-          path="procurement-services/invoice-for-buyer"
-          element={<InvoiceForBuyer />}
-        />
-        <Route
-          path="procurement-services/quote-proposal"
-          element={<QuoteProposal />}
-        />
-        <Route
-          path="procurement-services/prepare-invoice"
-          element={<PrepareInvoice />}
-        />
-      </Route>
       <Route path="/" element={<WebsiteMain />}>
         <Route index element={<HomePage />} />
 

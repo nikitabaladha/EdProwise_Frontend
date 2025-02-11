@@ -20,6 +20,7 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSchool(response.data.data);
+
         console.log("school data from heder", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
@@ -33,36 +34,18 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
     fetchSchoolData();
   }, []);
 
-  const [openMenus, setOpenMenus] = useState({});
+  const [openMenu, setOpenMenu] = useState(null);
   const location = useLocation();
 
-  const toggleMenu = (menuId, parentId = null) => {
-    setOpenMenus((prev) => {
-      const newOpenMenus = { ...prev };
-
-      if (parentId) {
-        Object.keys(newOpenMenus).forEach((key) => {
-          if (key !== parentId) {
-            delete newOpenMenus[key];
-          }
-        });
-      } else {
-        Object.keys(newOpenMenus).forEach((key) => {
-          delete newOpenMenus[key];
-        });
-      }
-
-      if (newOpenMenus[menuId]) {
-        delete newOpenMenus[menuId];
-      } else {
-        newOpenMenus[menuId] = true;
-      }
-
-      return newOpenMenus;
-    });
+  const toggleMenu = (menuId) => {
+    const newOpenMenu = openMenu === menuId ? null : menuId;
+    setOpenMenu(newOpenMenu);
+    localStorage.setItem("openMenu", newOpenMenu);
   };
+
   const sidebarRef = useRef(null);
 
+  // Handle clicks outside of the sidebar
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -79,6 +62,14 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [sidebarVisible, toggleSidebar]);
+
+  // Retrieve the open menu from localStorage on mount
+  useEffect(() => {
+    const storedOpenMenu = localStorage.getItem("openMenu");
+    if (storedOpenMenu) {
+      setOpenMenu(storedOpenMenu);
+    }
+  }, []);
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const userRole = userDetails?.role || "Guest";
@@ -168,48 +159,79 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         icon: "solar:wallet-money-bold",
         children: [
           {
-            id: "form",
-            label: "Form",
+            label: "Registration",
+            link: "/school-dashboard/fees-module/registration",
             icon: "solar:users-group-rounded-bold-duotone",
-            children: [
-              {
-                label: "Registration Form",
-                link: "/school-dashboard/fees-module/form/registration",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Admission Form",
-                link: "/school-dashboard/fees-module/form/admission-form",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "TC Form",
-                link: "/school-dashboard/fees-module/form/tc-form",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-            ],
           },
           {
-            id: "feesReceipts",
-            label: "Fees Receipts",
+            label: "Track Order & Order History",
+            link: "/school-dashboard/procurement-services/track-order-history",
             icon: "solar:users-group-rounded-bold-duotone",
-            children: [
-              {
-                label: "School Fees",
-                link: "/school-dashboard/fees-module/fees-receipts/school-fees",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Board Registration Fees",
-                link: "/school-dashboard/fees-module/fees-receipts/board-registration-fees",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Board Exam fees",
-                link: "/school-dashboard/fees-module/fees-receipts/board-exam-fees",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-            ],
+          },
+          {
+            label: "Pay To EdProwise",
+            link: "/school-dashboard/procurement-services/pay-to-edprowise",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+        ],
+      },
+    ],
+    Seller: [
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        icon: "solar:widget-5-bold-duotone",
+        link: "/seller-dashboard",
+      },
+      {
+        id: "procurementServices",
+        label: "Procurement Services",
+        icon: "solar:wallet-money-bold",
+        children: [
+          {
+            label: "Quote Enquiry",
+            link: "/seller-dashboard/procurement-services/track-quote",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          // {
+          //   label: "Submitted Quote",
+          //   link: "/seller-dashboard/procurement-services/submitted-quote",
+          //   icon: "solar:users-group-rounded-bold-duotone",
+          // },
+          // {
+          //   label: "View Prepared Quote",
+          //   link: "/seller-dashboard/procurement-services/prepared-quote",
+          //   icon: "solar:users-group-rounded-bold-duotone",
+          // },
+          {
+            label: "Track Order & Order History",
+            link: "/seller-dashboard/procurement-services/track-order-history",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Pay To EdProwise",
+            link: "/seller-dashboard/procurement-services/pay-to-edprowise",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Invoice For EdProwise",
+            link: "/seller-dashboard/procurement-services/invoice-for-edprowise",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Invoice For Buyer",
+            link: "/seller-dashboard/procurement-services/invoice-for-buyer",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          // {
+          //   label: "Prepare Invoice",
+          //   link: "/seller-dashboard/procurement-services/prepare-invoice",
+          //   icon: "solar:users-group-rounded-bold-duotone",
+          // },
+          {
+            label: "Quote/Proposal",
+            link: "/seller-dashboard/procurement-services/quote-proposal",
+            icon: "solar:users-group-rounded-bold-duotone",
           },
         ],
       },
@@ -220,57 +242,6 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
   };
 
   const menuItems = menuConfig[userRole] || menuConfig["Guest"];
-
-  const renderMenuItem = (item, parentId = null) => {
-    const isActive = item.children
-      ? item.children.some((child) => currentRoute === child.link)
-      : currentRoute === item.link;
-
-    return (
-      <li className={`nav-item ${isActive ? "active" : ""}`} key={item.id}>
-        {item.children ? (
-          <>
-            <div
-              className={`nav-link collapsed ${isActive ? "active" : ""}`}
-              onClick={() => toggleMenu(item.id, parentId)}
-            >
-              <span className="nav-icon">
-                <Icon icon={item.icon} />
-              </span>
-              <span className="nav-text"> {item.label} </span>
-              <IoIosArrowForward
-                style={{
-                  transition: "transform 0.3s ease",
-                  transform: openMenus[item.id]
-                    ? "rotate(90deg)"
-                    : "rotate(0deg)",
-                }}
-              />
-            </div>
-            {openMenus[item.id] && (
-              <div className="collapse show">
-                <ul className="nav sub-navbar-nav">
-                  {item.children.map((subItem) =>
-                    renderMenuItem(subItem, item.id)
-                  )}
-                </ul>
-              </div>
-            )}
-          </>
-        ) : (
-          <Link
-            className={`nav-link ${isActive ? "active" : ""}`}
-            to={item.link}
-          >
-            <span className="nav-icon">
-              <Icon icon={item.icon} />
-            </span>
-            <span className="nav-text"> {item.label} </span>
-          </Link>
-        )}
-      </li>
-    );
-  };
 
   return (
     <div
@@ -321,7 +292,72 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
 
       <div className="scrollbar" data-simplebar="">
         <ul className="navbar-nav" id="navbar-nav">
-          {menuItems.map((item) => renderMenuItem(item))}
+          {menuItems.map((item) => {
+            const isActive = item.children
+              ? item.children.some((child) => currentRoute === child.link)
+              : currentRoute === item.link;
+
+            return (
+              <li
+                className={`nav-item ${isActive ? "active" : ""}`}
+                key={item.id}
+              >
+                {item.children ? (
+                  <>
+                    <div
+                      className={`nav-link collapsed ${
+                        isActive ? "active" : ""
+                      }`}
+                      onClick={() => toggleMenu(item.id)}
+                    >
+                      <span className="nav-icon">
+                        <Icon icon={item.icon} />
+                      </span>
+                      <span className="nav-text"> {item.label} </span>
+
+                      <IoIosArrowForward
+                        style={{
+                          transition: "transform 0.3s ease",
+                          transform:
+                            openMenu === item.id
+                              ? "rotate(90deg)"
+                              : "rotate(0deg)",
+                        }}
+                      />
+                    </div>
+                    {openMenu === item.id && (
+                      <div className="collapse show">
+                        <ul className="nav sub-navbar-nav">
+                          {item.children.map((subItem, subIndex) => (
+                            <li className="sub-nav-item" key={subIndex}>
+                              <Link
+                                className={`sub-nav-link ${
+                                  currentRoute === subItem.link ? "active" : ""
+                                }`}
+                                to={subItem.link}
+                              >
+                                {subItem.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    className={`nav-link ${isActive ? "active" : ""}`}
+                    to={item.link}
+                  >
+                    <span className="nav-icon">
+                      <Icon icon={item.icon} />
+                    </span>
+                    <span className="nav-text"> {item.label} </span>
+                  </Link>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
