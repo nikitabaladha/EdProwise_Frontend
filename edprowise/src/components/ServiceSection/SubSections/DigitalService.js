@@ -18,53 +18,13 @@ import { RiFilePaperFill } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { IoMdCloseCircle } from "react-icons/io";
 const coursesData = [
-  {
-    id: 1,
-    icon: <FaMoneyBillTrendUp />,
-    title: "School Fees Management Software - Pixel Fees",
-    classid: 1,
-    send: "/services/digital-services/fees",
-  },
-  {
-    id: 2,
-    icon: <GiReceiveMoney />,
-    title: "Payroll Management Software – Ease Payroll",
-    classid: 2,
-    send: "/services/digital-services/payroll",
-  },
-  {
-    id: 3,
-    icon: <FcMoneyTransfer />,
-    title: "Financial Management Software – Book Sync",
-    classid: 3,
-    send: "/services/digital-services/booksync",
-  },
-  {
-    id: 4,
-    icon: <FaBusinessTime />,
-    title: "School Operational Management Software",
-    classid: 4,
-    send: "/services/digital-services/schooloperation",
-  },
-  {
-    id: 5,
-    icon: <MdInstallMobile />,
-    title: "School Mobile Application",
-    classid: 5,
-    send: "/services/digital-services/schoolApplication",
-  },
-  {
-    id: 6,
-    icon: <FaLaptopCode />,
-    title: "School Website Design",
-    classid: 6,
-    send: "/services/digital-services/school-Website-Design",
-  },
-  {
-    id: 7,
-    icon: <TbDeviceMobileCog />,
-    title: "Digital Exam Result System",
-    classid: 1,
+  { id: 1, icon: <FaMoneyBillTrendUp />, title: "School Fees Management Software - Pixel Fees", classid: 1, send:"/services/digital-services/fees" },
+  { id: 2, icon: <GiReceiveMoney />, title: "Payroll Management Software – Ease Payroll", classid: 2, send: "/services/digital-services/payroll" },
+  { id: 3, icon: <FcMoneyTransfer />, title: "Financial Management Software – Book Sync", classid: 3, send: "/services/digital-services/booksync" },
+  { id: 4, icon: <FaBusinessTime />, title: "School Operational Management Software", classid: 4, send: "/services/digital-services/schooloperation" },
+  { id: 5, icon: <MdInstallMobile />, title: "School Mobile Application", classid: 5, send: "/services/digital-services/schoolApplication" },
+  { id: 6, icon: <FaLaptopCode />, title: "School Website Design", classid: 6, send: "/services/digital-services/school-Website-Design" },
+  { id: 7, icon: <TbDeviceMobileCog />, title: "Digital Exam Result System", classid: 1,
     keyFeatures: [
       {
         idFeature: 1,

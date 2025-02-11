@@ -21,7 +21,7 @@ const testimonials = [
   },
   {
     text: "EdProWise has helped us transition smoothly into a more digital and data-driven education system. It has provided us with the structure and support needed to modernize our school operations.",
-    image: "",
+    image: "assets/website-images/Mount-collage-logo.png",
     name: "Principal",
     position: "Mount Carmel School, Hoshiarpur",
   },

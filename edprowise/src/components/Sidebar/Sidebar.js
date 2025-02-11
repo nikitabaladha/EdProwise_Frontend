@@ -153,6 +153,29 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
           },
         ],
       },
+      {
+        id: "feesmodule",
+        label: "Form",
+        icon: "solar:wallet-money-bold",
+        children: [
+          {
+            label: "Registration",
+            link: "/school-dashboard/fees-module/registration",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Track Order & Order History",
+            link: "/school-dashboard/procurement-services/track-order-history",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Pay To EdProwise",
+            link: "/school-dashboard/procurement-services/pay-to-edprowise",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+        ],
+      },
+      
     ],
     Seller: [
       {

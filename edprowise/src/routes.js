@@ -125,6 +125,8 @@ import FinanceBook from "./components/ServiceSection/ServiceDetails/FinanceBook/
 import SchoolOperation from "./components/ServiceSection/ServiceDetails/SchoolOperations/SchoolOperation.js";
 import SchoolApplication from "./components/ServiceSection/ServiceDetails/SchoolApplication/SchoolApplication.js";
 import SchoolWebsiteDesign from "./components/ServiceSection/ServiceDetails/SchoolWebsiteDesign/SchoolWebsiteDesign.js";
+import StudentRegisterListTable from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/StudentRegisterListTable.js";
+import StudentRegistrationForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/StudentRegistrationForm.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -337,6 +339,10 @@ const AppRoutes = () => {
           path="procurement-services/Pay-to-edprowise"
           element={<PayToEdProwiseForSchool />}
         />
+
+        {/* ***********Fees Module********* */}
+        <Route path="fees-module/registration" element={<StudentRegisterListTable/>} />
+        <Route path="fees-module/registration-form" element={< StudentRegistrationForm/>}/>
       </Route>
 
       {/* =========================================Seller Routes============================================= */}
@@ -426,7 +432,7 @@ const AppRoutes = () => {
         <Route path="contact-us" element={<ContactUsPage />} />
 
         <Route path="services" element={<ServiceMainPage />}>
-          <Route path="digital-services" element={<DigitalService />} />
+          <Route path="digital-services" element={<DigitalService />}/>
           <Route path="business-services" element={<BusinessSection />} />
           <Route path="recruitment-services" element={<RecruitmentSection />} />
           <Route path="procurement-services" element={<ProcurementSection />} />
@@ -445,32 +451,13 @@ const AppRoutes = () => {
         <Route path="terms" element={<TermsPage />} />
         <Route path="career" element={<CareerPage />} />
         <Route path="career/:jobName" element={<CareerForm />} />
-        <Route path="request-demo" element={<RequestDemoForm />} />
-
-        <Route
-          path="services/digital-services/fees"
-          element={<ServiceFess />}
-        />
-        <Route
-          path="services/digital-services/payroll"
-          element={<PayrollService />}
-        />
-        <Route
-          path="services/digital-services/booksync"
-          element={<FinanceBook />}
-        />
-        <Route
-          path="services/digital-services/schooloperation"
-          element={<SchoolOperation />}
-        />
-        <Route
-          path="services/digital-services/schoolApplication"
-          element={<SchoolApplication />}
-        />
-        <Route
-          path="services/digital-services/school-Website-Design"
-          element={<SchoolWebsiteDesign />}
-        />
+        <Route path="request-demo" element={<RequestDemoForm/>}/>
+        <Route path="services/digital-services/fees" element={<ServiceFess/>}/>
+        <Route path="services/digital-services/payroll" element={<PayrollService/>}/>
+        <Route path="services/digital-services/booksync" element={<FinanceBook/>}/> 
+        <Route path="services/digital-services/schooloperation" element={<SchoolOperation/>}/>
+        <Route path="services/digital-services/schoolApplication" element={<SchoolApplication/>}/>
+        <Route path="services/digital-services/school-Website-Design" element={<SchoolWebsiteDesign/>}/>
       </Route>
     </Routes>
   );
