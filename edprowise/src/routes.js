@@ -426,17 +426,10 @@ const AppRoutes = () => {
         <Route path="contact-us" element={<ContactUsPage />} />
 
         <Route path="services" element={<ServiceMainPage />}>
-          <Route path="digital-services" element={<DigitalService />}/>
-                {/* <Route path="fees" element={<ServiceFess/>}/>
-                <Route path="payroll" element={<PayrollService/>}/>
-                <Route path="booksync" element={<FinanceBook/>}/> 
-                <Route path="schooloperation" element={<SchoolOperation/>}/>
-                <Route path="schoolApplication" element={<SchoolApplication/>}/>
-                <Route path="school-Website-Design" element={<SchoolWebsiteDesign/>}/> */}
-          
+          <Route path="digital-services" element={<DigitalService />} />
           <Route path="business-services" element={<BusinessSection />} />
           <Route path="recruitment-services" element={<RecruitmentSection />} />
-          <Route path="procurement-services" element={<ProcurementSection />} />  
+          <Route path="procurement-services" element={<ProcurementSection />} />
         </Route>
 
         <Route path="community-connect" element={<CommunityMainPage />}>
@@ -449,16 +442,35 @@ const AppRoutes = () => {
         <Route path="become-supplier" element={<SupplierPage />} />
         <Route path="faq" element={<FaqPage />} />
         <Route path="privacy-policy" element={<PrivacyPage />} />
-        <Route path="terms" element={<TermsPage/>}/>
+        <Route path="terms" element={<TermsPage />} />
         <Route path="career" element={<CareerPage />} />
         <Route path="career/:jobName" element={<CareerForm />} />
-        <Route path="request-demo" element={<RequestDemoForm/>}/>
-        <Route path="fees" element={<ServiceFess/>}/>
-        <Route path="payroll" element={<PayrollService/>}/>
-        <Route path="booksync" element={<FinanceBook/>}/> 
-        <Route path="schooloperation" element={<SchoolOperation/>}/>
-        <Route path="schoolApplication" element={<SchoolApplication/>}/>
-        <Route path="school-Website-Design" element={<SchoolWebsiteDesign/>}/>
+        <Route path="request-demo" element={<RequestDemoForm />} />
+
+        <Route
+          path="services/digital-services/fees"
+          element={<ServiceFess />}
+        />
+        <Route
+          path="services/digital-services/payroll"
+          element={<PayrollService />}
+        />
+        <Route
+          path="services/digital-services/booksync"
+          element={<FinanceBook />}
+        />
+        <Route
+          path="services/digital-services/schooloperation"
+          element={<SchoolOperation />}
+        />
+        <Route
+          path="services/digital-services/schoolApplication"
+          element={<SchoolApplication />}
+        />
+        <Route
+          path="services/digital-services/school-Website-Design"
+          element={<SchoolWebsiteDesign />}
+        />
       </Route>
     </Routes>
   );

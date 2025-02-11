@@ -1000,7 +1000,7 @@ class ThemeLayout {
     if (window.innerWidth <= 1140) {
       self.changeMenuSize("hidden", false);
     } else {
-      self.changeMenuSize(self.config.menu.size);
+      // self.changeMenuSize(self.config.menu.size);
       // self.changeLayoutMode(self.config.layout.mode);
     }
   }
