@@ -390,6 +390,7 @@ const AppRoutes = () => {
           element={<PrepareInvoice />}
         />
       </Route>
+      <Route path="/" element={<Navigate to="/login" />} />
     </Routes>
   );
 };

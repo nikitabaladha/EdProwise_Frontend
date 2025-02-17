@@ -4,6 +4,7 @@ import getAPI from "../../../../../api/getAPI";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
+import QuoteRequestModal from "./QuoteRequestModal";
 const ViewCart = () => {
   const location = useLocation();
   const { enquiryNumber } = location.state || {};
@@ -12,7 +13,10 @@ const ViewCart = () => {
   const [selectedCart, setSelectedCart] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
+
+  const [modalEnquiryNumber, setModalEnquiryNumber] = useState(null);
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -36,6 +40,10 @@ const ViewCart = () => {
     } catch (err) {
       console.error("Error fetching cart data:", err);
     }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   const handleImageClick = (imageUrl) => {
@@ -75,10 +83,31 @@ const ViewCart = () => {
     });
   };
 
+  const handleOpenQuoteModal = () => {
+    if (!enquiryNumber) {
+      console.error("Enquiry number is missing!");
+      return;
+    }
+    setModalEnquiryNumber(enquiryNumber);
+
+    setIsModalOpen(true);
+  };
   return (
     <>
       <div className="container">
-        <h4 className="mb-3">Cart List</h4>
+        <div className="card-header d-flex justify-content-between align-items-center gap-1 mb-3 ps-3 pe-3">
+          <h3 className="card-title flex-grow-1">Cart List</h3>
+          <button
+            className="btn btn-soft-danger btn-sm d-flex align-items-center gap-2"
+            onClick={handleOpenQuoteModal}
+          >
+            <iconify-icon
+              icon="solar:cart-check-broken"
+              className="align-middle fs-18"
+            />
+            <span>Place Order</span>
+          </button>
+        </div>
 
         {Object.keys(carts).length === 0 ? (
           <p>No cart data available.</p>
@@ -92,7 +121,7 @@ const ViewCart = () => {
                     <Link
                       onClick={(e) => {
                         e.preventDefault();
-                        openDeleteDialog(enquiryNumber, items[0]?.sellerId); // Ensure sellerId is taken from an item
+                        openDeleteDialog(enquiryNumber, items[0]?.sellerId);
                       }}
                       className="btn btn-soft-danger btn-sm"
                     >
@@ -215,6 +244,14 @@ const ViewCart = () => {
           deleteType={deleteType}
           id={selectedCart}
           onDeleted={handleDeleteConfirmed}
+        />
+      )}
+
+      {isModalOpen && (
+        <QuoteRequestModal
+          onClose={handleCloseModal}
+          enquiryNumber={modalEnquiryNumber}
+          carts={carts}
         />
       )}
     </>

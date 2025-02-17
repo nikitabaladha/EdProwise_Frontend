@@ -8,63 +8,63 @@ const QuoteProposal = () => {
     {
       id: 1,
       slNo: 1,
-      description: "School Bench",
-      hsnSaac: "654321",
-      listingRate: "100000",
-      edProwiseMargin: "12",
-      qty: "100",
-      finalRateBeforeDiscount: "1125",
-      discountPercentage: "15",
-      finalRate: "956",
-      taxableValue: "95625",
-      cgstRate: "6",
-      cgstAmount: "5976",
-      sgstRate: "625",
-      sgstAmount: "5976",
-      igstRate: "12",
-      igstAmount: "11953",
-      amountBeforeGSTAndDiscount: "112500",
-      discountAmount: "16875",
-      gstAmount: "11953",
-      totalAmount: "124382",
-      productImages: "images/product1.jpg",
+      // subCategoryName: "School Bench",
+      // hsnSaac: "654321",
+      // listingRate: "100000",
+      // edProwiseMargin: "12",
+      // qty: "100",
+      // finalRateBeforeDiscount: "1125",
+      // discountPercentage: "15",
+      // finalRate: "956",
+      // taxableValue: "95625",
+      // cgstRate: "6",
+      // cgstAmount: "5976",
+      // sgstRate: "625",
+      // sgstAmount: "5976",
+      // igstRate: "12",
+      // igstAmount: "11953",
+      // amountBeforeGSTAndDiscount: "112500",
+      // discountAmount: "16875",
+      // gstAmount: "11953",
+      // totalAmount: "124382",
+      // productImages: "images/product1.jpg",
     },
     // Add more products as needed
   ]);
 
   const taxData = [
     {
-      hsn: "1234",
-      taxableValue: 5000,
-      cgstRate: 9,
-      cgstAmount: 450,
-      sgstRate: 9,
-      sgstAmount: 450,
-      igstRate: 18,
-      igstAmount: 0,
-      totalTaxAmount: 900,
+      // hsn: "1234",
+      // taxableValue: 5000,
+      // cgstRate: 9,
+      // cgstAmount: 450,
+      // sgstRate: 9,
+      // sgstAmount: 450,
+      // igstRate: 18,
+      // igstAmount: 0,
+      // totalTaxAmount: 900,
     },
     {
-      hsn: "5678",
-      taxableValue: 10000,
-      cgstRate: 9,
-      cgstAmount: 900,
-      sgstRate: 9,
-      sgstAmount: 900,
-      igstRate: 18,
-      igstAmount: 0,
-      totalTaxAmount: 1800,
+      // hsn: "5678",
+      // taxableValue: 10000,
+      // cgstRate: 9,
+      // cgstAmount: 900,
+      // sgstRate: 9,
+      // sgstAmount: 900,
+      // igstRate: 18,
+      // igstAmount: 0,
+      // totalTaxAmount: 1800,
     },
     {
-      hsn: "9101",
-      taxableValue: 8000,
-      cgstRate: 9,
-      cgstAmount: 720,
-      sgstRate: 9,
-      sgstAmount: 720,
-      igstRate: 18,
-      igstAmount: 0,
-      totalTaxAmount: 1440,
+      // hsn: "9101",
+      // taxableValue: 8000,
+      // cgstRate: 9,
+      // cgstAmount: 720,
+      // sgstRate: 9,
+      // sgstAmount: 720,
+      // igstRate: 18,
+      // igstAmount: 0,
+      // totalTaxAmount: 1440,
     },
   ];
 
@@ -435,7 +435,6 @@ const QuoteProposal = () => {
                 >
                   Contact No. :
                 </td>
-
                 <td
                   style={{
                     padding: "8px",
@@ -476,7 +475,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  Description
+                  Sub Category Name
                 </th>
                 <th
                   style={{
@@ -512,16 +511,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt before GST & Disc
-                </th>
-                <th
-                  style={{
-                    width: "10%",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  Taxable Value
+                  Discount Amount
                 </th>
                 <th
                   style={{
@@ -562,7 +552,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.description}
+                    {item.subCategoryName}
                   </td>
                   <td
                     style={{
@@ -582,7 +572,7 @@ const QuoteProposal = () => {
                   >
                     {item.listingRate}
                   </td>
-                  <td
+                  {/* <td
                     style={{
                       width: "10%",
                       border: "1px solid #ddd",
@@ -590,7 +580,7 @@ const QuoteProposal = () => {
                     }}
                   >
                     {item.taxableValue}
-                  </td>
+                  </td> */}
                   <td
                     style={{
                       width: "10%",

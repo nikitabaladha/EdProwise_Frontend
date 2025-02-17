@@ -257,24 +257,7 @@ const ViewPrepareQuoteListFromSeller = () => {
                                 quote.quantity
                               )}
                             </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="finalRateBeforeDiscount"
-                                  value={
-                                    editedQuote[quote._id]
-                                      .finalRateBeforeDiscount
-                                  }
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.finalRateBeforeDiscount
-                              )}
-                            </td>
+                            <td>{quote.finalRateBeforeDiscount}</td>
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input
@@ -290,36 +273,8 @@ const ViewPrepareQuoteListFromSeller = () => {
                                 quote.discount
                               )}
                             </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="finalRate"
-                                  value={editedQuote[quote._id].finalRate}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.finalRate
-                              )}
-                            </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="taxableValue"
-                                  value={editedQuote[quote._id].taxableValue}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.taxableValue
-                              )}
-                            </td>
+                            <td>{quote.finalRate}</td>
+                            <td>{quote.taxableValue}</td>
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input
@@ -335,21 +290,7 @@ const ViewPrepareQuoteListFromSeller = () => {
                                 quote.cgstRate
                               )}
                             </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="cgstAmount"
-                                  value={editedQuote[quote._id].cgstAmount}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.cgstAmount
-                              )}
-                            </td>
+                            <td>{quote.cgstAmount}</td>
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input
@@ -365,21 +306,7 @@ const ViewPrepareQuoteListFromSeller = () => {
                                 quote.sgstRate
                               )}
                             </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="sgstAmount"
-                                  value={editedQuote[quote._id].sgstAmount}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.sgstAmount
-                              )}
-                            </td>
+                            <td>{quote.sgstAmount}</td>
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input
@@ -395,84 +322,11 @@ const ViewPrepareQuoteListFromSeller = () => {
                                 quote.igstRate
                               )}
                             </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="igstAmount"
-                                  value={editedQuote[quote._id].igstAmount}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.igstAmount
-                              )}
-                            </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="amountBeforeGstAndDiscount"
-                                  value={
-                                    editedQuote[quote._id]
-                                      .amountBeforeGstAndDiscount
-                                  }
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.amountBeforeGstAndDiscount
-                              )}
-                            </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="discountAmount"
-                                  value={editedQuote[quote._id].discountAmount}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.discountAmount
-                              )}
-                            </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="gstAmount"
-                                  value={editedQuote[quote._id].gstAmount}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.gstAmount
-                              )}
-                            </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="totalAmount"
-                                  value={editedQuote[quote._id].totalAmount}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.totalAmount
-                              )}
-                            </td>
+                            <td>{quote.igstAmount}</td>
+                            <td>{quote.amountBeforeGstAndDiscount}</td>
+                            <td>{quote.discountAmount}</td>
+                            <td>{quote.gstAmount}</td>
+                            <td>{quote.totalAmount}</td>
 
                             <td>
                               <button
@@ -489,22 +343,10 @@ const ViewPrepareQuoteListFromSeller = () => {
                                         listingRate: quote.listingRate,
                                         edprowiseMargin: quote.edprowiseMargin,
                                         quantity: quote.quantity,
-                                        finalRateBeforeDiscount:
-                                          quote.finalRateBeforeDiscount,
                                         discount: quote.discount,
-                                        finalRate: quote.finalRate,
-                                        taxableValue: quote.taxableValue,
                                         cgstRate: quote.cgstRate,
-                                        cgstAmount: quote.cgstAmount,
                                         sgstRate: quote.sgstRate,
-                                        sgstAmount: quote.sgstAmount,
                                         igstRate: quote.igstRate,
-                                        igstAmount: quote.igstAmount,
-                                        amountBeforeGstAndDiscount:
-                                          quote.amountBeforeGstAndDiscount,
-                                        discountAmount: quote.discountAmount,
-                                        gstAmount: quote.gstAmount,
-                                        totalAmount: quote.totalAmount,
                                       },
                                     }));
                                   }

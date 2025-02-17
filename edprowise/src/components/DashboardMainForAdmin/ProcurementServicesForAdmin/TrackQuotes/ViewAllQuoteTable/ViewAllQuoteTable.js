@@ -84,14 +84,6 @@ const ViewAllQuoteTable = () => {
 
   const handleDownloadPDF = (quote) => {};
 
-  const showSuccessMessage = () => {
-    toast.success("Order Placed Successfully!");
-  };
-
-  const showErrorMessage = () => {
-    toast.error("Quote Rejected!");
-  };
-
   return (
     <>
       <div className="container-fluid">

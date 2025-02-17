@@ -62,20 +62,10 @@ const ViewRequestedQuote = () => {
       listingRate: "",
       edprowiseMargin: "",
       quantity: "",
-      finalRateBeforeDiscount: "",
       discount: "",
-      finalRate: "",
-      taxableValue: "",
       cgstRate: "",
-      cgstAmount: "",
       sgstRate: "",
-      sgstAmount: "",
       igstRate: "",
-      igstAmount: "",
-      amountBeforeGstAndDiscount: "",
-      discountAmount: "",
-      gstAmount: "",
-      totalAmount: "",
     }))
   );
 
@@ -120,20 +110,10 @@ const ViewRequestedQuote = () => {
         listingRate: "",
         edprowiseMargin: "",
         quantity: "",
-        finalRateBeforeDiscount: "",
         discount: "",
-        finalRate: "",
-        taxableValue: "",
         cgstRate: "",
-        cgstAmount: "",
         sgstRate: "",
-        sgstAmount: "",
         igstRate: "",
-        igstAmount: "",
-        amountBeforeGstAndDiscount: "",
-        discountAmount: "",
-        gstAmount: "",
-        totalAmount: "",
       }))
     );
   }, [quote]);
@@ -149,20 +129,10 @@ const ViewRequestedQuote = () => {
         listingRate: "",
         edprowiseMargin: "",
         quantity: "",
-        finalRateBeforeDiscount: "",
         discount: "",
-        finalRate: "",
-        taxableValue: "",
         cgstRate: "",
-        cgstAmount: "",
         sgstRate: "",
-        sgstAmount: "",
         igstRate: "",
-        igstAmount: "",
-        amountBeforeGstAndDiscount: "",
-        discountAmount: "",
-        gstAmount: "",
-        totalAmount: "",
       },
     ]);
   };
@@ -187,20 +157,10 @@ const ViewRequestedQuote = () => {
         listingRate: product.listingRate,
         edprowiseMargin: product.edprowiseMargin,
         quantity: product.quantity,
-        finalRateBeforeDiscount: product.finalRateBeforeDiscount,
         discount: product.discount,
-        finalRate: product.finalRate,
-        taxableValue: product.taxableValue,
         cgstRate: product.cgstRate,
-        cgstAmount: product.cgstAmount,
         sgstRate: product.sgstRate,
-        sgstAmount: product.sgstAmount,
         igstRate: product.igstRate,
-        igstAmount: product.igstAmount,
-        amountBeforeGstAndDiscount: product.amountBeforeGstAndDiscount,
-        discountAmount: product.discountAmount,
-        gstAmount: product.gstAmount,
-        totalAmount: product.totalAmount,
       };
 
       products.push(productData);
@@ -278,7 +238,6 @@ const ViewRequestedQuote = () => {
                           />
                         </div>
                       </th>
-
                       <th>Enquiry No.</th>
                       <th>Product Required Image & Name</th>
                       <th>Product Required (Category)</th>
