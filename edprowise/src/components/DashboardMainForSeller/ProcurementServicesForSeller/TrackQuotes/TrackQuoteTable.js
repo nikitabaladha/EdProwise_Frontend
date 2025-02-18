@@ -6,6 +6,10 @@ import getAPI from "../../../../api/getAPI";
 
 const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
+  const [quoteProposal, setQuoteProposal] = useState(null);
+  const [prepareQuoteData, setPrepareQuoteData] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuoteData = async () => {
@@ -25,10 +29,8 @@ const TrackQuoteTable = ({}) => {
       }
     };
 
-    fetchQuoteData(); // Call the function to fetch data
+    fetchQuoteData();
   }, []);
-
-  const navigate = useNavigate();
 
   const navigateToViewRequestedQuote = (event, enquiryNumber) => {
     event.preventDefault();
@@ -36,6 +38,7 @@ const TrackQuoteTable = ({}) => {
       state: { enquiryNumber },
     });
   };
+
   const navigateToSubmitQuote = (event, product) => {
     event.preventDefault();
     navigate(`/seller-dashboard/procurement-services/submit-quote`, {
@@ -45,8 +48,57 @@ const TrackQuoteTable = ({}) => {
 
   const handleExport = () => {
     const filteredData = quotes.map((quote) => ({}));
-
     exportToExcel(filteredData, "Products", "Products Data");
+  };
+
+  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, schoolId) => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const sellerId = userDetails?.id;
+
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
+    try {
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(`/seller-dashboard/procurement-services/quote-proposal`, {
+          state: { prepareQuoteData, quoteProposalData, profileData },
+        });
+      } else {
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
   };
 
   return (
@@ -159,12 +211,26 @@ const TrackQuoteTable = ({}) => {
 
                                 <Link
                                   className="btn btn-danger btn-sm"
+                                  title="generate pdf"
+                                  data-bs-toggle="popover"
+                                  data-bs-trigger="hover"
+                                  //right now i am navigating  to quote proposal page, passing the data and on that page i am generatinng pdf but now i want that without navigating to that page i want to pass the data and generate pdf buy this button i dont want to redirect
+
+                                  onClick={() =>
+                                    fetchPrepareQuoteAndProposalData(
+                                      quote.enquiryNumber,
+                                      quote.schoolId
+                                    )
+                                  }
+                                >
+                                  Prepare Quote Proposal
+                                </Link>
+
+                                <Link
+                                  className="btn btn-danger btn-sm"
                                   title="Submit"
                                   data-bs-toggle="popover"
                                   data-bs-trigger="hover"
-                                  // onClick={(event) =>
-                                  //   navigateToViewRequestedQuote(event, product)
-                                  // }
                                 >
                                   Prepare Quote
                                 </Link>
@@ -174,9 +240,9 @@ const TrackQuoteTable = ({}) => {
                                   title="Submit"
                                   data-bs-toggle="popover"
                                   data-bs-trigger="hover"
-                                  // onClick={(event) =>
-                                  //   navigateToSubmitQuote(event, product)
-                                  // }
+                                  onClick={(event) =>
+                                    navigateToSubmitQuote(event, quote)
+                                  }
                                 >
                                   Submit Quote
                                 </Link>
@@ -190,7 +256,6 @@ const TrackQuoteTable = ({}) => {
                 ) : (
                   <tr></tr>
                 )}
-                {/* end table-responsive */}
               </div>
               <div className="card-footer border-top">
                 <nav aria-label="Page navigation example">
