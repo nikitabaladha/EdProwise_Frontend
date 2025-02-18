@@ -135,7 +135,55 @@ const ViewAllQuoteTable = () => {
 
   const handleExport = () => {};
 
-  const handleDownloadPDF = (quote) => {};
+  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const schoolId = userDetails?.schoolId;
+
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
+    try {
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(`/school-dashboard/procurement-services/quote-proposal`, {
+          state: { prepareQuoteData, quoteProposalData, profileData },
+        });
+      } else {
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
 
   return (
     <>
@@ -236,10 +284,16 @@ const ViewAllQuoteTable = () => {
                                 />
                               </Link>
                               <Link
-                                onClick={(event) =>
-                                  handleDownloadPDF(event, quote)
+                                onClick={() =>
+                                  fetchPrepareQuoteAndProposalData(
+                                    quote?.enquiryNumber,
+                                    quote?.sellerId
+                                  )
                                 }
                                 className="btn btn-soft-info btn-sm"
+                                title="Download PDF"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                               >
                                 <iconify-icon
                                   icon="solar:download-broken"

@@ -20,8 +20,10 @@ const formatDate = (dateString) => {
 const ViewAllQuoteTable = () => {
   const location = useLocation();
   const enquiryNumber = location.state?.enquiryNumber;
+  const schoolId = location.state?.schoolId;
 
   console.log("enquiryNumber", enquiryNumber);
+  console.log("schoolId", schoolId);
 
   const navigate = useNavigate();
 
@@ -82,7 +84,52 @@ const ViewAllQuoteTable = () => {
 
   const handleExport = () => {};
 
-  const handleDownloadPDF = (quote) => {};
+  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
+    try {
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(`/admin-dashboard/procurement-services/quote-proposal`, {
+          state: { prepareQuoteData, quoteProposalData, profileData },
+        });
+      } else {
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
 
   return (
     <>
@@ -165,11 +212,19 @@ const ViewAllQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
+
                               <Link
-                                onClick={(event) =>
-                                  handleDownloadPDF(event, quote)
+                                onClick={() =>
+                                  fetchPrepareQuoteAndProposalData(
+                                    quote?.enquiryNumber,
+                                    quote?.sellerId,
+                                    schoolId
+                                  )
                                 }
                                 className="btn btn-soft-info btn-sm"
+                                title="Download PDF"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
                               >
                                 <iconify-icon
                                   icon="solar:download-broken"

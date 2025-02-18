@@ -32,17 +32,51 @@ const TrackQuoteTable = ({}) => {
     fetchQuoteData();
   }, []);
 
+  const [existingPrepareQuotes, setExistingPrepareQuotes] = useState(new Set());
+
+  useEffect(() => {
+    const fetchPrepareQuoteData = async () => {
+      const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+      const sellerId = userDetails?.id;
+
+      if (!sellerId) {
+        console.error("Seller ID is missing");
+        return;
+      }
+
+      try {
+        const fetchedQuotes = await Promise.all(
+          quotes.map(async (quote) => {
+            const response = await getAPI(
+              `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${quote.enquiryNumber}`,
+              {},
+              true
+            );
+
+            if (
+              !response.hasError &&
+              response.data &&
+              response.data.data.length > 0
+            ) {
+              return quote.enquiryNumber;
+            }
+            return null;
+          })
+        );
+
+        setExistingPrepareQuotes(new Set(fetchedQuotes.filter(Boolean)));
+      } catch (err) {
+        console.error("Error fetching prepare quote data:", err);
+      }
+    };
+
+    fetchPrepareQuoteData();
+  }, [quotes]);
+
   const navigateToViewRequestedQuote = (event, enquiryNumber) => {
     event.preventDefault();
     navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
       state: { enquiryNumber },
-    });
-  };
-
-  const navigateToSubmitQuote = (event, product) => {
-    event.preventDefault();
-    navigate(`/seller-dashboard/procurement-services/submit-quote`, {
-      state: { product },
     });
   };
 
@@ -196,6 +230,9 @@ const TrackQuoteTable = ({}) => {
                               <div className="d-flex gap-2">
                                 <Link
                                   className="btn btn-light btn-sm"
+                                  title="View Requested Quote"
+                                  data-bs-toggle="popover"
+                                  data-bs-trigger="hover"
                                   onClick={(event) =>
                                     navigateToViewRequestedQuote(
                                       event,
@@ -209,13 +246,11 @@ const TrackQuoteTable = ({}) => {
                                   />
                                 </Link>
 
-                                <Link
+                                {/* <Link
                                   className="btn btn-danger btn-sm"
                                   title="generate pdf"
                                   data-bs-toggle="popover"
                                   data-bs-trigger="hover"
-                                  //right now i am navigating  to quote proposal page, passing the data and on that page i am generatinng pdf but now i want that without navigating to that page i want to pass the data and generate pdf buy this button i dont want to redirect
-
                                   onClick={() =>
                                     fetchPrepareQuoteAndProposalData(
                                       quote.enquiryNumber,
@@ -223,29 +258,45 @@ const TrackQuoteTable = ({}) => {
                                     )
                                   }
                                 >
-                                  Prepare Quote Proposal
-                                </Link>
+                                  Download
+                                </Link> */}
 
                                 <Link
-                                  className="btn btn-danger btn-sm"
-                                  title="Submit"
-                                  data-bs-toggle="popover"
-                                  data-bs-trigger="hover"
-                                >
-                                  Prepare Quote
-                                </Link>
-
-                                <Link
-                                  className="btn btn-success btn-sm"
-                                  title="Submit"
-                                  data-bs-toggle="popover"
-                                  data-bs-trigger="hover"
-                                  onClick={(event) =>
-                                    navigateToSubmitQuote(event, quote)
+                                  onClick={() =>
+                                    fetchPrepareQuoteAndProposalData(
+                                      quote.enquiryNumber,
+                                      quote.schoolId
+                                    )
                                   }
+                                  className="btn btn-soft-info btn-sm"
+                                  title="Download PDF"
+                                  data-bs-toggle="popover"
+                                  data-bs-trigger="hover"
                                 >
-                                  Submit Quote
+                                  <iconify-icon
+                                    icon="solar:download-broken"
+                                    className="align-middle fs-18"
+                                  />
                                 </Link>
+
+                                {!existingPrepareQuotes.has(
+                                  quote.enquiryNumber
+                                ) && (
+                                  <Link
+                                    className="btn btn-danger btn-sm"
+                                    title="Submit"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                    onClick={(event) =>
+                                      navigateToViewRequestedQuote(
+                                        event,
+                                        quote?.enquiryNumber
+                                      )
+                                    }
+                                  >
+                                    Prepare Quote
+                                  </Link>
+                                )}
                               </div>
                             </td>
                           </tr>

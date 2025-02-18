@@ -57,19 +57,6 @@ const TrackQuoteTable = ({}) => {
     });
   };
 
-  // const navigateToViewQuoteTable = (event, quote) => {
-  //   event.preventDefault();
-
-  //   console.log("Quote object:", quote);
-
-  //   const enquiryNumberToPass = quote.enquiryNumber;
-
-  //   console.log("Enquiry Number from navigate function:", enquiryNumberToPass);
-
-  //   navigate(`/school-dashboard/procurement-services/view-quote-table`, {
-  //     state: { enquiryNumber: enquiryNumberToPass },
-  //   });
-  // };
   const handleExport = () => {
     const filteredData = quotes.map((quote) => ({}));
 

@@ -32,6 +32,7 @@ import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/Procu
 
 import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewQuote/ViewQuote";
+import QuoteProposalForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/QuoteProposalForAdmin/QuoteProposalForAdmin";
 
 import BankDetailsTable from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/BankDetailsTable";
 import AddNewBankDetail from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/AddNewBankDetail/AddNewBankDetail";
@@ -62,6 +63,7 @@ import ViewRequestedQuote from "./components/DashboardMainForSchool/ProcurementS
 import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewQuote/ViewQuote";
 import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 import ViewCart from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/Cart/ViewCart";
+import QuoteProposalForSchool from "./components/DashboardMainForSchool/QuoteProposalForSchool/QuoteProposalForSchool";
 
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
@@ -253,6 +255,11 @@ const AppRoutes = () => {
           path="procurement-services/update-bank-detail"
           element={<UpdateBankDetail />}
         />
+
+        <Route
+          path="procurement-services/quote-proposal"
+          element={<QuoteProposalForAdmin />}
+        />
       </Route>
 
       {/*==============================================School Routes============================================== */}
@@ -307,6 +314,10 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/Pay-to-edprowise"
           element={<PayToEdProwiseForSchool />}
+        />
+        <Route
+          path="procurement-services/quote-proposal"
+          element={<QuoteProposalForSchool />}
         />
       </Route>
 

@@ -17,6 +17,7 @@ const TrackQuoteTable = ({}) => {
           Array.isArray(response.data.data)
         ) {
           setQuotes(response.data.data);
+          console.log("Quote data", response.data.data);
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -37,10 +38,10 @@ const TrackQuoteTable = ({}) => {
     });
   };
 
-  const navigateToViewQuoteTable = (event, enquiryNumber) => {
+  const navigateToViewQuoteTable = (event, enquiryNumber, schoolId) => {
     event.preventDefault();
     navigate(`/admin-dashboard/procurement-services/view-quote-table`, {
-      state: { enquiryNumber },
+      state: { enquiryNumber, schoolId },
     });
   };
 
@@ -148,7 +149,8 @@ const TrackQuoteTable = ({}) => {
                                   onClick={(event) =>
                                     navigateToViewRequestedQuote(
                                       event,
-                                      quote?.enquiryNumber
+                                      quote?.enquiryNumber,
+                                      quote?.schoolId
                                     )
                                   }
                                 >
@@ -163,7 +165,8 @@ const TrackQuoteTable = ({}) => {
                                   onClick={(event) =>
                                     navigateToViewQuoteTable(
                                       event,
-                                      quote?.enquiryNumber
+                                      quote?.enquiryNumber,
+                                      quote?.schoolId
                                     )
                                   }
                                 >
