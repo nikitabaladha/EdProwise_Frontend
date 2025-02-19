@@ -36,11 +36,6 @@ const TrackQuoteTable = ({}) => {
   };
 
   const navigateToViewRequestedQuote = (event, enquiryNumber) => {
-    console.log(
-      "enquiryNumber from navigate function view requested quote",
-      enquiryNumber
-    );
-
     event.preventDefault();
     navigate(`/school-dashboard/procurement-services/view-requested-quote`, {
       state: { enquiryNumber },

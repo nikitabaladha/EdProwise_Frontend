@@ -39,10 +39,10 @@ const TrackOrderHistoryTable = () => {
     fetchOrderData();
   }, []);
 
-  const navigateToViewOrder = (event, order) => {
+  const navigateToViewOrder = (event, order, enquiryNumber) => {
     event.preventDefault();
     navigate(`/admin-dashboard/procurement-services/view-order-history`, {
-      state: { order },
+      state: { order, enquiryNumber },
     });
   };
 
@@ -127,7 +127,11 @@ const TrackOrderHistoryTable = () => {
                             <div className="d-flex gap-2">
                               <Link
                                 onClick={(event) =>
-                                  navigateToViewOrder(event, order)
+                                  navigateToViewOrder(
+                                    event,
+                                    order,
+                                    order.enquiryNumber
+                                  )
                                 }
                                 className="btn btn-light btn-sm"
                               >
