@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
+import UpdateOrderDetailsModal from "./UpdateOrderDetailsModal";
 
 import { format } from "date-fns";
 
@@ -20,46 +21,66 @@ const TrackOrderHistoryTable = () => {
 
   const [orderDetails, setOrderDetails] = useState([]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedOrderNumber, setSelectedOrderNumber] = useState(null);
+
+  const fetchOrderData = async () => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const sellerId = userDetails?.id;
+
+    if (!sellerId) {
+      console.error("Seller ID is missing");
+      return;
+    }
+
+    try {
+      const response = await getAPI(
+        `/order-details-by-seller-id/${sellerId}`,
+        {},
+        true
+      );
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setOrderDetails(response.data.data);
+        console.log("Order Details", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Order details:", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrderData = async () => {
-      const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-      const sellerId = userDetails?.id;
-
-      if (!sellerId) {
-        console.error("Seller ID is missing");
-        return;
-      }
-
-      try {
-        const response = await getAPI(
-          `/order-details-by-seller-id/${sellerId}`,
-          {},
-          true
-        );
-        if (
-          !response.hasError &&
-          response.data &&
-          Array.isArray(response.data.data)
-        ) {
-          setOrderDetails(response.data.data);
-
-          console.log("Order Details", response.data.data);
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching Order details:", err);
-      }
-    };
-
     fetchOrderData();
   }, []);
+
+  const handleOrderDetailsUpdated = () => {
+    fetchOrderData();
+    closeUpdateOrderDetailsModal();
+  };
 
   const navigateToViewOrder = (event, order, enquiryNumber) => {
     event.preventDefault();
     navigate(`/seller-dashboard/procurement-services/view-order-history`, {
       state: { order, enquiryNumber },
     });
+  };
+
+  // when update modal open i want to pass order number of that perticular order
+
+  const openUpdateOrderDetailsModal = (event, orderNumber) => {
+    event.preventDefault();
+    setSelectedOrderNumber(orderNumber);
+    setIsModalOpen(true);
+  };
+
+  const closeUpdateOrderDetailsModal = () => {
+    setIsModalOpen(false);
   };
 
   const handleExport = () => {};
@@ -156,6 +177,22 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
+                              <Link
+                                onClick={(event) =>
+                                  openUpdateOrderDetailsModal(
+                                    event,
+                                    order.orderNumber
+                                  )
+                                }
+                                className="btn btn-soft-primary btn-sm"
+                                title="Edit"
+                              >
+                                <iconify-icon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
+
                               {/* <button
                                 type="button"
                                 className="btn btn-primary custom-submit-button"
@@ -200,6 +237,12 @@ const TrackOrderHistoryTable = () => {
         </div>
         {/* end row */}
       </div>
+      <UpdateOrderDetailsModal
+        isOpen={isModalOpen}
+        onClose={closeUpdateOrderDetailsModal}
+        orderNumber={selectedOrderNumber} // Fix: Pass selected order number
+        onOrderDetailsUpdated={handleOrderDetailsUpdated}
+      />
     </>
   );
 };
