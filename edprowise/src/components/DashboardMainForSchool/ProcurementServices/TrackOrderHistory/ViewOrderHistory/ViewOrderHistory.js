@@ -1,6 +1,12 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return format(new Date(dateString), "dd/MM/yyyy");
+};
 
 const ViewOrderHistory = () => {
   const navigate = useNavigate();
@@ -44,7 +50,7 @@ const ViewOrderHistory = () => {
                     <label htmlFor="nameOfSupplier" className="form-label">
                       Name Of Supplier
                     </label>
-                    <p className="form-control">{order.nameOfSupplier}</p>
+                    <p className="form-control">{order.companyName}</p>
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -55,7 +61,9 @@ const ViewOrderHistory = () => {
                     >
                       Order Date
                     </label>
-                    <p className="form-control">{order.orderDate}</p>
+                    <p className="form-control">
+                      {formatDate(order.createdAt)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -66,7 +74,7 @@ const ViewOrderHistory = () => {
                     <label htmlFor="finalPayableAmount" className="form-label">
                       Status
                     </label>
-                    <p className="form-control">{order.status}</p>
+                    <p className="form-control">{order.supplierStatus}</p>
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -77,31 +85,27 @@ const ViewOrderHistory = () => {
                     >
                       Expected Delivery Date
                     </label>
-                    <p className="form-control">{order.expectedDeliveryDate}</p>
+                    <p className="form-control">
+                      {formatDate(order.expectedDeliveryDate)}
+                    </p>
                   </div>
                 </div>
                 <div className="col-md-4">
-                  {" "}
                   <div className="mb-3">
                     <label htmlFor="actualDeliveryDate" className="form-label">
                       Actual Delivery Date
                     </label>
-                    <p className="form-control">{order.actualDeliveryDate}</p>
+                    <p className="form-control">
+                      {order.actualDeliveryDate
+                        ? formatDate(order.actualDeliveryDate)
+                        : "Null"}
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div className="row">
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="invoice" className="form-label">
-                      Invoice Number
-                    </label>
-                    <p className="form-control">{order.invoiceNo}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
+                {/* <div className="col-md-4">
                   <div className="mb-3">
                     <label htmlFor="invoice" className="form-label">
                       Download Invoice
@@ -116,24 +120,23 @@ const ViewOrderHistory = () => {
                       </a>
                     </div>
                   </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="quotedAmount" className="form-label">
-                      Invoice Amount
-                    </label>
-                    <p className="form-control">{order.invoiceAmount}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="row">
+                </div> */}
                 <div className="col-md-4">
                   <div className="mb-3">
                     <label
-                      htmlFor="advancesRequiredAmount"
+                      htmlFor="invoiceAmountToBuyer"
                       className="form-label"
                     >
+                      Invoice Amount
+                    </label>
+                    <p className="form-control">
+                      {order.totalAmountBeforeGstAndDiscount}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="mb-3">
+                    <label htmlFor="advanceAdjustment" className="form-label">
                       Advance Adjustment
                     </label>
                     <p className="form-control">{order.advanceAdjustment}</p>
@@ -147,6 +150,9 @@ const ViewOrderHistory = () => {
                     <p className="form-control">{order.tdsDeduction}</p>
                   </div>
                 </div>
+              </div>
+
+              <div className="row">
                 <div className="col-md-4">
                   <div className="mb-3">
                     <label htmlFor="finalPayableAmount" className="form-label">
@@ -156,7 +162,30 @@ const ViewOrderHistory = () => {
                   </div>
                 </div>
               </div>
-              <div className="text-end">
+              {/* <div className="text-end">
+                <button
+                  type="button"
+                  className="btn btn-primary custom-submit-button"
+                  onClick={handleNavigation}
+                >
+                  Pay to EdProwise
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary custom-submit-button"
+                  onClick={handleNavigation}
+                >
+                  Download Invoice
+                </button>
+              </div> */}
+
+              <div className="d-flex justify-content-between">
+                <button
+                  type="button"
+                  className="btn btn-primary custom-submit-button"
+                >
+                  Download Invoice
+                </button>
                 <button
                   type="button"
                   className="btn btn-primary custom-submit-button"

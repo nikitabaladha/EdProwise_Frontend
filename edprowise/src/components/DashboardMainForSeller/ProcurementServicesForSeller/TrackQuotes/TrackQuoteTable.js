@@ -6,8 +6,6 @@ import getAPI from "../../../../api/getAPI";
 
 const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
-  const [quoteProposal, setQuoteProposal] = useState(null);
-  const [prepareQuoteData, setPrepareQuoteData] = useState(null);
 
   const navigate = useNavigate();
 

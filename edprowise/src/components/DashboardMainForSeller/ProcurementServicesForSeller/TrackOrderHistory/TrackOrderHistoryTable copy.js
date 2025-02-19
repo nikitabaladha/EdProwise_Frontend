@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
-import getAPI from "../../../../api/getAPI";
-
-import { format } from "date-fns";
-
-const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
-  return format(new Date(dateString), "dd/MM/yyyy");
-};
 
 const TrackOrderHistoryTable = () => {
   const navigate = useNavigate();
@@ -18,42 +10,62 @@ const TrackOrderHistoryTable = () => {
     navigate("/seller-dashboard/procurement-services/pay-to-edprowise");
   };
 
-  const [orderDetails, setOrderDetails] = useState([]);
-
-  useEffect(() => {
-    const fetchOrderData = async () => {
-      const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-      const sellerId = userDetails?.id;
-
-      if (!sellerId) {
-        console.error("Seller ID is missing");
-        return;
-      }
-
-      try {
-        const response = await getAPI(
-          `/order-details-by-seller-id/${sellerId}`,
-          {},
-          true
-        );
-        if (
-          !response.hasError &&
-          response.data &&
-          Array.isArray(response.data.data)
-        ) {
-          setOrderDetails(response.data.data);
-
-          console.log("Order Details", response.data.data);
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching Order details:", err);
-      }
-    };
-
-    fetchOrderData();
-  }, []);
+  const [orders, setOrders] = useState([
+    {
+      id: 1,
+      orderNumber: "ORD12345678",
+      orderDate: "2023-12-01",
+      status: "Order Placed",
+      commentFromBuyer: "This is a test comment",
+      expectedDeliveryDate: "2023-12-05",
+      actualDeliveryDate: "2023-12-06",
+      taxInvoiceForBuyer: "INV12345678",
+      taxInvoiceForEdProwise: "EDP12345678",
+      invoiceAmountToBuyer: "1500",
+      taxableValue: "1300",
+      gstAmount: "200",
+      totalInvoiceAmount: "1700",
+      advanceAdjustment: "100",
+      otherCharges: "50",
+      finalReceivableFromEdProwise: "165",
+    },
+    {
+      id: 2,
+      orderNumber: "ORD12345679",
+      orderDate: "2023-12-01",
+      status: "Order Placed",
+      commentFromBuyer: "This is a test comment",
+      expectedDeliveryDate: "2023-12-05",
+      actualDeliveryDate: "2023-12-06",
+      taxInvoiceForBuyer: "INV12345678",
+      taxInvoiceForEdProwise: "EDP12345678",
+      invoiceAmountToBuyer: "1500",
+      taxableValue: "1300",
+      gstAmount: "200",
+      totalInvoiceAmount: "1700",
+      advanceAdjustment: "100",
+      otherCharges: "50",
+      finalReceivableFromEdProwise: "165",
+    },
+    {
+      id: 3,
+      orderNumber: "ORD12345680",
+      orderDate: "2023-12-01",
+      status: "Order Placed",
+      commentFromBuyer: "This is a test comment",
+      expectedDeliveryDate: "2023-12-05",
+      actualDeliveryDate: "2023-12-06",
+      taxInvoiceForBuyer: "INV12345678",
+      taxInvoiceForEdProwise: "EDP12345678",
+      invoiceAmountToBuyer: "1500",
+      taxableValue: "1300",
+      gstAmount: "200",
+      totalInvoiceAmount: "1700",
+      advanceAdjustment: "100",
+      otherCharges: "50",
+      finalReceivableFromEdProwise: "165",
+    },
+  ]);
 
   const navigateToViewOrder = (event, order) => {
     event.preventDefault();
@@ -62,7 +74,31 @@ const TrackOrderHistoryTable = () => {
     });
   };
 
-  const handleExport = () => {};
+  const handleExport = () => {
+    const filteredData = orders.map((order) => ({
+      OrderNumber: order.orderNumber,
+      OrderDate: order.orderDate,
+      Status: order.status,
+      CommentFromBuyer: order.commentFromBuyer,
+      ExpectedDeliveryDate: order.expectedDeliveryDate,
+      ActualDeliveryDate: order.actualDeliveryDate || "N/A",
+      TaxInvoiceForBuyer: order.taxInvoiceForBuyer || "N/A",
+      TaxInvoiceForEdProwise: order.taxInvoiceForEdProwise || "N/A",
+      InvoiceAmountToBuyer: order.invoiceAmountToBuyer,
+      TaxableValue: order.taxableValue,
+      GstAmount: order.gstAmount,
+      TotalInvoiceAmount: order.totalInvoiceAmount,
+      AdvanceAdjustment: order.advanceAdjustment,
+      OtherCharges: order.otherCharges,
+      FinalReceivableFromEdProwise: order.finalReceivableFromEdProwise,
+    }));
+
+    exportToExcel(filteredData, "Track Order History", "Order History Data");
+  };
+
+  if (!orders || orders.length === 0) {
+    return <div>No orders available</div>;
+  }
 
   return (
     <>
@@ -71,7 +107,10 @@ const TrackOrderHistoryTable = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All Orders List</h4>
+                <h4 className="card-title flex-grow-1">View All Orders List</h4>
+                {/* <Link className="btn btn-sm btn-primary" to="/request-order">
+                  Request Order
+                </Link> */}
                 <div className="text-end">
                   <Link
                     onClick={handleExport}
@@ -100,15 +139,26 @@ const TrackOrderHistoryTable = () => {
                           </div>
                         </th>
                         <th>Order Number</th>
+                        {/* <th>Order Date</th> */}
                         <th>Status</th>
+                        {/* <th>Comment From Buyer</th> */}
                         <th>Expected Delivery Date</th>
-                        <th>Total Invoice Amount</th>
+                        {/* <th>Actual Delivery Date</th> */}
+                        {/* <th>Tax Invoice for Buyer</th> */}
+                        {/* <th>Tax Invoice for EdProwise</th> */}
+                        <th>Invoice Amount to Buyer</th>
+                        {/* <th>Taxable Value</th> */}
+                        {/* <th>GST Amount</th> */}
+                        {/* <th>Total Invoice Amount</th> */}
+                        {/* <th>Advance Adjustment</th> */}
+                        {/* <th>Other Charges</th> */}
+                        <th>Invoice Amount</th>
                         <th>Tax Invoice</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {orderDetails.map((order) => (
+                      {orders.map((order) => (
                         <tr key={order.id}>
                           <td>
                             <div className="form-check ms-1">
@@ -126,10 +176,20 @@ const TrackOrderHistoryTable = () => {
                             </div>
                           </td>
                           <td>{order.orderNumber}</td>
-                          <td>{order.supplierStatus}</td>
-
-                          <td>{formatDate(order.expectedDeliveryDate)}</td>
-                          <td>{order.totalAmount}</td>
+                          {/* <td>{order.orderDate}</td> */}
+                          <td>{order.status}</td>
+                          {/* <td>{order.commentFromBuyer}</td> */}
+                          <td>{order.expectedDeliveryDate}</td>
+                          {/* <td>{order.actualDeliveryDate || "N/A"}</td> */}
+                          {/* <td>{order.taxInvoiceForBuyer || "N/A"}</td> */}
+                          {/* <td>{order.taxInvoiceForEdProwise || "N/A"}</td> */}
+                          <td>{order.invoiceAmountToBuyer}</td>
+                          {/* <td>{order.taxableValue}</td> */}
+                          {/* <td>{order.gstAmount}</td> */}
+                          {/* <td>{order.totalInvoiceAmount}</td> */}
+                          {/* <td>{order.advanceAdjustment}</td> */}
+                          {/* <td>{order.otherCharges}</td> */}
+                          <td>{order.invoiceAmountToBuyer}</td>
                           <td>
                             <button
                               type="button"
