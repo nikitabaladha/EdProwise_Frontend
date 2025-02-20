@@ -196,10 +196,36 @@ const ViewOrderHistory = () => {
                         htmlFor="finalPayableAmount"
                         className="form-label"
                       >
-                        Final Payable Amount
+                        Final Receivable From Edprowise
                       </label>
                       <p className="form-control">
                         {order.finalReceivableFromEdprowise}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="finalPayableAmountWithoutTDS"
+                        className="form-label"
+                      >
+                        Final Payable Amount Without TDS
+                      </label>
+                      <p className="form-control">
+                        {order.finalPayableAmountWithoutTDS}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="finalPayableAmountWithTDS"
+                        className="form-label"
+                      >
+                        Final Payable Amount With TDS
+                      </label>
+                      <p className="form-control">
+                        {order.finalPayableAmountWithTDS}
                       </p>
                     </div>
                   </div>

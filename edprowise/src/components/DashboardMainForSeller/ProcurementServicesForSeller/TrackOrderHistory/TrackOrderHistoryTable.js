@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
 import UpdateOrderDetailsModal from "./UpdateOrderDetailsModal";
+import putAPI from "../../../../api/putAPI";
 
 import { format } from "date-fns";
 
@@ -71,8 +73,6 @@ const TrackOrderHistoryTable = () => {
     });
   };
 
-  // when update modal open i want to pass order number of that perticular order
-
   const openUpdateOrderDetailsModal = (event, orderNumber) => {
     event.preventDefault();
     setSelectedOrderNumber(orderNumber);
@@ -84,6 +84,139 @@ const TrackOrderHistoryTable = () => {
   };
 
   const handleExport = () => {};
+
+  const handleUpdateOrderStatus = async (enquiryNumber, newStatus) => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const sellerId = userDetails?.id;
+
+    if (!sellerId) {
+      console.error("Seller ID is missing");
+      return;
+    }
+
+    try {
+      const response = await putAPI(
+        `/order-progress-status?enquiryNumber=${enquiryNumber}&&sellerId=${sellerId}`,
+        { supplierStatus: newStatus },
+        true
+      );
+
+      if (!response.hasError) {
+        toast.success(`Order status updated to "${newStatus}" successfully!`);
+        fetchOrderData();
+      } else {
+        toast.error(response.message || "Failed to update status");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
+    }
+  };
+
+  const fetchInvoiceDataForEdprowise = async (enquiryNumber, schoolId) => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const sellerId = userDetails?.id;
+
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
+    try {
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(
+          `/seller-dashboard/procurement-services/invoice-for-edprowise`,
+          {
+            state: { prepareQuoteData, quoteProposalData, profileData },
+          }
+        );
+      } else {
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
+
+  const fetchInvoiceDataForBuyer = async (enquiryNumber, schoolId) => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const sellerId = userDetails?.id;
+
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
+    try {
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(`/seller-dashboard/procurement-services/invoice-for-buyer`, {
+          state: { prepareQuoteData, quoteProposalData, profileData },
+        });
+      } else {
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
 
   return (
     <>
@@ -124,7 +257,6 @@ const TrackOrderHistoryTable = () => {
                         <th>Status</th>
                         <th>Expected Delivery Date</th>
                         <th>Total Invoice Amount</th>
-                        <th>Tax Invoice</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -151,15 +283,7 @@ const TrackOrderHistoryTable = () => {
 
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>{order.totalAmount}</td>
-                          <td>
-                            <button
-                              type="button"
-                              className="btn btn-primary custom-submit-button"
-                              // onClick={handleNavigation}
-                            >
-                              Prepare Invoice
-                            </button>{" "}
-                          </td>
+
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -191,6 +315,81 @@ const TrackOrderHistoryTable = () => {
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
+                              </Link>
+                              <select
+                                id="supplierStatus"
+                                name="supplierStatus"
+                                className="form-control"
+                                value={order.supplierStatus}
+                                onChange={(e) =>
+                                  handleUpdateOrderStatus(
+                                    order.enquiryNumber,
+                                    e.target.value
+                                  )
+                                }
+                                required
+                              >
+                                <option value="">Select Status</option>
+                                <option value="Work In Progress">
+                                  Work In Progress
+                                </option>
+                                <option value="Ready For Transit">
+                                  Ready For Transit
+                                </option>
+                                <option value="In-Transit">In-Transit</option>
+                                <option value="Delivered">Delivered</option>
+                              </select>
+
+                              <Link>
+                                {[
+                                  "Ready For Transit",
+                                  "In-Transit",
+                                  "Delivered",
+                                ].includes(order.supplierStatus) && (
+                                  <Link
+                                    onClick={() =>
+                                      fetchInvoiceDataForEdprowise(
+                                        order.enquiryNumber,
+                                        order.schoolId
+                                      )
+                                    }
+                                    className="btn btn-soft-info btn-sm"
+                                    title="Download PDF Invoice For Edprowise"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:download-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                )}
+                              </Link>
+
+                              <Link>
+                                {[
+                                  "Ready For Transit",
+                                  "In-Transit",
+                                  "Delivered",
+                                ].includes(order.supplierStatus) && (
+                                  <Link
+                                    onClick={() =>
+                                      fetchInvoiceDataForBuyer(
+                                        order.enquiryNumber,
+                                        order.schoolId
+                                      )
+                                    }
+                                    className="btn btn-soft-info btn-sm"
+                                    title="Download PDF Invoice For Buyer"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:download-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                )}
                               </Link>
 
                               {/* <button

@@ -3,6 +3,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import convertToWOrds from "../../../CommonFunction.js";
 
 import { format } from "date-fns";
 
@@ -25,8 +26,8 @@ const QuoteProposal = () => {
     buyerName,
     schoolContactNumber,
     schoolPanNumber,
-    deliveryAddress,
-    deliveryLocation,
+    schoolDeliveryAddress,
+    schoolDeliveryLocation,
     quoteRequestedDate,
     enquiryNumber,
     quoteNumber,
@@ -34,6 +35,28 @@ const QuoteProposal = () => {
     paymentTerms,
     advanceRequiredAmount,
     expectedDeliveryDate,
+
+    sellerCompanyName,
+    sellerAddress,
+    sellerLandmark,
+    sellerCityStateCountry,
+    sellerGstin,
+    sellerPanNumber,
+    sellerContactNumber,
+    sellerEmailId,
+
+    edprowiseCompanyName,
+    edprowiseCompanyType,
+    edprowiseGstin,
+    edprowisePan,
+    edprowiseTan,
+    edprowiseCin,
+    edprowiseAddress,
+    edprowiseCityStateCountry,
+    edprowisePincode,
+    edprowiseContactNo,
+    edprowiseAlternateContactNo,
+    edprowiseEmailId,
   } = profileData || {};
 
   // Extract total values from quoteProposalData
@@ -158,7 +181,7 @@ const QuoteProposal = () => {
                     fontWeight: "normal",
                   }}
                 >
-                  GSTIN
+                  GSTIN : {edprowiseGstin}
                 </th>
               </tr>
             </thead>
@@ -174,7 +197,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  EdProwise Tech Pvt. Ltd
+                  {edprowiseCompanyName}
                 </td>
                 <td
                   style={{
@@ -185,7 +208,7 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  PAN:
+                  PAN : {edprowisePan}
                 </td>
               </tr>
               <tr>
@@ -197,7 +220,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  Chawri Bazaar, New Delhi
+                  {edprowiseAddress}
                 </td>
 
                 <td
@@ -209,7 +232,7 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Contact No.:
+                  Contact No. : {edprowiseContactNo}
                 </td>
               </tr>
               <tr>
@@ -222,7 +245,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  Delhi, 110006, India
+                  {sellerCityStateCountry}, {edprowisePincode}
                 </td>
 
                 <td
@@ -234,7 +257,7 @@ const QuoteProposal = () => {
                     borderBottom: " 1px solid #ddd",
                   }}
                 >
-                  Email ID:
+                  Email ID : {edprowiseEmailId}
                 </td>
               </tr>
             </tbody>
@@ -263,7 +286,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  <strong>Quote to</strong>
+                  <strong>Quote to </strong>
                 </th>
                 <th
                   style={{
@@ -275,7 +298,7 @@ const QuoteProposal = () => {
                     fontWeight: "normal",
                   }}
                 >
-                  Enquiry No.: {enquiryNumber}
+                  Enquiry No. : {enquiryNumber}
                 </th>
               </tr>
             </thead>
@@ -290,7 +313,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  Buyer Name: {buyerName}
+                  Buyer Name : {buyerName}
                 </td>
                 <td
                   style={{
@@ -301,7 +324,7 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Quote Requested Date:{formatDate(quoteRequestedDate)}
+                  Quote Requested Date : {formatDate(quoteRequestedDate)}
                 </td>
               </tr>
               <tr>
@@ -313,7 +336,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  Delivery Address: {deliveryAddress}
+                  Delivery Address : {schoolDeliveryAddress}
                 </td>
 
                 <td
@@ -325,7 +348,7 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Quote No.: {quoteNumber}
+                  Quote No. : {quoteNumber}
                 </td>
               </tr>
               <tr>
@@ -337,7 +360,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  City: {deliveryLocation?.split(",")[0]}
+                  City : {schoolDeliveryLocation?.split(",")[0]}
                 </td>
 
                 <td
@@ -349,7 +372,7 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Quote/Proposal Date: {formatDate(quoteProposalDate)}
+                  Quote/Proposal Date : {formatDate(quoteProposalDate)}
                 </td>
               </tr>
               <tr>
@@ -361,7 +384,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  State: {deliveryLocation?.split(",")[1]}
+                  State : {schoolDeliveryLocation?.split(",")[1]}
                 </td>
 
                 <td
@@ -385,7 +408,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  GSTIN Buyer GSTIN :
+                  GSTIN :
                 </td>
 
                 <td
@@ -409,7 +432,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  PAN (Buyer PAN) : {schoolPanNumber}
+                  PAN : {schoolPanNumber}
                 </td>
 
                 <td
@@ -421,7 +444,6 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  {/* 2025-02-17T21:48:07.602Z */}
                   Expected Delivery Date : {formatDate(expectedDeliveryDate)}
                 </td>
               </tr>
@@ -690,7 +712,7 @@ const QuoteProposal = () => {
           >
             <div className="row p-2">
               <p>
-                <strong>Amount In Words :</strong>
+                <strong>Amount In Words : {convertToWOrds(totalAmount)}</strong>
               </p>
             </div>
           </table>
@@ -910,8 +932,11 @@ const QuoteProposal = () => {
                     border: "1px solid #ddd",
                     padding: "8px",
                     width: "10%",
+                    fontWeight: "bold",
                   }}
-                ></td>
+                >
+                  Total
+                </td>
                 <td
                   style={{
                     border: "1px solid #ddd",
@@ -1002,16 +1027,6 @@ const QuoteProposal = () => {
           </table>
         </table>
       </div>
-      {/* <button
-        onClick={downloadPDF}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          cursor: "pointer",
-        }}
-      >
-        Download PDF
-      </button> */}
     </div>
   );
 };

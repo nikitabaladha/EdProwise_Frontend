@@ -63,10 +63,11 @@ import ViewRequestedQuote from "./components/DashboardMainForSchool/ProcurementS
 import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewQuote/ViewQuote";
 import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 import ViewCart from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/Cart/ViewCart";
-import QuoteProposalForSchool from "./components/DashboardMainForSchool/QuoteProposalForSchool/QuoteProposalForSchool";
+import QuoteProposalForSchool from "./components/DashboardMainForSchool/ProcurementServices/QuoteProposalForSchool/QuoteProposalForSchool";
 
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
+import InvoiceForBuyerFromSchool from "./components/DashboardMainForSchool/ProcurementServices/InvoiceForBuyerFromSchool/InvoiceForBuyerFromSchool";
 
 import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
 
@@ -89,7 +90,7 @@ import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/Procure
 
 import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
 
-import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
+// import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
 
 // import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
 import InvoiceForEdProwise from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForEdProwise/InvoiceForEdProwise";
@@ -319,6 +320,11 @@ const AppRoutes = () => {
           path="procurement-services/quote-proposal"
           element={<QuoteProposalForSchool />}
         />
+
+        <Route
+          path="procurement-services/invoice-for-buyer"
+          element={<InvoiceForBuyerFromSchool />}
+        />
       </Route>
 
       {/* =========================================Seller Routes============================================= */}
@@ -379,10 +385,10 @@ const AppRoutes = () => {
           element={<ViewSubmittedQuote />}
         /> */}
 
-        <Route
+        {/* <Route
           path="procurement-services/prepared-quote"
           element={<PreparedQuote />}
-        />
+        /> */}
         <Route
           path="procurement-services/invoice-for-edprowise"
           element={<InvoiceForEdProwise />}

@@ -11,10 +11,14 @@ const formatDate = (dateString) => {
   return format(new Date(dateString), "dd/MM/yyyy");
 };
 
-const QuoteProposal = () => {
+const InvoiceForBuyer = () => {
   const location = useLocation();
   const { prepareQuoteData, quoteProposalData, profileData } =
     location.state || {};
+
+  console.log("prepare quote data from download page", prepareQuoteData);
+  console.log("quote proposal data from download page", quoteProposalData);
+  console.log("Buyer Profile data from download page", profileData);
 
   // Extract total values from profileData
   const {
@@ -59,7 +63,7 @@ const QuoteProposal = () => {
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("QuoteProposal.pdf");
+    pdf.save("Invoice.pdf");
   };
 
   return (
@@ -80,7 +84,6 @@ const QuoteProposal = () => {
           Download PDF
         </button>
       </div>
-
       <div
         ref={pdfRef}
         style={{
@@ -105,16 +108,30 @@ const QuoteProposal = () => {
           >
             <tbody>
               <tr>
+                {/* Tax Invoice Column */}
                 <td
                   style={{
-                    width: "100%",
+                    width: "60%",
                     textAlign: "center",
                     fontWeight: "bold",
                     fontSize: "20px",
                     border: "none",
                   }}
                 >
-                  Quote/Proposal
+                  Tax Invoice
+                </td>
+
+                {/* (Original for Recipient) Column */}
+                <td
+                  style={{
+                    width: "40%",
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                    border: "none",
+                  }}
+                >
+                  (Original for Recipient)
                 </td>
               </tr>
             </tbody>
@@ -235,7 +252,6 @@ const QuoteProposal = () => {
               </tr>
             </tbody>
           </table>
-
           <table
             style={{
               width: "100%",
@@ -259,19 +275,17 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  <strong>Quote to</strong>
+                  <strong>Consignee</strong>
                 </th>
                 <th
                   style={{
-                    borderTop: "1px solid #ddd",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
-                    width: "40%",
                     fontWeight: "normal",
                   }}
                 >
-                  Enquiry No.: {enquiryNumber}
+                  Invoice No.
                 </th>
               </tr>
             </thead>
@@ -281,12 +295,13 @@ const QuoteProposal = () => {
                   style={{
                     borderTop: "none",
                     borderBottom: "none",
+
                     padding: "8px",
                     textAlign: "left",
                   }}
                   colSpan="2"
                 >
-                  Buyer Name: {buyerName}
+                  Name: EdProwise Tech Pvt. Ltd
                 </td>
                 <td
                   style={{
@@ -297,19 +312,18 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Quote Requested Date:{formatDate(quoteRequestedDate)}
+                  Invoice Date :
                 </td>
               </tr>
               <tr>
                 <td
                   style={{
-                    border: "none",
                     padding: "8px",
                     textAlign: "left",
                   }}
                   colSpan="2"
                 >
-                  Delivery Address: {deliveryAddress}
+                  Address:
                 </td>
 
                 <td
@@ -321,45 +335,144 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Quote No.: {quoteNumber}
+                  Payment Terms :
                 </td>
               </tr>
               <tr>
                 <td
                   style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
                     border: "none",
+                  }}
+                >
+                  City:
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    borderBottom: "none",
+                    borderTop: "none",
+                    borderLeft: "none",
                     padding: "8px",
                     textAlign: "left",
                   }}
+                >
+                  State:
+                </td>
+                <td
+                  style={{
+                    borderRight: "none",
+                    borderTop: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                >
+                  Advance Amount Received :
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    border: "none",
+                  }}
+                >
+                  Contact No:
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    borderBottom: "none",
+                    borderTop: "none",
+                    borderLeft: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                >
+                  Email ID:
+                </td>
+                <td
+                  style={{
+                    padding: "8px",
+                    border: "none",
+                    width: "20%",
+                  }}
+                >
+                  GSTIN :
+                </td>
+                <td
+                  style={{
+                    border: "none",
+                    padding: "8px",
+                    width: "20%",
+                  }}
+                >
+                  Buyer GSTIN
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              marginBottom: "20px",
+              margin: "0",
+              padding: "0",
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    borderLeft: "none",
+                    borderTop: "none",
+                    borderRight: "1px solid #ddd",
+                    borderBottom: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "60%",
+                  }}
                   colSpan="2"
                 >
-                  City: {deliveryLocation?.split(",")[0]}
+                  Buyer:
+                </th>
+                <td
+                  style={{
+                    padding: "8px",
+                    width: "20%",
+                  }}
+                >
+                  PAN
                 </td>
+                <td
+                  style={{
+                    border: "none",
+                    padding: "8px",
+                    width: "20%",
+                  }}
+                >
+                  Buyer PAN
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td
+                  style={{
+                    borderTop: "none",
+                    borderBottom: "none",
 
-                <td
-                  style={{
-                    padding: "8px",
-                    textAlign: "left",
-                    borderLeft: "1px solid #ddd",
-                    borderTop: "none",
-                    borderBottom: "none",
-                  }}
-                >
-                  Quote/Proposal Date: {formatDate(quoteProposalDate)}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    border: "none",
                     padding: "8px",
                     textAlign: "left",
                   }}
                   colSpan="2"
                 >
-                  State: {deliveryLocation?.split(",")[1]}
+                  Name: EdProwise Tech Pvt. Ltd
                 </td>
-
                 <td
                   style={{
                     padding: "8px",
@@ -369,84 +482,49 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Payment Terms : {paymentTerms}
+                  All Amount are in INR :
                 </td>
               </tr>
               <tr>
                 <td
                   style={{
-                    border: "none",
+                    borderRight: "1px solid #ddd",
                     padding: "8px",
                     textAlign: "left",
                   }}
                   colSpan="2"
                 >
-                  GSTIN Buyer GSTIN :
-                </td>
-
-                <td
-                  style={{
-                    padding: "8px",
-                    textAlign: "left",
-                    borderLeft: "1px solid #ddd",
-                    borderTop: "none",
-                    borderBottom: "none",
-                  }}
-                >
-                  Advance Amount Required : {advanceRequiredAmount}
+                  Address:
                 </td>
               </tr>
               <tr>
                 <td
                   style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
                     border: "none",
-                    padding: "8px",
-                    textAlign: "left",
                   }}
-                  colSpan="2"
                 >
-                  PAN (Buyer PAN) : {schoolPanNumber}
+                  City:
                 </td>
-
                 <td
                   style={{
-                    padding: "8px",
-                    textAlign: "left",
-                    borderLeft: "1px solid #ddd",
-                    borderTop: "none",
+                    border: "1px solid #ddd",
                     borderBottom: "none",
-                  }}
-                >
-                  {/* 2025-02-17T21:48:07.602Z */}
-                  Expected Delivery Date : {formatDate(expectedDeliveryDate)}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    border: "none",
-                    padding: "8px",
-                    textAlign: "left",
-                  }}
-                  colSpan="2"
-                >
-                  Contact No. : {schoolContactNumber}
-                </td>
-                <td
-                  style={{
-                    padding: "8px",
-                    textAlign: "left",
-                    borderLeft: "1px solid #ddd",
                     borderTop: "none",
-                    borderBottom: "none",
+                    borderLeft: "none",
+                    padding: "8px",
+                    textAlign: "left",
                   }}
                 >
-                  All Amount are in INR
+                  State:
                 </td>
               </tr>
             </tbody>
           </table>
 
+          {/* calculations */}
           <table
             style={{
               width: "100%",
@@ -467,7 +545,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    width: "30%",
+                    width: "45%",
                     border: "1px solid #ddd",
                     padding: "8px",
                   }}
@@ -501,15 +579,7 @@ const QuoteProposal = () => {
                 >
                   Amt before GST & Disc
                 </th>
-                <th
-                  style={{
-                    width: "10%",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  Discount Amount
-                </th>
+
                 <th
                   style={{
                     width: "10%",
@@ -521,7 +591,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    width: "5%",
+                    width: "10%",
                     border: "1px solid #ddd",
                     padding: "8px",
                   }}
@@ -544,7 +614,7 @@ const QuoteProposal = () => {
                   </td>
                   <td
                     style={{
-                      width: "30%",
+                      width: "45%",
                       border: "1px solid #ddd",
                       padding: "8px",
                     }}
@@ -578,15 +648,7 @@ const QuoteProposal = () => {
                   >
                     {item.amountBeforeGstAndDiscount}
                   </td>
-                  <td
-                    style={{
-                      width: "10%",
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                    }}
-                  >
-                    {item.discountAmount}
-                  </td>
+
                   <td
                     style={{
                       width: "10%",
@@ -598,7 +660,7 @@ const QuoteProposal = () => {
                   </td>
                   <td
                     style={{
-                      width: "5%",
+                      width: "10%",
                       border: "1px solid #ddd",
                       padding: "8px",
                     }}
@@ -649,14 +711,6 @@ const QuoteProposal = () => {
                   }}
                 >
                   {totalAmountBeforeGstAndDiscount}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  {totalDiscountAmount}
                 </td>
                 <td
                   style={{
@@ -906,8 +960,11 @@ const QuoteProposal = () => {
                     border: "1px solid #ddd",
                     padding: "8px",
                     width: "10%",
+                    fontWeight: "bold",
                   }}
-                ></td>
+                >
+                  Total
+                </td>
                 <td
                   style={{
                     border: "1px solid #ddd",
@@ -998,18 +1055,8 @@ const QuoteProposal = () => {
           </table>
         </table>
       </div>
-      {/* <button
-        onClick={downloadPDF}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          cursor: "pointer",
-        }}
-      >
-        Download PDF
-      </button> */}
     </div>
   );
 };
 
-export default QuoteProposal;
+export default InvoiceForBuyer;

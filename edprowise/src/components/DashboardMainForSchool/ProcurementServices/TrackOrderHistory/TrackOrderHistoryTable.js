@@ -154,6 +154,27 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
+
+                              <select
+                                id="tdsAmount"
+                                name="tdsAmount"
+                                className="form-control"
+                                value={order.tdsAmount}
+                                // onChange={(e) =>
+                                //   handleUpdateTDSStatus(
+                                //     order.enquiryNumber,
+                                //     e.target.value
+                                //   )
+                                // }
+                                required
+                              >
+                                <option value="">Select TDS</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="10">10</option>
+                                <option value="20.80">20.80</option>
+                              </select>
+
                               {/* <button
                                 className="btn btn-success btn-sm"
                                 title="Pay"

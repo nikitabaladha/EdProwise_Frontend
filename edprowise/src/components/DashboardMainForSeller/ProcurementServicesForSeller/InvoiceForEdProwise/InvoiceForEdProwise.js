@@ -2,71 +2,81 @@ import React, { useRef } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+
+import { format } from "date-fns";
+import convertToWOrds from "../../../CommonFunction.js";
+
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return format(new Date(dateString), "dd/MM/yyyy");
+};
 
 const InvoiceForEdProwise = () => {
-  const [products] = useState([
-    {
-      id: 1,
-      slNo: 1,
-      description: "School Bench",
-      hsnSaac: "654321",
-      listingRate: "100000",
-      edProwiseMargin: "12",
-      qty: "100",
-      finalRateBeforeDiscount: "1125",
-      discountPercentage: "15",
-      finalRate: "956",
-      taxableValue: "95625",
-      cgstRate: "6",
-      cgstAmount: "5976",
-      sgstRate: "625",
-      sgstAmount: "5976",
-      igstRate: "12",
-      igstAmount: "11953",
-      amountBeforeGSTAndDiscount: "112500",
-      discountAmount: "16875",
-      gstAmount: "11953",
-      totalAmount: "124382",
-      productImages: "images/product1.jpg",
-    },
-    // Add more products as needed
-  ]);
+  const location = useLocation();
+  const { prepareQuoteData, quoteProposalData, profileData } =
+    location.state || {};
 
-  const taxData = [
-    {
-      hsn: "1234",
-      taxableValue: 5000,
-      cgstRate: 9,
-      cgstAmount: 450,
-      sgstRate: 9,
-      sgstAmount: 450,
-      igstRate: 18,
-      igstAmount: 0,
-      totalTaxAmount: 900,
-    },
-    {
-      hsn: "5678",
-      taxableValue: 10000,
-      cgstRate: 9,
-      cgstAmount: 900,
-      sgstRate: 9,
-      sgstAmount: 900,
-      igstRate: 18,
-      igstAmount: 0,
-      totalTaxAmount: 1800,
-    },
-    {
-      hsn: "9101",
-      taxableValue: 8000,
-      cgstRate: 9,
-      cgstAmount: 720,
-      sgstRate: 9,
-      sgstAmount: 720,
-      igstRate: 18,
-      igstAmount: 0,
-      totalTaxAmount: 1440,
-    },
-  ];
+  console.log("prepare quote data from download page", prepareQuoteData);
+  console.log("quote proposal data from download page", quoteProposalData);
+  console.log("Buyer Profile data from download page", profileData);
+
+  // Extract total values from profileData
+  const {
+    buyerName,
+    schoolContactNumber,
+    schoolPanNumber,
+    schoolDeliveryAddress,
+    schoolDeliveryLocation,
+    quoteRequestedDate,
+    enquiryNumber,
+    quoteNumber,
+    quoteProposalDate,
+    paymentTerms,
+    advanceRequiredAmount,
+    expectedDeliveryDate,
+
+    sellerCompanyName,
+    sellerAddress,
+    sellerLandmark,
+    sellerCityStateCountry,
+    sellerGstin,
+    sellerPanNumber,
+    sellerContactNumber,
+    sellerEmailId,
+
+    edprowiseCompanyName,
+    edprowiseCompanyType,
+    edprowiseGstin,
+    edprowisePan,
+    edprowiseTan,
+    edprowiseCin,
+    edprowiseAddress,
+    edprowiseCityStateCountry,
+    edprowisePincode,
+    edprowiseContactNo,
+    edprowiseAlternateContactNo,
+    edprowiseEmailId,
+
+    invoiceDate,
+    invoiceForSchool,
+    invoiceForEdprowise,
+  } = profileData || {};
+
+  // Extract total values from quoteProposalData
+  const {
+    totalQuantity,
+    totalFinalRateBeforeDiscount,
+    totalAmountBeforeGstAndDiscount,
+    totalDiscountAmount,
+    totalGstAmount,
+    totalAmount,
+    totalTaxableValue,
+    totalCgstAmount,
+    totalSgstAmount,
+    totalIgstAmount,
+    totalTaxAmount,
+  } = quoteProposalData || {};
 
   const pdfRef = useRef();
 
@@ -80,11 +90,28 @@ const InvoiceForEdProwise = () => {
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("invoice.pdf");
+    pdf.save("QuoteProposal.pdf");
   };
 
   return (
     <div className="m-2">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <button
+          onClick={downloadPDF}
+          className="btn btn-danger btn-sm"
+          title="Download PDF"
+          data-bs-toggle="popover"
+          data-bs-trigger="hover"
+        >
+          Download PDF
+        </button>
+      </div>
+
       <div
         ref={pdfRef}
         style={{
@@ -172,7 +199,7 @@ const InvoiceForEdProwise = () => {
                     fontWeight: "normal",
                   }}
                 >
-                  GSTIN
+                  GSTIN : {sellerGstin}
                 </th>
               </tr>
             </thead>
@@ -188,7 +215,7 @@ const InvoiceForEdProwise = () => {
                   }}
                   colSpan="2"
                 >
-                  Name:
+                  Name : {sellerCompanyName}
                 </td>
                 <td
                   style={{
@@ -199,7 +226,7 @@ const InvoiceForEdProwise = () => {
                     borderBottom: "none",
                   }}
                 >
-                  PAN:
+                  PAN : {sellerPanNumber}
                 </td>
               </tr>
               <tr>
@@ -211,7 +238,7 @@ const InvoiceForEdProwise = () => {
                   }}
                   colSpan="2"
                 >
-                  Address:
+                  Address : {sellerAddress}
                 </td>
 
                 <td
@@ -223,7 +250,7 @@ const InvoiceForEdProwise = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Contact No.:
+                  Contact No.: {sellerContactNumber}
                 </td>
               </tr>
               <tr>
@@ -235,7 +262,7 @@ const InvoiceForEdProwise = () => {
                     border: "none",
                   }}
                 >
-                  City:
+                  City: {sellerCityStateCountry?.split(",")[0]}
                 </td>
                 <td
                   style={{
@@ -248,7 +275,7 @@ const InvoiceForEdProwise = () => {
                     width: "30%",
                   }}
                 >
-                  State:
+                  State: {sellerCityStateCountry?.split(",")[1]}
                 </td>
                 <td
                   style={{
@@ -259,7 +286,7 @@ const InvoiceForEdProwise = () => {
                     borderBottom: " 1px solid #ddd",
                   }}
                 >
-                  Email ID:
+                  Email ID : {sellerEmailId}
                 </td>
               </tr>
             </tbody>
@@ -297,7 +324,7 @@ const InvoiceForEdProwise = () => {
                     fontWeight: "normal",
                   }}
                 >
-                  Invoice No.
+                  Invoice No. : {invoiceForEdprowise}
                 </th>
               </tr>
             </thead>
@@ -313,7 +340,7 @@ const InvoiceForEdProwise = () => {
                   }}
                   colSpan="2"
                 >
-                  Name: EdProwise Tech Pvt. Ltd
+                  Name: {edprowiseCompanyName}
                 </td>
                 <td
                   style={{
@@ -324,7 +351,7 @@ const InvoiceForEdProwise = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Invoice Date :
+                  Invoice Date : {formatDate(invoiceDate)}
                 </td>
               </tr>
               <tr>
@@ -335,7 +362,7 @@ const InvoiceForEdProwise = () => {
                   }}
                   colSpan="2"
                 >
-                  Address:
+                  Address : {edprowiseAddress}{" "}
                 </td>
 
                 <td
@@ -347,7 +374,7 @@ const InvoiceForEdProwise = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Payment Terms :
+                  Payment Terms : {paymentTerms}
                 </td>
               </tr>
               <tr>
@@ -359,7 +386,7 @@ const InvoiceForEdProwise = () => {
                     border: "none",
                   }}
                 >
-                  City:
+                  City : {edprowiseCityStateCountry?.split(",")[0]}
                 </td>
                 <td
                   style={{
@@ -371,7 +398,7 @@ const InvoiceForEdProwise = () => {
                     textAlign: "left",
                   }}
                 >
-                  State:
+                  State: {edprowiseCityStateCountry?.split(",")[1]}
                 </td>
                 <td
                   style={{
@@ -392,7 +419,7 @@ const InvoiceForEdProwise = () => {
                     border: "none",
                   }}
                 >
-                  Contact No:
+                  Contact No : {edprowiseAlternateContactNo}
                 </td>
                 <td
                   style={{
@@ -404,7 +431,7 @@ const InvoiceForEdProwise = () => {
                     textAlign: "left",
                   }}
                 >
-                  Email ID:
+                  Email ID : {edprowiseEmailId}
                 </td>
                 <td
                   style={{
@@ -413,7 +440,7 @@ const InvoiceForEdProwise = () => {
                     width: "20%",
                   }}
                 >
-                  GSTIN :
+                  GSTIN : {edprowiseGstin}
                 </td>
                 <td
                   style={{
@@ -421,9 +448,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                     width: "20%",
                   }}
-                >
-                  Buyer GSTIN
-                </td>
+                ></td>
               </tr>
             </tbody>
           </table>
@@ -450,7 +475,7 @@ const InvoiceForEdProwise = () => {
                   }}
                   colSpan="2"
                 >
-                  Buyer:
+                  Buyer
                 </th>
                 <td
                   style={{
@@ -458,7 +483,7 @@ const InvoiceForEdProwise = () => {
                     width: "20%",
                   }}
                 >
-                  PAN
+                  PAN : {edprowisePan}
                 </td>
                 <td
                   style={{
@@ -466,9 +491,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                     width: "20%",
                   }}
-                >
-                  Buyer PAN
-                </td>
+                ></td>
               </tr>
             </thead>
             <tbody>
@@ -483,7 +506,7 @@ const InvoiceForEdProwise = () => {
                   }}
                   colSpan="2"
                 >
-                  Name: EdProwise Tech Pvt. Ltd
+                  Name: {edprowiseCompanyName}
                 </td>
                 <td
                   style={{
@@ -494,7 +517,7 @@ const InvoiceForEdProwise = () => {
                     borderBottom: "none",
                   }}
                 >
-                  All Amount are in INR :
+                  All Amount are in INR
                 </td>
               </tr>
               <tr>
@@ -506,7 +529,7 @@ const InvoiceForEdProwise = () => {
                   }}
                   colSpan="2"
                 >
-                  Address:
+                  Address : {edprowiseAddress}
                 </td>
               </tr>
               <tr>
@@ -518,7 +541,7 @@ const InvoiceForEdProwise = () => {
                     border: "none",
                   }}
                 >
-                  City:
+                  City : {edprowiseCityStateCountry?.split(",")[0]}
                 </td>
                 <td
                   style={{
@@ -530,12 +553,13 @@ const InvoiceForEdProwise = () => {
                     textAlign: "left",
                   }}
                 >
-                  State:
+                  State : {edprowiseCityStateCountry?.split(",")[1]}
                 </td>
               </tr>
             </tbody>
           </table>
-          <table
+          {/* calculations */}
+          {/* <table
             style={{
               width: "100%",
               borderCollapse: "collapse",
@@ -555,12 +579,12 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    width: "50%",
+                    width: "45%",
                     border: "1px solid #ddd",
                     padding: "8px",
                   }}
                 >
-                  Description
+                  Sub Category Name
                 </th>
                 <th
                   style={{
@@ -587,8 +611,9 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  Taxable Value
+                  Amt before GST & Disc
                 </th>
+
                 <th
                   style={{
                     width: "10%",
@@ -600,7 +625,7 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    width: "5%",
+                    width: "10%",
                     border: "1px solid #ddd",
                     padding: "8px",
                   }}
@@ -610,7 +635,7 @@ const InvoiceForEdProwise = () => {
               </tr>
             </thead>
             <tbody>
-              {products.map((item, index) => (
+              {prepareQuoteData?.map((item, index) => (
                 <tr key={index}>
                   <td
                     style={{
@@ -619,25 +644,16 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.slNo}
+                    {index + 1}
                   </td>
                   <td
                     style={{
-                      width: "50%",
+                      width: "45%",
                       border: "1px solid #ddd",
                       padding: "8px",
                     }}
                   >
-                    {item.description}
-                  </td>
-                  <td
-                    style={{
-                      width: "10%",
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                    }}
-                  >
-                    {item.qty}
+                    {item.subcategoryName}
                   </td>
                   <td
                     style={{
@@ -646,7 +662,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.listingRate}
+                    {item.quantity}
                   </td>
                   <td
                     style={{
@@ -655,8 +671,18 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.taxableValue}
+                    {item.finalRateBeforeDiscount}
                   </td>
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.amountBeforeGstAndDiscount}
+                  </td>
+
                   <td
                     style={{
                       width: "10%",
@@ -668,7 +694,7 @@ const InvoiceForEdProwise = () => {
                   </td>
                   <td
                     style={{
-                      width: "5%",
+                      width: "10%",
                       border: "1px solid #ddd",
                       padding: "8px",
                     }}
@@ -702,8 +728,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {/* Calculate total taxable value */}
-                  {products.reduce((sum, item) => sum + item.taxableValue, 0)}
+                  {totalQuantity}
                 </td>
                 <td
                   style={{
@@ -711,7 +736,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {products.reduce((sum, item) => sum + item.gstAmount, 0)}
+                  {totalFinalRateBeforeDiscount}
                 </td>
                 <td
                   style={{
@@ -719,7 +744,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {products.reduce((sum, item) => sum + item.totalAmount, 0)}
+                  {totalAmountBeforeGstAndDiscount}
                 </td>
                 <td
                   style={{
@@ -727,7 +752,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {products.reduce((sum, item) => sum + item.totalAmount, 0)}
+                  {totalGstAmount}
                 </td>
                 <td
                   style={{
@@ -735,7 +760,213 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {products.reduce((sum, item) => sum + item.totalAmount, 0)}
+                  {totalAmount}
+                </td>
+              </tr>
+            </tbody>
+          </table> */}
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              textAlign: "center",
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    width: "5%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  S.L.
+                </th>
+                <th
+                  style={{
+                    width: "45%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Sub Category Name
+                </th>
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Qty
+                </th>
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Rate
+                </th>
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Taxable Value
+                </th>
+
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  GST Amt
+                </th>
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Total Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {prepareQuoteData?.map((item, index) => (
+                <tr key={index}>
+                  <td
+                    style={{
+                      width: "5%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {index + 1}
+                  </td>
+                  <td
+                    style={{
+                      width: "45%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.subcategoryName}
+                  </td>
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.quantity}
+                  </td>
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.finalRateBeforeDiscount}
+                  </td>
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.taxableValue}
+                  </td>
+
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.gstAmount}
+                  </td>
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.totalAmount}
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td
+                  style={{
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                ></td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Total
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalQuantity}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalFinalRateBeforeDiscount}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalTaxableValue}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalGstAmount}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalAmount}
                 </td>
               </tr>
             </tbody>
@@ -749,7 +980,7 @@ const InvoiceForEdProwise = () => {
           >
             <div className="row p-2">
               <p>
-                <strong>Amount In Words :</strong>
+                <strong>Amount In Words : {convertToWOrds(totalAmount)}</strong>
               </p>
             </div>
           </table>
@@ -768,7 +999,7 @@ const InvoiceForEdProwise = () => {
                     border: "none",
                     padding: "8px",
                   }}
-                  colspan="2"
+                  colSpan="2"
                 ></th>
                 <th
                   style={{
@@ -887,88 +1118,79 @@ const InvoiceForEdProwise = () => {
               </tr>
             </thead>
             <tbody>
-              {taxData.map((item, index) => (
+              {prepareQuoteData?.map((item, index) => (
                 <tr key={index}>
                   <td
                     style={{
+                      width: "30%",
                       border: "1px solid #ddd",
                       padding: "8px",
-                      width: "25%",
                     }}
                   >
-                    {item.hsn}
+                    {item.hsnSacc}
                   </td>
                   <td
                     style={{
+                      width: "10%",
                       border: "1px solid #ddd",
                       padding: "8px",
-                      width: "10%",
                     }}
                   >
                     {item.taxableValue}
                   </td>
                   <td
                     style={{
+                      width: "10%",
                       border: "1px solid #ddd",
                       padding: "8px",
-                      width: "10%",
                     }}
                   >
                     {item.cgstRate}
                   </td>
                   <td
                     style={{
+                      width: "10%",
                       border: "1px solid #ddd",
                       padding: "8px",
-                      width: "10%",
                     }}
                   >
                     {item.cgstAmount}
                   </td>
                   <td
                     style={{
+                      width: "10%",
                       border: "1px solid #ddd",
                       padding: "8px",
-                      width: "10%",
                     }}
                   >
                     {item.sgstRate}
                   </td>
                   <td
                     style={{
+                      width: "10%",
                       border: "1px solid #ddd",
                       padding: "8px",
-                      width: "10%",
                     }}
                   >
                     {item.sgstAmount}
                   </td>
                   <td
                     style={{
+                      width: "10%",
                       border: "1px solid #ddd",
                       padding: "8px",
-                      width: "10%",
                     }}
                   >
                     {item.igstRate}
                   </td>
                   <td
                     style={{
+                      width: "10%",
                       border: "1px solid #ddd",
                       padding: "8px",
-                      width: "10%",
                     }}
                   >
                     {item.igstAmount}
-                  </td>
-                  <td
-                    style={{
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                      width: "5%",
-                    }}
-                  >
-                    {item.totalTaxAmount}
                   </td>
                 </tr>
               ))}
@@ -977,67 +1199,79 @@ const InvoiceForEdProwise = () => {
                   style={{
                     border: "1px solid #ddd",
                     padding: "8px",
+                    width: "10%",
+                    fontWeight: "bold",
                   }}
                 >
-                  <strong>Total</strong>
+                  Total
                 </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                    textAlign: "left",
-                  }}
-                ></td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                    textAlign: "left",
-                  }}
-                ></td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                    textAlign: "left",
-                  }}
-                ></td>
 
                 <td
                   style={{
                     border: "1px solid #ddd",
                     padding: "8px",
-                    textAlign: "left",
+                    width: "10%",
+                  }}
+                >
+                  {totalTaxableValue}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                    width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
                     border: "1px solid #ddd",
                     padding: "8px",
-                    textAlign: "left",
+                    width: "10%",
+                  }}
+                >
+                  {totalCgstAmount}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                    width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
                     border: "1px solid #ddd",
                     padding: "8px",
-                    textAlign: "left",
+                    width: "10%",
+                  }}
+                >
+                  {totalSgstAmount}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                    width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
                     border: "1px solid #ddd",
                     padding: "8px",
-                    textAlign: "left",
+                    width: "10%",
                   }}
-                ></td>
+                >
+                  {totalIgstAmount}
+                </td>
                 <td
                   style={{
                     border: "1px solid #ddd",
                     padding: "8px",
-                    textAlign: "left",
+                    width: "5%",
                   }}
-                ></td>
+                >
+                  {totalTaxAmount}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -1062,16 +1296,6 @@ const InvoiceForEdProwise = () => {
           </table>
         </table>
       </div>
-      <button
-        onClick={downloadPDF}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          cursor: "pointer",
-        }}
-      >
-        Download PDF
-      </button>
     </div>
   );
 };

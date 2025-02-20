@@ -48,6 +48,60 @@ const ViewOrderHistory = () => {
     }
   };
 
+  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const schoolId = userDetails?.schoolId;
+
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
+    console.log("sellerId", sellerId);
+    console.log("enquiryNumber", enquiryNumber);
+    console.log("schoolId", schoolId);
+
+    try {
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(`/school-dashboard/procurement-services/invoice-for-buyer`, {
+          state: { prepareQuoteData, quoteProposalData, profileData },
+        });
+      } else {
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
+
   if (!order) {
     return <div>No order details available.</div>;
   }
@@ -142,22 +196,6 @@ const ViewOrderHistory = () => {
                 </div>
 
                 <div className="row">
-                  {/* <div className="col-md-4">
-                <div className="mb-3">
-                  <label htmlFor="invoice" className="form-label">
-                    Download Invoice
-                  </label>
-                  <div className="form-control p-0">
-                    <a
-                      href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-                      download="Invoice.pdf"
-                      className="btn btn-link"
-                    >
-                      <i className="bi bi-download"></i> Download Invoice
-                    </a>
-                  </div>
-                </div>
-              </div> */}
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
@@ -202,27 +240,17 @@ const ViewOrderHistory = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className="text-end">
-              <button
-                type="button"
-                className="btn btn-primary custom-submit-button"
-                onClick={handleNavigation}
-              >
-                Pay to EdProwise
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary custom-submit-button"
-                onClick={handleNavigation}
-              >
-                Download Invoice
-              </button>
-            </div> */}
 
                 <div className="d-flex justify-content-between">
                   <button
                     type="button"
                     className="btn btn-primary custom-submit-button"
+                    onClick={() =>
+                      fetchPrepareQuoteAndProposalData(
+                        order?.enquiryNumber,
+                        order?.sellerId
+                      )
+                    }
                   >
                     Download Invoice
                   </button>
