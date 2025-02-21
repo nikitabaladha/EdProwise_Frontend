@@ -97,6 +97,46 @@ Version:        1.0.0
   font-size: x-large !important;
 }
   */
+
+/* Modal custom css  Start*/
+
+.custom-modal .modal-body-scrollable {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.custom-modal .modal-content {
+  display: block !important;
+  width: 100%;
+}
+
+@media (max-width: 576px) {
+  .custom-modal .modal-dialog {
+    max-width: 95% !important;
+    margin: 10px auto;
+  }
+
+  .custom-modal .modal-body {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-body-scrollable {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 769px) {
+  .modal-body-scrollable {
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+/* Modal custom css End*/
+
 ul.service-suggestions.slide-text.pb-2 {
   padding: 0 13px;
 }

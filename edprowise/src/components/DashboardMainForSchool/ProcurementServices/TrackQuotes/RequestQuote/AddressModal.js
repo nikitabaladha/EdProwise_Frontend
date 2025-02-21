@@ -114,12 +114,12 @@ const AddressModal = ({ onClose, cart, formData }) => {
   };
 
   return (
-    <Modal show={true} onHide={onClose} centered>
-      <Modal.Body>
+    <Modal show={true} onHide={onClose} centered dialogClassName="custom-modal">
+      <Modal.Body className="modal-body-scrollable">
         <div className="container">
           <div className="row">
             <div className="col-xl-12">
-              <div className="card m-2">
+              <div className="card">
                 <div className="card-body custom-heading-padding">
                   <div className="container">
                     <div className="card-header mb-2">
@@ -130,7 +130,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                   </div>
                   <div className="row">
                     <div className="col-md-12">
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <label htmlFor="deliveryAddress" className="form-label">
                           Delivery Address
                         </label>
@@ -144,7 +144,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <label
                           htmlFor="deliveryLocation"
                           className="form-label"
@@ -169,7 +169,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <label htmlFor="landMark" className="form-label">
                           Landmark
                         </label>
@@ -183,7 +183,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <label htmlFor="deliveryPincode" className="form-label">
                           Pin Code
                         </label>
@@ -197,7 +197,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <label
                           htmlFor="expectedDeliveryDate"
                           className="form-label"
@@ -213,6 +213,18 @@ const AddressModal = ({ onClose, cart, formData }) => {
                         />
                       </div>
                     </div>
+                    <div className="text-end">
+                      <Button variant="success" onClick={handleSubmit}>
+                        Request Quote
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        onClick={onClose}
+                        className="ms-2"
+                      >
+                        Close
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -220,14 +232,6 @@ const AddressModal = ({ onClose, cart, formData }) => {
           </div>
         </div>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="success" onClick={handleSubmit}>
-          Request Quote
-        </Button>
-        <Button variant="secondary" onClick={onClose}>
-          Close
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };

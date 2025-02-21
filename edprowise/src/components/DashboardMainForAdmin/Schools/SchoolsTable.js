@@ -66,6 +66,7 @@ const SchoolsTable = ({
     event.preventDefault();
     navigate(`/admin-dashboard/schools/update-school`, { state: { school } });
   };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolsPerPage] = useState(5);
 
@@ -186,7 +187,6 @@ const SchoolsTable = ({
                               <div>{school.schoolName}</div>
                             </div>
                           </td>
-
                           <td>{school.schoolMobileNo}</td>
                           <td>{school.schoolEmail}</td>
                           <td>{school.panNo}</td>

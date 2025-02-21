@@ -131,6 +131,40 @@ const ViewAllQuoteTable = () => {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [schoolsPerPage] = useState(5);
+
+  const indexOfLastSchool = currentPage * schoolsPerPage;
+  const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
+  const currentSubmittedQuotes = submittedQuotes.slice(
+    indexOfFirstSchool,
+    indexOfLastSchool
+  );
+
+  const totalPages = Math.ceil(submittedQuotes.length / schoolsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const pageRange = 1;
+
+  const startPage = Math.max(1, currentPage - pageRange);
+  const endPage = Math.min(totalPages, currentPage + pageRange);
+
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
+
   return (
     <>
       <div className="container-fluid">
@@ -175,7 +209,7 @@ const ViewAllQuoteTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {submittedQuotes.map((quote) => (
+                      {currentSubmittedQuotes.map((quote) => (
                         <tr key={quote._id}>
                           <td>
                             <div className="form-check ms-1">
@@ -296,19 +330,51 @@ const ViewAllQuoteTable = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <Link className="page-link">Previous</Link>
+                      <button
+                        className="page-link"
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
+                      >
+                        Previous
+                      </button>
                     </li>
-                    <li className="page-item active">
-                      <Link className="page-link">1</Link>
-                    </li>
+                    {pagesToShow.map((page) => (
+                      <li
+                        key={page}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
+                      >
+                        {/* <button
+                          className="page-link"
+                          onClick={() => handlePageClick(page)}
+                          style={{
+                            backgroundColor:
+                              currentPage === page ? "#ff947d" : "",
+                            color: currentPage === page ? "#fff" : "#424e5a",
+                          }}
+                        >
+                          {page}
+                        </button> */}
+
+                        <button
+                          className={`page-link pagination-button ${
+                            currentPage === page ? "active" : ""
+                          }`}
+                          onClick={() => handlePageClick(page)}
+                        >
+                          {page}
+                        </button>
+                      </li>
+                    ))}
                     <li className="page-item">
-                      <Link className="page-link">2</Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link">3</Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link">Next</Link>
+                      <button
+                        className="page-link"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
                     </li>
                   </ul>
                 </nav>

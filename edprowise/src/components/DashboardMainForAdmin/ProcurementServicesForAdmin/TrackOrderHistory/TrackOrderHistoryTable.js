@@ -54,6 +54,40 @@ const TrackOrderHistoryTable = () => {
 
   const handleExport = () => {};
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [schoolsPerPage] = useState(5);
+
+  const indexOfLastSchool = currentPage * schoolsPerPage;
+  const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
+  const currentOrderDetails = orderDetails.slice(
+    indexOfFirstSchool,
+    indexOfLastSchool
+  );
+
+  const totalPages = Math.ceil(orderDetails.length / schoolsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const pageRange = 1;
+
+  const startPage = Math.max(1, currentPage - pageRange);
+  const endPage = Math.min(totalPages, currentPage + pageRange);
+
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
+
   return (
     <>
       <div className="container-fluid">
@@ -102,7 +136,7 @@ const TrackOrderHistoryTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {orderDetails.map((order) => (
+                      {currentOrderDetails.map((order) => (
                         <tr key={order.id}>
                           <td>
                             <div className="form-check ms-1">
@@ -170,24 +204,51 @@ const TrackOrderHistoryTable = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <Link className="page-link">Previous</Link>
-                    </li>
-                    <li className="page-item active">
-                      <Link
+                      <button
                         className="page-link"
-                        style={{ backgroundColor: "red", borderColor: "red" }}
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
                       >
-                        1
-                      </Link>
+                        Previous
+                      </button>
                     </li>
+                    {pagesToShow.map((page) => (
+                      <li
+                        key={page}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
+                      >
+                        {/* <button
+                          className="page-link"
+                          onClick={() => handlePageClick(page)}
+                          style={{
+                            backgroundColor:
+                              currentPage === page ? "#ff947d" : "",
+                            color: currentPage === page ? "#fff" : "#424e5a",
+                          }}
+                        >
+                          {page}
+                        </button> */}
+
+                        <button
+                          className={`page-link pagination-button ${
+                            currentPage === page ? "active" : ""
+                          }`}
+                          onClick={() => handlePageClick(page)}
+                        >
+                          {page}
+                        </button>
+                      </li>
+                    ))}
                     <li className="page-item">
-                      <Link className="page-link">2</Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link">3</Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link">Next</Link>
+                      <button
+                        className="page-link"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
                     </li>
                   </ul>
                 </nav>

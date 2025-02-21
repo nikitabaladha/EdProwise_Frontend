@@ -105,12 +105,17 @@ const UpdateOrderDetailsModal = ({
   };
 
   return (
-    <Modal show={isOpen} onHide={onClose} centered>
-      <Modal.Body>
+    <Modal
+      show={isOpen}
+      onHide={onClose}
+      centered
+      dialogClassName="custom-modal"
+    >
+      <Modal.Body className="modal-body-scrollable">
         <div className="container">
           <div className="row">
             <div className="col-xl-12">
-              <div className="card m-2">
+              <div className="card">
                 <div className="card-body custom-heading-padding">
                   <div className="container">
                     <div className="card-header mb-2">
@@ -120,7 +125,7 @@ const UpdateOrderDetailsModal = ({
                     </div>
                   </div>
                   <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
+                    <div className="mb-2">
                       <label
                         htmlFor="actualDeliveryDate"
                         className="form-label"
@@ -135,7 +140,7 @@ const UpdateOrderDetailsModal = ({
                         className="form-control"
                       />
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-2">
                       <label htmlFor="otherCharges" className="form-label">
                         Other Charges
                       </label>
@@ -148,7 +153,7 @@ const UpdateOrderDetailsModal = ({
                       />
                     </div>
 
-                    <div className="mb-3">
+                    <div className="mb-2">
                       <label
                         htmlFor="finalReceivableFromEdprowise"
                         className="form-label"
