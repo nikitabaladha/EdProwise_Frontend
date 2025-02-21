@@ -294,15 +294,15 @@ const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
   };
 
   return (
-    <Modal show={true} onHide={onClose} centered>
+    <Modal show={true} onHide={onClose} centered dialogClassName="custom-modal">
       <Modal.Body>
         <div className="container">
           <div className="row">
             <div className="col-xl-12">
-              <div className="card m-2">
+              <div className="card">
                 <div className="card-body custom-heading-padding">
                   <div className="container">
-                    <div className="card-header mb-2">
+                    <div className="card-header">
                       <h4 className="card-title text-center custom-heading-font">
                         Your Current Address Details
                       </h4>
@@ -341,7 +341,7 @@ const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <label htmlFor="landMark" className="form-label">
                           Landmark
                         </label>
@@ -355,7 +355,7 @@ const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <label htmlFor="deliveryPincode" className="form-label">
                           Pin Code
                         </label>
@@ -369,7 +369,7 @@ const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <label
                           htmlFor="expectedDeliveryDate"
                           className="form-label"
@@ -388,6 +388,18 @@ const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
                         />
                       </div>
                     </div>
+                    <div className="text-end">
+                      <Button variant="success" onClick={handleSubmit}>
+                        Place Order
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        onClick={onClose}
+                        className="ms-2"
+                      >
+                        Close
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -395,14 +407,6 @@ const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
           </div>
         </div>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="success" onClick={handleSubmit}>
-          Place Order
-        </Button>
-        <Button variant="secondary" onClick={onClose}>
-          Close
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };
