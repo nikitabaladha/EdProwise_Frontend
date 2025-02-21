@@ -244,21 +244,6 @@ const TrackQuoteTable = ({}) => {
                                   />
                                 </Link>
 
-                                {/* <Link
-                                  className="btn btn-danger btn-sm"
-                                  title="generate pdf"
-                                  data-bs-toggle="popover"
-                                  data-bs-trigger="hover"
-                                  onClick={() =>
-                                    fetchPrepareQuoteAndProposalData(
-                                      quote.enquiryNumber,
-                                      quote.schoolId
-                                    )
-                                  }
-                                >
-                                  Download
-                                </Link> */}
-
                                 <Link
                                   onClick={() =>
                                     fetchPrepareQuoteAndProposalData(

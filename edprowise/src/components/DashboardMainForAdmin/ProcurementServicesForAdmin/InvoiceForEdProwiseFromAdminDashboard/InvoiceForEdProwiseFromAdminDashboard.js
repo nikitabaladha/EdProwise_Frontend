@@ -136,10 +136,20 @@ const InvoiceForEdProwise = () => {
           >
             <tbody>
               <tr>
-                {/* Tax Invoice Column */}
                 <td
                   style={{
-                    width: "60%",
+                    width: "33%",
+                  }}
+                >
+                  <img
+                    src="/assets/images/EdProwiseLogo.png"
+                    alt="EdProwise Logo"
+                    style={{ width: "200px", height: "auto" }}
+                  />
+                </td>
+                <td
+                  style={{
+                    width: "33%",
                     textAlign: "center",
                     fontWeight: "bold",
                     fontSize: "20px",
@@ -152,10 +162,10 @@ const InvoiceForEdProwise = () => {
                 {/* (Original for Recipient) Column */}
                 <td
                   style={{
-                    width: "40%",
+                    width: "33%",
                     textAlign: "right",
                     fontWeight: "bold",
-                    fontSize: "20px",
+                    fontSize: "15px",
                     border: "none",
                   }}
                 >
@@ -559,212 +569,6 @@ const InvoiceForEdProwise = () => {
             </tbody>
           </table>
           {/* calculations */}
-          {/* <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              textAlign: "center",
-            }}
-          >
-            <thead>
-              <tr>
-                <th
-                  style={{
-                    width: "5%",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  S.L.
-                </th>
-                <th
-                  style={{
-                    width: "45%",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  Sub Category Name
-                </th>
-                <th
-                  style={{
-                    width: "10%",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  Qty
-                </th>
-                <th
-                  style={{
-                    width: "10%",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  Rate
-                </th>
-                <th
-                  style={{
-                    width: "10%",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  Amt before GST & Disc
-                </th>
-
-                <th
-                  style={{
-                    width: "10%",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  GST Amt
-                </th>
-                <th
-                  style={{
-                    width: "10%",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  Total Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {prepareQuoteData?.map((item, index) => (
-                <tr key={index}>
-                  <td
-                    style={{
-                      width: "5%",
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                    }}
-                  >
-                    {index + 1}
-                  </td>
-                  <td
-                    style={{
-                      width: "45%",
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                    }}
-                  >
-                    {item.subcategoryName}
-                  </td>
-                  <td
-                    style={{
-                      width: "10%",
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                    }}
-                  >
-                    {item.quantity}
-                  </td>
-                  <td
-                    style={{
-                      width: "10%",
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                    }}
-                  >
-                    {item.finalRateBeforeDiscount}
-                  </td>
-                  <td
-                    style={{
-                      width: "10%",
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                    }}
-                  >
-                    {item.amountBeforeGstAndDiscount}
-                  </td>
-
-                  <td
-                    style={{
-                      width: "10%",
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                    }}
-                  >
-                    {item.gstAmount}
-                  </td>
-                  <td
-                    style={{
-                      width: "10%",
-                      border: "1px solid #ddd",
-                      padding: "8px",
-                    }}
-                  >
-                    {item.totalAmount}
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <td
-                  style={{
-                    textAlign: "right",
-                    fontWeight: "bold",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                ></td>
-                <td
-                  style={{
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  Total
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  {totalQuantity}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  {totalFinalRateBeforeDiscount}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  {totalAmountBeforeGstAndDiscount}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  {totalGstAmount}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                  }}
-                >
-                  {totalAmount}
-                </td>
-              </tr>
-            </tbody>
-          </table> */}
           <table
             style={{
               width: "100%",

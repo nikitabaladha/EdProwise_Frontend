@@ -141,10 +141,20 @@ const InvoiceForBuyer = () => {
           >
             <tbody>
               <tr>
-                {/* Tax Invoice Column */}
                 <td
                   style={{
-                    width: "60%",
+                    width: "33%",
+                  }}
+                >
+                  <img
+                    src="/assets/images/EdProwiseLogo.png"
+                    alt="EdProwise Logo"
+                    style={{ width: "200px", height: "auto" }}
+                  />
+                </td>
+                <td
+                  style={{
+                    width: "33%",
                     textAlign: "center",
                     fontWeight: "bold",
                     fontSize: "20px",
@@ -157,10 +167,10 @@ const InvoiceForBuyer = () => {
                 {/* (Original for Recipient) Column */}
                 <td
                   style={{
-                    width: "40%",
+                    width: "33%",
                     textAlign: "right",
                     fontWeight: "bold",
-                    fontSize: "20px",
+                    fontSize: "15px",
                     border: "none",
                   }}
                 >

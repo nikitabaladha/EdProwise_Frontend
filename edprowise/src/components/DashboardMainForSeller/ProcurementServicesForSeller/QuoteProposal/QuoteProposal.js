@@ -17,10 +17,6 @@ const QuoteProposal = () => {
   const { prepareQuoteData, quoteProposalData, profileData } =
     location.state || {};
 
-  console.log("prepare quote data from download page", prepareQuoteData);
-  console.log("quote proposal data from download page", quoteProposalData);
-  console.log("Buyer Profile data from download page", profileData);
-
   // Extract total values from profileData
   const {
     buyerName,
@@ -134,7 +130,18 @@ const QuoteProposal = () => {
               <tr>
                 <td
                   style={{
-                    width: "100%",
+                    width: "20%",
+                  }}
+                >
+                  <img
+                    src="/assets/images/EdProwiseLogo.png"
+                    alt="EdProwise Logo"
+                    style={{ width: "200px", height: "auto" }}
+                  />
+                </td>
+                <td
+                  style={{
+                    width: "80%",
                     textAlign: "center",
                     fontWeight: "bold",
                     fontSize: "20px",
