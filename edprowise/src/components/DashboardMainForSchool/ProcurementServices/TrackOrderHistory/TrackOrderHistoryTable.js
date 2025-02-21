@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
+import putAPI from "../../../../api/putAPI";
+
+import { toast } from "react-toastify";
 
 import { format } from "date-fns";
 
@@ -16,38 +19,38 @@ const TrackOrderHistoryTable = () => {
 
   const [orderDetails, setOrderDetails] = useState([]);
 
+  const fetchOrderData = async () => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const schoolId = userDetails?.schoolId;
+
+    if (!schoolId) {
+      console.error("School ID is missing");
+      return;
+    }
+
+    try {
+      const response = await getAPI(
+        `/order-details-by-school-id/${schoolId}`,
+        {},
+        true
+      );
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setOrderDetails(response.data.data);
+
+        console.log("Order Details", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Order details:", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrderData = async () => {
-      const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-      const schoolId = userDetails?.schoolId;
-
-      if (!schoolId) {
-        console.error("School ID is missing");
-        return;
-      }
-
-      try {
-        const response = await getAPI(
-          `/order-details-by-school-id/${schoolId}`,
-          {},
-          true
-        );
-        if (
-          !response.hasError &&
-          response.data &&
-          Array.isArray(response.data.data)
-        ) {
-          setOrderDetails(response.data.data);
-
-          console.log("Order Details", response.data.data);
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching Order details:", err);
-      }
-    };
-
     fetchOrderData();
   }, []);
 
@@ -65,6 +68,31 @@ const TrackOrderHistoryTable = () => {
 
   const handleExport = () => {};
 
+  const handleUpdateTDSStatus = async (
+    enquiryNumber,
+    quoteNumber,
+    newtDSAmount
+  ) => {
+    try {
+      const response = await putAPI(
+        `/update-tds?enquiryNumber=${enquiryNumber}&&quoteNumber=${quoteNumber}`,
+        { tDSAmount: Number(newtDSAmount) }, // Ensure it's a number
+        true
+      );
+
+      if (!response.hasError) {
+        toast.success(`TDS updated to "${newtDSAmount}" successfully!`);
+        fetchOrderData();
+      } else {
+        toast.error(response.message || "Failed to update status");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
+    }
+  };
   return (
     <>
       <div className="container-fluid">
@@ -106,6 +134,7 @@ const TrackOrderHistoryTable = () => {
                         <th>Actual Delivery Date</th>
                         <th>Invoice Amount</th>
                         <th>Status</th>
+                        <th>Select TDS</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -138,6 +167,34 @@ const TrackOrderHistoryTable = () => {
                           <td>{order.totalAmountBeforeGstAndDiscount}</td>
                           <td>{order.supplierStatus}</td>
                           <td>
+                            <select
+                              id="tdsAmount"
+                              name="tdsAmount"
+                              className="form-control"
+                              value={
+                                order.tDSAmount !== null &&
+                                order.tDSAmount !== undefined
+                                  ? order.tDSAmount.toString()
+                                  : ""
+                              }
+                              onChange={(e) =>
+                                handleUpdateTDSStatus(
+                                  order.enquiryNumber,
+                                  order.quoteNumber,
+                                  e.target.value
+                                )
+                              }
+                              required
+                            >
+                              <option value="">Select TDS</option>
+                              <option value="0">0</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="10">10</option>
+                              <option value="20.8">20.8</option>
+                            </select>
+                          </td>
+                          <td>
                             <div className="d-flex gap-2">
                               <Link
                                 onClick={(event) =>
@@ -154,26 +211,6 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-
-                              <select
-                                id="tdsAmount"
-                                name="tdsAmount"
-                                className="form-control"
-                                value={order.tdsAmount}
-                                // onChange={(e) =>
-                                //   handleUpdateTDSStatus(
-                                //     order.enquiryNumber,
-                                //     e.target.value
-                                //   )
-                                // }
-                                required
-                              >
-                                <option value="">Select TDS</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="10">10</option>
-                                <option value="20.80">20.80</option>
-                              </select>
 
                               {/* <button
                                 className="btn btn-success btn-sm"

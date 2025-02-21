@@ -12,7 +12,7 @@ const formatDate = (dateString) => {
   return format(new Date(dateString), "dd/MM/yyyy");
 };
 
-const InvoiceForBuyer = () => {
+const InvoiceForEdProwise = () => {
   const location = useLocation();
   const { prepareQuoteData, quoteProposalData, profileData } =
     location.state || {};
@@ -25,13 +25,7 @@ const InvoiceForBuyer = () => {
   const {
     buyerName,
     schoolContactNumber,
-    schoolEmailId,
     schoolPanNumber,
-    schoolAddress,
-    schoolLocation,
-    schoolLandmark,
-    schoolPincode,
-
     schoolDeliveryAddress,
     schoolDeliveryLocation,
     quoteRequestedDate,
@@ -96,7 +90,7 @@ const InvoiceForBuyer = () => {
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Invoice.pdf");
+    pdf.save("QuoteProposal.pdf");
   };
 
   return (
@@ -117,6 +111,7 @@ const InvoiceForBuyer = () => {
           Download PDF
         </button>
       </div>
+
       <div
         ref={pdfRef}
         style={{
@@ -204,7 +199,7 @@ const InvoiceForBuyer = () => {
                     fontWeight: "normal",
                   }}
                 >
-                  GSTIN : {edprowiseGstin}
+                  GSTIN : {sellerGstin}
                 </th>
               </tr>
             </thead>
@@ -220,7 +215,7 @@ const InvoiceForBuyer = () => {
                   }}
                   colSpan="2"
                 >
-                  {edprowiseCompanyName}
+                  Name : {sellerCompanyName}
                 </td>
                 <td
                   style={{
@@ -231,7 +226,7 @@ const InvoiceForBuyer = () => {
                     borderBottom: "none",
                   }}
                 >
-                  PAN : {edprowisePan}
+                  PAN : {sellerPanNumber}
                 </td>
               </tr>
               <tr>
@@ -243,7 +238,7 @@ const InvoiceForBuyer = () => {
                   }}
                   colSpan="2"
                 >
-                  {edprowiseAddress}
+                  Address : {sellerAddress}
                 </td>
 
                 <td
@@ -255,7 +250,7 @@ const InvoiceForBuyer = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Contact No. : {edprowiseContactNo}
+                  Contact No.: {sellerContactNumber}
                 </td>
               </tr>
               <tr>
@@ -264,13 +259,24 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                     textAlign: "left",
                     width: "30%",
-                    borderRight: "1px solid #ddd",
+                    border: "none",
                   }}
-                  colSpan="2"
                 >
-                  {edprowiseCityStateCountry}, {edprowisePincode}
+                  City: {sellerCityStateCountry?.split(",")[0]}
                 </td>
-
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    borderBottom: "none",
+                    borderTop: "none",
+                    borderLeft: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
+                  }}
+                >
+                  State: {sellerCityStateCountry?.split(",")[1]}
+                </td>
                 <td
                   style={{
                     borderRight: "none",
@@ -280,7 +286,7 @@ const InvoiceForBuyer = () => {
                     borderBottom: " 1px solid #ddd",
                   }}
                 >
-                  Email ID : {edprowiseEmailId}
+                  Email ID : {sellerEmailId}
                 </td>
               </tr>
             </tbody>
@@ -318,7 +324,7 @@ const InvoiceForBuyer = () => {
                     fontWeight: "normal",
                   }}
                 >
-                  Invoice No. : {invoiceForSchool}
+                  Invoice No. : {invoiceForEdprowise}
                 </th>
               </tr>
             </thead>
@@ -334,7 +340,7 @@ const InvoiceForBuyer = () => {
                   }}
                   colSpan="2"
                 >
-                  Name : {buyerName}
+                  Name: {edprowiseCompanyName}
                 </td>
                 <td
                   style={{
@@ -356,7 +362,7 @@ const InvoiceForBuyer = () => {
                   }}
                   colSpan="2"
                 >
-                  Address : {schoolDeliveryAddress}
+                  Address : {edprowiseAddress}{" "}
                 </td>
 
                 <td
@@ -380,7 +386,7 @@ const InvoiceForBuyer = () => {
                     border: "none",
                   }}
                 >
-                  City : {schoolDeliveryLocation?.split(",")[0]}
+                  City : {edprowiseCityStateCountry?.split(",")[0]}
                 </td>
                 <td
                   style={{
@@ -392,7 +398,7 @@ const InvoiceForBuyer = () => {
                     textAlign: "left",
                   }}
                 >
-                  State : City :{schoolDeliveryLocation?.split(",")[1]}
+                  State: {edprowiseCityStateCountry?.split(",")[1]}
                 </td>
                 <td
                   style={{
@@ -413,7 +419,7 @@ const InvoiceForBuyer = () => {
                     border: "none",
                   }}
                 >
-                  Contact No : {schoolContactNumber}
+                  Contact No : {edprowiseAlternateContactNo}
                 </td>
                 <td
                   style={{
@@ -425,7 +431,7 @@ const InvoiceForBuyer = () => {
                     textAlign: "left",
                   }}
                 >
-                  Email ID : {schoolEmailId}
+                  Email ID : {edprowiseEmailId}
                 </td>
                 <td
                   style={{
@@ -434,7 +440,7 @@ const InvoiceForBuyer = () => {
                     width: "20%",
                   }}
                 >
-                  GSTIN :
+                  GSTIN : {edprowiseGstin}
                 </td>
                 <td
                   style={{
@@ -477,7 +483,7 @@ const InvoiceForBuyer = () => {
                     width: "20%",
                   }}
                 >
-                  PAN : {schoolPanNumber}
+                  PAN : {edprowisePan}
                 </td>
                 <td
                   style={{
@@ -500,7 +506,7 @@ const InvoiceForBuyer = () => {
                   }}
                   colSpan="2"
                 >
-                  Name : {buyerName}
+                  Name: {edprowiseCompanyName}
                 </td>
                 <td
                   style={{
@@ -523,7 +529,7 @@ const InvoiceForBuyer = () => {
                   }}
                   colSpan="2"
                 >
-                  Address : {schoolAddress}
+                  Address : {edprowiseAddress}
                 </td>
               </tr>
               <tr>
@@ -535,7 +541,7 @@ const InvoiceForBuyer = () => {
                     border: "none",
                   }}
                 >
-                  City : {schoolLocation?.split(",")[0]}
+                  City : {edprowiseCityStateCountry?.split(",")[0]}
                 </td>
                 <td
                   style={{
@@ -547,13 +553,218 @@ const InvoiceForBuyer = () => {
                     textAlign: "left",
                   }}
                 >
-                  State : {schoolLocation?.split(",")[1]}
+                  State : {edprowiseCityStateCountry?.split(",")[1]}
                 </td>
               </tr>
             </tbody>
           </table>
-
           {/* calculations */}
+          {/* <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              textAlign: "center",
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    width: "5%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  S.L.
+                </th>
+                <th
+                  style={{
+                    width: "45%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Sub Category Name
+                </th>
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Qty
+                </th>
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Rate
+                </th>
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Amt before GST & Disc
+                </th>
+
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  GST Amt
+                </th>
+                <th
+                  style={{
+                    width: "10%",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Total Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {prepareQuoteData?.map((item, index) => (
+                <tr key={index}>
+                  <td
+                    style={{
+                      width: "5%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {index + 1}
+                  </td>
+                  <td
+                    style={{
+                      width: "45%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.subcategoryName}
+                  </td>
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.quantity}
+                  </td>
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.finalRateBeforeDiscount}
+                  </td>
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.amountBeforeGstAndDiscount}
+                  </td>
+
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.gstAmount}
+                  </td>
+                  <td
+                    style={{
+                      width: "10%",
+                      border: "1px solid #ddd",
+                      padding: "8px",
+                    }}
+                  >
+                    {item.totalAmount}
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td
+                  style={{
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                ></td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  Total
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalQuantity}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalFinalRateBeforeDiscount}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalAmountBeforeGstAndDiscount}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalGstAmount}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "8px",
+                  }}
+                >
+                  {totalAmount}
+                </td>
+              </tr>
+            </tbody>
+          </table> */}
           <table
             style={{
               width: "100%",
@@ -989,8 +1200,12 @@ const InvoiceForBuyer = () => {
                     border: "1px solid #ddd",
                     padding: "8px",
                     width: "10%",
+                    fontWeight: "bold",
                   }}
-                ></td>
+                >
+                  Total
+                </td>
+
                 <td
                   style={{
                     border: "1px solid #ddd",
@@ -1085,4 +1300,4 @@ const InvoiceForBuyer = () => {
   );
 };
 
-export default InvoiceForBuyer;
+export default InvoiceForEdProwise;

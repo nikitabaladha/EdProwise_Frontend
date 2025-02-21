@@ -39,10 +39,16 @@ const TrackOrderHistoryTable = () => {
     fetchOrderData();
   }, []);
 
-  const navigateToViewOrder = (event, order, enquiryNumber) => {
+  const navigateToViewOrder = (
+    event,
+    order,
+    enquiryNumber,
+    schoolId,
+    sellerId
+  ) => {
     event.preventDefault();
     navigate(`/admin-dashboard/procurement-services/view-order-history`, {
-      state: { order, enquiryNumber },
+      state: { order, enquiryNumber, schoolId, sellerId },
     });
   };
 
@@ -130,7 +136,9 @@ const TrackOrderHistoryTable = () => {
                                   navigateToViewOrder(
                                     event,
                                     order,
-                                    order.enquiryNumber
+                                    order.enquiryNumber,
+                                    order.schoolId,
+                                    order.sellerId
                                   )
                                 }
                                 className="btn btn-light btn-sm"

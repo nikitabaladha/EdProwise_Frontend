@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
 import getAPI from "../../../../../api/getAPI";
@@ -16,6 +17,11 @@ const ViewOrderHistory = () => {
   const order = location.state?.order;
 
   const enquiryNumber = location.state?.enquiryNumber;
+
+  const schoolId = location.state?.schoolId;
+  const sellerId = location.state?.sellerId;
+
+  const navigate = useNavigate();
 
   const [quote, setQuote] = useState([]);
 
@@ -42,6 +48,103 @@ const ViewOrderHistory = () => {
   if (!order) {
     return <div>No order details available.</div>;
   }
+
+  const fetchInvoiceDataForEdprowise = async () => {
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
+    try {
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(
+          `/admin-dashboard/procurement-services/invoice-for-edprowise`,
+          {
+            state: { prepareQuoteData, quoteProposalData, profileData },
+          }
+        );
+      } else {
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
+
+  const fetchInvoiceDataForBuyer = async () => {
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
+    try {
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(`/admin-dashboard/procurement-services/invoice-for-buyer`, {
+          state: { prepareQuoteData, quoteProposalData, profileData },
+        });
+      } else {
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
 
   return (
     <>
@@ -232,12 +335,49 @@ const ViewOrderHistory = () => {
                 </div>
 
                 <div className="d-flex justify-content-between">
-                  <button
-                    type="button"
-                    className="btn btn-primary custom-submit-button"
-                  >
-                    Tax Invoice For Buyer
-                  </button>
+                  <Link>
+                    {["Ready For Transit", "In-Transit", "Delivered"].includes(
+                      order.supplierStatus
+                    ) && (
+                      <Link
+                        onClick={
+                          () => fetchInvoiceDataForEdprowise()
+                          // i want pass enquiryNumber , sellerId and , schoolId what ever is present in location.state
+                        }
+                        className="btn btn-soft-info btn-sm"
+                        title="Download PDF Invoice For Edprowise"
+                        data-bs-toggle="popover"
+                        data-bs-trigger="hover"
+                      >
+                        Download Invoice For Edprowise {}
+                        <iconify-icon
+                          icon="solar:download-broken"
+                          className="align-middle fs-18"
+                        />{" "}
+                      </Link>
+                    )}
+                  </Link>
+
+                  <Link>
+                    {["Ready For Transit", "In-Transit", "Delivered"].includes(
+                      order.supplierStatus
+                    ) && (
+                      <Link
+                        onClick={() => fetchInvoiceDataForBuyer()}
+                        className="btn btn-soft-info btn-sm"
+                        title="Download PDF Invoice For Buyer"
+                        data-bs-toggle="popover"
+                        data-bs-trigger="hover"
+                      >
+                        Download Invoice For Buyer {}
+                        <iconify-icon
+                          icon="solar:download-broken"
+                          className="align-middle fs-18"
+                        />{" "}
+                      </Link>
+                    )}
+                  </Link>
+
                   <button
                     type="button"
                     className="btn btn-primary custom-submit-button"

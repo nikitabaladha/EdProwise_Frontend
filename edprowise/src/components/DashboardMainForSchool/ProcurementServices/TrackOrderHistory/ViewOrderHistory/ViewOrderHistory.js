@@ -48,7 +48,7 @@ const ViewOrderHistory = () => {
     }
   };
 
-  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+  const fetchInvoiceDataForBuyer = async (enquiryNumber, sellerId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
@@ -56,10 +56,6 @@ const ViewOrderHistory = () => {
       console.error("Seller ID, Enquiry Number, or School ID is missing");
       return;
     }
-
-    console.log("sellerId", sellerId);
-    console.log("enquiryNumber", enquiryNumber);
-    console.log("schoolId", schoolId);
 
     try {
       // Fetch Prepare Quote data
@@ -219,10 +215,10 @@ const ViewOrderHistory = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="commentFromBuyer" className="form-label">
-                        TDS/Any Other Deduction
+                      <label htmlFor="tDSAmount" className="form-label">
+                        TDS Amount
                       </label>
-                      <p className="form-control">{order.tdsDeduction}</p>
+                      <p className="form-control">{order.tDSAmount}</p>
                     </div>
                   </div>
                 </div>
@@ -231,29 +227,57 @@ const ViewOrderHistory = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
-                        htmlFor="finalPayableAmount"
+                        htmlFor="finalPayableAmountWithoutTDS"
                         className="form-label"
                       >
-                        Final Payable Amt
+                        Final Payable Amt Without TDS
                       </label>
-                      <p className="form-control">{order.finalPayableAmount}</p>
+                      <p className="form-control">
+                        {order.finalPayableAmountWithoutTDS}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="finalPayableAmountWithTDS"
+                        className="form-label"
+                      >
+                        Final Payable Amt With TDS
+                      </label>
+                      <p className="form-control">
+                        {order.finalPayableAmountWithTDS}
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 <div className="d-flex justify-content-between">
-                  <button
-                    type="button"
-                    className="btn btn-primary custom-submit-button"
-                    onClick={() =>
-                      fetchPrepareQuoteAndProposalData(
-                        order?.enquiryNumber,
-                        order?.sellerId
-                      )
-                    }
-                  >
-                    Download Invoice
-                  </button>
+                  <Link>
+                    {["Ready For Transit", "In-Transit", "Delivered"].includes(
+                      order.supplierStatus
+                    ) && (
+                      <Link
+                        onClick={() =>
+                          fetchInvoiceDataForBuyer(
+                            order?.enquiryNumber,
+                            order?.sellerId
+                          )
+                        }
+                        className="btn btn-soft-info btn-sm"
+                        title="Download PDF Invoice For Buyer"
+                        data-bs-toggle="popover"
+                        data-bs-trigger="hover"
+                      >
+                        Download Invoice For Buyer {}
+                        <iconify-icon
+                          icon="solar:download-broken"
+                          className="align-middle fs-18"
+                        />{" "}
+                      </Link>
+                    )}
+                  </Link>
+
                   <button
                     type="button"
                     className="btn btn-primary custom-submit-button"

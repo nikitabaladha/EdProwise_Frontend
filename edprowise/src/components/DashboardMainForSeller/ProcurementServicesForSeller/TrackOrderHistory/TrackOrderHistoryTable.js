@@ -257,6 +257,7 @@ const TrackOrderHistoryTable = () => {
                         <th>Status</th>
                         <th>Expected Delivery Date</th>
                         <th>Total Invoice Amount</th>
+
                         <th>Action</th>
                       </tr>
                     </thead>

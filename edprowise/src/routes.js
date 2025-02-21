@@ -33,6 +33,8 @@ import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/Procu
 import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewQuote/ViewQuote";
 import QuoteProposalForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/QuoteProposalForAdmin/QuoteProposalForAdmin";
+import InvoiceForEdProwiseFromAdminDashboard from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/InvoiceForEdProwiseFromAdminDashboard/InvoiceForEdProwiseFromAdminDashboard";
+import InvoiceForBuyerFromAdminDashboard from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/InvoiceForBuyerFromAdminDashboard/InvoiceForBuyerFromAdminDashboard";
 
 import BankDetailsTable from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/BankDetailsTable";
 import AddNewBankDetail from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/AddNewBankDetail/AddNewBankDetail";
@@ -260,6 +262,16 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/quote-proposal"
           element={<QuoteProposalForAdmin />}
+        />
+
+        <Route
+          path="procurement-services/invoice-for-edprowise"
+          element={<InvoiceForEdProwiseFromAdminDashboard />}
+        />
+
+        <Route
+          path="procurement-services/invoice-for-buyer"
+          element={<InvoiceForBuyerFromAdminDashboard />}
         />
       </Route>
 
