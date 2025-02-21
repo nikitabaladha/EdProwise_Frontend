@@ -26,38 +26,37 @@ const PressMediaSection = () => {
   ];
 
   return (
-    <section
-      className="wpo-blog-section section-padding pt-lg-3 pb-lg-2 pt-mb-2 pb-mb-1"
-      id="blog"
-      style={{ background: "#fcf9ef" }}
-    >
+    <section className="wpo-blog-section section-padding pt-lg-3 pb-lg-2 pt-mb-2 pb-mb-1" id="blog"  style={{ background: "#fcf9ef" }}>
       <div className="container edprowise-choose-container">
+      
         <div className="wpo-blog-items">
-          <div className="row-web">
-            {blogPosts.map((post, index) => (
-              <div key={index} className="col col-lg-4 col-md-6 col-6 ">
-                <div className="wpo-blog-item mb-lg-3 blog-item-custom">
-                  <div className="wpo-blog-img">
-                    <img src={post.image} alt={post.title} />
-                  </div>
-                  <div className="wpo-blog-content">
-                    <ul className="blog-list-ul">
-                      <li>{post.date}</li>
-                      <li>
-                        By <a>{post.author}</a>
-                      </li>
-                    </ul>
-                    <h2 className="font-weight-web-h2">
-                      <a>{post.title}</a>
-                    </h2>
-                    <a className="more">Continue Reading</a>
-                  </div>
-                </div>
-              </div>
-            ))}
+    <div className="row-web">
+      {blogPosts.map((post, index) => (
+        <div key={index} className="col col-lg-4 col-md-6 col-6 ">
+          <div className="wpo-blog-item mb-lg-3 blog-item-custom">
+            <div className="wpo-blog-img">
+              <img src={post.image} alt={post.title} />
+            </div>
+            <div className="wpo-blog-content">
+              <ul className="blog-list-ul">
+                <li>{post.date}</li>
+                <li>
+                  By <a >{post.author}</a>
+                </li>
+              </ul>
+              <h2 className="font-weight-web-h2">
+                <a >{post.title}</a>
+              </h2>
+              <a  className="more">
+                Continue Reading
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      ))}
+    </div>
+    </div>
+    </div>
     </section>
   );
 };

@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-
+import { GiThreeFriends } from "react-icons/gi";
+import { FaStore } from "react-icons/fa";
+import { FaShieldAlt } from "react-icons/fa";
+import { PiMedalBold } from "react-icons/pi";
+import { GiDiamondTrophy } from "react-icons/gi";
+import { GiTeamIdea } from "react-icons/gi";
 const WhyChooseEdProwise = () => {
   const carouselRef = useRef(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
@@ -8,7 +13,7 @@ const WhyChooseEdProwise = () => {
     {
       id: 1,
       className: "s1",
-      iconClass: "fi flaticon-user-experience",
+      iconClass: <GiThreeFriends />,
       title: "Connect Ecosystem",
       description:
         "The Central Dashboard offers real-time access to vital information, including student performance, attendance, and fee status. This enhances communication and collaboration among principals, teachers, management, and parents, supporting student success.",
@@ -16,7 +21,7 @@ const WhyChooseEdProwise = () => {
     {
       id: 2,
       className: "s2",
-      iconClass: "fi flaticon-megaphone",
+      iconClass: <FaStore />,
       title: "Marketplace For School",
       description:
         "Marketplace for wide range of services including technology integration, administrative solutions, educational consultation, and professional development, providing holistic support tailored to enhanceevery aspect of educational operations",
@@ -24,7 +29,7 @@ const WhyChooseEdProwise = () => {
     {
       id: 3,
       className: "s3",
-      iconClass: "fi flaticon-code",
+      iconClass:<FaShieldAlt />,
       title: "Zero Leakage Of Fees",
       description:
         "Through meticulous reconciliation of school fees, we guarantee zero leakage. Our detailed analysis identifies the gap between fees due and fees collected, enabling us to swiftly address any discrepancie",
@@ -32,7 +37,7 @@ const WhyChooseEdProwise = () => {
     {
       id: 4,
       className: "s4",
-      iconClass: "fi flaticon-knowledge",
+      iconClass: <GiDiamondTrophy />,
       title: "Expertise In Educational Solutions",
       description:
         "With a dedicated focus on the education sector, we brings deep expertise and understanding of the unique needs and challenges faced by educational institutions.",
@@ -40,7 +45,7 @@ const WhyChooseEdProwise = () => {
     {
       id: 5,
       className: "s5",
-      iconClass: "fi flaticon-user-experience",
+      iconClass: <PiMedalBold />,
       title: "Commitment To Excellence",
       description:
         "Our commitment to excellence is reflected in our mission to empower educational institutions with transformative solutions that enable them to achieve their goals effectively and sustainably",
@@ -48,7 +53,7 @@ const WhyChooseEdProwise = () => {
     {
       id: 6,
       className: "s6",
-      iconClass: "fi flaticon-knowledge",
+      iconClass: <GiTeamIdea /> ,
       title: "Innovative Approach",
       description:
         "We leverage innovative technologies and strategic insights to deliver solutions that drive efficiency, improve learning outcomes, and foster continuous improvement within educational setting.",
@@ -171,7 +176,8 @@ const WhyChooseEdProwise = () => {
               <div className="wpo-courses-item">
                 <div className="wpo-courses-text">
                   <div className="courses-icon">
-                    <i className={item.iconClass}></i>
+                  {item.iconClass}
+                    {/* <i className={item.iconClass}></i> */}
                   </div>
                   <h2 className="font-weight-web-h2">
                     <a href="#">{item.title}</a>

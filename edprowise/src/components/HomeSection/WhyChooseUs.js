@@ -1,36 +1,46 @@
 import React, { useState } from "react";
-
+import { TbSortAZ } from "react-icons/tb";
+import { GiCutDiamond } from "react-icons/gi";
+import { MdOutlineManageHistory } from "react-icons/md";
+import { HiLightBulb } from "react-icons/hi";
+import { BsRocketFill } from "react-icons/bs";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { LuBoxes } from "react-icons/lu";
+import { FaShippingFast } from "react-icons/fa";
 const WhyChooseUs = () => {
   const [activeTab, setActiveTab] = useState("buyer");
 
   const chooseDataBuyer = [
     {
       id: 1,
-      iconClass: "fi flaticon-user-experience",
+      iconClass: <TbSortAZ />,
       title: "A to Z Services",
-      description: "Marketplace for school. Whatever You Need, We Provide",
+      description:
+       "Marketplace for school. Whatever You Need, We Provide",
       classNameS: "s1",
     },
     {
       id: 2,
-      iconClass: "fi flaticon-megaphone",
+      iconClass: <GiCutDiamond />,
       title: "Specialization",
       description:
-        "Deep expertise & understanding of the unique needs & challenges faced by educational institutions .",
+       "Deep expertise & understanding of the unique needs & challenges faced by educational institutions .",
       classNameS: "s2",
     },
     {
       id: 3,
-      iconClass: "fi flaticon-code",
+      iconClass: <MdOutlineManageHistory />,
       title: "Efficient Operation",
-      description: "Streamlining operations with efficient management systems.",
+      description:
+        "Streamlining operations with efficient management systems.",
       classNameS: "s3",
     },
     {
       id: 4,
-      iconClass: "fi flaticon-knowledge",
+      iconClass: <HiLightBulb />,
       title: "Innovative Approach",
-      description: "Innovative school management ERP & Dedicated to fostering.",
+      description:
+      "Innovative school management ERP & Dedicated to fostering.",
       classNameS: "s4",
     },
   ];
@@ -38,14 +48,15 @@ const WhyChooseUs = () => {
   const chooseDataSupplier = [
     {
       id: 1,
-      iconClass: "fi flaticon-user-experience",
+      iconClass: <BsRocketFill />,
       title: "Grow Your Business",
-      description: "Get access to a global buyer base and grow 3X and more.",
+      description:
+        "Get access to a global buyer base and grow 3X and more.",
       classNameS: "s1",
     },
     {
       id: 2,
-      iconClass: "fi flaticon-megaphone",
+      iconClass: <FaMoneyBillTransfer />,
       title: "Advance Payments",
       description:
         "Get your payments upfront and let us worry about the credit.",
@@ -53,16 +64,18 @@ const WhyChooseUs = () => {
     },
     {
       id: 3,
-      iconClass: "fi flaticon-code",
+      iconClass: <LuBoxes />,
       title: "High Order Volumes",
-      description: "Get bigger order volumes from our large global buyer base.",
+      description:
+        "Get bigger order volumes from our large global buyer base.",
       classNameS: "s3",
     },
     {
       id: 4,
-      iconClass: "fi flaticon-knowledge",
+      iconClass:<FaShippingFast />,
       title: "Fulfillment Services",
-      description: "End-to-end managed logistics while you focus on business.",
+      description:
+       "End-to-end managed logistics while you focus on business.",
       classNameS: "s4",
     },
   ];
@@ -77,9 +90,7 @@ const WhyChooseUs = () => {
           <div className="row-web">
             <div className="col-12">
               <div className="wpo-section-title-s2">
-                <h2 className="font-family-web">
-                  Maximizing Value for Buyers & Sellers
-                </h2>
+                <h2 className="font-family-web">Maximizing Value for Buyers & Sellers</h2>
               </div>
             </div>
           </div>
@@ -116,7 +127,8 @@ const WhyChooseUs = () => {
                   <div className="wpo-courses-item category-itemm">
                     <div className="wpo-courses-text">
                       <div className="courses-icon category-icons">
-                        <i className={item.iconClass}></i>
+                      {item.iconClass}
+                        {/* <i className={item.iconClass}></i> */}
                       </div>
                       <h2 className="category-h2 font-weight-web-h2">
                         <a>{item.title}</a>
@@ -143,7 +155,8 @@ const WhyChooseUs = () => {
                   <div className="wpo-courses-item category-itemm">
                     <div className="wpo-courses-text">
                       <div className="courses-icon category-icons">
-                        <i className={item.iconClass}></i>
+                      {item.iconClass}
+                        {/* <i className={item.iconClass}></i> */}
                       </div>
                       <h2 className="category-h2 font-weight-web-h2">
                         <a>{item.title}</a>

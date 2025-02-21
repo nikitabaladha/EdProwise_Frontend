@@ -1,10 +1,19 @@
 import react, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
+import { RiEmotionHappyLine } from "react-icons/ri";
+import { FaHandsHelping } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa6";
+import { TbReportSearch } from "react-icons/tb";
+import { IoIosSend } from "react-icons/io";
 const HomeMainSection = () => {
   const slideTrackRef = useRef(null);
   const [counter, setCounter] = useState(0);
-  const words = ["Transforming", "Unlocking", "Redifining", "Nurturing"];
+  const words = [
+    "Transforming",
+    "Unlocking",
+    "Redifining",
+    "Nurturing",
+  ];
   const intervalTime = 3000;
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef(null);
@@ -81,6 +90,9 @@ const HomeMainSection = () => {
     }
   };
 
+
+
+
   const handleMouseEnter = (index) => {
     setActiveIndex(index);
   };
@@ -110,42 +122,62 @@ const HomeMainSection = () => {
   const featuresData = [
     {
       id: 1,
-      icon: "fi flaticon-training-1",
+      icon: <RiEmotionHappyLine />,
       title: "5+ Happy Clients ",
-      // description:
-      //   "We take pride in our ability to deliver tailored courses and comprehensive training programs that effectively meet the unique and evolving needs of each client, ensuring satisfaction, measurable outcomes, and sustainable, long-term growth opportunities.",
-      // hiddenDescription:
-      //   "We take pride in our ability to deliver tailored courses and comprehensive training programs that effectively meet the unique and evolving needs of each client, ensuring satisfaction, measurable outcomes, and sustainable, long-term growth opportunities.",
     },
     {
       id: 2,
-      icon: "fi flaticon-team",
+      icon: <FaHandsHelping />,
       title: "99% Full Loyalty",
-      // description:
-      //   "Our dedication to building long-term relationships, delivering exceptional services, and providing unmatched value has resulted in a perfect client retention rate, demonstrating trust, reliability, and client satisfaction.",
-      // hiddenDescription:
-      //   "Our dedication to building long-term relationships, delivering exceptional services, and providing unmatched value has resulted in a perfect client retention rate, demonstrating trust, reliability, and client satisfaction.",
     },
     {
       id: 3,
-      icon: "fi flaticon-video-lesson",
+      icon: <FaUsers />,
       title: "5K+ Users",
-      // description:
-      //   "Join our community of over 20,000 users who trust our platform to learn, grow, and achieve their goals with high-quality courses, valuable resources, expert guidance, personalized assistance, and continuous support.",
-      // hiddenDescription:
-      //   "Join our community of over 20,000 users who trust our platform to learn, grow, and achieve their goals with high-quality courses, valuable resources, expert guidance, personalized assistance, and continuous support.",
     },
     {
       id: 4,
-      icon: "fi flaticon-training",
+      icon: <TbReportSearch />,
       title: "100+ Reports",
-      // description:
-      //   "Unlock powerful insights with our 100+ dashboards and reports designed to provide actionable data for informed, strategic decision-making and improved overall performance outcomes and efficiency.",
-      // hiddenDescription:
-      // "Unlock powerful insights with our 100+ dashboards and reports designed to provide actionable data for informed, strategic decision-making and improved overall performance outcomes and efficiency.",
     },
   ];
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
+  const searchBoxRef = useRef(null); // To handle click outside
+
+  const serviceData = [
+    { title: "School Fees Management Software - Pixel Fees" },
+    { title: "Web Development" },
+    { title: "App Development" },
+    { title: "SEO Optimization" },
+    { title: "Content Writing" },
+    { title: "Graphic Design" },
+    { title: "Social Media Management" },
+    { title: "Data Analytics" },
+    { title: "Cyber Security" },
+    { title: "Cloud Computing" },
+  ];
+
+  // Filter services based on search query
+  const filteredServices = searchQuery
+    ? serviceData.filter((service) =>
+      service.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    : serviceData.slice(0, 7); // Show first 7 by default
+
+  // Handle click outside to close the search box
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
+        setIsExpanded(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
   return (
     <>
       <section className="slider-section pb-0">
@@ -181,19 +213,62 @@ const HomeMainSection = () => {
                   </h2>
                 </div>
                 <div data-swiper-parallax="400" class="slide-text">
-                  <p className="text-black">
-                    Inspiring growth, fostering innovation, shaping the future,
-                    and cultivating success in education.
-                  </p>
+                  <p className="text-black">Inspiring growth, fostering innovation, shaping the future, and cultivating success in education.</p>
                 </div>
 
                 {/* Slide Text */}
                 <div data-swiper-parallax="400" className="slide-text">
-                  <p className="font-family-web"></p>
+                  <p className="font-family-web">
+
+                  </p>
+                </div>
+
+                <div className="serach-expand slide-text" ref={searchBoxRef}>
+                  <div
+                    className="searchbox-wrap slide-text"
+                    data-swiper-parallax="400"
+                  >
+                    <input
+                      className="home-search-input"
+                      type="text"
+                      placeholder="Search Our Services..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onClick={() => setIsExpanded(true)}
+                    />
+                    <button>
+                      <span className="font-family-web">Search</span>
+                    </button>
+                  </div>
+                  {/* Service suggestions dropdown list-unstyled */}
+                  {isExpanded && (
+                    <ul className="service-suggestions slide-text pb-2  "> 
+                      {filteredServices.length > 0 ? (
+                        filteredServices.map((service, index) => (
+                         <li className="d-flex justify-content-between mb-1 align-item-center pl-2 ">
+                           <div
+                            key={index}
+                            className="service-item pl-1"
+                            onClick={() => {
+                              setSearchQuery(service.title);
+                              setIsExpanded(false);
+                            }}
+                          >
+                            {service.title}
+                          </div>
+                          <span className=""><IoIosSend /></span>
+                         </li>
+                        ))
+                      ) : (
+                        <div className="no-results">No services found</div>
+                      )}
+                    </ul>
+                  )}
                 </div>
 
                 {/* Search Box */}
-                <div
+                {/* <div className="serach-expand">
+                 <div
                   className="searchbox-wrap slide-text"
                   data-swiper-parallax="400"
                 >
@@ -201,7 +276,11 @@ const HomeMainSection = () => {
                   <button>
                     <span className="font-family-web">Search</span>
                   </button>
-                </div>
+                </div> 
+              </div> */}
+
+
+
 
                 {/* Call-to-Action Button */}
                 <div data-swiper-parallax="500" className="slide-btns">
@@ -259,43 +338,48 @@ const HomeMainSection = () => {
               {featuresData.map((feature, index) => (
                 <div
                   key={feature.id}
-                  className={`col col-lg-3 col-md-6 col-12 carousel-itemm ${
-                    index === currentIndex ? "active" : "item"
-                  }`}
+                  className={`col col-lg-3 col-md-6 col-12 carousel-itemm ${index === currentIndex ? "active" : "item"
+                    }`}
                   onMouseEnter={() => handleMouseEnter(index)}
                   onMouseLeave={handleMouseLeave}
                 >
                   <div
-                    className={`feature-item-wrap ${
-                      window.innerWidth <= 992
+                    className={`feature-item-wrap ${window.innerWidth <= 992
                         ? index === currentIndex
                           ? "active"
                           : ""
                         : activeIndex === index
-                        ? "active"
-                        : ""
-                    }`}
+                          ? "active"
+                          : ""
+                      }`}
                   >
                     <div className="feature-item d-flex feature-itemm-small">
                       <div className="icon">
+                        {/* <FontAwesomeIcon icon="fa-solid fa-face-smile" />        */}
+                        {/* <RiEmotionHappyLine /> */}
+                        {feature.icon}
+
                         <i className={feature.icon}></i>
                       </div>
                       <div className="feature-text align-content-center m-2">
                         <h2 className="font-weight-web-h2 mb-0">
-                          <a className="feature-title-color">{feature.title}</a>
+                          <a className="feature-title-color" >{feature.title}</a>
                         </h2>
                         {/* <p>{feature.description}</p> */}
                       </div>
                     </div>
                     <div className="feature-item-hidden d-flex feature-itemm-small">
                       <div className="icon">
-                        <i className={feature.icon}></i>
+                        {feature.icon}
+
+                        {/* <i className={feature.icon}></i> */}
                       </div>
                       <div className="feature-text align-content-center m-2">
                         <h2 className="font-weight-web-h2 mb-0">
                           <a href={feature.link}>{feature.title}</a>
                         </h2>
                         {/* <p>{feature.hiddenDescription}</p> */}
+
                       </div>
                     </div>
                   </div>

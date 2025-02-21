@@ -10,6 +10,7 @@
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
+    "date-fns": "^4.1.0",
     "edprowise": "file:",
     "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",

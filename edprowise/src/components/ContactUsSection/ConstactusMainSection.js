@@ -1,147 +1,184 @@
-import React from "react";
-
+import React, { useState } from "react";
+// import { toast } from "react-toastify"; // Import toastify
+import { ToastContainer, toast } from "react-toastify";
 const ConstactusMainSection = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    service: "",
+    note: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent the default form submission
+
+    // Validate form data
+    if (!formData.name || !formData.email || !formData.phone || !formData.service) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    // Send the form data to the backend API
+    try {
+      const response = await fetch("http://localhost:3001/api/contactus", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.hasError) {
+        toast.error(data.message || "Error occurred while sending message. Please try again later.");
+      } else {
+        toast.success("Thank you! Your message has been sent.");
+        setFormData({ name: "", email: "", phone: "", service: "", note: "" }); // Reset form after success
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Error occurred while sending message. Please try again later.");
+    }
+  };
+
   return (
     <>
-      <section className="wpo-contact-pg-section section-padding">
-        <div className="container">
-          <div className="row">
-            <div className="col col-lg-10 offset-lg-1">
-              <div className="office-info">
-                <div className="row">
-                  <div className="col col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div className="office-info-item">
-                      <div className="office-info-icon">
-                        <div className="icon">
-                          <i className="fi flaticon-maps-and-flags text-black"></i>
-                        </div>
-                      </div>
-                      <div className="office-info-text">
-                        <h2>Address</h2>
-                        <p className="text-black">New Delhi, Delhi, India</p>
+    <ToastContainer position="top-right" autoClose={3000} />
+    <section className="wpo-contact-pg-section section-padding">
+      <div className="container">
+        <div className="row">
+          <div className="col col-lg-10 offset-lg-1">
+            <div className="office-info">
+              <div className="row">
+                <div className="col col-xl-4 col-lg-6 col-md-6 col-12">
+                  <div className="office-info-item">
+                    <div className="office-info-icon">
+                      <div className="icon">
+                        <i className="fi flaticon-maps-and-flags text-black"></i>
                       </div>
                     </div>
-                  </div>
-                  <div className="col col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div className="office-info-item">
-                      <div className="office-info-icon">
-                        <div className="icon">
-                          <i className="fi flaticon-email text-black"></i>
-                        </div>
-                      </div>
-                      <div className="office-info-text">
-                        <h2>Email Us</h2>
-                        <p className="text-black">info@edprowise.com</p>
-                        {/* <p>helloyou@gmail.com</p> */}
-                      </div>
+                    <div className="office-info-text">
+                      <h2>Address</h2>
+                      <p className="text-black">New Delhi, Delhi, India</p>
                     </div>
                   </div>
-                  <div className="col col-xl-4 col-lg-6 col-md-6 col-12">
-                    <div className="office-info-item">
-                      <div className="office-info-icon">
-                        <div className="icon">
-                          <i className="fi flaticon-phone-call text-black"></i>
-                        </div>
+                </div>
+                <div className="col col-xl-4 col-lg-6 col-md-6 col-12">
+                  <div className="office-info-item">
+                    <div className="office-info-icon">
+                      <div className="icon">
+                        <i className="fi flaticon-email text-black"></i>
                       </div>
-                      <div className="office-info-text">
-                        <h2>Call Now</h2>
-                        <p className="text-black">+91-9958528306</p>
-                        {/* <p>+1 800 123 654 987</p> */}
+                    </div>
+                    <div className="office-info-text">
+                      <h2>Email Us</h2>
+                      <p className="text-black">info@edprowise.com</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col col-xl-4 col-lg-6 col-md-6 col-12">
+                  <div className="office-info-item">
+                    <div className="office-info-icon">
+                      <div className="icon">
+                        <i className="fi flaticon-phone-call text-black"></i>
                       </div>
+                    </div>
+                    <div className="office-info-text">
+                      <h2>Call Now</h2>
+                      <p className="text-black">+91-9958528306</p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="wpo-contact-title">
-                <h2>Have Any Question?</h2>
-                <p>
-                  Want to get in touch? We'd love to hear from you. Here's how
-                  you can reach us..
-                </p>
-              </div>
-              <div className="wpo-contact-form-area">
-                <form
-                  method="post"
-                  className="contact-validation-active"
-                  id="contact-form-main"
-                >
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="name"
-                      id="name"
-                      placeholder="Your Name*"
-                    />
+            </div>
+            <div className="wpo-contact-title">
+              <h2>Have Any Question?</h2>
+              <p>
+                Want to get in touch? We'd love to hear from you. Here's how you can reach us..
+              </p>
+            </div>
+            <div className="wpo-contact-form-area">
+              <form
+                method="post"
+                className="contact-validation-active"
+                id="contact-form-main"
+                onSubmit={handleSubmit}
+              >
+                <div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Your Name*"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    className="form-control"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Your Email*"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Your Phone*"
+                  />
+                </div>
+                <div>
+                  <select
+                    name="service"
+                    className="form-control"
+                    value={formData.service}
+                    onChange={handleChange}
+                  >
+                    <option disabled="disabled" selected>
+                      Subject
+                    </option>
+                    <option>Web Development</option>
+                    <option>Web Design</option>
+                    <option>Marketing</option>
+                  </select>
+                </div>
+                <div className="fullwidth">
+                  <textarea
+                    className="form-control"
+                    name="note"
+                    value={formData.note}
+                    onChange={handleChange}
+                    placeholder="Message..."
+                  ></textarea>
+                </div>
+                <div className="submit-area">
+                  <button type="submit" className="theme-btn">
+                    Get in Touch
+                  </button>
+                  <div id="loader">
+                    <i className="ti-reload"></i>
                   </div>
-                  <div>
-                    <input
-                      type="email"
-                      className="form-control "
-                      name="email"
-                      id="email"
-                      placeholder="Your Email*"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="phone"
-                      id="phone"
-                      placeholder="Your Phone*"
-                    />
-                  </div>
-                  <div>
-                    <select name="service" className="form-control">
-                      <option disabled="disabled" selected>
-                        Subject
-                      </option>
-                      <option>Web Development</option>
-                      <option>Web Design</option>
-                      <option>Marketing</option>
-                    </select>
-                  </div>
-                  <div className="fullwidth">
-                    <textarea
-                      className="form-control"
-                      name="note"
-                      id="note"
-                      placeholder="Message..."
-                    ></textarea>
-                  </div>
-                  <div className="submit-area">
-                    <button type="submit" className="theme-btn">
-                      Get in Touch
-                    </button>
-                    <div id="loader">
-                      <i className="ti-reload"></i>
-                    </div>
-                  </div>
-                  <div className="clearfix error-handling-messages">
-                    <div id="success">Thank you</div>
-                    <div id="error">
-                      Error occurred while sending email. Please try again
-                      later.
-                    </div>
-                  </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
-      </section>
-      {/* <section className="wpo-contact-map-section">
-    <h2 className="hidden">Contact map</h2>
-    <div className="wpo-contact-map">
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.9147703055!2d-74.11976314309273!3d40.69740344223377!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew+York%2C+NY%2C+USA!5e0!3m2!1sen!2sbd!4v1547528325671"
-        allowFullScreen
-        loading="lazy"
-        title="Google Map"
-      ></iframe>
-    </div>
-  </section> */}
+      </div>
+    </section>
     </>
   );
 };

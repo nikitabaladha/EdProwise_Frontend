@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
@@ -55,7 +56,7 @@ const GallerySection = () => {
                   <div className="grid-web" key={item.id}>
                     <div className="img-holder-web">
                       <a
-                        href="#"
+                        
                         onClick={(e) => {
                           e.preventDefault();
                           handleImageClick(item.image);

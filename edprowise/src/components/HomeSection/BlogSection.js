@@ -167,11 +167,7 @@ const BlogSection = () => {
   }, []);
 
   return (
-    <section
-      className="wpo-blog-section section-padding pt-0 pb-1"
-      id="blog"
-      style={{ background: "#fcf9ef" }}
-    >
+    <section className="wpo-blog-section section-padding pt-0 pb-1" id="blog"  style={{ background: "#fcf9ef" }}>
       <div className="container edprowise-choose-container">
         <div className="wpo-section-title-s2 mb-2">
           {/* <small className="font-family-web">Our Blogs</small> */}

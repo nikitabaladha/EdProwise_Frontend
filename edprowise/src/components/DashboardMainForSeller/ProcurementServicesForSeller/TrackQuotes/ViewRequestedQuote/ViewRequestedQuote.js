@@ -1,85 +1,73 @@
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
-import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
+import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import PrepareQuoteTable from "../PrepareQuoteTable/PrepareQuoteTable";
+
+import getAPI from "../../../../../api/getAPI";
+import postAPI from "../../../../../api/postAPI";
+
+import { format } from "date-fns";
+
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return format(new Date(dateString), "dd/MM/yyyy");
+};
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
-
-  const [requestedProducts, setRequestedProducts] = useState([
-    {
-      id: 1,
-      enquiryNo: "ENQ1234567890",
-      quoteRequestedDate: "2023-12-01",
-      category: "Office Furniture",
-      subCategory: "Office Chair",
-      productDescription: "We want chair",
-      qty: 8,
-      unit: "Pieces",
-      deliveryExpectedDate: "2023-12-05",
-      imageUrl: "assets/images/product/p-1.png",
-      status: "Quote Requested",
-    },
-    {
-      id: 2,
-      enquiryNo: "ENQ1234567890",
-      quoteRequestedDate: "2023-12-01",
-      category: "Office Furniture",
-      subCategory: "Office Chair",
-      productDescription: "Need 10 wooden desks.",
-      qty: 10,
-      unit: "Pieces",
-      deliveryExpectedDate: "2023-12-10",
-      imageUrl: "assets/images/product/p-2.png",
-      status: "Quote Requested",
-    },
-    {
-      id: 3,
-      enquiryNo: "ENQ1234567890",
-      quoteRequestedDate: "2023-12-01",
-      category: "Office Furniture",
-      subCategory: "Office Chair",
-      productDescription: "Request for 5 whiteboards.",
-      qty: 5,
-      unit: "Pieces",
-      deliveryExpectedDate: "2023-12-12",
-      imageUrl: "assets/images/product/p-3.png",
-      status: "Quote Requested",
-    },
-  ]);
-
-  const [prepareProducts, setPrepareProducts] = useState(
-    requestedProducts.map((product) => ({
-      slNo: "",
-      description: "",
-      hsnSaac: "",
-      listingRate: "",
-      edProwiseMargin: "",
-      qty: "",
-      finalRateBeforeDiscount: "",
-      discountPercentage: "",
-      finalRate: "",
-      taxableValue: "",
-      cgstRate: "",
-      cgstAmount: "",
-      sgstRate: "",
-      sgstAmount: "",
-      igstRate: "",
-      igstAmount: "",
-      amountBeforeGST: "",
-      discountAmount: "",
-      gstAmount: "",
-      totalAmount: "",
-      productImages: null,
-    }))
-  );
+  const enquiryNumber = location.state?.enquiryNumber;
 
   const navigate = useNavigate();
+
+  const [quote, setQuote] = useState([]);
+
+  useEffect(() => {
+    if (!enquiryNumber) return;
+    const fetchQuoteData = async () => {
+      try {
+        const response = await getAPI(
+          `/get-according-to-category-filter/${enquiryNumber}`,
+          {},
+          true
+        );
+
+        if (!response.hasError && response.data.data.products) {
+          setQuote(response.data.data.products);
+          console.log(
+            "product data from function",
+            response.data.data.products
+          );
+        } else {
+          console.error("Invalid response format or error in response");
+        }
+      } catch (err) {
+        console.error("Error fetching quote:", err);
+      }
+    };
+
+    fetchQuoteData();
+  }, [enquiryNumber]);
+
+  const [prepareProducts, setPrepareProducts] = useState(
+    quote.map((product) => ({
+      srNo: "",
+      subCategoryName: "",
+      prepareQuoteImage: null,
+      hsnSacc: "",
+      listingRate: "",
+      edprowiseMargin: "",
+      quantity: "",
+      discount: "",
+      cgstRate: "",
+      sgstRate: "",
+      igstRate: "",
+    }))
+  );
 
   const [isPrepareQuoteTableVisible, setIsPrepareQuoteTableVisible] =
     useState(false);
@@ -93,47 +81,58 @@ const ViewRequestedQuote = () => {
   };
 
   const handleChange = (index, e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files, type } = e.target;
     const updatedProducts = [...prepareProducts];
+
     updatedProducts[index] = {
       ...updatedProducts[index],
-      [name]: files ? files[0] : value,
+      [name]: type === "file" && files.length > 0 ? files[0] : value,
     };
+
     setPrepareProducts(updatedProducts);
   };
 
   const handleImageChange = (index, event) => {
     const file = event.target.files[0];
     const updatedProducts = [...prepareProducts];
-    updatedProducts[index].productImages = file; // Store the image file
+
+    updatedProducts[index].prepareQuoteImage = file;
     setPrepareProducts(updatedProducts);
   };
 
-  const handleAddProduct = () => {
-    setPrepareProducts([
-      ...prepareProducts,
-      {
-        slNo: "",
-        description: "",
-        hsnSaac: "",
+  useEffect(() => {
+    setPrepareProducts(
+      quote.map((_, index) => ({
+        srNo: index + 1,
+        subCategoryName: "",
+        prepareQuoteImage: null,
+        hsnSacc: "",
         listingRate: "",
-        edProwiseMargin: "",
-        qty: "",
-        finalRateBeforeDiscount: "",
-        discountPercentage: "",
-        finalRate: "",
-        taxableValue: "",
+        edprowiseMargin: "",
+        quantity: "",
+        discount: "",
         cgstRate: "",
-        cgstAmount: "",
         sgstRate: "",
-        sgstAmount: "",
         igstRate: "",
-        igstAmount: "",
-        amountBeforeGST: "",
-        discountAmount: "",
-        gstAmount: "",
-        totalAmount: "",
-        productImages: null,
+      }))
+    );
+  }, [quote]);
+
+  const handleAddProduct = () => {
+    setPrepareProducts((prev) => [
+      ...prev,
+      {
+        srNo: prev.length + 1,
+        subCategoryName: "",
+        prepareQuoteImage: null,
+        hsnSacc: "",
+        listingRate: "",
+        edprowiseMargin: "",
+        quantity: "",
+        discount: "",
+        cgstRate: "",
+        sgstRate: "",
+        igstRate: "",
       },
     ]);
   };
@@ -143,19 +142,70 @@ const ViewRequestedQuote = () => {
     setPrepareProducts(updatedProducts);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Prepare Quote Data:", prepareProducts);
-    toast.success("Quote prepared successfully!");
 
-    navigate("/seller-dashboard/procurement-services/submit-quote");
+    const formData = new FormData();
+    formData.append("enquiryNumber", enquiryNumber);
+
+    const products = [];
+
+    prepareProducts.forEach((product, index) => {
+      const productData = {
+        subcategoryName: product.subCategoryName,
+        hsnSacc: product.hsnSacc,
+        listingRate: product.listingRate,
+        edprowiseMargin: product.edprowiseMargin,
+        quantity: product.quantity,
+        discount: product.discount,
+        cgstRate: product.cgstRate,
+        sgstRate: product.sgstRate,
+        igstRate: product.igstRate,
+      };
+
+      products.push(productData);
+
+      if (product.prepareQuoteImage) {
+        formData.append(
+          `products[${index}][prepareQuoteImage]`,
+          product.prepareQuoteImage
+        );
+      }
+    });
+
+    formData.append("products", JSON.stringify(products));
+
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    try {
+      const response = await postAPI(
+        "/prepare-quote",
+        formData,
+        {
+          "Content-Type": "multipart/form-data",
+        },
+        true
+      );
+
+      if (!response.hasError) {
+        navigate("/seller-dashboard/procurement-services/submit-quote", {
+          state: { enquiryNumber },
+        });
+
+        toast.success("Quote prepared successfully");
+        setPrepareProducts([]);
+      } else {
+        toast.error(response.message || "Failed to Prepare Quote");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
+    }
   };
-
-  if (!requestedProducts) {
-    return <div>No product details available.</div>;
-  }
-
-  console.log("Product view", requestedProducts);
 
   return (
     <div className="container">
@@ -189,67 +239,69 @@ const ViewRequestedQuote = () => {
                         </div>
                       </th>
                       <th>Enquiry No.</th>
-
                       <th>Product Required Image & Name</th>
                       <th>Product Required (Category)</th>
-                      <th>Quote Requested Date</th>
-                      <th>Product Description</th>
                       <th>Quantity</th>
                       <th>Unit</th>
-                      <th>DeliveryExpectedDate</th>
                       <th>Status</th>
+                      <th>Product Description</th>
+                      <th>Quote Requested Date</th>
+                      <th>DeliveryExpectedDate</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {requestedProducts.map((product) => (
-                      <tr key={product.id}>
-                        <td>
-                          <div className="form-check ms-1">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                              id={`customCheck${product.id}`}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor={`customCheck${product.id}`}
-                            >
-                              &nbsp;
-                            </label>
-                          </div>
-                        </td>
-                        <td>{product.enquiryNo}</td>
-                        <td>
-                          <div className="d-flex align-items-center gap-2">
-                            <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                              <img
-                                src={product.imageUrl}
-                                alt={product.subCategory}
-                                className="avatar-md"
+                    {quote.length > 0 ? (
+                      quote.map((product) => (
+                        <tr key={product.id}>
+                          <td>
+                            <div className="form-check ms-1">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id={`customCheck${product.id}`}
                               />
+                              <label
+                                className="form-check-label"
+                                htmlFor={`customCheck${product.id}`}
+                              >
+                                &nbsp;
+                              </label>
                             </div>
-                            <div>
-                              <Link className="text-dark fw-medium fs-15">
-                                {product.subCategory}
-                              </Link>
+                          </td>
+                          <td>{product.enquiryNumber}</td>
+                          <td>
+                            <div className="d-flex align-items-center gap-2">
+                              {product.productImage && (
+                                <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                  <img
+                                    className="avatar-md"
+                                    alt={product.subCategoryName}
+                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                  />
+                                </div>
+                              )}
+                              <div>
+                                <Link className="text-dark fw-medium">
+                                  {product.subCategoryName}
+                                </Link>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-
-                        <td>{product.category}</td>
-                        <td>{product.quoteRequestedDate}</td>
-                        <td>{product.productDescription}</td>
-                        <td>{product.qty}</td>
-                        <td>{product.unit}</td>
-                        <td>{product.deliveryExpectedDate}</td>
-                        <td>{product.status}</td>
-                      </tr>
-                    ))}
+                          </td>
+                          <td>{product.categoryName}</td>
+                          <td>{product.quantity}</td>
+                          <td>{product.unit}</td>
+                          <td>{product.buyerStatus}</td>
+                          <td>{product.description}</td>
+                          <td>{formatDate(product.createdAt)}</td>
+                          <td>{formatDate(product.expectedDeliveryDate)}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr></tr>
+                    )}
                   </tbody>
                 </table>
               </div>
-
-              {/* end table-responsive */}
 
               <div className="d-flex justify-content-between mt-2">
                 <button

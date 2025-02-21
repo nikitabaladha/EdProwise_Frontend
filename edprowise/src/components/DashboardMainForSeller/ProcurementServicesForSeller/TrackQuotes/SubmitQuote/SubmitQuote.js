@@ -2,16 +2,20 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import postAPI from "../../../../../api/postAPI";
+import { useLocation } from "react-router-dom";
 
 const SubmitQuote = () => {
+  const location = useLocation();
+  const enquiryNumber = location.state?.enquiryNumber;
+
   const [formData, setFormData] = useState({
-    dateOfQuoteSubmitted: "",
     quotedAmount: "",
-    remarksFromSupplier: "",
-    expectedDeliveryDateMentionedBySeller: "",
-    paymentTerms: "",
-    advancesRequiredAmount: "",
     description: "",
+    remarksFromSupplier: "",
+    expectedDeliveryDateBySeller: "",
+    paymentTerms: "",
+    advanceRequiredAmount: "",
   });
 
   const navigate = useNavigate();
@@ -26,19 +30,41 @@ const SubmitQuote = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`Submitting form data:`, formData);
 
-    toast.success("Quote request submitted successfully!");
-    setFormData({
-      dateOfQuoteSubmitted: "",
-      quotedAmount: "",
-      remarksFromSupplier: "",
-      expectedDeliveryDateMentionedBySeller: "",
-      paymentTerms: "",
-      advancesRequiredAmount: "",
-      description: "",
-    });
-    navigate(-1);
+    try {
+      const data = new FormData();
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
+
+      if (enquiryNumber) {
+        data.append("enquiryNumber", enquiryNumber);
+      }
+
+      const response = await postAPI("/submit-quote", data, true);
+
+      if (!response.hasError) {
+        toast.success("Quote submitted successfully!");
+
+        setFormData({
+          quotedAmount: "",
+          description: "",
+          remarksFromSupplier: "",
+          expectedDeliveryDateBySeller: "",
+          paymentTerms: "",
+          advanceRequiredAmount: "",
+        });
+
+        navigate(-1);
+      } else {
+        toast.error(response.message || "Failed to add school");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
+    }
   };
 
   return (
@@ -58,25 +84,6 @@ const SubmitQuote = () => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfQuoteSubmitted"
-                        className="form-label"
-                      >
-                        Date of Quote Submission
-                      </label>
-                      <input
-                        type="date"
-                        id="dateOfQuoteSubmitted"
-                        name="dateOfQuoteSubmitted"
-                        className="form-control"
-                        value={formData.dateOfQuoteSubmitted}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
                       <label htmlFor="quotedAmount" className="form-label">
                         Quoted Amount
                       </label>
@@ -89,6 +96,25 @@ const SubmitQuote = () => {
                         onChange={handleChange}
                         required
                         min="0"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="expectedDeliveryDateBySeller"
+                        className="form-label"
+                      >
+                        Expected Delivery Date by Seller
+                      </label>
+                      <input
+                        type="date"
+                        id="expectedDeliveryDateBySeller"
+                        name="expectedDeliveryDateBySeller"
+                        className="form-control"
+                        value={formData.expectedDeliveryDateBySeller}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
                   </div>
@@ -132,26 +158,7 @@ const SubmitQuote = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="expectedDeliveryDateMentionedBySeller"
-                        className="form-label"
-                      >
-                        Expected Delivery Date by Seller
-                      </label>
-                      <input
-                        type="date"
-                        id="expectedDeliveryDateMentionedBySeller"
-                        name="expectedDeliveryDateMentionedBySeller"
-                        className="form-control"
-                        value={formData.expectedDeliveryDateMentionedBySeller}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="paymentTerms" className="form-label">
                         Payment Terms
@@ -167,7 +174,7 @@ const SubmitQuote = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label
                         htmlFor="advancesRequiredAmount"
@@ -177,10 +184,10 @@ const SubmitQuote = () => {
                       </label>
                       <input
                         type="number"
-                        id="advancesRequiredAmount"
-                        name="advancesRequiredAmount"
+                        id="advanceRequiredAmount"
+                        name="advanceRequiredAmount"
                         className="form-control"
-                        value={formData.advancesRequiredAmount}
+                        value={formData.advanceRequiredAmount}
                         onChange={handleChange}
                         required
                         min="0"

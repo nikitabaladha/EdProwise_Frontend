@@ -1,6 +1,8 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+// ================================Website Routes================================================
+
 import WebsiteMain from "./components/WebsiteMain";
 import HomePage from "./components/HomeSection/HomePage";
 import AboutPage from "./components/AboutSection/AboutPage";
@@ -24,37 +26,63 @@ import PrivacyPage from "./components/PrivacyPage/PrivacyPage.js";
 import CareerPage from "./components/CareerPage/CareerPage.js";
 import CareerForm from "./components/CareerPage/CareerForm.js";
 
+import ServiceFess from "./components/ServiceSection/ServiceDetails/FessPixal/ServiceFees.js";
+import PayrollService from "./components/ServiceSection/ServiceDetails/PayrollService/PayrollService.js";
+import FinanceBook from "./components/ServiceSection/ServiceDetails/FinanceBook/FinanceBook.js";
+import SchoolOperation from "./components/ServiceSection/ServiceDetails/SchoolOperations/SchoolOperation.js";
+import SchoolApplication from "./components/ServiceSection/ServiceDetails/SchoolApplication/SchoolApplication.js";
+import SchoolWebsiteDesign from "./components/ServiceSection/ServiceDetails/SchoolWebsiteDesign/SchoolWebsiteDesign.js";
+
+import TermsPage from "./components/PrivacyPage/TermsPage.js";
+import RequestDemoForm from "./components/HomeSection/RequestDemoForm.js";
+
+// =================================Signup Login Routes================================================
+
 import AdminLogin from "./components/Login/AdminLogin";
 import UserLogin from "./components/Login/UserLogin";
 
 import Signup from "./components/Signup/Signup";
 import AdminSignup from "./components/Signup/AdminSignup";
 
-// ==================================Admin Routes =================================
-import ChangePasswordForAdmin from "./components/DashboardMainForAdmin/ChangePassword/ChangePassword";
+// ==============Admin Routes ====================Admin Routes ========================Admin Routes=========
 
+// ======================================School================================================================
+
+import ChangePasswordForAdmin from "./components/DashboardMainForAdmin/ChangePassword/ChangePassword";
 import CompleteEdprowiseProfile from "./components/DashboardMainForAdmin/CompleteEdprowiseProfile/CompleteEdprowiseProfile";
 import ViewAdminProfile from "./components/DashboardMainForAdmin/ViewAdminProfile/ViewAdminProfile";
 import UpdateAdminProfile from "./components/DashboardMainForAdmin/UpdateAdminProfile/UpdateAdminProfile";
-
 import AdminDashboardMain from "./components/DashboardMainForAdmin/AdminDashboardMain";
 import Dashboard from "./components/DashboardMainForAdmin/Dashboard/Dashboard";
-
 import Schools from "./components/DashboardMainForAdmin/Schools/Schools";
 import AddNewSchool from "./components/DashboardMainForAdmin/Schools/AddNewSchool/AddNewSchool";
 import ViewSchool from "./components/DashboardMainForAdmin/Schools/ViewSchool/ViewSchool";
 import UpdateSchool from "./components/DashboardMainForAdmin/Schools/UpdateSchool/UpdateSchool";
+
+// ====================================== Subscriptions======================================
 
 import Subscriptions from "./components/DashboardMainForAdmin/Subscription/Subscription";
 import AddNewSubscription from "./components/DashboardMainForAdmin/Subscription/AddNewSubscription/AddNewSubscription";
 import ViewSubscriptions from "./components/DashboardMainForAdmin/Subscription/ViewSubscription/ViewSubscription";
 import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/UpdateSubscription/UpdateSubscription";
 
+// ========================================Fees module===========================================
+
+import ViewRequestsForDemo from "./components/DashboardMainForAdmin/ViewRequestsForDemo/ViewRequestsForDemo.js";
+import { ViewRequestDemoDetails } from "./components/DashboardMainForAdmin/ViewRequestsForDemo/ViewRequestDemoDetails.js";
+import ContactUsEdprowise from "./components/DashboardMainForAdmin/Enquiry/ContactUsEdprowise.js";
+import ViewEnquiryDetails from "./components/DashboardMainForAdmin/Enquiry/ViewEnquiryDetails.js";
+
+// ================================ Admin Procurement Services========================================
+
 import TrackQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/TrackQuoteTable";
 import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
-
 import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewQuote/ViewQuote";
+
+import QuoteProposalForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/QuoteProposalForAdmin/QuoteProposalForAdmin";
+import InvoiceForEdProwiseFromAdminDashboard from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/InvoiceForEdProwiseFromAdminDashboard/InvoiceForEdProwiseFromAdminDashboard";
+import InvoiceForBuyerFromAdminDashboard from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/InvoiceForBuyerFromAdminDashboard/InvoiceForBuyerFromAdminDashboard";
 
 import BankDetailsTable from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/BankDetailsTable";
 import AddNewBankDetail from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/AddNewBankDetail/AddNewBankDetail";
@@ -67,7 +95,7 @@ import GoodsAndServicesTable from "./components/DashboardMainForAdmin/Procuremen
 import AddGoodsAndServices from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/AddGoodsAndServices/AddGoodsAndServices";
 import UpdateGoodAndService from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/UpdateGoodAndService/UpdateGoodAndService";
 
-// =============================================School Routes==============================================
+// ================School Routes=============School Routes============School Routes===========================
 
 import CompleteSchoolProfile from "./components/DashboardMainForSchool/CompleteSchoolProfile/CompleteSchoolProfile";
 import UpdateSchoolProfile from "./components/DashboardMainForSchool/UpdateSchoolProfile/UpdateSchoolProfile";
@@ -77,6 +105,8 @@ import ChangePasswordForSchoolAdmin from "./components/DashboardMainForSchool/Ch
 import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
 
+// ================================ School Procurement Services========================================
+
 import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/TrackQuoteTable";
 import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/RequestQuote/RequestQuote";
 
@@ -85,8 +115,13 @@ import ViewRequestedQuote from "./components/DashboardMainForSchool/ProcurementS
 import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewQuote/ViewQuote";
 import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 
+import ViewCart from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/Cart/ViewCart";
+import QuoteProposalForSchool from "./components/DashboardMainForSchool/ProcurementServices/QuoteProposalForSchool/QuoteProposalForSchool";
+
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
+
+import InvoiceForBuyerFromSchool from "./components/DashboardMainForSchool/ProcurementServices/InvoiceForBuyerFromSchool/InvoiceForBuyerFromSchool";
 
 import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
 
@@ -109,15 +144,13 @@ import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/Procure
 
 import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
 
-import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
+// import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
 
 // import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
 import InvoiceForEdProwise from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForEdProwise/InvoiceForEdProwise";
 import InvoiceForBuyer from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForBuyer/InvoiceForBuyer";
 import PrepareInvoice from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PrepareInvoice/PrepareInvoice";
 import QuoteProposal from "./components/DashboardMainForSeller/ProcurementServicesForSeller/QuoteProposal/QuoteProposal";
-import TermsPage from "./components/PrivacyPage/TermsPage.js";
-import RequestDemoForm from "./components/HomeSection/RequestDemoForm.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -200,18 +233,14 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       >
-        {/* Main Dashboard Route */}
         <Route index element={<Dashboard />} />
-
+        {/* Main Dashboard Route */}
         <Route path="view-admin-profile" element={<ViewAdminProfile />} />
-
         <Route path="update-admin-profile" element={<UpdateAdminProfile />} />
-
         <Route
           path="change-edprowise-admin-password"
           element={<ChangePasswordForAdmin />}
         />
-
         {/* School Table page and it's Add, View, Update Routes */}
         <Route path="schools" element={<Schools />}>
           <Route path="add-new-school" element={<AddNewSchool />} />
@@ -227,7 +256,20 @@ const AppRoutes = () => {
           <Route path="view-subscriptions" element={<ViewSubscriptions />} />
           <Route path="update-subscriptions" element={<UpdateSubscription />} />
         </Route>
-        {/* Procurement Services Routes */}
+
+        {/* =====================Fees module=========================================== */}
+        <Route path="request-for-demo" element={<ViewRequestsForDemo />} />
+        <Route
+          path="request-for-demo/view-demo-request-details"
+          element={<ViewRequestDemoDetails />}
+        />
+        <Route path="enquiry" element={<ContactUsEdprowise />} />
+        <Route
+          path="enquiry/enquity-details"
+          element={<ViewEnquiryDetails />}
+        />
+
+        {/*======================= Procurement Services Routes================== */}
         <Route
           path="procurement-services/track-quote"
           element={<TrackQuoteTableForAdmin />}
@@ -277,9 +319,24 @@ const AppRoutes = () => {
           path="procurement-services/update-bank-detail"
           element={<UpdateBankDetail />}
         />
+
+        <Route
+          path="procurement-services/quote-proposal"
+          element={<QuoteProposalForAdmin />}
+        />
+
+        <Route
+          path="procurement-services/invoice-for-edprowise"
+          element={<InvoiceForEdProwiseFromAdminDashboard />}
+        />
+
+        <Route
+          path="procurement-services/invoice-for-buyer"
+          element={<InvoiceForBuyerFromAdminDashboard />}
+        />
       </Route>
 
-      {/*==============================================School Routes============================================== */}
+      {/*==================================School Routes============================================== */}
 
       <Route
         path="/school-dashboard"
@@ -289,6 +346,7 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       >
+        <Route index element={<SchoolDashboard />} />
         {/*School Dashboard Route */}
         <Route path="view-school-profile" element={<ViewSchoolProfile />} />
         <Route path="update-school-profile" element={<UpdateSchoolProfile />} />
@@ -318,6 +376,8 @@ const AppRoutes = () => {
           element={<ViewAllQuoteTable />}
         />
 
+        <Route path="procurement-services/view-cart" element={<ViewCart />} />
+
         <Route
           path="procurement-services/track-order-history"
           element={<TrackOrderHistoryTable />}
@@ -330,8 +390,16 @@ const AppRoutes = () => {
           path="procurement-services/Pay-to-edprowise"
           element={<PayToEdProwiseForSchool />}
         />
-      </Route>
+        <Route
+          path="procurement-services/quote-proposal"
+          element={<QuoteProposalForSchool />}
+        />
 
+        <Route
+          path="procurement-services/invoice-for-buyer"
+          element={<InvoiceForBuyerFromSchool />}
+        />
+      </Route>
       {/* =========================================Seller Routes============================================= */}
 
       <Route
@@ -343,6 +411,7 @@ const AppRoutes = () => {
         }
       >
         {/*Seller Dashboard Route */}
+
         <Route index element={<SellerDashboard />} />
 
         <Route path="view-seller-profile" element={<ViewSellerProfile />} />
@@ -390,10 +459,10 @@ const AppRoutes = () => {
           element={<ViewSubmittedQuote />}
         /> */}
 
-        <Route
+        {/* <Route
           path="procurement-services/prepared-quote"
           element={<PreparedQuote />}
-        />
+        /> */}
         <Route
           path="procurement-services/invoice-for-edprowise"
           element={<InvoiceForEdProwise />}
@@ -412,6 +481,9 @@ const AppRoutes = () => {
           element={<PrepareInvoice />}
         />
       </Route>
+
+      {/* Website Routes */}
+
       <Route path="/" element={<WebsiteMain />}>
         <Route index element={<HomePage />} />
 
@@ -439,6 +511,30 @@ const AppRoutes = () => {
         <Route path="career" element={<CareerPage />} />
         <Route path="career/:jobName" element={<CareerForm />} />
         <Route path="request-demo" element={<RequestDemoForm />} />
+        <Route
+          path="services/digital-services/fees"
+          element={<ServiceFess />}
+        />
+        <Route
+          path="services/digital-services/payroll"
+          element={<PayrollService />}
+        />
+        <Route
+          path="services/digital-services/booksync"
+          element={<FinanceBook />}
+        />
+        <Route
+          path="services/digital-services/schooloperation"
+          element={<SchoolOperation />}
+        />
+        <Route
+          path="services/digital-services/schoolApplication"
+          element={<SchoolApplication />}
+        />
+        <Route
+          path="services/digital-services/school-Website-Design"
+          element={<SchoolWebsiteDesign />}
+        />
       </Route>
     </Routes>
   );

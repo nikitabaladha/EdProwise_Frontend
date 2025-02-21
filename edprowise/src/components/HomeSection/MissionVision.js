@@ -73,7 +73,7 @@ const VisionMissionSection = () => {
       ),
       title: "Mission",
       description:
-        "To empower educational institutions with innovative solutions that enhance learning environments, streamline operations, and foster continuous growth and development.",
+       "To empower educational institutions with innovative solutions that enhance learning environments, streamline operations, and foster continuous growth and development."
     },
     {
       id: 2,
@@ -81,7 +81,7 @@ const VisionMissionSection = () => {
       icon: <div className="cart-vm-icon">👁️</div>,
       title: "Vision",
       description:
-        "Transforming education to drive societal progress & economic growth in India by delivering innovative, impactful solutions that empower institutions & inspire future leaders.",
+      "Transforming education to drive societal progress & economic growth in India by delivering innovative, impactful solutions that empower institutions & inspire future leaders.",
     },
     {
       id: 3,
@@ -115,9 +115,7 @@ const VisionMissionSection = () => {
                 </div>
                 <div className="cart-vm-text">
                   <h2 className="font-family-web">{item.title}</h2>
-                  <p className="font-family-web text-black">
-                    {item.description}
-                  </p>
+                  <p className="font-family-web text-black">{item.description}</p>
                 </div>
               </div>
             ))}

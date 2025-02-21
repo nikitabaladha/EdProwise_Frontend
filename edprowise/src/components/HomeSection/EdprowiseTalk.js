@@ -108,62 +108,55 @@ const EdprowiseTalk = () => {
 
   return (
     <>
-      <section className="wpo-choose-section-s2 section-padding pt-0 pb-1">
-        <div className="container edprowise-choose-container">
-          <div className="wpo-choose-wrap">
-            <div className="row ">
-              <div className="col-12">
-                <div className="wpo-section-title-s2">
-                  <h2 className="font-family-web">
-                    Support – We Listen..We Resolve..We Deliver
-                  </h2>
-                </div>
-              </div>
-            </div>
-            <div className="wpo-choose-grids clearfix" ref={carouselRef}>
-              {slides.map((slide, index) => (
-                <div
-                  className="grid-web"
-                  key={index}
-                  style={{ display: "inline-flex !important" }}
-                >
-                  <div className="icon">
-                    <i className={slide.icon}></i>
-                  </div>
-                  <div className="info">
-                    <h3>{slide.title}</h3>
-                    <p>{slide.description}</p>
-                  </div>
-                </div>
-              ))}
+    <section className="wpo-choose-section-s2 section-padding pt-0 pb-1">
+      <div className="container edprowise-choose-container">
+        <div className="wpo-choose-wrap">
+        <div className="row ">
+          <div className="col-12">
+            <div className="wpo-section-title-s2">
+              <h2 className="font-family-web">Support – We Listen..We Resolve..We Deliver</h2>
             </div>
           </div>
         </div>
-      </section>
-      <section
-        className="wpo-choose-section-s2 section-padding pt-lg-0 pb-lg-3 "
-        style={{ background: "white" }}
-      >
-        <div className="container edprowise-choose-container">
-          <div className="row mb-2">
-            <div className="col-12">
-              <div className="wpo-section-title-s2 mb-2">
-                <h2 className="font-family-web">Edprowise Talk</h2>
+          <div className="wpo-choose-grids clearfix" ref={carouselRef}>
+            {slides.map((slide, index) => (
+              <div className="grid-web" key={index} style={{display:"inline-flex !important"}}>
+                <div className="icon">
+                  <i className={slide.icon}></i>
+                </div>
+                <div className="info">
+                  <h3>{slide.title}</h3>
+                  <p>{slide.description}</p>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="right-img mb-2">
-            <img src="assets/website-images/choose2.webp" alt="Choose Us" />
-            <a
-              href="https://www.youtube.com/embed/r5sw-6lJmTA?autoplay=1"
-              className="video-btn"
-              onClick={handleVideoClick}
-            >
-              <i className="fi flaticon-play-1"></i>
-            </a>
+            ))}
           </div>
         </div>
-      </section>
+        </div>
+        </section>
+        <section className="wpo-choose-section-s2 section-padding pt-lg-0 pb-lg-3 "  style={{ background: "white" }}>
+      <div className="container edprowise-choose-container">
+        <div className="row mb-2"  >
+          <div className="col-12">
+            <div className="wpo-section-title-s2 mb-2">
+              <h2 className="font-family-web">Edprowise Talk</h2>
+            </div>
+          </div>
+        </div>
+        <div className="right-img mb-2">
+          {/* <img src="assets/website-images/choose2.webp" alt="Choose Us" />
+          <a
+            href="https://youtu.be/KzMNx8h7RbY?si=v0iGavTuuw0RO9gs"
+            className="video-btn"
+            onClick={handleVideoClick}
+          >
+            <i className="fi flaticon-play-1"></i>
+          </a> */}
+          <iframe width="100%" height="325" src="https://www.youtube.com/embed/KzMNx8h7RbY?si=7eEmdFNCVHPkdYBp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+      </div>
+    </section>
     </>
   );
 };

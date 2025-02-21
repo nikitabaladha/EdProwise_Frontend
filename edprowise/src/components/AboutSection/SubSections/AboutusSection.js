@@ -1,5 +1,8 @@
 import react from "react";
-
+import { RiEmotionHappyLine } from "react-icons/ri";
+import { FaHandsHelping } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa6";
+import { TbReportSearch } from "react-icons/tb";
 const AboutusSection = () => {
   return (
     <>
@@ -9,11 +12,11 @@ const AboutusSection = () => {
       >
         <div className="container container-big">
           <div className="wpo-about-wrap">
-            <div className="row align-items-center">
+            <div className="row-web align-items-center">
               <div className="col-lg-6 col-md-12 col-12">
                 <div className="wpo-about-img" style={{ textAlign: "center" }}>
                   <img
-                    src="assets/website-images/about/img-3.webp"
+                    src="/assets/images/AboutPageimg.png"
                     alt=""
                     style={{ width: "70%" }}
                   />
@@ -33,21 +36,11 @@ const AboutusSection = () => {
                     <h2>Whatever You Need, We Provide.</h2>
                   </div>
                   <p className="about-para-text">
-                    EdProwise is a startup company founded on the principle of
-                    empowering educational institutions, specializes in
-                    delivering various services to educational institution.
-                  </p>
+                  EdProwise is a startup company founded on the principle of empowering educational institutions, specializes in delivering various services to educational institution.
+                  </p >
+                  <p className="about-para-text">We brings deep expertise and understanding of the unique needs and challenges faced by educational institutions.</p>
                   <p className="about-para-text">
-                    We brings deep expertise and understanding of the unique
-                    needs and challenges faced by educational institutions.
-                  </p>
-                  <p className="about-para-text">
-                    We offer a wide range of services including technology
-                    integration, administrative solutions, educational
-                    consultation, and professional development, providing
-                    holistic support tailored to enhance every aspect of
-                    educational operations.{" "}
-                  </p>
+                  We offer a wide range of services including technology integration, administrative solutions, educational consultation, and professional development, providing holistic support tailored to enhance every aspect of educational operations.                  </p>
                   {/* <a  className="theme-btn-ss">
                     Learn More About Us
                   </a> */}
@@ -63,21 +56,21 @@ const AboutusSection = () => {
             <div className="row align-items-center">
               <div className="col-lg-6 col-md-12 col-12">
                 <div className="wpo-about-img-wrap">
-                  <div className="wpo-about-img-left">
+                  {/* <div className="wpo-about-img-left">
                     <div className="wpo-about-img">
                       <img
                         src="assets/website-images/about/img-1.webp"
                         alt=""
                       />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="wpo-about-img-right">
-                    <div className="wpo-about-img-inner">
+                    {/* <div className="wpo-about-img-inner">
                       <img
                         src="assets/website-images/about/img-2.webp"
                         alt=""
                       />
-                    </div>
+                    </div> */}
                     <div className="exprience-wrap ">
                       <div className="exprience">
                         <div className="icon">
@@ -94,8 +87,8 @@ const AboutusSection = () => {
               </div>
               <div className="col-lg-6 col-md-12 col-12">
                 <div className="wpo-about-text">
-                  <div className="wpo-section-title">
-                    {/* <small>About Edprowise</small> */}
+                  {/* <div className="wpo-section-title">
+
                     <h2>
                       A New Different Way To Improve Your
                       <span>
@@ -113,21 +106,16 @@ const AboutusSection = () => {
                     </h2>
                   </div>
                   <p className="text-black">
-                    We offer a wide range of services including technology
-                    integration, administrative solutions, educational
-                    consultation, and professional development, providing
-                    holistic support tailored to enhance every aspect of
-                    educational operations.{" "}
-                  </p>
+                  We offer a wide range of services including technology integration, administrative solutions, educational consultation, and professional development, providing holistic support tailored to enhance every aspect of educational operations.                 </p>
                   <p className="text-black">
-                    We brings deep expertise and understanding of the unique
-                    needs and challenges faced by educational institutions.
-                  </p>
+                  We brings deep expertise and understanding of the unique needs and challenges faced by educational institutions. 
+                  </p> */}
                   <div className="wpo-about-features-wrap">
                     <div className="wpo-about-features-item">
                       <div className="wpo-about-features-icon">
                         <div className="icon">
-                          <i className="fi flaticon-training-1"></i>
+                          <RiEmotionHappyLine/>
+                          {/* <i className="fi flaticon-training-1"></i> */}
                         </div>
                       </div>
                       <div className="wpo-about-features-text">
@@ -137,7 +125,8 @@ const AboutusSection = () => {
                     <div className="wpo-about-features-item">
                       <div className="wpo-about-features-icon">
                         <div className="icon">
-                          <i className="fi flaticon-video-lesson"></i>
+                          <FaHandsHelping/>
+                          {/* <i className="fi flaticon-video-lesson"></i> */}
                         </div>
                       </div>
                       <div className="wpo-about-features-text">
@@ -147,7 +136,8 @@ const AboutusSection = () => {
                     <div className="wpo-about-features-item">
                       <div className="wpo-about-features-icon">
                         <div className="icon">
-                          <i className="fi flaticon-team"></i>
+                          <FaUsers/>
+                          {/* <i className="fi flaticon-team"></i> */}
                         </div>
                       </div>
                       <div className="wpo-about-features-text">
@@ -157,7 +147,8 @@ const AboutusSection = () => {
                     <div className="wpo-about-features-item">
                       <div className="wpo-about-features-icon">
                         <div className="icon">
-                          <i className="fi flaticon-training"></i>
+                          <TbReportSearch/>
+                          {/* <i className="fi flaticon-training"></i> */}
                         </div>
                       </div>
                       <div className="wpo-about-features-text">

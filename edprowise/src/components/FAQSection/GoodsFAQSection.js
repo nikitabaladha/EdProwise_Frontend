@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 const edprowiseServicesData = [
   {
@@ -25,8 +25,7 @@ const edprowiseServicesData = [
   {
     id: "edprowiseServicesFour",
     headingId: "edprowiseServicesHeadingFour",
-    question:
-      "Does EdProwise provide procurement services for digital learning tools?",
+    question: "Does EdProwise provide procurement services for digital learning tools?",
     answer:
       "Yes, we procure and implement smart boards, projectors, e-learning software, and digital classroom solutions to enhance the teaching-learning experience.",
   },
@@ -54,16 +53,14 @@ const edprowiseServicesData = [
   {
     id: "edprowiseServicesEight",
     headingId: "edprowiseServicesHeadingEight",
-    question:
-      "Does EdProwise handle procurement for school uniforms and stationery?",
+    question: "Does EdProwise handle procurement for school uniforms and stationery?",
     answer:
       "Yes, we provide customized solutions for school uniforms, books, and stationery, ensuring timely availability and bulk order discounts.",
   },
   {
     id: "edprowiseServicesNine",
     headingId: "edprowiseServicesHeadingNine",
-    question:
-      "How does EdProwise ensure cost-effective procurement for schools?",
+    question: "How does EdProwise ensure cost-effective procurement for schools?",
     answer:
       "We negotiate with suppliers, leverage bulk purchasing, and source directly from manufacturers to offer cost-efficient solutions without compromising quality.",
   },
@@ -84,8 +81,7 @@ const edprowiseServicesData = [
   {
     id: "edprowiseServicesTwelve",
     headingId: "edprowiseServicesHeadingTwelve",
-    question:
-      "How can schools ensure sustainable and eco-friendly procurement?",
+    question: "How can schools ensure sustainable and eco-friendly procurement?",
     answer:
       "We offer eco-friendly procurement options such as recycled paper products, energy-efficient appliances, and sustainable school furniture to promote a green learning environment.",
   },
@@ -120,41 +116,44 @@ const edprowiseServicesData = [
   {
     id: "edprowiseServicesSeventeen",
     headingId: "edprowiseServicesHeadingSeventeen",
-    question:
-      "What is the process for schools to avail procurement services from EdProwise?",
+    question: "What is the process for schools to avail procurement services from EdProwise?",
     answer:
       "Schools can contact us with their procurement needs, and our team will provide vendor options, pricing estimates, and a seamless procurement-to-delivery process.",
   },
 ];
 
 const GoodsFAQSection = () => {
+  const [activeIndex, setActiveIndex] = useState(0); // State to track the active FAQ index
+    
+      const handleAccordionClick = (index) => {
+        setActiveIndex(index === activeIndex ? null : index); // Toggle the active index
+      };
   return (
     <section className="wpo-faq-section section-padding pt-lg-2 pb-lg-2">
-      <div className="container">
-        <div className="row align-items-center">
-          <div className="col-lg-8 offset-lg-2">
-            <div className="wpo-section-title mb-lg-3">
-              <h2>Frequently Asked Questions</h2>
-            </div>
+    <div className="container">
+      <div className="row align-items-center">
+        <div className="col-lg-8 offset-lg-2">
+          <div className="wpo-section-title mb-lg-3">
+            <h2>Frequently Asked Questions</h2>
           </div>
+        </div>
 
-          <div className="col-lg-8 offset-lg-2">
-            <div className="wpo-faq-section">
-              <div className="row">
-                <div className="col-lg-12 col-12">
-                  <div className="wpo-benefits-item">
-                    <div className="accordion" id="accordionExample">
-                      {edprowiseServicesData.map((faq, index) => (
+        <div className="col-lg-8 offset-lg-2">
+          <div className="wpo-faq-section">
+            <div className="row">
+              <div className="col-lg-12 col-12">
+                <div className="wpo-benefits-item">
+                  <div className="accordion" id="accordionExample">
+                    {edprowiseServicesData.map((faq, index) => {
+                      const isActive = index === activeIndex; // Check if this item is active
+                      return (
                         <div className="accordion-item" key={faq.id}>
                           <h3 className="accordion-header" id={faq.headingId}>
                             <button
-                              className={`accordion-button ${
-                                index === 0 ? "" : "collapsed"
-                              }`}
+                              className={`text-black fw-bold accordion-button ${!isActive ? "collapsed" : ""}`}
                               type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target={`#${faq.id}`}
-                              aria-expanded={index === 0 ? "true" : "false"}
+                              onClick={() => handleAccordionClick(index)}
+                              aria-expanded={isActive ? "true" : "false"}
                               aria-controls={faq.id}
                             >
                               {faq.question}
@@ -162,19 +161,17 @@ const GoodsFAQSection = () => {
                           </h3>
                           <div
                             id={faq.id}
-                            className={`accordion-collapse collapse ${
-                              index === 0 ? "show" : ""
-                            }`}
+                            className={`accordion-collapse collapse ${isActive ? "show" : ""}`}
                             aria-labelledby={faq.headingId}
                             data-bs-parent="#accordionExample"
                           >
                             <div className="accordion-body">
-                              <p>{faq.answer}</p>
+                              <p className="text-black">{faq.answer}</p>
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -182,7 +179,8 @@ const GoodsFAQSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
   );
 };
 
