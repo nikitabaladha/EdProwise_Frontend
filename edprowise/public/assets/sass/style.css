@@ -97,6 +97,9 @@ Version:        1.0.0
   font-size: x-large !important;
 }
   */
+  ul.service-suggestions.slide-text.pb-2 {
+    padding: 0 13px;
+}
   /* RecruitmentSection.css */
  
   .mint-container {
@@ -628,7 +631,7 @@ Version:        1.0.0
 
 .searchbox-wrap {
   display: flex;
-  /* width: ; */
+
 }
 
 .searchbox-wrap input {
@@ -640,7 +643,19 @@ Version:        1.0.0
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.19);
   border: none;
 }
-
+.serach-expand{
+  border-radius: 25px;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.19);
+  /* border: none;  */
+}
+.home-search-input{
+  outline: none;
+}
+.service-suggestions {
+  position: relative;
+  z-index: 2;
+  
+}
 .searchbox-wrap button {
   padding-right: 10px;
   background-color: #fff;

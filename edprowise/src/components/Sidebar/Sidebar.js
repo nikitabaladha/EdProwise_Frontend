@@ -132,6 +132,18 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
           },
         ],
       },
+      {
+        id: "requestDemo",
+        label: "Request For Demo",
+        icon: "solar:wallet-money-bold",
+        link: "/admin-dashboard/request-for-demo", 
+      },
+      {
+        id: "contact",
+        label: "Enquiry",
+        icon: "solar:wallet-money-bold",
+        link: "/admin-dashboard/enquiry", 
+      }
     ],
     School: [
       {
@@ -170,47 +182,79 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
           {
             id: "form",
             label: "Form",
-            icon: "solar:users-group-rounded-bold-duotone",
+            icon: "solar:book-bookmark-bold-duotone",
             children: [
               {
                 label: "Registration Form",
                 link: "/school-dashboard/fees-module/form/registration",
-                icon: "solar:users-group-rounded-bold-duotone",
+                // icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Admission Form",
-                link: "/school-dashboard/fees-module/form/admission-form",
-                icon: "solar:users-group-rounded-bold-duotone",
+                link: "/school-dashboard/fees-module/form/admission-list",
+                // icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "TC Form",
-                link: "/school-dashboard/fees-module/form/tc-form",
-                icon: "solar:users-group-rounded-bold-duotone",
+                link: "/school-dashboard/fees-module/form/trasfer-certificate-list",
+                // icon: "solar:users-group-rounded-bold-duotone",
+              },
+              {
+                label: "Concession Form",
+                link: "/school-dashboard/fees-module/form/concession-table",
+                // icon: "solar:users-group-rounded-bold-duotone",
               },
             ],
           },
           {
             id: "feesReceipts",
             label: "Fees Receipts",
-            icon: "solar:users-group-rounded-bold-duotone",
+            icon: "solar:bill-list-bold-duotone",
             children: [
               {
                 label: "School Fees",
                 link: "/school-dashboard/fees-module/fees-receipts/school-fees",
-                icon: "solar:users-group-rounded-bold-duotone",
+                // icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Board Registration Fees",
                 link: "/school-dashboard/fees-module/fees-receipts/board-registration-fees",
-                icon: "solar:users-group-rounded-bold-duotone",
+                // icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Board Exam fees",
                 link: "/school-dashboard/fees-module/fees-receipts/board-exam-fees",
-                icon: "solar:users-group-rounded-bold-duotone",
+                // icon: "solar:users-group-rounded-bold-duotone",
               },
             ],
           },
+          {
+            id: "adminSetting",
+            label: "Admin Setting",
+            icon: "solar:users-group-rounded-bold-duotone",
+            children: [
+              {
+                label: "Shift",
+                link: "/school-dashboard/fees-module/admin-setting/shifts",
+                // icon: "solar:users-group-rounded-bold-duotone",
+              },
+              {
+                label: "Class & Section",
+                link: "/school-dashboard/fees-module/admin-setting/class-section",
+                // icon: "solar:users-group-rounded-bold-duotone",
+              },
+              {
+                label: "Fees Types",
+                link: "/school-dashboard/fees-module/admin-setting/fees-type-list",
+                // icon: "solar:users-group-rounded-bold-duotone",
+              },
+              {
+                label: "Fees Structure",
+                link: "/school-dashboard/fees-module/admin-setting/fees-structure",
+                // icon: "solar:users-group-rounded-bold-duotone",
+              }, 
+            ],
+          }
         ],
       },
     ],

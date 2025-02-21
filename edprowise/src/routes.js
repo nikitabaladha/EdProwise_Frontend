@@ -120,14 +120,42 @@ import TermsPage from "./components/PrivacyPage/TermsPage.js";
 import RequestDemoForm from "./components/HomeSection/RequestDemoForm.js";
 import ServiceFess from "./components/ServiceSection/ServiceDetails/FessPixal/ServiceFees.js";
 import PayrollService from "./components/ServiceSection/ServiceDetails/PayrollService/PayrollService.js";
-import TestingforPop from "./components/ServiceSection/SubSections/TestingforPop.js";
 import FinanceBook from "./components/ServiceSection/ServiceDetails/FinanceBook/FinanceBook.js";
 import SchoolOperation from "./components/ServiceSection/ServiceDetails/SchoolOperations/SchoolOperation.js";
 import SchoolApplication from "./components/ServiceSection/ServiceDetails/SchoolApplication/SchoolApplication.js";
 import SchoolWebsiteDesign from "./components/ServiceSection/ServiceDetails/SchoolWebsiteDesign/SchoolWebsiteDesign.js";
 import StudentRegisterListTable from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/StudentRegisterListTable.js";
-import StudentRegistrationForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/StudentRegistrationForm.js";
-
+import StudentRegistrationForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/StudentRegistrationForm.js";
+import ViewStudentInfoRegister from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/ViewStudentInfoRegister/ViewStudentInfoRegister.js";
+import UpdateStudentRegistrationForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/UpdateStudentRegistrationForm.js/UpdateStudentRegistrationForm.js";
+import StudentAdmissionListTable from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionListTable.js";
+import StudentAdmissionForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/StudentAdmissionForm.js";
+import ViewStudentAdmissionDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/ViewStudentAdmissionDetail/ViewStudentAdmissionDetails.js";
+import UpdateAdmissionForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/UpdateAdmissionDetail/UpdateAdmissionForm.js";
+import StudentTCFormTable from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/StudentTCFormTable.js";
+import StudentAddTCForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/StudentTCForm/StudentAddTCForm.js";
+import ViewTCFormDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/ViewTCFormDetails/ViewTCFormDetails.js";
+import UpdateTCForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/UpdateTCform/UpdateTCForm.js";
+import ConcessionStudentListTable from "./components/DashboardMainForSchool/FeesModuleServices/Form/ConcessionForm/ConcessionStudentListTable.js";
+import AddConcessionForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/ConcessionForm/ConcessionForm/AddConcessionForm.js";
+import ViewStudentConcessionDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/ConcessionForm/ViewStudentConcessionForm/ViewStudentConcessionDetails.js";
+import UpdateConcessionForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/ConcessionForm/UpdateConcessionForm/UpdateConcessionForm.js";
+import ViewRequestsForDemo from "./components/DashboardMainForAdmin/ViewRequestsForDemo/ViewRequestsForDemo.js";
+import { ViewRequestDemoDetails } from "./components/DashboardMainForAdmin/ViewRequestsForDemo/ViewRequestDemoDetails.js";
+import  ContactUsEdprowise  from "./components/DashboardMainForAdmin/Enquiry/ContactUsEdprowise.js";
+import ViewEnquiryDetails from "./components/DashboardMainForAdmin/Enquiry/ViewEnquiryDetails.js";
+import ClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/ClassAndSection.js";
+import FeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructure.js";
+import SchoolShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/SchoolShifts.js";
+import CreateClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/CreateClassAndSection.js";
+import TypeOfFeesList from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/DefineTypesOfFees/TypeOfFeesList.js";
+import AddFeesType from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/DefineTypesOfFees/AddFeesType.js";
+import AddShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/AddShifts.js";
+import FeesStructureListTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructureListTable.js";
+import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
+import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
+import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
+// import ViewTCFormDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/ViewTCFormDetails.js"
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -286,6 +314,12 @@ const AppRoutes = () => {
           path="procurement-services/update-bank-detail"
           element={<UpdateBankDetail />}
         />
+
+        <Route path="request-for-demo" element={<ViewRequestsForDemo/>}/>
+          <Route path="request-for-demo/view-demo-request-details" element={<ViewRequestDemoDetails/>} />
+        
+        <Route path="enquiry" element={<ContactUsEdprowise/>}/>
+        <Route path="enquiry/enquity-details" element={<ViewEnquiryDetails/>}/>
       </Route>
 
       {/*==============================================School Routes============================================== */}
@@ -346,8 +380,47 @@ const AppRoutes = () => {
           element={<StudentRegisterListTable />}
         />
         <Route
-          path="fees-module/form/registration/registration-form"
+          path="fees-module/form/registration-form"
           element={<StudentRegistrationForm />}
+        />
+        <Route
+           path="fees-module/form/registed-student-info"
+           element={<ViewStudentInfoRegister/>}
+        />
+        <Route path="fees-module/form/update-registed-student-info" element={<UpdateStudentRegistrationForm/>} />
+        <Route path="fees-module/form/registration-form/sucess" element={<RegistrationOfficialDetails/>}/>
+
+        <Route path="fees-module/form/admission-list" element={<StudentAdmissionListTable/>}/>
+        <Route path="fees-module/form/admission-form" element={<StudentAdmissionForm/>}/>
+        <Route path="fees-module/form/admission-form/admission-details" element={<AdmissionOfficialInformation/>}/>
+        <Route path="fees-module/form/view-admission-details" element={<ViewStudentAdmissionDetails/>}/>
+        <Route path="fees-module/form/update-admission-form" element={<UpdateAdmissionForm/>} />
+
+        <Route path="fees-module/form/trasfer-certificate-list" element={<StudentTCFormTable/>}/>
+        <Route path="fees-module/form/trasfer-certificate-form" element={<StudentAddTCForm/>}/>
+        <Route path="fees-module/form/view-trasfer-certificate-details" element={<ViewTCFormDetails/>}/>
+        <Route path="fees-module/form/update-trasfer-certificate-form" element={<UpdateTCForm/>}/>
+
+        <Route path="fees-module/form/concession-table" element={<ConcessionStudentListTable/>}/>
+        <Route path="fees-module/form/concession-form" element={<AddConcessionForm/>}/>
+        <Route path="fees-module/form/view-concession-details" element={<ViewStudentConcessionDetails/>}/>
+        <Route path="fees-module/form/update-concession-form" element={<UpdateConcessionForm/>}/>
+
+        <Route path="fees-module/admin-setting/class-section" element={<ClassAndSection/>}/>
+        <Route path="fees-module/admin-setting/class-section/create-class-section" element={<CreateClassAndSection/>} />
+
+        <Route path="fees-module/admin-setting/fees-type-list" element={<TypeOfFeesList/>}/>
+        <Route path="fees-module/admin-setting/fees-type-list/add-fees-type" element={<AddFeesType/>}/>
+
+        <Route path="fees-module/admin-setting/fees-structure" element={<FeesStructureListTable/>}/>
+        <Route path="fees-module/admin-setting/fees-structure/add-fees-structure" element={<FeesStructure/>}/>
+
+        <Route path="fees-module/admin-setting/shifts" element={<SchoolShifts/>}/>
+        <Route path="fees-module/admin-setting/shifts/add-shift" element={<AddShifts/>}/>
+
+        <Route 
+          path="fees-module/fees-receipts/school-fees"
+          element={<SchoolFeesReceipts/>}
         />
       </Route>
 

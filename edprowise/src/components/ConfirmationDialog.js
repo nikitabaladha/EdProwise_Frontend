@@ -21,6 +21,18 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete subscription.",
     idKey: "schoolId",
   },
+  requestdemo:{
+    getEndpoint: (id) => `/delete-request/${id}`,
+    successMessage: "Demo request successfully deleted!",
+    errorMessage: "Failed to delete demo request.",
+    idKey: "_id",
+  },
+  enquiry:{
+    getEndpoint: (id) => `/delete-contact-form/${id}`,
+    successMessage: "Enquiry request successfully deleted!",
+    errorMessage: "Failed to delete enquiry request.",
+    idKey: "_id",
+  }
 };
 
 const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
