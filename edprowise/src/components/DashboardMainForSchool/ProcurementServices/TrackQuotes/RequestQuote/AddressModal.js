@@ -58,6 +58,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const products = cart.map((item) => {
       const productData = {
         categoryId: item.categoryId,
@@ -66,12 +67,10 @@ const AddressModal = ({ onClose, cart, formData }) => {
         unit: item.unit,
         quantity: item.quantity,
       };
-
       return productData;
     });
 
-    const requestBody = {
-      products,
+    const data = {
       deliveryAddress: school?.deliveryAddress,
       deliveryLocation: school?.deliveryLocation,
       deliveryLandMark: school?.deliveryLandMark,
@@ -80,16 +79,23 @@ const AddressModal = ({ onClose, cart, formData }) => {
     };
 
     const formDataToSend = new FormData();
-    const files = [];
 
-    cart.forEach((item) => {
+    formDataToSend.append("products", JSON.stringify(products));
+    formDataToSend.append("data", JSON.stringify(data));
+
+    cart.forEach((item, index) => {
       if (item.productImage) {
-        files.push(item.productImage);
-        formDataToSend.append("productImage", item.productImage);
+        formDataToSend.append(
+          `products[${index}][productImage]`,
+          item.productImage
+        );
       }
     });
 
-    formDataToSend.append("data", JSON.stringify(requestBody));
+    console.log("FormData Entries:");
+    for (const pair of formDataToSend.entries()) {
+      console.log(pair[0], pair[1]);
+    }
 
     try {
       const response = await postAPI(
