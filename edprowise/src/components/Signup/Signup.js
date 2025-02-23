@@ -18,6 +18,7 @@ const Signup = () => {
     event.preventDefault();
     navigate("/");
   };
+
   const navigateToLogin = (event) => {
     event.preventDefault();
     navigate("/login");

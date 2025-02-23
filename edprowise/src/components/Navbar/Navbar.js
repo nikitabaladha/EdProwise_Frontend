@@ -6,7 +6,6 @@ import Topbar from "./Topbar";
 
 const menuData = [
   { name: "Home", link: "/", subMenu: [] },
-
   {
     name: "Services",
     subMenu: [
@@ -100,15 +99,60 @@ const Header = () => {
 
   const handleSignIn = (event) => {
     event.preventDefault();
-    event.stopPropagation(); // Prevent event bubbling
-    console.log("Sign In Clicked");
-    navigate(`/login`);
+    event.stopPropagation();
+
+    const accessToken = localStorage.getItem("accessToken");
+    const userDetails = localStorage.getItem("userDetails");
+
+    if (!accessToken || !userDetails) return navigate("/login");
+
+    const user = JSON.parse(userDetails);
+    let route = "";
+
+    switch (user.role) {
+      case "School":
+        route =
+          user.status === "Pending"
+            ? "/complete-school-profile"
+            : "/school-dashboard";
+        break;
+
+      case "Seller":
+        route =
+          user.status === "Pending"
+            ? "/complete-seller-profile"
+            : "/seller-dashboard";
+        break;
+
+      case "Admin":
+        route =
+          user.status === "Pending"
+            ? "/complete-seller-profile"
+            : "/admin-dashboard";
+        break;
+
+      case "Auditor":
+        route = "/auditor-dashboard";
+        break;
+
+      case "User":
+        route = "/user-dashboard";
+        break;
+
+      default:
+        route = "/login";
+    }
+
+    return navigate(route);
   };
 
   const handleSignUp = (event) => {
     event.preventDefault();
-    event.stopPropagation(); // Prevent event bubbling
-    console.log("Sign Up Clicked");
+    event.stopPropagation();
+
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userDetails");
+
     navigate(`/signup`);
   };
 
@@ -116,7 +160,7 @@ const Header = () => {
     var navbar = window.$(".navigation-holder");
     var openBtn = window.$(".mobail-menu .open-btn");
     var xbutton = window.$(" .navbar-toggler");
-    // e.stopImmediatePropagation();
+
     navbar.toggleClass("slideInn");
     xbutton.toggleClass("x-close");
     return false;
@@ -239,11 +283,11 @@ const Header = () => {
                     ))}
                     {window.innerWidth <= 992 ? (
                       <>
-                        <li className="menu-item ">
-                          <Link to="/signup">Sign Up</Link>
+                        <li className="menu-item">
+                          <Link onClick={handleSignUp}>Sign Up</Link>
                         </li>
                         <li className="menu-item">
-                          <Link to="/login">Sign In</Link>
+                          <Link onClick={handleSignIn}>Sign In</Link>
                         </li>
                       </>
                     ) : null}
