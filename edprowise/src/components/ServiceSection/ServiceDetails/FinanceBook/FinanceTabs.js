@@ -12,6 +12,17 @@ const FinanceTabs=()=>{
   const showTab = (tabName) => {
     setActiveTab(tabName);
   };
+
+  const handleDownload=(tabName)=>{
+    if (tabName === "brochureSection") {
+      const link = document.createElement("a");
+      link.href = "/assets/website-images/EdProwise Brochure.pdf"; 
+      link.download = "EdProwise-Brochure.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
     return(
         <>
 
@@ -55,11 +66,9 @@ const FinanceTabs=()=>{
          What We Are Solving
         </button>
         <button
-        id="recruitmentTab"
-          className={`nav-tab ${
-            activeTab === "recruitmentSection" ? "active" : ""
-          }`}
-          onClick={() => showTab("recruitmentSection")}
+        id="brochureTab"
+        className="download-brocher-tab"
+        onClick={() => handleDownload("brochureSection")}
         >
          Download Brochure
         </button>
@@ -98,14 +107,6 @@ const FinanceTabs=()=>{
         >
           <WhatWeSolveFinance/>
         </div>
-        <div
-          className={`show-tab ${
-            activeTab === "recruitmentSection" ? "active" : ""
-          }`}
-          id="recruitmentSection"
-        >
-             
-        </div>  
       </div>
     </section>
            

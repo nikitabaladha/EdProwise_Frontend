@@ -199,7 +199,8 @@ const WhyChooseUs = () => {
           <div className="slide-track">
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/1.png"
+              className="serve-school-img"
+                src="/assets/website-images/carmel-school.png"
                 height="100"
                 width="250"
                 alt=""
@@ -207,7 +208,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/2.png"
+              className="serve-school-img"
+                src="/assets/website-images/francis-de-sales-school.jpeg"
                 height="100"
                 width="250"
                 alt=""
@@ -215,7 +217,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/3.png"
+              className="serve-school-img"
+                src="/assets/website-images/christ-raja-school.jpg"
                 height="100"
                 width="250"
                 alt=""
@@ -223,7 +226,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/4.png"
+              className="serve-school-img"
+                src="/assets/website-images/Mount-collage-logo.png"
                 height="100"
                 width="250"
                 alt=""
@@ -231,7 +235,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/5.png"
+              className="serve-school-img"
+                src="/assets/website-images/thomas-convent-school.jpeg"
                 height="100"
                 width="250"
                 alt=""
@@ -239,7 +244,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/6.png"
+              className="serve-school-img"
+                src="/assets/website-images/trinity-convent-school.jpeg"
                 height="100"
                 width="250"
                 alt=""
@@ -247,7 +253,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/7.png"
+              className="serve-school-img"
+                src="/assets/website-images/carmel-school.png"
                 height="100"
                 width="250"
                 alt=""
@@ -255,7 +262,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/1.png"
+              className="serve-school-img"
+                src="/assets/website-images/francis-de-sales-school.jpeg"
                 height="100"
                 width="250"
                 alt=""
@@ -263,7 +271,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/2.png"
+              className="serve-school-img"
+                src="/assets/website-images/christ-raja-school.jpg"
                 height="100"
                 width="250"
                 alt=""
@@ -271,7 +280,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/3.png"
+              className="serve-school-img"
+                src="/assets/website-images/Mount-collage-logo.png"
                 height="100"
                 width="250"
                 alt=""
@@ -279,7 +289,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/4.png"
+              className="serve-school-img"
+                src="/assets/website-images/thomas-convent-school.jpeg"
                 height="100"
                 width="250"
                 alt=""
@@ -287,7 +298,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/5.png"
+              className="serve-school-img"
+                src="/assets/website-images/trinity-convent-school.jpeg"
                 height="100"
                 width="250"
                 alt=""
@@ -295,7 +307,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/6.png"
+              className="serve-school-img"
+                src="/assets/website-images/carmel-school.png"
                 height="100"
                 width="250"
                 alt=""
@@ -303,7 +316,8 @@ const WhyChooseUs = () => {
             </div>
             <div className="slide">
               <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/7.png"
+              className="serve-school-img"
+                src="/assets/website-images/francis-de-sales-school.jpeg"
                 height="100"
                 width="250"
                 alt=""

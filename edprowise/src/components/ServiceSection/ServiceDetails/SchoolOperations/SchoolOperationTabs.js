@@ -1,7 +1,6 @@
 import React,{useState} from "react";
 import SchoolOperationKeyFeature from "./SchoolOperationKeyFeature";
 import SchoolOpsFAQSection from "../../../FAQSection/SchoolOpsFAQSection";
-import WhatWeSolveSchoolOps from "./WhatWeSolveSchoolOps";
 
 const SchoolOperationTabs=()=>{
     
@@ -10,6 +9,17 @@ const SchoolOperationTabs=()=>{
   const showTab = (tabName) => {
     setActiveTab(tabName);
   };
+
+  const handleDownload=(tabName)=>{
+    if (tabName === "recruitmentSection") {
+      const link = document.createElement("a");
+      link.href = "/assets/website-images/EdProwise Brochure.pdf"; 
+      link.download = "EdProwise-Brochure.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
     return(
         <>
 
@@ -35,21 +45,11 @@ const SchoolOperationTabs=()=>{
         >
           FAQ
         </button>
-        <button
-        id="whatwesayTab"
-          className={`nav-tab ${
-            activeTab === "whatwesaySection" ? "active" : ""
-          }`}
-          onClick={() => showTab("whatwesaySection")}
-        >
-         What We Are Solving
-        </button>
+        
         <button
         id="recruitmentTab"
-          className={`nav-tab ${
-            activeTab === "recruitmentSection" ? "active" : ""
-          }`}
-          onClick={() => showTab("recruitmentSection")}
+        className="download-brocher-tab"
+        onClick={() => handleDownload("recruitmentSection")}
         >
          Download Brochure
         </button>
@@ -71,26 +71,7 @@ const SchoolOperationTabs=()=>{
           id="procurementSection"
         >
          <SchoolOpsFAQSection/>
-        </div>
-        <div
-          className={`show-tab ${
-            activeTab === "whatwesaySection" ? "active" : ""
-          }`}
-          id="whatwesaySection"
-        >
-          <WhatWeSolveSchoolOps/>
-          
-        </div> 
-        <div
-          className={`show-tab ${
-            activeTab === "recruitmentSection" ? "active" : ""
-          }`}
-          id="recruitmentSection"
-        >
-          
-          
-        </div>  
-          
+        </div>   
       </div>
     </section>
            

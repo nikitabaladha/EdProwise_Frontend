@@ -80,6 +80,10 @@ body {
     width: 100px;
 }
 
+.logos {
+    max-width: 85% !important;
+}
+
 .website-logo-inside .logo {
     background-image: url("../images/logo-yellow.svg");
 }
@@ -162,7 +166,7 @@ body {
 }
 
 .form-content .form-items {
-    max-width: 340px;
+    max-width: 400px;
     text-align: center;
 }
 

@@ -108,7 +108,7 @@ const StudentAddTCForm = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="age" className="form-label">
-                        age
+                        Age
                       </label>
                       <input
                         type="number"
@@ -405,7 +405,7 @@ const StudentAddTCForm = () => {
                       className="form-check-label"
                       htmlFor="customCheck1"
                     >
-                    The certificate is issued for the purpose of admission to other School.
+                    The certificate is issued for the purpose of admission to another School.
                     </label>
                   </div>
 

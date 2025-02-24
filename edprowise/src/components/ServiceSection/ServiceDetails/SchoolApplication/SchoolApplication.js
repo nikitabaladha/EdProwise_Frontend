@@ -1,13 +1,13 @@
 import React from 'react'
 import SchoolApplicationCommonHeader from './SchoolApplicationCommonHeader';
-import Serviceinfomainpage from "../Serviceinfomainpage";
 import SchoolApplicationTabs from './SchoolApplicationTabs';
+import SchoolApplicationInfoSection from './SchoolApplicationInfoSection';
 
 const SchoolApplication = () => {
   return (
     <>
     <SchoolApplicationCommonHeader/>
-    <Serviceinfomainpage/>
+    <SchoolApplicationInfoSection/>
     <SchoolApplicationTabs/>
     </>
   )

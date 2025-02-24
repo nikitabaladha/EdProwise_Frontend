@@ -2,11 +2,6 @@ import React from "react";
 
 const EdprowiseTalkSection = () => {
   
-  const handleVideoClick = (e) => {
-    e.preventDefault();
-    const videoUrl = e.currentTarget.getAttribute("href");
-    window.open(videoUrl, "_blank", "noopener,noreferrer");
-  };
   return (
     <section className="wpo-choose-section-s2 section-padding pt-3 pb-3 "  style={{ background: "white" }}>
     <div className="container edprowise-choose-container">
@@ -18,14 +13,17 @@ const EdprowiseTalkSection = () => {
         </div>
       </div> */}
       <div className="right-img mb-0 ">
-        <img src="/assets/website-images/choose2.webp" alt="Choose Us" />
-        <a
-          href="https://www.youtube.com/embed/r5sw-6lJmTA?autoplay=1"
-          className="video-btn"
-          onClick={handleVideoClick}
-        >
-          <i className="fi flaticon-play-1"></i>
-        </a>
+        
+           <iframe
+        width="100%"
+        height="325"
+        src="https://www.youtube.com/embed/KzMNx8h7RbY?si=7eEmdFNCVHPkdYBp"
+        title="YouTube video player"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+      ></iframe>
       </div>
       
     </div>

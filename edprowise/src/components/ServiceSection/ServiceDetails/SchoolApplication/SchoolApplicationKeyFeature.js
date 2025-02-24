@@ -261,7 +261,7 @@ const SchoolApplicationKeyFeature = () => {
       <div className="tabs p-1">
         <button
           id="buyerTab"
-          className={`tab-back theme-choose-btn ${
+          className={`tab-appli-keyfeacher theme-choose-btn ${
             activeTab === "buyer" ? "active" : ""
           }`}
           onClick={() => setActiveTab("buyer")}
@@ -270,7 +270,7 @@ const SchoolApplicationKeyFeature = () => {
         </button>
         <button
           id="supplierTab"
-          className={`tab-back theme-choose-btn ${
+          className={`tab-appli-keyfeacher theme-choose-btn ${
             activeTab === "supplier" ? "active" : ""
           }`}
           onClick={() => setActiveTab("supplier")}
@@ -279,7 +279,7 @@ const SchoolApplicationKeyFeature = () => {
         </button>
         <button
           id="studentTab"
-          className={`tab-back theme-choose-btn ${
+          className={`tab-appli-keyfeacher theme-choose-btn ${
             activeTab === "student" ? "active" : ""
           }`}
           onClick={() => setActiveTab("student")}
@@ -295,7 +295,7 @@ const SchoolApplicationKeyFeature = () => {
           {chooseDataPrinciple.map((item) => (
             <div
               key={item.id}
-              className={`category-items col-lg-3 col-md-6 col-6 grid-web ${item.classNameS}`}
+              className={`category-items col-lg-3 col-md-6 col-12 grid-web ${item.classNameS}`}
             >
               <div className="wpo-courses-item category-itemm">
                 <div className="wpo-courses-text">
@@ -320,7 +320,7 @@ const SchoolApplicationKeyFeature = () => {
           {chooseDataTeacher.map((item) => (
             <div
               key={item.id}
-              className={`category-items col-lg-3 col-md-6 col-6 grid-web ${item.classNameS}`}
+              className={`category-items col-lg-3 col-md-6 col-12 grid-web ${item.classNameS}`}
             >
               <div className="wpo-courses-item category-itemm">
                 <div className="wpo-courses-text">
@@ -344,7 +344,7 @@ const SchoolApplicationKeyFeature = () => {
           {chooseDataStudent.map((item) => (
             <div
               key={item.id}
-              className={`category-items col-lg-3 col-md-6 col-6 grid-web ${item.classNameS}`}
+              className={`category-items col-lg-3 col-md-6 col-12 grid-web ${item.classNameS}`}
             >
               <div className="wpo-courses-item category-itemm">
                 <div className="wpo-courses-text">

@@ -11,6 +11,17 @@ const ServiceTabs=()=>{
   const showTab = (tabName) => {
     setActiveTab(tabName);
   };
+
+  const handleDownload=(tabName)=>{
+    if (tabName === "brochureSection") {
+      const link = document.createElement("a");
+      link.href = "/assets/website-images/EdProwise Brochure.pdf"; 
+      link.download = "EdProwise-Brochure.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
     return(
         <>
 
@@ -55,10 +66,8 @@ const ServiceTabs=()=>{
         </button>
         <button
         id="brochureTab"
-          className={`nav-tab ${
-            activeTab === "brochureSection" ? "active" : ""
-          }`}
-          onClick={() => showTab("brochureSection")}
+        className="download-brocher-tab"
+        onClick={() => handleDownload("brochureSection")}
         >
          Download Brochure
         </button>

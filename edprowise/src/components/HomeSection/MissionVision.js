@@ -8,10 +8,10 @@ const VisionMissionSection = () => {
     const items = carouselContainer.querySelectorAll(".cart-vm");
     const totalItems = items.length;
     let currentIndex = 0;
-    const intervalTime = 4000; // Time between slides in milliseconds
+    const intervalTime = 4000; 
     let autoplayInterval;
 
-    // Update carousel position
+    
     const updateCarousel = () => {
       carouselContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
     };

@@ -1,13 +1,13 @@
 import React from 'react'
 import SchoolWebsitebreadcrum from './SchoolWebsitebreadcrum';
-import Serviceinfomainpage from '../Serviceinfomainpage';
 import SchoolWebsiteTabs from './SchoolWebsiteTabs';
+import SchoolWebsiteInfoSection from './SchoolWebsiteInfoSection';
 
 const SchoolWebsiteDesign = () => {
   return (
     <>
     <SchoolWebsitebreadcrum/>
-    <Serviceinfomainpage/>
+    <SchoolWebsiteInfoSection/>
     <SchoolWebsiteTabs/>
     </>
   )

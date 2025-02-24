@@ -97,6 +97,9 @@ Version:        1.0.0
   font-size: x-large !important;
 }
   */
+  .serve-school-img{
+    max-width: fit-content !important;
+  }
   ul.service-suggestions.slide-text.pb-2 {
     padding: 0 13px;
 }
@@ -604,7 +607,8 @@ Version:        1.0.0
   /* margin-bottom: 20px; */
 }
 
-.nav-tab {
+.nav-tab,
+.download-brocher-tab {
   background-color: #ffffff;
   color: black;
   border: 3px solid #ffffff;
@@ -618,10 +622,11 @@ Version:        1.0.0
 }
 
 .nav-tab.active,
-.nav-tab.active:hover {
+.nav-tab.active:hover,
+.download-brocher-tab:hover {
   background-color: #007bff;
   color: #ffffff;
-  border: none;
+  border: 3px solid;
 }
 
 .nav-tab:hover {
@@ -692,7 +697,8 @@ Version:        1.0.0
 }
 
 .theme-choose-btn,
-.tab-back {
+.tab-back,
+.tab-appli-keyfeacher {
   color: #1a1729;
   display: inline-block;
   font-weight: 500;
@@ -710,12 +716,23 @@ Version:        1.0.0
   border-radius: 30px;
   font-weight: 600;
 }
-.tab-back{
+
+@media (max-width: 445px) {
+  .tab-appli-keyfeacher {
+    padding: 10px 13px;
+    font-size: 16px;
+  }  
+}
+
+
+.tab-back,
+.tab-appli-keyfeacher{
   background-color: white ;
 }
 
 .theme-choose-btn.active,
-.tab-back.active {
+.tab-back.active,
+.tab-appli-keyfeacher.active {
   background: #f2bc00;
 }
 

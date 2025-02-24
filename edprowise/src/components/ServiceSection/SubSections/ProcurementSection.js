@@ -15,6 +15,7 @@ import { RiFilePaperLine } from "react-icons/ri";
 import { TiNews } from "react-icons/ti";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { RiBuilding2Line } from "react-icons/ri";
+import { Link } from "react-router-dom";
 const ProcurementSection = () => {
   const courses = [
     {
@@ -130,13 +131,13 @@ const ProcurementSection = () => {
                 {/* <i className={course.icon}></i> */}
               </div>
               <h2 className="category-h2 font-weight-web-h2">
-                <a >{course.title}</a>
+                {course.title}
               </h2>
               {/* <p className="category-text">{course.description}</p> */}
             </div>
-            <a className="all-info" >
-              Know More...
-            </a>
+            <Link to={"/login"} className="all-info" >
+              Buy Now...
+            </Link>
           </div>
         </div>
       ))}

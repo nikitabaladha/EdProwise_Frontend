@@ -1,22 +1,24 @@
 import React,{useState} from 'react'
 import SchoolWebsiteKeyFeatures from './SchoolWebsiteKeyFeatures';
-import { Link, useNavigate } from "react-router-dom";
 
 const SchoolWebsiteTabs = () => {
     const [activeTab, setActiveTab] = useState("digitalSection");
-    const navigate = useNavigate();
     
-    const handleItemClick = (send) => {
-      if (send) {
-        // console.log(send);
-        navigate(send);
-      } else {
-        navigate()
-      }
-    };
+    
       const showTab = (tabName) => {
         setActiveTab(tabName);
       };
+
+      const handleDownload=(tabName)=>{
+        if (tabName === "recruitmentSection") {
+          const link = document.createElement("a");
+          link.href = "/assets/website-images/EdProwise Brochure.pdf"; 
+          link.download = "EdProwise-Brochure.pdf";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }
   return (
     <>
      <section className="wpo-courses-section-s2 section-padding p-0">
@@ -32,31 +34,15 @@ const SchoolWebsiteTabs = () => {
           Key Features
         </button>
         
-        {/* <button
-          id="procurementTab"
-          className={`nav-tab ${
-            activeTab === "procurementSection" ? "active" : ""
-          }`}
-          onClick={() => showTab("procurementSection")}
-        >
-          FAQ
-        </button> */}
+        
         <button
         id="recruitmentTab"
-          className={`nav-tab ${
-            activeTab === "recruitmentSection" ? "active" : ""
-          }`}
-          onClick={() => showTab("recruitmentSection")}
+        className="download-brocher-tab"
+        onClick={() => handleDownload("recruitmentSection")}
         >
          Download Brochure
         </button>
-        <button
-         id="whatwesayTab"
-         className="nav-tab"
-         onClick={() => handleItemClick("/request-demo")}
-          >
-         Request For Demo
-       </button>
+
 
       </div>
       <div className="container section-padding">
@@ -68,33 +54,6 @@ const SchoolWebsiteTabs = () => {
         >
          <SchoolWebsiteKeyFeatures/>
         </div>
-       
-        {/* <div
-          className={`show-tab ${
-            activeTab === "procurementSection" ? "active" : ""
-          }`}
-          id="procurementSection"
-        >
-         
-        </div> */}
-        <div
-          className={`show-tab ${
-            activeTab === "recruitmentSection" ? "active" : ""
-          }`}
-          id="recruitmentSection"
-        >
-          {/* <SchoolFessFaq/> */}
-          
-        </div>  
-        <div
-          className={`show-tab ${
-            activeTab === "whatwesaySection" ? "active" : ""
-          }`}
-          id="whatwesaySection"
-        >
-          {/* <SchoolFessFaq/> */}
-          
-        </div>   
       </div>
     </section>
     </>

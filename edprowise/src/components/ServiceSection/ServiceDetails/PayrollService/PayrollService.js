@@ -1,13 +1,13 @@
-import React,{useState} from "react";
+import React from "react";
 import PayrollCommonHeader from "./PayrollCommonHeader";
-import Serviceinfomainpage from "../Serviceinfomainpage";
 import PayrollTabs from "./PayrollTabs";
+import PayrollInfoMainPage from "./PayrollInfoMainPage";
 
 const PayrollService=()=>{
     return(
         <>
         <PayrollCommonHeader/>
-        <Serviceinfomainpage/>
+        <PayrollInfoMainPage/>
         <PayrollTabs/>
         </>
     )

@@ -1,13 +1,13 @@
-import React,{useState} from "react";
+import React from "react";
 import SchoolOperationCommonHeader from "./SchoolOperationCommonHeader";
-import Serviceinfomainpage from "../Serviceinfomainpage";
 import SchoolOperationTabs from "./SchoolOperationTabs";
+import SchoolOperationInfoSection from "./SchoolOperationInfoSection";
 
 const SchoolOperation=()=>{
     return(
         <>
         <SchoolOperationCommonHeader/>
-        <Serviceinfomainpage/>
+        <SchoolOperationInfoSection/>
         <SchoolOperationTabs/>
         </>
     )
