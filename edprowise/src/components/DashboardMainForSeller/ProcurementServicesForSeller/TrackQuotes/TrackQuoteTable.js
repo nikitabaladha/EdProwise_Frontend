@@ -71,10 +71,14 @@ const TrackQuoteTable = ({}) => {
     fetchPrepareQuoteData();
   }, [quotes]);
 
-  const navigateToViewRequestedQuote = (event, enquiryNumber) => {
+  const navigateToViewRequestedQuote = (
+    event,
+    enquiryNumber,
+    supplierStatus
+  ) => {
     event.preventDefault();
     navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
-      state: { enquiryNumber },
+      state: { enquiryNumber, supplierStatus },
     });
   };
 
@@ -105,7 +109,7 @@ const TrackQuoteTable = ({}) => {
 
       // Fetch Profile data based on the schoolId
       const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}`
+        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}`
       );
 
       if (
@@ -265,7 +269,8 @@ const TrackQuoteTable = ({}) => {
                                   onClick={(event) =>
                                     navigateToViewRequestedQuote(
                                       event,
-                                      quote?.enquiryNumber
+                                      quote?.enquiryNumber,
+                                      quote?.supplierStatus
                                     )
                                   }
                                 >

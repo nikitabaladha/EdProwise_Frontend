@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
-import postAPI from "../../../../../api/postAPI";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+import putAPI from "../../../../../api/putAPI";
+import getAPI from "../../../../../api/getAPI";
+import { format, parseISO } from "date-fns";
 
 const SubmitQuote = () => {
   const location = useLocation();
   const enquiryNumber = location.state?.enquiryNumber;
 
-  const [formData, setFormData] = useState({
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const sellerId = userDetails?.id;
+
+  const [submittedQuote, setSubmittedQuote] = useState({
     quotedAmount: "",
     description: "",
     remarksFromSupplier: "",
@@ -18,35 +22,85 @@ const SubmitQuote = () => {
     advanceRequiredAmount: "",
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchSubmittedQuoteData = async () => {
+      try {
+        const response = await getAPI(
+          `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+        );
+        if (!response.hasError && response.data && response.data.data) {
+          const {
+            quotedAmount,
+            description,
+            remarksFromSupplier,
+            expectedDeliveryDateBySeller,
+            paymentTerms,
+            advanceRequiredAmount,
+          } = response.data.data;
 
-  const handleChange = (e) => {
+          const formattedDate = format(
+            parseISO(expectedDeliveryDateBySeller),
+            "yyyy-MM-dd"
+          );
+
+          setSubmittedQuote({
+            quotedAmount,
+            description,
+            remarksFromSupplier,
+            expectedDeliveryDateBySeller: formattedDate,
+            paymentTerms,
+            advanceRequiredAmount,
+          });
+        } else {
+          console.error("Invalid response format or error in response");
+        }
+      } catch (err) {
+        console.error("Error fetching Submitted quote data:", err);
+      }
+    };
+
+    fetchSubmittedQuoteData();
+  }, [enquiryNumber, sellerId]);
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setSubmittedQuote((prevState) => ({
+      ...prevState,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const {
+      quotedAmount,
+      description,
+      remarksFromSupplier,
+      expectedDeliveryDateBySeller,
+      paymentTerms,
+      advanceRequiredAmount,
+    } = submittedQuote;
+
+    const dataToSend = {
+      quotedAmount,
+      description,
+      remarksFromSupplier,
+      expectedDeliveryDateBySeller,
+      paymentTerms,
+      advanceRequiredAmount,
+    };
+
     try {
-      const data = new FormData();
-      Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
-      });
-
-      if (enquiryNumber) {
-        data.append("enquiryNumber", enquiryNumber);
-      }
-
-      const response = await postAPI("/submit-quote", data, true);
+      const response = await putAPI(
+        `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        dataToSend,
+        true
+      );
 
       if (!response.hasError) {
-        toast.success("Quote submitted successfully!");
-
-        setFormData({
+        toast.success("Quote Submitted successfully");
+        setSubmittedQuote({
           quotedAmount: "",
           description: "",
           remarksFromSupplier: "",
@@ -55,9 +109,9 @@ const SubmitQuote = () => {
           advanceRequiredAmount: "",
         });
 
-        navigate(-1);
+        Navigate(-1);
       } else {
-        toast.error(response.message || "Failed to add school");
+        toast.error(response.message || "Failed to Prepare quote");
       }
     } catch (error) {
       toast.error(
@@ -89,13 +143,11 @@ const SubmitQuote = () => {
                       </label>
                       <input
                         type="number"
-                        id="quotedAmount"
                         name="quotedAmount"
+                        value={submittedQuote.quotedAmount}
+                        onChange={handleInputChange}
                         className="form-control"
-                        value={formData.quotedAmount}
-                        onChange={handleChange}
                         required
-                        min="0"
                       />
                     </div>
                   </div>
@@ -108,13 +160,12 @@ const SubmitQuote = () => {
                         Expected Delivery Date by Seller
                       </label>
                       <input
-                        type="date"
-                        id="expectedDeliveryDateBySeller"
-                        name="expectedDeliveryDateBySeller"
-                        className="form-control"
-                        value={formData.expectedDeliveryDateBySeller}
-                        onChange={handleChange}
                         required
+                        type="date"
+                        name="expectedDeliveryDateBySeller"
+                        value={submittedQuote.expectedDeliveryDateBySeller}
+                        onChange={handleInputChange}
+                        className="form-control"
                       />
                     </div>
                   </div>
@@ -127,12 +178,11 @@ const SubmitQuote = () => {
                         Description
                       </label>
                       <textarea
-                        id="description"
+                        type="text"
                         name="description"
+                        value={submittedQuote.description}
+                        onChange={handleInputChange}
                         className="form-control"
-                        rows={2}
-                        value={formData.description}
-                        onChange={handleChange}
                         required
                       />
                     </div>
@@ -146,12 +196,11 @@ const SubmitQuote = () => {
                         Remarks from Supplier
                       </label>
                       <textarea
-                        id="remarksFromSupplier"
+                        type="text"
                         name="remarksFromSupplier"
+                        value={submittedQuote.remarksFromSupplier}
+                        onChange={handleInputChange}
                         className="form-control"
-                        rows={2}
-                        value={formData.remarksFromSupplier}
-                        onChange={handleChange}
                         required
                       />
                     </div>
@@ -165,37 +214,31 @@ const SubmitQuote = () => {
                       </label>
                       <input
                         type="text"
-                        id="paymentTerms"
                         name="paymentTerms"
+                        value={submittedQuote.paymentTerms}
+                        onChange={handleInputChange}
                         className="form-control"
-                        value={formData.paymentTerms}
-                        onChange={handleChange}
-                        required
                       />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label
-                        htmlFor="advancesRequiredAmount"
+                        htmlFor="advanceRequiredAmount"
                         className="form-label"
                       >
                         Advances Required Amount
                       </label>
                       <input
-                        type="number"
-                        id="advanceRequiredAmount"
+                        type="text"
                         name="advanceRequiredAmount"
+                        value={submittedQuote.advanceRequiredAmount}
+                        onChange={handleInputChange}
                         className="form-control"
-                        value={formData.advanceRequiredAmount}
-                        onChange={handleChange}
-                        required
-                        min="0"
                       />
                     </div>
                   </div>
                 </div>
-
                 <div className="text-end">
                   <button
                     type="submit"

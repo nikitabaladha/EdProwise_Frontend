@@ -21,6 +21,7 @@ const formatDate = (dateString) => {
 const ViewRequestedQuote = () => {
   const location = useLocation();
   const enquiryNumber = location.state?.enquiryNumber;
+  const supplierStatus = location.state?.supplierStatus;
 
   const navigate = useNavigate();
 
@@ -141,6 +142,9 @@ const ViewRequestedQuote = () => {
     const updatedProducts = prepareProducts.filter((_, i) => i !== index);
     setPrepareProducts(updatedProducts);
   };
+
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const sellerId = userDetails?.id;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

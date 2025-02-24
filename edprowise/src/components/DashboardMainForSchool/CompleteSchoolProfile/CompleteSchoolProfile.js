@@ -40,6 +40,37 @@ const CompleteSchoolProfile = () => {
   const affiliationCertificateRef = useRef(null);
   const panFileRef = useRef(null);
 
+  // const fetchSchoolData = async () => {
+  //   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  //   const schoolId = userDetails?.schoolId;
+
+  //   if (!schoolId) {
+  //     console.error("School ID not found in localStorage");
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await getAPI(`/school-profile/${schoolId}`, {}, true);
+
+  //     if (!response.hasError && response.data && response.data.data) {
+  //       setSchool(response.data.data);
+
+  //       console.log("school profile", response.data.data);
+
+  //       // if no school profile found, i want to redirect to /complete-your-school-profile page
+
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         ...response.data.data,
+  //       }));
+  //     } else {
+  //       console.error("Invalid response format or error in response");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error fetching School:", err);
+  //   }
+  // };
+
   const fetchSchoolData = async () => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
@@ -54,15 +85,49 @@ const CompleteSchoolProfile = () => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSchool(response.data.data);
+
+        console.log("school profile", response.data.data);
+
+        //   {
+        //     "_id": "67b89e5366b379934ba75315",
+        //     "schoolId": "SID00001",
+        //     "schoolName": "ABC School",
+        //     "panFile": "/Documents/SchoolPanFile/test_pan_file_pdf_1740152403780.pdf",
+        //     "panNo": "AAAAA9999A",
+        //     "schoolAddress": "B-503 Saaga Residency\r\nNear Zydus Corporate Park, Near Nirma University",
+        //     "schoolLocation": "Faridabad, Haryana, India",
+        //     "schoolMobileNo": "1234567890",
+        //     "schoolEmail": "abc@gmail.com",
+        //     "profileImage": "/Images/SchoolProfile/abc_school_png_1740152403779.png",
+        //     "affiliationCertificate": "/Images/SchoolAffiliationCertificate/test_affiliation_certificate_jpg_1740152403780.jpg",
+        //     "affiliationUpto": "College",
+        //     "createdAt": "2025-02-21T15:40:03.914Z",
+        //     "updatedAt": "2025-02-21T15:48:18.099Z",
+        //     "__v": 0,
+        //     "contactPersonName": "Mr Gupta",
+        //     "deliveryAddress": "B-503 Saaga Residency\r\nNear Zydus Corporate Park, Near Nirma University",
+        //     "deliveryLandMark": "Railway Station Road",
+        //     "deliveryLocation": "Faridabad, Haryana, India",
+        //     "deliveryPincode": "382421",
+        //     "landMark": "Railway Station Road",
+        //     "numberOfStudents": 1000,
+        //     "principalName": "Mr Naresh Gupta",
+        //     "schoolAlternateContactNo": "1234567890",
+        //     "schoolPincode": "382421"
+        // }
         setFormData((prev) => ({
           ...prev,
           ...response.data.data,
         }));
       } else {
         console.error("Invalid response format or error in response");
+        // Redirect to /complete-your-school-profile if no school profile is found
+        navigate("/complete-your-school-profile");
       }
     } catch (err) {
       console.error("Error fetching School:", err);
+      // Redirect to /complete-your-school-profile if there's an error
+      navigate("/complete-your-school-profile");
     }
   };
 

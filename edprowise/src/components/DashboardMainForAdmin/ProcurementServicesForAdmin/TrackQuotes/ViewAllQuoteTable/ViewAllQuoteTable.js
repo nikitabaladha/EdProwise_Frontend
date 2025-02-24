@@ -103,7 +103,7 @@ const ViewAllQuoteTable = () => {
 
       // Fetch Profile data based on the schoolId
       const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}`
+        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}`
       );
 
       if (

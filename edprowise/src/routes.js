@@ -98,6 +98,7 @@ import UpdateGoodAndService from "./components/DashboardMainForAdmin/Procurement
 // ================School Routes=============School Routes============School Routes===========================
 
 import CompleteSchoolProfile from "./components/DashboardMainForSchool/CompleteSchoolProfile/CompleteSchoolProfile";
+import CompleteSchoolProfileBySchool from "./components/DashboardMainForSchool/CompleteSchoolProfile/CompleteSchoolProfileBySchool.js";
 import UpdateSchoolProfile from "./components/DashboardMainForSchool/UpdateSchoolProfile/UpdateSchoolProfile";
 import ViewSchoolProfile from "./components/DashboardMainForSchool/ViewSchoolProfile/ViewSchoolProfile";
 import ChangePasswordForSchoolAdmin from "./components/DashboardMainForSchool/ChangePassword/ChangePassword";
@@ -211,6 +212,14 @@ const AppRoutes = () => {
         element={
           <PrivateRoute>
             <CompleteSchoolProfile />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/complete-your-school-profile"
+        element={
+          <PrivateRoute>
+            <CompleteSchoolProfileBySchool />
           </PrivateRoute>
         }
       />
