@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import PrepareQuoteTable from "../PrepareQuoteTable/PrepareQuoteTable";
+import ViewPrepareQuoteSeller from "./ViewPrepareQuoteSeller";
 
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
@@ -308,15 +309,22 @@ const ViewRequestedQuote = () => {
               </div>
 
               <div className="d-flex justify-content-between mt-2">
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                  onClick={() =>
-                    setIsPrepareQuoteTableVisible(!isPrepareQuoteTableVisible)
-                  }
-                >
-                  {isPrepareQuoteTableVisible ? "Hide Quote" : "Prepare Quote"}
-                </button>
+                {supplierStatus === "Quote Requested" ? (
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={() =>
+                      setIsPrepareQuoteTableVisible(!isPrepareQuoteTableVisible)
+                    }
+                  >
+                    {isPrepareQuoteTableVisible
+                      ? "Hide Quote"
+                      : "Prepare Quote"}
+                  </button>
+                ) : (
+                  <></>
+                )}
+
                 <button
                   type="button"
                   className="btn btn-primary custom-submit-button"
@@ -329,6 +337,13 @@ const ViewRequestedQuote = () => {
           </div>
         </div>
       </div>
+
+      <>
+        <ViewPrepareQuoteSeller
+          sellerId={userDetails?.id}
+          enquiryNumber={enquiryNumber}
+        />
+      </>
 
       {isPrepareQuoteTableVisible && (
         <PrepareQuoteTable

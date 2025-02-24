@@ -299,7 +299,7 @@ const ViewOrderHistory = () => {
                 <div className="container">
                   <div className="card-header mb-2">
                     <h4 className="card-title text-center custom-heading-font">
-                      Ordered Quote Details
+                      Requested Quote Details
                     </h4>
                   </div>
                 </div>

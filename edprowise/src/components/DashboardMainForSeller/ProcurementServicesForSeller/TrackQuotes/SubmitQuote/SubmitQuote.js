@@ -5,6 +5,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import putAPI from "../../../../../api/putAPI";
 import getAPI from "../../../../../api/getAPI";
 import { format, parseISO } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 const SubmitQuote = () => {
   const location = useLocation();
@@ -12,6 +13,8 @@ const SubmitQuote = () => {
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const sellerId = userDetails?.id;
+
+  const navigate = useNavigate();
 
   const [submittedQuote, setSubmittedQuote] = useState({
     quotedAmount: "",
@@ -109,7 +112,11 @@ const SubmitQuote = () => {
           advanceRequiredAmount: "",
         });
 
-        Navigate(-1);
+        // i want to pass enquiry number in state variable when i submit the quote
+        navigate(
+          "/seller-dashboard/procurement-services/view-requested-quote",
+          { state: { enquiryNumber: enquiryNumber } }
+        );
       } else {
         toast.error(response.message || "Failed to Prepare quote");
       }

@@ -108,7 +108,6 @@ const ViewPrepareQuoteListFromSeller = () => {
                         <th>Product Subcategory</th>
                         <th>HSN/SACC</th>
                         <th>Listing Rate</th>
-                        <th>EdProwise Margin %</th>
                         <th>Quantity</th>
                         <th>Final Rate Before Discount</th>
                         <th>Discount %</th>
@@ -168,7 +167,7 @@ const ViewPrepareQuoteListFromSeller = () => {
                             </td>
                             <td>{quote.hsnSacc}</td>
                             <td>{quote.listingRate}</td>
-                            <td>{quote.edprowiseMargin}</td>
+
                             <td>{quote.quantity}</td>
                             <td>{quote.finalRateBeforeDiscount}</td>
                             <td>{quote.discount}</td>
@@ -214,18 +213,6 @@ const ViewPrepareQuoteListFromSeller = () => {
                           currentPage === page ? "active" : ""
                         }`}
                       >
-                        {/* <button
-                          className="page-link"
-                          onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
-                        >
-                          {page}
-                        </button> */}
-
                         <button
                           className={`page-link pagination-button ${
                             currentPage === page ? "active" : ""
