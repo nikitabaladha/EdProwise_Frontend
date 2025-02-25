@@ -88,33 +88,6 @@ const CompleteSchoolProfile = () => {
 
         console.log("school profile", response.data.data);
 
-        //   {
-        //     "_id": "67b89e5366b379934ba75315",
-        //     "schoolId": "SID00001",
-        //     "schoolName": "ABC School",
-        //     "panFile": "/Documents/SchoolPanFile/test_pan_file_pdf_1740152403780.pdf",
-        //     "panNo": "AAAAA9999A",
-        //     "schoolAddress": "B-503 Saaga Residency\r\nNear Zydus Corporate Park, Near Nirma University",
-        //     "schoolLocation": "Faridabad, Haryana, India",
-        //     "schoolMobileNo": "1234567890",
-        //     "schoolEmail": "abc@gmail.com",
-        //     "profileImage": "/Images/SchoolProfile/abc_school_png_1740152403779.png",
-        //     "affiliationCertificate": "/Images/SchoolAffiliationCertificate/test_affiliation_certificate_jpg_1740152403780.jpg",
-        //     "affiliationUpto": "College",
-        //     "createdAt": "2025-02-21T15:40:03.914Z",
-        //     "updatedAt": "2025-02-21T15:48:18.099Z",
-        //     "__v": 0,
-        //     "contactPersonName": "Mr Gupta",
-        //     "deliveryAddress": "B-503 Saaga Residency\r\nNear Zydus Corporate Park, Near Nirma University",
-        //     "deliveryLandMark": "Railway Station Road",
-        //     "deliveryLocation": "Faridabad, Haryana, India",
-        //     "deliveryPincode": "382421",
-        //     "landMark": "Railway Station Road",
-        //     "numberOfStudents": 1000,
-        //     "principalName": "Mr Naresh Gupta",
-        //     "schoolAlternateContactNo": "1234567890",
-        //     "schoolPincode": "382421"
-        // }
         setFormData((prev) => ({
           ...prev,
           ...response.data.data,
@@ -210,7 +183,7 @@ const CompleteSchoolProfile = () => {
 
     try {
       const response = await putAPI(
-        `/school-profile/${school._id}`,
+        `/school-profile/${school.schoolId}`,
         formDataToSend,
         {
           "Content-Type": "multipart/form-data",

@@ -6,7 +6,7 @@ import getAPI from "../../../../../api/getAPI";
 import putAPI from "../../../../../api/putAPI";
 import { Modal } from "react-bootstrap";
 
-const ViewPrepareQuoteListFromSeller = () => {
+const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
   const location = useLocation();
   const { sellerId, enquiryNumber } = location.state || {};
 
@@ -71,6 +71,7 @@ const ViewPrepareQuoteListFromSeller = () => {
         toast.success("Quote updated successfully!");
         setEditedQuote((prev) => ({ ...prev, [id]: null }));
         fetchQuoteData();
+        onQuoteUpdated();
       } else {
         toast.error("Failed to update quote.");
       }

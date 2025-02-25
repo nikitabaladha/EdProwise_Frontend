@@ -176,7 +176,7 @@ const SubscriptionTable = ({
                               </label>
                             </div>
                           </td>
-                          <td>{subscriptions.sID}</td>
+                          <td>{subscriptions.schoolId}</td>
 
                           <td>
                             <div className="d-flex align-items-center gap-2">

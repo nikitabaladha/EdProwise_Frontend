@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddNewSubscription = ({ addSubscription, schools }) => {
+  console.log("Schools===", schools);
   const [formData, setFormData] = useState({
     schoolId: "",
     subscriptionFor: "",
@@ -55,12 +56,11 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
       if (!response.hasError) {
         toast.success("Subscription added successfully");
 
-        // Fetch additional school details
-        const schoolDetails = await getAPI(
-          `/school/${formData.schoolId}`,
-          {},
-          true
-        );
+        console.log("response.data.data", response.data.data);
+
+        const schoolId = response.data.data.schoolId;
+
+        const schoolDetails = await getAPI(`/school/${schoolId}`, {}, true);
         if (!schoolDetails.hasError) {
           const schoolData = schoolDetails.data.data;
 
@@ -75,7 +75,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
             schoolName: schoolData.schoolName,
             sID: schoolData.schoolId,
             schoolEmail: schoolData.schoolEmail,
-            schoolId: schoolData._id,
+            schoolId: schoolData.schoolId,
           };
 
           addSubscription(newSubscription);
@@ -134,7 +134,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                         <option value="">Select School</option>
 
                         {schools.map((school) => (
-                          <option key={school._id} value={school._id}>
+                          <option key={school.schoolId} value={school.schoolId}>
                             ({school.schoolId}) {school.schoolName}
                           </option>
                         ))}

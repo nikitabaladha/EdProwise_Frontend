@@ -1,6 +1,10 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import QuoteProposalForAll from "./components/ProcurementPDF/QuoteProposal.js";
+import InvoiceForBuyerForAll from "./components/ProcurementPDF/InvoiceForBuyer.js";
+import InvoiceForEdProwiseForAll from "./components/ProcurementPDF/InvoiceForEdProwise.js";
+
 // ================================Website Routes================================================
 
 import WebsiteMain from "./components/WebsiteMain";
@@ -80,10 +84,6 @@ import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/Procu
 import ViewAllQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 import ViewQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewQuote/ViewQuote";
 
-import QuoteProposalForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/QuoteProposalForAdmin/QuoteProposalForAdmin";
-import InvoiceForEdProwiseFromAdminDashboard from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/InvoiceForEdProwiseFromAdminDashboard/InvoiceForEdProwiseFromAdminDashboard";
-import InvoiceForBuyerFromAdminDashboard from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/InvoiceForBuyerFromAdminDashboard/InvoiceForBuyerFromAdminDashboard";
-
 import BankDetailsTable from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/BankDetailsTable";
 import AddNewBankDetail from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/AddNewBankDetail/AddNewBankDetail";
 import UpdateBankDetail from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/BankDetails/UpdateBankDetail/UpdateBankDetail";
@@ -117,12 +117,9 @@ import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/T
 import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
 
 import ViewCart from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/Cart/ViewCart";
-import QuoteProposalForSchool from "./components/DashboardMainForSchool/ProcurementServices/QuoteProposalForSchool/QuoteProposalForSchool";
 
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
-
-import InvoiceForBuyerFromSchool from "./components/DashboardMainForSchool/ProcurementServices/InvoiceForBuyerFromSchool/InvoiceForBuyerFromSchool";
 
 import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
 
@@ -148,10 +145,7 @@ import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/Pr
 // import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
 
 // import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
-import InvoiceForEdProwise from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForEdProwise/InvoiceForEdProwise";
-import InvoiceForBuyer from "./components/DashboardMainForSeller/ProcurementServicesForSeller/InvoiceForBuyer/InvoiceForBuyer";
 import PrepareInvoice from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PrepareInvoice/PrepareInvoice";
-import QuoteProposal from "./components/DashboardMainForSeller/ProcurementServicesForSeller/QuoteProposal/QuoteProposal";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -331,17 +325,17 @@ const AppRoutes = () => {
 
         <Route
           path="procurement-services/quote-proposal"
-          element={<QuoteProposalForAdmin />}
+          element={<QuoteProposalForAll />}
         />
 
         <Route
           path="procurement-services/invoice-for-edprowise"
-          element={<InvoiceForEdProwiseFromAdminDashboard />}
+          element={<InvoiceForEdProwiseForAll />}
         />
 
         <Route
           path="procurement-services/invoice-for-buyer"
-          element={<InvoiceForBuyerFromAdminDashboard />}
+          element={<InvoiceForBuyerForAll />}
         />
       </Route>
 
@@ -401,12 +395,12 @@ const AppRoutes = () => {
         />
         <Route
           path="procurement-services/quote-proposal"
-          element={<QuoteProposalForSchool />}
+          element={<QuoteProposalForAll />}
         />
 
         <Route
           path="procurement-services/invoice-for-buyer"
-          element={<InvoiceForBuyerFromSchool />}
+          element={<InvoiceForBuyerForAll />}
         />
       </Route>
       {/* =========================================Seller Routes============================================= */}
@@ -474,16 +468,16 @@ const AppRoutes = () => {
         /> */}
         <Route
           path="procurement-services/invoice-for-edprowise"
-          element={<InvoiceForEdProwise />}
+          element={<InvoiceForEdProwiseForAll />}
         />
 
         <Route
           path="procurement-services/invoice-for-buyer"
-          element={<InvoiceForBuyer />}
+          element={<InvoiceForBuyerForAll />}
         />
         <Route
           path="procurement-services/quote-proposal"
-          element={<QuoteProposal />}
+          element={<QuoteProposalForAll />}
         />
         <Route
           path="procurement-services/prepare-invoice"

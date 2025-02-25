@@ -30,16 +30,15 @@ const ViewRequestedQuote = () => {
   const [quote, setQuote] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
+  const [preparedQuotes, setPreparedQuotes] = useState([]);
+  const [isPrepareQuoteTableVisible, setIsPrepareQuoteTableVisible] =
+    useState(false);
 
   useEffect(() => {
     if (!enquiryNumber) return;
     const fetchQuoteData = async () => {
       try {
-        const response = await getAPI(
-          `/get-according-to-category-filter/${enquiryNumber}`,
-          {},
-          true
-        );
+        const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
 
         if (!response.hasError && response.data.data.products) {
           setQuote(response.data.data.products);
@@ -58,6 +57,29 @@ const ViewRequestedQuote = () => {
     fetchQuoteData();
   }, [enquiryNumber]);
 
+  useEffect(() => {
+    const fetchPreparedQuotes = async () => {
+      const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+      const sellerId = userDetails?.id;
+
+      try {
+        const response = await getAPI(
+          `prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+          {},
+          true
+        );
+
+        if (!response.hasError && response.data.data) {
+          setPreparedQuotes(response.data.data); // Set prepared quotes
+        }
+      } catch (err) {
+        console.error("Error fetching prepared quotes:", err);
+      }
+    };
+
+    fetchPreparedQuotes();
+  }, [enquiryNumber]);
+
   const [prepareProducts, setPrepareProducts] = useState(
     quote.map((product) => ({
       srNo: "",
@@ -73,9 +95,6 @@ const ViewRequestedQuote = () => {
       igstRate: "",
     }))
   );
-
-  const [isPrepareQuoteTableVisible, setIsPrepareQuoteTableVisible] =
-    useState(false);
 
   const handleExport = (event) => {
     event.preventDefault();
@@ -312,6 +331,7 @@ const ViewRequestedQuote = () => {
                           <td>{product.description}</td>
                           <td>{formatDate(product.createdAt)}</td>
                           <td>{formatDate(product.expectedDeliveryDate)}</td>
+                          <td>{product.supplierStatus}</td>
                         </tr>
                       ))
                     ) : (
@@ -351,12 +371,13 @@ const ViewRequestedQuote = () => {
         </div>
       </div>
 
-      <>
+      {/* i want to show View Prepare Quote Seller if and only if data present otherwise show nothing */}
+      {preparedQuotes.length > 0 && (
         <ViewPrepareQuoteSeller
           sellerId={userDetails?.id}
           enquiryNumber={enquiryNumber}
         />
-      </>
+      )}
 
       {isPrepareQuoteTableVisible && (
         <PrepareQuoteTable

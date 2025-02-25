@@ -3,7 +3,9 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import convertToWOrds from "../../../CommonFunction.js";
+// import convertToWOrds from "../../../CommonFunction.js";
+
+import convertToWords from "../CommonFunction.js";
 
 import { format } from "date-fns";
 
@@ -720,7 +722,7 @@ const QuoteProposal = () => {
           >
             <div className="row p-2">
               <h5 style={{ color: "black" }}>
-                <strong>Amount In Words : {convertToWOrds(totalAmount)}</strong>
+                <strong>Amount In Words : {convertToWords(totalAmount)}</strong>
               </h5>
             </div>
           </table>

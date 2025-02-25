@@ -20,6 +20,8 @@ const TrackQuoteTable = ({}) => {
           Array.isArray(response.data.data)
         ) {
           setQuotes(response.data.data);
+
+          console.log("Quotes fetched successfully:", response.data.data);
         } else {
           console.error("Invalid response format or error in response");
         }

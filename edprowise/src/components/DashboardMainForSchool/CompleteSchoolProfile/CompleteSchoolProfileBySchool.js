@@ -117,7 +117,7 @@ const CompleteSchoolProfile = () => {
 
     try {
       const response = await postAPI(
-        `/school-profile`,
+        `/school-profile/${schoolId}`,
         formDataToSend,
         {
           "Content-Type": "multipart/form-data",
@@ -127,6 +127,7 @@ const CompleteSchoolProfile = () => {
 
       if (!response.data.hasError) {
         const storedUserResponse = await getAPI(`/get-user-by-id/${userId}`);
+
         if (!storedUserResponse.hasError) {
           localStorage.setItem(
             "userDetails",

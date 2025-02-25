@@ -86,7 +86,7 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
             schoolName: schoolData.schoolName,
             sID: schoolData.schoolId,
             schoolEmail: schoolData.schoolEmail,
-            schoolId: schoolData._id,
+            schoolId: schoolData.schoolId,
           };
 
           updatedSubscription(newUpdatedSubscription);

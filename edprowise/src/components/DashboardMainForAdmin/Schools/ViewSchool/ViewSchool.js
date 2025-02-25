@@ -26,13 +26,14 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   const [subscription, setSubscription] = useState([]);
 
   const fetchUserData = async () => {
-    if (!school?._id) {
+    if (!school?.schoolId) {
       console.error("School ID is missing.");
       return;
     }
+
     try {
       const response = await getAPI(
-        `/get-all-user-by-school-id/${school._id}`,
+        `/get-all-user-by-school-id/${school.schoolId}`,
         {},
         true
       );
@@ -52,12 +53,16 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   };
 
   const fetchSubscriptionData = async () => {
-    if (!school?._id) {
+    if (!school?.schoolId) {
       console.error("School ID is missing.");
       return;
     }
     try {
-      const response = await getAPI(`/subscription/${school._id}`, {}, true);
+      const response = await getAPI(
+        `/subscription/${school.schoolId}`,
+        {},
+        true
+      );
       if (
         !response.hasError &&
         response.data &&
@@ -566,10 +571,17 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
           <div className="row"></div>
         )}
       </div>
-      {isAddDialogOpen && (
+      {/* {isAddDialogOpen && (
         <AddConfirmationDialog
           onClose={handleAddCancel}
           id={selectedSchool._id}
+          onAdd={handleAddConfirmed}
+        />
+      )} */}
+      {isAddDialogOpen && (
+        <AddConfirmationDialog
+          onClose={handleAddCancel}
+          id={selectedSchool.schoolId}
           onAdd={handleAddConfirmed}
         />
       )}

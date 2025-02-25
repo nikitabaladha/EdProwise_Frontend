@@ -310,7 +310,7 @@ const ViewQuote = () => {
           <></>
         </div>
 
-        <ViewPrepareQuoteListFromSeller />
+        <ViewPrepareQuoteListFromSeller onQuoteUpdated={fetchQuoteData} />
       </div>
 
       <UpdateSubmittedQuoteModal
