@@ -115,7 +115,7 @@ const QuoteProposal = () => {
       >
         <table
           style={{
-            border: "1px solid #ddd",
+            border: "1px solid black",
             width: "100%",
           }}
         >
@@ -167,8 +167,8 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     borderLeft: "none",
-                    borderTop: "1px solid #ddd",
-                    borderRight: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderRight: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -180,7 +180,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    borderTop: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -210,7 +210,7 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -234,7 +234,7 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -248,7 +248,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                     textAlign: "left",
                     width: "30%",
-                    borderRight: "1px solid #ddd",
+                    borderRight: "1px solid black",
                   }}
                   colSpan="2"
                 >
@@ -261,7 +261,6 @@ const QuoteProposal = () => {
                     borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
-                    borderBottom: " 1px solid #ddd",
                   }}
                 >
                   Email ID : {edprowiseEmailId}
@@ -284,8 +283,8 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     borderLeft: "none",
-                    borderTop: "1px solid #ddd",
-                    borderRight: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderRight: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -297,7 +296,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    borderTop: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -326,7 +325,7 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -350,7 +349,7 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -374,7 +373,7 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -398,7 +397,7 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -422,7 +421,7 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -446,7 +445,7 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -469,7 +468,7 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -492,16 +491,16 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "5%",
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     padding: "8px",
                   }}
                 >
-                  S.L.
+                  Sr
                 </th>
                 <th
                   style={{
                     width: "30%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -510,7 +509,7 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -519,7 +518,7 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -528,7 +527,7 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -537,7 +536,7 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -546,7 +545,7 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -555,7 +554,7 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "5%",
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -569,7 +568,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "5%",
-                      border: "1px solid #ddd",
+                      borderTop: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -578,7 +577,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "30%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -587,7 +586,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -596,7 +595,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -605,7 +604,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -614,7 +613,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -623,7 +622,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -632,7 +631,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "5%",
-                      border: "1px solid #ddd",
+                      borderTop: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -645,7 +644,8 @@ const QuoteProposal = () => {
                   style={{
                     textAlign: "right",
                     fontWeight: "bold",
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                   }}
                 ></td>
@@ -653,7 +653,7 @@ const QuoteProposal = () => {
                   style={{
                     textAlign: "center",
                     fontWeight: "bold",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -661,7 +661,7 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -669,7 +669,7 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -677,7 +677,7 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -685,7 +685,7 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -693,7 +693,7 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -701,7 +701,8 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -718,9 +719,9 @@ const QuoteProposal = () => {
             }}
           >
             <div className="row p-2">
-              <p>
+              <h5 style={{ color: "black" }}>
                 <strong>Amount In Words : {convertToWOrds(totalAmount)}</strong>
-              </p>
+              </h5>
             </div>
           </table>
           <table
@@ -743,7 +744,7 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "20%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     textAlign: "center",
                   }}
@@ -754,7 +755,7 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "20%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     textAlign: "center",
                   }}
@@ -765,7 +766,7 @@ const QuoteProposal = () => {
                 <th
                   style={{
                     width: "20%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     textAlign: "center",
                   }}
@@ -784,7 +785,7 @@ const QuoteProposal = () => {
               <tr>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -792,7 +793,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -800,7 +801,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -808,7 +809,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -816,7 +817,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -824,7 +825,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -832,7 +833,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -840,7 +841,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -848,7 +849,8 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -862,7 +864,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "30%",
-                      border: "1px solid #ddd",
+                      borderTop: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -871,7 +873,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -880,7 +882,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -889,7 +891,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -898,7 +900,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -907,7 +909,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -916,7 +918,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -925,7 +927,7 @@ const QuoteProposal = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -936,7 +938,8 @@ const QuoteProposal = () => {
               <tr>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                     width: "10%",
                     fontWeight: "bold",
@@ -946,7 +949,7 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -955,14 +958,14 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -971,14 +974,14 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -987,14 +990,14 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -1003,7 +1006,8 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                     width: "5%",
                   }}
@@ -1020,15 +1024,15 @@ const QuoteProposal = () => {
             }}
           >
             <div style={{ height: "120px" }} className="row p-2">
-              <div style={{ marginBottom: "80px" }}>
-                <p className="text-end">
+              <div style={{ marginBottom: "90px" }}>
+                <h5 className="text-end" style={{ color: "black" }}>
                   <strong>For EdProwise Tech Pvt. Ltd</strong>
-                </p>
+                </h5>
               </div>
               <div>
-                <p className="text-end">
+                <h5 className="text-end">
                   <strong>Authorised Signatory</strong>
-                </p>
+                </h5>
               </div>
             </div>
           </table>

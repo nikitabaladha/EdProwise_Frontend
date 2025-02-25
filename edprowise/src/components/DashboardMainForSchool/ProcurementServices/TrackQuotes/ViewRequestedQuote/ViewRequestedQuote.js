@@ -17,6 +17,7 @@ import getAPI from "../../../../../api/getAPI";
 import ViewAllQuoteTable from "../ViewAllQuoteTable/ViewAllQuoteTable";
 
 import { format } from "date-fns";
+import { Modal } from "react-bootstrap";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -30,6 +31,8 @@ const ViewRequestedQuote = () => {
   const navigate = useNavigate();
 
   const [quote, setQuote] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   const [isQuoteTableVisible, setIsQuoteTableVisible] = useState(false);
 
@@ -52,6 +55,11 @@ const ViewRequestedQuote = () => {
     } catch (err) {
       console.error("Error fetching quote:", err);
     }
+  };
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
   };
 
   return (
@@ -124,6 +132,11 @@ const ViewRequestedQuote = () => {
                                     className="avatar-md"
                                     alt={product.subCategoryName}
                                     src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                    onClick={() =>
+                                      handleImageClick(
+                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
+                                      )
+                                    }
                                   />
                                 </div>
                               )}
@@ -178,6 +191,16 @@ const ViewRequestedQuote = () => {
       ) : (
         <div className="row"></div>
       )}
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Body className="text-center">
+          <img
+            src={selectedImage}
+            alt="Preview"
+            style={{ maxWidth: "100%", maxHeight: "80vh" }}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

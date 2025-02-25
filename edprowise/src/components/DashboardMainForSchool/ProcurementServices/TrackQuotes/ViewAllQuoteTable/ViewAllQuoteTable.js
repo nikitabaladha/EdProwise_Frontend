@@ -281,7 +281,7 @@ const ViewAllQuoteTable = () => {
                         <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
-                        <th>Vender Status</th>
+                        {/* <th>Vender Status</th> */}
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -303,7 +303,7 @@ const ViewAllQuoteTable = () => {
                           </td>
                           <td>{quote.quotedAmount}</td>
                           <td>{quote.remarksFromSupplier}</td>
-                          <td>{quote.venderStatus}</td>
+                          {/* <td>{quote.venderStatus}</td> */}
                           <td>
                             <div className="d-flex gap-2">
                               <Link

@@ -14,6 +14,7 @@ import getAPI from "../../../../../api/getAPI";
 import putAPI from "../../../../../api/putAPI";
 
 import { format } from "date-fns";
+import { Modal } from "react-bootstrap";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -31,6 +32,9 @@ const ViewRequestedQuote = () => {
   const [isQuoteTableVisible, setIsQuoteTableVisible] = useState(false);
 
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -104,6 +108,11 @@ const ViewRequestedQuote = () => {
     });
   };
 
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolsPerPage] = useState(5);
 
@@ -139,136 +148,20 @@ const ViewRequestedQuote = () => {
   );
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-xl-12">
-          <div className="card m-2">
-            <div className="card-body custom-heading-padding">
-              <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Requested Quote Details
-                  </h4>
-                </div>
-              </div>
-
-              <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
-                  <thead className="bg-light-subtle">
-                    <tr>
-                      <th style={{ width: 20 }}>
-                        <div className="form-check ms-1">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="customCheck1"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="customCheck1"
-                          />
-                        </div>
-                      </th>
-                      <th>Enquiry No.</th>
-                      <th>Product Required Image & Name</th>
-                      <th>Product Required (Category)</th>
-                      <th>Quantity</th>
-                      <th>Unit</th>
-                      <th>Status</th>
-                      <th>Product Description</th>
-                      <th>Quote Requested Date</th>
-                      <th>Delivery Expected Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {quote.length > 0 ? (
-                      quote.map((product) => (
-                        <tr key={product.id}>
-                          <td>
-                            <div className="form-check ms-1">
-                              <input
-                                type="checkbox"
-                                className="form-check-input"
-                                id={`customCheck${product.id}`}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor={`customCheck${product.id}`}
-                              >
-                                &nbsp;
-                              </label>
-                            </div>
-                          </td>
-                          <td>{product.enquiryNumber}</td>
-                          <td>
-                            <div className="d-flex align-items-center gap-2">
-                              {product.productImage && (
-                                <img
-                                  className="avatar-md"
-                                  alt={product.subCategoryName}
-                                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
-                                />
-                              )}
-                              <Link className="text-dark fw-medium">
-                                {product.subCategoryName}
-                              </Link>
-                            </div>
-                          </td>
-                          <td>{product.categoryName}</td>
-                          <td>{product.quantity}</td>
-                          <td>{product.unit}</td>
-                          <td>{product.buyerStatus}</td>
-                          <td>{product.description}</td>
-                          <td>{formatDate(product.createdAt)}</td>
-                          <td>{formatDate(product.expectedDeliveryDate)}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* end table-responsive */}
-
-              <div className="d-flex justify-content-between mt-2">
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                  onClick={() => setIsQuoteTableVisible(!isQuoteTableVisible)}
-                >
-                  {isQuoteTableVisible ? "Hide Quote" : "View Quote"}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                  onClick={() => window.history.back()}
-                >
-                  Go Back
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {isQuoteTableVisible && quote.length > 0 ? (
-        <div className="row p-2">
+    <>
+      <div className="container">
+        <div className="row">
           <div className="col-xl-12">
-            <div className="card">
-              <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1"> All Quote List</h4>
-                <div className="text-end">
-                  <Link
-                    // onClick={(event) => handleExport(event)}
-                    className="btn btn-sm btn-outline-light"
-                  >
-                    Export
-                  </Link>
+            <div className="card m-2">
+              <div className="card-body custom-heading-padding">
+                <div className="container">
+                  <div className="card-header mb-2">
+                    <h4 className="card-title text-center custom-heading-font">
+                      Requested Quote Details
+                    </h4>
+                  </div>
                 </div>
-              </div>
-              <div>
+
                 <div className="table-responsive">
                   <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
                     <thead className="bg-light-subtle">
@@ -286,76 +179,212 @@ const ViewRequestedQuote = () => {
                             />
                           </div>
                         </th>
-                        <th>Name of Supplier</th>
-                        <th>Expected Delivery Date (Mention by Seller)</th>
-                        <th>Quoted Amount</th>
-                        <th>Remarks from Supplier</th>
-                        <th>Vender Status</th>
-                        <th>Action</th>
+                        <th>Enquiry No.</th>
+                        <th>Product Required Image & Name</th>
+                        <th>Product Required (Category)</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Status</th>
+                        <th>Product Description</th>
+                        <th>Quote Requested Date</th>
+                        <th>Delivery Expected Date</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {currentSubmittedQuote.map((quote) => (
-                        <tr key={quote._id}>
-                          <td>
+                      {quote.length > 0 ? (
+                        quote.map((product) => (
+                          <tr key={product.id}>
+                            <td>
+                              <div className="form-check ms-1">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id={`customCheck${product.id}`}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`customCheck${product.id}`}
+                                >
+                                  &nbsp;
+                                </label>
+                              </div>
+                            </td>
+                            <td>{product.enquiryNumber}</td>
+                            <td>
+                              <div className="d-flex align-items-center gap-2">
+                                {product.productImage && (
+                                  <img
+                                    className="avatar-md"
+                                    alt={product.subCategoryName}
+                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                    onClick={() =>
+                                      handleImageClick(
+                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
+                                      )
+                                    }
+                                  />
+                                )}
+                                <Link className="text-dark fw-medium">
+                                  {product.subCategoryName}
+                                </Link>
+                              </div>
+                            </td>
+                            <td>{product.categoryName}</td>
+                            <td>{product.quantity}</td>
+                            <td>{product.unit}</td>
+                            <td>{product.buyerStatus}</td>
+                            <td>{product.description}</td>
+                            <td>{formatDate(product.createdAt)}</td>
+                            <td>{formatDate(product.expectedDeliveryDate)}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* end table-responsive */}
+
+                <div className="d-flex justify-content-between mt-2">
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={() => setIsQuoteTableVisible(!isQuoteTableVisible)}
+                  >
+                    {isQuoteTableVisible ? "Hide Quote" : "View Quote"}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={() => window.history.back()}
+                  >
+                    Go Back
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {isQuoteTableVisible && quote.length > 0 ? (
+          <div className="row p-2">
+            <div className="col-xl-12">
+              <div className="card">
+                <div className="card-header d-flex justify-content-between align-items-center gap-1">
+                  <h4 className="card-title flex-grow-1"> All Quote List</h4>
+                  <div className="text-end">
+                    <Link
+                      // onClick={(event) => handleExport(event)}
+                      className="btn btn-sm btn-outline-light"
+                    >
+                      Export
+                    </Link>
+                  </div>
+                </div>
+                <div>
+                  <div className="table-responsive">
+                    <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
+                      <thead className="bg-light-subtle">
+                        <tr>
+                          <th style={{ width: 20 }}>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${quote._id}`}
+                                id="customCheck1"
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${quote._id}`}
-                              >
-                                &nbsp;
-                              </label>
+                                htmlFor="customCheck1"
+                              />
                             </div>
-                          </td>
-                          <td>{quote.companyName}</td>
-                          <td>
-                            {formatDate(quote.expectedDeliveryDateBySeller)}
-                          </td>
-                          <td>{quote.quotedAmount}</td>
-                          <td>{quote.remarksFromSupplier}</td>
-                          <td>{quote.venderStatus}</td>
-                          <td>
-                            <div className="d-flex gap-2">
-                              <Link
-                                onClick={(event) =>
-                                  navigateToViewQuote(event, quote)
-                                }
-                                className="btn btn-light btn-sm"
-                              >
-                                <iconify-icon
-                                  icon="solar:eye-broken"
-                                  className="align-middle fs-18"
+                          </th>
+                          <th>Name of Supplier</th>
+                          <th>Expected Delivery Date (Mention by Seller)</th>
+                          <th>Quoted Amount</th>
+                          <th>Remarks from Supplier</th>
+                          <th>Vender Status</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {currentSubmittedQuote.map((quote) => (
+                          <tr key={quote._id}>
+                            <td>
+                              <div className="form-check ms-1">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id={`customCheck${quote._id}`}
                                 />
-                              </Link>
-                              <Link
-                                // onClick={(event) =>
-                                //   handleDownloadPDF(event, quote)
-                                // }
-                                className="btn btn-soft-info btn-sm"
-                              >
-                                <iconify-icon
-                                  icon="solar:download-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
-                              {quote.venderStatus === "Pending" && (
-                                <>
-                                  <button
-                                    className="btn btn-success btn-sm"
-                                    onClick={() =>
-                                      handleVenderStatusUpdate(
-                                        quote.sellerId,
-                                        "Quote Accepted"
-                                      )
-                                    }
-                                  >
-                                    Accept
-                                  </button>
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`customCheck${quote._id}`}
+                                >
+                                  &nbsp;
+                                </label>
+                              </div>
+                            </td>
+                            <td>{quote.companyName}</td>
+                            <td>
+                              {formatDate(quote.expectedDeliveryDateBySeller)}
+                            </td>
+                            <td>{quote.quotedAmount}</td>
+                            <td>{quote.remarksFromSupplier}</td>
+                            <td>{quote.venderStatus}</td>
+                            <td>
+                              <div className="d-flex gap-2">
+                                <Link
+                                  onClick={(event) =>
+                                    navigateToViewQuote(event, quote)
+                                  }
+                                  className="btn btn-light btn-sm"
+                                >
+                                  <iconify-icon
+                                    icon="solar:eye-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                                <Link
+                                  // onClick={(event) =>
+                                  //   handleDownloadPDF(event, quote)
+                                  // }
+                                  className="btn btn-soft-info btn-sm"
+                                >
+                                  <iconify-icon
+                                    icon="solar:download-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                                {quote.venderStatus === "Pending" && (
+                                  <>
+                                    <button
+                                      className="btn btn-success btn-sm"
+                                      onClick={() =>
+                                        handleVenderStatusUpdate(
+                                          quote.sellerId,
+                                          "Quote Accepted"
+                                        )
+                                      }
+                                    >
+                                      Accept
+                                    </button>
+                                    <button
+                                      className="btn btn-danger btn-sm"
+                                      onClick={() =>
+                                        handleVenderStatusUpdate(
+                                          quote.sellerId,
+                                          "Quote Not Accepted"
+                                        )
+                                      }
+                                    >
+                                      Reject
+                                    </button>
+                                  </>
+                                )}
+                                {quote.venderStatus === "Quote Accepted" && (
                                   <button
                                     className="btn btn-danger btn-sm"
                                     onClick={() =>
@@ -367,91 +396,88 @@ const ViewRequestedQuote = () => {
                                   >
                                     Reject
                                   </button>
-                                </>
-                              )}
-                              {quote.venderStatus === "Quote Accepted" && (
-                                <button
-                                  className="btn btn-danger btn-sm"
-                                  onClick={() =>
-                                    handleVenderStatusUpdate(
-                                      quote.sellerId,
-                                      "Quote Not Accepted"
-                                    )
-                                  }
-                                >
-                                  Reject
-                                </button>
-                              )}
-                              {quote.venderStatus === "Quote Not Accepted" && (
-                                <button
-                                  className="btn btn-success btn-sm"
-                                  onClick={() =>
-                                    handleVenderStatusUpdate(
-                                      quote.sellerId,
-                                      "Quote Accepted"
-                                    )
-                                  }
-                                >
-                                  Accept
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                                )}
+                                {quote.venderStatus ===
+                                  "Quote Not Accepted" && (
+                                  <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={() =>
+                                      handleVenderStatusUpdate(
+                                        quote.sellerId,
+                                        "Quote Accepted"
+                                      )
+                                    }
+                                  >
+                                    Accept
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {/* end table-responsive */}
                 </div>
-                {/* end table-responsive */}
-              </div>
-              <div className="card-footer border-top">
-                <nav aria-label="Page navigation example">
-                  <ul className="pagination justify-content-end mb-0">
-                    <li className="page-item">
-                      <button
-                        className="page-link"
-                        onClick={handlePreviousPage}
-                        disabled={currentPage === 1}
-                      >
-                        Previous
-                      </button>
-                    </li>
-                    {pagesToShow.map((page) => (
-                      <li
-                        key={page}
-                        className={`page-item ${
-                          currentPage === page ? "active" : ""
-                        }`}
-                      >
+                <div className="card-footer border-top">
+                  <nav aria-label="Page navigation example">
+                    <ul className="pagination justify-content-end mb-0">
+                      <li className="page-item">
                         <button
-                          className={`page-link pagination-button ${
-                            currentPage === page ? "active" : ""
-                          }`}
-                          onClick={() => handlePageClick(page)}
+                          className="page-link"
+                          onClick={handlePreviousPage}
+                          disabled={currentPage === 1}
                         >
-                          {page}
+                          Previous
                         </button>
                       </li>
-                    ))}
-                    <li className="page-item">
-                      <button
-                        className="page-link"
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              </div>{" "}
+                      {pagesToShow.map((page) => (
+                        <li
+                          key={page}
+                          className={`page-item ${
+                            currentPage === page ? "active" : ""
+                          }`}
+                        >
+                          <button
+                            className={`page-link pagination-button ${
+                              currentPage === page ? "active" : ""
+                            }`}
+                            onClick={() => handlePageClick(page)}
+                          >
+                            {page}
+                          </button>
+                        </li>
+                      ))}
+                      <li className="page-item">
+                        <button
+                          className="page-link"
+                          onClick={handleNextPage}
+                          disabled={currentPage === totalPages}
+                        >
+                          Next
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>{" "}
+              </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="row"></div>
-      )}
-    </div>
+        ) : (
+          <div className="row"></div>
+        )}
+      </div>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Body className="text-center">
+          <img
+            src={selectedImage}
+            alt="Preview"
+            style={{ maxWidth: "100%", maxHeight: "80vh" }}
+          />
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 

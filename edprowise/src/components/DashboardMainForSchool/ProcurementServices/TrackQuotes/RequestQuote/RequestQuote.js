@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -86,6 +85,11 @@ const RequestQuote = () => {
 
     toast.success("Product added to cart!");
     setIsFormValid(true);
+  };
+
+  const handleRemoveFromCart = (id) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+    toast.success("Product removed from cart!");
   };
 
   useEffect(() => {
@@ -316,6 +320,7 @@ const RequestQuote = () => {
                         <th>Product Image</th>
                         <th>Unit</th>
                         <th>Quantity</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -340,6 +345,15 @@ const RequestQuote = () => {
                           </td>
                           <td>{item.unit}</td>
                           <td>{item.quantity}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-primary custom-submit-button"
+                              onClick={() => handleRemoveFromCart(item.id)}
+                            >
+                              Remove
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

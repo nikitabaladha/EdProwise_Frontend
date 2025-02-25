@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
+import { Modal } from "react-bootstrap";
 
 const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   const navigate = useNavigate();
 
@@ -137,6 +140,11 @@ const TrackQuoteTable = ({}) => {
     }
   };
 
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolsPerPage] = useState(5);
 
@@ -245,6 +253,11 @@ const TrackQuoteTable = ({}) => {
                                       className="avatar-md"
                                       alt={quote.subCategoryName}
                                       src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote?.productImage}`}
+                                      onClick={() =>
+                                        handleImageClick(
+                                          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.productImage}`
+                                        )
+                                      }
                                     />
                                   </div>
                                 )}
@@ -346,18 +359,6 @@ const TrackQuoteTable = ({}) => {
                           currentPage === page ? "active" : ""
                         }`}
                       >
-                        {/* <button
-                          className="page-link"
-                          onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
-                        >
-                          {page}
-                        </button> */}
-
                         <button
                           className={`page-link pagination-button ${
                             currentPage === page ? "active" : ""
@@ -384,6 +385,16 @@ const TrackQuoteTable = ({}) => {
           </div>
         </div>
       </div>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Body className="text-center">
+          <img
+            src={selectedImage}
+            alt="Preview"
+            style={{ maxWidth: "100%", maxHeight: "80vh" }}
+          />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

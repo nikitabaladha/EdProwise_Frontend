@@ -364,7 +364,7 @@ const SchoolDashboardHeader = () => {
                     <IoKeyOutline className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Change Password</span>
                   </Link>
-                  <Link className="dropdown-item" href="apps-chat.html">
+                  {/* <Link className="dropdown-item" href="apps-chat.html">
                     <BiMessageDots className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Messages</span>
                   </Link>
@@ -379,7 +379,7 @@ const SchoolDashboardHeader = () => {
                   <Link className="dropdown-item" href="auth-lock-screen.html">
                     <PiLockKeyBold className="bx bx-lock text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Lock screen</span>
-                  </Link>
+                  </Link> */}
                   <div className="dropdown-divider my-1" />
                   <Link
                     className="dropdown-item text-danger"

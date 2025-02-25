@@ -124,7 +124,7 @@ const InvoiceForBuyer = () => {
       >
         <table
           style={{
-            border: "1px solid #ddd",
+            border: "1px solid black",
             width: "100%",
           }}
         >
@@ -189,8 +189,8 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     borderLeft: "none",
-                    borderTop: "1px solid #ddd",
-                    borderRight: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderRight: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -202,7 +202,7 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                    borderTop: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -232,7 +232,7 @@ const InvoiceForBuyer = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -256,7 +256,7 @@ const InvoiceForBuyer = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -270,7 +270,7 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                     textAlign: "left",
                     width: "30%",
-                    borderRight: "1px solid #ddd",
+                    borderRight: "1px solid black",
                   }}
                   colSpan="2"
                 >
@@ -283,7 +283,7 @@ const InvoiceForBuyer = () => {
                     borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
-                    borderBottom: " 1px solid #ddd",
+                    borderBottom: " 1px solid black",
                   }}
                 >
                   Email ID : {edprowiseEmailId}
@@ -305,8 +305,8 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     borderLeft: "none",
-                    borderTop: "1px solid #ddd",
-                    borderRight: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderRight: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -346,7 +346,7 @@ const InvoiceForBuyer = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -369,7 +369,7 @@ const InvoiceForBuyer = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -390,15 +390,12 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    borderLeft: "none",
+                    borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
                   }}
                 >
-                  State : City :{schoolDeliveryLocation?.split(",")[1]}
+                  State :{schoolDeliveryLocation?.split(",")[1]}
                 </td>
                 <td
                   style={{
@@ -423,10 +420,7 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    borderLeft: "none",
+                    borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
                   }}
@@ -467,7 +461,7 @@ const InvoiceForBuyer = () => {
                   style={{
                     borderLeft: "none",
                     borderTop: "none",
-                    borderRight: "1px solid #ddd",
+                    borderRight: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -512,7 +506,7 @@ const InvoiceForBuyer = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -523,7 +517,7 @@ const InvoiceForBuyer = () => {
               <tr>
                 <td
                   style={{
-                    borderRight: "1px solid #ddd",
+                    borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
                   }}
@@ -545,10 +539,7 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    borderLeft: "none",
+                    borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
                   }}
@@ -572,16 +563,16 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     width: "5%",
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     padding: "8px",
                   }}
                 >
-                  S.L.
+                  Sr.
                 </th>
                 <th
                   style={{
                     width: "45%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -590,7 +581,7 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -599,7 +590,7 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -608,7 +599,7 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -618,7 +609,7 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -627,7 +618,7 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -641,7 +632,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "5%",
-                      border: "1px solid #ddd",
+                      borderTop: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -650,7 +641,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "45%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -659,7 +650,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -668,7 +659,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -677,7 +668,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -687,7 +678,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -696,7 +687,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      borderTop: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -709,7 +700,8 @@ const InvoiceForBuyer = () => {
                   style={{
                     textAlign: "right",
                     fontWeight: "bold",
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                   }}
                 ></td>
@@ -717,7 +709,7 @@ const InvoiceForBuyer = () => {
                   style={{
                     textAlign: "center",
                     fontWeight: "bold",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -725,7 +717,7 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -733,7 +725,7 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -741,7 +733,7 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -749,7 +741,7 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -757,7 +749,8 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -774,9 +767,9 @@ const InvoiceForBuyer = () => {
             }}
           >
             <div className="row p-2">
-              <p>
+              <h5 style={{ color: "black" }}>
                 <strong>Amount In Words : {convertToWOrds(totalAmount)}</strong>
-              </p>
+              </h5>
             </div>
           </table>
           <table
@@ -799,7 +792,7 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     width: "20%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     textAlign: "center",
                   }}
@@ -810,7 +803,7 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     width: "20%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     textAlign: "center",
                   }}
@@ -821,7 +814,7 @@ const InvoiceForBuyer = () => {
                 <th
                   style={{
                     width: "20%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     textAlign: "center",
                   }}
@@ -840,7 +833,7 @@ const InvoiceForBuyer = () => {
               <tr>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -848,7 +841,7 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -856,7 +849,7 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -864,7 +857,7 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -872,7 +865,7 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -880,7 +873,7 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -888,7 +881,7 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -896,7 +889,7 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -904,7 +897,8 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -918,7 +912,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "30%",
-                      border: "1px solid #ddd",
+                      borderTop: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -927,7 +921,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -936,7 +930,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -945,7 +939,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -954,7 +948,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -963,7 +957,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -972,7 +966,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -981,7 +975,7 @@ const InvoiceForBuyer = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -992,14 +986,18 @@ const InvoiceForBuyer = () => {
               <tr>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                     width: "10%",
+                    fontWeight: "bold",
                   }}
-                ></td>
+                >
+                  Total
+                </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -1008,14 +1006,14 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -1024,14 +1022,14 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -1040,14 +1038,14 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -1056,7 +1054,8 @@ const InvoiceForBuyer = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                     width: "5%",
                   }}
@@ -1073,15 +1072,15 @@ const InvoiceForBuyer = () => {
             }}
           >
             <div style={{ height: "120px" }} className="row p-2">
-              <div style={{ marginBottom: "80px" }}>
-                <p className="text-end">
+              <div style={{ marginBottom: "90px" }}>
+                <h5 className="text-end">
                   <strong>For EdProwise Tech Pvt. Ltd</strong>
-                </p>
+                </h5>
               </div>
               <div>
-                <p className="text-end">
+                <h5 className="text-end">
                   <strong>Authorised Signatory</strong>
-                </p>
+                </h5>
               </div>
             </div>
           </table>

@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
+import { Modal } from "react-bootstrap";
 
 const TrackQuoteTable = () => {
   const [quotes, setQuotes] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
     const fetchQuoteData = async () => {
@@ -43,6 +46,11 @@ const TrackQuoteTable = () => {
     navigate(`/admin-dashboard/procurement-services/view-quote-table`, {
       state: { enquiryNumber, schoolId },
     });
+  };
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
   };
 
   const handleExport = () => {
@@ -161,6 +169,11 @@ const TrackQuoteTable = () => {
                                       className="avatar-md"
                                       alt={quote.subCategoryName}
                                       src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote?.productImage}`}
+                                      onClick={() =>
+                                        handleImageClick(
+                                          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.productImage}`
+                                        )
+                                      }
                                     />
                                   </div>
                                 )}
@@ -260,6 +273,15 @@ const TrackQuoteTable = () => {
           </div>
         </div>
       </div>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Body className="text-center">
+          <img
+            src={selectedImage}
+            alt="Preview"
+            style={{ maxWidth: "100%", maxHeight: "80vh" }}
+          />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

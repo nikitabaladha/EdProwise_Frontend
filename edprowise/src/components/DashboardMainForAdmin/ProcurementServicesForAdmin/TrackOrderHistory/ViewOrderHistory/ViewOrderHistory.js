@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
 import getAPI from "../../../../../api/getAPI";
+import { Modal } from "react-bootstrap";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -24,6 +25,8 @@ const ViewOrderHistory = () => {
   const navigate = useNavigate();
 
   const [quote, setQuote] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -144,6 +147,11 @@ const ViewOrderHistory = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
     }
+  };
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
   };
 
   return (
@@ -398,7 +406,7 @@ const ViewOrderHistory = () => {
                 <div className="container">
                   <div className="card-header mb-2">
                     <h4 className="card-title text-center custom-heading-font">
-                      Ordered Quote Details
+                      Requested Quote Details
                     </h4>
                   </div>
                 </div>
@@ -458,6 +466,11 @@ const ViewOrderHistory = () => {
                                     className="avatar-md"
                                     alt={product.subCategoryName}
                                     src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                    onClick={() =>
+                                      handleImageClick(
+                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
+                                      )
+                                    }
                                   />
                                 )}
                                 <Link className="text-dark fw-medium">
@@ -487,6 +500,15 @@ const ViewOrderHistory = () => {
           </div>
         </div>
       </div>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Body className="text-center">
+          <img
+            src={selectedImage}
+            alt="Preview"
+            style={{ maxWidth: "100%", maxHeight: "80vh" }}
+          />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

@@ -119,7 +119,7 @@ const InvoiceForEdProwise = () => {
       >
         <table
           style={{
-            border: "1px solid #ddd",
+            border: "1px solid black",
             width: "100%",
           }}
         >
@@ -184,8 +184,8 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     borderLeft: "none",
-                    borderTop: "1px solid #ddd",
-                    borderRight: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderRight: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -197,7 +197,7 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    borderTop: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -227,7 +227,7 @@ const InvoiceForEdProwise = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -251,7 +251,7 @@ const InvoiceForEdProwise = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -272,10 +272,7 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    borderLeft: "none",
+                    borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
                     width: "30%",
@@ -289,7 +286,7 @@ const InvoiceForEdProwise = () => {
                     borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
-                    borderBottom: " 1px solid #ddd",
+                    borderBottom: " 1px solid black",
                   }}
                 >
                   Email ID : {sellerEmailId}
@@ -311,8 +308,8 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     borderLeft: "none",
-                    borderTop: "1px solid #ddd",
-                    borderRight: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderRight: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -352,7 +349,7 @@ const InvoiceForEdProwise = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -375,7 +372,7 @@ const InvoiceForEdProwise = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -396,10 +393,7 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    borderLeft: "none",
+                    borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
                   }}
@@ -429,10 +423,7 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    borderLeft: "none",
+                    borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
                   }}
@@ -473,7 +464,7 @@ const InvoiceForEdProwise = () => {
                   style={{
                     borderLeft: "none",
                     borderTop: "none",
-                    borderRight: "1px solid #ddd",
+                    borderRight: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -518,7 +509,7 @@ const InvoiceForEdProwise = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    borderLeft: "1px solid #ddd",
+                    borderLeft: "1px solid black",
                     borderTop: "none",
                     borderBottom: "none",
                   }}
@@ -529,7 +520,7 @@ const InvoiceForEdProwise = () => {
               <tr>
                 <td
                   style={{
-                    borderRight: "1px solid #ddd",
+                    borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
                   }}
@@ -551,10 +542,7 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    borderLeft: "none",
+                    borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
                   }}
@@ -577,16 +565,16 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     width: "5%",
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     padding: "8px",
                   }}
                 >
-                  S.L.
+                  Sr.
                 </th>
                 <th
                   style={{
                     width: "45%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -595,7 +583,7 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -604,7 +592,7 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -613,7 +601,7 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -623,7 +611,7 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -632,7 +620,7 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     width: "10%",
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -646,7 +634,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "5%",
-                      border: "1px solid #ddd",
+                      borderTop: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -655,7 +643,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "45%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -664,7 +652,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -673,7 +661,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -682,7 +670,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -692,7 +680,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -701,7 +689,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      borderTop: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -714,7 +702,8 @@ const InvoiceForEdProwise = () => {
                   style={{
                     textAlign: "right",
                     fontWeight: "bold",
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                   }}
                 ></td>
@@ -722,7 +711,7 @@ const InvoiceForEdProwise = () => {
                   style={{
                     textAlign: "center",
                     fontWeight: "bold",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -730,7 +719,7 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -738,7 +727,7 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -746,7 +735,7 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -754,7 +743,7 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -762,7 +751,8 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -779,9 +769,9 @@ const InvoiceForEdProwise = () => {
             }}
           >
             <div className="row p-2">
-              <p>
+              <h5>
                 <strong>Amount In Words : {convertToWOrds(totalAmount)}</strong>
-              </p>
+              </h5>
             </div>
           </table>
           <table
@@ -804,7 +794,7 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     width: "20%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     textAlign: "center",
                   }}
@@ -815,7 +805,7 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     width: "20%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     textAlign: "center",
                   }}
@@ -826,7 +816,7 @@ const InvoiceForEdProwise = () => {
                 <th
                   style={{
                     width: "20%",
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     textAlign: "center",
                   }}
@@ -845,7 +835,7 @@ const InvoiceForEdProwise = () => {
               <tr>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -853,7 +843,7 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -861,7 +851,7 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -869,7 +859,7 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -877,7 +867,7 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -885,7 +875,7 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -893,7 +883,7 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -901,7 +891,7 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -909,7 +899,8 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                   }}
                 >
@@ -923,7 +914,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "30%",
-                      border: "1px solid #ddd",
+                      borderTop: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -932,7 +923,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -941,7 +932,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -950,7 +941,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -959,7 +950,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -968,7 +959,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -977,7 +968,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -986,7 +977,7 @@ const InvoiceForEdProwise = () => {
                   <td
                     style={{
                       width: "10%",
-                      border: "1px solid #ddd",
+                      border: "1px solid black",
                       padding: "8px",
                     }}
                   >
@@ -997,7 +988,8 @@ const InvoiceForEdProwise = () => {
               <tr>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                     width: "10%",
                     fontWeight: "bold",
@@ -1008,7 +1000,7 @@ const InvoiceForEdProwise = () => {
 
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -1017,14 +1009,14 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -1033,14 +1025,14 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -1049,14 +1041,14 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
                 ></td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    border: "1px solid black",
                     padding: "8px",
                     width: "10%",
                   }}
@@ -1065,7 +1057,8 @@ const InvoiceForEdProwise = () => {
                 </td>
                 <td
                   style={{
-                    border: "1px solid #ddd",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
                     padding: "8px",
                     width: "5%",
                   }}
@@ -1082,15 +1075,15 @@ const InvoiceForEdProwise = () => {
             }}
           >
             <div style={{ height: "120px" }} className="row p-2">
-              <div style={{ marginBottom: "80px" }}>
-                <p className="text-end">
+              <div style={{ marginBottom: "90px" }}>
+                <h5 className="text-end">
                   <strong>For EdProwise Tech Pvt. Ltd</strong>
-                </p>
+                </h5>
               </div>
               <div>
-                <p className="text-end">
+                <h5 className="text-end">
                   <strong>Authorised Signatory</strong>
-                </p>
+                </h5>
               </div>
             </div>
           </table>

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Modal } from "react-bootstrap";
 
 import PrepareQuoteTable from "../PrepareQuoteTable/PrepareQuoteTable";
 import ViewPrepareQuoteSeller from "./ViewPrepareQuoteSeller";
@@ -27,6 +28,8 @@ const ViewRequestedQuote = () => {
   const navigate = useNavigate();
 
   const [quote, setQuote] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -212,6 +215,11 @@ const ViewRequestedQuote = () => {
     }
   };
 
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
+  };
+
   return (
     <div className="container">
       <div className="row">
@@ -282,6 +290,11 @@ const ViewRequestedQuote = () => {
                                     className="avatar-md"
                                     alt={product.subCategoryName}
                                     src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                    onClick={() =>
+                                      handleImageClick(
+                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
+                                      )
+                                    }
                                   />
                                 </div>
                               )}
@@ -355,6 +368,16 @@ const ViewRequestedQuote = () => {
           handleSubmit={handleSubmit}
         />
       )}
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Body className="text-center">
+          <img
+            src={selectedImage}
+            alt="Preview"
+            style={{ maxWidth: "100%", maxHeight: "80vh" }}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

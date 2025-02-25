@@ -75,60 +75,6 @@ const ViewQuote = () => {
                           className="align-middle fs-18"
                         />
                       </Link>
-
-                      {/* <Link
-                        onClick={openUpdateSubmittedQuoteModal}
-                        className="btn btn-soft-primary btn-sm"
-                        title="Edit"
-                        data-bs-toggle="popover"
-                        data-bs-trigger="hover"
-                      >
-                        <iconify-icon
-                          icon="solar:pen-2-broken"
-                          className="align-middle fs-18"
-                        />
-                      </Link>
-
-                      {currentQuote.venderStatus === "Pending" && (
-                        <>
-                          <button
-                            className="btn btn-success btn-sm"
-                            onClick={() =>
-                              handleVenderStatusUpdate("Quote Accepted")
-                            }
-                          >
-                            Accept
-                          </button>
-                          <button
-                            className="btn btn-danger btn-sm"
-                            onClick={() =>
-                              handleVenderStatusUpdate("Quote Not Accepted")
-                            }
-                          >
-                            Reject
-                          </button>
-                        </>
-                      )}
-                      {currentQuote.venderStatus === "Quote Accepted" && (
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() =>
-                            handleVenderStatusUpdate("Quote Not Accepted")
-                          }
-                        >
-                          Reject
-                        </button>
-                      )}
-                      {currentQuote.venderStatus === "Quote Not Accepted" && (
-                        <button
-                          className="btn btn-success btn-sm"
-                          onClick={() =>
-                            handleVenderStatusUpdate("Quote Accepted")
-                          }
-                        >
-                          Accept
-                        </button>
-                      )} */}
                     </div>
                   </div>
                 </div>
