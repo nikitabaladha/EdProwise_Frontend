@@ -52,9 +52,11 @@ const SchoolDashboardHeader = () => {
     fetchSchoolData();
   }, []);
 
-  const navigateToViewSchoolProfile = (event, _id) => {
+  const navigateToViewSchoolProfile = (event, _id, schoolId) => {
     event.preventDefault();
-    navigate("/school-dashboard/view-school-profile", { state: { _id } });
+    navigate("/school-dashboard/view-school-profile", {
+      state: { _id, schoolId },
+    });
   };
 
   const navigateToChangeSchoolPassword = (event, school) => {
@@ -348,7 +350,11 @@ const SchoolDashboardHeader = () => {
                   <Link
                     className="dropdown-item"
                     onClick={(event) =>
-                      navigateToViewSchoolProfile(event, school?._id)
+                      navigateToViewSchoolProfile(
+                        event,
+                        school?._id,
+                        school?.schoolId
+                      )
                     }
                   >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />

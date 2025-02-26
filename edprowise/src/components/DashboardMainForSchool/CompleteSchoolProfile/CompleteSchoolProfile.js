@@ -243,6 +243,7 @@ const CompleteSchoolProfile = () => {
       ) {
         toast.error(error.response.data.message);
       } else {
+        console.log(error);
         toast.error("An unexpected error occurred. Please try again.");
       }
     }
@@ -469,22 +470,22 @@ const CompleteSchoolProfile = () => {
                       </h4>
                       <h4 className="mb-3"> Same As Above</h4>
 
-                      <th style={{ width: 20 }} className="mb-3">
-                        <div className="form-check ms-1">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="sameAsSchoolAddress"
-                            name="sameAsSchoolAddress"
-                            checked={formData.sameAsSchoolAddress}
-                            onChange={handleChange}
-                          />{" "}
-                          <label
-                            className="form-check-label"
-                            htmlFor="sameAsSchoolAddress"
-                          />
-                        </div>
-                      </th>
+                      {/* <th style={{ width: 20 }} className="mb-3"> */}
+                      <div className="form-check ms-1">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id="sameAsSchoolAddress"
+                          name="sameAsSchoolAddress"
+                          checked={formData.sameAsSchoolAddress}
+                          onChange={handleChange}
+                        />{" "}
+                        <label
+                          className="form-check-label"
+                          htmlFor="sameAsSchoolAddress"
+                        />
+                      </div>
+                      {/* </th> */}
                     </div>
                     <div className="row">
                       <div className="mb-3">

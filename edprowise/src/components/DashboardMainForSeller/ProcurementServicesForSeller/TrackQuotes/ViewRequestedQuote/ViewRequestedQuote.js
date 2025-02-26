@@ -23,7 +23,6 @@ const formatDate = (dateString) => {
 const ViewRequestedQuote = () => {
   const location = useLocation();
   const enquiryNumber = location.state?.enquiryNumber;
-  const supplierStatus = location.state?.supplierStatus;
 
   const navigate = useNavigate();
 
@@ -33,12 +32,17 @@ const ViewRequestedQuote = () => {
   const [preparedQuotes, setPreparedQuotes] = useState([]);
   const [isPrepareQuoteTableVisible, setIsPrepareQuoteTableVisible] =
     useState(false);
+  const [supplierStatus, setSupplierStatus] = useState(null);
 
   useEffect(() => {
     if (!enquiryNumber) return;
     const fetchQuoteData = async () => {
       try {
-        const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
+        const response = await getAPI(
+          `/get-according-to-category-filter/${enquiryNumber}`,
+          {},
+          true
+        );
 
         if (!response.hasError && response.data.data.products) {
           setQuote(response.data.data.products);
@@ -70,7 +74,7 @@ const ViewRequestedQuote = () => {
         );
 
         if (!response.hasError && response.data.data) {
-          setPreparedQuotes(response.data.data); // Set prepared quotes
+          setPreparedQuotes(response.data.data);
         }
       } catch (err) {
         console.error("Error fetching prepared quotes:", err);
@@ -234,6 +238,34 @@ const ViewRequestedQuote = () => {
     }
   };
 
+  // i want to fetch Quote propsal data
+
+  useEffect(() => {
+    if (!enquiryNumber || !sellerId) return;
+    fetchQuoteProposal();
+  }, [enquiryNumber, sellerId]);
+
+  const fetchQuoteProposal = async () => {
+    try {
+      const response = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        {},
+        true
+      );
+
+      if (!response.hasError && response.data) {
+        const quoteProposalData = response.data.data;
+
+        // if no quoteProposal data or quoteProposalData.supplierStatus is "Quote Requested" in  both cases i want to show "Prepare Quote" and "Hide" button
+        setSupplierStatus(quoteProposalData.supplierStatus);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching quote proposal:", err);
+    }
+  };
+
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowModal(true);
@@ -252,7 +284,6 @@ const ViewRequestedQuote = () => {
                   </h4>
                 </div>
               </div>
-
               <div className="table-responsive">
                 <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
                   <thead className="bg-light-subtle">
@@ -279,6 +310,7 @@ const ViewRequestedQuote = () => {
                       <th>Product Description</th>
                       <th>Quote Requested Date</th>
                       <th>DeliveryExpectedDate</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -331,7 +363,7 @@ const ViewRequestedQuote = () => {
                           <td>{product.description}</td>
                           <td>{formatDate(product.createdAt)}</td>
                           <td>{formatDate(product.expectedDeliveryDate)}</td>
-                          <td>{product.supplierStatus}</td>
+                          <td>{product.buyerStatus}</td>
                         </tr>
                       ))
                     ) : (
@@ -342,21 +374,22 @@ const ViewRequestedQuote = () => {
               </div>
 
               <div className="d-flex justify-content-between mt-2">
-                {supplierStatus === "Quote Requested" ? (
-                  <button
-                    type="button"
-                    className="btn btn-primary custom-submit-button"
-                    onClick={() =>
-                      setIsPrepareQuoteTableVisible(!isPrepareQuoteTableVisible)
-                    }
-                  >
-                    {isPrepareQuoteTableVisible
-                      ? "Hide Quote"
-                      : "Prepare Quote"}
-                  </button>
-                ) : (
-                  <></>
-                )}
+                {supplierStatus === "Quote Requested" ||
+                  (supplierStatus === null && (
+                    <button
+                      type="button"
+                      className="btn btn-primary custom-submit-button"
+                      onClick={() =>
+                        setIsPrepareQuoteTableVisible(
+                          !isPrepareQuoteTableVisible
+                        )
+                      }
+                    >
+                      {isPrepareQuoteTableVisible
+                        ? "Hide Quote"
+                        : "Prepare Quote"}
+                    </button>
+                  ))}
 
                 <button
                   type="button"

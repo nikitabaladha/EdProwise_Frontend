@@ -13,7 +13,8 @@ import CityData from "../../CityData.json";
 
 const UpdateSchoolProfile = () => {
   const location = useLocation();
-  const schoolId = location.state?._id;
+  // const schoolId = location.state?._id;
+  const schoolId = location.state?.schoolId;
 
   const navigate = useNavigate();
 
@@ -131,7 +132,7 @@ const UpdateSchoolProfile = () => {
 
     try {
       const response = await putAPI(
-        `/school-profile/${school._id}`,
+        `/school-profile/${school.schoolId}`,
         formDataToSend,
         {
           "Content-Type": "multipart/form-data",

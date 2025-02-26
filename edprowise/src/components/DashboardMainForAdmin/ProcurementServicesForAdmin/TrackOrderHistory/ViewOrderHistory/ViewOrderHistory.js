@@ -71,7 +71,7 @@ const ViewOrderHistory = () => {
 
       // Fetch Profile data based on the schoolId
       const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}`
+        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
       );
 
       if (
@@ -121,7 +121,7 @@ const ViewOrderHistory = () => {
 
       // Fetch Profile data based on the schoolId
       const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}`
+        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
       );
 
       if (

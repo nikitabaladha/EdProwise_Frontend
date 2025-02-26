@@ -12,7 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 const ViewSchoolProfile = () => {
   const location = useLocation();
-  const schoolId = location.state?._id;
+  // const schoolId = location.state?._id;
+  const schoolId = location.state?.schoolId;
 
   const navigate = useNavigate();
 
@@ -49,9 +50,11 @@ const ViewSchoolProfile = () => {
     fetchSchoolData();
   }, []);
 
-  const navigateToUpdateSchoolProfile = (event, _id) => {
+  const navigateToUpdateSchoolProfile = (event, _id, schoolId) => {
     event.preventDefault();
-    navigate(`/school-dashboard/update-school-profile`, { state: { _id } });
+    navigate(`/school-dashboard/update-school-profile`, {
+      state: { _id, schoolId },
+    });
   };
 
   return (
@@ -69,7 +72,11 @@ const ViewSchoolProfile = () => {
                       </h4>
                       <Link
                         onClick={(event) =>
-                          navigateToUpdateSchoolProfile(event, school?._id)
+                          navigateToUpdateSchoolProfile(
+                            event,
+                            school?._id,
+                            school?.schoolId
+                          )
                         }
                         className="btn btn-soft-primary btn-sm"
                       >

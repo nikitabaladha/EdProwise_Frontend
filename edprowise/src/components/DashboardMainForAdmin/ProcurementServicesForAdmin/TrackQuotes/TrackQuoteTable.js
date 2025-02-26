@@ -34,10 +34,10 @@ const TrackQuoteTable = () => {
 
   const navigate = useNavigate();
 
-  const navigateToViewRequestedQuote = (event, enquiryNumber) => {
+  const navigateToViewRequestedQuote = (event, enquiryNumber, schoolId) => {
     event.preventDefault();
     navigate(`/admin-dashboard/procurement-services/view-requested-quote`, {
-      state: { enquiryNumber },
+      state: { enquiryNumber, schoolId },
     });
   };
 

@@ -22,9 +22,6 @@ const ViewAllQuoteTable = () => {
   const enquiryNumber = location.state?.enquiryNumber;
   const schoolId = location.state?.schoolId;
 
-  console.log("enquiryNumber", enquiryNumber);
-  console.log("schoolId", schoolId);
-
   const navigate = useNavigate();
 
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
@@ -84,7 +81,11 @@ const ViewAllQuoteTable = () => {
 
   const handleExport = () => {};
 
-  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+  const fetchPrepareQuoteAndProposalData = async (
+    enquiryNumber,
+    sellerId,
+    schoolId
+  ) => {
     if (!sellerId || !enquiryNumber || !schoolId) {
       console.error("Seller ID, Enquiry Number, or School ID is missing");
       return;
@@ -103,7 +104,7 @@ const ViewAllQuoteTable = () => {
 
       // Fetch Profile data based on the schoolId
       const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}`
+        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
       );
 
       if (
@@ -345,18 +346,6 @@ const ViewAllQuoteTable = () => {
                           currentPage === page ? "active" : ""
                         }`}
                       >
-                        {/* <button
-                          className="page-link"
-                          onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
-                        >
-                          {page}
-                        </button> */}
-
                         <button
                           className={`page-link pagination-button ${
                             currentPage === page ? "active" : ""

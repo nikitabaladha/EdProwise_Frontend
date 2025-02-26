@@ -71,12 +71,13 @@ const TrackOrderHistoryTable = () => {
   const handleUpdateTDSStatus = async (
     enquiryNumber,
     quoteNumber,
+    sellerId,
     newtDSAmount
   ) => {
     try {
       const response = await putAPI(
-        `/update-tds?enquiryNumber=${enquiryNumber}&&quoteNumber=${quoteNumber}`,
-        { tDSAmount: Number(newtDSAmount) }, // Ensure it's a number
+        `/update-tds?enquiryNumber=${enquiryNumber}&quoteNumber=${quoteNumber}&sellerId=${sellerId}`,
+        { tDSAmount: Number(newtDSAmount) },
         true
       );
 
@@ -216,6 +217,7 @@ const TrackOrderHistoryTable = () => {
                                 handleUpdateTDSStatus(
                                   order.enquiryNumber,
                                   order.quoteNumber,
+                                  order.sellerId,
                                   e.target.value
                                 )
                               }
@@ -284,18 +286,6 @@ const TrackOrderHistoryTable = () => {
                           currentPage === page ? "active" : ""
                         }`}
                       >
-                        {/* <button
-                          className="page-link"
-                          onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
-                        >
-                          {page}
-                        </button> */}
-
                         <button
                           className={`page-link pagination-button ${
                             currentPage === page ? "active" : ""

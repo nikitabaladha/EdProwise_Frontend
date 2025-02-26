@@ -114,7 +114,7 @@ const TrackQuoteTable = ({}) => {
 
       // Fetch Profile data based on the schoolId
       const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}`
+        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
       );
 
       if (
@@ -313,25 +313,24 @@ const TrackQuoteTable = ({}) => {
                                   />
                                 </Link>
 
-                                {!existingPrepareQuotes.has(
-                                  quote.enquiryNumber
-                                ) && (
-                                  <Link
-                                    className="btn btn-danger btn-sm"
-                                    title="Submit"
-                                    data-bs-toggle="popover"
-                                    data-bs-trigger="hover"
-                                    onClick={(event) =>
-                                      navigateToViewRequestedQuote(
-                                        event,
-                                        quote?.enquiryNumber,
-                                        quote?.supplierStatus
-                                      )
-                                    }
-                                  >
-                                    Prepare Quote
-                                  </Link>
-                                )}
+                                {quote.supplierStatus === "Quote Requested" &&
+                                  !existingPrepareQuotes.has(
+                                    quote.enquiryNumber
+                                  ) && (
+                                    <Link
+                                      className="btn btn-danger btn-sm"
+                                      title="Prepare Quote"
+                                      onClick={(event) =>
+                                        navigateToViewRequestedQuote(
+                                          event,
+                                          quote?.enquiryNumber,
+                                          quote?.supplierStatus
+                                        )
+                                      }
+                                    >
+                                      Prepare Quote
+                                    </Link>
+                                  )}
                               </div>
                             </td>
                           </tr>
