@@ -238,8 +238,6 @@ const ViewRequestedQuote = () => {
     }
   };
 
-  // i want to fetch Quote propsal data
-
   useEffect(() => {
     if (!enquiryNumber || !sellerId) return;
     fetchQuoteProposal();
@@ -256,7 +254,6 @@ const ViewRequestedQuote = () => {
       if (!response.hasError && response.data) {
         const quoteProposalData = response.data.data;
 
-        // if no quoteProposal data or quoteProposalData.supplierStatus is "Quote Requested" in  both cases i want to show "Prepare Quote" and "Hide" button
         setSupplierStatus(quoteProposalData.supplierStatus);
       } else {
         console.error("Invalid response format or error in response");
@@ -306,11 +303,9 @@ const ViewRequestedQuote = () => {
                       <th>Product Required (Category)</th>
                       <th>Quantity</th>
                       <th>Unit</th>
-                      <th>Status</th>
                       <th>Product Description</th>
                       <th>Quote Requested Date</th>
                       <th>DeliveryExpectedDate</th>
-                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -359,11 +354,9 @@ const ViewRequestedQuote = () => {
                           <td>{product.categoryName}</td>
                           <td>{product.quantity}</td>
                           <td>{product.unit}</td>
-                          <td>{product.buyerStatus}</td>
                           <td>{product.description}</td>
                           <td>{formatDate(product.createdAt)}</td>
                           <td>{formatDate(product.expectedDeliveryDate)}</td>
-                          <td>{product.buyerStatus}</td>
                         </tr>
                       ))
                     ) : (
@@ -404,7 +397,6 @@ const ViewRequestedQuote = () => {
         </div>
       </div>
 
-      {/* i want to show View Prepare Quote Seller if and only if data present otherwise show nothing */}
       {preparedQuotes.length > 0 && (
         <ViewPrepareQuoteSeller
           sellerId={userDetails?.id}

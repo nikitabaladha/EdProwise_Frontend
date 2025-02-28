@@ -30,11 +30,12 @@ const ViewRequestedQuote = () => {
 
   const navigate = useNavigate();
 
-  const [quote, setQuote] = useState([]);
+  const [quotes, setQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
   const [isQuoteTableVisible, setIsQuoteTableVisible] = useState(false);
+  const [submittedQuotes, setSubmittedQuotes] = useState([]);
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -47,7 +48,7 @@ const ViewRequestedQuote = () => {
       const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
 
       if (!response.hasError && response.data.data.products) {
-        setQuote(response.data.data.products);
+        setQuotes(response.data.data.products);
         console.log(
           "get Quote List data from function",
           response.data.data.products
@@ -57,6 +58,45 @@ const ViewRequestedQuote = () => {
       }
     } catch (err) {
       console.error("Error fetching quote:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (!quotes.length) return;
+    quotes.forEach((quote) => {
+      if (quote.enquiryNumber) {
+        fetchAllQuoteData(quote.enquiryNumber);
+      }
+    });
+  }, [quotes]);
+
+  const fetchAllQuoteData = async (enquiryNumber) => {
+    try {
+      const response = await getAPI(
+        `/submit-quote-by-status/${enquiryNumber}`,
+        {},
+        true
+      );
+
+      if (
+        !response.hasError &&
+        response.data &&
+        response.data.data.length > 0
+      ) {
+        setSubmittedQuotes((prev) => ({
+          ...prev,
+          [enquiryNumber]: response.data.data,
+        }));
+        console.log(
+          "Submitted Quote data for",
+          enquiryNumber,
+          response.data.data
+        );
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching submitted-quote:", err);
     }
   };
 
@@ -101,43 +141,42 @@ const ViewRequestedQuote = () => {
                       <th>Product Required (Category)</th>
                       <th>Quantity</th>
                       <th>Unit</th>
-                      <th>Status</th>
                       <th>Product Description</th>
                       <th>Quote Requested Date</th>
                       <th>Delivery Expected Date</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {quote.length > 0 ? (
-                      quote.map((product) => (
-                        <tr key={product.id}>
+                    {quotes.length > 0 ? (
+                      quotes.map((quote) => (
+                        <tr key={quote.id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${product.id}`}
+                                id={`customCheck${quote.id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${product.id}`}
+                                htmlFor={`customCheck${quote.id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{product.enquiryNumber}</td>
+                          <td>{quote.enquiryNumber}</td>
                           <td>
                             <div className="d-flex align-items-center gap-2">
-                              {product.productImage && (
+                              {quote.productImage && (
                                 <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
                                   <img
                                     className="avatar-md"
-                                    alt={product.subCategoryName}
-                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                    alt={quote.subCategoryName}
+                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote?.productImage}`}
                                     onClick={() =>
                                       handleImageClick(
-                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
+                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.productImage}`
                                       )
                                     }
                                   />
@@ -145,18 +184,17 @@ const ViewRequestedQuote = () => {
                               )}
                               <div>
                                 <Link className="text-dark fw-medium">
-                                  {product.subCategoryName}
+                                  {quote.subCategoryName}
                                 </Link>
                               </div>
                             </div>
                           </td>
-                          <td>{product.categoryName}</td>
-                          <td>{product.quantity}</td>
-                          <td>{product.unit}</td>
-                          <td>{product.buyerStatus}</td>
-                          <td>{product.description}</td>
-                          <td>{formatDate(product.createdAt)}</td>
-                          <td>{formatDate(product.expectedDeliveryDate)}</td>
+                          <td>{quote.categoryName}</td>
+                          <td>{quote.quantity}</td>
+                          <td>{quote.unit}</td>
+                          <td>{quote.description}</td>
+                          <td>{formatDate(quote.createdAt)}</td>
+                          <td>{formatDate(quote.expectedDeliveryDate)}</td>
                         </tr>
                       ))
                     ) : (
@@ -168,7 +206,7 @@ const ViewRequestedQuote = () => {
 
               {/* end table-responsive */}
 
-              <div className="d-flex justify-content-between mt-2">
+              {/* <div className="d-flex justify-content-between mt-2">
                 <button
                   type="button"
                   className="btn btn-primary custom-submit-button"
@@ -183,13 +221,34 @@ const ViewRequestedQuote = () => {
                 >
                   Go Back
                 </button>
+              </div> */}
+
+              <div className="d-flex justify-content-between mt-2">
+                {Object.values(submittedQuotes).some(
+                  (quotes) => quotes.length > 0
+                ) && (
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={() => setIsQuoteTableVisible(!isQuoteTableVisible)}
+                  >
+                    {isQuoteTableVisible ? "Hide Quote" : "View Quote"}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="btn btn-primary custom-submit-button"
+                  onClick={() => window.history.back()}
+                >
+                  Go Back
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {isQuoteTableVisible && quote.length > 0 ? (
+      {isQuoteTableVisible && quotes.length > 0 ? (
         <ViewAllQuoteTable />
       ) : (
         <div className="row"></div>

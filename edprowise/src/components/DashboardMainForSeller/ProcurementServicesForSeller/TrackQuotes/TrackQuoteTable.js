@@ -7,8 +7,10 @@ import { Modal } from "react-bootstrap";
 
 const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
+  const [preparedQuotes, setPreparedQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
+  const [supplierStatus, setSupplierStatus] = useState(null);
 
   const navigate = useNavigate();
 
@@ -37,44 +39,36 @@ const TrackQuoteTable = ({}) => {
 
   const [existingPrepareQuotes, setExistingPrepareQuotes] = useState(new Set());
 
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const sellerId = userDetails?.id;
+
   useEffect(() => {
-    const fetchPrepareQuoteData = async () => {
-      const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-      const sellerId = userDetails?.id;
+    if (!quotes.length || !sellerId) return;
 
-      if (!sellerId) {
-        console.error("Seller ID is missing");
-        return;
+    quotes.forEach((quote) => {
+      if (quote.enquiryNumber) {
+        fetchQuoteProposal(quote.enquiryNumber);
       }
+    });
+  }, [quotes, sellerId]);
 
-      try {
-        const fetchedQuotes = await Promise.all(
-          quotes.map(async (quote) => {
-            const response = await getAPI(
-              `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${quote.enquiryNumber}`,
-              {},
-              true
-            );
+  const fetchQuoteProposal = async (enquiryNumber) => {
+    try {
+      const response = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        {},
+        true
+      );
 
-            if (
-              !response.hasError &&
-              response.data &&
-              response.data.data.length > 0
-            ) {
-              return quote.enquiryNumber;
-            }
-            return null;
-          })
-        );
-
-        setExistingPrepareQuotes(new Set(fetchedQuotes.filter(Boolean)));
-      } catch (err) {
-        console.error("Error fetching prepare quote data:", err);
+      if (!response.hasError && response.data) {
+        setPreparedQuotes(response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
       }
-    };
-
-    fetchPrepareQuoteData();
-  }, [quotes]);
+    } catch (err) {
+      console.error("Error fetching quote proposal:", err);
+    }
+  };
 
   const navigateToViewRequestedQuote = (
     event,
@@ -273,7 +267,10 @@ const TrackQuoteTable = ({}) => {
                             <td>{quote.categoryName}</td>
                             <td>{quote.quantity}</td>
                             <td>{quote.unit}</td>
-                            <td>{quote.supplierStatus}</td>
+                            <td>
+                              {preparedQuotes?.supplierStatus ||
+                                "Quote Requested"}
+                            </td>
                             <td>
                               <div className="d-flex gap-2">
                                 <Link
@@ -313,24 +310,22 @@ const TrackQuoteTable = ({}) => {
                                   />
                                 </Link>
 
-                                {quote.supplierStatus === "Quote Requested" &&
-                                  !existingPrepareQuotes.has(
-                                    quote.enquiryNumber
-                                  ) && (
-                                    <Link
-                                      className="btn btn-danger btn-sm"
-                                      title="Prepare Quote"
-                                      onClick={(event) =>
-                                        navigateToViewRequestedQuote(
-                                          event,
-                                          quote?.enquiryNumber,
-                                          quote?.supplierStatus
-                                        )
-                                      }
-                                    >
-                                      Prepare Quote
-                                    </Link>
-                                  )}
+                                {preparedQuotes?.supplierStatus ===
+                                "Quote Submitted" ? null : (
+                                  <Link
+                                    className="btn btn-danger btn-sm"
+                                    title="Prepare Quote"
+                                    onClick={(event) =>
+                                      navigateToViewRequestedQuote(
+                                        event,
+                                        quote?.enquiryNumber,
+                                        quote?.supplierStatus
+                                      )
+                                    }
+                                  >
+                                    Prepare Quote
+                                  </Link>
+                                )}
                               </div>
                             </td>
                           </tr>

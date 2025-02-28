@@ -153,7 +153,6 @@ const ViewCart = () => {
                             <th>Product Subcategory</th>
                             <th>HSN/SACC</th>
                             <th>Listing Rate</th>
-                            <th>EdProwise Margin %</th>
                             <th>Quantity</th>
                             <th>Final Rate Before Discount</th>
                             <th>Discount %</th>
@@ -197,7 +196,6 @@ const ViewCart = () => {
                               </td>
                               <td>{item.hsnSacc}</td>
                               <td>{item.listingRate}</td>
-                              <td>{item.edprowiseMargin}</td>
                               <td>{item.quantity}</td>
                               <td>{item.finalRateBeforeDiscount}</td>
                               <td>{item.discount}</td>

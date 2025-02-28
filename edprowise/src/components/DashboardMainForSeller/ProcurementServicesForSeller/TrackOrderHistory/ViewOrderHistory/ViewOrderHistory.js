@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import ViewRequestedQuote from "../../TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
 
 import { format } from "date-fns";
 
@@ -208,23 +209,15 @@ const ViewOrderHistory = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="status" className="form-label">
-                        Status
-                      </label>
-                      <p className="form-control">{order.supplierStatus}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
                       <label htmlFor="tDSAmount" className="form-label">
                         TDS Amount
                       </label>
                       <p className="form-control">{order.tDSAmount}</p>
                     </div>
                   </div>
+                </div>
+
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
@@ -303,7 +296,6 @@ const ViewOrderHistory = () => {
                         <th>Product Required (Category)</th>
                         <th>Quantity</th>
                         <th>Unit</th>
-                        <th>Status</th>
                         <th>Product Description</th>
                         <th>Quote Requested Date</th>
                         <th>DeliveryExpectedDate</th>
@@ -355,7 +347,6 @@ const ViewOrderHistory = () => {
                             <td>{product.categoryName}</td>
                             <td>{product.quantity}</td>
                             <td>{product.unit}</td>
-                            <td>{product.buyerStatus}</td>
                             <td>{product.description}</td>
                             <td>{formatDate(product.createdAt)}</td>
                             <td>{formatDate(product.expectedDeliveryDate)}</td>
@@ -372,6 +363,7 @@ const ViewOrderHistory = () => {
           </div>
         </div>
       </div>
+
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Body className="text-center">
           <img

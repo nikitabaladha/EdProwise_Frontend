@@ -182,15 +182,6 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              {/* <button
-                                                      className="btn btn-success btn-sm"
-                                                      title="Pay"
-                                                      data-bs-toggle="popover"
-                                                      data-bs-trigger="hover"
-                                                      onClick={handleNavigation}
-                                                    >
-                                                      Pay
-                                                    </button> */}
                             </div>
                           </td>
                         </tr>

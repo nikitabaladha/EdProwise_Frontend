@@ -89,7 +89,17 @@ const ViewQuote = () => {
                     <p className="form-control">{currentQuote.companyName}</p>
                   </div>
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="paymentTerms" className="form-label">
+                      Payment Terms
+                    </label>
+                    <p className="form-control">{currentQuote.paymentTerms}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label
                       htmlFor="dateOfQuoteSubmitted"
@@ -103,7 +113,7 @@ const ViewQuote = () => {
                     </p>
                   </div>
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label
                       htmlFor="expectedDeliveryDateBySeller"
@@ -162,25 +172,6 @@ const ViewQuote = () => {
                       Description
                     </label>
                     <p className="form-control">{currentQuote.description}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="paymentTerms" className="form-label">
-                      Payment Terms
-                    </label>
-                    <p className="form-control">{currentQuote.paymentTerms}</p>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="placeOrder" className="form-label">
-                      Status
-                    </label>
-                    <p className="form-control">{currentQuote.buyerStatus}</p>
                   </div>
                 </div>
               </div>

@@ -10,6 +10,8 @@ const TrackQuoteTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
+  const [submittedQuotes, setSubmittedQuotes] = useState([]);
+
   useEffect(() => {
     const fetchQuoteData = async () => {
       try {
@@ -31,6 +33,41 @@ const TrackQuoteTable = () => {
 
     fetchQuoteData();
   }, []);
+
+  useEffect(() => {
+    if (!quotes.length) return;
+    quotes.forEach((quote) => {
+      if (quote.enquiryNumber) {
+        fetchAllQuoteData(quote.enquiryNumber);
+      }
+    });
+  }, [quotes]);
+
+  const fetchAllQuoteData = async (enquiryNumber) => {
+    try {
+      const response = await getAPI(`/submit-quote/${enquiryNumber}`, {}, true);
+
+      if (
+        !response.hasError &&
+        response.data &&
+        response.data.data.length > 0
+      ) {
+        setSubmittedQuotes((prev) => ({
+          ...prev,
+          [enquiryNumber]: response.data.data,
+        }));
+        console.log(
+          "Submitted Quote data for",
+          enquiryNumber,
+          response.data.data
+        );
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching submitted-quote:", err);
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -187,7 +224,13 @@ const TrackQuoteTable = () => {
                             <td>{quote.categoryName}</td>
                             <td>{quote.quantity}</td>
                             <td>{quote.unit}</td>
-                            <td>{quote.edprowiseStatus}</td>
+
+                            <td>
+                              {submittedQuotes[quote.enquiryNumber]
+                                ? "Quote Received"
+                                : "Quote Requested"}
+                            </td>
+
                             <td>
                               <div className="d-flex gap-2">
                                 <Link
@@ -205,19 +248,22 @@ const TrackQuoteTable = () => {
                                     className="align-middle fs-18"
                                   />
                                 </Link>
-                                <button
-                                  type="button"
-                                  className="btn btn-primary custom-submit-button"
-                                  onClick={(event) =>
-                                    navigateToViewQuoteTable(
-                                      event,
-                                      quote?.enquiryNumber,
-                                      quote?.schoolId
-                                    )
-                                  }
-                                >
-                                  View Quote
-                                </button>
+
+                                {submittedQuotes[quote.enquiryNumber] && (
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary custom-submit-button"
+                                    onClick={(event) =>
+                                      navigateToViewQuoteTable(
+                                        event,
+                                        quote?.enquiryNumber,
+                                        quote?.schoolId
+                                      )
+                                    }
+                                  >
+                                    View Quote
+                                  </button>
+                                )}
                               </div>
                             </td>
                           </tr>

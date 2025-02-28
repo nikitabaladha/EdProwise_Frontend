@@ -132,40 +132,6 @@ const ViewAllQuoteTable = () => {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [schoolsPerPage] = useState(5);
-
-  const indexOfLastSchool = currentPage * schoolsPerPage;
-  const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
-  const currentSubmittedQuotes = submittedQuotes.slice(
-    indexOfFirstSchool,
-    indexOfLastSchool
-  );
-
-  const totalPages = Math.ceil(submittedQuotes.length / schoolsPerPage);
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
-  const pageRange = 1;
-
-  const startPage = Math.max(1, currentPage - pageRange);
-  const endPage = Math.min(totalPages, currentPage + pageRange);
-
-  const pagesToShow = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, index) => startPage + index
-  );
-
   return (
     <>
       <div className="container-fluid">
@@ -205,12 +171,11 @@ const ViewAllQuoteTable = () => {
                         <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
-                        <th>Vender Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {currentSubmittedQuotes.map((quote) => (
+                      {submittedQuotes.map((quote) => (
                         <tr key={quote._id}>
                           <td>
                             <div className="form-check ms-1">
@@ -233,7 +198,7 @@ const ViewAllQuoteTable = () => {
                           </td>
                           <td>{quote.quotedAmount}</td>
                           <td>{quote.remarksFromSupplier}</td>
-                          <td>{quote.venderStatus}</td>
+
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -326,47 +291,6 @@ const ViewAllQuoteTable = () => {
                   </table>
                 </div>
                 {/* end table-responsive */}
-              </div>
-              <div className="card-footer border-top">
-                <nav aria-label="Page navigation example">
-                  <ul className="pagination justify-content-end mb-0">
-                    <li className="page-item">
-                      <button
-                        className="page-link"
-                        onClick={handlePreviousPage}
-                        disabled={currentPage === 1}
-                      >
-                        Previous
-                      </button>
-                    </li>
-                    {pagesToShow.map((page) => (
-                      <li
-                        key={page}
-                        className={`page-item ${
-                          currentPage === page ? "active" : ""
-                        }`}
-                      >
-                        <button
-                          className={`page-link pagination-button ${
-                            currentPage === page ? "active" : ""
-                          }`}
-                          onClick={() => handlePageClick(page)}
-                        >
-                          {page}
-                        </button>
-                      </li>
-                    ))}
-                    <li className="page-item">
-                      <button
-                        className="page-link"
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
               </div>
             </div>
           </div>

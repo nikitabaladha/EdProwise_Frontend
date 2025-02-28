@@ -8,6 +8,7 @@ import autoTable from "jspdf-autotable";
 import { useLocation } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
+import ReasonModal from "./ReasonModal";
 
 import jsPDF from "jspdf";
 import { format } from "date-fns";
@@ -25,6 +26,9 @@ const ViewAllQuoteTable = () => {
 
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
   const [cartCount, setCartCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSellerId, setSelectedSellerId] = useState(null);
+  const [selectedEnquiryNumber, setSelectedEnquiryNumber] = useState(null);
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -42,6 +46,7 @@ const ViewAllQuoteTable = () => {
 
       if (!response.hasError && response.data) {
         setSubmittedQuotes(response.data.data);
+        console.log("Submitted quotes", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -79,6 +84,7 @@ const ViewAllQuoteTable = () => {
         toast.success("Cart data submitted successfully!");
 
         fetchCartData();
+        fetchAllQuoteData();
       } else {
         toast.error(response.message || "Failed to add data to cart");
       }
@@ -133,6 +139,17 @@ const ViewAllQuoteTable = () => {
     });
   };
 
+  const handleOpenModal = (event, enquiryNumber, sellerId) => {
+    event.preventDefault();
+    setSelectedEnquiryNumber(enquiryNumber);
+    setSelectedSellerId(sellerId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   const handleExport = () => {};
 
   const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
@@ -184,40 +201,6 @@ const ViewAllQuoteTable = () => {
       console.error("Error fetching data:", err);
     }
   };
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [schoolsPerPage] = useState(5);
-
-  const indexOfLastSchool = currentPage * schoolsPerPage;
-  const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
-  const currentSubmittedQuotes = submittedQuotes.slice(
-    indexOfFirstSchool,
-    indexOfLastSchool
-  );
-
-  const totalPages = Math.ceil(submittedQuotes.length / schoolsPerPage);
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
-  const pageRange = 1;
-
-  const startPage = Math.max(1, currentPage - pageRange);
-  const endPage = Math.min(totalPages, currentPage + pageRange);
-
-  const pagesToShow = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, index) => startPage + index
-  );
 
   return (
     <>
@@ -281,12 +264,11 @@ const ViewAllQuoteTable = () => {
                         <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
-                        {/* <th>Vender Status</th> */}
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {currentSubmittedQuotes.map((quote) => (
+                      {submittedQuotes.map((quote) => (
                         <tr key={quote._id}>
                           <td>
                             <div className="form-check ms-1">
@@ -303,7 +285,6 @@ const ViewAllQuoteTable = () => {
                           </td>
                           <td>{quote.quotedAmount}</td>
                           <td>{quote.remarksFromSupplier}</td>
-                          {/* <td>{quote.venderStatus}</td> */}
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -334,18 +315,36 @@ const ViewAllQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                className="btn btn-light btn-sm"
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  handleSubmit(event, quote);
-                                }}
-                              >
-                                <iconify-icon
-                                  icon="solar:cart-plus-outline"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
+
+                              {quote.venderStatusFromBuyer === "Pending" && (
+                                <>
+                                  <Link
+                                    className="btn btn-light btn-sm"
+                                    onClick={(event) => {
+                                      event.preventDefault();
+                                      handleSubmit(event, quote);
+                                    }}
+                                  >
+                                    <iconify-icon
+                                      icon="solar:cart-plus-outline"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary custom-submit-button"
+                                    onClick={(event) =>
+                                      handleOpenModal(
+                                        event,
+                                        quote?.enquiryNumber,
+                                        quote?.sellerId
+                                      )
+                                    }
+                                  >
+                                    Reject Quote
+                                  </button>
+                                </>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -355,63 +354,18 @@ const ViewAllQuoteTable = () => {
                 </div>
                 {/* end table-responsive */}
               </div>
-              <div className="card-footer border-top">
-                <nav aria-label="Page navigation example">
-                  <ul className="pagination justify-content-end mb-0">
-                    <li className="page-item">
-                      <button
-                        className="page-link"
-                        onClick={handlePreviousPage}
-                        disabled={currentPage === 1}
-                      >
-                        Previous
-                      </button>
-                    </li>
-                    {pagesToShow.map((page) => (
-                      <li
-                        key={page}
-                        className={`page-item ${
-                          currentPage === page ? "active" : ""
-                        }`}
-                      >
-                        {/* <button
-                          className="page-link"
-                          onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
-                        >
-                          {page}
-                        </button> */}
-
-                        <button
-                          className={`page-link pagination-button ${
-                            currentPage === page ? "active" : ""
-                          }`}
-                          onClick={() => handlePageClick(page)}
-                        >
-                          {page}
-                        </button>
-                      </li>
-                    ))}
-                    <li className="page-item">
-                      <button
-                        className="page-link"
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
             </div>
           </div>
         </div>
       </div>
+      {isModalOpen && (
+        <ReasonModal
+          onClose={handleCloseModal}
+          sellerId={selectedSellerId}
+          enquiryNumber={selectedEnquiryNumber}
+          fetchAllQuoteData={fetchAllQuoteData}
+        />
+      )}
     </>
   );
 };

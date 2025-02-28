@@ -9,12 +9,13 @@ const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
-  const [submittedQuotes, setSubmittedQuotes] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuoteData = async () => {
       try {
-        const response = await getAPI(`/get-quote-list-for-school`, {}, true);
+        const response = await getAPI(`/get-quote-list-for-seller`, {}, true);
         if (
           !response.hasError &&
           response.data &&
@@ -22,7 +23,7 @@ const TrackQuoteTable = ({}) => {
         ) {
           setQuotes(response.data.data);
 
-          console.log("Quotes fetched successfully:", response.data.data);
+          console.log("setQuotes", response.data.data);
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -34,78 +35,141 @@ const TrackQuoteTable = ({}) => {
     fetchQuoteData();
   }, []);
 
-  useEffect(() => {
-    if (!quotes.length) return;
-    quotes.forEach((quote) => {
-      if (quote.enquiryNumber) {
-        fetchAllQuoteData(quote.enquiryNumber);
-      }
-    });
-  }, [quotes]);
+  const [existingPrepareQuotes, setExistingPrepareQuotes] = useState(new Set());
 
-  const fetchAllQuoteData = async (enquiryNumber) => {
+  // useEffect(() => {
+  //   const fetchPrepareQuoteData = async () => {
+  //     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  //     const sellerId = userDetails?.id;
+
+  //     if (!sellerId) {
+  //       console.error("Seller ID is missing");
+  //       return;
+  //     }
+
+  //     try {
+  //       const fetchedQuotes = await Promise.all(
+  //         quotes.map(async (quote) => {
+  //           const response = await getAPI(
+  //             `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${quote.enquiryNumber}`,
+  //             {},
+  //             true
+  //           );
+
+  //           if (
+  //             !response.hasError &&
+  //             response.data &&
+  //             response.data.data.length > 0
+  //           ) {
+  //             return quote.enquiryNumber;
+  //           }
+  //           return null;
+  //         })
+  //       );
+
+  //       setExistingPrepareQuotes(new Set(fetchedQuotes.filter(Boolean)));
+  //     } catch (err) {
+  //       console.error("Error fetching prepare quote data:", err);
+  //     }
+  //   };
+
+  //   fetchPrepareQuoteData();
+  // }, [quotes]);
+
+  // useEffect(() => {
+  //   if (!enquiryNumber || !sellerId) return;
+  //   fetchQuoteProposal();
+  // }, [enquiryNumber, sellerId]);
+
+  // const fetchQuoteProposal = async () => {
+  //   try {
+  //     const response = await getAPI(
+  //       `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+  //       {},
+  //       true
+  //     );
+
+  //     if (!response.hasError && response.data) {
+  //       const quoteProposalData = response.data.data;
+
+  //       setSupplierStatus(quoteProposalData.supplierStatus);
+  //     } else {
+  //       console.error("Invalid response format or error in response");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error fetching quote proposal:", err);
+  //   }
+  // };
+
+  const navigateToViewRequestedQuote = (
+    event,
+    enquiryNumber,
+    supplierStatus
+  ) => {
+    event.preventDefault();
+    navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
+      state: { enquiryNumber, supplierStatus },
+    });
+  };
+
+  const handleExport = () => {
+    const filteredData = quotes.map((quote) => ({}));
+    exportToExcel(filteredData, "Products", "Products Data");
+  };
+
+  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, schoolId) => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const sellerId = userDetails?.id;
+
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
     try {
-      const response = await getAPI(
-        `/submit-quote-by-status/${enquiryNumber}`,
-        {},
-        true
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
       );
 
       if (
-        !response.hasError &&
-        response.data &&
-        response.data.data.length > 0
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
       ) {
-        setSubmittedQuotes((prev) => ({
-          ...prev,
-          [enquiryNumber]: response.data.data,
-        }));
-        console.log(
-          "Submitted Quote data for",
-          enquiryNumber,
-          response.data.data
-        );
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(`/seller-dashboard/procurement-services/quote-proposal`, {
+          state: { prepareQuoteData, quoteProposalData, profileData },
+        });
       } else {
-        console.error("Invalid response format or error in response");
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
       }
     } catch (err) {
-      console.error("Error fetching submitted-quote:", err);
+      console.error("Error fetching data:", err);
     }
-  };
-
-  const navigate = useNavigate();
-
-  const navigateToRequestQuote = (event) => {
-    event.preventDefault();
-    navigate(`/school-dashboard/procurement-services/request-quote`);
-  };
-
-  const navigateToViewRequestedQuote = (event, enquiryNumber) => {
-    event.preventDefault();
-    navigate(`/school-dashboard/procurement-services/view-requested-quote`, {
-      state: { enquiryNumber },
-    });
-  };
-
-  const navigateToViewQuoteTable = (event, enquiryNumber) => {
-    event.preventDefault();
-
-    console.log("viewQuoteTable navigation function", enquiryNumber);
-
-    navigate(`/school-dashboard/procurement-services/view-quote-table`, {
-      state: { enquiryNumber },
-    });
   };
 
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowModal(true);
-  };
-
-  const handleExport = () => {
-    const filteredData = quotes.map((quote) => ({}));
-
-    exportToExcel(filteredData, "Products", "Products Data");
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -147,18 +211,18 @@ const TrackQuoteTable = ({}) => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">
-                  All Request Quote List
+                  All Requested Quote List
                 </h4>
-                <Link
-                  onClick={(event) => navigateToRequestQuote(event)}
-                  className="btn btn-sm btn-primary"
-                >
-                  Request Quote
-                </Link>
                 <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
+                  <Link
+                    onClick={handleExport}
+                    className="btn btn-sm btn-outline-light"
+                  >
+                    Export
+                  </Link>
                 </div>
               </div>
+
               <div>
                 {quotes.length > 0 ? (
                   <div className="table-responsive">
@@ -234,20 +298,19 @@ const TrackQuoteTable = ({}) => {
                             <td>{quote.categoryName}</td>
                             <td>{quote.quantity}</td>
                             <td>{quote.unit}</td>
-
-                            <td>
-                              {submittedQuotes[quote.enquiryNumber]
-                                ? "Quote Received"
-                                : "Quote Requested"}
-                            </td>
+                            <td>{quote.supplierStatus}</td>
                             <td>
                               <div className="d-flex gap-2">
                                 <Link
                                   className="btn btn-light btn-sm"
+                                  title="View Requested Quote"
+                                  data-bs-toggle="popover"
+                                  data-bs-trigger="hover"
                                   onClick={(event) =>
                                     navigateToViewRequestedQuote(
                                       event,
-                                      quote?.enquiryNumber
+                                      quote?.enquiryNumber,
+                                      quote?.supplierStatus
                                     )
                                   }
                                 >
@@ -257,20 +320,42 @@ const TrackQuoteTable = ({}) => {
                                   />
                                 </Link>
 
-                                {submittedQuotes[quote.enquiryNumber] && (
-                                  <button
-                                    type="button"
-                                    className="btn btn-primary custom-submit-button"
-                                    onClick={(event) =>
-                                      navigateToViewQuoteTable(
-                                        event,
-                                        quote?.enquiryNumber
-                                      )
-                                    }
-                                  >
-                                    View Quote
-                                  </button>
-                                )}
+                                <Link
+                                  onClick={() =>
+                                    fetchPrepareQuoteAndProposalData(
+                                      quote.enquiryNumber,
+                                      quote.schoolId
+                                    )
+                                  }
+                                  className="btn btn-soft-info btn-sm"
+                                  title="Download PDF"
+                                  data-bs-toggle="popover"
+                                  data-bs-trigger="hover"
+                                >
+                                  <iconify-icon
+                                    icon="solar:download-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+
+                                {quote.supplierStatus === "Quote Requested" &&
+                                  !existingPrepareQuotes.has(
+                                    quote.enquiryNumber
+                                  ) && (
+                                    <Link
+                                      className="btn btn-danger btn-sm"
+                                      title="Prepare Quote"
+                                      onClick={(event) =>
+                                        navigateToViewRequestedQuote(
+                                          event,
+                                          quote?.enquiryNumber,
+                                          quote?.supplierStatus
+                                        )
+                                      }
+                                    >
+                                      Prepare Quote
+                                    </Link>
+                                  )}
                               </div>
                             </td>
                           </tr>
@@ -281,7 +366,6 @@ const TrackQuoteTable = ({}) => {
                 ) : (
                   <tr></tr>
                 )}
-                {/* end table-responsive */}
               </div>
               <div className="card-footer border-top">
                 <nav aria-label="Page navigation example">
@@ -328,6 +412,7 @@ const TrackQuoteTable = ({}) => {
           </div>
         </div>
       </div>
+
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Body className="text-center">
           <img
