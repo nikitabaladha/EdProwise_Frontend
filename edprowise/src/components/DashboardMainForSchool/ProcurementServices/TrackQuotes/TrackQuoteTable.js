@@ -237,9 +237,11 @@ const TrackQuoteTable = ({}) => {
 
                             <td>
                               {submittedQuotes[quote.enquiryNumber]
-                                ? "Quote Received"
-                                : "Quote Requested"}
+                                ? submittedQuotes[quote.enquiryNumber][0]
+                                    .buyerStatus
+                                : quote.buyerStatus}
                             </td>
+
                             <td>
                               <div className="d-flex gap-2">
                                 <Link

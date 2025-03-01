@@ -7,10 +7,9 @@ import { Modal } from "react-bootstrap";
 
 const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
-  const [preparedQuotes, setPreparedQuotes] = useState([]);
+  const [preparedQuotes, setPreparedQuotes] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
-  const [supplierStatus, setSupplierStatus] = useState(null);
 
   const navigate = useNavigate();
 
@@ -37,8 +36,6 @@ const TrackQuoteTable = ({}) => {
     fetchQuoteData();
   }, []);
 
-  const [existingPrepareQuotes, setExistingPrepareQuotes] = useState(new Set());
-
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const sellerId = userDetails?.id;
 
@@ -52,6 +49,8 @@ const TrackQuoteTable = ({}) => {
     });
   }, [quotes, sellerId]);
 
+  // i want that if quote proposal data is alredy present for  that perticular enquiry number and seller id then dont show Prepare Quote Button otherwise show Prepare Quote Button
+
   const fetchQuoteProposal = async (enquiryNumber) => {
     try {
       const response = await getAPI(
@@ -60,8 +59,13 @@ const TrackQuoteTable = ({}) => {
         true
       );
 
-      if (!response.hasError && response.data) {
-        setPreparedQuotes(response.data.data);
+      if (!response.hasError && response.data.data) {
+        setPreparedQuotes((prev) => ({
+          ...prev,
+          [enquiryNumber]: response.data.data,
+        }));
+
+        console.log("setPreparedQuotes", setPreparedQuotes);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -268,8 +272,10 @@ const TrackQuoteTable = ({}) => {
                             <td>{quote.quantity}</td>
                             <td>{quote.unit}</td>
                             <td>
-                              {preparedQuotes?.supplierStatus ||
-                                "Quote Requested"}
+                              {preparedQuotes[quote.enquiryNumber]
+                                ? preparedQuotes[quote.enquiryNumber]
+                                    .supplierStatus
+                                : "Quote Requested"}
                             </td>
                             <td>
                               <div className="d-flex gap-2">
@@ -291,7 +297,6 @@ const TrackQuoteTable = ({}) => {
                                     className="align-middle fs-18"
                                   />
                                 </Link>
-
                                 <Link
                                   onClick={() =>
                                     fetchPrepareQuoteAndProposalData(
@@ -310,11 +315,10 @@ const TrackQuoteTable = ({}) => {
                                   />
                                 </Link>
 
-                                {preparedQuotes?.supplierStatus ===
-                                "Quote Submitted" ? null : (
-                                  <Link
-                                    className="btn btn-danger btn-sm"
-                                    title="Prepare Quote"
+                                {preparedQuotes[quote.enquiryNumber] ? null : (
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary custom-submit-button"
                                     onClick={(event) =>
                                       navigateToViewRequestedQuote(
                                         event,
@@ -324,7 +328,7 @@ const TrackQuoteTable = ({}) => {
                                     }
                                   >
                                     Prepare Quote
-                                  </Link>
+                                  </button>
                                 )}
                               </div>
                             </td>

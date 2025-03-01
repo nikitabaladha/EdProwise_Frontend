@@ -27,6 +27,12 @@ const DELETE_CONFIG = {
     successMessage: "Cart successfully deleted!",
     errorMessage: "Failed to delete Cart.",
   },
+  singleCart: {
+    getEndpoint: (id) => `/delete-by-cart-id/${id}`,
+    successMessage: "Single data successfully deleted!",
+    errorMessage: "Failed to delete Cart.",
+    idKey: "id",
+  },
   requestdemo: {
     getEndpoint: (id) => `/delete-request/${id}`,
     successMessage: "Demo request successfully deleted!",
@@ -78,7 +84,6 @@ const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
         if (typeof onDeleted === "function") {
           onDeleted(id);
         }
-
         onClose();
       } else {
         console.error(config.errorMessage, response.message);

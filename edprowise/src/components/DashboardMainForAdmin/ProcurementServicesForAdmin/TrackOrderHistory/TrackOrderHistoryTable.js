@@ -162,7 +162,7 @@ const TrackOrderHistoryTable = () => {
                               : "Null"}
                           </td>
                           <td>{order.totalAmountBeforeGstAndDiscount}</td>
-                          <td>{order.supplierStatus}</td>
+                          <td>{order.edprowiseStatus}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link

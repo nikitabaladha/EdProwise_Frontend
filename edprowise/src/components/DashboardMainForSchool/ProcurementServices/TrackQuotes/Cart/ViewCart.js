@@ -10,6 +10,7 @@ const ViewCart = () => {
   const { enquiryNumber } = location.state || {};
 
   const [carts, setCarts] = useState({});
+  const [items, setItems] = useState({});
   const [selectedCart, setSelectedCart] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
@@ -33,7 +34,7 @@ const ViewCart = () => {
 
       if (!response.hasError && response.data.data) {
         setCarts(response.data.data);
-        console.log(response.data.data);
+        console.log("carts", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -51,21 +52,22 @@ const ViewCart = () => {
     setShowModal(true);
   };
 
+  const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
 
-  const openDeleteDialog = (enquiryNumber, sellerId) => {
+  const openBulkDeleteDialog = (enquiryNumber, sellerId) => {
     setSelectedCart({ enquiryNumber, sellerId });
-    setIsDeleteDialogOpen(true);
+    setIsBulkDeleteDialogOpen(true);
     setDeleteType("cart");
   };
 
-  const handleDeleteCancel = () => {
-    setIsDeleteDialogOpen(false);
+  const handleBulkDeleteCancel = () => {
+    setIsBulkDeleteDialogOpen(false);
     setSelectedCart(null);
   };
 
-  const handleDeleteConfirmed = ({ enquiryNumber, sellerId }) => {
+  const handleBulkDeleteConfirmed = ({ enquiryNumber, sellerId }) => {
     setCarts((prevCarts) => {
       const updatedCarts = { ...prevCarts };
       Object.keys(updatedCarts).forEach((companyName) => {
@@ -74,6 +76,35 @@ const ViewCart = () => {
             !(
               item.enquiryNumber === enquiryNumber && item.sellerId === sellerId
             )
+        );
+        if (updatedCarts[companyName].length === 0) {
+          delete updatedCarts[companyName];
+        }
+      });
+      return updatedCarts;
+    });
+  };
+
+  const openDeleteDialog = (cart) => {
+    console.log("cartid: ", cart._id);
+
+    setSelectedCart({ cart });
+    setIsDeleteDialogOpen(true);
+    setDeleteType("singleCart");
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+    setSelectedCart(null);
+  };
+
+  const handleSingleDeleteConfirmed = (_id) => {
+    console.log("cartid from delete confirmed: " + _id);
+    setCarts((prevCarts) => {
+      const updatedCarts = { ...prevCarts };
+      Object.keys(updatedCarts).forEach((companyName) => {
+        updatedCarts[companyName] = updatedCarts[companyName].filter(
+          (item) => item._id !== _id
         );
         if (updatedCarts[companyName].length === 0) {
           delete updatedCarts[companyName];
@@ -92,6 +123,7 @@ const ViewCart = () => {
 
     setIsModalOpen(true);
   };
+  console.log(carts);
   return (
     <>
       <div className="container">
@@ -118,10 +150,11 @@ const ViewCart = () => {
                 <div key={companyName} className="card">
                   <div className="card-header d-flex justify-content-between align-items-center gap-1">
                     <h4 className="card-title flex-grow-1">{companyName}</h4>
+
                     <Link
                       onClick={(e) => {
                         e.preventDefault();
-                        openDeleteDialog(enquiryNumber, items[0]?.sellerId);
+                        openBulkDeleteDialog(enquiryNumber, items[0]?.sellerId);
                       }}
                       className="btn btn-soft-danger btn-sm"
                     >
@@ -150,6 +183,7 @@ const ViewCart = () => {
                                 />
                               </div>
                             </th>
+                            <th>Sr</th>
                             <th>Product Subcategory</th>
                             <th>HSN/SACC</th>
                             <th>Listing Rate</th>
@@ -168,11 +202,25 @@ const ViewCart = () => {
                             <th>Discount Amount</th>
                             <th>GST Amount</th>
                             <th>Total Amount</th>
+                            <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
                           {items.map((item, index) => (
                             <tr key={item._id}>
+                              <td style={{ width: 20 }}>
+                                <div className="form-check ms-1">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    id="customCheck1"
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="customCheck1"
+                                  />
+                                </div>
+                              </td>
                               <td>{index + 1}</td>
                               <td>
                                 <div className="d-flex align-items-center gap-2">
@@ -211,6 +259,21 @@ const ViewCart = () => {
                               <td>{item.discountAmount}</td>
                               <td>{item.gstAmount}</td>
                               <td>{item.totalAmount}</td>
+
+                              <td>
+                                <Link
+                                  className="btn btn-soft-danger btn-sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    openDeleteDialog(item);
+                                  }}
+                                >
+                                  <iconify-icon
+                                    icon="solar:trash-bin-minimalistic-2-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -236,12 +299,21 @@ const ViewCart = () => {
       </Modal>
 
       {/* it will open delete dialoge  */}
+      {isBulkDeleteDialogOpen && (
+        <ConfirmationDialog
+          onClose={handleBulkDeleteCancel}
+          deleteType={deleteType}
+          id={selectedCart}
+          onDeleted={handleBulkDeleteConfirmed}
+        />
+      )}
+
       {isDeleteDialogOpen && (
         <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
-          id={selectedCart}
-          onDeleted={handleDeleteConfirmed}
+          id={selectedCart.cart._id}
+          onDeleted={handleSingleDeleteConfirmed}
         />
       )}
 

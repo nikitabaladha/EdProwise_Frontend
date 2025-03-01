@@ -112,7 +112,6 @@ const SubmitQuote = () => {
           advanceRequiredAmount: "",
         });
 
-        // i want to pass enquiry number in state variable when i submit the quote
         navigate(
           "/seller-dashboard/procurement-services/view-requested-quote",
           { state: { enquiryNumber: enquiryNumber } }

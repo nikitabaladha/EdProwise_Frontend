@@ -227,8 +227,9 @@ const TrackQuoteTable = () => {
 
                             <td>
                               {submittedQuotes[quote.enquiryNumber]
-                                ? "Quote Received"
-                                : "Quote Requested"}
+                                ? submittedQuotes[quote.enquiryNumber][0]
+                                    .edprowiseStatus
+                                : quote.edprowiseStatus}
                             </td>
 
                             <td>

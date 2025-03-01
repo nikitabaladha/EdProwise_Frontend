@@ -201,7 +201,7 @@ const TrackOrderHistoryTable = () => {
                               : "Null"}
                           </td>
                           <td>{order.totalAmountBeforeGstAndDiscount}</td>
-                          <td>{order.supplierStatus}</td>
+                          <td>{order.buyerStatus}</td>
                           <td>
                             <select
                               id="tdsAmount"
