@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import Serviceinfomainpage from "../Serviceinfomainpage";
+import React from "react";
 import ServiceInfoCommonHeader from "./ServiceInfoCommonHeader";
 import ServiceTabs from "./ServiceTabs";
+import PixalFeesInfoMainPage from "./PixalFeesInfoMainPage";
 
 const ServiceFess = () => {
   return (
     <>
       <ServiceInfoCommonHeader />
-      <Serviceinfomainpage />
+      <PixalFeesInfoMainPage/>
       <ServiceTabs />
     </>
   );

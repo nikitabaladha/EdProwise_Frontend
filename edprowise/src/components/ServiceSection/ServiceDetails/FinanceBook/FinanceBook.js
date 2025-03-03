@@ -1,14 +1,14 @@
-import React,{useState} from "react";
+import React from "react";
 import FinanceCommonHeader from "./FinanceCommonHeader";
-import Serviceinfomainpage from "../Serviceinfomainpage";
 import FinanceTabs from "./FinanceTabs";
+import FinanceBookInfoMainPage from "./FinanceBookInfoMainPage";
 
 
 const FinanceBook=()=>{
     return(
         <>
        <FinanceCommonHeader/>
-       <Serviceinfomainpage/>
+       <FinanceBookInfoMainPage/>
        <FinanceTabs/>
         </>
     )

@@ -337,20 +337,15 @@ const DigitalSection = () => {
           <div
             className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.classid}`}
           >
+            
             <div
               className="wpo-courses-item category-itemm"
               onClick={() => handleItemClick(course)}
             >
-              {" "}
-              {/*onClick={handleRoutes} for first 4*/}
-              {/* onClick={(e) => {
-          e.preventDefault();
-          handleImageClick(course.title);
-        }} */}
               <div className="wpo-courses-text">
                 <div className="courses-icon category-icons">{course.icon}</div>
                 <h2 className="category-h2 font-weight-web-h2">
-                  <a>{course.title}</a>
+                  {course.title}
                 </h2>
               </div>
               <Link to={course.send} className="all-info">

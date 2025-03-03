@@ -80,7 +80,7 @@ const coursesData = [
 
   const CourseItem = ({  title,description ,classid }) => {
     return (
-      <div className={`category-items col-lg-3 col-md-6 col-6 grid-web s${classid}`}>
+      <div className={`category-items col-lg-3 col-md-6 col-12 grid-web s${classid}`}>
         <div className="wpo-courses-item category-itemm">
           <div className="wpo-courses-text" >
             {/* <div className="courses-icon category-icons">{icon}</div> */}

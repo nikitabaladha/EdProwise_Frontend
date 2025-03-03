@@ -67,7 +67,7 @@ const Category = () => {
                     {/* <i className=></i> */}
                   </div>
                   <h2 className="category-h2 font-weight-web-h2">
-                    <a>{course.title}</a>
+                    {course.title}
                   </h2>
                   <p className="category-text font-family-web ">
                     {course.description}

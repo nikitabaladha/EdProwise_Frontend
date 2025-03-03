@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import RequestDemoSteps from "./RequestDemoSteps";
 import { ToastContainer, toast } from "react-toastify";
 
 const coursesData = [
@@ -73,6 +74,7 @@ const RequestDemoForm = () => {
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
+      
       <section className="wpo-page-title">
         <div className="container">
           <div className="row">
@@ -84,6 +86,7 @@ const RequestDemoForm = () => {
           </div>
         </div>
       </section>
+      <RequestDemoSteps/>
       <section className="wpo-contact-pg-section section-padding">
         <div className="container">
           <div className="row">

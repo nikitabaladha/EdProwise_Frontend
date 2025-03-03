@@ -11,6 +11,7 @@ import WebsiteMain from "./components/WebsiteMain";
 import HomePage from "./components/HomeSection/HomePage";
 import AboutPage from "./components/AboutSection/AboutPage";
 import ContactUsPage from "./components/ContactUsSection/ContactUsPage";
+import OrderDetailsWebSitePage from "./components/OrderDetailsWebsite/OrderDetailsWebSitePage.js";
 
 import ServiceMainPage from "./components/ServiceSection/ServiceMainPage";
 import DigitalService from "./components/ServiceSection/SubSections/DigitalService";
@@ -506,6 +507,7 @@ const AppRoutes = () => {
 
         <Route path="about-us" element={<AboutPage />} />
         <Route path="contact-us" element={<ContactUsPage />} />
+        <Route path="order" element={<OrderDetailsWebSitePage />} />
 
         <Route path="services" element={<ServiceMainPage />}>
           <Route path="digital-services" element={<DigitalService />} />

@@ -18,7 +18,7 @@ const Footer = () => {
       name: "Services",
       link: "/services/digital-services",
     },
-    { name: "Orders", link: "#" },
+    { name: "Orders", link: "/order" },
     {
       name: "Community Connect",
       link: "/community-connect/gallery",
@@ -37,7 +37,6 @@ const Footer = () => {
     },
     {
       name: "Download Brochure",
-      link: "#",
     },
     { name: "Become A Supplier", link: "/signup" },
    
@@ -60,7 +59,8 @@ const Footer = () => {
                   </Link>
                 </div>
                 <p>
-                Startup founded on the principle of empowering educational institutions, specializes in delivering various services to educational institution
+                  Market place for school which offers wide range of services including technology integration, adminisstrative solutions, educational consultation and professional development, providing holistic support tailored to enhance every aspect of educational operations. 
+                {/* Startup founded on the principle of empowering educational institutions, specializes in delivering various services to educational institution */}
                 </p>
                 <div className="social">
                   <ul>

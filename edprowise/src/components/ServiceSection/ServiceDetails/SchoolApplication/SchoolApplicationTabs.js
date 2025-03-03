@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import SchoolApplicationKeyFeature from './SchoolApplicationKeyFeature';
 import SchoolAppFAQSection from '../../../FAQSection/SchoolAppFAQSection';
-import WhatWeSolveApplication from './WhatWeSolveApplication';
 
 const SchoolApplicationTabs = () => {
   const [activeTab, setActiveTab] = useState("digitalSection");
@@ -9,6 +8,17 @@ const SchoolApplicationTabs = () => {
   const showTab = (tabName) => {
     setActiveTab(tabName);
   };
+
+  const handleDownload=(tabName)=>{
+    if (tabName === "recruitmentSection") {
+      const link = document.createElement("a");
+      link.href = "/assets/website-images/EdProwise Brochure.pdf"; 
+      link.download = "EdProwise-Brochure.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
   return (
     <section className="wpo-courses-section-s2 section-padding p-0">
     <div className="nav-tabs-container">
@@ -32,21 +42,11 @@ const SchoolApplicationTabs = () => {
       >
         FAQ
       </button>
-      <button
-      id="whatwesayTab"
-        className={`nav-tab ${
-          activeTab === "whatwesaySection" ? "active" : ""
-        }`}
-        onClick={() => showTab("whatwesaySection")}
-      >
-       What We Are Solving
-      </button>
+      
       <button
       id="recruitmentTab"
-        className={`nav-tab ${
-          activeTab === "recruitmentSection" ? "active" : ""
-        }`}
-        onClick={() => showTab("recruitmentSection")}
+      className="download-brocher-tab"
+      onClick={() => handleDownload("recruitmentSection")}
       >
        Download Brochure
       </button>
@@ -70,15 +70,6 @@ const SchoolApplicationTabs = () => {
       >
        <SchoolAppFAQSection/>
       </div>
-      <div
-        className={`show-tab ${
-          activeTab === "whatwesaySection" ? "active" : ""
-        }`}
-        id="whatwesaySection"
-      >
-        {/* <SchoolFessFaq/> */}
-        <WhatWeSolveApplication/>
-      </div>  
       <div
         className={`show-tab ${
           activeTab === "recruitmentSection" ? "active" : ""

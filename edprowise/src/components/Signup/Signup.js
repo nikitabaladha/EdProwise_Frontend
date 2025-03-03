@@ -96,14 +96,18 @@ const Signup = () => {
           >
             <div className="form-content justify-content-end">
               <div className="form-items">
-                <div className="website-logo-inside logo-normal">
+                <div className="website-logoo-inside logo-normal">
                   <Link to="" className="custom-link">
                     <div>
-                      <div className="login-logo-font">EdProwise</div>
+                      <img
+                        className="logos"
+                        src="/assets/website-images/EdProwiseLogo.webp"
+                        alt="logo"
+                      />
                     </div>
                   </Link>
                 </div>
-                <h3 className="font-md">Whatever You Need, We Provide</h3>
+                <h3 className="font-md">Whatever School Need, We Provide</h3>
                 <p>We Listen...We Resolve...We Deliver</p>
                 <form onSubmit={handleSignup}>
                   <input

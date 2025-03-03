@@ -61,32 +61,27 @@ const Serviceinfomainpage = () => {
                     Inspiring growth, fostering innovation, shaping the future, and cultivating success in education.
                   </p>
                 </div>
-
-                {/* Call-to-Action Button */}
                 <div data-swiper-parallax="500" className="slide-btns">
                   <Link to="/request-demo" className="theme-btn">
                     Request For Demo
                   </Link>
                 </div>
               </div>
-
-              {/* Student Picture with Shapes */}
               <div className="student-pic student-service-pic">
                 <img src="/assets/images/Fees-service.png" alt="Student" />
                 <div className="wp-shape-1">
-                  <img src="assets/website-images/slider/shape-1.svg" alt="Shape 1" />
+                  <img src="/assets/website-images/slider/shape-1.svg" alt="Shape 1" />
                 </div>
                 <div className="wp-shape-2">
-                  <img src="assets/website-images/slider/shape-2.svg" alt="Shape 2" />
+                  <img src="/assets/website-images/slider/shape-2.svg" alt="Shape 2" />
                 </div>
                 <div className="wp-shape-3">
-                  <img src="assets/website-images/slider/shape-3.svg" alt="Shape 3" />
+                  <img src="/assets/website-images/slider/shape-3.svg" alt="Shape 3" />
                 </div>
                 <div className="wp-shape-4">
-                  <img src="assets/website-images/slider/shape-4.svg" alt="Shape 4" />
+                  <img src="/assets/website-images/slider/shape-4.svg" alt="Shape 4" />
                 </div>
               </div>
-
             </div>
           </div>
         </div>

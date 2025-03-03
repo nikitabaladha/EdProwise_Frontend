@@ -41,7 +41,7 @@ const FinanceReport = () => {
   return (
       <div className="row-web wpo-courses-wrap service-row">
         {reportsPlans.map((plan, index) => (
-          <div key={index} className="category-items col-lg-4 col-md-6 col-6 grid-web s3">
+          <div key={index} className="category-items col-lg-4 col-md-6 col-12 grid-web s3">
             <div className="card shadow-sm border-0 p-3 text-center">
               {/* <h5 className="text-success fw-bold"></h5> */}
               <h2 className="fw-bold service-title-head">{plan.title}</h2>

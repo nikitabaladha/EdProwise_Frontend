@@ -59,7 +59,7 @@ const RecruitmentSection = () => {
       {items.map((item, index) => (
         <div
           key={item.id}
-          className={`category-items col-lg-3 col-md-6 col-6 grid-web ${item.id}`}
+          className={`category-items col-lg-3 col-md-6 col-12 grid-web ${item.id}`}
           // onMouseEnter={() => setHoveredItem(item.id)}
           // onMouseLeave={() => setHoveredItem(null)}
         >

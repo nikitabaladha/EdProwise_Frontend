@@ -21,7 +21,7 @@ const menuData = [
       { name: "Hire School Teacher", link: "/services/recruitment-services" },
     ],
   },
-  { name: "Orders", link: "#", subMenu: [] },
+  { name: "Orders", link: "/order", subMenu: [] },
   {
     name: "About Us",
     link: "/about-us",
@@ -227,12 +227,12 @@ const Header = () => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="sidebar-logo">
                       <div className="navbar-header">
-                        <a className="navbar-brand fw-bold logo">
+                        <Link to="/" className="navbar-brand fw-bold logo">
                           <img
                             src="/assets/website-images/EdProwiseLogoWhite.webp"
                             alt="logo"
                           />
-                        </a>
+                        </Link>
                       </div>
                     </div>
                     <button className="menu-close" onClick={toggleMobileMenu}>

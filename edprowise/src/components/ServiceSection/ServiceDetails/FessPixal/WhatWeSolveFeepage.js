@@ -11,7 +11,7 @@ const WhatWeSolveFeepage = () => {
   return (
     <div className="row-web wpo-courses-wrap service-row">
       {coursesData.map((course) => (
-         <div className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.classid}`}>
+         <div className={`category-items col-lg-3 col-md-6 col-12 grid-web s${course.classid}`}>
          <div className="wpo-courses-item category-itemm">
            <div className="wpo-courses-text" >
              {/* <div className="courses-icon category-icons">{icon}</div> */}

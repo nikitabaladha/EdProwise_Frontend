@@ -144,29 +144,39 @@ const HomeMainSection = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
-  const searchBoxRef = useRef(null); // To handle click outside
+  const searchBoxRef = useRef(null); 
 
   const serviceData = [
-    { title: "School Fees Management Software - Pixel Fees" },
-    { title: "Web Development" },
-    { title: "App Development" },
-    { title: "SEO Optimization" },
-    { title: "Content Writing" },
-    { title: "Graphic Design" },
-    { title: "Social Media Management" },
-    { title: "Data Analytics" },
-    { title: "Cyber Security" },
-    { title: "Cloud Computing" },
+    { title: "School Fees Management Software - Pixel Fees", send:"/services/digital-services/fees", },
+    { title: "Payroll Management Software – Ease Payroll", send:"/services/digital-services/payroll"},
+    { title: "Financial Management Software – Book Sync", send:"/services/digital-services/booksync" },
+    { title: "School Operational Management Software", send:"/services/digital-services/schooloperation" },
+    { title: "School Mobile Application", send:"/services/digital-services/schoolApplication" },
+    { title: "School Website Design", send:"/services/digital-services/school-Website-Design" },
+    { title: "Digital Exam Result System", send:"/services/digital-services" },
+    { title: "Digital Student Attendance", send:"/services/digital-services" },
+    { title: "Digital Staff Attendance", send:"/services/digital-services" },
+    { title: "Library Management Software", send:"/services/digital-services" },
+    {title:"Entrance Management Software", send:"/services/digital-services"},
+    {title:"Online Payment Gateway", send:"/services/digital-services"},
+    {title:"SMS & WhatsApp Integration Services", send:"/services/digital-services"},
+    {title:"PF Consultancy", send:"/services/business-services"},
+    {title:"ESI Consultancy", send:"/services/business-services"},
+    {title:"Affiliation Support", send:"/services/business-services"},
+    {title:"International Tour Management", send:"/services/business-services"},
+    {title:"Student Counselling", send:"/services/business-services"},
+    {title:"Training & Workshop for Teache", send:"/services/business-services"},
+    
   ];
 
-  // Filter services based on search query
+  
   const filteredServices = searchQuery
     ? serviceData.filter((service) =>
       service.title.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    : serviceData.slice(0, 7); // Show first 7 by default
+    : serviceData.slice(0, 5);
 
-  // Handle click outside to close the search box
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
@@ -245,7 +255,8 @@ const HomeMainSection = () => {
                     <ul className="service-suggestions slide-text pb-2  "> 
                       {filteredServices.length > 0 ? (
                         filteredServices.map((service, index) => (
-                         <li className="d-flex justify-content-between mb-1 align-item-center pl-2 ">
+                        <Link to={service.send} >
+                         <li className="d-flex justify-content-between text-black mb-1 align-item-center pl-2 ">
                            <div
                             key={index}
                             className="service-item pl-1"
@@ -258,6 +269,7 @@ const HomeMainSection = () => {
                           </div>
                           <span className=""><IoIosSend /></span>
                          </li>
+                         </Link>
                         ))
                       ) : (
                         <div className="no-results">No services found</div>
@@ -265,22 +277,6 @@ const HomeMainSection = () => {
                     </ul>
                   )}
                 </div>
-
-                {/* Search Box */}
-                {/* <div className="serach-expand">
-                 <div
-                  className="searchbox-wrap slide-text"
-                  data-swiper-parallax="400"
-                >
-                  <input type="text" placeholder="Search Our Services..." />
-                  <button>
-                    <span className="font-family-web">Search</span>
-                  </button>
-                </div> 
-              </div> */}
-
-
-
 
                 {/* Call-to-Action Button */}
                 <div data-swiper-parallax="500" className="slide-btns">
@@ -322,7 +318,7 @@ const HomeMainSection = () => {
           </div>
         </div>
       </section>
-      <section className="wpo-features-area section-padding pt-0">
+      <section className="wpo-features-area section-padding pt-0" >
         <div className="container-fluid">
           <div className="features-wrap">
             <div
@@ -376,7 +372,7 @@ const HomeMainSection = () => {
                       </div>
                       <div className="feature-text align-content-center m-2">
                         <h2 className="font-weight-web-h2 mb-0">
-                          <a href={feature.link}>{feature.title}</a>
+                          {feature.title}
                         </h2>
                         {/* <p>{feature.hiddenDescription}</p> */}
 
