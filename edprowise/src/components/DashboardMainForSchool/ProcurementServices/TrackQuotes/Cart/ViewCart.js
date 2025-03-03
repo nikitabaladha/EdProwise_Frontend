@@ -260,7 +260,7 @@ const ViewCart = () => {
                               <td>{item.gstAmount}</td>
                               <td>{item.totalAmount}</td>
 
-                              <td>
+                              {/* <td>
                                 <Link
                                   className="btn btn-soft-danger btn-sm"
                                   onClick={(e) => {
@@ -273,7 +273,7 @@ const ViewCart = () => {
                                     className="align-middle fs-18"
                                   />
                                 </Link>
-                              </td>
+                              </td> */}
                             </tr>
                           ))}
                         </tbody>
