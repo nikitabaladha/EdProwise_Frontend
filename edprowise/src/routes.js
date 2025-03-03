@@ -50,18 +50,25 @@ import AdminSignup from "./components/Signup/AdminSignup";
 
 // ==============Admin Routes ====================Admin Routes ========================Admin Routes=========
 
-// ======================================School================================================================
-
 import ChangePasswordForAdmin from "./components/DashboardMainForAdmin/ChangePassword/ChangePassword";
 import CompleteEdprowiseProfile from "./components/DashboardMainForAdmin/CompleteEdprowiseProfile/CompleteEdprowiseProfile";
 import ViewAdminProfile from "./components/DashboardMainForAdmin/ViewAdminProfile/ViewAdminProfile";
 import UpdateAdminProfile from "./components/DashboardMainForAdmin/UpdateAdminProfile/UpdateAdminProfile";
 import AdminDashboardMain from "./components/DashboardMainForAdmin/AdminDashboardMain";
 import Dashboard from "./components/DashboardMainForAdmin/Dashboard/Dashboard";
+
+// ======================================School================================================================
 import Schools from "./components/DashboardMainForAdmin/Schools/Schools";
 import AddNewSchool from "./components/DashboardMainForAdmin/Schools/AddNewSchool/AddNewSchool";
 import ViewSchool from "./components/DashboardMainForAdmin/Schools/ViewSchool/ViewSchool";
 import UpdateSchool from "./components/DashboardMainForAdmin/Schools/UpdateSchool/UpdateSchool";
+
+// ======================================Seller================================================================
+
+import Sellers from "./components/DashboardMainForAdmin/Sellers/Sellers";
+import AddNewSeller from "./components/DashboardMainForAdmin/Sellers/AddNewSeller/AddNewSeller.js";
+import ViewSeller from "./components/DashboardMainForAdmin/Sellers/ViewSeller/ViewSeller.js";
+import UpdateSeller from "./components/DashboardMainForAdmin/Sellers/UpdateSeller/UpdateSeller.js";
 
 // ====================================== Subscriptions======================================
 
@@ -258,6 +265,13 @@ const AppRoutes = () => {
           />
           <Route path="view-subscriptions" element={<ViewSubscriptions />} />
           <Route path="update-subscriptions" element={<UpdateSubscription />} />
+        </Route>
+
+        {/* Seller Table page and it's Add, View, Update Routes */}
+        <Route path="sellers" element={<Sellers />}>
+          <Route path="add-new-seller" element={<AddNewSeller />} />
+          <Route path="view-seller" element={<ViewSeller />} />
+          <Route path="update-seller" element={<UpdateSeller />} />
         </Route>
 
         {/* =====================Fees module=========================================== */}
