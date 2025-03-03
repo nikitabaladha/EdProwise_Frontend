@@ -6,6 +6,8 @@ import WhyChooseUs from "./WhyChooseUs";
 import TestimonialSection from "./Testimonial";
 import EdprowiseTalk from "./EdprowiseTalk";
 import BlogSection from "./BlogSection";
+// import RequestDemoSteps from "./RequestDemoSteps";
+import FaqContactUsComponent from "./FaqContactUsComponent";
 const HomePage = () => {
   return (
     <>
@@ -18,6 +20,7 @@ const HomePage = () => {
       <EdprowiseTalk />
       <BlogSection />
       
+      <FaqContactUsComponent/>
     </>
   );
 };

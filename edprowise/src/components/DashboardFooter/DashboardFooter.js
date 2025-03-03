@@ -18,7 +18,7 @@ const Footer = () => {
       name: "Services",
       link: "/services/digital-services",
     },
-    { name: "Orders", link: "#" },
+    { name: "Orders", link: "/order" },
     {
       name: "Community Connect",
       link: "/community-connect/gallery",
@@ -37,7 +37,6 @@ const Footer = () => {
     },
     {
       name: "Download Brochure",
-      link: "#",
     },
     { name: "Become A Supplier", link: "/signup" },
    

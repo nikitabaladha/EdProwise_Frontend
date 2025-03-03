@@ -93,18 +93,331 @@ Version:        1.0.0
 /*------------------------------------------------------------------
 1. General
 ----------------------------------------------------------------*/
-/* .icon{
-  font-size: x-large !important;
+
+
+.tracking-details-outer-container{
+  border-top: 3px solid #F2BC00;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
-  */
+
+  .tracking-details-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: white;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  }
+  
+  .order-web-icon{
+    font-size: 150px;
+  }
+  
+  .tracking-details-container h1 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .tracking-details-container p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .tracking-details-container button {
+    padding: 10px 20px;
+    background-color: white ;
+    color:#007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    border: 2px solid #F2BC00;
+  }
+  
+  .tracking-details-container button:hover {
+    color: black;
+    background-color: #F2BC00;
+  }
+    /* request-demo-step */
+    .graph-container {
+      position: relative;
+      width: 100%;
+      font-family: "Urbanist";
+      height: 500px;
+      margin: 0 auto;
+    }
+  
+    .section-padding-request-steps{
+      padding: 15px 0 185px 0;;
+    }
+    
+    .graph-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; 
+    }
+    
+    .graph-point {
+      position: absolute;
+      transform: translate(-50%, 50%);
+    }
+    
+    .point {
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      border: 4px solid #e8533c;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .point-label {
+      display: flex;
+      align-items: center;   gap: 10px; 
+      position: absolute;
+      top: 30px;
+      font-family: "Urbanist";
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: normal; 
+      font-size: 14px;
+      color: #333;
+      width: 300px;
+      text-align: left;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    
+    .request-demo-steps-icon
+     {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size:45px;
+      color: #e8533c;
+    }
+    
+    .point-label .flex-column {
+      display: flex;
+      flex-direction: column;
+      max-width: calc(100% - 30px); 
+      word-wrap: break-word;
+    }
+    
+    .request-semo-title{
+      font-size: 18px;
+        color: black;
+        font-family: "Urbanist";
+        font-weight: 600;
+    }
+    
+    .point-label .flex-column div {
+      line-height: 1.4;
+    }
+    
+    .graph-point:nth-child(4) .point-label, 
+    .graph-point:nth-child(6) .point-label {
+      top: -40px; 
+      transform: translateX(-50%) translateY(-100%);
+    }
+    
+    .graph-point:nth-child(3) .point-label {
+      transform: translateX(0%);
+      width: 350px;
+    }
+    
+    .graph-point:nth-child(8) .point-label {
+      top: -80px;
+      transform: translateX(-100%);
+      width: 220px;
+    }
+    
+    .rocket {
+      position: absolute;
+      font-size: 24px;
+      z-index: 2;
+      transition: left 1.5s ease, bottom 1.5s ease, transform 1s ease;
+    }
+    
+    .request-demo-button {
+      position: absolute;
+      top: 270px; /* Adjust this value to position the button correctly */
+      left: 50%;
+      color: #1A1729;
+      display: inline-block;
+      font-weight: 600;
+      padding: 10px 25px;
+      border: 0;
+      text-transform: capitalize;
+      -webkit-backface-visibility: hidden;
+      z-index: 1;
+     width: max-content;
+      font-size: 18px;
+      background: #F2BC00;
+      font-family: "Urbanist";
+      border-radius: 30px;
+      transform: translateX(-10%);
+      cursor: pointer;
+    }
+    
+    .request-demo-button:hover {
+      background-color:#F2BC00;
+    }
+  
+    
+  /* // CSS updates for mobile */
+  @media (max-width: 992px) {
+    .graph-container {
+      height: 800px; /* Increased height for vertical steps */
+      margin: 80px 0;
+    }
+    .section-padding-request-steps{
+      padding: 15px 0 0 0;;
+    }
+    .point-label {
+      width: 425px;
+      left: -120px !important;
+      transform: none !important;
+      top: 50% !important;
+    }
+  
+    .graph-point:nth-child(n) .point-label {
+      top: 50% !important;
+      transform: translate(-100%,-50%) !important;
+    }
+  
+    .graph-point:nth-child(8) .point-label {
+      top: 50% !important;
+      transform: translate(-142%,-50%) !important;
+    }
+    .graph-point:nth-child(3) .point-label {
+      transform: translateX(0%);
+      width: 425px;
+    }
+    .request-demo-button {
+      top: 120px !important;
+      transform: translateX(-50%) !important;
+    }
+  }
+  @media (max-width: 768px) {
+    .graph-container {
+      height: 800px; /* Increased height for vertical steps */
+      margin: 80px 0;
+    }
+    .section-padding-request-steps{
+      padding: 15px 0 0 0;;
+    }
+    
+  
+    .graph-point:nth-child(n) .point-label {
+      top: 50% !important;
+      transform: translate(-80%,-50%) !important;
+    }
+  
+    .graph-point:nth-child(8) .point-label {
+      top: 50% !important;
+      transform: translate(-111%,-50%) !important;
+    }
+    .graph-point:nth-child(3) .point-label {
+      transform: translateX(0%);
+      width: 425px;
+    }
+    .request-demo-button {
+      top: 120px !important;
+      transform: translateX(-50%) !important;
+    }
+  }
+  
+  @media (max-width: 560px) {
+    .graph-container {
+      height: 800px; /* Increased height for vertical steps */
+      margin: 140px 0;
+    }
+    .section-padding-request-steps{
+      padding: 40px 0 0 0;;
+    }
+    
+    .point-label {
+      width: 324px;
+      left: -120px !important;
+      transform: none !important;
+      top: 50% !important;
+    }
+    .graph-point:nth-child(n) .point-label {
+      top: 50% !important;
+      transform: translate(-70%,-50%) !important;
+    }
+  
+    .graph-point:nth-child(8) .point-label {
+      top: 50% !important;
+      transform: translate(-80%,-50%) !important;
+    }
+    .graph-point:nth-child(3) .point-label {
+      transform: translateX(0%);
+      width: 324px;
+    }
+    .request-demo-button {
+      top: 120px !important;
+      transform: translateX(-50%) !important;
+    }
+  }
+  
+  @media (max-width: 400px) {
+    
+    .graph-container {
+      height: 800px; /* Increased height for vertical steps */
+      margin: 125px 0;
+    }
+    .point-label {
+      width: 300px;
+      left: -120px !important;
+      transform: none !important;
+      top: 50% !important;
+    }
+    .graph-point:nth-child(n) .point-label {
+      top: 50% !important;
+      transform: translate(-70%,-50%) !important;
+    }
+  
+    .graph-point:nth-child(8) .point-label {
+      top: 50% !important;
+      transform: translate(-80%,-50%) !important;
+    }
+    .graph-point:nth-child(3) .point-label {
+      transform: translateX(0%);
+      width: 300px;
+    }
+    .request-demo-button {
+      top: 120px !important;
+      transform: translateX(-50%) !important;
+    }
+  }
+  
+
+  
+  /* request-demo-step */
+  
+
   .serve-school-img{
     max-width: fit-content !important;
   }
   ul.service-suggestions.slide-text.pb-2 {
     padding: 0 13px;
 }
-  /* RecruitmentSection.css */
- 
+
+  /* RecruitmentSection css for modal*/
   .mint-container {
     text-align: center;
     padding: 10px 10px;
@@ -12564,7 +12877,8 @@ img {
 .wpo-features-area-s3 .features-wrap {
   max-width: 1420px;
   margin: 0 auto;
-  margin-top: -115px;
+  /*befor -115px is their  */
+  margin-top: -90px;  
   z-index: 9;
   position: relative;
   background: #fcf9ef;

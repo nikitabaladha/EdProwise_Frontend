@@ -20,7 +20,7 @@ const menuData = [
       
     ],
   },
-  { name: "Orders", link: "#", subMenu: [] },
+  { name: "Orders", link: "/order", subMenu: [] },
   {
     name: "About Us",
     link: "/about-us",
