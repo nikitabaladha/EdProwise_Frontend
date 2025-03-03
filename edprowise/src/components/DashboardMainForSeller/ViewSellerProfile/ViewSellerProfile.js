@@ -66,7 +66,7 @@ const ViewSellerProfile = () => {
                     <h4 className="card-title text-center custom-heading-font card-title">
                       Seller Details
                     </h4>
-                    <Link
+                    {/* <Link
                       onClick={(event) =>
                         navigateToUpdateSellerProfile(event, sellerProfile?._id)
                       }
@@ -76,7 +76,7 @@ const ViewSellerProfile = () => {
                         icon="solar:pen-2-broken"
                         className="align-middle fs-18"
                       />
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
                 <h4 className="card-title text-center custom-heading-font mb-3">

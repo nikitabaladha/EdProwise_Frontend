@@ -33,9 +33,9 @@ const SellersTable = ({
     setSelectedSeller(null);
   };
 
-  const handleDeleteConfirmed = (_id) => {
+  const handleDeleteConfirmed = (sellerId) => {
     setSellers((prevSellers) =>
-      prevSellers.filter((seller) => seller._id !== _id)
+      prevSellers.filter((seller) => seller.sellerId !== sellerId)
     );
   };
 
@@ -171,7 +171,7 @@ const SellersTable = ({
                                   }}
                                 />
                               </div>
-                              <div>{seller.schoolName}</div>
+                              <div>{seller.companyName}</div>
                             </div>
                           </td>
                           <td>{seller.contactNo}</td>
@@ -270,7 +270,7 @@ const SellersTable = ({
         <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
-          id={selectedSeller._id}
+          id={selectedSeller.sellerId}
           onDeleted={handleDeleteConfirmed}
         />
       )}

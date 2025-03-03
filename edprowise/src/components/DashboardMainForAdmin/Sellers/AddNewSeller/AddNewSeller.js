@@ -133,6 +133,20 @@ const AddNewSeller = ({ addSeller }) => {
       if (!response.hasError) {
         console.log("profile storage data", response.data.data);
 
+        const newSeller = {
+          _id: response.data.data._id,
+          sellerId: response.data.data.sellerId,
+          companyName: response.data.data.companyName,
+          contactNo: response.data.data.contactNo,
+          emailId: response.data.data.emailId,
+          pan: response.data.data.pan,
+          sellerProfile: response.data.data.sellerProfile,
+        };
+
+        console.log("newSeller", newSeller);
+
+        addSeller(newSeller);
+
         setFormData({
           companyName: "",
           companyType: "",
@@ -158,7 +172,6 @@ const AddNewSeller = ({ addSeller }) => {
           turnover: "",
         });
         setDealingProducts([]);
-
         toast.success("Seller added successfully");
         navigate(-1);
       } else {
