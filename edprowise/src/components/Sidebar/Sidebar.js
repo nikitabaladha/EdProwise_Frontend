@@ -522,12 +522,12 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         icon: "solar:users-group-rounded-bold-duotone",
         link: "/admin-dashboard/schools",
       },
-      // {
-      //   id: "seller",
-      //   label: "Sellers",
-      //   icon: "solar:users-group-rounded-bold-duotone",
-      //   link: "/admin-dashboard/sellers",
-      // },
+      {
+        id: "seller",
+        label: "Sellers",
+        icon: "solar:users-group-rounded-bold-duotone",
+        link: "/admin-dashboard/sellers",
+      },
       {
         id: "subscriptions",
         label: "Subscriptions",

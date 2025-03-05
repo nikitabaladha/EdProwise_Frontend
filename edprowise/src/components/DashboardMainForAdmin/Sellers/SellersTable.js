@@ -23,6 +23,7 @@ const SellersTable = ({
   const [deleteType, setDeleteType] = useState("");
 
   const openDeleteDialog = (seller) => {
+    console.log("open delete dialog", seller);
     setSelectedSeller(seller);
     setIsDeleteDialogOpen(true);
     setDeleteType("seller");
@@ -155,7 +156,6 @@ const SellersTable = ({
                             </div>
                           </td>
                           <td>{seller.sellerId}</td>
-
                           <td>
                             <div className="d-flex align-items-center gap-2">
                               <div className="rounded bg-light d-flex align-items-center justify-content-center">

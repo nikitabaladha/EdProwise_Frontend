@@ -253,18 +253,6 @@ const SchoolsTable = ({
                           currentPage === page ? "active" : ""
                         }`}
                       >
-                        {/* <button
-                          className="page-link"
-                          onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
-                        >
-                          {page}
-                        </button> */}
-
                         <button
                           className={`page-link pagination-button ${
                             currentPage === page ? "active" : ""

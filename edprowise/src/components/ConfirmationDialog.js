@@ -10,12 +10,11 @@ const DELETE_CONFIG = {
     idKey: "schoolId",
   },
   seller: {
-    getEndpoint: (id) => `/seller/${id}`,
+    getEndpoint: (id) => `/seller-profile/${id}`,
     successMessage: "Seller successfully deleted!",
     errorMessage: "Failed to delete seller.",
     idKey: "sellerId",
   },
-
   user: {
     getEndpoint: (id) => `/user/${id}`,
     successMessage: "User successfully deleted!",

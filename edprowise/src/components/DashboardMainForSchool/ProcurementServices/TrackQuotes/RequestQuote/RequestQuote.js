@@ -215,8 +215,8 @@ const RequestQuote = () => {
                         name="description"
                         className="form-control"
                         value={formData.description}
+                        placeholder="Example : I want high quality product"
                         onChange={handleChange}
-                        required
                       />
                     </div>
                   </div>
@@ -275,6 +275,7 @@ const RequestQuote = () => {
                         onChange={handleChange}
                         required
                         min="1"
+                        placeholder="Example : 10"
                       />
                     </div>
                   </div>

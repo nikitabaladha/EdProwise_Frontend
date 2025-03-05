@@ -138,6 +138,7 @@ const AddNewSchool = ({ addSchool }) => {
                           value={formData.schoolName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : ABC School"
                         />
                       </div>
                     </div>
@@ -155,6 +156,7 @@ const AddNewSchool = ({ addSchool }) => {
                           value={formData.schoolMobileNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 1234567890"
                         />
                       </div>
                     </div>
@@ -171,6 +173,7 @@ const AddNewSchool = ({ addSchool }) => {
                           value={formData.schoolEmail}
                           onChange={handleChange}
                           required
+                          placeholder="Example : example@gmail.com"
                         />
                       </div>
                     </div>
@@ -189,6 +192,7 @@ const AddNewSchool = ({ addSchool }) => {
                         value={formData.schoolAddress}
                         onChange={handleChange}
                         required
+                        placeholder="Example :  ABC Building , 123 Street"
                       />
                     </div>
                   </div>
@@ -305,6 +309,7 @@ const AddNewSchool = ({ addSchool }) => {
                           value={formData.panNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : ABCDE1234F"
                         />
                       </div>
                     </div>

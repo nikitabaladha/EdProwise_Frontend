@@ -215,7 +215,7 @@ const CompleteEdprowiseProfile = () => {
                           className="form-control"
                           value={formData.tan}
                           onChange={handleChange}
-                          required
+                          // required
                         />
                       </div>
                     </div>
@@ -231,7 +231,7 @@ const CompleteEdprowiseProfile = () => {
                           className="form-control"
                           value={formData.cin}
                           onChange={handleChange}
-                          required
+                          // required
                         />
                       </div>
                     </div>
@@ -294,7 +294,7 @@ const CompleteEdprowiseProfile = () => {
                           className="form-control"
                           value={formData.landmark}
                           onChange={handleChange}
-                          required
+                          // required
                         />
                       </div>
                     </div>
@@ -351,7 +351,7 @@ const CompleteEdprowiseProfile = () => {
                           className="form-control"
                           value={formData.alternateContactNo}
                           onChange={handleChange}
-                          required
+                          // required
                         />
                       </div>
                     </div>
@@ -388,7 +388,7 @@ const CompleteEdprowiseProfile = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-                          required
+                          // required
                         />
                       </div>
                     </div>

@@ -47,10 +47,10 @@ const ViewSellerProfile = () => {
     fetchSellerProfileData();
   }, []);
 
-  const navigateToUpdateSellerProfile = (event, _id) => {
+  const navigateToUpdateSellerProfile = (event, sellerProfile) => {
     event.preventDefault();
     navigate(`/seller-dashboard/update-seller-profile`, {
-      state: { _id },
+      state: { sellerProfile },
     });
   };
 
@@ -66,9 +66,9 @@ const ViewSellerProfile = () => {
                     <h4 className="card-title text-center custom-heading-font card-title">
                       Seller Details
                     </h4>
-                    {/* <Link
+                    <Link
                       onClick={(event) =>
-                        navigateToUpdateSellerProfile(event, sellerProfile?._id)
+                        navigateToUpdateSellerProfile(event, sellerProfile)
                       }
                       className="btn btn-soft-primary btn-sm"
                     >
@@ -76,7 +76,7 @@ const ViewSellerProfile = () => {
                         icon="solar:pen-2-broken"
                         className="align-middle fs-18"
                       />
-                    </Link> */}
+                    </Link>
                   </div>
                 </div>
                 <h4 className="card-title text-center custom-heading-font mb-3">

@@ -38,7 +38,7 @@ const WebsiteMain = () => {
         await loadScript(
           `${process.env.PUBLIC_URL}/assets/website-js/script.js`
         );
-        console.log("Scripts loaded successfully.");
+
         $(document).ready(() => {
           $(".select").niceSelect();
         });
