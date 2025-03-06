@@ -83,11 +83,15 @@ const BankDetailsTable = () => {
                 </Link>
 
                 <div className="text-end">
-                  <Link
+                  {/* <Link
                     onClick={handleExport}
                     className="btn btn-sm btn-outline-light"
                   >
                     Export
+                  </Link> */}
+                  <Link onClick={handleExport} class="text-primary">
+                    Export
+                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>

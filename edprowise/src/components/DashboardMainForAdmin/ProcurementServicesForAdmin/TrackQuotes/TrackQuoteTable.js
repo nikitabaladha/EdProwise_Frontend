@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
 import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 const TrackQuoteTable = () => {
   const [quotes, setQuotes] = useState([]);
@@ -91,9 +92,49 @@ const TrackQuoteTable = () => {
   };
 
   const handleExport = () => {
-    const filteredData = quotes.map((quote) => ({}));
+    if (!quotes.length) {
+      toast.error("No data available to export");
+      return;
+    }
 
-    exportToExcel(filteredData, "Products", "Products Data");
+    const formattedData = quotes.map((quote) => ({
+      ID: quote.id || "N/A",
+      School_ID: quote.schoolId || "N/A",
+      Enquiry_Number: quote.enquiryNumber || "N/A",
+      Delivery_Address: quote.deliveryAddress || "N/A",
+      Delivery_Location: quote.deliveryLocation || "N/A",
+      Delivery_Landmark: quote.deliveryLandMark || "N/A",
+      Delivery_Pincode: quote.deliveryPincode || "N/A",
+      Expected_Delivery_Date: quote.expectedDeliveryDate
+        ? new Date(quote.expectedDeliveryDate).toLocaleDateString()
+        : "N/A",
+      Buyer_Status: quote.buyerStatus || "N/A",
+      Supplier_Status: quote.supplierStatus || "N/A",
+      Edprowise_Status: quote.edprowiseStatus || "N/A",
+      Created_At: quote.createdAt
+        ? new Date(quote.createdAt).toLocaleDateString()
+        : "N/A",
+      Updated_At: quote.updatedAt
+        ? new Date(quote.updatedAt).toLocaleDateString()
+        : "N/A",
+      Category_ID: quote.categoryId || "N/A",
+      Category_Name: quote.categoryName || "N/A",
+      Sub_Categor_ID: quote.subCategoryId || "N/A",
+      Sub_Category_Name: quote.subCategoryName || "N/A",
+      Description: quote.description || "N/A",
+      Product_Image: quote.productImage || "N/A",
+      Unit: quote.unit || "N/A",
+      Quantity: quote.quantity || 0,
+      Product_Enquiry_Number: quote.productEnquiryNumber || "N/A",
+      Product_Created_At: quote.productCreatedAt
+        ? new Date(quote.productCreatedAt).toLocaleDateString()
+        : "N/A",
+      Product_Updated_At: quote.productUpdatedAt
+        ? new Date(quote.productUpdatedAt).toLocaleDateString()
+        : "N/A",
+    }));
+
+    exportToExcel(formattedData, "Requested Quotes", "Requested_Quotes");
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -139,11 +180,9 @@ const TrackQuoteTable = () => {
                 </h4>
 
                 <div className="text-end">
-                  <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
+                  <Link onClick={handleExport} class="text-primary">
                     Export
+                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>

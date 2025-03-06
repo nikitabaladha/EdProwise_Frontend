@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../export-excel";
+import { toast } from "react-toastify";
 
 import ConfirmationDialog from "../../ConfirmationDialog";
 const SchoolsTable = ({
@@ -14,22 +15,38 @@ const SchoolsTable = ({
   const navigate = useNavigate();
 
   const handleExport = () => {
-    const filteredData = schools.map((school) => ({
-      Id: school._id,
-      SchoolId: school.schoolId,
-      SchoolName: school.schoolName,
-      MobileNo: school.schoolMobileNo,
-      Email: school.schoolEmail,
-      Address: school.schoolAddress,
-      Location: school.schoolLocation,
-      ProfileImage: school.profileImage,
-      AffiliationCertificate: school.affiliationCertificate,
-      AffiliationUpto: school.affiliationUpto,
-      PANNumber: school.panNo,
-      PanFile: school.panFile,
+    if (!schools.length) {
+      toast.error("No data available to export");
+      return;
+    }
+
+    const formattedData = schools.map((school) => ({
+      School_ID: school.schoolId,
+      School_Name: school.schoolName,
+      PAN_Number: school.panNo,
+      School_Address: school.schoolAddress,
+      School_Location: school.schoolLocation,
+      Landmark: school.landMark,
+      School_Pincode: school.schoolPincode,
+      Delivery_Address: school.deliveryAddress,
+      Delivery_Location: school.deliveryLocation,
+      Delivery_Landmark: school.deliveryLandMark,
+      Delivery_Pincode: school.deliveryPincode,
+      School_Mobile_No: school.schoolMobileNo,
+      School_Alternate_Contact_No: school.schoolAlternateContactNo,
+      School_Email: school.schoolEmail,
+      Contact_Person_Name: school.contactPersonName,
+      Number_of_Students: school.numberOfStudents,
+      Principal_Name: school.principalName,
+      Affiliation_Upto: school.affiliationUpto,
+      PAN_File_URL: school.panFile,
+      Profile_Image_URL: school.profileImage,
+      Affiliation_Certificate_URL: school.affiliationCertificate,
+      Created_At: school.createdAt,
+      Updated_At: school.updatedAt,
     }));
 
-    exportToExcel(filteredData, "Schools", "Schools Data");
+    exportToExcel(formattedData, "Schools", "Schools");
   };
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -115,11 +132,9 @@ const SchoolsTable = ({
                 </Link>
 
                 <div className="text-end">
-                  <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
+                  <Link onClick={handleExport} class="text-primary">
                     Export
+                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>

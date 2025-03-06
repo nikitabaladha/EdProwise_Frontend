@@ -282,12 +282,21 @@ const Header = () => {
                     ))}
                     {window.innerWidth <= 992 ? (
                       <>
-                        <li className="menu-item">
-                          <Link onClick={handleSignUp}>Sign Up</Link>
-                        </li>
-                        <li className="menu-item">
-                          <Link onClick={handleSignIn}>Sign In</Link>
-                        </li>
+                        {localStorage.getItem("accessToken") &&
+                        localStorage.getItem("userDetails") ? (
+                          <li className="menu-item">
+                            <Link onClick={handleSignIn}>Go To Dashboard</Link>
+                          </li>
+                        ) : (
+                          <>
+                            <li className="menu-item">
+                              <Link onClick={handleSignUp}>Sign Up</Link>
+                            </li>
+                            <li className="menu-item">
+                              <Link onClick={handleSignIn}>Sign In</Link>
+                            </li>
+                          </>
+                        )}
                       </>
                     ) : null}
                   </ul>
@@ -297,31 +306,50 @@ const Header = () => {
               </div>
               <div className="col-lg-2 col-md-3 col-0">
                 <div className="header-right">
-                  <div className="close-form">
-                    <Link
-                      className="login"
-                      onClick={(event) => handleSignUp(event)}
-                    >
-                      <span className="text font-family-web login-weight">
-                        Sign Up
-                      </span>
-                      <span className="mobile">
-                        <i className="fi flaticon-charity"></i>
-                      </span>
-                    </Link>
+                  {localStorage.getItem("accessToken") &&
+                  localStorage.getItem("userDetails") ? (
+                    <div className="close-form">
+                      <Link
+                        className="theme-btn"
+                        onClick={(event) => handleSignIn(event)}
+                      >
+                        <span className="text font-family-web login-weight">
+                          Go to Dashboard
+                        </span>
+                        <span className="mobile">
+                          <i className="fi flaticon-charity"></i>
+                        </span>
+                      </Link>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="close-form">
+                        <Link
+                          className="login"
+                          onClick={(event) => handleSignUp(event)}
+                        >
+                          <span className="text font-family-web login-weight">
+                            Sign Up
+                          </span>
+                          <span className="mobile">
+                            <i className="fi flaticon-charity"></i>
+                          </span>
+                        </Link>
 
-                    <Link
-                      className="theme-btn"
-                      onClick={(event) => handleSignIn(event)}
-                    >
-                      <span className="text font-family-web login-weight">
-                        Sign In
-                      </span>
-                      <span className="mobile">
-                        <i className="fi flaticon-charity"></i>
-                      </span>
-                    </Link>
-                  </div>
+                        <Link
+                          className="theme-btn"
+                          onClick={(event) => handleSignIn(event)}
+                        >
+                          <span className="text font-family-web login-weight">
+                            Sign In
+                          </span>
+                          <span className="mobile">
+                            <i className="fi flaticon-charity"></i>
+                          </span>
+                        </Link>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

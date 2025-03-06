@@ -138,6 +138,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.companyName}
                           onChange={handleChange}
                           required
+                          placeholder="ABC Company"
                         />
                       </div>
                     </div>
@@ -182,6 +183,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.gstin}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 22AAAAA0000A1Z5"
                         />
                       </div>
                     </div>
@@ -198,6 +200,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.pan}
                           onChange={handleChange}
                           required
+                          placeholder="Example : AAAA0000A"
                         />
                       </div>
                     </div>
@@ -216,6 +219,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.tan}
                           onChange={handleChange}
                           // required
+                          placeholder="Example : AAAAPL1234C"
                         />
                       </div>
                     </div>
@@ -232,6 +236,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.cin}
                           onChange={handleChange}
                           // required
+                          placeholder="Example : U74999KA2022PTC123456"
                         />
                       </div>
                     </div>
@@ -253,6 +258,7 @@ const CompleteEdprowiseProfile = () => {
                         value={formData.address}
                         onChange={handleChange}
                         required
+                        placeholder="Example : 123 Building, ABC Street"
                       />
                     </div>
                   </div>
@@ -295,6 +301,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.landmark}
                           onChange={handleChange}
                           // required
+                          placeholder="Example : Near ABC Market"
                         />
                       </div>
                     </div>
@@ -311,6 +318,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.pincode}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 560045"
                         />
                       </div>
                     </div>
@@ -333,6 +341,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.contactNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 9876543210"
                         />
                       </div>
                     </div>
@@ -352,6 +361,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.alternateContactNo}
                           onChange={handleChange}
                           // required
+                          placeholder="Example : 9876543210"
                         />
                       </div>
                     </div>
@@ -370,6 +380,7 @@ const CompleteEdprowiseProfile = () => {
                           value={formData.emailId}
                           onChange={handleChange}
                           required
+                          placeholder="Example : example@gmail.com"
                         />
                       </div>
                     </div>

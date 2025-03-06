@@ -83,7 +83,38 @@ const TrackOrderHistoryTable = () => {
     setIsModalOpen(false);
   };
 
-  const handleExport = () => {};
+  const handleExport = () => {
+    if (!orderDetails.length) {
+      toast.error("No data available to export");
+      return;
+    }
+
+    const formattedData = orderDetails.map((order) => ({
+      Order_Number: order.orderNumber,
+      Enquiry_Number: order.enquiryNumber,
+      Seller_ID: order.sellerId,
+      School_ID: order.schoolId,
+      Company_Name: order.companyName,
+      Supplier_Status: order.supplierStatus,
+      Buyer_Status: order.buyerStatus,
+      Edprowise_Status: order.edprowiseStatus,
+      Total_Amount_BeforeGST: order.totalAmountBeforeGstAndDiscount,
+      Total_Amount: order.totalAmount,
+      Total_Taxable_Value: order.totalTaxableValue,
+      Total_GST_Amount: order.totalGstAmount,
+      Other_Charges: order.otherCharges,
+      Final_Receivable_From_Edprowise: order.finalReceivableFromEdprowise,
+      Advance_Adjustment: order.advanceAdjustment,
+      Final_Payable_Without_TDS: order.finalPayableAmountWithoutTDS,
+      Final_Payable_With_TDS: order.finalPayableAmountWithTDS,
+      TDS_Amount: order.tDSAmount,
+      Expected_Delivery_Date: formatDate(order.expectedDeliveryDate),
+      Actual_Delivery_Date: formatDate(order.actualDeliveryDate),
+      CreatedAt: formatDate(order.createdAt),
+    }));
+
+    exportToExcel(formattedData, "Ordered Products", "Ordered_Products");
+  };
 
   const handleUpdateOrderStatus = async (enquiryNumber, newStatus) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -261,11 +292,9 @@ const TrackOrderHistoryTable = () => {
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">All Orders List</h4>
                 <div className="text-end">
-                  <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
+                  <Link onClick={handleExport} class="text-primary">
                     Export
+                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>

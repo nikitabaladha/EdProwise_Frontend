@@ -124,8 +124,13 @@ const UpdateSubmittedQuoteModal = ({
   };
 
   return (
-    <Modal show={isOpen} onHide={onClose} centered>
-      <Modal.Body>
+    <Modal
+      show={isOpen}
+      onHide={onClose}
+      centered
+      dialogClassName="custom-modal"
+    >
+      <Modal.Body className="modal-body-scrollable">
         <div className="container">
           <div className="row">
             <div className="col-xl-12">

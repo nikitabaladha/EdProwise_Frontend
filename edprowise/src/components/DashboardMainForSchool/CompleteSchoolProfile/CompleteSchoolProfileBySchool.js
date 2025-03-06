@@ -220,6 +220,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.schoolName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : ABC School"
                         />
                       </div>
                     </div>
@@ -239,6 +240,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.contactPersonName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : John Doe"
                         />
                       </div>
                     </div>
@@ -255,6 +257,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.principalName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : Jane Doe"
                         />
                       </div>
                     </div>
@@ -273,6 +276,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.schoolMobileNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 1234567890"
                         />
                       </div>
                     </div>
@@ -292,6 +296,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.schoolAlternateContactNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 1234567890"
                         />
                       </div>
                     </div>
@@ -308,6 +313,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.schoolEmail}
                           onChange={handleChange}
                           required
+                          placeholder="Example : example@gmail.com"
                         />
                       </div>
                     </div>
@@ -331,6 +337,7 @@ const CompleteSchoolProfile = () => {
                         value={formData.schoolAddress}
                         onChange={handleChange}
                         required
+                        placeholder="Example : 123, ABC Street"
                       />
                     </div>
                   </div>
@@ -370,6 +377,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.landMark}
                           onChange={handleChange}
                           required
+                          placeholder="Example : Near ABC Market"
                         />
                       </div>
                     </div>
@@ -386,6 +394,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.schoolPincode}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 560045"
                         />
                       </div>
                     </div>
@@ -429,6 +438,7 @@ const CompleteSchoolProfile = () => {
                           onChange={handleChange}
                           required
                           disabled
+                          placeholder="Example : ABC Street"
                         />
                       ) : (
                         <input
@@ -440,6 +450,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.deliveryAddress}
                           onChange={handleChange}
                           required
+                          placeholder="Example : ABC Street"
                         />
                       )}
                     </div>
@@ -507,6 +518,7 @@ const CompleteSchoolProfile = () => {
                             onChange={handleChange}
                             required
                             disabled
+                            placeholder="Example : Near ABC Market"
                           />
                         ) : (
                           <input
@@ -517,6 +529,7 @@ const CompleteSchoolProfile = () => {
                             value={formData.deliveryLandMark}
                             onChange={handleChange}
                             required
+                            placeholder="Example : Near ABC Market"
                           />
                         )}
                       </div>
@@ -536,6 +549,7 @@ const CompleteSchoolProfile = () => {
                             onChange={handleChange}
                             required
                             disabled
+                            placeholder="Example : 560045"
                           />
                         ) : (
                           <input
@@ -546,6 +560,7 @@ const CompleteSchoolProfile = () => {
                             value={formData.deliveryPincode}
                             onChange={handleChange}
                             required
+                            placeholder="Example : 560045"
                           />
                         )}
                       </div>
@@ -571,6 +586,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.numberOfStudents}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 500"
                         />
                       </div>
                     </div>
@@ -655,6 +671,7 @@ const CompleteSchoolProfile = () => {
                           value={formData.panNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : AAAAA0000A"
                         />
                       </div>
                     </div>
@@ -675,7 +692,7 @@ const CompleteSchoolProfile = () => {
                       </div>
                     </div>
                   </div>
-                  {/* ===================== */}
+
                   <div className="text-end">
                     <button
                       type="submit"

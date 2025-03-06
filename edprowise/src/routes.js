@@ -148,7 +148,7 @@ import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
 
-import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
+// import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
 
 // import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
 
@@ -468,10 +468,10 @@ const AppRoutes = () => {
           element={<PayToEdProwiseForSeller />}
         />
 
-        <Route
+        {/* <Route
           path="procurement-services/submitted-quote"
           element={<SubmittedQuoteTableForSeller />}
-        />
+        /> */}
         {/* <Route
           path="procurement-services/view-submitted-quote"
           element={<ViewSubmittedQuote />}

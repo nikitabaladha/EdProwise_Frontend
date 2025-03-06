@@ -190,6 +190,7 @@ const SubmitQuote = () => {
                         onChange={handleInputChange}
                         className="form-control"
                         required
+                        placeholder="Example : All Products are good"
                       />
                     </div>
                   </div>
@@ -208,6 +209,7 @@ const SubmitQuote = () => {
                         onChange={handleInputChange}
                         className="form-control"
                         required
+                        placeholder="Example : All Products are good"
                       />
                     </div>
                   </div>
@@ -224,6 +226,7 @@ const SubmitQuote = () => {
                         value={submittedQuote.paymentTerms}
                         onChange={handleInputChange}
                         className="form-control"
+                        placeholder="Example : 30 days"
                       />
                     </div>
                   </div>

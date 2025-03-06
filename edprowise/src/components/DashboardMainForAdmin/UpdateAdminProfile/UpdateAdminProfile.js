@@ -89,7 +89,7 @@ const UpdateAdminProfile = () => {
 
     try {
       const response = await putAPI(
-        `/edprowise-profile/${profileId}`,
+        `/edprowise-profile/67c72a486680419faf7a652a`,
         formDataToSend,
         {
           "Content-Type": "multipart/form-data",

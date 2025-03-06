@@ -1,10 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
-import { BiMessageDots } from "react-icons/bi";
-import { IoWalletOutline } from "react-icons/io5";
-import { IoMdHelpCircleOutline } from "react-icons/io";
-import { PiLockKeyBold } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
 import { IoKeyOutline } from "react-icons/io5";
 import { ThemeContext } from "../ThemeProvider";
@@ -175,7 +171,6 @@ const SellerDashboardHeader = () => {
                     </div>
                   </div>
                   <div data-simplebar="" style={{ maxHeight: 280 }}>
-                    {/* Item */}
                     <Link
                       to=""
                       className="dropdown-item py-3 border-bottom text-wrap"
@@ -329,16 +324,11 @@ const SellerDashboardHeader = () => {
                       src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.sellerProfile}`}
                       className="rounded-circle"
                       alt="logo light"
-                      width={32}
+                      style={{ objectFit: "cover" }}
                     />
                   </span>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-end">
-                  {/* item*/}
-                  <h6 className="dropdown-header">
-                    {sellerProfile?.companyName}
-                  </h6>
-
                   <Link
                     className="dropdown-item"
                     onClick={(event) =>
@@ -346,7 +336,9 @@ const SellerDashboardHeader = () => {
                     }
                   >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
-                    <span className="align-middle">Profile</span>
+                    <span className="align-middle">
+                      {sellerProfile?.companyName}
+                    </span>
                   </Link>
 
                   <Link
@@ -360,10 +352,7 @@ const SellerDashboardHeader = () => {
                   </Link>
 
                   <div className="dropdown-divider my-1" />
-                  <Link
-                    className="dropdown-item text-danger"
-                    href="auth-signin.html"
-                  >
+                  <Link className="dropdown-item text-danger">
                     <BiLogOut className="bx bx-log-out fs-18 align-middle me-1" />
                     <span className="align-middle" onClick={handleLogout}>
                       Logout

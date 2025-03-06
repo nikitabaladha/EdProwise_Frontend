@@ -122,6 +122,8 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   };
 
   const navigateToViewSubscription = async (event, subscriptions) => {
+    console.log("navigateToViewSubscription", subscriptions);
+
     event.preventDefault();
 
     try {
@@ -131,6 +133,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
         true
       );
       if (!response.hasError && response.data) {
+        console.log("navigateToViewSubscription", response.data);
         navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
           state: { subscriptions: response.data.data },
         });
@@ -204,7 +207,9 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                       <label htmlFor="schoolName" className="form-label">
                         School Name
                       </label>
-                      <p className="form-control">{school.schoolName}</p>
+                      <p className="form-control" aria-placeholder="ABC XYZ">
+                        {school.schoolName}
+                      </p>
                     </div>
                     <div className="mb-3">
                       <label htmlFor="address" className="form-label">
@@ -571,13 +576,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
           <div className="row"></div>
         )}
       </div>
-      {/* {isAddDialogOpen && (
-        <AddConfirmationDialog
-          onClose={handleAddCancel}
-          id={selectedSchool._id}
-          onAdd={handleAddConfirmed}
-        />
-      )} */}
+
       {isAddDialogOpen && (
         <AddConfirmationDialog
           onClose={handleAddCancel}

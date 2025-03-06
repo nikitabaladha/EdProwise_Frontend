@@ -1,27 +1,45 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { exportToExcel } from "../../export-excel";
 
 const DashboardRecentSchools = ({ schools }) => {
   const handleExport = () => {
-    const filteredData = schools.map((school) => ({
-      Id: school._id,
-      SchoolId: school.schoolId,
-      SchoolName: school.schoolName,
-      MobileNo: school.schoolMobileNo,
-      Email: school.schoolEmail,
-      Address: school.schoolAddress,
-      Location: school.schoolLocation,
-      ProfileImage: school.profileImage,
-      AffiliationCertificate: school.affiliationCertificate,
-      AffiliationUpto: school.affiliationUpto,
-      PANNumber: school.panNo,
-      PanFile: school.panFile,
+    if (!schools.length) {
+      toast.error("No data available to export");
+      return;
+    }
+
+    const formattedData = schools.map((school) => ({
+      School_ID: school.schoolId,
+      School_Name: school.schoolName,
+      PAN_Number: school.panNo,
+      School_Address: school.schoolAddress,
+      School_Location: school.schoolLocation,
+      Landmark: school.landMark,
+      School_Pincode: school.schoolPincode,
+      Delivery_Address: school.deliveryAddress,
+      Delivery_Location: school.deliveryLocation,
+      Delivery_Landmark: school.deliveryLandMark,
+      Delivery_Pincode: school.deliveryPincode,
+      School_Mobile_No: school.schoolMobileNo,
+      School_Alternate_Contact_No: school.schoolAlternateContactNo,
+      School_Email: school.schoolEmail,
+      Contact_Person_Name: school.contactPersonName,
+      Number_of_Students: school.numberOfStudents,
+      Principal_Name: school.principalName,
+      Affiliation_Upto: school.affiliationUpto,
+      PAN_File_URL: school.panFile,
+      Profile_Image_URL: school.profileImage,
+      Affiliation_Certificate_URL: school.affiliationCertificate,
+      Created_At: school.createdAt,
+      Updated_At: school.updatedAt,
     }));
 
-    exportToExcel(filteredData, "Schools", "Schools Data");
+    exportToExcel(formattedData, "Schools", "Schools");
   };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolsPerPage] = useState(5);
 
@@ -61,8 +79,9 @@ const DashboardRecentSchools = ({ schools }) => {
             <div className="card-header d-flex justify-content-between align-items-center gap-1">
               <h4 className="card-title flex-grow-1">Recent Schools</h4>
               <div className="text-end">
-                <Link onClick={handleExport} className="btn btn-sm btn-primary">
+                <Link onClick={handleExport} class="text-primary">
                   Export
+                  <i class="bx bx-export ms-1"></i>
                 </Link>
               </div>
             </div>
@@ -159,13 +178,10 @@ const DashboardRecentSchools = ({ schools }) => {
                       }`}
                     >
                       <button
-                        className="page-link"
+                        className={`page-link pagination-button ${
+                          currentPage === page ? "active" : ""
+                        }`}
                         onClick={() => handlePageClick(page)}
-                        style={{
-                          backgroundColor:
-                            currentPage === page ? "#ff947d" : "",
-                          color: currentPage === page ? "#fff" : "#424e5a",
-                        }}
                       >
                         {page}
                       </button>

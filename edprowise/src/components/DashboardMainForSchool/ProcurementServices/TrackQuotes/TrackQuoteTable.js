@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
 import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
@@ -103,9 +104,35 @@ const TrackQuoteTable = ({}) => {
   };
 
   const handleExport = () => {
-    const filteredData = quotes.map((quote) => ({}));
+    if (!quotes.length) {
+      toast.error("No data available to export");
+      return;
+    }
 
-    exportToExcel(filteredData, "Products", "Products Data");
+    const formattedData = quotes.map((quote) => ({
+      ID: quote.id,
+      School_ID: quote.schoolId,
+      Enquiry_Number: quote.enquiryNumber,
+      Delivery_Address: quote.deliveryAddress,
+      Delivery_Location: quote.deliveryLocation,
+      Delivery_Landmark: quote.deliveryLandMark,
+      Delivery_Pincode: quote.deliveryPincode,
+      Expected_Delivery_Date: quote.expectedDeliveryDate,
+      Buyer_Status: quote.buyerStatus,
+      Supplier_Status: quote.supplierStatus,
+      Edprowise_Status: quote.edprowiseStatus,
+      Category_ID: quote.categoryId,
+      Category_Name: quote.categoryName,
+      SubCategory_ID: quote.subCategoryId,
+      SubCategory_Name: quote.subCategoryName,
+      Description: quote.description,
+      Product_Image: quote.productImage,
+      Unit: quote.unit,
+      Quantity: quote.quantity,
+      Product_Enquiry_Number: quote.productEnquiryNumber,
+    }));
+
+    exportToExcel(formattedData, "Requested Quotes", "Requested_Quotes");
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -156,7 +183,11 @@ const TrackQuoteTable = ({}) => {
                   Request Quote
                 </Link>
                 <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
+                  <Link onClick={handleExport} class="text-primary">
+                    Export
+                    <i class="bx bx-export ms-1"></i>
+                  </Link>
+                  {/* <Link className="btn btn-sm btn-outline-light">Export</Link> */}
                 </div>
               </div>
               <div>

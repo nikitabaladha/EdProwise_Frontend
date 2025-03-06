@@ -3,7 +3,11 @@
   font-weight: normal;
   font-style: normal;
   src: url("../fonts/boxicons.eot");
-  src: url("../fonts/boxicons.eot") format("embedded-opentype"), url("../fonts/boxicons.woff2") format("woff2"), url("../fonts/boxicons.woff") format("woff"), url("../fonts/boxicons.ttf") format("truetype"), url("../fonts/boxiconsd41d.svg?#boxicons") format("svg");
+  src: url("../fonts/boxicons.eot") format("embedded-opentype"),
+    url("../fonts/boxicons.woff2") format("woff2"),
+    url("../fonts/boxicons.woff") format("woff"),
+    url("../fonts/boxicons.ttf") format("truetype"),
+    url("../fonts/boxiconsd41d.svg?#boxicons") format("svg");
 }
 .bx {
   font-family: "boxicons" !important;
@@ -205,15 +209,21 @@
     -webkit-transform: scale3d(1, 1, 1);
     transform: scale3d(1, 1, 1);
   }
-  10%, 20% {
+  10%,
+  20% {
     -webkit-transform: scale3d(0.95, 0.95, 0.95) rotate3d(0, 0, 1, -10deg);
     transform: scale3d(0.95, 0.95, 0.95) rotate3d(0, 0, 1, -10deg);
   }
-  30%, 50%, 70%, 90% {
+  30%,
+  50%,
+  70%,
+  90% {
     -webkit-transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 10deg);
     transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 10deg);
   }
-  40%, 60%, 80% {
+  40%,
+  60%,
+  80% {
     -webkit-transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, -10deg);
     transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, -10deg);
   }
@@ -227,15 +237,21 @@
     -webkit-transform: scale3d(1, 1, 1);
     transform: scale3d(1, 1, 1);
   }
-  10%, 20% {
+  10%,
+  20% {
     -webkit-transform: scale3d(0.95, 0.95, 0.95) rotate3d(0, 0, 1, -10deg);
     transform: scale3d(0.95, 0.95, 0.95) rotate3d(0, 0, 1, -10deg);
   }
-  30%, 50%, 70%, 90% {
+  30%,
+  50%,
+  70%,
+  90% {
     -webkit-transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 10deg);
     transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 10deg);
   }
-  40%, 60%, 80% {
+  40%,
+  60%,
+  80% {
     -webkit-transform: rotate3d(0, 0, 1, -10deg);
     transform: rotate3d(0, 0, 1, -10deg);
   }
@@ -361,31 +377,31 @@
 
 .bx-rotate-90 {
   -webkit-transform: rotate(90deg);
-          transform: rotate(90deg);
+  transform: rotate(90deg);
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
 }
 
 .bx-rotate-180 {
   -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
+  transform: rotate(180deg);
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
 }
 
 .bx-rotate-270 {
   -webkit-transform: rotate(270deg);
-          transform: rotate(270deg);
+  transform: rotate(270deg);
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
 }
 
 .bx-flip-horizontal {
   -webkit-transform: scaleX(-1);
-          transform: scaleX(-1);
+  transform: scaleX(-1);
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
 }
 
 .bx-flip-vertical {
   -webkit-transform: scaleY(-1);
-          transform: scaleY(-1);
+  transform: scaleY(-1);
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
 }
 
@@ -6945,7 +6961,9 @@
   font-family: "tabler-icons";
   font-style: normal;
   font-weight: 400;
-  src: url("../fonts/tabler-icons3026.woff2?v3.4.0") format("woff2"), url("../fonts/tabler-iconsd41d.woff?") format("woff"), url("../fonts/tabler-icons3026.ttf?v3.4.0") format("truetype");
+  src: url("../fonts/tabler-icons3026.woff2?v3.4.0") format("woff2"),
+    url("../fonts/tabler-iconsd41d.woff?") format("woff"),
+    url("../fonts/tabler-icons3026.ttf?v3.4.0") format("truetype");
 }
 .ti {
   font-family: "tabler-icons" !important;

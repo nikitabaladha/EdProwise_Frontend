@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
+import { toast } from "react-toastify";
 
 import { format } from "date-fns";
 
@@ -52,7 +53,39 @@ const TrackOrderHistoryTable = () => {
     });
   };
 
-  const handleExport = () => {};
+  const handleExport = () => {
+    if (!orderDetails.length) {
+      toast.error("No data available to export");
+      return;
+    }
+
+    const formattedData = orderDetails.map((order) => ({
+      Order_ID: order._id,
+      Order_Number: order.orderNumber,
+      Enquiry_Number: order.enquiryNumber,
+      Seller_ID: order.sellerId,
+      School_ID: order.schoolId,
+      Company_Name: order.companyName,
+      Other_Charges: order.otherCharges,
+      Final_Receivable_From_Edprowise: order.finalReceivableFromEdprowise,
+      Expected_Delivery_Date: formatDate(order.expectedDeliveryDate),
+      Supplier_Status: order.supplierStatus,
+      Buyer_Status: order.buyerStatus,
+      Edprowise_Status: order.edprowiseStatus,
+      Total_Amount_Before_GST_And_Discount:
+        order.totalAmountBeforeGstAndDiscount,
+      Total_Amount: order.totalAmount,
+      Total_Taxable_Value: order.totalTaxableValue,
+      Total_GST_Amount: order.totalGstAmount,
+      Advance_Adjustment: order.advanceAdjustment,
+      Final_Payable_Amount_Without_TDS: order.finalPayableAmountWithoutTDS,
+      Final_Payable_Amount_With_TDS: order.finalPayableAmountWithTDS,
+      TDS_Amount: order.tDSAmount,
+      Created_At: formatDate(order.createdAt),
+    }));
+
+    exportToExcel(formattedData, "Order Details", "Order_Details");
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolsPerPage] = useState(5);
@@ -99,12 +132,13 @@ const TrackOrderHistoryTable = () => {
                 <div className="text-end">
                   <Link
                     onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
+                    class="text-primary"
                     title="Export Excel File"
                     data-bs-toggle="popover"
                     data-bs-trigger="hover"
                   >
                     Export
+                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>

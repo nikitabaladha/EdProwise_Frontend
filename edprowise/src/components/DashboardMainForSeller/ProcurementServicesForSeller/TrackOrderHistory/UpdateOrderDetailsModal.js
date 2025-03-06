@@ -150,6 +150,7 @@ const UpdateOrderDetailsModal = ({
                         value={orderDetailsFromSeller.otherCharges}
                         onChange={handleInputChange}
                         className="form-control"
+                        placeholder="200"
                       />
                     </div>
 
@@ -168,6 +169,7 @@ const UpdateOrderDetailsModal = ({
                         }
                         onChange={handleInputChange}
                         className="form-control"
+                        placeholder="100000"
                       />
                     </div>
                     <div className="text-end">

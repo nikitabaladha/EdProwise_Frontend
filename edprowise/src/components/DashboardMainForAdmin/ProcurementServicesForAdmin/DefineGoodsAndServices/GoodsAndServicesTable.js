@@ -79,7 +79,7 @@ const GoodsAndServicesTable = () => {
                 </Link>
 
                 <div className="text-end">
-                  <Link
+                  {/* <Link
                     onClick={handleExport}
                     className="btn btn-sm btn-outline-light"
                     title="Export Excel File"
@@ -87,6 +87,10 @@ const GoodsAndServicesTable = () => {
                     data-bs-trigger="hover"
                   >
                     Export
+                  </Link> */}
+                  <Link onClick={handleExport} class="text-primary">
+                    Export
+                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>

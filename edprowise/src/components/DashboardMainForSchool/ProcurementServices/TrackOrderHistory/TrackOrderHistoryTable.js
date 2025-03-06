@@ -66,7 +66,37 @@ const TrackOrderHistoryTable = () => {
     navigate("/school-dashboard/procurement-services/pay-to-edprowise");
   };
 
-  const handleExport = () => {};
+  const handleExport = () => {
+    if (!orderDetails.length) {
+      toast.error("No data available to export");
+      return;
+    }
+
+    const formattedData = orderDetails.map((order) => ({
+      Order_Number: order.orderNumber || "N/A",
+      Enquiry_Number: order.enquiryNumber || "N/A",
+      Quote_Number: order.quoteNumber || "N/A",
+      Company_Name: order.companyName || "N/A",
+      Seller_ID: order.sellerId || "N/A",
+      School_ID: order.schoolId || "N/A",
+      Actual_Delivery_Date: formatDate(order.actualDeliveryDate),
+      Expected_Delivery_Date: formatDate(order.expectedDeliveryDate),
+      Supplier_Status: order.supplierStatus || "N/A",
+      Buyer_Status: order.buyerStatus || "N/A",
+      Edprowise_Status: order.edprowiseStatus || "N/A",
+      Other_Charges: order.otherCharges || 0,
+      Total_Amount_Before_GST: order.totalAmountBeforeGstAndDiscount || 0,
+      Total_Amount: order.totalAmount || 0,
+      Total_Taxable_Value: order.totalTaxableValue || 0,
+      Total_GST_Amount: order.totalGstAmount || 0,
+      Final_Payable_Amount_Without_TDS: order.finalPayableAmountWithoutTDS || 0,
+      Final_Payable_Amount_With_TDS: order.finalPayableAmountWithTDS || 0,
+      TDS_Amount: order.tDSAmount || 0,
+      Advance_Adjustment: order.advanceAdjustment || 0,
+    }));
+
+    exportToExcel(formattedData, "Ordered Products", "Ordered_Products");
+  };
 
   const handleUpdateTDSStatus = async (
     enquiryNumber,
@@ -138,11 +168,9 @@ const TrackOrderHistoryTable = () => {
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">View All Orders List</h4>
                 <div className="text-end">
-                  <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
+                  <Link onClick={handleExport} class="text-primary">
                     Export
+                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>

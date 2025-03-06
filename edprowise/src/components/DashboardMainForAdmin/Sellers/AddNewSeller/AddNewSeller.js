@@ -221,6 +221,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.companyName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : ABC Company"
                         />
                       </div>
                     </div>
@@ -265,6 +266,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.gstin}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 22AAAAA0000A1Z5"
                         />
                       </div>
                     </div>
@@ -281,6 +283,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.pan}
                           onChange={handleChange}
                           required
+                          placeholder="Example : AAAAPL1234C"
                         />
                       </div>
                     </div>
@@ -299,6 +302,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.tan}
                           onChange={handleChange}
                           required
+                          placeholder="Example : AAAAPL1234C"
                         />
                       </div>
                     </div>
@@ -315,6 +319,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.cin}
                           onChange={handleChange}
                           required
+                          placeholder="Example : AAAAPL1234C"
                         />
                       </div>
                     </div>
@@ -336,6 +341,7 @@ const AddNewSeller = ({ addSeller }) => {
                         value={formData.address}
                         onChange={handleChange}
                         required
+                        placeholder="Example : ABC Building, XYZ Street"
                       />
                     </div>
                   </div>
@@ -378,6 +384,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.landmark}
                           onChange={handleChange}
                           required
+                          placeholder="Example : Near ABC Market"
                         />
                       </div>
                     </div>
@@ -394,6 +401,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.pincode}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 560097"
                         />
                       </div>
                     </div>
@@ -416,6 +424,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.contactNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 9876543210"
                         />
                       </div>
                     </div>
@@ -435,6 +444,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.alternateContactNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 0987654321"
                         />
                       </div>
                     </div>
@@ -453,6 +463,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.emailId}
                           onChange={handleChange}
                           required
+                          placeholder="Example : example@gmail.com"
                         />
                       </div>
                     </div>
@@ -492,6 +503,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.accountNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 123456789012"
                         />
                       </div>
                     </div>
@@ -508,6 +520,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.ifsc}
                           onChange={handleChange}
                           required
+                          placeholder="Example : SBIN0001234"
                         />
                       </div>
                     </div>
@@ -524,6 +537,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.bankName}
                           onChange={handleChange}
                           required
+                          placeholder="ABC Bank"
                         />
                       </div>
                     </div>
@@ -545,6 +559,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.accountHolderName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : John Due"
                         />
                       </div>
                     </div>
@@ -561,6 +576,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.branchName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : ABC Branch"
                         />
                       </div>
                     </div>
@@ -615,6 +631,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.ceoName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : John Smith"
                         />
                       </div>
                     </div>
@@ -631,6 +648,7 @@ const AddNewSeller = ({ addSeller }) => {
                           value={formData.turnover}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 1000000"
                         />
                       </div>
                     </div>

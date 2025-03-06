@@ -29,7 +29,7 @@ const Sellers = () => {
         Array.isArray(response.data.data)
       ) {
         setSellers(response.data.data);
-        console.log("school data", response.data.data);
+        console.log("seller data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }

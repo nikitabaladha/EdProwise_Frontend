@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../export-excel";
+import { toast } from "react-toastify";
 
 import ConfirmationDialog from "../../ConfirmationDialog";
 const SellersTable = ({
@@ -14,9 +15,41 @@ const SellersTable = ({
   const navigate = useNavigate();
 
   const handleExport = () => {
-    const filteredData = sellers.map((seller) => ({}));
+    if (!sellers.length) {
+      toast.error("No data available to export");
+      return;
+    }
 
-    exportToExcel(filteredData, "Sellers", "Sellers Data");
+    const formattedData = sellers.map((seller) => ({
+      Seller_ID: seller.sellerId,
+      Random_ID: seller.randomId,
+      Company_Name: seller.companyName,
+      Company_Type: seller.companyType,
+      GSTIN: seller.gstin,
+      PAN: seller.pan,
+      TAN: seller.tan,
+      CIN: seller.cin,
+      Address: seller.address,
+      City_State_Country: seller.cityStateCountry,
+      Landmark: seller.landmark,
+      Pincode: seller.pincode,
+      Contact_No: seller.contactNo,
+      Alternate_Contact_No: seller.alternateContactNo,
+      Email_ID: seller.emailId,
+      Bank_Account_No: seller.accountNo,
+      IFSC_Code: seller.ifsc,
+      Account_Holder_Name: seller.accountHolderName,
+      Bank_Name: seller.bankName,
+      Branch_Name: seller.branchName,
+      No_of_Employees: seller.noOfEmployees,
+      CEO_Name: seller.ceoName,
+      Annual_Turnover: seller.turnover,
+      Seller_Profile_Image: seller.sellerProfile,
+      Created_At: seller.createdAt,
+      Updated_At: seller.updatedAt,
+    }));
+
+    exportToExcel(formattedData, "Sellers", "Sellers");
   };
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -103,11 +136,9 @@ const SellersTable = ({
                 </Link>
 
                 <div className="text-end">
-                  <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
+                  <Link onClick={handleExport} class="text-primary">
                     Export
+                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>
@@ -155,7 +186,8 @@ const SellersTable = ({
                               </label>
                             </div>
                           </td>
-                          <td>{seller.sellerId}</td>
+
+                          <td>{seller.randomId}</td>
                           <td>
                             <div className="d-flex align-items-center gap-2">
                               <div className="rounded bg-light d-flex align-items-center justify-content-center">

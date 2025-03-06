@@ -334,15 +334,13 @@ const AdminDashboardHeader = () => {
                       src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${adminProfile?.edprowiseProfile}`}
                       className="rounded-circle"
                       alt="logo light"
-                      width={32}
+                      // width={32}
+                      // height={32}
+                      style={{ objectFit: "cover" }}
                     />
                   </span>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-end">
-                  {/* item*/}
-                  <h6 className="dropdown-header">
-                    {userDetails?.firstName} {userDetails?.lastName}
-                  </h6>
                   <Link
                     className="dropdown-item"
                     onClick={(event) =>
@@ -350,7 +348,9 @@ const AdminDashboardHeader = () => {
                     }
                   >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
-                    <span className="align-middle">Profile</span>
+                    <span className="align-middle">
+                      {userDetails?.firstName} {userDetails?.lastName}
+                    </span>
                   </Link>
 
                   <Link
@@ -362,27 +362,9 @@ const AdminDashboardHeader = () => {
                     <IoKeyOutline className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">Change Password</span>
                   </Link>
-                  {/* <Link className="dropdown-item" href="apps-chat.html">
-                    <BiMessageDots className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
-                    <span className="align-middle">Messages</span>
-                  </Link>
-                  <Link className="dropdown-item" href="pages-pricing.html">
-                    <IoWalletOutline className="bx bx-wallet text-muted fs-18 align-middle me-1" />
-                    <span className="align-middle">Pricing</span>
-                  </Link>
-                  <Link className="dropdown-item" href="pages-faqs.html">
-                    <IoMdHelpCircleOutline className="bx bx-help-circle text-muted fs-18 align-middle me-1" />
-                    <span className="align-middle">Help</span>
-                  </Link>
-                  <Link className="dropdown-item" href="auth-lock-screen.html">
-                    <PiLockKeyBold className="bx bx-lock text-muted fs-18 align-middle me-1" />
-                    <span className="align-middle">Lock screen</span>
-                  </Link> */}
+
                   <div className="dropdown-divider my-1" />
-                  <Link
-                    className="dropdown-item text-danger"
-                    href="auth-signin.html"
-                  >
+                  <Link className="dropdown-item text-danger">
                     <BiLogOut className="bx bx-log-out fs-18 align-middle me-1" />
                     <span className="align-middle" onClick={handleLogout}>
                       Logout

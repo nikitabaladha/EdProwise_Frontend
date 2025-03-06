@@ -215,6 +215,7 @@ const CompleteSellerProfile = () => {
                           value={formData.companyName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : ABC Company"
                         />
                       </div>
                     </div>
@@ -259,6 +260,7 @@ const CompleteSellerProfile = () => {
                           value={formData.gstin}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 22AAAAA0000A1Z5"
                         />
                       </div>
                     </div>
@@ -275,6 +277,7 @@ const CompleteSellerProfile = () => {
                           value={formData.pan}
                           onChange={handleChange}
                           required
+                          placeholder="Example : AAAA0000A"
                         />
                       </div>
                     </div>
@@ -292,7 +295,8 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.tan}
                           onChange={handleChange}
-                          required
+                          // required
+                          placeholder="Example : AAAAPL1234C"
                         />
                       </div>
                     </div>
@@ -308,7 +312,8 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.cin}
                           onChange={handleChange}
-                          required
+                          // required
+                          placeholder="Example : AAAAPL1234"
                         />
                       </div>
                     </div>
@@ -330,6 +335,7 @@ const CompleteSellerProfile = () => {
                         value={formData.address}
                         onChange={handleChange}
                         required
+                        placeholder="Example : XYZ Building, ABC Street"
                       />
                     </div>
                   </div>
@@ -371,7 +377,8 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.landmark}
                           onChange={handleChange}
-                          required
+                          // required
+                          placeholder="Example : Near ABC Market"
                         />
                       </div>
                     </div>
@@ -388,6 +395,7 @@ const CompleteSellerProfile = () => {
                           value={formData.pincode}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 123456"
                         />
                       </div>
                     </div>
@@ -410,6 +418,7 @@ const CompleteSellerProfile = () => {
                           value={formData.contactNo}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 1234567890"
                         />
                       </div>
                     </div>
@@ -428,7 +437,8 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.alternateContactNo}
                           onChange={handleChange}
-                          required
+                          // required
+                          placeholder="Example : 1234567890"
                         />
                       </div>
                     </div>
@@ -447,6 +457,7 @@ const CompleteSellerProfile = () => {
                           value={formData.emailId}
                           onChange={handleChange}
                           required
+                          placeholder="example@gmail.com"
                         />
                       </div>
                     </div>
@@ -462,7 +473,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-                          required
+                          // required
                         />
                       </div>
                     </div>
@@ -486,6 +497,7 @@ const CompleteSellerProfile = () => {
                           value={formData.accountNo}
                           onChange={handleChange}
                           required
+                          placeholder="EXample : 123456789012"
                         />
                       </div>
                     </div>
@@ -502,6 +514,7 @@ const CompleteSellerProfile = () => {
                           value={formData.ifsc}
                           onChange={handleChange}
                           required
+                          placeholder="Example : SBIN0001234"
                         />
                       </div>
                     </div>
@@ -518,6 +531,7 @@ const CompleteSellerProfile = () => {
                           value={formData.bankName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : ABC Bank"
                         />
                       </div>
                     </div>
@@ -539,6 +553,7 @@ const CompleteSellerProfile = () => {
                           value={formData.accountHolderName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : John Doe"
                         />
                       </div>
                     </div>
@@ -555,6 +570,7 @@ const CompleteSellerProfile = () => {
                           value={formData.branchName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : ABC Branch"
                         />
                       </div>
                     </div>
@@ -609,6 +625,7 @@ const CompleteSellerProfile = () => {
                           value={formData.ceoName}
                           onChange={handleChange}
                           required
+                          placeholder="Example : John Smith"
                         />
                       </div>
                     </div>
@@ -625,6 +642,7 @@ const CompleteSellerProfile = () => {
                           value={formData.turnover}
                           onChange={handleChange}
                           required
+                          placeholder="Example : 1000000"
                         />
                       </div>
                     </div>

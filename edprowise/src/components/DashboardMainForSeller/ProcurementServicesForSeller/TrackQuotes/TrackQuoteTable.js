@@ -49,8 +49,6 @@ const TrackQuoteTable = ({}) => {
     });
   }, [quotes, sellerId]);
 
-  // i want that if quote proposal data is alredy present for  that perticular enquiry number and seller id then dont show Prepare Quote Button otherwise show Prepare Quote Button
-
   const fetchQuoteProposal = async (enquiryNumber) => {
     try {
       const response = await getAPI(
@@ -86,8 +84,37 @@ const TrackQuoteTable = ({}) => {
   };
 
   const handleExport = () => {
-    const filteredData = quotes.map((quote) => ({}));
-    exportToExcel(filteredData, "Products", "Products Data");
+    if (!quotes.length) {
+      console.error("No data available to export");
+      return;
+    }
+
+    const filteredData = quotes.map((quote) => ({
+      ID: quote.id,
+      School_ID: quote.schoolId,
+      Category_ID: quote.categoryId,
+      Category_Name: quote.categoryName,
+      Sub_Category_ID: quote.subCategoryId,
+      Sub_Category_Name: quote.subCategoryName,
+      Description: quote.description,
+      Product_Image: quote.productImage,
+      Unit: quote.unit,
+      Quantity: quote.quantity,
+      Enquiry_Number: quote.enquiryNumber,
+      Quote_Request_ID: quote.quoteRequestId,
+      Delivery_Address: quote.deliveryAddress,
+      Delivery_Location: quote.deliveryLocation,
+      Delivery_Landmark: quote.deliveryLandMark,
+      Delivery_Pincode: quote.deliveryPincode,
+      Expected_Delivery_Date: quote.expectedDeliveryDate,
+      Buyer_Status: quote.buyerStatus,
+      Supplier_Status: quote.supplierStatus,
+      Edprowise_Status: quote.edprowiseStatus,
+      Created_At: new Date(quote.createdAt).toLocaleString(),
+      Updated_At: new Date(quote.updatedAt).toLocaleString(),
+    }));
+
+    exportToExcel(filteredData, "Requested Quotes", "Requested_Quotes");
   };
 
   const fetchPrepareQuoteAndProposalData = async (enquiryNumber, schoolId) => {
@@ -187,11 +214,9 @@ const TrackQuoteTable = ({}) => {
                   All Requested Quote List
                 </h4>
                 <div className="text-end">
-                  <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
+                  <Link onClick={handleExport} class="text-primary">
                     Export
+                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>

@@ -206,6 +206,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                         onChange={handleChange}
                         required
                         min="1"
+                        placeholder="Example : 12"
                       />
                     </div>
                   </div>
@@ -223,6 +224,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                         onChange={handleChange}
                         required
                         min="0"
+                        placeholder="Example : 1000"
                       />
                     </div>
                   </div>
