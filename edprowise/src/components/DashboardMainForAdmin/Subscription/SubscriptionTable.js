@@ -53,7 +53,7 @@ const SubscriptionTable = ({
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [subscriptionPerPage] = useState(5);
+  const [subscriptionPerPage] = useState(10);
 
   const indexOfLastSubscription = currentPage * subscriptionPerPage;
   const indexOfFirstSubscription =

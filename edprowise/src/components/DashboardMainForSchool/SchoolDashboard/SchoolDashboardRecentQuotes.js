@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "../../../export-excel";
-import getAPI from "../../../../api/getAPI";
+import getAPI from "../../../api/getAPI";
 import { Modal } from "react-bootstrap";
-import { toast } from "react-toastify";
 
-const TrackQuoteTable = () => {
+const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
-
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
 
   useEffect(() => {
     const fetchQuoteData = async () => {
       try {
-        const response = await getAPI(`/get-quote-for-admin`, {}, true);
+        const response = await getAPI(`/get-quote-list-for-school`, {}, true);
         if (
           !response.hasError &&
           response.data &&
           Array.isArray(response.data.data)
         ) {
           setQuotes(response.data.data);
-          console.log("Quote data", response.data.data);
+
+          console.log("Quotes fetched successfully:", response.data.data);
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -46,7 +44,11 @@ const TrackQuoteTable = () => {
 
   const fetchAllQuoteData = async (enquiryNumber) => {
     try {
-      const response = await getAPI(`/submit-quote/${enquiryNumber}`, {}, true);
+      const response = await getAPI(
+        `/submit-quote-by-status/${enquiryNumber}`,
+        {},
+        true
+      );
 
       if (
         !response.hasError &&
@@ -72,69 +74,26 @@ const TrackQuoteTable = () => {
 
   const navigate = useNavigate();
 
-  const navigateToViewRequestedQuote = (event, enquiryNumber, schoolId) => {
+  const navigateToViewRequestedQuote = (event, enquiryNumber) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/view-requested-quote`, {
-      state: { enquiryNumber, schoolId },
+    navigate(`/school-dashboard/procurement-services/view-requested-quote`, {
+      state: { enquiryNumber },
     });
   };
 
-  const navigateToViewQuoteTable = (event, enquiryNumber, schoolId) => {
+  const navigateToViewQuoteTable = (event, enquiryNumber) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/view-quote-table`, {
-      state: { enquiryNumber, schoolId },
+
+    console.log("viewQuoteTable navigation function", enquiryNumber);
+
+    navigate(`/school-dashboard/procurement-services/view-quote-table`, {
+      state: { enquiryNumber },
     });
   };
 
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowModal(true);
-  };
-
-  const handleExport = () => {
-    if (!quotes.length) {
-      toast.error("No data available to export");
-      return;
-    }
-
-    const formattedData = quotes.map((quote) => ({
-      ID: quote.id || "N/A",
-      School_ID: quote.schoolId || "N/A",
-      Enquiry_Number: quote.enquiryNumber || "N/A",
-      Delivery_Address: quote.deliveryAddress || "N/A",
-      Delivery_Location: quote.deliveryLocation || "N/A",
-      Delivery_Landmark: quote.deliveryLandMark || "N/A",
-      Delivery_Pincode: quote.deliveryPincode || "N/A",
-      Expected_Delivery_Date: quote.expectedDeliveryDate
-        ? new Date(quote.expectedDeliveryDate).toLocaleDateString()
-        : "N/A",
-      Buyer_Status: quote.buyerStatus || "N/A",
-      Supplier_Status: quote.supplierStatus || "N/A",
-      Edprowise_Status: quote.edprowiseStatus || "N/A",
-      Created_At: quote.createdAt
-        ? new Date(quote.createdAt).toLocaleDateString()
-        : "N/A",
-      Updated_At: quote.updatedAt
-        ? new Date(quote.updatedAt).toLocaleDateString()
-        : "N/A",
-      Category_ID: quote.categoryId || "N/A",
-      Category_Name: quote.categoryName || "N/A",
-      Sub_Categor_ID: quote.subCategoryId || "N/A",
-      Sub_Category_Name: quote.subCategoryName || "N/A",
-      Description: quote.description || "N/A",
-      Product_Image: quote.productImage || "N/A",
-      Unit: quote.unit || "N/A",
-      Quantity: quote.quantity || 0,
-      Product_Enquiry_Number: quote.productEnquiryNumber || "N/A",
-      Product_Created_At: quote.productCreatedAt
-        ? new Date(quote.productCreatedAt).toLocaleDateString()
-        : "N/A",
-      Product_Updated_At: quote.productUpdatedAt
-        ? new Date(quote.productUpdatedAt).toLocaleDateString()
-        : "N/A",
-    }));
-
-    exportToExcel(formattedData, "Requested Quotes", "Requested_Quotes");
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -178,18 +137,9 @@ const TrackQuoteTable = () => {
                 <h4 className="card-title flex-grow-1">
                   All Request Quote List
                 </h4>
-
-                <div className="text-end">
-                  <Link onClick={handleExport} class="text-primary">
-                    Export
-                    <i class="bx bx-export ms-1"></i>
-                  </Link>
-                </div>
               </div>
               <div>
-                {quotes.length === 0 ? (
-                  <p className="text-center mt-3">No quotes found.</p>
-                ) : (
+                {quotes.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
                       <thead className="bg-light-subtle">
@@ -267,8 +217,8 @@ const TrackQuoteTable = () => {
                             <td>
                               {submittedQuotes[quote.enquiryNumber]
                                 ? submittedQuotes[quote.enquiryNumber][0]
-                                    .edprowiseStatus
-                                : quote.edprowiseStatus}
+                                    .buyerStatus
+                                : quote.buyerStatus}
                             </td>
 
                             <td>
@@ -278,8 +228,7 @@ const TrackQuoteTable = () => {
                                   onClick={(event) =>
                                     navigateToViewRequestedQuote(
                                       event,
-                                      quote?.enquiryNumber,
-                                      quote?.schoolId
+                                      quote?.enquiryNumber
                                     )
                                   }
                                 >
@@ -296,8 +245,7 @@ const TrackQuoteTable = () => {
                                     onClick={(event) =>
                                       navigateToViewQuoteTable(
                                         event,
-                                        quote?.enquiryNumber,
-                                        quote?.schoolId
+                                        quote?.enquiryNumber
                                       )
                                     }
                                   >
@@ -311,6 +259,8 @@ const TrackQuoteTable = () => {
                       </tbody>
                     </table>
                   </div>
+                ) : (
+                  <tr></tr>
                 )}
                 {/* end table-responsive */}
               </div>
@@ -354,7 +304,7 @@ const TrackQuoteTable = () => {
                     </li>
                   </ul>
                 </nav>
-              </div>{" "}
+              </div>
             </div>
           </div>
         </div>

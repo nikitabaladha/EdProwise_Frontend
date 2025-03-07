@@ -41,7 +41,7 @@ const DashboardRecentSchools = ({ schools }) => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [schoolsPerPage] = useState(5);
+  const [schoolsPerPage] = useState(10);
 
   const indexOfLastSchool = currentPage * schoolsPerPage;
   const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
@@ -78,12 +78,6 @@ const DashboardRecentSchools = ({ schools }) => {
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center gap-1">
               <h4 className="card-title flex-grow-1">Recent Schools</h4>
-              <div className="text-end">
-                <Link onClick={handleExport} class="text-primary">
-                  Export
-                  <i class="bx bx-export ms-1"></i>
-                </Link>
-              </div>
             </div>
             <div>
               <div className="table-responsive">

@@ -85,7 +85,7 @@ const SchoolsTable = ({
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [schoolsPerPage] = useState(5);
+  const [schoolsPerPage] = useState(10);
 
   const indexOfLastSchool = currentPage * schoolsPerPage;
   const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;

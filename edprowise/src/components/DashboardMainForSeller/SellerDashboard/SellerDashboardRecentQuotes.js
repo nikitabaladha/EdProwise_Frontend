@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "../../../export-excel";
-import getAPI from "../../../../api/getAPI";
+
+import getAPI from "../../../api/getAPI";
 import { Modal } from "react-bootstrap";
 
-const TrackQuoteTable = ({}) => {
+const TrackQuoteTable = () => {
   const [quotes, setQuotes] = useState([]);
+  const [preparedQuotes, setPreparedQuotes] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
@@ -35,71 +36,41 @@ const TrackQuoteTable = ({}) => {
     fetchQuoteData();
   }, []);
 
-  const [existingPrepareQuotes, setExistingPrepareQuotes] = useState(new Set());
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const sellerId = userDetails?.id;
 
-  // useEffect(() => {
-  //   const fetchPrepareQuoteData = async () => {
-  //     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-  //     const sellerId = userDetails?.id;
+  useEffect(() => {
+    if (!quotes.length || !sellerId) return;
 
-  //     if (!sellerId) {
-  //       console.error("Seller ID is missing");
-  //       return;
-  //     }
+    quotes.forEach((quote) => {
+      if (quote.enquiryNumber) {
+        fetchQuoteProposal(quote.enquiryNumber);
+      }
+    });
+  }, [quotes, sellerId]);
 
-  //     try {
-  //       const fetchedQuotes = await Promise.all(
-  //         quotes.map(async (quote) => {
-  //           const response = await getAPI(
-  //             `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${quote.enquiryNumber}`,
-  //             {},
-  //             true
-  //           );
+  const fetchQuoteProposal = async (enquiryNumber) => {
+    try {
+      const response = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        {},
+        true
+      );
 
-  //           if (
-  //             !response.hasError &&
-  //             response.data &&
-  //             response.data.data.length > 0
-  //           ) {
-  //             return quote.enquiryNumber;
-  //           }
-  //           return null;
-  //         })
-  //       );
+      if (!response.hasError && response.data.data) {
+        setPreparedQuotes((prev) => ({
+          ...prev,
+          [enquiryNumber]: response.data.data,
+        }));
 
-  //       setExistingPrepareQuotes(new Set(fetchedQuotes.filter(Boolean)));
-  //     } catch (err) {
-  //       console.error("Error fetching prepare quote data:", err);
-  //     }
-  //   };
-
-  //   fetchPrepareQuoteData();
-  // }, [quotes]);
-
-  // useEffect(() => {
-  //   if (!enquiryNumber || !sellerId) return;
-  //   fetchQuoteProposal();
-  // }, [enquiryNumber, sellerId]);
-
-  // const fetchQuoteProposal = async () => {
-  //   try {
-  //     const response = await getAPI(
-  //       `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
-  //       {},
-  //       true
-  //     );
-
-  //     if (!response.hasError && response.data) {
-  //       const quoteProposalData = response.data.data;
-
-  //       setSupplierStatus(quoteProposalData.supplierStatus);
-  //     } else {
-  //       console.error("Invalid response format or error in response");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error fetching quote proposal:", err);
-  //   }
-  // };
+        console.log("setPreparedQuotes", setPreparedQuotes);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching quote proposal:", err);
+    }
+  };
 
   const navigateToViewRequestedQuote = (
     event,
@@ -110,11 +81,6 @@ const TrackQuoteTable = ({}) => {
     navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
       state: { enquiryNumber, supplierStatus },
     });
-  };
-
-  const handleExport = () => {
-    const filteredData = quotes.map((quote) => ({}));
-    exportToExcel(filteredData, "Products", "Products Data");
   };
 
   const fetchPrepareQuoteAndProposalData = async (enquiryNumber, schoolId) => {
@@ -173,7 +139,7 @@ const TrackQuoteTable = ({}) => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [schoolsPerPage] = useState(5);
+  const [schoolsPerPage] = useState(10);
 
   const indexOfLastSchool = currentPage * schoolsPerPage;
   const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
@@ -213,14 +179,6 @@ const TrackQuoteTable = ({}) => {
                 <h4 className="card-title flex-grow-1">
                   All Requested Quote List
                 </h4>
-                <div className="text-end">
-                  <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
-                    Export
-                  </Link>
-                </div>
               </div>
 
               <div>
@@ -298,7 +256,12 @@ const TrackQuoteTable = ({}) => {
                             <td>{quote.categoryName}</td>
                             <td>{quote.quantity}</td>
                             <td>{quote.unit}</td>
-                            <td>{quote.supplierStatus}</td>
+                            <td>
+                              {preparedQuotes[quote.enquiryNumber]
+                                ? preparedQuotes[quote.enquiryNumber]
+                                    .supplierStatus
+                                : "Quote Requested"}
+                            </td>
                             <td>
                               <div className="d-flex gap-2">
                                 <Link
@@ -319,7 +282,6 @@ const TrackQuoteTable = ({}) => {
                                     className="align-middle fs-18"
                                   />
                                 </Link>
-
                                 <Link
                                   onClick={() =>
                                     fetchPrepareQuoteAndProposalData(
@@ -338,24 +300,21 @@ const TrackQuoteTable = ({}) => {
                                   />
                                 </Link>
 
-                                {quote.supplierStatus === "Quote Requested" &&
-                                  !existingPrepareQuotes.has(
-                                    quote.enquiryNumber
-                                  ) && (
-                                    <Link
-                                      className="btn btn-danger btn-sm"
-                                      title="Prepare Quote"
-                                      onClick={(event) =>
-                                        navigateToViewRequestedQuote(
-                                          event,
-                                          quote?.enquiryNumber,
-                                          quote?.supplierStatus
-                                        )
-                                      }
-                                    >
-                                      Prepare Quote
-                                    </Link>
-                                  )}
+                                {preparedQuotes[quote.enquiryNumber] ? null : (
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary custom-submit-button"
+                                    onClick={(event) =>
+                                      navigateToViewRequestedQuote(
+                                        event,
+                                        quote?.enquiryNumber,
+                                        quote?.supplierStatus
+                                      )
+                                    }
+                                  >
+                                    Prepare Quote
+                                  </button>
+                                )}
                               </div>
                             </td>
                           </tr>

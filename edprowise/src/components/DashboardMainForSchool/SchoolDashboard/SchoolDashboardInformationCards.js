@@ -1,99 +1,84 @@
 import React from "react";
-import { TbRadioactiveFilled } from "react-icons/tb";
-import { PiStudentDuotone } from "react-icons/pi";
+import { IoNewspaperOutline } from "react-icons/io5";
+import { PiShoppingCartBold } from "react-icons/pi";
+import { AiFillProduct } from "react-icons/ai";
+import { AiOutlineProduct } from "react-icons/ai";
 import { GiMoneyStack } from "react-icons/gi";
-import { BiSolidSchool } from "react-icons/bi";
-import { TiArrowSortedUp, TiArrowSortedDown } from "react-icons/ti";
+import { PiMoneyWavyBold } from "react-icons/pi";
+import { FaSchool } from "react-icons/fa6";
+import { LuSchool } from "react-icons/lu";
+import { PiStudentFill } from "react-icons/pi";
+import { PiStudent } from "react-icons/pi";
+import { GiTakeMyMoney } from "react-icons/gi";
+import { GrMoney } from "react-icons/gr";
+import { GiShop } from "react-icons/gi";
+import { AiOutlineShop } from "react-icons/ai";
 
-const cardData = [
-  {
-    id: 1,
-    icon: <BiSolidSchool className="avatar-title fs-32 text-primary" />,
-    title: "Total Registration From",
-    value: "20",
-    trend: "up",
-    percentage: "2.3%",
-    period: "Last Week",
-  },
-  {
-    id: 2,
-    icon: <TbRadioactiveFilled className="avatar-title fs-32 text-primary" />,
-    title: "Today Collection",
-    value: "\u20B9200000",
-    trend: "down",
-    percentage: "10.6%",
-    period: "Last Month",
-  },
-  {
-    id: 3,
-    icon: <PiStudentDuotone className="avatar-title fs-32 text-primary" />,
-    title: "Total Admission",
-    value: "20",
-    trend: "up",
-    percentage: "8.1%",
-    period: "Last Month",
-  },
-  {
-    id: 4,
-    icon: <GiMoneyStack className="avatar-title fs-32 text-primary" />,
-    title: "Student Master",
-    value: "20",
-    trend: "down",
-    percentage: "0.3%",
-    period: "Last Month",
-  },
-];
+const DashboardInformationCards = ({ totalCounts }) => {
+  const cardData = [
+    {
+      icon: <PiStudentFill className="fs-36 text-warning" />,
+      value: totalCounts.totalStudents || 0,
+      label: "Total Students",
+      badgeClass: "badge-soft-danger",
+      badgeIcon: "ti ti-arrow-badge-down",
+      badgeText: "5.69%",
+      widgetIcon: <PiStudent className="widget-icon" />,
+      textColor: "text-purple",
+    },
 
-const SchoolDashboardInformationCards = () => {
+    {
+      icon: <IoNewspaperOutline className="fs-36 text-info" />,
+      value: totalCounts.totalQuoteRequest || 0,
+      label: "Total Quotes",
+      badgeClass: "badge-soft-success",
+      badgeIcon: "ti ti-arrow-badge-up",
+      // badgeText: "8.72%",
+      widgetIcon: <IoNewspaperOutline className="widget-icon" />,
+      textColor: "text-info",
+    },
+    {
+      icon: <PiShoppingCartBold className="fs-36 text-success" />,
+      value: totalCounts.totalOrder || 0,
+      label: "Total Orders",
+      badgeClass: "badge-soft-danger",
+      badgeIcon: "ti ti-arrow-badge-down",
+      // badgeText: "3.28%",
+      widgetIcon: <PiShoppingCartBold className="widget-icon" />,
+      textColor: "text-success",
+    },
+
+    {
+      icon: <GiMoneyStack className="fs-36 text-warning" />,
+      value: totalCounts.totalRevenue || 0,
+      label: "Total Revenue",
+      badgeClass: "badge-soft-success",
+      badgeIcon: "ti ti-arrow-badge-up",
+      badgeText: "10.58%",
+      widgetIcon: <PiMoneyWavyBold className="widget-icon" />,
+      textColor: "text-orange",
+    },
+  ];
   return (
-    <div className="col-xxl-12">
-      <div className="row">
-        {cardData.map((card) => (
-          <div className="col-md-3" key={card.id}>
-            <div className="card overflow-hidden">
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-6">
-                    <div className="avatar-md bg-soft-primary rounded">
-                      {card.icon}
-                    </div>
-                  </div>
-                  <div className="col-6 text-end">
-                    <p className="text-muted mb-0 text-truncate custom-font-size-for-card">
-                      {card.title}
-                    </p>
-                    <h4 className="text-dark mt-1 mb-0">{card.value}</h4>
-                  </div>
-                </div>
-              </div>
-              <div className="card-footer py-2 bg-light bg-opacity-50">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div>
-                    <span
-                      className={`text-${
-                        card.trend === "up" ? "success" : "danger"
-                      }`}
-                    >
-                      {card.trend === "up" ? (
-                        <TiArrowSortedUp className="bx bxs-up-arrow fs-12" />
-                      ) : (
-                        <TiArrowSortedDown className="bx bxs-down-arrow fs-12" />
-                      )}{" "}
-                      {card.percentage}
-                    </span>
-                    <span className="text-muted ms-1 fs-12">{card.period}</span>
-                  </div>
-                  <a href="#!" className="text-reset fw-semibold fs-12">
-                    View More
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="row">
+      {cardData.map((card, index) => (
+        <div className="col-md-3">
+          <div className="card">
+            <div className="card-body overflow-hidden position-relative">
+              {card.icon}
+
+              <h3 className="mb-0 fw-bold mt-3 mb-1">{card.value}</h3>
+              <p className="text-muted">{card.label}</p>
+
+              {card.widgetIcon}
+            </div>{" "}
+            {/* end card-body */}
+          </div>{" "}
+          {/* end card */}
+        </div>
+      ))}
     </div>
   );
 };
 
-export default SchoolDashboardInformationCards;
+export default DashboardInformationCards;

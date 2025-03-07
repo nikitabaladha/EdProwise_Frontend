@@ -89,7 +89,7 @@ const SellersTable = ({
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [sellersPerPage] = useState(5);
+  const [sellersPerPage] = useState(10);
 
   const indexOfLastSeller = currentPage * sellersPerPage;
   const indexOfFirstSeller = indexOfLastSeller - sellersPerPage;
