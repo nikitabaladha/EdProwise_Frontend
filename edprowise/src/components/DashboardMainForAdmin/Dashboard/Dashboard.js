@@ -69,23 +69,19 @@ const Dashboard = () => {
   return (
     <>
       <div className="container-fluid">
-        <div className="row">
-          <DashboardInformationCards
-            totalCounts={totalCounts}
-            setTotalCounts={setTotalCounts}
-          />
-        </div>
+        <DashboardInformationCards
+          totalCounts={totalCounts}
+          setTotalCounts={setTotalCounts}
+        />
         <div class="row">
-          <div class="row">
-            <DashboardPerformance
-              performance={performance}
-              fetchPerformance={fetchPerformance}
-            />
-            <DashboardConversions />
-            <div />
-          </div>
+          <DashboardPerformance
+            performance={performance}
+            fetchPerformance={fetchPerformance}
+          />
+          <DashboardConversions />
+          <div />
         </div>
-        ;
+
         <DashboardRecentSchools
           schools={schools}
           setSchools={setSchools}

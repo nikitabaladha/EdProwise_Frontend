@@ -114,8 +114,12 @@ const SubmitQuote = () => {
 
         navigate(
           "/seller-dashboard/procurement-services/view-requested-quote",
-          { state: { enquiryNumber: enquiryNumber } }
+          { state: { enquiryNumber: enquiryNumber, showWarningDialog: true } }
         );
+        console.log("Navigating with state:", {
+          enquiryNumber,
+          showWarningDialog: true,
+        });
       } else {
         toast.error(response.message || "Failed to Prepare quote");
       }

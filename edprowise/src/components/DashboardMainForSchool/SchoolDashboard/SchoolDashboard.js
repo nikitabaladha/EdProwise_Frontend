@@ -4,7 +4,7 @@ import getAPI from "../../../api/getAPI";
 import SchoolDashboardInformationCards from "./SchoolDashboardInformationCards";
 import SchoolDashboardPerformance from "./SchoolDashboardPerformance";
 import SchoolDashboardConversions from "./SchoolDashboardConversions";
-import SchoolDashboardRecentQuotes from "./SchoolDashboardRecentQuotes";
+import SchoolDashboardRecentOrders from "./SchoolDashboardRecentOrders";
 
 const Dashboard = () => {
   const [totalCounts, setTotalCounts] = useState({});
@@ -51,24 +51,22 @@ const Dashboard = () => {
   return (
     <>
       <div className="container-fluid">
-        <div className="row">
-          <SchoolDashboardInformationCards
-            totalCounts={totalCounts}
-            setTotalCounts={setTotalCounts}
+        <SchoolDashboardInformationCards
+          totalCounts={totalCounts}
+          setTotalCounts={setTotalCounts}
+        />
+
+        {/* <div class="row">
+          <SchoolDashboardPerformance
+            performance={performance}
+            fetchPerformance={fetchPerformance}
           />
+          <SchoolDashboardConversions />
+          <div />
+        </div> */}
+        <div className="row">
+          <SchoolDashboardRecentOrders />
         </div>
-        <div class="row">
-          <div class="row">
-            {/* <SchoolDashboardPerformance
-              performance={performance}
-              fetchPerformance={fetchPerformance}
-            /> */}
-            <SchoolDashboardConversions />
-            <div />
-          </div>
-        </div>
-        ;
-        <SchoolDashboardRecentQuotes />
       </div>
     </>
   );

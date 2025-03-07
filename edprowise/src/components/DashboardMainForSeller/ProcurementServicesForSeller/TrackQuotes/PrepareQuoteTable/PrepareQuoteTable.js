@@ -1,5 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+
+import WarningDialog from "./WarningDialog";
 
 const PrepareQuoteTable = ({
   products,
@@ -9,8 +11,25 @@ const PrepareQuoteTable = ({
   handleImageChange,
   handleSubmit,
 }) => {
+  const location = useLocation();
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
+
+  useEffect(() => {
+    console.log("Location object:", location);
+    console.log("Location state:", location.state);
+    if (location.state?.showWarningDialog) {
+      setShowWarningDialog(true);
+    }
+  }, [location.state]);
+
+  const handleCloseWarningDialog = () => {
+    setShowWarningDialog(false);
+  };
   return (
     <div className="row p-2">
+      {showWarningDialog && (
+        <WarningDialog onClose={handleCloseWarningDialog} />
+      )}
       <div className="col-md-12">
         <div className="card">
           <div className="card-header d-flex justify-content-between align-items-center gap-1">
