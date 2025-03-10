@@ -104,21 +104,61 @@ import AddGoodsAndServices from "./components/DashboardMainForAdmin/ProcurementS
 import UpdateGoodAndService from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/UpdateGoodAndService/UpdateGoodAndService";
 
 import MainCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/MainCategory/MainCategory.js";
-import AddMainCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/MainCategory/AddMainCategory.js";
-
-import Category from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/Category/Category.js";
-import AddCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/Category/AddCategory.js";
-
-// import SubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/SubCategory.js";
-
 import SubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/SubCategory.js";
-import AddSubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/AddSubCategory.js";
+import Category from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/Category/Category.js";
+
 // ================School Routes=============School Routes============School Routes===========================
 
 import CompleteSchoolProfile from "./components/DashboardMainForSchool/CompleteSchoolProfile/CompleteSchoolProfile";
 import CompleteSchoolProfileBySchool from "./components/DashboardMainForSchool/CompleteSchoolProfile/CompleteSchoolProfileBySchool.js";
+import UpdateSchoolProfile from "./components/DashboardMainForSchool/UpdateSchoolProfile/UpdateSchoolProfile";
+import ViewSchoolProfile from "./components/DashboardMainForSchool/ViewSchoolProfile/ViewSchoolProfile";
+import ChangePasswordForSchoolAdmin from "./components/DashboardMainForSchool/ChangePassword/ChangePassword";
+
+import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashboardMain";
+import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
+
+// ================================ School Procurement Services========================================
+
+import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/TrackQuoteTable";
+import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/RequestQuote/RequestQuote";
+
+import ViewRequestedQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
+
+import ViewQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewQuote/ViewQuote";
+import ViewAllQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/ViewAllQuoteTable/ViewAllQuoteTable";
+
+import ViewCart from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/Cart/ViewCart";
+
+import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
+import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
+
+import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
+
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
+import ViewSellerProfile from "./components/DashboardMainForSeller/ViewSellerProfile/ViewSellerProfile";
+import UpdateSellerProfile from "./components/DashboardMainForSeller/UpdateSellerProfile/UpdateSellerProfile";
+import ChangePasswordForSeller from "./components/DashboardMainForSeller/ChangePassword/ChangePassword";
+import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
+import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
+
+import TrackQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/TrackQuoteTable";
+import ViewRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
+
+import SubmitQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/SubmitQuote/SubmitQuote";
+
+import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
+import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
+import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
+
+// import SubmittedQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/SubmittedQuote/SubmittedQuote";
+
+// import PreparedQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PreparedQuotes/PreparedQuote";
+
+// import PayToEdProwise from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
+import PrepareInvoice from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PrepareInvoice/PrepareInvoice";
+import DefineGoodsAndServices from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/DefineGoodsAndServices.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -232,12 +272,22 @@ const AppRoutes = () => {
           <Route path="view-subscriptions" element={<ViewSubscriptions />} />
           <Route path="update-subscriptions" element={<UpdateSubscription />} />
         </Route>
+
         {/* Seller Table page and it's Add, View, Update Routes */}
         <Route path="sellers" element={<Sellers />}>
           <Route path="add-new-seller" element={<AddNewSeller />} />
           <Route path="view-seller" element={<ViewSeller />} />
           <Route path="update-seller" element={<UpdateSeller />} />
         </Route>
+
+        <Route
+          path="goods-services"
+          element={<DefineGoodsAndServices />}
+        ></Route>
+        <Route path="main-category" element={<MainCategory />}></Route>
+        <Route path="category" element={<Category />}></Route>
+        <Route path="sub-category" element={<SubCategory />}></Route>
+
         {/* =====================Fees module=========================================== */}
         <Route path="request-for-demo" element={<ViewRequestsForDemo />} />
         <Route
@@ -249,6 +299,7 @@ const AppRoutes = () => {
           path="enquiry/enquity-details"
           element={<ViewEnquiryDetails />}
         />
+
         {/*======================= Procurement Services Routes================== */}
         <Route
           path="procurement-services/track-quote"
@@ -274,27 +325,18 @@ const AppRoutes = () => {
           path="procurement-services/view-order-history"
           element={<ViewOrderHistoryForAdmin />}
         />
-
         <Route
-          path="procurement-services/define-goods-services/main-category"
-          element={<MainCategory />}
-        >
-          <Route path="add-main-category" element={<AddMainCategory />} />
-        </Route>
-
+          path="procurement-services/define-goods-services"
+          element={<GoodsAndServicesTable />}
+        />
         <Route
-          path="procurement-services/define-goods-services/category"
-          element={<Category />}
-        >
-          <Route path="add-category" element={<AddCategory />} />
-        </Route>
-
+          path="procurement-services/add-good-services"
+          element={<AddGoodsAndServices />}
+        />
         <Route
-          path="procurement-services/define-goods-services/sub-category"
-          element={<SubCategory />}
-        >
-          <Route path="add-sub-category" element={<AddSubCategory />} />
-        </Route>
+          path="procurement-services/update-good-service"
+          element={<UpdateGoodAndService />}
+        />
 
         <Route
           path="procurement-services/bank-details"
@@ -308,17 +350,166 @@ const AppRoutes = () => {
           path="procurement-services/update-bank-detail"
           element={<UpdateBankDetail />}
         />
+
+        <Route
+          path="procurement-services/quote-proposal"
+          element={<QuoteProposalForAll />}
+        />
+
+        <Route
+          path="procurement-services/invoice-for-edprowise"
+          element={<InvoiceForEdProwiseForAll />}
+        />
+
+        <Route
+          path="procurement-services/invoice-for-buyer"
+          element={<InvoiceForBuyerForAll />}
+        />
+      </Route>
+
+      {/*==================================School Routes============================================== */}
+
+      <Route
+        path="/school-dashboard"
+        element={
+          <PrivateRoute>
+            <SchoolDashboardMain />
+          </PrivateRoute>
+        }
+      >
+        <Route index element={<SchoolDashboard />} />
+        {/*School Dashboard Route */}
+        <Route path="view-school-profile" element={<ViewSchoolProfile />} />
+        <Route path="update-school-profile" element={<UpdateSchoolProfile />} />
+        <Route
+          path="change-school-admin-password"
+          element={<ChangePasswordForSchoolAdmin />}
+        />
+
+        <Route index element={<SchoolDashboard />} />
+
+        <Route
+          path="procurement-services/track-quote"
+          element={<TrackQuoteTable />}
+        />
+        <Route
+          path="procurement-services/request-quote"
+          element={<RequestQuote />}
+        />
+        <Route
+          path="procurement-services/view-requested-quote"
+          element={<ViewRequestedQuote />}
+        />
+
+        <Route path="procurement-services/view-quote" element={<ViewQuote />} />
+        <Route
+          path="procurement-services/view-quote-table"
+          element={<ViewAllQuoteTable />}
+        />
+
+        <Route path="procurement-services/view-cart" element={<ViewCart />} />
+
+        <Route
+          path="procurement-services/track-order-history"
+          element={<TrackOrderHistoryTable />}
+        />
+        <Route
+          path="procurement-services/view-order-history"
+          element={<ViewOrderHistory />}
+        />
+        <Route
+          path="procurement-services/Pay-to-edprowise"
+          element={<PayToEdProwiseForSchool />}
+        />
+        <Route
+          path="procurement-services/quote-proposal"
+          element={<QuoteProposalForAll />}
+        />
+
+        <Route
+          path="procurement-services/invoice-for-buyer"
+          element={<InvoiceForBuyerForAll />}
+        />
+      </Route>
+      {/* =========================================Seller Routes============================================= */}
+
+      <Route
+        path="/seller-dashboard"
+        element={
+          <PrivateRoute>
+            <SellerDashboardMain />
+          </PrivateRoute>
+        }
+      >
+        {/*Seller Dashboard Route */}
+
+        <Route index element={<SellerDashboard />} />
+
+        <Route path="view-seller-profile" element={<ViewSellerProfile />} />
+        <Route path="update-seller-profile" element={<UpdateSellerProfile />} />
+
+        <Route
+          path="change-seller-password"
+          element={<ChangePasswordForSeller />}
+        />
+
+        {/* Procurement Services Routes */}
+        <Route
+          path="procurement-services/track-quote"
+          element={<TrackQuoteTableForSeller />}
+        />
+        <Route
+          path="procurement-services/view-requested-quote"
+          element={<ViewRequestedQuoteForSeller />}
+        />
+
+        <Route
+          path="procurement-services/submit-quote"
+          element={<SubmitQuote />}
+        />
+
+        <Route
+          path="procurement-services/track-order-history"
+          element={<TrackOrderHistoryTableForSeller />}
+        />
+        <Route
+          path="procurement-services/view-order-history"
+          element={<ViewOrderHistoryForSeller />}
+        />
+        <Route
+          path="procurement-services/Pay-to-edprowise"
+          element={<PayToEdProwiseForSeller />}
+        />
+
+        {/* <Route
+          path="procurement-services/submitted-quote"
+          element={<SubmittedQuoteTableForSeller />}
+        /> */}
+        {/* <Route
+          path="procurement-services/view-submitted-quote"
+          element={<ViewSubmittedQuote />}
+        /> */}
+
+        {/* <Route
+          path="procurement-services/prepared-quote"
+          element={<PreparedQuote />}
+        /> */}
+        <Route
+          path="procurement-services/invoice-for-edprowise"
+          element={<InvoiceForEdProwiseForAll />}
+        />
+
+        <Route
+          path="procurement-services/invoice-for-buyer"
+          element={<InvoiceForBuyerForAll />}
+        />
         <Route
           path="procurement-services/quote-proposal"
           element={<QuoteProposalForAll />}
         />
         <Route
-          path="procurement-services/invoice-for-edprowise"
-          element={<InvoiceForEdProwiseForAll />}
-        />
-        <Route
-          path="procurement-services/invoice-for-buyer"
-          element={<InvoiceForBuyerForAll />}
+          path="procurement-services/prepare-invoice"
+          element={<PrepareInvoice />}
         />
       </Route>
 

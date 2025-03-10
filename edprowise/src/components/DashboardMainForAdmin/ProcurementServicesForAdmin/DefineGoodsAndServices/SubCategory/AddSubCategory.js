@@ -1,0 +1,183 @@
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import postAPI from "../../../../../api/postAPI";
+import getAPI from "../../../../../api/getAPI";
+
+const AddCategory = () => {
+  const [mainCategoryId, setMainCategoryId] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [subCategoryName, setSubCategoryName] = useState("");
+  const [mainCategories, setMainCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchMainCategories = async () => {
+      try {
+        const response = await getAPI("/main-category", true);
+        if (!response.hasError) {
+          setMainCategories(response.data.data);
+        } else {
+          toast.error(`Failed to fetch Main Categories: ${response.message}`);
+        }
+      } catch (error) {
+        toast.error("An error occurred while fetching branches.");
+      }
+    };
+
+    fetchMainCategories();
+  }, []);
+
+  const handleMainCategoryChange = async (e) => {
+    const mainCategoryId = e.target.value;
+    setMainCategoryId(mainCategoryId);
+    setCategories([]);
+
+    if (mainCategoryId) {
+      try {
+        const response = await getAPI(`/category/${mainCategoryId}`, {}, true);
+        if (!response.hasError && Array.isArray(response.data.data)) {
+          setCategories(response.data.data);
+        } else {
+          toast.error("Failed to load categories.");
+        }
+      } catch (err) {
+        toast.error("Error fetching categories.");
+      }
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const subCategoryData = {
+      subCategoryName,
+      categoryId,
+      mainCategoryId,
+    };
+
+    try {
+      const response = await postAPI(
+        "/sub-category",
+        subCategoryData,
+        {},
+        true
+      );
+
+      if (!response.hasError) {
+        toast.success("Sub Categories Created Successfully");
+
+        navigate(-1);
+      } else {
+        toast.error(`Failed to create Subcategories: ${response.message}`);
+      }
+    } catch (error) {
+      toast.error("An error occurred while creating the subcategories.");
+    }
+  };
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-xl-12">
+          <div className="card m-2">
+            <div className="card-body custom-heading-padding">
+              <div className="container">
+                <div className="card-header mb-2">
+                  <h4 className="card-title text-center custom-heading-font">
+                    Add New Sub Category
+                  </h4>
+                </div>
+              </div>
+              <form onSubmit={handleSubmit}>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-6">
+                      <label htmlFor="mainCategoryId" className="form-label">
+                        Main Category List
+                      </label>
+                      <select
+                        required
+                        className="form-control"
+                        id="mainCategoryId"
+                        name="mainCategoryId"
+                        value={mainCategoryId}
+                        onChange={handleMainCategoryChange}
+                      >
+                        <option value="">Select Main Category</option>
+                        {mainCategories.map((mainCategory) => (
+                          <option
+                            key={mainCategory._id}
+                            value={mainCategory._id}
+                          >
+                            {mainCategory.mainCategoryName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-6">
+                      <label htmlFor="mainCategoryId" className="form-label">
+                        Category List
+                      </label>
+                      <select
+                        className="form-control"
+                        required
+                        id="categoryId"
+                        name="categoryId"
+                        value={categoryId}
+                        onChange={(e) => setCategoryId(e.target.value)}
+                      >
+                        <option value="">Select Category</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.categoryName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="category" className="form-label">
+                        Sub Category Name
+                      </label>
+                      <input
+                        onChange={(e) => setSubCategoryName(e.target.value)}
+                        required
+                        className="form-control"
+                        placeholder="Sub Category Name"
+                        name="subCategoryName"
+                        type="text"
+                        id="subCategoryName"
+                        value={subCategoryName}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-end">
+                  <button
+                    type="submit"
+                    className="btn btn-primary custom-submit-button"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AddCategory;

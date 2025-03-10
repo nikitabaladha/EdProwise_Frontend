@@ -1,65 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "../../../export-excel";
-const GoodsAndServicesTable = () => {
-  const [goods, setGoods] = useState([
-    {
-      id: 1,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "School Desk & Bench - Wooden",
-    },
-    {
-      id: 2,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "School Desk & Bench - Steel",
-    },
-    {
-      id: 3,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "School Desk & Bench - Wooden & Steel Combine",
-    },
-    {
-      id: 4,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Senior School)",
-      subCategory: "Others",
-    },
-    {
-      id: 5,
-      mainCategory: "Procurement Services",
-      category: "School Desk & Bench (Play School & KG)",
-      subCategory: "Kids School Desk & Bench - Wooden",
-    },
-  ]);
+import { exportToExcel } from "../../../../export-excel";
+import getAPI from "../../../../../api/getAPI";
+const MainCategoryTable = () => {
+  const [subCategories, setSubCategories] = useState([]);
+  const fetchSubCategoryData = async () => {
+    try {
+      const response = await getAPI(`/sub-category`, {}, true);
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setSubCategories(response.data.data);
+        console.log("Sub Category data", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Sub category List:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubCategoryData();
+  }, []);
 
   const navigate = useNavigate();
 
-  const navigateToAddGoodServices = (event) => {
+  const navigateToAddNewSubCategory = (event) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/add-good-services`);
+    navigate(
+      `/admin-dashboard/procurement-services/define-goods-services/sub-category/add-sub-category`
+    );
   };
 
-  const navigateToUpdateGoodServices = (event, good) => {
+  const navigateToUpdateSubCategory = (event, good) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/procurement-services/update-good-service`, {
-      state: { good },
-    });
+    navigate(
+      `/admin-dashboard/procurement-services/define-goods-services/sub-category/update-sub-category`,
+      {
+        state: { good },
+      }
+    );
   };
 
-  const handleExport = () => {
-    const filteredData = goods.map((good) => ({
-      Id: good.id,
-      "Main Category": good.mainCategory,
-      Category: good.category,
-      "Sub Category": good.subCategory,
-    }));
-
-    exportToExcel(filteredData, "Goods & Services", "Goods & Services Data");
-  };
+  const handleExport = () => {};
 
   return (
     <>
@@ -69,13 +56,13 @@ const GoodsAndServicesTable = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">
-                  All Goods And Services List
+                  All Sub Category List
                 </h4>
                 <Link
                   className="btn btn-sm btn-primary"
-                  onClick={(event) => navigateToAddGoodServices(event)}
+                  onClick={(event) => navigateToAddNewSubCategory(event)}
                 >
-                  Add New Good
+                  Add New Sub Category
                 </Link>
 
                 <div className="text-end">
@@ -104,58 +91,45 @@ const GoodsAndServicesTable = () => {
                           </div>
                         </th>
                         <th>Main Category </th>
-                        <th>Category</th>
+                        <th>Category </th>
                         <th>Sub Category</th>
-
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {goods.map((good) => (
-                        <tr key={good.id}>
+                      {subCategories.map((subCategory) => (
+                        <tr key={subCategory.id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${good.id}`}
+                                id={`customCheck${subCategory.id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${good.id}`}
+                                htmlFor={`customCheck${subCategory.id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{good.mainCategory}</td>
-                          <td>{good.category}</td>
-                          <td>{good.subCategory}</td>
+                          <td>{subCategory.mainCategoryName}</td>
+                          <td>{subCategory.categoryName}</td>
+                          <td>{subCategory.subCategoryName}</td>
 
                           <td>
                             <div className="d-flex gap-2">
-                              {/* <Link
-                                className="btn btn-light btn-sm"
-                                title="View"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
-                                onClick={(event) =>
-                                  navigateToViewGoodsAndServicesQuote(event, good)
-                                }
-                              >
-                                <iconify-icon
-                                  icon="solar:eye-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link> */}
-
                               <Link
                                 className="btn btn-soft-primary btn-sm"
                                 title="Update"
                                 data-bs-toggle="popover"
                                 data-bs-trigger="hover"
                                 onClick={(event) =>
-                                  navigateToUpdateGoodServices(event, good)
+                                  navigateToUpdateSubCategory(
+                                    event,
+                                    subCategory
+                                  )
                                 }
                               >
                                 <iconify-icon
@@ -217,4 +191,4 @@ const GoodsAndServicesTable = () => {
   );
 };
 
-export default GoodsAndServicesTable;
+export default MainCategoryTable;

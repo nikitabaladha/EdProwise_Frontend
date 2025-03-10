@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddNewSubscription = ({ addSubscription, schools }) => {
-  console.log("Schools===", schools);
   const [formData, setFormData] = useState({
     schoolId: "",
     subscriptionFor: "",
