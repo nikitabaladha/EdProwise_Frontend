@@ -1,18 +1,12 @@
 const CommonHeader = () => {
   return (
     <>
-      <section className="wpo-page-title">
+      <section className="wpo-page-title service-sub-page-title">
         <div className="container">
           <div className="row">
             <div className="col col-xs-12">
               <div className="wpo-breadcumb-wrap">
                 <h2>Community Connect</h2>
-                {/* <ol className="wpo-breadcumb-wrap">
-                  <li>
-                    <a href="index.html">Home</a>
-                  </li>
-                  <li>Community Connect</li>
-                </ol> */}
               </div>
             </div>
           </div>

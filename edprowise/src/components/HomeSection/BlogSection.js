@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const blogPosts = [
@@ -8,7 +8,7 @@ const blogPosts = [
     author: "Anne William",
     title: "The Surprising Reason College Tuition Is Crazy Expensive",
     image: "assets/website-images/blog/img-1.webp",
-    link: "blog-single.html",
+    link: "/blog/1",
   },
   {
     id: 2,
@@ -16,7 +16,7 @@ const blogPosts = [
     author: "Robert Fox",
     title: "Become a great WordPress & PHP developer.",
     image: "assets/website-images/blog/img-2.webp",
-    link: "blog-single.html",
+    link: "/blog/2",
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ const blogPosts = [
     author: "Devon Lane",
     title: "A critical review of mobile learning integration",
     image: "assets/website-images/blog/img-3.webp",
-    link: "blog-single.html",
+    link: "/blog/3",
   },
 ];
 
@@ -42,7 +42,7 @@ const BlogItem = ({ date, author, title, image, link }) => (
           </li>
         </ul>
         <h2 className="font-weight-web-h2">
-          <Link to="">{title}</Link>
+          <Link to={link}>{title}</Link>
         </h2>
         <Link to={link} className="more">
           Continue Reading
@@ -54,52 +54,58 @@ const BlogItem = ({ date, author, title, image, link }) => (
 
 const BlogSection = () => {
   const carouselRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 991);
 
   useEffect(() => {
     const carouselContainer = carouselRef.current;
     const items = carouselContainer.querySelectorAll(".carousel-item-blog");
     const totalItems = items.length;
-    let currentIndex = 0;
-    const intervalTime = 4000;
+    let currentIndex = 1; // Start at the first real item
+    const intervalTime = 4000; // Time between slides in milliseconds
     let autoplayInterval;
 
-    // Determine slide width based on screen size
-    const getSlideWidthPercentage = () => {
-      if (window.innerWidth <= 767) {
-        return 100; // Full width for very small screens
-      } else if (window.innerWidth <= 991) {
-        return 50; // Half width for medium screens
-      }
-      return 0; // Default for larger screens (no sliding)
-    };
+    // Clone first and last items for infinite loop effect
+    const firstClone = items[0].cloneNode(true);
+    const lastClone = items[totalItems - 1].cloneNode(true);
+
+    // Add clones to the DOM for mobile view
+    if (isMobile) {
+      carouselContainer.appendChild(firstClone);
+      carouselContainer.insertBefore(lastClone, items[0]);
+    }
 
     // Update carousel position
     function updateCarousel() {
-      const slideWidthPercentage = getSlideWidthPercentage();
+      const itemWidth = items[0].offsetWidth;
       carouselContainer.style.transition = "transform 0.5s ease-in-out";
       carouselContainer.style.transform = `translateX(-${
-        (currentIndex + 1) * slideWidthPercentage
-      }%)`;
+        currentIndex * itemWidth
+      }px)`;
     }
 
     // Move to the next slide
     function moveToNextSlide() {
-      currentIndex += 1;
+      const itemWidth = items[0].offsetWidth;
+      currentIndex++;
       updateCarousel();
 
-      // Reset position for infinite loop
-      setTimeout(() => {
-        if (currentIndex >= totalItems) {
+      if (currentIndex === totalItems + 1) {
+        // Reset to the first real item
+        setTimeout(() => {
           carouselContainer.style.transition = "none";
-          currentIndex = 0;
-          updateCarousel();
-        }
-      }, 500); // Match transition duration
+          currentIndex = 1;
+          carouselContainer.style.transform = `translateX(-${
+            currentIndex * itemWidth
+          }px)`;
+        }, 500); // Match transition duration
+      }
     }
 
-    // Start autoplay
+    // Start autoplay only for mobile
     function startAutoplay() {
-      autoplayInterval = setInterval(moveToNextSlide, intervalTime);
+      if (isMobile) {
+        autoplayInterval = setInterval(moveToNextSlide, intervalTime);
+      }
     }
 
     // Stop autoplay
@@ -107,67 +113,26 @@ const BlogSection = () => {
       clearInterval(autoplayInterval);
     }
 
-    // Clone the first and last slides for smaller screens
-    const cloneSlides = () => {
-      const firstSlide = items[0].cloneNode(true);
-      const lastSlide = items[totalItems - 1].cloneNode(true);
-      carouselContainer.appendChild(firstSlide);
-      carouselContainer.insertBefore(lastSlide, items[0]);
-    };
-
-    // Remove cloned slides
-    const removeClonedSlides = () => {
-      const clonedSlides = carouselContainer.querySelectorAll(
-        ".carousel-item-blog"
-      );
-      if (clonedSlides.length > totalItems) {
-        clonedSlides.forEach((slide, index) => {
-          if (index === 0 || index === clonedSlides.length - 1) {
-            slide.remove();
-          }
-        });
-      }
-    };
-
     // Handle window resize
     const handleResize = () => {
-      if (window.innerWidth > 992) {
-        stopAutoplay();
-        removeClonedSlides();
-        carouselContainer.style.transition = "none";
-        carouselContainer.style.transform = "translateX(0)"; // Reset to the first item
-        currentIndex = 0; // Reset index
-      } else {
-        startAutoplay();
-        updateCarousel();
-        if (carouselContainer.children.length === totalItems) {
-          cloneSlides();
-        }
-      }
+      setIsMobile(window.innerWidth <= 991);
     };
 
-    // Initialize autoplay for smaller screens
-    if (window.innerWidth <= 991) {
+    // Initialize autoplay if mobile
+    if (isMobile) {
       startAutoplay();
-      updateCarousel();
-      cloneSlides();
     }
-
-    // Set initial position to the first clone
-    carouselContainer.style.transition = "none";
-    carouselContainer.style.transform = `translateX(-${getSlideWidthPercentage()}%)`;
 
     window.addEventListener("resize", handleResize);
 
     return () => {
       stopAutoplay();
-      removeClonedSlides();
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
-    <section className="wpo-blog-section section-padding pt-0 pb-1" id="blog"  style={{ background: "#fcf9ef" }}>
+    <section className="wpo-blog-section section-padding pt-0 pb-1" id="blog" style={{ background: "#fcf9ef" }}>
       <div className="container edprowise-choose-container">
         <div className="wpo-section-title-s2 mb-2">
           <h2 className="font-family-web">Our Latest News</h2>

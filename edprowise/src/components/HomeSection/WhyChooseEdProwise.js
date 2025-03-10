@@ -87,7 +87,7 @@ const WhyChooseEdProwise = () => {
         currentIndex * itemWidth
       }px)`;
     }
-
+    
     // Move to the next slide
     function moveToNextSlide() {
       const itemWidth = items[0].offsetWidth;

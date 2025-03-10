@@ -8,13 +8,13 @@ const ServiceMainPage = () => {
     location.pathname === "/services/digital-services";
 
   const isBusinessServicesRoute =
-    location.pathname === "/services/business-services";
+    location.pathname === "/services/academic-admin-services";
 
   const isRecruitmentSectionRoute =
     location.pathname === "/services/recruitment-services";
 
   const isProcurementSectionRoute =
-    location.pathname === "/services/procurement-services";
+    location.pathname === "/services/get-goods-services";
 
   return (
     <>

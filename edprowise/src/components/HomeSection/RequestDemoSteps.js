@@ -124,7 +124,7 @@ const RequestDemoSteps = () => {
             <div className="container">
                 <div className="wpo-section-title-s2 pb-1 mb-0">
 
-                    <h2>Request Demo Steps</h2>
+                    <h2>Take Next Steps</h2>
                 </div>
                 <div className="graph-container" >
                     <svg className="graph-lines" xmlns="http://www.w3.org/2000/svg">

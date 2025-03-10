@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Links } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { RiCloseLargeFill } from "react-icons/ri";
 import Topbar from "./Topbar";
@@ -14,8 +14,8 @@ const menuData = [
         name: "Digital Services",
         link: "/services/digital-services",
       },
-      { name: "Acadmic & Admin", link: "/services/business-services" },
-      { name: "Get Goods For Your School", link: "/services/procurement-services" },
+      { name: "Acadmic & Admin", link: "/services/academic-admin-services" },
+      { name: "Get Goods For Your School", link: "/services/get-goods-services" },
       { name: "Hire School Teacher", link: "/services/recruitment-services" },
       
     ],
@@ -100,16 +100,22 @@ const Header = () => {
   const handleSignIn = (event) => {
     event.preventDefault();
     event.stopPropagation(); // Prevent event bubbling
-    console.log("Sign In Clicked");
+    // console.log("Sign In Clicked");
     navigate(`/login`);
   };
 
   const handleSignUp = (event) => {
     event.preventDefault();
     event.stopPropagation(); // Prevent event bubbling
-    console.log("Sign Up Clicked");
+    // console.log("Sign Up Clicked");
     navigate(`/signup`);
   };
+
+  const handleHomePageRender=(event)=>{
+    event.preventDefault();
+    event.stopPropagation();
+    navigate(`/`)
+  }
 
   const toggleMobileNavigation = (e) => {
     var navbar = window.$(".navigation-holder");
@@ -140,6 +146,7 @@ const Header = () => {
                         type="button"
                         className="menu-close "
                         onClick={toggleMobileMenu}
+                        style={{borderRadius:"0.75rem"}}
                       >
                         <span className="sr-only">Toggle navigation</span>
                         <span className="icon-bar first-angle"></span>
@@ -153,6 +160,7 @@ const Header = () => {
                       className="navbar-toggler open-btn"
                       // onClick={toggleMobileMenu}
                       onClick={toggleMobileNavigation}
+                      style={{borderRadius:"0.75rem"}}
                     >
                       <span className="sr-only">Toggle navigation</span>
                       <span className="icon-bar first-angle"></span>
@@ -164,9 +172,9 @@ const Header = () => {
               </div>
               <div className="col-lg-2 col-9">
                 <div className="navbar-header">
-                  <Link to="/" className="navbar-brand fw-bold logo">
+                  <Link onClick={(event) => handleHomePageRender(event)} className="navbar-brand fw-bold logo">
                     <img
-                      src="/assets/website-images/EdProwiseLogo.webp"
+                      src="/assets/website-images/EdProwise New Logo-1.png"
                       alt="logo"
                     />
                   </Link>
@@ -182,12 +190,12 @@ const Header = () => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="sidebar-logo">
                       <div className="navbar-header">
-                        <a className="navbar-brand fw-bold logo">
+                        <Link onClick={(event) => handleHomePageRender(event)} className="navbar-brand fw-bold logo">
                           <img
-                            src="/assets/website-images/EdProwiseLogoWhite.webp"
+                            src="/assets/website-images/EdProwise New Logo White-1.png"
                             alt="logo"
                           />
-                        </a>
+                        </Link>
                       </div>
                     </div>
                     <button className="menu-close" onClick={toggleMobileMenu}>
@@ -199,15 +207,20 @@ const Header = () => {
                     {menuData.map((menu, index) => (
                       <li
                         key={index}
-                        className={`menu-item ${
+                        className={` ${
                           menu.subMenu.length > 0
                             ? "menu-item-has-children"
                             : ""
+
+                            // menu-item
                         }`}
                       >
                         <Link
                           to={menu.link}
-                          onMouseEnter={(e) => handleMenuClick(menu, index, e)}
+                          // onClick={(e) => handleMenuClick(menu, index, e)}
+                          
+  onClick={window.innerWidth<= 992 ? (e) => handleMenuClick(menu, index, e) : undefined}
+
                           className={`nav-item ${
                             isActive(menu.link, menu.subMenu)
                               ? "active"
@@ -216,8 +229,10 @@ const Header = () => {
                         >
                           {menu.name}
                         </Link>
-
-                        {menu.subMenu.length > 0 && openSubMenu === index && (
+{/* && openSubMenu === index  */}
+                        {
+                          window.innerWidth <=992?(<>
+                          {menu.subMenu.length > 0 && window.innerWidth<=992 && openSubMenu === index && (
                           <ul className="sub-menu">
                             {menu.subMenu.map((subItem, subIndex) => (
                               <li key={subIndex}>
@@ -235,7 +250,29 @@ const Header = () => {
                               </li>
                             ))}
                           </ul>
-                        )}
+                         )} 
+                          </>):(<>
+                            {menu.subMenu.length > 0  && (
+                          <ul className="sub-menu">
+                            {menu.subMenu.map((subItem, subIndex) => (
+                              <li key={subIndex}>
+                                <Link
+                                  to={subItem.link}
+                                  onClick={(e) =>
+                                    handleSubMenuClick(subItem, e)
+                                  }
+                                  className={`${
+                                    isActive(subItem.link) ? "active" : ""
+                                  }`}
+                                >
+                                  {subItem.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                         )} 
+                          </>)
+                        }
                       </li>
                     ))}
                     {window.innerWidth <= 992 ? (

@@ -109,7 +109,7 @@ const UserLogin = () => {
                     <div>
                     <img
                       className="logos"
-                        src="/assets/website-images/EdProwiseLogo.webp"
+                        src="/assets/website-images/EdProwise New Logo-1.png"
                         alt="logo"
                       />
                       {/* <div className="login-logo-font">EdProwise</div> */}

@@ -39,12 +39,12 @@ const WebsiteMain = () => {
         await loadScript(
           `${process.env.PUBLIC_URL}/assets/website-js/script.js`
         );
-        console.log("Scripts loaded successfully.");
+        // console.log("Scripts loaded successfully.");
         $(document).ready(() => {
           $(".select").niceSelect();
         });
       } catch (error) {
-        console.error(error);
+        // console.error(error);
         console.error("Error loading scripts:", error);
       }
     };
@@ -86,7 +86,7 @@ const WebsiteMain = () => {
         <DashboardFooter />
       </div>
 
-      {showBackToTop && (
+      {/* {showBackToTop && (
         <button
           className="back-to-top"
           onClick={scrollToTop}
@@ -111,7 +111,7 @@ const WebsiteMain = () => {
         >
           ↑
         </button>
-      )}
+      )} */}
     </>
   );
 };

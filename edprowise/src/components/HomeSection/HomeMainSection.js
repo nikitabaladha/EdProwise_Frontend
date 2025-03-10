@@ -201,10 +201,10 @@ const HomeMainSection = () => {
           </div>
         </div>
       </section>
-      <section className="static-hero-s2">
-        <div className="hero-container">
-          <div className="hero-inner p-0">
-            <div className="container-fluid">
+      <section className="static-hero-s2 home-hero-section">
+        <div className="hero-container home-hero-container">
+          <div className="hero-inner home-hero-inner p-0">
+            <div className="container-fluid home-hero-container-fluid">
               <div className="hero-content">
                 {/* Slide Title */}
                 <div data-swiper-parallax="300" className="slide-title">
@@ -287,7 +287,8 @@ const HomeMainSection = () => {
               </div>
 
               {/* Student Picture with Shapes */}
-              <div className="student-pic">
+             <div className="home-hero-outer-pic">
+             <div className="student-pic home-hero-student-pic">
                 <img src="assets/website-images/slider/2.webp" alt="Student" />
                 <div className="wp-shape-1">
                   <img
@@ -314,6 +315,7 @@ const HomeMainSection = () => {
                   />
                 </div>
               </div>
+             </div>
             </div>
           </div>
         </div>

@@ -1,12 +1,29 @@
 import React, { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-
+import { Link, useLocation,  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const Footer = () => {
   const location = useLocation();
-
+const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
+
+  const handleDownload = (tabName) => {
+    if (tabName === "brochureSection") {
+      const link = document.createElement("a");
+      link.href = "/assets/website-images/EdProwise Brochure.pdf"; 
+      link.download = "EdProwise-Brochure.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const handleHomePageRender=(event)=>{
+    event.preventDefault();
+    event.stopPropagation();
+    navigate(`/`)
+  }
 
   const menuData = [
     { name: "Home", link: "/" },
@@ -50,16 +67,16 @@ const Footer = () => {
             <div className="col col-lg-3 col-md-6 col-12 col-sm-12 mt-0">
               <div className="widget about-widget">
                 <div className="logo widget-title">
-                  <Link to="/" className="navbar-brand">
+                  <Link onClick={(event) => handleHomePageRender(event)} className="navbar-brand">
                     <img
-                      src="/assets/website-images/EdProwiseLogoWhite.webp"
+                      src="/assets/website-images/EdProwise New Logo White-1.png"
                       width="180px"
                       alt="EdProwise Logo"
                     />
                   </Link>
                 </div>
                 <p>
-                  Market place for school which offers wide range of services including technology integration, adminisstrative solutions, educational consultation and professional development, providing holistic support tailored to enhance every aspect of educational operations. 
+                  Market place for school which offers wide range of services including technology integration, professional development, providing holistic support tailored to enhance every aspect of educational operations. 
                 {/* Startup founded on the principle of empowering educational institutions, specializes in delivering various services to educational institution */}
                 </p>
                 <div className="social">
@@ -115,9 +132,13 @@ const Footer = () => {
                   <h3>Useful Links</h3>
                 </div>
                 <ul>
-                  {useLinks.map((menu, index) => (
+                {useLinks.map((menu, index) => (
                     <li key={index}>
-                      <Link to={menu.link}>{menu.name}</Link>
+                      {index === 3 ? (
+                        <Link onClick={() => handleDownload("brochureSection")}>{menu.name}</Link>
+                      ) : (
+                        <Link to={menu.link}>{menu.name}</Link>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -155,9 +176,10 @@ const Footer = () => {
           <div className="row align-items-center">
             <div className="col col-lg-6 col-md-12 col-12">
               <ul>
-                <li>
-                  &copy; 2025 <a href="#">Edprowise</a>. All rights reserved.
-                </li>
+              <li>
+  &copy; {new Date().getFullYear()} <a>Edprowise</a>. All rights reserved.
+</li>
+
               </ul>
             </div>
             <div className="col col-lg-6 col-md-12 col-12">
@@ -167,14 +189,14 @@ const Footer = () => {
                     <Link to="/privacy-policy">Privacy & Policy</Link>
                   </li>
                   <li>
-                    <Link to="/terms">Terms</Link>
+                    <Link to="/terms">Terms & Conditions</Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="/about-us">About us</Link>
                   </li>
                   <li>
                     <Link to="/faq">FAQ</Link>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
