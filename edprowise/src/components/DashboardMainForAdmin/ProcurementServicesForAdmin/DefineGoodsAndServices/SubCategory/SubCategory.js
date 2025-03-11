@@ -9,11 +9,11 @@ const Category = () => {
 
   const isCreateRoute =
     location.pathname ===
-    "/admin-dashboard/procurement-services/define-goods-services/sub-category/add-sub-category";
+    "/admin-dashboard/procurement-services/good-services/add-goods-services";
 
   const isUpdateRoute =
     location.pathname ===
-    "/admin-dashboard/procurement-services/define-goods-services/sub-category/update-sub-category";
+    "/admin-dashboard/procurement-services/good-services/update-goods-services";
 
   return (
     <>

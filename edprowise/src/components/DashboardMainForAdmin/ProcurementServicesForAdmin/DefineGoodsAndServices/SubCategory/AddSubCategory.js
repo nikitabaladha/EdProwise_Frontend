@@ -8,9 +8,14 @@ import getAPI from "../../../../../api/getAPI";
 const AddCategory = () => {
   const [mainCategoryId, setMainCategoryId] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [subCategoryName, setSubCategoryName] = useState("");
   const [mainCategories, setMainCategories] = useState([]);
   const [categories, setCategories] = useState([]);
+
+  const [categoryRows, setCategoryRows] = useState([
+    { mainCategoryName: "", categoryName: "", subCategoryName: "" },
+  ]);
+
+  const [showOtherFields, setShowOtherFields] = useState(false);
 
   const navigate = useNavigate();
 
@@ -24,21 +29,25 @@ const AddCategory = () => {
           toast.error(`Failed to fetch Main Categories: ${response.message}`);
         }
       } catch (error) {
-        toast.error("An error occurred while fetching branches.");
+        toast.error("An error occurred while fetching main categories.");
       }
     };
-
     fetchMainCategories();
   }, []);
 
   const handleMainCategoryChange = async (e) => {
-    const mainCategoryId = e.target.value;
-    setMainCategoryId(mainCategoryId);
+    const selectedMainCategoryId = e.target.value;
+    setMainCategoryId(selectedMainCategoryId);
     setCategories([]);
+    setCategoryId("");
 
-    if (mainCategoryId) {
+    if (selectedMainCategoryId) {
       try {
-        const response = await getAPI(`/category/${mainCategoryId}`, {}, true);
+        const response = await getAPI(
+          `/category/${selectedMainCategoryId}`,
+          {},
+          true
+        );
         if (!response.hasError && Array.isArray(response.data.data)) {
           setCategories(response.data.data);
         } else {
@@ -50,32 +59,86 @@ const AddCategory = () => {
     }
   };
 
+  const handleRowChange = (index, field, value) => {
+    const updatedRows = [...categoryRows];
+    updatedRows[index][field] = value;
+    setCategoryRows(updatedRows);
+  };
+
+  const addRow = () => {
+    setCategoryRows([
+      ...categoryRows,
+      { mainCategoryName: "", categoryName: "", subCategoryName: "" },
+    ]);
+  };
+
+  const removeRow = (index) => {
+    const updatedRows = categoryRows.filter((_, i) => i !== index);
+    setCategoryRows(updatedRows);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const subCategoryData = {
-      subCategoryName,
-      categoryId,
-      mainCategoryId,
-    };
-
     try {
-      const response = await postAPI(
-        "/sub-category",
-        subCategoryData,
-        {},
-        true
-      );
+      for (const row of categoryRows) {
+        let subCategoryData = {};
 
-      if (!response.hasError) {
-        toast.success("Sub Categories Created Successfully");
-
-        navigate(-1);
-      } else {
-        toast.error(`Failed to create Subcategories: ${response.message}`);
+        if (mainCategoryId && categoryId) {
+          subCategoryData = {
+            subCategoryName: row.subCategoryName,
+            categoryId,
+            mainCategoryId,
+          };
+          const response = await postAPI(
+            "/sub-category",
+            subCategoryData,
+            {},
+            true
+          );
+          if (!response.hasError) {
+            toast.success("Goods and Service Created Successfully");
+          } else {
+            toast.error(`Failed to create Sub Category: ${response.message}`);
+          }
+        } else if (mainCategoryId && !categoryId) {
+          subCategoryData = {
+            subCategoryName: row.subCategoryName,
+            categoryName: row.categoryName,
+            mainCategoryId,
+          };
+          const response = await postAPI(
+            "/sub-category-without-category-id",
+            subCategoryData,
+            {},
+            true
+          );
+          if (!response.hasError) {
+            toast.success("Goods and Service Created Successfully");
+          } else {
+            toast.error(`Failed to create Category: ${response.message}`);
+          }
+        } else if (!mainCategoryId && !categoryId) {
+          subCategoryData = {
+            subCategoryName: row.subCategoryName,
+            categoryName: row.categoryName,
+            mainCategoryName: row.mainCategoryName,
+          };
+          const response = await postAPI(
+            "/sub-category-without-ids",
+            subCategoryData,
+            {},
+            true
+          );
+          if (!response.hasError) {
+            toast.success("Goods and Service Created Successfully");
+          } else {
+            toast.error(`Failed to create Main Category: ${response.message}`);
+          }
+        }
       }
+      navigate(-1);
     } catch (error) {
-      toast.error("An error occurred while creating the subcategories.");
+      toast.error("An error occurred while processing the request.");
     }
   };
 
@@ -88,86 +151,173 @@ const AddCategory = () => {
               <div className="container">
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
-                    Add New Sub Category
+                    {showOtherFields
+                      ? "Add Custom Goods And Services"
+                      : "Add New Goods And Services"}
                   </h4>
                 </div>
               </div>
+
               <form onSubmit={handleSubmit}>
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-6">
-                      <label htmlFor="mainCategoryId" className="form-label">
-                        Main Category List
-                      </label>
-                      <select
-                        required
-                        className="form-control"
-                        id="mainCategoryId"
-                        name="mainCategoryId"
-                        value={mainCategoryId}
-                        onChange={handleMainCategoryChange}
-                      >
-                        <option value="">Select Main Category</option>
-                        {mainCategories.map((mainCategory) => (
-                          <option
-                            key={mainCategory._id}
-                            value={mainCategory._id}
+                {categoryRows.map((row, index) => (
+                  <div className="row mb-2" key={index}>
+                    <div className="col-md-3">
+                      {!showOtherFields && mainCategories.length > 0 ? (
+                        <>
+                          <label
+                            htmlFor="mainCategoryId"
+                            className="form-label"
                           >
-                            {mainCategory.mainCategoryName}
-                          </option>
-                        ))}
-                      </select>
+                            Main Category List
+                          </label>
+                          <select
+                            required
+                            className="form-control"
+                            id="mainCategoryId"
+                            name="mainCategoryId"
+                            value={mainCategoryId}
+                            onChange={handleMainCategoryChange}
+                          >
+                            <option value="">Select Main Category</option>
+                            {mainCategories.map((mainCategory) => (
+                              <option
+                                key={mainCategory._id}
+                                value={mainCategory._id}
+                              >
+                                {mainCategory.mainCategoryName}
+                              </option>
+                            ))}
+                          </select>
+                        </>
+                      ) : (
+                        <>
+                          <label
+                            htmlFor="mainCategoryName"
+                            className="form-label"
+                          >
+                            Main Category Name
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={row.mainCategoryName}
+                            onChange={(e) =>
+                              handleRowChange(
+                                index,
+                                "mainCategoryName",
+                                e.target.value
+                              )
+                            }
+                            required
+                          />
+                        </>
+                      )}
                     </div>
-                  </div>
 
-                  <div className="col-md-4">
-                    <div className="mb-6">
-                      <label htmlFor="mainCategoryId" className="form-label">
-                        Category List
-                      </label>
-                      <select
-                        className="form-control"
-                        required
-                        id="categoryId"
-                        name="categoryId"
-                        value={categoryId}
-                        onChange={(e) => setCategoryId(e.target.value)}
-                      >
-                        <option value="">Select Category</option>
-                        {categories.map((category) => (
-                          <option key={category.id} value={category.id}>
-                            {category.categoryName}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="col-md-3">
+                      {!showOtherFields &&
+                      mainCategoryId &&
+                      categories.length > 0 ? (
+                        <>
+                          <label htmlFor="categoryId" className="form-label">
+                            Category List
+                          </label>
+                          <select
+                            required
+                            className="form-control"
+                            id="categoryId"
+                            name="categoryId"
+                            value={categoryId}
+                            onChange={(e) => {
+                              setCategoryId(e.target.value);
+                              handleRowChange(
+                                index,
+                                "categoryName",
+                                e.target.options[e.target.selectedIndex].text
+                              );
+                            }}
+                          >
+                            <option value="">Select Category</option>
+                            {categories.map((category) => (
+                              <option key={category.id} value={category.id}>
+                                {category.categoryName}
+                              </option>
+                            ))}
+                          </select>
+                        </>
+                      ) : (
+                        <>
+                          <label htmlFor="categoryName" className="form-label">
+                            Category Name
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={row.categoryName}
+                            onChange={(e) =>
+                              handleRowChange(
+                                index,
+                                "categoryName",
+                                e.target.value
+                              )
+                            }
+                            required
+                          />
+                        </>
+                      )}
                     </div>
-                  </div>
 
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="category" className="form-label">
+                    <div className="col-md-4">
+                      <label htmlFor="subCategoryName" className="form-label">
                         Sub Category Name
                       </label>
                       <input
-                        onChange={(e) => setSubCategoryName(e.target.value)}
-                        required
-                        className="form-control"
-                        placeholder="Sub Category Name"
-                        name="subCategoryName"
                         type="text"
-                        id="subCategoryName"
-                        value={subCategoryName}
+                        className="form-control"
+                        value={row.subCategoryName}
+                        onChange={(e) =>
+                          handleRowChange(
+                            index,
+                            "subCategoryName",
+                            e.target.value
+                          )
+                        }
+                        required
                       />
                     </div>
-                  </div>
-                </div>
 
-                <div className="text-end">
+                    <div className="col-md-2 d-flex align-items-center mt-3">
+                      <button
+                        type="button"
+                        className="btn btn-success me-2"
+                        onClick={addRow}
+                      >
+                        Add
+                      </button>
+                      {index > 0 && (
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          onClick={() => removeRow(index)}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="d-flex justify-content-between mt-3">
                   <button
-                    type="submit"
-                    className="btn btn-primary custom-submit-button"
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => setShowOtherFields(!showOtherFields)}
                   >
+                    {showOtherFields
+                      ? "Add Goods And Services"
+                      : "Add Custom Goods And Services"}
+                  </button>
+                  <button type="submit" className="btn btn-primary">
                     Submit
                   </button>
                 </div>

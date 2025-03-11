@@ -3,8 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../../export-excel";
 import getAPI from "../../../../../api/getAPI";
+import ConfirmationDialog from "../../../../ConfirmationDialog";
+import { toast } from "react-toastify";
+
 const MainCategoryTable = () => {
   const [subCategories, setSubCategories] = useState([]);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const fetchSubCategoryData = async () => {
     try {
       const response = await getAPI(`/sub-category`, {}, true);
@@ -32,21 +36,105 @@ const MainCategoryTable = () => {
   const navigateToAddNewSubCategory = (event) => {
     event.preventDefault();
     navigate(
-      `/admin-dashboard/procurement-services/define-goods-services/sub-category/add-sub-category`
+      `/admin-dashboard/procurement-services/good-services/add-goods-services`
     );
   };
 
-  const navigateToUpdateSubCategory = (event, good) => {
+  const navigateToUpdateSubCategory = (event, subCategory) => {
+    console.log("navigateToUpdateSubCategory", subCategory);
+    // here at time of navigate i am perfectly passing the subCategory data
+    //   {
+    //     "id": "6789a6727cf7927203f6617a",
+    //     "subCategoryId": "6789a6727cf7927203f6617a",
+    //     "subCategoryName": "AC",
+    //     "categoryId": "678f50c86e1ed92982459e96",
+    //     "categoryName": "Air Cooling System",
+    //     "mainCategoryId": "6789a3d9d08fa66bcc1dc5b2",
+    //     "mainCategoryName": "Procurement Services"
+    // }
     event.preventDefault();
     navigate(
-      `/admin-dashboard/procurement-services/define-goods-services/sub-category/update-sub-category`,
+      `/admin-dashboard/procurement-services/good-services/update-goods-services`,
       {
-        state: { good },
+        state: { subCategory },
       }
     );
   };
 
-  const handleExport = () => {};
+  const handleExport = () => {
+    if (!subCategories.length) {
+      toast.error("No data available to export");
+      return;
+    }
+
+    const formattedData = subCategories.map((subCategory) => ({
+      id: subCategory.id,
+      Sub_Category_Id: subCategory.subCategoryId,
+      Sub_Category_Name: subCategory.subCategoryName,
+      Category_Id: subCategory.categoryId,
+      Category_Name: subCategory.categoryName,
+      MainCategory_Id: subCategory.mainCategoryId,
+      MainCategory_Name: subCategory.mainCategoryName,
+    }));
+
+    exportToExcel(formattedData, "SubCategory", "SubCategory");
+  };
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteType, setDeleteType] = useState("");
+
+  const openDeleteDialog = (subCategory) => {
+    console.log("openDeleteDialog", subCategory);
+    setSelectedSubCategory(subCategory);
+    setIsDeleteDialogOpen(true);
+    setDeleteType("subCategory");
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+    setSelectedSubCategory(null);
+  };
+
+  const handleDeleteConfirmed = (id) => {
+    console.log("Id", id);
+    setSubCategories((prevSubCategories) =>
+      prevSubCategories.filter((subCategory) => subCategory.id !== id)
+    );
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [subCategoriesPerPage] = useState(10);
+
+  const indexOfLastSubCategory = currentPage * subCategoriesPerPage;
+  const indexOfFirstSubCategory = indexOfLastSubCategory - subCategoriesPerPage;
+  const currentSubCategory = subCategories.slice(
+    indexOfFirstSubCategory,
+    indexOfLastSubCategory
+  );
+
+  const totalPages = Math.ceil(subCategories.length / subCategoriesPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const pageRange = 1;
+
+  const startPage = Math.max(1, currentPage - pageRange);
+  const endPage = Math.min(totalPages, currentPage + pageRange);
+
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
 
   return (
     <>
@@ -97,7 +185,7 @@ const MainCategoryTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {subCategories.map((subCategory) => (
+                      {currentSubCategory.map((subCategory) => (
                         <tr key={subCategory.id}>
                           <td>
                             <div className="form-check ms-1">
@@ -142,6 +230,10 @@ const MainCategoryTable = () => {
                                 title="Delete"
                                 data-bs-toggle="popover"
                                 data-bs-trigger="hover"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openDeleteDialog(subCategory);
+                                }}
                               >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
@@ -161,24 +253,39 @@ const MainCategoryTable = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <Link className="page-link">Previous</Link>
-                    </li>
-                    <li className="page-item active">
-                      <Link
+                      <button
                         className="page-link"
-                        style={{ backgroundColor: "red", borderColor: "red" }}
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
                       >
-                        1
-                      </Link>
+                        Previous
+                      </button>
                     </li>
+                    {pagesToShow.map((page) => (
+                      <li
+                        key={page}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
+                      >
+                        <button
+                          className={`page-link pagination-button ${
+                            currentPage === page ? "active" : ""
+                          }`}
+                          onClick={() => handlePageClick(page)}
+                        >
+                          {page}
+                        </button>
+                      </li>
+                    ))}
                     <li className="page-item">
-                      <Link className="page-link">2</Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link">3</Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link">Next</Link>
+                      <button
+                        className="page-link"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
                     </li>
                   </ul>
                 </nav>
@@ -187,6 +294,14 @@ const MainCategoryTable = () => {
           </div>
         </div>
       </div>
+      {isDeleteDialogOpen && (
+        <ConfirmationDialog
+          onClose={handleDeleteCancel}
+          deleteType={deleteType}
+          id={selectedSubCategory.id}
+          onDeleted={handleDeleteConfirmed}
+        />
+      )}
     </>
   );
 };

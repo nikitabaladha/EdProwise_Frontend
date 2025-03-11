@@ -33,9 +33,15 @@ const DELETE_CONFIG = {
     successMessage: "Cart successfully deleted!",
     errorMessage: "Failed to delete Cart.",
   },
+  subCategory: {
+    getEndpoint: (id) => `/sub-category/${id}`,
+    successMessage: "SubCategory data successfully deleted!",
+    errorMessage: "Failed to delete Subcategory.",
+    idKey: "id",
+  },
   singleCart: {
     getEndpoint: (id) => `/delete-by-cart-id/${id}`,
-    successMessage: "Single data successfully deleted!",
+    successMessage: "Cart data successfully deleted!",
     errorMessage: "Failed to delete Cart.",
     idKey: "id",
   },

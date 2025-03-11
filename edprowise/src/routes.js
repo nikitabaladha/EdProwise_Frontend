@@ -113,6 +113,7 @@ import AddCategory from "./components/DashboardMainForAdmin/ProcurementServicesF
 
 import SubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/SubCategory.js";
 import AddSubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/AddSubCategory.js";
+import UpdateSubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/UpdateSubCategory.js";
 // ================School Routes=============School Routes============School Routes===========================
 
 import CompleteSchoolProfile from "./components/DashboardMainForSchool/CompleteSchoolProfile/CompleteSchoolProfile";
@@ -274,28 +275,25 @@ const AppRoutes = () => {
           path="procurement-services/view-order-history"
           element={<ViewOrderHistoryForAdmin />}
         />
-
-        <Route
+        {/* <Route
           path="procurement-services/define-goods-services/main-category"
           element={<MainCategory />}
         >
           <Route path="add-main-category" element={<AddMainCategory />} />
-        </Route>
-
-        <Route
+        </Route> */}
+        {/* <Route
           path="procurement-services/define-goods-services/category"
           element={<Category />}
         >
           <Route path="add-category" element={<AddCategory />} />
-        </Route>
-
+        </Route> */}
         <Route
-          path="procurement-services/define-goods-services/sub-category"
+          path="procurement-services/good-services"
           element={<SubCategory />}
         >
-          <Route path="add-sub-category" element={<AddSubCategory />} />
+          <Route path="add-goods-services" element={<AddSubCategory />} />
+          <Route path="update-goods-services" element={<UpdateSubCategory />} />
         </Route>
-
         <Route
           path="procurement-services/bank-details"
           element={<BankDetailsTable />}
