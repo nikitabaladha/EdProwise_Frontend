@@ -194,6 +194,35 @@ margin: 3px;
 
 /* .search-car-bar media query for 991px add padding 6px */
 
+.service-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: 10%;
+  /* margin-top: 10px; */
+}
+
+.chatbot-error-msg{
+  font-size: 0.95rem;
+}
+
+.service-btn {
+  background: white;
+  color: black;
+  padding: 5px 5px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  /* border: none; */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 0.95rem;
+  border: 2px solid #A9FFFD;
+}
+
+.service-btn:hover {
+  background: #edf4ff;
+}
+
 @media (min-width:992px) {
   .home-hero-section{
     padding-bottom: 20px !important;

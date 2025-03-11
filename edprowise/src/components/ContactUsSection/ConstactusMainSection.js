@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 // import { toast } from "react-toastify"; // Import toastify
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import postAPI from "../../api/postAPI";
 const ConstactusMainSection = () => {
   const [formData, setFormData] = useState({
@@ -150,7 +150,7 @@ const ConstactusMainSection = () => {
                       required
                     >
                       <option value=""> 
-                        Subject
+                        Subject*
                       </option>
                       <option value="Web Development">Web Development</option>
                       <option value="Web Design">Web Design</option>
