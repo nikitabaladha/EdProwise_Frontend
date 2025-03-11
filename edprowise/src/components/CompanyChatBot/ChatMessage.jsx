@@ -8,7 +8,7 @@ const ChatMessage = ({ chat, handleInputChange }) => {
         !chat.hideInChat && (<>
             <div className={`message ${chat.role === "model" ? "bot" : "user"}-message ${chat.isError ? "error" : ""}`}>
                 {chat.role === "model" && 
-                 <span className='material-symbols-rounded'><img src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlMTEelnh5ku1vaSWwLN2blXbK4qGNASRy4w&s"} alt={""} /></span>
+                 <span className='message-bot-img'><img src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlMTEelnh5ku1vaSWwLN2blXbK4qGNASRy4w&s"} alt={""} /></span>
                 // <ChatbotIcon />
                 }
                 <p className='message-text'>{chat.text}</p>

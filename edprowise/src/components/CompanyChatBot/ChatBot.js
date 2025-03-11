@@ -164,8 +164,9 @@ const ChatBot = () => {
             <div className='chatbot-popup'>
                 <div className='chat-header'>
                     <div className='header-info'>
-                        <ChatbotIcon />
-                        <h2 className='logo-text'>Chatbot</h2>
+                        {/* <ChatbotIcon /> */}
+                        <span className='message-bot-img'><img src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlMTEelnh5ku1vaSWwLN2blXbK4qGNASRy4w&s"} alt={""} /></span>
+                        <h2 className='logo-text m-0'>EDI</h2>
                     </div>
                     <button onClick={() => setShowChatbot(prev => !prev)} className='material-symbols-rounded'><IoIosArrowRoundDown /></button>
                 </div>

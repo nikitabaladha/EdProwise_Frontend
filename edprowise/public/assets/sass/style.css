@@ -206,6 +206,16 @@ margin: 3px;
   font-size: 0.95rem;
 }
 
+span.message-bot-img {
+  width: 45px;
+  border-radius: 50%;
+}
+
+span.message-bot-img img {
+  border-radius: 50%;
+  border: 1px solid #A9FFFD;
+}
+
 .service-btn {
   background: white;
   color: black;
@@ -395,7 +405,7 @@ margin: 3px;
   }
   
   .chatbot-popup{
-    width: 420px;
+    width: 400px;
     position: fixed;
     opacity: 0;
     pointer-events: none;
@@ -469,8 +479,8 @@ margin: 3px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 25px 22px;
-    height: 460px;
+    padding: 15px 22px;
+    height: 410px;
     margin-bottom: 82px;
     scrollbar-width: thin;
     scrollbar-color: #DDD3F9;
@@ -510,6 +520,7 @@ margin: 3px;
   
   .chat-body .bot-message .message-text{
     background: #edf4ff;
+    margin: 5px 0;
     border-radius: 13px 13px 3px 13px;
   }
   
@@ -522,6 +533,7 @@ margin: 3px;
   .chat-body .user-message .message-text{
     background:#007bff;
     color: white;
+    margin: 5px;
     border-radius: 13px 13px 3px 13px;  
   }
   
