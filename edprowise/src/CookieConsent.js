@@ -18,12 +18,16 @@ const CookieConsent = () => {
   useEffect(() => {
     // Update pageData on each route change
     if (cookies.userConsent) {
-      setCookie("pageData", JSON.stringify({ CurrentVisitedPage: location.pathname }), {
-        path: "/",
-        maxAge: 36000,
-        secure: true,
-        sameSite: "Strict",
-      });  
+      setCookie(
+        "pageData",
+        JSON.stringify({ CurrentVisitedPage: location.pathname }),
+        {
+          path: "/",
+          maxAge: 36000,
+          secure: true,
+          sameSite: "Strict",
+        }
+      );
     }
   }, [location, cookies.userConsent, setCookie]);
 
@@ -31,7 +35,8 @@ const CookieConsent = () => {
     // Save the user's theme preference in cookies and track theme changes
     const handleThemeChange = () => {
       if (cookies.userConsent) {
-        const currentTheme = document.documentElement.getAttribute("data-bs-theme") || "light";
+        const currentTheme =
+          document.documentElement.getAttribute("data-bs-theme") || "light";
         setCookie("theme", currentTheme, {
           path: "/",
           maxAge: 36000,
@@ -55,7 +60,8 @@ const CookieConsent = () => {
   useEffect(() => {
     // Save the user's theme preference in cookies
     if (cookies.userConsent) {
-      const savedTheme = document.documentElement.getAttribute("data-bs-theme") || "light";
+      const savedTheme =
+        document.documentElement.getAttribute("data-bs-theme") || "light";
       setCookie("theme", savedTheme, {
         path: "/",
         maxAge: 36000,
@@ -74,18 +80,23 @@ const CookieConsent = () => {
       sameSite: "Strict", // Prevents CSRF attacks
     });
 
-    setCookie("pageData", JSON.stringify({ CurrentVisitedPage: location.pathname }), {
-      path: "/",
-      maxAge: 36000, 
-      secure: true, 
-      sameSite: "Lax",
-    });
+    setCookie(
+      "pageData",
+      JSON.stringify({ CurrentVisitedPage: location.pathname }),
+      {
+        path: "/",
+        maxAge: 36000,
+        secure: true,
+        sameSite: "Lax",
+      }
+    );
 
-    const currentTheme = document.documentElement.getAttribute("data-bs-theme") || "light";
+    const currentTheme =
+      document.documentElement.getAttribute("data-bs-theme") || "light";
     setCookie("theme", currentTheme, {
       path: "/",
-      maxAge: 36000, 
-      secure: true, 
+      maxAge: 36000,
+      secure: true,
       sameSite: "Strict",
     });
 
