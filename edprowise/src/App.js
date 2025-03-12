@@ -18,7 +18,7 @@ const App = () => {
       <ThemeProvider>
         <AppRoutes />
         <ChatBot />
-        <CookieConsent />
+        {/* <CookieConsent /> */}
         <ToastContainer />
       </ThemeProvider>
     </BrowserRouter>
