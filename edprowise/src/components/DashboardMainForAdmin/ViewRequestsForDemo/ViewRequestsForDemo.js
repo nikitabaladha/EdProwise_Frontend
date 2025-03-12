@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import ConfirmationDialog from "../../ConfirmationDialog";
+import getAPI from "../../../api/getAPI";
 
 const ViewRequestsForDemo = () => {
   const navigate = useNavigate();
@@ -17,16 +18,13 @@ const ViewRequestsForDemo = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3001/api/get-request-demo"
-        );
-        const data = await response.json();
+        const response = await getAPI("/get-request-demo", {}, true);
 
         // Check if the data has the expected format
-        if (!data.hasError && Array.isArray(data.data)) {
-          setRequests(data.data); // Store the fetched demo requests in the state
+        if (!response.hasError && Array.isArray(response.data.data)) {
+          setRequests(response.data.data); // Store the fetched demo requests in the state
         } else {
-          console.error("Error in fetching data:", data.message);
+          console.error("Error in fetching data:", response.message);
         }
       } catch (error) {
         console.error("Error fetching requests:", error);
@@ -101,14 +99,7 @@ const ViewRequestsForDemo = () => {
                 </h4>
 
                 <div className="text-end">
-                  {/* <Link className="btn btn-sm btn-outline-light">
-                                        Export
-                                    </Link> */}
-
-                  <Link class="text-primary">
-                    Export
-                    <i class="bx bx-export ms-1"></i>
-                  </Link>
+                  <Link className="btn btn-sm btn-outline-light">Export</Link>
                 </div>
               </div>
 

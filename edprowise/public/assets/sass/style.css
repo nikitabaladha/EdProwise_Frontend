@@ -142,8 +142,34 @@ Version:        1.0.0
 
 /* Umesh CSS Starts */
 
+.category-item-btn,
+.download-brocher-tab {
+  min-width: fit-content;
+  margin: 10px;
+  padding: 13px;
+  border-radius: 5px;
+  text-align: center;
+  background-color: white;
+  cursor: pointer;
+  color: #000000;
+  border: 2px solid transparent;
+  font-weight: bolder;
+}
+
+.category-item-btn:hover {
+  transform: scale(1.01);
+  border: 2px solid #e8b400;
+}
+
+.category-item-btn.active,
+.download-brocher-tab:hover {
+  color: white;
+  border: 3px solid white;
+  background-color: #007bff;
+}
+
 .bg-bedcrum {
-  background-color: #A9FFFD;
+  background-color: #a9fffd;
 }
 
 .service-options {
@@ -1362,7 +1388,7 @@ ul.service-suggestions.slide-text.pb-2 {
   /* margin-bottom: 20px; */
 }
 
-.nav-tab,
+/* .nav-tab,
 .download-brocher-tab {
   background-color: #ffffff;
   color: black;
@@ -1374,7 +1400,7 @@ ul.service-suggestions.slide-text.pb-2 {
   font-weight: 800;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
-}
+} */
 
 .nav-tab.active,
 .nav-tab.active:hover,
@@ -1780,22 +1806,22 @@ ul.service-suggestions.slide-text.pb-2 {
   display: none;
 }
 
-@media (max-width:575px) {
+@media (max-width: 575px) {
   .job-apply-edpro,
-  .salary{
- font-size: 15px;
+  .salary {
+    font-size: 15px;
   }
-  .job-title-name{
+  .job-title-name {
     font-size: 16px;
   }
-  .job-card{
- padding: 6px;
+  .job-card {
+    padding: 6px;
   }
-  .tagss span{
+  .tagss span {
     padding: 3px 10px;
-}
-  .read-moree{
-    padding:3px 10px ;
+  }
+  .read-moree {
+    padding: 3px 10px;
     font-size: 15px;
   }
 }
@@ -14003,6 +14029,12 @@ img {
   padding: 0 40px;
 }
 
+@media (max-width: 1399px) {
+  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
+    padding: 0 15px;
+  }
+}
+
 @media (max-width: 575px) {
   .wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
     width: 40%;
@@ -14044,17 +14076,11 @@ img {
   }
 }
 
-@media (max-width: 1399px) {
-  .wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
-    padding: 0 15px;
-  }
-}
-
-@media (max-width: 991px) {
+/* @media (max-width: 991px) {
   .wpo-choose-section-s2 .wpo-choose-wrap .grid-web {
     width: 50%;
   }
-}
+} */
 
 .wpo-choose-section-s2 .wpo-choose-wrap .grid-web .info {
   max-width: 270px;

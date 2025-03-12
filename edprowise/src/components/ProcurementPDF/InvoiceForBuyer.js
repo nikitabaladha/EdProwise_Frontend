@@ -143,11 +143,13 @@ const InvoiceForBuyer = () => {
                     width: "33%",
                   }}
                 >
-                  <img
-                    src="/assets/images/EdProwiseLogo.png"
-                    alt="EdProwise Logo"
-                    style={{ width: "200px", height: "auto" }}
-                  />
+                  <div className="mt-3">
+                    <img
+                      src="/assets/website-images/EdProwise New Logo-1.png"
+                      alt="EdProwise Logo"
+                      style={{ width: "200px", height: "auto" }}
+                    />
+                  </div>
                 </td>
                 <td
                   style={{

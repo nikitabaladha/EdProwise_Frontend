@@ -332,14 +332,26 @@ const Header = () => {
                       </li>
                     ))}
                     {window.innerWidth <= 992 ? (
-                      <>
-                        <li className="menu-item ">
-                          <Link to="/signup">Sign Up</Link>
-                        </li>
+                      localStorage.getItem("accessToken") &&
+                      localStorage.getItem("userDetails") ? (
                         <li className="menu-item">
-                          <Link to="/login">Sign In</Link>
+                          <Link
+                            to="/dashboard"
+                            onClick={(event) => handleSignIn(event)}
+                          >
+                            Go To Dashboard
+                          </Link>
                         </li>
-                      </>
+                      ) : (
+                        <>
+                          <li className="menu-item">
+                            <Link to="/signup">Sign Up</Link>
+                          </li>
+                          <li className="menu-item">
+                            <Link to="/login">Sign In</Link>
+                          </li>
+                        </>
+                      )
                     ) : null}
                   </ul>
                   {/* Signup Login Button */}

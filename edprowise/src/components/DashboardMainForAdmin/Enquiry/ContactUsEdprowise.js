@@ -1,29 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ConfirmationDialog from "../../ConfirmationDialog";
+import getAPI from "../../../api/getAPI";
 
 const ContactUsEdprowise = () => {
   const navigate = useNavigate();
 
-  const [requests, setRequests] = useState([]); // State to hold the fetched data
+  const [requests, setRequests] = useState([]); // Initialize as an empty array
   const [currentPage, setCurrentPage] = useState(1);
   const [requestPerPage] = useState(5);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
 
-  // Fetch the requests for demo on component mount
+  // Fetch the requests on component mount
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/get-contactus");
-        const data = await response.json();
+        const response = await getAPI("/get-contactus", {}, true);
+
+        console.log("Backend Response:", response); // Log the response
 
         // Check if the data has the expected format
-        if (!data.hasError && Array.isArray(data.data)) {
-          setRequests(data.data); // Store the fetched demo requests in the state
+        if (
+          !response.hasError &&
+          response.data &&
+          Array.isArray(response.data.data)
+        ) {
+          setRequests(response.data.data); // Use response.data.data
         } else {
-          console.error("Error in fetching data:", data.message);
+          console.error("Error in fetching data:", response.message);
         }
       } catch (error) {
         console.error("Error fetching requests:", error);
@@ -72,15 +78,17 @@ const ContactUsEdprowise = () => {
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
   };
+
   const handleDeleteConfirmed = (_id) => {
     setRequests((prevRequests) =>
       prevRequests.filter((request) => request._id !== _id)
     );
   };
+
   const navigateToViewRequestInfo = (event, request) => {
     event.preventDefault();
     navigate(`/admin-dashboard/enquiry/enquity-details`, {
-      state: { request }, // Pass student data through state
+      state: { request }, // Pass request data through state
     });
   };
 
@@ -92,12 +100,8 @@ const ContactUsEdprowise = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">All Contact Us List</h4>
-
                 <div className="text-end">
-                  <Link class="text-primary">
-                    Export
-                    <i class="bx bx-export ms-1"></i>
-                  </Link>
+                  <Link className="btn btn-sm btn-outline-light">Export</Link>
                 </div>
               </div>
 
@@ -153,7 +157,6 @@ const ContactUsEdprowise = () => {
                             ? `${request.note.slice(0, 20)}...`
                             : request.note}
                         </td>
-
                         <td>
                           <div className="d-flex gap-2">
                             <Link
@@ -167,7 +170,6 @@ const ContactUsEdprowise = () => {
                                 className="align-middle fs-18"
                               />
                             </Link>
-
                             <Link
                               onClick={(e) => {
                                 e.preventDefault();
