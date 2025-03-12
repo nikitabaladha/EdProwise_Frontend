@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { RiCloseLargeFill } from "react-icons/ri";
 import Topbar from "./Topbar";
 
 const menuData = [
   { name: "Home", link: "/", subMenu: [] },
- 
+
   {
     name: "Services",
     subMenu: [
@@ -15,9 +15,11 @@ const menuData = [
         link: "/services/digital-services",
       },
       { name: "Acadmic & Admin", link: "/services/academic-admin-services" },
-      { name: "Get Goods For Your School", link: "/services/get-goods-services" },
+      {
+        name: "Get Goods For Your School",
+        link: "/services/get-goods-services",
+      },
       { name: "Hire School Teacher", link: "/services/recruitment-services" },
-      
     ],
   },
   { name: "Orders", link: "/order", subMenu: [] },
@@ -66,7 +68,6 @@ const Header = () => {
     toggleMobileMenu();
   };
 
- 
   const isActive = (path, subMenu) => {
     if (location.pathname === path) {
       return true;
@@ -111,11 +112,11 @@ const Header = () => {
     navigate(`/signup`);
   };
 
-  const handleHomePageRender=(event)=>{
+  const handleHomePageRender = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    navigate(`/`)
-  }
+    navigate(`/`);
+  };
 
   const toggleMobileNavigation = (e) => {
     var navbar = window.$(".navigation-holder");
@@ -146,7 +147,7 @@ const Header = () => {
                         type="button"
                         className="menu-close "
                         onClick={toggleMobileMenu}
-                        style={{borderRadius:"0.75rem"}}
+                        style={{ borderRadius: "0.75rem" }}
                       >
                         <span className="sr-only">Toggle navigation</span>
                         <span className="icon-bar first-angle"></span>
@@ -160,7 +161,7 @@ const Header = () => {
                       className="navbar-toggler open-btn"
                       // onClick={toggleMobileMenu}
                       onClick={toggleMobileNavigation}
-                      style={{borderRadius:"0.75rem"}}
+                      style={{ borderRadius: "0.75rem" }}
                     >
                       <span className="sr-only">Toggle navigation</span>
                       <span className="icon-bar first-angle"></span>
@@ -172,7 +173,10 @@ const Header = () => {
               </div>
               <div className="col-lg-2 col-9">
                 <div className="navbar-header">
-                  <Link onClick={(event) => handleHomePageRender(event)} className="navbar-brand fw-bold logo">
+                  <Link
+                    onClick={(event) => handleHomePageRender(event)}
+                    className="navbar-brand fw-bold logo"
+                  >
                     <img
                       src="/assets/website-images/EdProwise New Logo-1.png"
                       alt="logo"
@@ -190,7 +194,10 @@ const Header = () => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="sidebar-logo">
                       <div className="navbar-header">
-                        <Link onClick={(event) => handleHomePageRender(event)} className="navbar-brand fw-bold logo">
+                        <Link
+                          onClick={(event) => handleHomePageRender(event)}
+                          className="navbar-brand fw-bold logo"
+                        >
                           <img
                             src="/assets/website-images/EdProwise New Logo White-1.png"
                             alt="logo"
@@ -212,67 +219,72 @@ const Header = () => {
                             ? "menu-item-has-children"
                             : ""
 
-                            // menu-item
+                          // menu-item
                         }`}
                       >
                         <Link
                           to={menu.link}
                           // onClick={(e) => handleMenuClick(menu, index, e)}
-                          
-  onClick={window.innerWidth<= 992 ? (e) => handleMenuClick(menu, index, e) : undefined}
 
+                          onClick={
+                            window.innerWidth <= 992
+                              ? (e) => handleMenuClick(menu, index, e)
+                              : undefined
+                          }
                           className={`nav-item ${
-                            isActive(menu.link, menu.subMenu)
-                              ? "active"
-                              : ""
+                            isActive(menu.link, menu.subMenu) ? "active" : ""
                           }`}
                         >
                           {menu.name}
                         </Link>
-{/* && openSubMenu === index  */}
-                        {
-                          window.innerWidth <=992?(<>
-                          {menu.subMenu.length > 0 && window.innerWidth<=992 && openSubMenu === index && (
-                          <ul className="sub-menu">
-                            {menu.subMenu.map((subItem, subIndex) => (
-                              <li key={subIndex}>
-                                <Link
-                                  to={subItem.link}
-                                  onClick={(e) =>
-                                    handleSubMenuClick(subItem, e)
-                                  }
-                                  className={`${
-                                    isActive(subItem.link) ? "active" : ""
-                                  }`}
-                                >
-                                  {subItem.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                         )} 
-                          </>):(<>
-                            {menu.subMenu.length > 0  && (
-                          <ul className="sub-menu">
-                            {menu.subMenu.map((subItem, subIndex) => (
-                              <li key={subIndex}>
-                                <Link
-                                  to={subItem.link}
-                                  onClick={(e) =>
-                                    handleSubMenuClick(subItem, e)
-                                  }
-                                  className={`${
-                                    isActive(subItem.link) ? "active" : ""
-                                  }`}
-                                >
-                                  {subItem.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                         )} 
-                          </>)
-                        }
+                        {/* && openSubMenu === index  */}
+                        {window.innerWidth <= 992 ? (
+                          <>
+                            {menu.subMenu.length > 0 &&
+                              window.innerWidth <= 992 &&
+                              openSubMenu === index && (
+                                <ul className="sub-menu">
+                                  {menu.subMenu.map((subItem, subIndex) => (
+                                    <li key={subIndex}>
+                                      <Link
+                                        to={subItem.link}
+                                        onClick={(e) =>
+                                          handleSubMenuClick(subItem, e)
+                                        }
+                                        className={`${
+                                          isActive(subItem.link) ? "active" : ""
+                                        }`}
+                                      >
+                                        {subItem.name}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                          </>
+                        ) : (
+                          <>
+                            {menu.subMenu.length > 0 && (
+                              <ul className="sub-menu">
+                                {menu.subMenu.map((subItem, subIndex) => (
+                                  <li key={subIndex}>
+                                    <Link
+                                      to={subItem.link}
+                                      onClick={(e) =>
+                                        handleSubMenuClick(subItem, e)
+                                      }
+                                      className={`${
+                                        isActive(subItem.link) ? "active" : ""
+                                      }`}
+                                    >
+                                      {subItem.name}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </>
+                        )}
                       </li>
                     ))}
                     {window.innerWidth <= 992 ? (
