@@ -317,7 +317,6 @@ const DigitalSection = () => {
 
   const handleItemClick = (course) => {
     if (course.send) {
-      console.log("Navigating to:", course.send);
       navigate(course.send);
     } else {
       setModalContent(course);
@@ -335,6 +334,7 @@ const DigitalSection = () => {
       <div className="row-web wpo-courses-wrap service-row">
         {coursesData.map((course, index) => (
           <div
+          key={course.id}
             className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.classid}`}
           >
             

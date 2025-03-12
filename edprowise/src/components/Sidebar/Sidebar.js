@@ -720,32 +720,27 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       <div className="logo-box">
         <Link to="" className="logo-dark">
           <img
-            // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
-            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
+            src={`${process.env.PUBLIC_URL}/assets/website-images/EdProwise New Logo White-1.png`}
             className="logo-sm"
-            alt={`${school?.schoolName} Profile`}
+            alt={`EdProwise Profile`}
           />
           <img
-            // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
-            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
+            src={`${process.env.PUBLIC_URL}/assets/website-images/EdProwise New Logo White-1.png`}
             className="logo-lg"
-            alt={`${school?.schoolName} Profile`}
+            alt={`EdProwise Profile`}
           />
         </Link>
         <Link to="" className="logo-light">
           <img
-            // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
-            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
+            src={`${process.env.PUBLIC_URL}/assets/website-images/EdProwise New Logo White-1.png`}
             className="logo-sm"
-            alt={`${school?.schoolName} Profile`}
+            alt={`EdProwise Profile`}
           />
           <span>
             <img
-              // src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
-              src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
+              src={`${process.env.PUBLIC_URL}/assets/website-images/EdProwise New Logo White-1.png`}
               className="logo-lg"
-              alt={`${school?.schoolName} Profile`}
-              style={{ height: "80px", width: "160px" }}
+              alt={`EdProwise Profile`}
             />
           </span>
         </Link>

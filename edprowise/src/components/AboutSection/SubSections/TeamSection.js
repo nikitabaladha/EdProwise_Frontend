@@ -5,48 +5,40 @@ const TeamSection = () => {
     {
       name: "Kunal Shah",
       role: "CEO",
-      image: "assets/website-images/team/1.webp",
+      image: "assets/website-images/kunalCEO-preview (1).jpg",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
-        // facebook: "#",
-        // twitter: "#",
-        linkedin: "#",
+        linkedin: " https://www.linkedin.com/in/ca-kunal-shah-a7618a100?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
       },
     },
     {
       name: "Jai Gupta",
       role: "COO",
-      image: "assets/website-images/team/2.webp",
+      image: "assets/website-images/jayGupta-preview (1).jpg",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
-        // facebook: "#",
-        // twitter: "#",
         linkedin: "#",
       },
     },
     {
       name: "Dhiraj Zope",
       role: "CTO",
-      image: "assets/website-images/team/3.webp",
+      image: "assets/website-images/dhirajsir-preview (1).jpg",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
-        // facebook: "#",
-        // twitter: "#",
-        linkedin: "#",
+        linkedin: "https://www.linkedin.com/in/dhiru805",
       },
     },
     {
       name: "Dhruv Anand",
       role: "CFO",
-      image: "assets/website-images/team/4.webp",
+      image: "assets/website-images/DhruvPhota.jpg",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
       socialLinks: {
-        // facebook: "#",
-        // twitter: "#",
         linkedin: "#",
       },
     },
@@ -58,9 +50,9 @@ const TeamSection = () => {
         <div className="wpo-section-title-s2">
           {/* <small>Our Professionals</small> */}
           <h2>
-          Meet the  
+          Meet the   
             <span>
-            Exceptional
+             Exceptional
               <i className="shape">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +98,7 @@ const TeamSection = () => {
                   </div>
                   <div className="wpo-team-text">
                     <h2>
-                      <a href="teacher-single.html">{member.name}</a>
+                      <a >{member.name}</a>
                     </h2>
                     <span>{member.role}</span>
                   </div>

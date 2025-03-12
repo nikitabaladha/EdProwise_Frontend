@@ -62,7 +62,7 @@ const AdminDashboardHeader = () => {
 
   const [adminProfile, setAdminProfile] = useState(null);
 
-  const fetchSellerProfileData = async () => {
+  const fetchEdprowiseProfileData = async () => {
     try {
       const response = await getAPI(`/edprowise-profile`, {}, true);
 
@@ -79,7 +79,7 @@ const AdminDashboardHeader = () => {
   };
 
   useEffect(() => {
-    fetchSellerProfileData();
+    fetchEdprowiseProfileData();
   }, []);
 
   const navigateToViewAdminProfile = (event, _id) => {

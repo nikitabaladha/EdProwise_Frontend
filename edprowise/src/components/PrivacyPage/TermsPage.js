@@ -3,18 +3,12 @@ import react from "react";
 const TermsPage = () => {
   return (
     <>
-      <section className="wpo-page-title">
+      <section className="wpo-page-title service-sub-page-title">
         <div className="container">
           <div className="row">
             <div className="col col-xs-12">
               <div className="wpo-breadcumb-wrap">
-                <h2>Terms</h2>
-                {/* <ol className="wpo-breadcumb-wrap">
-                  <li>
-                    <a>Home</a>
-                  </li>
-                  <li>Privacy Policy</li>
-                </ol> */}
+                <h2>Terms & Conditions</h2>
               </div>
             </div>
           </div>

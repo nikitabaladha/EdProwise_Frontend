@@ -60,7 +60,7 @@ const ViewAdminProfile = () => {
                     <h4 className="card-title text-center custom-heading-font card-title">
                       Your Profile Details
                     </h4>
-                    <Link
+                    {/* <Link
                       onClick={(event) =>
                         navigateToUpdateAdminProfile(event, adminProfile?._id)
                       }
@@ -70,7 +70,7 @@ const ViewAdminProfile = () => {
                         icon="solar:pen-2-broken"
                         className="align-middle fs-18"
                       />
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
                 <h4 className="card-title text-center custom-heading-font">

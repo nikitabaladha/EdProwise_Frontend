@@ -35,11 +35,11 @@ const AddCategory = () => {
     fetchMainCategories();
   }, []);
 
-  const handleMainCategoryChange = async (e) => {
-    const selectedMainCategoryId = e.target.value;
-    setMainCategoryId(selectedMainCategoryId);
-    setCategories([]);
-    setCategoryId("");
+  const handleMainCategoryChange = async (index, selectedMainCategoryId) => {
+    const updatedRows = [...categoryRows];
+    updatedRows[index].mainCategoryId = selectedMainCategoryId;
+    updatedRows[index].categories = [];
+    updatedRows[index].categoryId = "";
 
     if (selectedMainCategoryId) {
       try {
@@ -49,7 +49,7 @@ const AddCategory = () => {
           true
         );
         if (!response.hasError && Array.isArray(response.data.data)) {
-          setCategories(response.data.data);
+          updatedRows[index].categories = response.data.data;
         } else {
           toast.error("Failed to load categories.");
         }
@@ -57,6 +57,7 @@ const AddCategory = () => {
         toast.error("Error fetching categories.");
       }
     }
+    setCategoryRows(updatedRows);
   };
 
   const handleRowChange = (index, field, value) => {
@@ -66,10 +67,11 @@ const AddCategory = () => {
   };
 
   const addRow = () => {
-    setCategoryRows([
-      ...categoryRows,
-      { mainCategoryName: "", categoryName: "", subCategoryName: "" },
-    ]);
+    if (categoryRows.length > 0) {
+      const firstRowData = { ...categoryRows[0] };
+      firstRowData.subCategoryName = "";
+      setCategoryRows([...categoryRows, firstRowData]);
+    }
   };
 
   const removeRow = (index) => {
@@ -83,11 +85,11 @@ const AddCategory = () => {
       for (const row of categoryRows) {
         let subCategoryData = {};
 
-        if (mainCategoryId && categoryId) {
+        if (row.mainCategoryId && row.categoryId) {
           subCategoryData = {
             subCategoryName: row.subCategoryName,
-            categoryId,
-            mainCategoryId,
+            categoryId: row.categoryId,
+            mainCategoryId: row.mainCategoryId,
           };
           const response = await postAPI(
             "/sub-category",
@@ -100,11 +102,11 @@ const AddCategory = () => {
           } else {
             toast.error(`Failed to create Sub Category: ${response.message}`);
           }
-        } else if (mainCategoryId && !categoryId) {
+        } else if (row.mainCategoryId && !row.categoryId) {
           subCategoryData = {
             subCategoryName: row.subCategoryName,
             categoryName: row.categoryName,
-            mainCategoryId,
+            mainCategoryId: row.mainCategoryId,
           };
           const response = await postAPI(
             "/sub-category-without-category-id",
@@ -117,7 +119,7 @@ const AddCategory = () => {
           } else {
             toast.error(`Failed to create Category: ${response.message}`);
           }
-        } else if (!mainCategoryId && !categoryId) {
+        } else if (!row.mainCategoryId && !row.categoryId) {
           subCategoryData = {
             subCategoryName: row.subCategoryName,
             categoryName: row.categoryName,
@@ -165,7 +167,7 @@ const AddCategory = () => {
                       {!showOtherFields && mainCategories.length > 0 ? (
                         <>
                           <label
-                            htmlFor="mainCategoryId"
+                            htmlFor={`mainCategoryId-${index}`}
                             className="form-label"
                           >
                             Main Category List
@@ -173,10 +175,11 @@ const AddCategory = () => {
                           <select
                             required
                             className="form-control"
-                            id="mainCategoryId"
-                            name="mainCategoryId"
-                            value={mainCategoryId}
-                            onChange={handleMainCategoryChange}
+                            id={`mainCategoryId-${index}`}
+                            value={row.mainCategoryId}
+                            onChange={(e) =>
+                              handleMainCategoryChange(index, e.target.value)
+                            }
                           >
                             <option value="">Select Main Category</option>
                             {mainCategories.map((mainCategory) => (
@@ -192,7 +195,7 @@ const AddCategory = () => {
                       ) : (
                         <>
                           <label
-                            htmlFor="mainCategoryName"
+                            htmlFor={`mainCategoryName-${index}`}
                             className="form-label"
                           >
                             Main Category Name
@@ -216,29 +219,30 @@ const AddCategory = () => {
 
                     <div className="col-md-3">
                       {!showOtherFields &&
-                      mainCategoryId &&
-                      categories.length > 0 ? (
+                      row.mainCategoryId &&
+                      row.categories.length > 0 ? (
                         <>
-                          <label htmlFor="categoryId" className="form-label">
+                          <label
+                            htmlFor={`categoryId-${index}`}
+                            className="form-label"
+                          >
                             Category List
                           </label>
                           <select
                             required
                             className="form-control"
-                            id="categoryId"
-                            name="categoryId"
-                            value={categoryId}
-                            onChange={(e) => {
-                              setCategoryId(e.target.value);
+                            id={`categoryId-${index}`}
+                            value={row.categoryId}
+                            onChange={(e) =>
                               handleRowChange(
                                 index,
-                                "categoryName",
-                                e.target.options[e.target.selectedIndex].text
-                              );
-                            }}
+                                "categoryId",
+                                e.target.value
+                              )
+                            }
                           >
                             <option value="">Select Category</option>
-                            {categories.map((category) => (
+                            {row.categories.map((category) => (
                               <option key={category.id} value={category.id}>
                                 {category.categoryName}
                               </option>
@@ -247,7 +251,10 @@ const AddCategory = () => {
                         </>
                       ) : (
                         <>
-                          <label htmlFor="categoryName" className="form-label">
+                          <label
+                            htmlFor={`categoryName-${index}`}
+                            className="form-label"
+                          >
                             Category Name
                           </label>
                           <input

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 const edprowiseData = [
     {
       id: "edprowiseOne",
@@ -51,6 +51,12 @@ const edprowiseData = [
     },
   ];
 const EdProwiseFAQSection = () => {
+
+   const [activeIndex, setActiveIndex] = useState(0); // State to track the active FAQ index
+      
+        const handleAccordionClick = (index) => {
+          setActiveIndex(index === activeIndex ? null : index); // Toggle the active index
+        };
     return (
       <section className="wpo-faq-section section-padding pt-lg-2 pb-lg-2">
         <div className="container">
@@ -67,17 +73,16 @@ const EdProwiseFAQSection = () => {
                   <div className="col-lg-12 col-12">
                     <div className="wpo-benefits-item">
                       <div className="accordion" id="accordionExample">
-                        {edprowiseData.map((faq, index) => (
-                          <div className="accordion-item" key={index}>
+                        {edprowiseData.map((faq, index) => {
+                          const isActive = index === activeIndex;
+                          return(
+                            <div className="accordion-item" key={faq.id}>
                             <h3 className="accordion-header" id={faq.headingId}>
                               <button
-                                className={`text-black fw-bold accordion-button  ${
-                                  index === 0 ? "" : "collapsed"
-                                }`}
+                                className={`text-black fw-bold faq-question-back accordion-button   ${!isActive ? "collapsed" : ""}`}
                                 type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target={`#${faq.id}`}
-                                aria-expanded={index === 0 ? "true" : "false"}
+                                onClick={() => handleAccordionClick(index)}
+                                aria-expanded={isActive ? "true" : "false"}
                                 aria-controls={faq.id}
                               >
                                 {faq.question}
@@ -85,9 +90,7 @@ const EdProwiseFAQSection = () => {
                             </h3>
                             <div
                               id={faq.id}
-                              className={`accordion-collapse collapse ${
-                                index === 0 ? "show" : ""
-                              }`}
+                              className={`accordion-collapse collapse ${isActive ? "show" : ""}`}
                               aria-labelledby={faq.headingId}
                               data-bs-parent="#accordionExample"
                             >
@@ -96,7 +99,8 @@ const EdProwiseFAQSection = () => {
                               </div>
                             </div>
                           </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     </div>
                   </div>

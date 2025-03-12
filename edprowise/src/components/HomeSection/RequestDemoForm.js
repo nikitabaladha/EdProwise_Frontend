@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import RequestDemoSteps from "./RequestDemoSteps";
 import { ToastContainer, toast } from "react-toastify";
+import postAPI from "../../api/postAPI";
 
 const coursesData = [
   { id: 1, title: "School Fees Management Software - Pixel Fees" },
@@ -54,17 +55,18 @@ const RequestDemoForm = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3001/api/request-demo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const response = await postAPI("/request-demo", data,
+        {
+         "Content-Type": "application/json",
+      }
+    ,
+  true);
 
-      if (response.ok) {
+      if (!response.hasError) {
         toast.success("Thank you! We will touch with you shortly.");
         resetForm(e.target);
       } else {
-        toast.error("Error occurred while sending request. Please try again later.");
+        toast.error("A demo request with this email already exists.");
       }
     } catch (error) {
       toast.error("Error occurred while sending request. Please try again later.");
@@ -73,7 +75,6 @@ const RequestDemoForm = () => {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
       
       <section className="wpo-page-title">
         <div className="container">

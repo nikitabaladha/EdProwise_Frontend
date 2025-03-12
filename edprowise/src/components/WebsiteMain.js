@@ -85,7 +85,7 @@ const WebsiteMain = () => {
         <DashboardFooter />
       </div>
 
-      {showBackToTop && (
+      {/* {showBackToTop && (
         <button
           className="back-to-top"
           onClick={scrollToTop}
@@ -110,7 +110,7 @@ const WebsiteMain = () => {
         >
           ↑
         </button>
-      )}
+      )} */}
     </>
   );
 };

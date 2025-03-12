@@ -1,8 +1,5 @@
 import React,{useState} from "react";
-import { Link } from "react-router-dom";
 import { FaUserTie } from "react-icons/fa";
-import { GiLaptop } from "react-icons/gi";
-import { MdEmojiEvents } from "react-icons/md";
 import { MdSupportAgent } from "react-icons/md";
 import { GiAirplaneDeparture } from "react-icons/gi";
 import { MdSupervisorAccount } from "react-icons/md";

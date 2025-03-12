@@ -331,9 +331,9 @@ const AppRoutes = () => {
 
         <Route path="services" element={<ServiceMainPage />}>
           <Route path="digital-services" element={<DigitalService />} />
-          <Route path="business-services" element={<BusinessSection />} />
+          <Route path="academic-admin-services" element={<BusinessSection />} />
           <Route path="recruitment-services" element={<RecruitmentSection />} />
-          <Route path="procurement-services" element={<ProcurementSection />} />
+          <Route path="get-goods-services" element={<ProcurementSection />} />
         </Route>
 
         <Route path="community-connect" element={<CommunityMainPage />}>

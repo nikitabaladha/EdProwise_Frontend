@@ -105,7 +105,7 @@ const BookSyncFAQSection = () => {
                           <div className="accordion-item" key={faq.id}>
                             <h3 className="accordion-header" id={faq.headingId}>
                               <button
-                                className={`text-black fw-bold accordion-button ${!isActive ? "collapsed" : ""}`}
+                                className={`text-black fw-bold faq-question-back accordion-button ${!isActive ? "collapsed" : ""}`}
                                 type="button"
                                 onClick={() => handleAccordionClick(index)}
                                 aria-expanded={isActive ? "true" : "false"}
