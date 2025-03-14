@@ -10,6 +10,7 @@ import getAPI from "../../../api/getAPI";
 const UpdateAdminProfile = () => {
   const location = useLocation();
   const profileId = location.state?._id;
+  console.log("profileId", profileId);
 
   const navigate = useNavigate();
 
@@ -89,7 +90,7 @@ const UpdateAdminProfile = () => {
 
     try {
       const response = await putAPI(
-        `/edprowise-profile/67c72a486680419faf7a652a`,
+        `/edprowise-profile/${profileId}`,
         formDataToSend,
         {
           "Content-Type": "multipart/form-data",

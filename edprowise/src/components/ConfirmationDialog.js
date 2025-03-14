@@ -9,6 +9,12 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete school.",
     idKey: "schoolId",
   },
+  admin: {
+    getEndpoint: (id) => `/delete-admin/${id}`,
+    successMessage: "Admin successfully deleted!",
+    errorMessage: "Failed to delete Admin.",
+    idKey: "adminId",
+  },
   seller: {
     getEndpoint: (id) => `/seller-profile/${id}`,
     successMessage: "Seller successfully deleted!",

@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../../export-excel";
@@ -24,12 +24,18 @@ const formatDate = (dateString) => {
 const ViewQuote = () => {
   const location = useLocation();
 
-  const { quote, sellerId, enquiryNumber } = location.state || {};
+  const { quote, sellerId, enquiryNumber, schoolId } = location.state || {};
 
   const [currentQuote, setCurrentQuote] = useState(quote);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchQuoteData = async () => {
+    // if (!enquiryNumber || !sellerId) {
+    //   console.error("Enquiry Number or Seller ID is missing");
+    //   return;
+    // }
+    console.log("Enquiry Number", enquiryNumber);
+    console.log("Seller ID", sellerId);
     try {
       const response = await getAPI(
         `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
@@ -46,15 +52,11 @@ const ViewQuote = () => {
     }
   };
 
+  useEffect(() => {
+    fetchQuoteData();
+  }, [enquiryNumber, sellerId]);
+
   const navigate = useNavigate();
-
-  const handleDownloadPDF = (event, quote) => {
-    event.preventDefault();
-
-    navigate("/admin-dashboard/procurement-services/view-quote", {
-      state: { quote },
-    });
-  };
 
   const openUpdateSubmittedQuoteModal = (event) => {
     event.preventDefault();
@@ -92,9 +94,56 @@ const ViewQuote = () => {
     }
   };
 
-  if (!quote) {
-    return <div>No quote details available.</div>;
-  }
+  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
+      return;
+    }
+
+    try {
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      );
+
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
+
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(`/admin-dashboard/procurement-services/quote-proposal`, {
+          state: { prepareQuoteData, quoteProposalData, profileData },
+        });
+      } else {
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
+
+  // if (!quote) {
+  //   return <div>No quote details available.</div>;
+  // }
 
   return (
     <>
@@ -111,7 +160,12 @@ const ViewQuote = () => {
                       </h4>
                       <div className="">
                         <Link
-                          onClick={(event) => handleDownloadPDF(event, quote)}
+                          onClick={() =>
+                            fetchPrepareQuoteAndProposalData(
+                              quote?.enquiryNumber,
+                              quote?.sellerId
+                            )
+                          }
                           className="btn btn-soft-info btn-sm"
                           title="Download PDF"
                           data-bs-toggle="popover"
@@ -136,7 +190,7 @@ const ViewQuote = () => {
                           />
                         </Link>
 
-                        {currentQuote.venderStatus === "Pending" && (
+                        {currentQuote?.venderStatus === "Pending" && (
                           <>
                             <button
                               className="btn btn-success btn-sm"
@@ -156,7 +210,7 @@ const ViewQuote = () => {
                             </button>
                           </>
                         )}
-                        {currentQuote.venderStatus === "Quote Accepted" && (
+                        {currentQuote?.venderStatus === "Quote Accepted" && (
                           <button
                             className="btn btn-danger btn-sm"
                             onClick={() =>
@@ -166,7 +220,8 @@ const ViewQuote = () => {
                             Reject
                           </button>
                         )}
-                        {currentQuote.venderStatus === "Quote Not Accepted" && (
+                        {currentQuote?.venderStatus ===
+                          "Quote Not Accepted" && (
                           <button
                             className="btn btn-success btn-sm"
                             onClick={() =>
@@ -187,7 +242,9 @@ const ViewQuote = () => {
                       <label htmlFor="supplierName" className="form-label">
                         Supplier Name
                       </label>
-                      <p className="form-control">{currentQuote.companyName}</p>
+                      <p className="form-control">
+                        {currentQuote?.companyName}
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -196,7 +253,7 @@ const ViewQuote = () => {
                         Payment Terms
                       </label>
                       <p className="form-control">
-                        {currentQuote.paymentTerms}
+                        {currentQuote?.paymentTerms}
                       </p>
                     </div>
                   </div>
@@ -212,7 +269,7 @@ const ViewQuote = () => {
                       </label>
 
                       <p className="form-control">
-                        {formatDate(currentQuote.createdAt)}
+                        {formatDate(currentQuote?.createdAt)}
                       </p>
                     </div>
                   </div>
@@ -225,7 +282,7 @@ const ViewQuote = () => {
                         Expected Delivery Date
                       </label>
                       <p className="form-control">
-                        {formatDate(currentQuote.expectedDeliveryDateBySeller)}
+                        {formatDate(currentQuote?.expectedDeliveryDateBySeller)}
                       </p>
                     </div>
                   </div>
@@ -239,7 +296,7 @@ const ViewQuote = () => {
                         Quoted Amount
                       </label>
                       <p className="form-control">
-                        {currentQuote.quotedAmount}
+                        {currentQuote?.quotedAmount}
                       </p>
                     </div>
                   </div>
@@ -253,7 +310,7 @@ const ViewQuote = () => {
                         Advances Required Amount
                       </label>
                       <p className="form-control">
-                        {currentQuote.advanceRequiredAmount}
+                        {currentQuote?.advanceRequiredAmount}
                       </p>
                     </div>
                   </div>
@@ -269,7 +326,7 @@ const ViewQuote = () => {
                         Remarks from Supplier
                       </label>
                       <p className="form-control">
-                        {currentQuote.remarksFromSupplier}
+                        {currentQuote?.remarksFromSupplier}
                       </p>
                     </div>
                   </div>
@@ -279,7 +336,9 @@ const ViewQuote = () => {
                       <label htmlFor="description" className="form-label">
                         Description
                       </label>
-                      <p className="form-control">{currentQuote.description}</p>
+                      <p className="form-control">
+                        {currentQuote?.description}
+                      </p>
                     </div>
                   </div>
                 </div>

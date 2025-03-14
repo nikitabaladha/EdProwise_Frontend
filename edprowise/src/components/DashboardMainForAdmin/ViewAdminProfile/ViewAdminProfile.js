@@ -11,6 +11,10 @@ const ViewAdminProfile = () => {
   const location = useLocation();
   const profileId = location.state?._id;
 
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+
+  const email = userDetails.email;
+
   const navigate = useNavigate();
 
   const [adminProfile, setAdminProfile] = useState(null);
@@ -60,17 +64,20 @@ const ViewAdminProfile = () => {
                     <h4 className="card-title text-center custom-heading-font card-title">
                       Your Profile Details
                     </h4>
-                    {/* <Link
-                      onClick={(event) =>
-                        navigateToUpdateAdminProfile(event, adminProfile?._id)
-                      }
-                      className="btn btn-soft-primary btn-sm"
-                    >
-                      <iconify-icon
-                        icon="solar:pen-2-broken"
-                        className="align-middle fs-18"
-                      />
-                    </Link> */}
+
+                    {email === "edprowise@gmail.com" && (
+                      <Link
+                        onClick={(event) =>
+                          navigateToUpdateAdminProfile(event, adminProfile?._id)
+                        }
+                        className="btn btn-soft-primary btn-sm"
+                      >
+                        <iconify-icon
+                          icon="solar:pen-2-broken"
+                          className="align-middle fs-18"
+                        />
+                      </Link>
+                    )}
                   </div>
                 </div>
                 <h4 className="card-title text-center custom-heading-font">

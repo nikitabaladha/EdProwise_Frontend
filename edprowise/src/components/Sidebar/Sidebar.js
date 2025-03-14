@@ -419,38 +419,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { IoIosArrowForward } from "react-icons/io";
-import getAPI from "../../api/getAPI";
 
 const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
-  const [school, setSchool] = useState(null);
-  const fetchSchoolData = async () => {
-    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-    const schoolId = userDetails?.schoolId;
-
-    if (!schoolId) {
-      console.error("School ID not found in localStorage");
-      return;
-    }
-
-    try {
-      const response = await getAPI(`/school-profile/${schoolId}`, {}, true);
-
-      if (!response.hasError && response.data && response.data.data) {
-        setSchool(response.data.data);
-
-        console.log("school data from heder", response.data.data);
-      } else {
-        console.error("Invalid response format or error in response");
-      }
-    } catch (err) {
-      console.error("Error fetching School:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchSchoolData();
-  }, []);
-
   const [openMenu, setOpenMenu] = useState(null);
   const location = useLocation();
 
@@ -491,6 +461,8 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const userRole = userDetails?.role || "Guest";
 
+  const email = userDetails.email;
+
   const currentRoute = location.pathname;
   const menuConfig = {
     Admin: [
@@ -500,6 +472,17 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         icon: "solar:widget-5-bold-duotone",
         link: "/admin-dashboard",
       },
+
+      ...(email === "edprowise@gmail.com"
+        ? [
+            {
+              id: "admin",
+              label: "Admins",
+              icon: "solar:users-group-rounded-bold-duotone",
+              link: "/admin-dashboard/admins",
+            },
+          ]
+        : []),
       {
         id: "school",
         label: "Schools",

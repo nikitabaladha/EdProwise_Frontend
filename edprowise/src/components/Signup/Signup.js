@@ -11,6 +11,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     userId: "",
     password: "",
+    conformPassword: "",
     role: "",
   });
 
@@ -47,8 +48,21 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
 
+    if (formData.password !== formData.conformPassword) {
+      toast.error("Password and Confirm Password do not match.");
+      return;
+    }
+
     try {
-      const response = await postAPI("/user-signup", formData, false);
+      const response = await postAPI(
+        "/user-signup",
+        {
+          userId: formData.userId,
+          password: formData.password,
+          role: formData.role,
+        },
+        false
+      );
 
       if (!response.hasError) {
         toast.success("Signup successful!");
@@ -61,6 +75,7 @@ const Signup = () => {
           userId: "",
           password: "",
           role: "",
+          conformPassword: "",
         });
       } else {
         setGeneralError(response.message || "Signup failed.");
@@ -71,6 +86,11 @@ const Signup = () => {
           "An unexpected signup error occurred. Please try again."
       );
     }
+  };
+
+  const [showConformPassword, setShowConformPassword] = useState(false);
+  const toggleConformPasswordVisibility = () => {
+    setShowConformPassword((prev) => !prev);
   };
 
   return (
@@ -150,6 +170,47 @@ const Signup = () => {
                     ) : (
                       <FaEyeSlash
                         onClick={togglePasswordVisibility}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  <div
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      width: "100%",
+                    }}
+                  >
+                    <input
+                      type={showConformPassword ? "text" : "password"}
+                      name="conformPassword"
+                      value={formData.conformPassword}
+                      onChange={handleChange}
+                      required
+                      className="form-control pe-5"
+                      placeholder="Conform password"
+                    />
+                    {showConformPassword ? (
+                      <FaEye
+                        onClick={toggleConformPasswordVisibility}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                        }}
+                      />
+                    ) : (
+                      <FaEyeSlash
+                        onClick={toggleConformPasswordVisibility}
                         style={{
                           position: "absolute",
                           right: "10px",

@@ -75,6 +75,7 @@ const ViewAllQuoteTable = () => {
         sellerId: quote.sellerId,
         enquiryNumber: quote.enquiryNumber,
         quote: quote,
+        schoolId,
       },
     });
   };

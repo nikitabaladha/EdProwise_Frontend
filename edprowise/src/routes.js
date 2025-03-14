@@ -58,6 +58,11 @@ import UpdateAdminProfile from "./components/DashboardMainForAdmin/UpdateAdminPr
 import AdminDashboardMain from "./components/DashboardMainForAdmin/AdminDashboardMain";
 import Dashboard from "./components/DashboardMainForAdmin/Dashboard/Dashboard";
 
+// ======================================Admin-List================================================================
+import Admins from "./components/DashboardMainForAdmin/AllAdmin/Admin";
+import AddNewAdmin from "./components/DashboardMainForAdmin/AllAdmin/AddNewAdmin/AddNewAdmin";
+import UpdateAdmin from "./components/DashboardMainForAdmin/AllAdmin/UpdateAdmin/UpdateAdmin";
+
 // ======================================School================================================================
 import Schools from "./components/DashboardMainForAdmin/Schools/Schools";
 import AddNewSchool from "./components/DashboardMainForAdmin/Schools/AddNewSchool/AddNewSchool";
@@ -159,7 +164,6 @@ import SubmitQuote from "./components/DashboardMainForSeller/ProcurementServices
 import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
-import PrepareInvoice from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PrepareInvoice/PrepareInvoice";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -258,6 +262,13 @@ const AppRoutes = () => {
           path="change-edprowise-admin-password"
           element={<ChangePasswordForAdmin />}
         />
+
+        {/* School Table page and it's Add, View, Update Routes */}
+        <Route path="admins" element={<Admins />}>
+          <Route path="add-new-admin" element={<AddNewAdmin />} />
+          <Route path="update-admin" element={<UpdateAdmin />} />
+        </Route>
+
         {/* School Table page and it's Add, View, Update Routes */}
         <Route path="schools" element={<Schools />}>
           <Route path="add-new-school" element={<AddNewSchool />} />
@@ -497,10 +508,6 @@ const AppRoutes = () => {
         <Route
           path="procurement-services/quote-proposal"
           element={<QuoteProposalForAll />}
-        />
-        <Route
-          path="procurement-services/prepare-invoice"
-          element={<PrepareInvoice />}
         />
       </Route>
 

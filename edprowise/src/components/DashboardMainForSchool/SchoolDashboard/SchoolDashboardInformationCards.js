@@ -1,18 +1,10 @@
 import React from "react";
 import { IoNewspaperOutline } from "react-icons/io5";
 import { PiShoppingCartBold } from "react-icons/pi";
-import { AiFillProduct } from "react-icons/ai";
-import { AiOutlineProduct } from "react-icons/ai";
 import { GiMoneyStack } from "react-icons/gi";
 import { PiMoneyWavyBold } from "react-icons/pi";
-import { FaSchool } from "react-icons/fa6";
-import { LuSchool } from "react-icons/lu";
 import { PiStudentFill } from "react-icons/pi";
 import { PiStudent } from "react-icons/pi";
-import { GiTakeMyMoney } from "react-icons/gi";
-import { GrMoney } from "react-icons/gr";
-import { GiShop } from "react-icons/gi";
-import { AiOutlineShop } from "react-icons/ai";
 
 const DashboardInformationCards = ({ totalCounts }) => {
   const cardData = [
@@ -22,7 +14,6 @@ const DashboardInformationCards = ({ totalCounts }) => {
       label: "Total Students",
       badgeClass: "badge-soft-danger",
       badgeIcon: "ti ti-arrow-badge-down",
-      badgeText: "5.69%",
       widgetIcon: <PiStudent className="widget-icon" />,
       textColor: "text-purple",
     },
@@ -33,7 +24,6 @@ const DashboardInformationCards = ({ totalCounts }) => {
       label: "Total Quotes",
       badgeClass: "badge-soft-success",
       badgeIcon: "ti ti-arrow-badge-up",
-      // badgeText: "8.72%",
       widgetIcon: <IoNewspaperOutline className="widget-icon" />,
       textColor: "text-info",
     },
@@ -43,7 +33,6 @@ const DashboardInformationCards = ({ totalCounts }) => {
       label: "Total Orders",
       badgeClass: "badge-soft-danger",
       badgeIcon: "ti ti-arrow-badge-down",
-      // badgeText: "3.28%",
       widgetIcon: <PiShoppingCartBold className="widget-icon" />,
       textColor: "text-success",
     },
@@ -54,7 +43,6 @@ const DashboardInformationCards = ({ totalCounts }) => {
       label: "Total Revenue",
       badgeClass: "badge-soft-success",
       badgeIcon: "ti ti-arrow-badge-up",
-      badgeText: "10.58%",
       widgetIcon: <PiMoneyWavyBold className="widget-icon" />,
       textColor: "text-orange",
     },

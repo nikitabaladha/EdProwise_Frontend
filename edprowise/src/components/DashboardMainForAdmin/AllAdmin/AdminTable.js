@@ -1,109 +1,76 @@
 import React, { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "../../../../export-excel";
-import getAPI from "../../../../../api/getAPI";
-import ConfirmationDialog from "../../../../ConfirmationDialog";
-import { toast } from "react-toastify";
+import getAPI from "../../../api/getAPI";
 
-const MainCategoryTable = () => {
-  const [subCategories, setSubCategories] = useState([]);
-  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-  const fetchSubCategoryData = async () => {
+import ConfirmationDialog from "../../ConfirmationDialog";
+import { exportToExcel } from "../../export-excel";
+const SubscriptionTable = () => {
+  const navigate = useNavigate();
+
+  const [admins, setAdmins] = useState([]);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
+
+  const fetchAdminData = async () => {
     try {
-      const response = await getAPI(`/sub-category`, {}, true);
+      const response = await getAPI(`/get-all-admin`, {}, true);
       if (
         !response.hasError &&
         response.data &&
         Array.isArray(response.data.data)
       ) {
-        setSubCategories(response.data.data);
-        console.log("Sub Category data", response.data.data);
+        setAdmins(response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
     } catch (err) {
-      console.error("Error fetching Sub category List:", err);
+      console.error("Error fetching Admin List:", err);
     }
   };
 
   useEffect(() => {
-    fetchSubCategoryData();
+    fetchAdminData();
   }, []);
-
-  const navigate = useNavigate();
-
-  const navigateToAddNewSubCategory = (event) => {
-    event.preventDefault();
-    navigate(
-      `/admin-dashboard/procurement-services/good-services/add-goods-services`
-    );
-  };
-
-  const navigateToUpdateSubCategory = (event, subCategory) => {
-    console.log("navigateToUpdateSubCategory", subCategory);
-
-    event.preventDefault();
-    navigate(
-      `/admin-dashboard/procurement-services/good-services/update-goods-services`,
-      {
-        state: { subCategory },
-      }
-    );
-  };
-
-  const handleExport = () => {
-    if (!subCategories.length) {
-      toast.error("No data available to export");
-      return;
-    }
-
-    const formattedData = subCategories.map((subCategory) => ({
-      id: subCategory.id,
-      Sub_Category_Id: subCategory.subCategoryId,
-      Sub_Category_Name: subCategory.subCategoryName,
-      Category_Id: subCategory.categoryId,
-      Category_Name: subCategory.categoryName,
-      MainCategory_Id: subCategory.mainCategoryId,
-      MainCategory_Name: subCategory.mainCategoryName,
-    }));
-
-    exportToExcel(formattedData, "SubCategory", "SubCategory");
-  };
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
 
-  const openDeleteDialog = (subCategory) => {
-    console.log("openDeleteDialog", subCategory);
-    setSelectedSubCategory(subCategory);
+  const openDeleteDialog = (admin) => {
+    setSelectedAdmin(admin);
     setIsDeleteDialogOpen(true);
-    setDeleteType("subCategory");
+    setDeleteType("admin");
+  };
+
+  const handleDeleteConfirmed = (_id) => {
+    setAdmins((prevAdmins) => prevAdmins.filter((admin) => admin._id !== _id));
   };
 
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
-    setSelectedSubCategory(null);
+    setSelectedAdmin(null);
   };
 
-  const handleDeleteConfirmed = (id) => {
-    console.log("Id", id);
-    setSubCategories((prevSubCategories) =>
-      prevSubCategories.filter((subCategory) => subCategory.id !== id)
-    );
+  const navigateToAddNewAdmin = (event) => {
+    event.preventDefault();
+    navigate(`/admin-dashboard/admins/add-new-admin`);
+  };
+
+  const navigateToUpdateAdmin = (event, admin) => {
+    event.preventDefault();
+    navigate(`/admin-dashboard/admins/update-admin`, {
+      state: { admin },
+    });
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [subCategoriesPerPage] = useState(10);
+  const [adminPerPage] = useState(10);
 
-  const indexOfLastSubCategory = currentPage * subCategoriesPerPage;
-  const indexOfFirstSubCategory = indexOfLastSubCategory - subCategoriesPerPage;
-  const currentSubCategory = subCategories.slice(
-    indexOfFirstSubCategory,
-    indexOfLastSubCategory
-  );
+  const indexOfLastAdmin = currentPage * adminPerPage;
+  const indexOfFirstAdmin = indexOfLastAdmin - adminPerPage;
+  const currentAdmin = admins.slice(indexOfFirstAdmin, indexOfLastAdmin);
 
-  const totalPages = Math.ceil(subCategories.length / subCategoriesPerPage);
+  const totalPages = Math.ceil(admins.length / adminPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -127,33 +94,36 @@ const MainCategoryTable = () => {
     (_, index) => startPage + index
   );
 
+  const handleExport = () => {};
+
   return (
     <>
+      {" "}
       <div className="container-fluid">
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">
-                  All Sub Category List
-                </h4>
+                <h4 className="card-title flex-grow-1">All Admin List</h4>
                 <Link
+                  onClick={(event) => navigateToAddNewAdmin(event)}
                   className="btn btn-sm btn-primary"
-                  onClick={(event) => navigateToAddNewSubCategory(event)}
                 >
-                  Add New Sub Category
+                  Add Admin
                 </Link>
 
                 <div className="text-end">
-                  <Link onClick={handleExport} class="text-primary">
+                  <Link
+                    onClick={handleExport}
+                    className="btn btn-sm btn-outline-light"
+                  >
                     Export
-                    <i class="bx bx-export ms-1"></i>
                   </Link>
                 </div>
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
+                  <table className="table align-middle mb-0 table-hover table-centered text-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -169,47 +139,43 @@ const MainCategoryTable = () => {
                             />
                           </div>
                         </th>
-                        <th>Main Category </th>
-                        <th>Category </th>
-                        <th>Sub Category</th>
-                        <th>Action</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th className="text-start">Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {currentSubCategory.map((subCategory) => (
-                        <tr key={subCategory.id}>
+                      {currentAdmin.map((admin) => (
+                        <tr key={admin._id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${subCategory.id}`}
+                                id="customCheck2"
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${subCategory.id}`}
+                                htmlFor="customCheck2"
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{subCategory.mainCategoryName}</td>
-                          <td>{subCategory.categoryName}</td>
-                          <td>{subCategory.subCategoryName}</td>
+                          <td>{admin.firstName}</td>
+                          <td>{admin.lastName}</td>
+                          <td>{admin.email}</td>
+                          <td>********</td>
 
                           <td>
                             <div className="d-flex gap-2">
                               <Link
-                                className="btn btn-soft-primary btn-sm"
-                                title="Update"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
                                 onClick={(event) =>
-                                  navigateToUpdateSubCategory(
-                                    event,
-                                    subCategory
-                                  )
+                                  navigateToUpdateAdmin(event, admin)
                                 }
+                                className="btn btn-soft-primary btn-sm"
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
@@ -217,14 +183,11 @@ const MainCategoryTable = () => {
                                 />
                               </Link>
                               <Link
-                                className="btn btn-soft-danger btn-sm"
-                                title="Delete"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  openDeleteDialog(subCategory);
+                                  openDeleteDialog(admin);
                                 }}
+                                className="btn btn-soft-danger btn-sm"
                               >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
@@ -238,7 +201,6 @@ const MainCategoryTable = () => {
                     </tbody>
                   </table>
                 </div>
-                {/* end table-responsive */}
               </div>
               <div className="card-footer border-top">
                 <nav aria-label="Page navigation example">
@@ -289,12 +251,12 @@ const MainCategoryTable = () => {
         <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
-          id={selectedSubCategory.id}
-          onDeleted={handleDeleteConfirmed}
+          id={selectedAdmin._id}
+          onDeleted={() => handleDeleteConfirmed(selectedAdmin._id)}
         />
       )}
     </>
   );
 };
 
-export default MainCategoryTable;
+export default SubscriptionTable;

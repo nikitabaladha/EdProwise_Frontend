@@ -202,7 +202,7 @@ const ViewCart = () => {
                             <th>Discount Amount</th>
                             <th>GST Amount</th>
                             <th>Total Amount</th>
-                            <th>Action</th>
+                            {/* <th>Action</th> */}
                           </tr>
                         </thead>
                         <tbody>

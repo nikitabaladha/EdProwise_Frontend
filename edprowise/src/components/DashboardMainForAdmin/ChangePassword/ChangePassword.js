@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import putAPI from "../../../api/putAPI";
 import { toast } from "react-toastify";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 const ChangePassword = () => {
   const { state } = useLocation();
   const adminProfile = state?.adminProfile;
@@ -72,6 +73,20 @@ const ChangePassword = () => {
     }
   };
 
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const toggleCurrentPasswordVisibility = () => {
+    setShowCurrentPassword((prev) => !prev);
+  };
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword((prev) => !prev);
+  };
+
+  const [showConformPassword, setShowConformPassword] = useState(false);
+  const toggleConformPasswordVisibility = () => {
+    setShowConformPassword((prev) => !prev);
+  };
+
   return (
     <>
       <div className="container">
@@ -130,57 +145,130 @@ const ChangePassword = () => {
                   <div className="row">
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label htmlFor="currentPassword" className="form-label">
+                        <label htmlFor="password" className="form-label">
                           Current Password
                         </label>
-                        <span className="text-danger">*</span>
-                        <input
-                          className="form-control"
-                          required
-                          name="currentPassword"
-                          type="password"
-                          value={formData.currentPassword}
-                          onChange={handleChange}
-                          id="currentPassword"
-                          placeholder="Example : 12@AB#cd"
-                        />
+                        <div style={{ position: "relative" }}>
+                          <input
+                            type={showCurrentPassword ? "text" : "password"}
+                            className="form-control"
+                            required
+                            name="currentPassword"
+                            value={formData.currentPassword}
+                            onChange={handleChange}
+                            id="currentPassword"
+                            placeholder="Example : dc#BA@21"
+                          />
+                          {showCurrentPassword ? (
+                            <FaEye
+                              onClick={toggleCurrentPasswordVisibility}
+                              style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                              }}
+                            />
+                          ) : (
+                            <FaEyeSlash
+                              onClick={toggleCurrentPasswordVisibility}
+                              style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                              }}
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label htmlFor="newPassword" className="form-label">
+                        <label htmlFor="password" className="form-label">
                           New Password
                         </label>
-                        <span className="text-danger">*</span>
-                        <input
-                          className="form-control"
-                          required
-                          name="newPassword"
-                          type="password"
-                          value={formData.newPassword}
-                          onChange={handleChange}
-                          id="newPassword"
-                          placeholder="Example : dc#BA@21"
-                        />
+                        <div style={{ position: "relative" }}>
+                          <input
+                            type={showNewPassword ? "text" : "password"}
+                            className="form-control"
+                            required
+                            name="newPassword"
+                            value={formData.newPassword}
+                            onChange={handleChange}
+                            id="newPassword"
+                            placeholder="Example : 12@AB#cd"
+                          />
+                          {showNewPassword ? (
+                            <FaEye
+                              onClick={toggleNewPasswordVisibility}
+                              style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                              }}
+                            />
+                          ) : (
+                            <FaEyeSlash
+                              onClick={toggleNewPasswordVisibility}
+                              style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                              }}
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
+
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label htmlFor="confirmPassword" className="form-label">
-                          Re-type New Password
+                        <label htmlFor="password" className="form-label">
+                          Retype New Password
                         </label>
-                        <span className="text-danger">*</span>
-                        <input
-                          className="form-control"
-                          required
-                          name="confirmPassword"
-                          type="password"
-                          value={formData.confirmPassword}
-                          onChange={handleChange}
-                          id="confirmPassword"
-                          placeholder="Example : dc#BA@21"
-                        />
+                        <div style={{ position: "relative" }}>
+                          <input
+                            type={showConformPassword ? "text" : "password"}
+                            className="form-control"
+                            required
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            id="confirmPassword"
+                            placeholder="Example : 12@AB#cd"
+                          />
+                          {showConformPassword ? (
+                            <FaEye
+                              onClick={toggleConformPasswordVisibility}
+                              style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                              }}
+                            />
+                          ) : (
+                            <FaEyeSlash
+                              onClick={toggleConformPasswordVisibility}
+                              style={{
+                                position: "absolute",
+                                right: "10px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                              }}
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

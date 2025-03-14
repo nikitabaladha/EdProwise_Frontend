@@ -38,7 +38,7 @@ const WarningDialog = ({ onClose }) => {
           id="swal2-title"
           style={{ display: "block" }}
         >
-          You can edit the prepared quote data within 4 hrs
+          You can edit the prepared quote data only for one time within 4 hrs
         </h2>
         <div
           className="swal2-html-container"
@@ -83,7 +83,7 @@ const WarningDialog = ({ onClose }) => {
             style={{ display: "inline-block" }}
             onClick={onClose}
           >
-            Close!
+            Ok Got It!
           </button>
         </div>
         <div className="swal2-footer" style={{ display: "none" }} />

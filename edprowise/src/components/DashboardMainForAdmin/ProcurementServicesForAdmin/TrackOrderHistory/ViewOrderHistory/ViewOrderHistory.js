@@ -16,6 +16,7 @@ const formatDate = (dateString) => {
 const ViewOrderHistory = () => {
   const location = useLocation();
   const order = location.state?.order;
+  const orderNumber = order.orderNumber;
 
   const enquiryNumber = location.state?.enquiryNumber;
 
@@ -25,6 +26,7 @@ const ViewOrderHistory = () => {
   const navigate = useNavigate();
 
   const [quote, setQuote] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
@@ -47,6 +49,32 @@ const ViewOrderHistory = () => {
       console.error("Error fetching quote:", err);
     }
   };
+
+  const fetchOrderDetails = async () => {
+    try {
+      const response = await getAPI(
+        `/order-from-buyer/${orderNumber}/${sellerId}`,
+        {},
+        true
+      );
+
+      if (!response.hasError && response.data.data) {
+        setOrders(response.data.data);
+        console.log(
+          "order data from function from school order history",
+          response.data.data
+        );
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching quote:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrderDetails();
+  }, [enquiryNumber]);
 
   if (!order) {
     return <div>No order details available.</div>;
@@ -473,6 +501,107 @@ const ViewOrderHistory = () => {
                             <td>{product.description}</td>
                             <td>{formatDate(product.createdAt)}</td>
                             <td>{formatDate(product.expectedDeliveryDate)}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* end table-responsive */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="container">
+        <div className="row">
+          <div className="col-xl-12">
+            <div className="card m-2">
+              <div className="card-body custom-heading-padding">
+                <div className="container">
+                  <div className="card-header mb-2">
+                    <h4 className="card-title text-center custom-heading-font">
+                      Order From Buyer
+                    </h4>
+                  </div>
+                </div>
+
+                <div className="table-responsive">
+                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
+                    <thead className="bg-light-subtle">
+                      <tr>
+                        <th style={{ width: 20 }}>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id="customCheck1"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="customCheck1"
+                            />
+                          </div>
+                        </th>
+                        <th>Order Number</th>
+                        <th>Product Required Image & Name</th>
+                        <th>Quantity</th>
+                        <th>Listing Rate</th>
+                        <th>Discount</th>
+                        <th>Final Rate</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orders.length > 0 ? (
+                        orders.map((order) => (
+                          <tr key={order._id}>
+                            <td>
+                              <div className="form-check ms-1">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id={`customCheck${order._id}`}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`customCheck${order._id}`}
+                                >
+                                  &nbsp;
+                                </label>
+                              </div>
+                            </td>
+                            <td>{order.orderNumber}</td>
+                            <td>
+                              <div className="d-flex align-items-center gap-2">
+                                {order.cartImage && (
+                                  <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                    <img
+                                      className="avatar-md"
+                                      alt={order.subCategoryName}
+                                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${order.cartImage}`}
+                                      onClick={() =>
+                                        handleImageClick(
+                                          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${order.cartImage}`
+                                        )
+                                      }
+                                    />
+                                  </div>
+                                )}
+                                <div>
+                                  <Link className="text-dark fw-medium">
+                                    {order.subcategoryName}
+                                  </Link>
+                                </div>
+                              </div>
+                            </td>
+
+                            <td>{order.quantity}</td>
+                            <td>{order.listingRate}</td>
+                            <td>{order.discount}</td>
+                            <td>{order.finalRate}</td>
                           </tr>
                         ))
                       ) : (
