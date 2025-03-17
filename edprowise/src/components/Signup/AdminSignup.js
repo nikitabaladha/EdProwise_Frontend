@@ -125,7 +125,7 @@ const Signup = () => {
                 <form onSubmit={handleSignup}>
                   <input
                     className="form-control"
-                    type="text"
+                    type="text" 
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
@@ -137,7 +137,7 @@ const Signup = () => {
                     type="text"
                     name="lastName"
                     value={formData.lastName}
-                    onChange={handleChange}
+                    onChange={                  handleChange}
                     placeholder="Last Name"
                     required=""
                   />
