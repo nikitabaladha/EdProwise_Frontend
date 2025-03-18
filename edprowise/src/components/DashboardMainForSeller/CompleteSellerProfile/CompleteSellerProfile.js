@@ -30,6 +30,10 @@ const CompleteSellerProfile = () => {
     noOfEmployees: "",
     ceoName: "",
     turnover: "",
+    panFile: null,
+    tanFile: null,
+    cinFile: null,
+    gstFile: null,
   });
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState({});
@@ -157,6 +161,10 @@ const CompleteSellerProfile = () => {
           noOfEmployees: "",
           ceoName: "",
           turnover: "",
+          panFile: null,
+          tanFile: null,
+          cinFile: null,
+          gstFile: null,
         });
         setDealingProducts([]);
         const updatedUserResponse = await getAPI(`/get-seller-by-id/${userId}`);
@@ -182,18 +190,33 @@ const CompleteSellerProfile = () => {
     cities.map((city) => `${city}, ${state}, India`)
   );
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userDetails");
+    window.location.href = "/login";
+  };
+
+
   return (
     <>
+      
       <div className="container">
         <div className="row">
           <div className="col-xl-12">
             <div className="card m-2">
               <div className="card-body custom-heading-padding">
                 <div className="container">
-                  <div className="card-header mb-2">
+                  <div className="card-header mb-2 d-flex justify-content-between align-items-center">
                     <h4 className="card-title custom-heading-font">
-                      Add Your Profile
+                      Add New Seller
                     </h4>
+                    <button
+                      type="button"
+                      className="btn btn-primary custom-submit-button"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
                   </div>
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -205,7 +228,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="companyName" className="form-label">
-                          Company Name
+                          Company Name <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -214,7 +237,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.companyName}
                           onChange={handleChange}
-                          required
+                          // required
                           placeholder="Example : ABC Company"
                         />
                       </div>
@@ -222,7 +245,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="companyType" className="form-label">
-                          Company Type
+                          Company Type <span className="text-danger">*</span>
                         </label>
                         <select
                           id="companyType"
@@ -230,7 +253,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.companyType}
                           onChange={handleChange}
-                          required
+                          // required
                         >
                           <option value="">Select Company Type</option>
                           <option value="Public Limited">Public Limited</option>
@@ -250,7 +273,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="gstin" className="form-label">
-                          GSTIN
+                          GSTIN <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -259,15 +282,34 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.gstin}
                           onChange={handleChange}
-                          required
+                          // required
                           placeholder="Example : 22AAAAA0000A1Z5"
                         />
                       </div>
                     </div>
                     <div className="col-md-6">
+                      {" "}
+                      <div className="mb-3">
+                        <label htmlFor="panFile" className="form-label">
+                          GST File <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="file"
+                          id="gstFile"
+                          name="gstFile"
+                          className="form-control"
+                          accept="image/*,application/pdf"
+                          onChange={handleChange}
+                          // required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="pan" className="form-label">
-                          PAN Number
+                          PAN Number <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -277,7 +319,25 @@ const CompleteSellerProfile = () => {
                           value={formData.pan}
                           onChange={handleChange}
                           required
-                          placeholder="Example : AAAA0000A"
+                          placeholder="Example : AAAAPL1234C"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      {" "}
+                      <div className="mb-3">
+                        <label htmlFor="panFile" className="form-label">
+                          PAN File <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="file"
+                          id="panFile"
+                          name="panFile"
+                          className="form-control"
+                          accept="image/*,application/pdf"
+                          onChange={handleChange}
+                          // required
                         />
                       </div>
                     </div>
@@ -300,6 +360,26 @@ const CompleteSellerProfile = () => {
                         />
                       </div>
                     </div>
+
+                    <div className="col-md-6">
+                      {" "}
+                      <div className="mb-3">
+                        <label htmlFor="tanFile" className="form-label">
+                          TAN File
+                        </label>
+                        <input
+                          type="file"
+                          id="tanFile"
+                          name="tanFile"
+                          className="form-control"
+                          accept="image/*,application/pdf"
+                          onChange={handleChange}
+                          // required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="cin" className="form-label">
@@ -313,7 +393,25 @@ const CompleteSellerProfile = () => {
                           value={formData.cin}
                           onChange={handleChange}
                           // required
-                          placeholder="Example : AAAAPL1234"
+                          placeholder="Example : AAAAPL1234C"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      {" "}
+                      <div className="mb-3">
+                        <label htmlFor="panFile" className="form-label">
+                          CIN File
+                        </label>
+                        <input
+                          type="file"
+                          id="cinFile"
+                          name="cinFile"
+                          className="form-control"
+                          accept="image/*,application/pdf"
+                          onChange={handleChange}
+                          // required
                         />
                       </div>
                     </div>
@@ -325,7 +423,7 @@ const CompleteSellerProfile = () => {
                   <div className="row">
                     <div className="mb-3">
                       <label htmlFor="address" className="form-label">
-                        Address
+                        Address <span className="text-danger">*</span>
                       </label>
                       <textarea
                         className="form-control"
@@ -334,8 +432,8 @@ const CompleteSellerProfile = () => {
                         rows={3}
                         value={formData.address}
                         onChange={handleChange}
-                        required
-                        placeholder="Example : XYZ Building, ABC Street"
+                        // required
+                        placeholder="Example : ABC Building, XYZ Street"
                       />
                     </div>
                   </div>
@@ -346,7 +444,7 @@ const CompleteSellerProfile = () => {
                           htmlFor="cityStateCountry"
                           className="form-label"
                         >
-                          City State Country Location
+                          City State Country Location <span className="text-danger">*</span>
                         </label>
                         <select
                           id="cityStateCountry"
@@ -354,7 +452,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.cityStateCountry}
                           onChange={handleChange}
-                          required
+                          // required
                         >
                           <option value="">Select City-State-Country</option>
                           {cityOptions.map((option, index) => (
@@ -368,7 +466,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="landmark" className="form-label">
-                          Land Mark
+                          Land Mark <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -385,7 +483,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="pincode" className="form-label">
-                          Pin Code
+                          Pin Code <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -394,8 +492,8 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.pincode}
                           onChange={handleChange}
-                          required
-                          placeholder="Example : 123456"
+                          // required
+                          placeholder="Example : 560097"
                         />
                       </div>
                     </div>
@@ -408,7 +506,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="contactNo" className="form-label">
-                          Contact Number
+                          Contact Number <span className="text-danger">*</span>
                         </label>
                         <input
                           type="tel"
@@ -417,8 +515,8 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.contactNo}
                           onChange={handleChange}
-                          required
-                          placeholder="Example : 1234567890"
+                          // required
+                          placeholder="Example : 9876543210"
                         />
                       </div>
                     </div>
@@ -437,8 +535,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.alternateContactNo}
                           onChange={handleChange}
-                          // required
-                          placeholder="Example : 1234567890"
+                          placeholder="Example : 0987654321"
                         />
                       </div>
                     </div>
@@ -447,7 +544,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="emailId" className="form-label">
-                          Email ID
+                          Email ID <span className="text-danger">*</span>
                         </label>
                         <input
                           type="email"
@@ -456,8 +553,8 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.emailId}
                           onChange={handleChange}
-                          required
-                          placeholder="example@gmail.com"
+                          // required
+                          placeholder="Example : example@gmail.com"
                         />
                       </div>
                     </div>
@@ -473,7 +570,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-                          // required
+                          
                         />
                       </div>
                     </div>
@@ -487,7 +584,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="accountNo" className="form-label">
-                          Bank Account Number
+                          Bank Account Number <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -496,15 +593,15 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.accountNo}
                           onChange={handleChange}
-                          required
-                          placeholder="EXample : 123456789012"
+                          // required
+                          placeholder="Example : 123456789012"
                         />
                       </div>
                     </div>
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="ifsc" className="form-label">
-                          IFSC Code
+                          IFSC Code <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -513,7 +610,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.ifsc}
                           onChange={handleChange}
-                          required
+                          // required
                           placeholder="Example : SBIN0001234"
                         />
                       </div>
@@ -521,7 +618,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="bankName" className="form-label">
-                          Bank Name
+                          Bank Name <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -530,8 +627,8 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.bankName}
                           onChange={handleChange}
-                          required
-                          placeholder="Example : ABC Bank"
+                          // required
+                          placeholder="ABC Bank"
                         />
                       </div>
                     </div>
@@ -543,7 +640,7 @@ const CompleteSellerProfile = () => {
                           htmlFor="accountHolderName"
                           className="form-label"
                         >
-                          Account Holder Name
+                          Account Holder Name <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -552,15 +649,15 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.accountHolderName}
                           onChange={handleChange}
-                          required
-                          placeholder="Example : John Doe"
+                          // required
+                          placeholder="Example : John Due"
                         />
                       </div>
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="branchName" className="form-label">
-                          Branch Name
+                          Branch Name <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -569,7 +666,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.branchName}
                           onChange={handleChange}
-                          required
+                          // required
                           placeholder="Example : ABC Branch"
                         />
                       </div>
@@ -583,7 +680,7 @@ const CompleteSellerProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="noOfEmployees" className="form-label">
-                          Number Of Employees
+                          Number Of Employees <span className="text-danger">*</span>
                         </label>
                         <select
                           id="noOfEmployees"
@@ -591,7 +688,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.noOfEmployees}
                           onChange={handleChange}
-                          required
+                          // required
                         >
                           <option value="">Select Number Of Employees</option>
                           <option value="1 to 10 Employees">
@@ -606,8 +703,8 @@ const CompleteSellerProfile = () => {
                           <option value="50 to 100 Employees">
                             50 to 100 Employees
                           </option>
-                          <option value="50 to 100 Employees">
-                            50 to 100 Employees
+                          <option value="More than 100 Employees">
+                          More than 100 Employees
                           </option>
                         </select>
                       </div>
@@ -624,7 +721,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.ceoName}
                           onChange={handleChange}
-                          required
+                          // required
                           placeholder="Example : John Smith"
                         />
                       </div>
@@ -634,16 +731,28 @@ const CompleteSellerProfile = () => {
                         <label htmlFor="turnover" className="form-label">
                           Company Turnover
                         </label>
-                        <input
-                          type="number"
+                        <select
                           id="turnover"
                           name="turnover"
                           className="form-control"
                           value={formData.turnover}
                           onChange={handleChange}
-                          required
-                          placeholder="Example : 1000000"
-                        />
+                          // required
+                        >
+                          <option value="">Select Company Ternover</option>
+                          <option value="1 to 10 Lakh">
+                          1 to 10 Lakh
+                          </option>
+                          <option value="10 to 50 Lakh">
+                          10 to 50 Lakh
+                          </option>
+                          <option value="50 Lakh to 1 Crore">
+                          50 Lakh to 1 Crore
+                          </option>
+                          <option value="More than 1 Crore">
+                          More than 1 Crore
+                          </option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -657,7 +766,7 @@ const CompleteSellerProfile = () => {
                         <div className="row">
                           <div className="col-md-6">
                             <label htmlFor="category" className="form-label">
-                              Category
+                              Category <span className="text-danger">*</span>
                             </label>
                             <select
                               className="form-control"
@@ -683,7 +792,7 @@ const CompleteSellerProfile = () => {
                               htmlFor="subCategories"
                               className="form-label"
                             >
-                              Subcategories
+                              Subcategories <span className="text-danger">*</span>
                             </label>
                             <div>
                               {(subCategories[product.categoryId] || []).map(
@@ -753,7 +862,7 @@ const CompleteSellerProfile = () => {
                       type="submit"
                       className="btn btn-primary custom-submit-button"
                     >
-                      Submit Profile
+                      Submit
                     </button>
                   </div>
                 </form>

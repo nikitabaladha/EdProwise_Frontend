@@ -1,11 +1,11 @@
-import { useLocation } from "react-router-dom";
-
 import { format } from "date-fns";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
+
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
+import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 
 const formatDate = (dateString) => {
@@ -14,16 +14,18 @@ const formatDate = (dateString) => {
 };
 
 const ViewOrderHistory = () => {
+  const navigate = useNavigate();
+
   const location = useLocation();
   const order = location.state?.order;
   const orderNumber = order.orderNumber;
+  const sellerId = order.sellerId;
 
   const enquiryNumber = location.state?.enquiryNumber;
 
-  const schoolId = location.state?.schoolId;
-  const sellerId = location.state?.sellerId;
-
-  const navigate = useNavigate();
+  const handleNavigation = () => {
+    navigate("/school-dashboard/procurement-services/pay-to-edprowise");
+  };
 
   const [quote, setQuote] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -32,7 +34,9 @@ const ViewOrderHistory = () => {
 
   useEffect(() => {
     if (!enquiryNumber) return;
+
     fetchRequestedQuoteData();
+    fetchOrderDetails();
   }, [enquiryNumber]);
 
   const fetchRequestedQuoteData = async () => {
@@ -41,7 +45,6 @@ const ViewOrderHistory = () => {
 
       if (!response.hasError && response.data.data.products) {
         setQuote(response.data.data.products);
-        console.log("product data from function", response.data.data.products);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -72,15 +75,10 @@ const ViewOrderHistory = () => {
     }
   };
 
-  useEffect(() => {
-    fetchOrderDetails();
-  }, [enquiryNumber]);
+  const fetchInvoiceDataForBuyer = async (enquiryNumber, sellerId) => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const schoolId = userDetails?.schoolId;
 
-  if (!order) {
-    return <div>No order details available.</div>;
-  }
-
-  const fetchInvoiceDataForEdprowise = async () => {
     if (!sellerId || !enquiryNumber || !schoolId) {
       console.error("Seller ID, Enquiry Number, or School ID is missing");
       return;
@@ -114,57 +112,7 @@ const ViewOrderHistory = () => {
         const quoteProposalData = quoteProposalResponse.data.data;
         const profileData = profileResponse.data.data;
 
-        navigate(
-          `/admin-dashboard/procurement-services/invoice-for-edprowise`,
-          {
-            state: { prepareQuoteData, quoteProposalData, profileData },
-          }
-        );
-      } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
-      }
-    } catch (err) {
-      console.error("Error fetching data:", err);
-    }
-  };
-
-  const fetchInvoiceDataForBuyer = async () => {
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
-      return;
-    }
-
-    try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
-      );
-
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
-
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/admin-dashboard/procurement-services/invoice-for-buyer`, {
+        navigate(`/school-dashboard/procurement-services/invoice-for-buyer`, {
           state: { prepareQuoteData, quoteProposalData, profileData },
         });
       } else {
@@ -176,11 +124,14 @@ const ViewOrderHistory = () => {
       console.error("Error fetching data:", err);
     }
   };
-
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowModal(true);
   };
+
+  if (!order) {
+    return <div>No order details available.</div>;
+  }
 
   return (
     <>
@@ -200,21 +151,22 @@ const ViewOrderHistory = () => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">
-                      <label htmlFor="nameOfSupplier" className="form-label">
-                        Name Of Supplier
-                      </label>
-                      <p className="form-control">{order.companyName}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
                       <label htmlFor="orderNumber" className="form-label">
                         Order Number
                       </label>
                       <p className="form-control">{order.orderNumber}</p>
                     </div>
                   </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="nameOfSupplier" className="form-label">
+                        Name Of Supplier
+                      </label>
+                      <p className="form-control">{order.companyName}</p>
+                    </div>
+                  </div>
                 </div>
+
                 <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">
@@ -245,7 +197,6 @@ const ViewOrderHistory = () => {
                 </div>
                 <div className="row">
                   <div className="col-md-6">
-                    {" "}
                     <div className="mb-3">
                       <label
                         htmlFor="actualDeliveryDate"
@@ -262,11 +213,13 @@ const ViewOrderHistory = () => {
                   </div>
                   <div className="col-md-6">
                     <div className="mb-3">
-                      <label htmlFor="invoiceAmtToBuyer" className="form-label">
-                        Invoice Amount To Buyer
+                      <label
+                        htmlFor="invoiceAmountToBuyer"
+                        className="form-label"
+                      >
+                        Invoice Amount
                       </label>
                       <p className="form-control">
-                        {" "}
                         {order.totalAmountBeforeGstAndDiscount}
                       </p>
                     </div>
@@ -275,74 +228,43 @@ const ViewOrderHistory = () => {
                 <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">
-                      <label htmlFor="taxableValue" className="form-label">
-                        Taxable Value
-                      </label>
-                      <p className="form-control">{order.totalTaxableValue}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="gstAmount" className="form-label">
-                        GST Amount
-                      </label>
-                      <p className="form-control">{order.totalGstAmount}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="totalInvoiceAmt" className="form-label">
-                        Total Invoice Amount
-                      </label>
-                      <p className="form-control">{order.totalAmount}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="advancesRequiredAmount"
-                        className="form-label"
-                      >
+                      <label htmlFor="advanceAdjustment" className="form-label">
                         Advance Adjustment
                       </label>
                       <p className="form-control">{order.advanceAdjustment}</p>
                     </div>
                   </div>
-                </div>
-                <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
+                      <label htmlFor="tDSAmount" className="form-label">
+                        TDS Amount
                       </label>
-                      <p className="form-control">{order.otherCharges}</p>
+                      <p className="form-control">{order.tDSAmount}</p>
                     </div>
                   </div>
+                </div>
+
+                <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label
-                        htmlFor="finalPayableAmount"
+                        htmlFor="finalPayableAmountWithoutTDS"
                         className="form-label"
                       >
-                        Final Receivable From Edprowise
+                        Final Payable Amt Without TDS
                       </label>
                       <p className="form-control">
-                        {order.finalReceivableFromEdprowise}
+                        {order.finalPayableAmountWithoutTDS}
                       </p>
                     </div>
                   </div>
-                </div>
-                <div className="row">
-                  
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label
                         htmlFor="finalPayableAmountWithTDS"
                         className="form-label"
                       >
-                        Final Payable Amount With TDS
+                        Final Payable Amt With TDS
                       </label>
                       <p className="form-control">
                         {order.finalPayableAmountWithTDS}
@@ -357,27 +279,12 @@ const ViewOrderHistory = () => {
                       order.supplierStatus
                     ) && (
                       <Link
-                        onClick={() => fetchInvoiceDataForEdprowise()}
-                        className="btn btn-soft-info btn-sm"
-                        title="Download PDF Invoice For Edprowise"
-                        data-bs-toggle="popover"
-                        data-bs-trigger="hover"
-                      >
-                        Download Invoice For Edprowise {}
-                        <iconify-icon
-                          icon="solar:download-broken"
-                          className="align-middle fs-18"
-                        />{" "}
-                      </Link>
-                    )}
-                  </Link>
-
-                  <Link>
-                    {["Ready For Transit", "In-Transit", "Delivered"].includes(
-                      order.supplierStatus
-                    ) && (
-                      <Link
-                        onClick={() => fetchInvoiceDataForBuyer()}
+                        onClick={() =>
+                          fetchInvoiceDataForBuyer(
+                            order?.enquiryNumber,
+                            order?.sellerId
+                          )
+                        }
                         className="btn btn-soft-info btn-sm"
                         title="Download PDF Invoice For Buyer"
                         data-bs-toggle="popover"
@@ -395,8 +302,9 @@ const ViewOrderHistory = () => {
                   <button
                     type="button"
                     className="btn btn-primary custom-submit-button"
+                    onClick={handleNavigation}
                   >
-                    Pay Online
+                    Pay to EdProwise
                   </button>
                 </div>
               </div>
@@ -467,20 +375,24 @@ const ViewOrderHistory = () => {
                             <td>
                               <div className="d-flex align-items-center gap-2">
                                 {product.productImage && (
-                                  <img
-                                    className="avatar-md"
-                                    alt={product.subCategoryName}
-                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
-                                    onClick={() =>
-                                      handleImageClick(
-                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
-                                      )
-                                    }
-                                  />
+                                  <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                    <img
+                                      className="avatar-md"
+                                      alt={product.subCategoryName}
+                                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                      onClick={() =>
+                                        handleImageClick(
+                                          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
+                                        )
+                                      }
+                                    />
+                                  </div>
                                 )}
-                                <Link className="text-dark fw-medium">
-                                  {product.subCategoryName}
-                                </Link>
+                                <div>
+                                  <Link className="text-dark fw-medium">
+                                    {product.subCategoryName}
+                                  </Link>
+                                </div>
                               </div>
                             </td>
                             <td>{product.categoryName}</td>
@@ -504,6 +416,7 @@ const ViewOrderHistory = () => {
           </div>
         </div>
       </div>
+
       <div className="container">
         <div className="row">
           <div className="col-xl-12">

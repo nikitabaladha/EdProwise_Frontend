@@ -232,7 +232,7 @@ const UpdateAdminProfile = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="companyName" className="form-label">
-                        Company Name
+                        Company Name <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -247,7 +247,7 @@ const UpdateAdminProfile = () => {
 
                     <div className="mb-3">
                       <label htmlFor="gstin" className="form-label">
-                        Company GSTIN Number
+                        Company GSTIN Number <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -260,7 +260,7 @@ const UpdateAdminProfile = () => {
                     </div>
                     <div className="mb-3">
                       <label htmlFor="tan" className="form-label">
-                        Company TAN Number
+                        Company TAN Number 
                       </label>
                       <input
                         type="text"
@@ -269,13 +269,14 @@ const UpdateAdminProfile = () => {
                         value={formData.tan}
                         onChange={handleChange}
                         className="form-control"
+                        placeholder="Example : AAAAPL1234C"
                       />
                     </div>
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="companyType" className="form-label">
-                        Company Type
+                        Company Type <span className="text-danger">*</span>
                       </label>
                       <select
                         id="companyType"
@@ -296,7 +297,7 @@ const UpdateAdminProfile = () => {
 
                     <div className="mb-3">
                       <label htmlFor="pan" className="form-label">
-                        Company PAN Number
+                        Company PAN Number <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -319,6 +320,7 @@ const UpdateAdminProfile = () => {
                         value={formData.cin}
                         onChange={handleChange}
                         className="form-control"
+                        placeholder="Example : U74999KA2022PTC123456"
                       />
                     </div>
                   </div>
@@ -331,7 +333,7 @@ const UpdateAdminProfile = () => {
                 <div className="row">
                   <div className="mb-3">
                     <label htmlFor="address" className="form-label">
-                      Address
+                      Address <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -347,7 +349,7 @@ const UpdateAdminProfile = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="cityStateCountry" className="form-label">
-                        City, State, Country
+                        City, State, Country <span className="text-danger">*</span>
                       </label>
                       <select
                         id="cityStateCountry"
@@ -369,7 +371,7 @@ const UpdateAdminProfile = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="landmark" className="form-label">
-                        Landmark
+                        Landmark <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -384,7 +386,7 @@ const UpdateAdminProfile = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
-                        Pincode
+                        Pincode <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -408,8 +410,8 @@ const UpdateAdminProfile = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="contactNo" className="form-label">
-                        Contact No
-                      </label>
+                        Contact No <span className="text-danger">*</span>
+                      </label> 
                       <input
                         type="text"
                         id="contactNo"
@@ -437,13 +439,14 @@ const UpdateAdminProfile = () => {
                         value={formData.alternateContactNo}
                         onChange={handleChange}
                         className="form-control"
+                        placeholder="Example : 9876543210"
                       />
                     </div>
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="emailId" className="form-label">
-                        Email ID
+                        Email ID <span className="text-danger">*</span>
                       </label>
                       <input
                         type="email"

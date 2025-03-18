@@ -44,7 +44,7 @@ const RequestQuote = () => {
     if (
       !formData.categoryId ||
       !formData.subCategoryId ||
-      !formData.description ||
+      // !formData.description ||
       !formData.unit ||
       !formData.quantity
     ) {
@@ -156,7 +156,7 @@ const RequestQuote = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="category" className="form-label">
-                        Product Required – Select category
+                        Product Required – Select category <span className="text-danger">*</span>
                       </label>
                       <select
                         id="category"
@@ -178,7 +178,7 @@ const RequestQuote = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="subCategory" className="form-label">
-                        Product Required – Select sub category
+                        Product Required – Select sub category <span className="text-danger">*</span>
                       </label>
 
                       <select
@@ -240,7 +240,7 @@ const RequestQuote = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="unit" className="form-label">
-                        Unit
+                        Unit <span className="text-danger">*</span>
                       </label>
                       <select
                         id="unit"
@@ -264,7 +264,7 @@ const RequestQuote = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="quantity" className="form-label">
-                        Quantity
+                        Quantity <span className="text-danger">*</span>
                       </label>
                       <input
                         type="number"
@@ -329,7 +329,7 @@ const RequestQuote = () => {
                         <tr key={index}>
                           <td>{item.categoryName} </td>
                           <td>{item.subCategoryName}</td>
-                          <td>{item.description}</td>
+                          <td>{item.description || "Not Provided"}</td>
 
                           <td>
                             <div className="d-flex align-items-center">

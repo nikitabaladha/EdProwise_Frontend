@@ -165,7 +165,7 @@ const UpdateSchool = ({ updateSchool }) => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="schoolName" className="form-label">
-                        School Name
+                        School Name <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -181,7 +181,7 @@ const UpdateSchool = ({ updateSchool }) => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="mobileNo" className="form-label">
-                        School Mobile Number
+                        School Mobile Number <span className="text-danger">*</span>
                       </label>
                       <input
                         type="tel"
@@ -197,7 +197,7 @@ const UpdateSchool = ({ updateSchool }) => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
-                        School Email
+                        School Email <span className="text-danger">*</span>
                       </label>
                       <input
                         type="email"
@@ -215,7 +215,7 @@ const UpdateSchool = ({ updateSchool }) => {
                 <div className="row">
                   <div className="mb-3">
                     <label htmlFor="address" className="form-label">
-                      School Address
+                      School Address <span className="text-danger">*</span>
                     </label>
                     <textarea
                       className="form-control"
@@ -233,7 +233,7 @@ const UpdateSchool = ({ updateSchool }) => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="cityStateCountry" className="form-label">
-                        City-State-Country
+                        City-State-Country <span className="text-danger">*</span>
                       </label>
                       <select
                         id="cityStateCountry"
@@ -255,7 +255,7 @@ const UpdateSchool = ({ updateSchool }) => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="profileImage" className="form-label">
-                        Profile Image
+                        Profile Image <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"
@@ -283,7 +283,7 @@ const UpdateSchool = ({ updateSchool }) => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="affiliationUpto" className="form-label">
-                        Affiliation Upto
+                        Affiliation Upto <span className="text-danger">*</span>
                       </label>
                       <select
                         id="affiliationUpto"
@@ -315,7 +315,7 @@ const UpdateSchool = ({ updateSchool }) => {
                         htmlFor="affiliationCertificate"
                         className="form-label"
                       >
-                        Affiliation Certificate
+                        Affiliation Certificate <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"
@@ -343,7 +343,7 @@ const UpdateSchool = ({ updateSchool }) => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="panNo" className="form-label">
-                        PAN Number
+                        PAN Number <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -360,7 +360,7 @@ const UpdateSchool = ({ updateSchool }) => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="panFile" className="form-label">
-                        PAN File
+                        PAN File <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"

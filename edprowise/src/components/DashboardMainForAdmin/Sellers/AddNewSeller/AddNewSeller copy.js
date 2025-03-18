@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import CityData from "../../../CityData.json";
 
-const AddNewSeller = () => {
+const AddNewSeller = ({ addSeller }) => {
   const [formData, setFormData] = useState({
     companyName: "",
     companyType: "",
@@ -30,10 +30,6 @@ const AddNewSeller = () => {
     noOfEmployees: "",
     ceoName: "",
     turnover: "",
-    panFile: null,
-    tanFile: null,
-    cinFile: null,
-    gstFile: null,
   });
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState({});
@@ -137,7 +133,20 @@ const AddNewSeller = () => {
       if (!response.hasError) {
         console.log("profile storage data", response.data.data);
 
-       
+        const newSeller = {
+          _id: response.data.data._id,
+          sellerId: response.data.data.sellerId,
+          companyName: response.data.data.companyName,
+          contactNo: response.data.data.contactNo,
+          emailId: response.data.data.emailId,
+          pan: response.data.data.pan,
+          sellerProfile: response.data.data.sellerProfile,
+        };
+
+        console.log("newSeller", newSeller);
+
+        addSeller(newSeller);
+
         setFormData({
           companyName: "",
           companyType: "",
@@ -161,10 +170,6 @@ const AddNewSeller = () => {
           noOfEmployees: "",
           ceoName: "",
           turnover: "",
-          panFile: null,
-          tanFile: null,
-          cinFile: null,
-          gstFile: null,
         });
         setDealingProducts([]);
         toast.success("Seller added successfully");
@@ -206,7 +211,7 @@ const AddNewSeller = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="companyName" className="form-label">
-                          Company Name <span className="text-danger">*</span>
+                          Company Name
                         </label>
                         <input
                           type="text"
@@ -215,7 +220,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.companyName}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : ABC Company"
                         />
                       </div>
@@ -223,7 +228,7 @@ const AddNewSeller = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="companyType" className="form-label">
-                          Company Type <span className="text-danger">*</span>
+                          Company Type
                         </label>
                         <select
                           id="companyType"
@@ -231,7 +236,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.companyType}
                           onChange={handleChange}
-                          // required
+                          required
                         >
                           <option value="">Select Company Type</option>
                           <option value="Public Limited">Public Limited</option>
@@ -251,7 +256,7 @@ const AddNewSeller = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="gstin" className="form-label">
-                          GSTIN <span className="text-danger">*</span>
+                          GSTIN
                         </label>
                         <input
                           type="text"
@@ -260,34 +265,15 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.gstin}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : 22AAAAA0000A1Z5"
                         />
                       </div>
                     </div>
                     <div className="col-md-6">
-                      {" "}
-                      <div className="mb-3">
-                        <label htmlFor="panFile" className="form-label">
-                          GST File <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="file"
-                          id="gstFile"
-                          name="gstFile"
-                          className="form-control"
-                          accept="image/*,application/pdf"
-                          onChange={handleChange}
-                          // required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="pan" className="form-label">
-                          PAN Number <span className="text-danger">*</span>
+                          PAN Number
                         </label>
                         <input
                           type="text"
@@ -298,24 +284,6 @@ const AddNewSeller = () => {
                           onChange={handleChange}
                           required
                           placeholder="Example : AAAAPL1234C"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      {" "}
-                      <div className="mb-3">
-                        <label htmlFor="panFile" className="form-label">
-                          PAN File <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="file"
-                          id="panFile"
-                          name="panFile"
-                          className="form-control"
-                          accept="image/*,application/pdf"
-                          onChange={handleChange}
-                          // required
                         />
                       </div>
                     </div>
@@ -333,31 +301,11 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.tan}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : AAAAPL1234C"
                         />
                       </div>
                     </div>
-
-                    <div className="col-md-6">
-                      {" "}
-                      <div className="mb-3">
-                        <label htmlFor="tanFile" className="form-label">
-                          TAN File
-                        </label>
-                        <input
-                          type="file"
-                          id="tanFile"
-                          name="tanFile"
-                          className="form-control"
-                          accept="image/*,application/pdf"
-                          onChange={handleChange}
-                          // required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="cin" className="form-label">
@@ -370,26 +318,8 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.cin}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : AAAAPL1234C"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      {" "}
-                      <div className="mb-3">
-                        <label htmlFor="panFile" className="form-label">
-                          CIN File
-                        </label>
-                        <input
-                          type="file"
-                          id="cinFile"
-                          name="cinFile"
-                          className="form-control"
-                          accept="image/*,application/pdf"
-                          onChange={handleChange}
-                          // required
                         />
                       </div>
                     </div>
@@ -401,7 +331,7 @@ const AddNewSeller = () => {
                   <div className="row">
                     <div className="mb-3">
                       <label htmlFor="address" className="form-label">
-                        Address <span className="text-danger">*</span>
+                        Address
                       </label>
                       <textarea
                         className="form-control"
@@ -410,7 +340,7 @@ const AddNewSeller = () => {
                         rows={3}
                         value={formData.address}
                         onChange={handleChange}
-                        // required
+                        required
                         placeholder="Example : ABC Building, XYZ Street"
                       />
                     </div>
@@ -422,7 +352,7 @@ const AddNewSeller = () => {
                           htmlFor="cityStateCountry"
                           className="form-label"
                         >
-                          City State Country Location <span className="text-danger">*</span>
+                          City State Country Location
                         </label>
                         <select
                           id="cityStateCountry"
@@ -430,7 +360,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.cityStateCountry}
                           onChange={handleChange}
-                          // required
+                          required
                         >
                           <option value="">Select City-State-Country</option>
                           {cityOptions.map((option, index) => (
@@ -444,7 +374,7 @@ const AddNewSeller = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="landmark" className="form-label">
-                          Land Mark <span className="text-danger">*</span>
+                          Land Mark
                         </label>
                         <input
                           type="text"
@@ -453,7 +383,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.landmark}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : Near ABC Market"
                         />
                       </div>
@@ -461,7 +391,7 @@ const AddNewSeller = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="pincode" className="form-label">
-                          Pin Code <span className="text-danger">*</span>
+                          Pin Code
                         </label>
                         <input
                           type="text"
@@ -470,7 +400,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.pincode}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : 560097"
                         />
                       </div>
@@ -484,7 +414,7 @@ const AddNewSeller = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="contactNo" className="form-label">
-                          Contact Number <span className="text-danger">*</span>
+                          Contact Number
                         </label>
                         <input
                           type="tel"
@@ -493,7 +423,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.contactNo}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : 9876543210"
                         />
                       </div>
@@ -513,6 +443,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.alternateContactNo}
                           onChange={handleChange}
+                          required
                           placeholder="Example : 0987654321"
                         />
                       </div>
@@ -522,7 +453,7 @@ const AddNewSeller = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="emailId" className="form-label">
-                          Email ID <span className="text-danger">*</span>
+                          Email ID
                         </label>
                         <input
                           type="email"
@@ -531,7 +462,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.emailId}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : example@gmail.com"
                         />
                       </div>
@@ -548,7 +479,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-                          
+                          required
                         />
                       </div>
                     </div>
@@ -562,7 +493,7 @@ const AddNewSeller = () => {
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="accountNo" className="form-label">
-                          Bank Account Number <span className="text-danger">*</span>
+                          Bank Account Number
                         </label>
                         <input
                           type="text"
@@ -571,7 +502,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.accountNo}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : 123456789012"
                         />
                       </div>
@@ -579,7 +510,7 @@ const AddNewSeller = () => {
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="ifsc" className="form-label">
-                          IFSC Code <span className="text-danger">*</span>
+                          IFSC Code
                         </label>
                         <input
                           type="text"
@@ -588,7 +519,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.ifsc}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : SBIN0001234"
                         />
                       </div>
@@ -596,7 +527,7 @@ const AddNewSeller = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="bankName" className="form-label">
-                          Bank Name <span className="text-danger">*</span>
+                          Bank Name
                         </label>
                         <input
                           type="text"
@@ -605,7 +536,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.bankName}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="ABC Bank"
                         />
                       </div>
@@ -618,7 +549,7 @@ const AddNewSeller = () => {
                           htmlFor="accountHolderName"
                           className="form-label"
                         >
-                          Account Holder Name <span className="text-danger">*</span>
+                          Account Holder Name
                         </label>
                         <input
                           type="text"
@@ -627,7 +558,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.accountHolderName}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : John Due"
                         />
                       </div>
@@ -635,7 +566,7 @@ const AddNewSeller = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="branchName" className="form-label">
-                          Branch Name <span className="text-danger">*</span>
+                          Branch Name
                         </label>
                         <input
                           type="text"
@@ -644,7 +575,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.branchName}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : ABC Branch"
                         />
                       </div>
@@ -658,7 +589,7 @@ const AddNewSeller = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="noOfEmployees" className="form-label">
-                          Number Of Employees <span className="text-danger">*</span>
+                          Number Of Employees
                         </label>
                         <select
                           id="noOfEmployees"
@@ -666,7 +597,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.noOfEmployees}
                           onChange={handleChange}
-                          // required
+                          required
                         >
                           <option value="">Select Number Of Employees</option>
                           <option value="1 to 10 Employees">
@@ -681,8 +612,8 @@ const AddNewSeller = () => {
                           <option value="50 to 100 Employees">
                             50 to 100 Employees
                           </option>
-                          <option value="More than 100 Employees">
-                          More than 100 Employees
+                          <option value="50 to 100 Employees">
+                            50 to 100 Employees
                           </option>
                         </select>
                       </div>
@@ -699,7 +630,7 @@ const AddNewSeller = () => {
                           className="form-control"
                           value={formData.ceoName}
                           onChange={handleChange}
-                          // required
+                          required
                           placeholder="Example : John Smith"
                         />
                       </div>
@@ -709,7 +640,7 @@ const AddNewSeller = () => {
                         <label htmlFor="turnover" className="form-label">
                           Company Turnover
                         </label>
-                        {/* <input
+                        <input
                           type="number"
                           id="turnover"
                           name="turnover"
@@ -718,29 +649,7 @@ const AddNewSeller = () => {
                           onChange={handleChange}
                           required
                           placeholder="Example : 1000000"
-                        /> */}
-                        <select
-                          id="turnover"
-                          name="turnover"
-                          className="form-control"
-                          value={formData.turnover}
-                          onChange={handleChange}
-                          // required
-                        >
-                          <option value="">Select Company Ternover</option>
-                          <option value="1 to 10 Lakh">
-                          1 to 10 Lakh
-                          </option>
-                          <option value="10 to 50 Lakh">
-                          10 to 50 Lakh
-                          </option>
-                          <option value="50 Lakh to 1 Crore">
-                          50 Lakh to 1 Crore
-                          </option>
-                          <option value="More than 1 Crore">
-                          More than 1 Crore
-                          </option>
-                        </select>
+                        />
                       </div>
                     </div>
                   </div>
@@ -754,7 +663,7 @@ const AddNewSeller = () => {
                         <div className="row">
                           <div className="col-md-6">
                             <label htmlFor="category" className="form-label">
-                              Category <span className="text-danger">*</span>
+                              Category
                             </label>
                             <select
                               className="form-control"
@@ -780,7 +689,7 @@ const AddNewSeller = () => {
                               htmlFor="subCategories"
                               className="form-label"
                             >
-                              Subcategories <span className="text-danger">*</span>
+                              Subcategories
                             </label>
                             <div>
                               {(subCategories[product.categoryId] || []).map(

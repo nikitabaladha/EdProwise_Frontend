@@ -173,6 +173,12 @@ const Header = () => {
     navigate(`/`);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userDetails");
+    window.location.href = "/login";
+  };
+
   return (
     <header id="header">
       {location.pathname === "/" && <Topbar />}
@@ -334,14 +340,19 @@ const Header = () => {
                     {window.innerWidth <= 992 ? (
                       localStorage.getItem("accessToken") &&
                       localStorage.getItem("userDetails") ? (
-                        <li className="menu-item">
-                          <Link
-                            to="/dashboard"
-                            onClick={(event) => handleSignIn(event)}
-                          >
-                            Go To Dashboard
-                          </Link>
-                        </li>
+                        <>
+                          <li className="menu-item">
+                            <Link
+                              to="/dashboard"
+                              onClick={(event) => handleSignIn(event)}
+                            >
+                              Dashboard
+                            </Link>
+                          </li>
+                          <li className="menu-item">
+                            <Link onClick={handleLogout}>Logout</Link>
+                          </li>
+                        </>
                       ) : (
                         <>
                           <li className="menu-item">
@@ -361,19 +372,31 @@ const Header = () => {
                 <div className="header-right">
                   {localStorage.getItem("accessToken") &&
                   localStorage.getItem("userDetails") ? (
-                    <div className="close-form">
+                    <>
+                      <div className="close-form">
+
                       <Link
-                        className="theme-btn"
-                        onClick={(event) => handleSignIn(event)}
-                      >
-                        <span className="text font-family-web login-weight">
-                          Go to Dashboard
-                        </span>
-                        <span className="mobile">
-                          <i className="fi flaticon-charity"></i>
-                        </span>
-                      </Link>
-                    </div>
+                          className="login"
+                          onClick={(event) => handleSignIn(event)}
+                        >
+                          <span className="text font-family-web login-weight">
+                            Dashboard
+                          </span>
+                          <span className="mobile">
+                            <i className="fi flaticon-charity"></i>
+                          </span>
+                        </Link>
+                      
+                        <Link className="theme-btn" onClick={handleLogout}>
+                          <span className="text font-family-web login-weight">
+                            Logout
+                          </span>
+                          <span className="mobile">
+                            <i className="fi flaticon-charity"></i>
+                          </span>
+                        </Link>
+                      </div>
+                    </>
                   ) : (
                     <>
                       <div className="close-form">

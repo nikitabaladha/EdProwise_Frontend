@@ -236,16 +236,16 @@ const ViewOrderHistory = () => {
                   </div>
                   <div className="col-md-6">
                     <div className="mb-3">
-                      <label htmlFor="tDSAmount" className="form-label">
-                        TDS Amount
+                      <label htmlFor="tdsValue" className="form-label">
+                        TDS Value
                       </label>
-                      <p className="form-control">{order.tDSAmount}</p>
+                      <p className="form-control">{order.tdsValue}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="row">
-                  <div className="col-md-6">
+                  {/* <div className="col-md-6">
                     <div className="mb-3">
                       <label
                         htmlFor="finalPayableAmountWithoutTDS"
@@ -257,7 +257,7 @@ const ViewOrderHistory = () => {
                         {order.finalPayableAmountWithoutTDS}
                       </p>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label
@@ -268,6 +268,19 @@ const ViewOrderHistory = () => {
                       </label>
                       <p className="form-control">
                         {order.finalPayableAmountWithTDS}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="otherCharges"
+                        className="form-label"
+                      >
+                        Other Charges
+                      </label>
+                      <p className="form-control">
+                        {order.otherCharges}
                       </p>
                     </div>
                   </div>

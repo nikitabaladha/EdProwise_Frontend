@@ -187,6 +187,13 @@ const CompleteSchoolProfile = () => {
     return url ? url.split("/").pop() : "";
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userDetails");
+    window.location.href = "/login";
+  };
+
+
   return (
     <>
       <div className="container">
@@ -195,10 +202,17 @@ const CompleteSchoolProfile = () => {
             <div className="card m-2">
               <div className="card-body custom-heading-padding">
                 <div className="container">
-                  <div className="card-header mb-2">
+                  <div className="card-header mb-2 d-flex justify-content-between align-items-center">
                     <h4 className="card-title custom-heading-font">
                       Complete Your Profile
                     </h4>
+                    <button
+                      type="button"
+                      className="btn btn-primary custom-submit-button"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
                   </div>
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -210,7 +224,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="schoolName" className="form-label">
-                          School Name
+                          School Name <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -239,7 +253,7 @@ const CompleteSchoolProfile = () => {
                           className="form-control"
                           value={formData.contactPersonName}
                           onChange={handleChange}
-                          required
+                          // required
                           placeholder="Example : John Doe"
                         />
                       </div>
@@ -256,7 +270,7 @@ const CompleteSchoolProfile = () => {
                           className="form-control"
                           value={formData.principalName}
                           onChange={handleChange}
-                          required
+                          // required
                           placeholder="Example : Jane Doe"
                         />
                       </div>
@@ -266,7 +280,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="mobileNo" className="form-label">
-                          School Mobile Number
+                          School Mobile Number <span className="text-danger">*</span>
                         </label>
                         <input
                           type="tel"
@@ -286,7 +300,7 @@ const CompleteSchoolProfile = () => {
                           htmlFor="schoolAlternateContactNo"
                           className="form-label"
                         >
-                          School Alternate Contact Number
+                          Alternate Contact Number
                         </label>
                         <input
                           type="tel"
@@ -295,7 +309,7 @@ const CompleteSchoolProfile = () => {
                           className="form-control"
                           value={formData.schoolAlternateContactNo}
                           onChange={handleChange}
-                          required
+                          // required
                           placeholder="Example : 1234567890"
                         />
                       </div>
@@ -303,7 +317,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="email" className="form-label">
-                          School Email
+                          School Email <span className="text-danger">*</span>
                         </label>
                         <input
                           type="email"
@@ -327,7 +341,7 @@ const CompleteSchoolProfile = () => {
                   <div className="row">
                     <div className="mb-3">
                       <label htmlFor="schoolAddress" className="form-label">
-                        School Address
+                        School Address <span className="text-danger">*</span>
                       </label>
                       <textarea
                         className="form-control"
@@ -345,7 +359,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="schoolLocation" className="form-label">
-                          School Location
+                          School Location <span className="text-danger">*</span>
                         </label>
                         <select
                           id="schoolLocation"
@@ -367,7 +381,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="panNo" className="form-label">
-                          Land Mark
+                          Land Mark <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -384,7 +398,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="panNo" className="form-label">
-                          School Pin Code
+                          School Pin Code <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -405,7 +419,7 @@ const CompleteSchoolProfile = () => {
                     </h4>
                     <h4 className="mb-3"> Same As Above</h4>
 
-                    {/* <th style={{ width: 20 }} className="mb-3"> */}
+                    
                     <div className="form-check ms-1">
                       <input
                         type="checkbox"
@@ -420,12 +434,12 @@ const CompleteSchoolProfile = () => {
                         htmlFor="sameAsSchoolAddress"
                       />
                     </div>
-                    {/* </th> */}
+                   
                   </div>
                   <div className="row">
                     <div className="mb-3">
                       <label htmlFor="deliveryAddress" className="form-label">
-                        Delivery Address
+                        Delivery Address <span className="text-danger">*</span>
                       </label>
                       {formData.sameAsSchoolAddress ? (
                         <input
@@ -462,7 +476,7 @@ const CompleteSchoolProfile = () => {
                           htmlFor="deliveryLocation"
                           className="form-label"
                         >
-                          Delivery Location
+                          Delivery Location <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
                           <select
@@ -506,7 +520,7 @@ const CompleteSchoolProfile = () => {
                           htmlFor="deliveryLandMark"
                           className="form-label"
                         >
-                          Delivery LandMark
+                          Delivery LandMark <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
                           <input
@@ -537,7 +551,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="deliveryPincode" className="form-label">
-                          Delivery Pin Code
+                          Delivery Pincode <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
                           <input
@@ -585,7 +599,6 @@ const CompleteSchoolProfile = () => {
                           className="form-control"
                           value={formData.numberOfStudents}
                           onChange={handleChange}
-                          required
                           placeholder="Example : 500"
                         />
                       </div>
@@ -602,7 +615,7 @@ const CompleteSchoolProfile = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-                          required
+                          
                         />
                       </div>
                     </div>
@@ -611,7 +624,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="affiliationUpto" className="form-label">
-                          Affiliation Upto
+                          Affiliation Upto <span className="text-danger">*</span>
                         </label>
                         <select
                           id="affiliationUpto"
@@ -643,7 +656,7 @@ const CompleteSchoolProfile = () => {
                           htmlFor="affiliationCertificate"
                           className="form-label"
                         >
-                          Affiliation Certificate
+                          Affiliation Certificate <span className="text-danger">*</span>
                         </label>
                         <input
                           type="file"
@@ -661,7 +674,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="panNo" className="form-label">
-                          PAN Number
+                          PAN Number <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -678,7 +691,7 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="panFile" className="form-label">
-                          PAN File
+                          PAN File <span className="text-danger">*</span>
                         </label>
                         <input
                           type="file"

@@ -120,7 +120,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                   <div className="col-md-12">
                     <div className="mb-6">
                       <label htmlFor="schoolId" className="form-label">
-                        School List
+                        School List <span className="text-danger">*</span>
                       </label>
                       <select
                         id="schoolId"
@@ -146,7 +146,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="subscriptionFor" className="form-label">
-                        Subscription Module
+                        Subscription Module  <span className="text-danger">*</span>
                       </label>
                       <select
                         id="subscriptionFor"
@@ -172,7 +172,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                         htmlFor="subscriptionStartDate"
                         className="form-label"
                       >
-                        Subscription Start Date
+                        Subscription Start Date <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -194,7 +194,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                         htmlFor="subscriptionNoOfMonth"
                         className="form-label"
                       >
-                        No. Of Months
+                        No. Of Months <span className="text-danger">*</span>
                       </label>
                       <input
                         type="number"
@@ -212,7 +212,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="monthlyRate" className="form-label">
-                        Monthly Rate
+                        Monthly Rate <span className="text-danger">*</span>
                       </label>
                       <input
                         type="number"

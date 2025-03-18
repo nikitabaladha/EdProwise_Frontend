@@ -3,6 +3,39 @@
 
 /*By Nikita: Custom css Start*/
 
+/* Input Css Starts */
+
+input::placeholder{
+  color:#9097a7 !important;
+}
+
+textarea::placeholder{      
+  color:#9097a7 !important;
+}
+
+select {
+  color: #9097a7 !important;
+}
+
+select:focus,
+select:valid {
+  color: black !important;
+}
+
+option {
+    color: black !important;
+  }
+
+input[type="file"] {
+  color: #9097a7 !important; 
+}
+
+input[type="file"]:focus,input[type="file"]:valid  {
+  color: black !important;
+}
+/* Input Css ends */
+
+
 .table-responsive .table > :not(:last-child) > :last-child > * {
   border-bottom-color: #d8dfe7;
 }

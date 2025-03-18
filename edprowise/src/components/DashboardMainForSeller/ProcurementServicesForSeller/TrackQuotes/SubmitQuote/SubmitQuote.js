@@ -157,7 +157,7 @@ const SubmitQuote = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="quotedAmount" className="form-label">
-                          Quoted Amount
+                          Quoted Amount <span className="text-danger">*</span>
                         </label>
                         <input
                           type="number"
@@ -175,7 +175,7 @@ const SubmitQuote = () => {
                           htmlFor="expectedDeliveryDateBySeller"
                           className="form-label"
                         >
-                          Expected Delivery Date by Seller
+                          Expected Delivery Date by Seller <span className="text-danger">*</span>
                         </label>
                         <input
                           required
@@ -201,7 +201,7 @@ const SubmitQuote = () => {
                           value={submittedQuote.description}
                           onChange={handleInputChange}
                           className="form-control"
-                          required
+                          // required
                           placeholder="Example : All Products are good"
                         />
                       </div>
@@ -220,7 +220,7 @@ const SubmitQuote = () => {
                           value={submittedQuote.remarksFromSupplier}
                           onChange={handleInputChange}
                           className="form-control"
-                          required
+                          // required
                           placeholder="Example : All Products are good"
                         />
                       </div>
@@ -230,7 +230,7 @@ const SubmitQuote = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="paymentTerms" className="form-label">
-                          Payment Terms
+                          Payment Terms <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -239,6 +239,7 @@ const SubmitQuote = () => {
                           onChange={handleInputChange}
                           className="form-control"
                           placeholder="Example : 30 days"
+                          required
                         />
                       </div>
                     </div>

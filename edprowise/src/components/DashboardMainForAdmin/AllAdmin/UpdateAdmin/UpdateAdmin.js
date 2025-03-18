@@ -85,10 +85,6 @@ const UpdateAdmin = () => {
     }
   };
 
-  const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
 
   const [showNewPassword, setShowNewPassword] = useState(false);
   const toggleNewPasswordVisibility = () => {
@@ -118,7 +114,7 @@ const UpdateAdmin = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="firstName" className="form-label">
-                        First Name
+                        First Name <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -134,7 +130,7 @@ const UpdateAdmin = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="lastName" className="form-label">
-                        Last Name
+                        Last Name <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -152,7 +148,7 @@ const UpdateAdmin = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
-                        Email
+                        Email <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -169,7 +165,7 @@ const UpdateAdmin = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="password" className="form-label">
-                        New Password
+                        New Password <span className="text-danger">*</span>
                       </label>
                       <div style={{ position: "relative" }}>
                         <input
@@ -212,7 +208,7 @@ const UpdateAdmin = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="password" className="form-label">
-                        Retype New Password
+                        Retype New Password <span className="text-danger">*</span>
                       </label>
                       <div style={{ position: "relative" }}>
                         <input

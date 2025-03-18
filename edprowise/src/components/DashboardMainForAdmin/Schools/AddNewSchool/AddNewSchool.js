@@ -128,7 +128,8 @@ const AddNewSchool = ({ addSchool }) => {
                       {" "}
                       <div className="mb-3">
                         <label htmlFor="schoolName" className="form-label">
-                          School Name
+                          School Name <span className="text-danger">*</span>
+
                         </label>
                         <input
                           type="text"
@@ -146,7 +147,8 @@ const AddNewSchool = ({ addSchool }) => {
                       {" "}
                       <div className="mb-3">
                         <label htmlFor="mobileNo" className="form-label">
-                          School Mobile Number
+                          School Mobile Number <span className="text-danger">*</span>
+
                         </label>
                         <input
                           type="tel"
@@ -163,7 +165,8 @@ const AddNewSchool = ({ addSchool }) => {
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="email" className="form-label">
-                          School Email
+                          School Email <span className="text-danger">*</span>
+
                         </label>
                         <input
                           type="email"
@@ -182,7 +185,8 @@ const AddNewSchool = ({ addSchool }) => {
                   <div className="row">
                     <div className="mb-3">
                       <label htmlFor="address" className="form-label">
-                        School Address
+                        School Address <span className="text-danger">*</span>
+
                       </label>
                       <textarea
                         className="form-control"
@@ -204,7 +208,8 @@ const AddNewSchool = ({ addSchool }) => {
                           htmlFor="cityStateCountry"
                           className="form-label"
                         >
-                          City-State-Country
+                          City-State-Country <span className="text-danger">*</span>
+
                         </label>
 
                         <select
@@ -227,7 +232,7 @@ const AddNewSchool = ({ addSchool }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="profileImage" className="form-label">
-                          Profile Image
+                          Profile Image 
                         </label>
                         <input
                           type="file"
@@ -236,7 +241,7 @@ const AddNewSchool = ({ addSchool }) => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-                          required
+                          // required
                         />
                       </div>
                     </div>
@@ -247,7 +252,8 @@ const AddNewSchool = ({ addSchool }) => {
                       {" "}
                       <div className="mb-3">
                         <label htmlFor="affiliationUpto" className="form-label">
-                          Affiliation Upto
+                          Affiliation Upto <span className="text-danger">*</span>
+
                         </label>
                         <select
                           id="affiliationUpto"
@@ -280,7 +286,8 @@ const AddNewSchool = ({ addSchool }) => {
                           htmlFor="affiliationCertificate"
                           className="form-label"
                         >
-                          Affiliation Certificate
+                          Affiliation Certificate <span className="text-danger">*</span>
+
                         </label>
                         <input
                           type="file"
@@ -299,7 +306,8 @@ const AddNewSchool = ({ addSchool }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="panNumber" className="form-label">
-                          PAN Number
+                          PAN Number <span className="text-danger">*</span>
+
                         </label>
                         <input
                           type="text"
@@ -317,7 +325,8 @@ const AddNewSchool = ({ addSchool }) => {
                       {" "}
                       <div className="mb-3">
                         <label htmlFor="panFile" className="form-label">
-                          PAN File
+                          PAN File <span className="text-danger">*</span>
+
                         </label>
                         <input
                           type="file"

@@ -122,7 +122,7 @@ const ViewSchoolProfile = () => {
                         <label htmlFor="principalName" className="form-label">
                           Principal Name
                         </label>
-                        <p className="form-control">{school.principalName}</p>
+                        <p className="form-control">{school.principalName || "Not Provided"}</p>
                       </div>
                       <div className="mb-3">
                         <label htmlFor="schoolMobileNo" className="form-label">
@@ -153,7 +153,7 @@ const ViewSchoolProfile = () => {
                           Contact Person Name
                         </label>
                         <p className="form-control">
-                          {school.contactPersonName}
+                          {school.contactPersonName || "Not Provided"}
                         </p>
                       </div>
                       <div className="mb-3">
@@ -164,7 +164,7 @@ const ViewSchoolProfile = () => {
                           School Alter Nate Contact Number
                         </label>
                         <p className="form-control">
-                          {school.schoolAlternateContactNo}
+                          {school.schoolAlternateContactNo || "Not Provided"}
                         </p>
                       </div>
                       <div className="mb-3">
@@ -175,7 +175,7 @@ const ViewSchoolProfile = () => {
                           Number Of Students
                         </label>
                         <p className="form-control">
-                          {school.numberOfStudents}
+                          {school.numberOfStudents || "Not Provided"}
                         </p>
                       </div>
                     </div>

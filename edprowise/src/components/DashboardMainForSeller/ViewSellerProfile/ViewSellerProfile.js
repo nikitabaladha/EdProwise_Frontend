@@ -122,7 +122,7 @@ const ViewSellerProfile = () => {
                       <label htmlFor="tan" className="form-label">
                         TAN Number
                       </label>
-                      <p className="form-control">{sellerProfile?.tan}</p>
+                      <p className="form-control">{sellerProfile?.tan || "Not Provided"}</p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -144,7 +144,165 @@ const ViewSellerProfile = () => {
                       <label htmlFor="cin" className="form-label">
                         CIN Number
                       </label>
-                      <p className="form-control">{sellerProfile?.cin}</p>
+                      <p className="form-control">{sellerProfile?.cin || "Not Provided"}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="panFile" className="form-label">
+                        PAN File
+                      </label>
+                      {sellerProfile?.panFile ? (
+                        sellerProfile?.panFile?.endsWith(".pdf") ? (
+                          <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
+                            <div
+                              style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <Viewer
+                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.panFile}`}
+                              />
+                            </div>
+                          </Worker>
+                        ) : (
+                          <div
+                            style={{
+                              border: "1px solid #ccc",
+                              borderRadius: "10px",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <img
+                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.panFile}`}
+                              alt="Affiliation Certificate"
+                              style={{ width: "100%", height: "auto" }}
+                            />
+                          </div>
+                        )
+                      ) : (
+                        <h5>No PAN File available</h5>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="gstFile" className="form-label">
+                        GST File
+                      </label>
+                      {sellerProfile?.gstFile ? (
+                        sellerProfile?.gstFile?.endsWith(".pdf") ? (
+                          <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
+                            <div
+                              style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <Viewer
+                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.gstFile}`}
+                              />
+                            </div>
+                          </Worker>
+                        ) : (
+                          <div
+                            style={{
+                              border: "1px solid #ccc",
+                              borderRadius: "10px",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <img
+                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.gstFile}`}
+                              alt="Affiliation Certificate"
+                              style={{ width: "100%", height: "auto" }}
+                            />
+                          </div>
+                        )
+                      ) : (
+                        <h5>No GST File available</h5>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="tanFile" className="form-label">
+                        TAN File
+                      </label>
+                      {sellerProfile?.tanFile ? (
+                        sellerProfile?.tanFile?.endsWith(".pdf") ? (
+                          <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
+                            <div
+                              style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <Viewer
+                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.tanFile}`}
+                              />
+                            </div>
+                          </Worker>
+                        ) : (
+                          <div
+                            style={{
+                              border: "1px solid #ccc",
+                              borderRadius: "10px",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <img
+                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.tanFile}`}
+                              alt="TAN Certificate"
+                              style={{ width: "100%", height: "auto" }}
+                            />
+                          </div>
+                        )
+                      ) : (
+                        <h5>No TAN File available</h5>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="cinFile" className="form-label">
+                        CIN File
+                      </label>
+                      {sellerProfile?.cinFile ? (
+                        sellerProfile?.cinFile?.endsWith(".pdf") ? (
+                          <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
+                            <div
+                              style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <Viewer
+                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.cinFile}`}
+                              />
+                            </div>
+                          </Worker>
+                        ) : (
+                          <div
+                            style={{
+                              border: "1px solid #ccc",
+                              borderRadius: "10px",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <img
+                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.cinFile}`}
+                              alt="TAN Certificate"
+                              style={{ width: "100%", height: "auto" }}
+                            />
+                          </div>
+                        )
+                      ) : (
+                        <h5>No CIN File available</h5>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -211,7 +369,7 @@ const ViewSellerProfile = () => {
                         Alternate Contact Number
                       </label>
                       <p className="form-control">
-                        {sellerProfile?.alternateContactNo}
+                        {sellerProfile?.alternateContactNo || "Not Provided"}
                       </p>
                     </div>
                   </div>
@@ -296,7 +454,7 @@ const ViewSellerProfile = () => {
                       <label htmlFor="ceoName" className="form-label">
                         CEO Name
                       </label>
-                      <p className="form-control">{sellerProfile?.ceoName}</p>
+                      <p className="form-control">{sellerProfile?.ceoName || "Not Provided"}</p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -304,7 +462,7 @@ const ViewSellerProfile = () => {
                       <label htmlFor="turnover" className="form-label">
                         Company Turnover
                       </label>
-                      <p className="form-control">{sellerProfile?.turnover}</p>
+                      <p className="form-control">{sellerProfile?.turnover || "Not Provided"}</p>
                     </div>
                   </div>
                 </div>

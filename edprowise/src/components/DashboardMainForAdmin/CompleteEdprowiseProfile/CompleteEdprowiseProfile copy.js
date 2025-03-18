@@ -5,8 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import CityData from "../../CityData.json";
-import Select from "react-select";
-import { Link } from "react-router-dom";
+
 
 const CompleteEdprowiseProfile = () => {
   const [formData, setFormData] = useState({
@@ -26,6 +25,8 @@ const CompleteEdprowiseProfile = () => {
     emailId: "",
   });
 
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -43,6 +44,19 @@ const CompleteEdprowiseProfile = () => {
       }));
     }
   };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value); // Update search query
+  };
+
+  // const handleSelectCity = (city) => {
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     cityStateCountry: city,
+  //   }));
+  //   setShowDropdown(false); // Hide dropdown after selection
+  //   setSearchQuery(""); // Clear search query
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,10 +121,20 @@ const CompleteEdprowiseProfile = () => {
     cities.map((city) => `${city}, ${state}, India`)
   );
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userDetails");
-    window.location.href = "/login";
+  // Filter cities based on search query
+  const filteredCities = cityOptions.filter((city) =>
+    city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSelectCity = (city) => {
+    console.log("Selected city:", city); // Debugging log
+    setFormData((prevState) => ({
+      ...prevState,
+      cityStateCountry: city,
+    }));
+    setShowDropdown(false); // Hide dropdown after selection
+    setSearchQuery(""); // Clear search query
+    console.log("Updated formData:", formData); // Check updated state
   };
 
   return (
@@ -121,18 +145,10 @@ const CompleteEdprowiseProfile = () => {
             <div className="card m-2">
               <div className="card-body custom-heading-padding">
                 <div className="container">
-                  <div className="card-header mb-2 d-flex justify-content-between align-items-center">
+                  <div className="card-header mb-2">
                     <h4 className="card-title custom-heading-font">
                       Add Your Profile
                     </h4>
-
-                    <button
-                      type="button"
-                      className="btn btn-primary custom-submit-button"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </button>
                   </div>
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -157,7 +173,7 @@ const CompleteEdprowiseProfile = () => {
                           placeholder="ABC Company"
                         />
                       </div>
-                    </div>
+                    </div>  
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="companyType" className="form-label">
@@ -256,8 +272,8 @@ const CompleteEdprowiseProfile = () => {
                     </div>
                   </div>
                   <h4 className="card-title text-center custo m-heading-font">
-                    Address Details
-                  </h4>
+                    Address Details 
+                  </h4> 
                   <hr></hr>
                   <div className="row">
                     <div className="mb-3">
@@ -277,7 +293,7 @@ const CompleteEdprowiseProfile = () => {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-4">           
                       <div className="mb-3">
                         <label
                           htmlFor="cityStateCountry"
@@ -285,24 +301,37 @@ const CompleteEdprowiseProfile = () => {
                         >
                           City State Country Location
                         </label>
-                        <select
-                          id="cityStateCountry"
-                          name="cityStateCountry"
-                          className="form-control"
-                          value={formData.cityStateCountry}
-                          onChange={handleChange}
-                          required
-                        >
-                          <option value="">Select City-State-Country</option>
-                          {cityOptions.map((option, index) => (
-                            <option key={index} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="dropdown">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search City"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            onFocus={() => setShowDropdown(true)}
+                          />
+                          {showDropdown && (
+                            <div className="dropdown-menu show" style={{
+                              maxHeight: '200px', 
+                              overflowY: 'auto',  
+                              overflowX: 'hidden'
+                            }}
+                      >
+                              {filteredCities.map((city, index) => (
+                                <button
+                                  key={index}
+                                  type="button"
+                                  className="dropdown-item"
+                                  onClick={() => handleSelectCity(city)}
+                                >
+                                  {city}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="landmark" className="form-label">
@@ -315,7 +344,7 @@ const CompleteEdprowiseProfile = () => {
                           className="form-control"
                           value={formData.landmark}
                           onChange={handleChange}
-                          required
+                          required  
                           placeholder="Example : Near ABC Market"
                         />
                       </div>
@@ -425,7 +454,7 @@ const CompleteEdprowiseProfile = () => {
                       type="submit"
                       className="btn btn-primary custom-submit-button"
                     >
-                      Submit Profile
+                      Submit Profile  
                     </button>
                   </div>
                 </form>
@@ -438,4 +467,4 @@ const CompleteEdprowiseProfile = () => {
   );
 };
 
-export default CompleteEdprowiseProfile;
+export default CompleteEdprowiseProfile;  

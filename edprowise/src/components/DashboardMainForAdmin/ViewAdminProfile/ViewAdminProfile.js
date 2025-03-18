@@ -124,7 +124,7 @@ const ViewAdminProfile = () => {
                       <label htmlFor="tan" className="form-label">
                         Company TAN Number
                       </label>
-                      <p className="form-control">{adminProfile?.tan}</p>
+                      <p className="form-control">{adminProfile?.tan || "Not Provided"}</p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -146,7 +146,7 @@ const ViewAdminProfile = () => {
                       <label htmlFor="cin" className="form-label">
                         Company CIN Number
                       </label>
-                      <p className="form-control">{adminProfile?.cin}</p>
+                      <p className="form-control">{adminProfile?.cin || "Not Provided"}</p>
                     </div>
                   </div>
                 </div>
@@ -213,7 +213,7 @@ const ViewAdminProfile = () => {
                         Alternate Contact Number
                       </label>
                       <p className="form-control">
-                        {adminProfile?.alternateContactNo}
+                        {adminProfile?.alternateContactNo || "Not Provided"}
                       </p>
                     </div>
                   </div>

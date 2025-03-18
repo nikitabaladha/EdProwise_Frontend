@@ -1,17 +1,41 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../export-excel";
 import { toast } from "react-toastify";
+import getAPI from "../../../api/getAPI";
 
 import ConfirmationDialog from "../../ConfirmationDialog";
-const SellersTable = ({
-  sellers,
-  setSellers,
-  selectedSeller,
-  setSelectedSeller,
-}) => {
+const SellersTable = () => {
+const [sellers, setSellers] = useState([]);
+
+    const [selectedSeller, setSelectedSeller] = useState(null);
+  
+
+  const fetchSellersData = async () => {
+    try {
+      const response = await getAPI(`/seller-profile-get-all`, {}, true);
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setSellers(response.data.data);
+        console.log("seller data", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Seller List:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSellersData();
+  }, []);
+
+
   const navigate = useNavigate();
 
   const handleExport = () => {

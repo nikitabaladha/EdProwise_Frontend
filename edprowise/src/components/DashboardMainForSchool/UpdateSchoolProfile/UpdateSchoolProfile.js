@@ -13,7 +13,6 @@ import CityData from "../../CityData.json";
 
 const UpdateSchoolProfile = () => {
   const location = useLocation();
-  // const schoolId = location.state?._id;
   const schoolId = location.state?.schoolId;
 
   const navigate = useNavigate();
@@ -219,7 +218,7 @@ const UpdateSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="schoolName" className="form-label">
-                            School Name
+                            School Name <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -247,7 +246,7 @@ const UpdateSchoolProfile = () => {
                             className="form-control"
                             value={formData.contactPersonName}
                             onChange={handleChange}
-                            required
+                            // required
                           />
                         </div>
                       </div>
@@ -263,7 +262,7 @@ const UpdateSchoolProfile = () => {
                             className="form-control"
                             value={formData.principalName}
                             onChange={handleChange}
-                            required
+                            // required
                           />
                         </div>
                       </div>
@@ -273,7 +272,7 @@ const UpdateSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="email" className="form-label">
-                            School Email
+                            School Email <span className="text-danger">*</span>
                           </label>
                           <input
                             type="email"
@@ -289,7 +288,8 @@ const UpdateSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="mobileNo" className="form-label">
-                            School Mobile Number
+                            School Mobile Number <span className="text-danger">*</span>
+
                           </label>
                           <input
                             type="tel"
@@ -317,7 +317,7 @@ const UpdateSchoolProfile = () => {
                             className="form-control"
                             value={formData.schoolAlternateContactNo}
                             onChange={handleChange}
-                            required
+                            // required
                           />
                         </div>
                       </div>
@@ -330,7 +330,7 @@ const UpdateSchoolProfile = () => {
                     <div className="row">
                       <div className="mb-3">
                         <label htmlFor="address" className="form-label">
-                          School Address
+                          School Address <span className="text-danger">*</span>
                         </label>
                         <textarea
                           className="form-control"
@@ -350,7 +350,7 @@ const UpdateSchoolProfile = () => {
                             htmlFor="schoolLocation"
                             className="form-label"
                           >
-                            School Location
+                            School Location <span className="text-danger">*</span>
                           </label>
                           <select
                             id="schoolLocation"
@@ -373,7 +373,8 @@ const UpdateSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="panNo" className="form-label">
-                            Land Mark
+                            Land Mark <span className="text-danger">*</span>
+
                           </label>
                           <input
                             type="text"
@@ -389,8 +390,9 @@ const UpdateSchoolProfile = () => {
 
                       <div className="col-md-4">
                         <div className="mb-3">
-                          <label htmlFor="panNo" className="form-label">
-                            School Pin Code
+                          <label htmlFor="schoolPinCode" className="form-label">
+                            School Pin Code <span className="text-danger">*</span>
+
                           </label>
                           <input
                             type="text"
@@ -413,7 +415,8 @@ const UpdateSchoolProfile = () => {
                     <div className="row">
                       <div className="mb-3">
                         <label htmlFor="deliveryAddress" className="form-label">
-                          Delivery Address
+                          Delivery Address <span className="text-danger">*</span>
+
                         </label>
                         <input
                           type="text"
@@ -433,7 +436,8 @@ const UpdateSchoolProfile = () => {
                             htmlFor="deliveryLocation"
                             className="form-label"
                           >
-                            Delivery Location
+                            Delivery Location <span className="text-danger">*</span>
+
                           </label>
                           <select
                             id="deliveryLocation"
@@ -458,7 +462,8 @@ const UpdateSchoolProfile = () => {
                             htmlFor="deliveryLandMark"
                             className="form-label"
                           >
-                            Delivery LandMark
+                            Delivery LandMark <span className="text-danger">*</span>
+
                           </label>
                           <input
                             type="text"
@@ -477,7 +482,8 @@ const UpdateSchoolProfile = () => {
                             htmlFor="deliveryPincode"
                             className="form-label"
                           >
-                            Delivery Pin Code
+                            Delivery Pin Code <span className="text-danger">*</span>
+
                           </label>
                           <input
                             type="text"
@@ -509,7 +515,7 @@ const UpdateSchoolProfile = () => {
                             className="form-control"
                             value={formData.numberOfStudents}
                             onChange={handleChange}
-                            required
+                            // required
                           />
                         </div>
                       </div>
@@ -546,7 +552,8 @@ const UpdateSchoolProfile = () => {
                             htmlFor="affiliationUpto"
                             className="form-label"
                           >
-                            Affiliation Upto
+                            Affiliation Upto <span className="text-danger">*</span>
+
                           </label>
                           <select
                             id="affiliationUpto"
@@ -578,7 +585,7 @@ const UpdateSchoolProfile = () => {
                             htmlFor="affiliationCertificate"
                             className="form-label"
                           >
-                            Affiliation Certificate
+                            Affiliation Certificate <span className="text-danger">*</span>
                           </label>
                           <input
                             type="file"
@@ -605,7 +612,8 @@ const UpdateSchoolProfile = () => {
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="panNo" className="form-label">
-                            PAN Number
+                            PAN Number <span className="text-danger">*</span>
+
                           </label>
                           <input
                             type="text"
@@ -621,7 +629,7 @@ const UpdateSchoolProfile = () => {
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="panFile" className="form-label">
-                            PAN File
+                            PAN File <span className="text-danger">*</span>
                           </label>
                           <input
                             type="file"
