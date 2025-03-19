@@ -33,16 +33,16 @@ const PrepareQuoteTable = ({
               <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
                 <thead className="bg-light-subtle">
                   <tr>
-                    <th>Action</th>
-                    <th>Sr No.</th>
-                    <th>Subcategory Name</th>
-                    <th>HSN/SAAC</th>
-                    <th>Listing Rate</th>
-                    <th>EdProwise Margin %</th>
-                    <th>Quantity</th>
-                    <th>Discount %</th>
-                    <th>CGST Rate</th>
-                    <th>SGST Rate</th>
+                    <th>Action</th> 
+                    <th>Sr No. </th> 
+                    <th>Subcategory Name <span className="text-danger">*</span></th>
+                    <th>HSN/SAAC <span className="text-danger">*</span></th>
+                    <th>Listing Rate <span className="text-danger">*</span></th>
+                    <th>EdProwise Margin % <span className="text-danger">*</span></th>
+                    <th>Quantity <span className="text-danger">*</span></th>
+                    <th>Discount % <span className="text-danger">*</span></th>
+                    <th>CGST Rate <span className="text-danger">*</span></th>
+                    <th>SGST Rate <span className="text-danger">*</span></th>
                     <th>IGST Rate</th>
                     <th>Upload Sample Images of Products</th>
                   </tr>

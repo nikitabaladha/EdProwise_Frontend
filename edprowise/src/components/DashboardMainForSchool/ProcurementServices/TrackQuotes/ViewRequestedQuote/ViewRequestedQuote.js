@@ -4,13 +4,7 @@ import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { exportToExcel } from "../../../../export-excel";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import autoTable from "jspdf-autotable";
-import jsPDF from "jspdf";
-
-import postAPI from "../../../../../api/postAPI";
 
 import getAPI from "../../../../../api/getAPI";
 
@@ -204,24 +198,7 @@ const ViewRequestedQuote = () => {
                 </table>
               </div>
 
-              {/* end table-responsive */}
-
-              {/* <div className="d-flex justify-content-between mt-2">
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                  onClick={() => setIsQuoteTableVisible(!isQuoteTableVisible)}
-                >
-                  {isQuoteTableVisible ? "Hide Quote" : "View Quote"}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                  onClick={() => window.history.back()}
-                >
-                  Go Back
-                </button>
-              </div> */}
+              
 
               <div className="d-flex justify-content-between mt-2">
                 {Object.values(submittedQuotes).some(

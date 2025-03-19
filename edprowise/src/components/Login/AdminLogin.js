@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import postAPI from "../../api/postAPI";
@@ -41,7 +43,7 @@ const AdminLogin = () => {
           navigate(
             userDetails.status === "Pending"
               ? "/complete-admin-profile"
-              : "/admin-dashboard"
+              : "/admin-dashboard/procurement-services/dashboard"
           );
         }
       } else {

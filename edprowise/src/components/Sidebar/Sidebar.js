@@ -466,12 +466,12 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
   const currentRoute = location.pathname;
   const menuConfig = {
     Admin: [
-      {
-        id: "dashboard",
-        label: "Dashboard",
-        icon: "solar:widget-5-bold-duotone",
-        link: "/admin-dashboard",
-      },
+      // {
+      //   id: "dashboard",
+      //   label: "Dashboard",
+      //   icon: "solar:widget-5-bold-duotone",
+      //   link: "/admin-dashboard",
+      // },
 
       ...(email === "edprowise@gmail.com"
         ? [
@@ -507,6 +507,11 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         label: "Procurement Services",
         icon: "solar:wallet-money-bold",
         children: [
+          {
+            label: "Dashboard",
+            link: "/admin-dashboard/procurement-services/dashboard",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
           {
             label: "Quotes",
             link: "/admin-dashboard/procurement-services/track-quote",
@@ -544,17 +549,22 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
     ],
 
     School: [
-      {
-        id: "dashboard",
-        label: "Dashboard",
-        icon: "solar:widget-5-bold-duotone",
-        link: "/school-dashboard",
-      },
+      // {
+      //   id: "dashboard",
+      //   label: "Dashboard",
+      //   icon: "solar:widget-5-bold-duotone",
+      //   link: "/school-dashboard",
+      // },
       {
         id: "procurementServices",
         label: "Procurement Services",
         icon: "solar:wallet-money-bold",
         children: [
+          {
+            label: "Dashboard",
+            link: "/school-dashboard/procurement-services/dashboard",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
           {
             label: "Quotes",
             link: "/school-dashboard/procurement-services/track-quote",
@@ -657,17 +667,22 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       },
     ],
     Seller: [
-      {
-        id: "dashboard",
-        label: "Dashboard",
-        icon: "solar:widget-5-bold-duotone",
-        link: "/seller-dashboard",
-      },
+      // {
+      //   id: "dashboard",
+      //   label: "Dashboard",
+      //   icon: "solar:widget-5-bold-duotone",
+      //   link: "/seller-dashboard",
+      // },
       {
         id: "procurementServices",
         label: "Procurement Services",
         icon: "solar:wallet-money-bold",
         children: [
+          {
+            label: "Dashboard",
+            link: "/seller-dashboard/procurement-services/dashboard",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
           {
             label: "Quote Enquiry",
             link: "/seller-dashboard/procurement-services/track-quote",

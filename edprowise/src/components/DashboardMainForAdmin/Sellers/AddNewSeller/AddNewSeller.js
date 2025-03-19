@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import CityData from "../../../CityData.json";
+import Select from "react-select";
 
 const AddNewSeller = () => {
   const [formData, setFormData] = useState({
@@ -180,7 +181,10 @@ const AddNewSeller = () => {
   };
 
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
+    cities.map((city) => ({
+      value: `${city}, ${state}, India`,
+      label: `${city}, ${state}, India`,
+    }))
   );
 
   return (
@@ -424,21 +428,23 @@ const AddNewSeller = () => {
                         >
                           City State Country Location <span className="text-danger">*</span>
                         </label>
-                        <select
+                                                <Select
                           id="cityStateCountry"
                           name="cityStateCountry"
-                          className="form-control"
-                          value={formData.cityStateCountry}
-                          onChange={handleChange}
-                          // required
-                        >
-                          <option value="">Select City-State-Country</option>
-                          {cityOptions.map((option, index) => (
-                            <option key={index} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
+                          options={cityOptions}
+                          value={cityOptions.find(option => option.value === formData.cityStateCountry)}
+                          onChange={(selectedOption) =>
+                            setFormData((prevState) => ({
+                              ...prevState,
+                              cityStateCountry: selectedOption ? selectedOption.value : "",
+                            }))
+                          }
+                          placeholder="Select City-State-Country"
+                          isSearchable
+                          required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -709,16 +715,7 @@ const AddNewSeller = () => {
                         <label htmlFor="turnover" className="form-label">
                           Company Turnover
                         </label>
-                        {/* <input
-                          type="number"
-                          id="turnover"
-                          name="turnover"
-                          className="form-control"
-                          value={formData.turnover}
-                          onChange={handleChange}
-                          required
-                          placeholder="Example : 1000000"
-                        /> */}
+                        
                         <select
                           id="turnover"
                           name="turnover"

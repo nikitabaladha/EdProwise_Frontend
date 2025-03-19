@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import getAPI from "../../../api/getAPI";
 
 import SchoolDashboardInformationCards from "./SchoolDashboardInformationCards";
-import SchoolDashboardPerformance from "./SchoolDashboardPerformance";
-import SchoolDashboardConversions from "./SchoolDashboardConversions";
 import SchoolDashboardRecentOrders from "./SchoolDashboardRecentOrders";
 
 const Dashboard = () => {

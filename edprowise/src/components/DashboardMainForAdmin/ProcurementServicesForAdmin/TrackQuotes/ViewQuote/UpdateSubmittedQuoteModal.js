@@ -146,7 +146,7 @@ const UpdateSubmittedQuoteModal = ({
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                       <label htmlFor="quotedAmount" className="form-label">
-                        Quoted Amount
+                        Quoted Amount <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -167,7 +167,8 @@ const UpdateSubmittedQuoteModal = ({
                         value={submittedQuote.description}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
+                        // required
+                        placeholder="Example : Good Products"
                       />
                     </div>
                     <div className="mb-3">
@@ -183,6 +184,7 @@ const UpdateSubmittedQuoteModal = ({
                         value={submittedQuote.remarksFromSupplier}
                         onChange={handleInputChange}
                         className="form-control"
+                        placeholder="Example : Good Products"
                       />
                     </div>
                     <div className="mb-3">
@@ -190,7 +192,7 @@ const UpdateSubmittedQuoteModal = ({
                         htmlFor="expectedDeliveryDateBySeller"
                         className="form-label"
                       >
-                        Expected Delivery Date
+                        Expected Delivery Date <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -202,7 +204,7 @@ const UpdateSubmittedQuoteModal = ({
                     </div>
                     <div className="mb-3">
                       <label htmlFor="paymentTerms" className="form-label">
-                        Payment Terms
+                        Payment Terms <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"

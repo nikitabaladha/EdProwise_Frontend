@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import getAPI from "../../../api/getAPI";
 import putAPI from "../../../api/putAPI";
-
+import Select from "react-select";
 import "react-toastify/dist/ReactToastify.css";
 
 import { toast } from "react-toastify";
@@ -39,37 +39,6 @@ const CompleteSchoolProfile = () => {
   const profileImageRef = useRef(null);
   const affiliationCertificateRef = useRef(null);
   const panFileRef = useRef(null);
-
-  // const fetchSchoolData = async () => {
-  //   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-  //   const schoolId = userDetails?.schoolId;
-
-  //   if (!schoolId) {
-  //     console.error("School ID not found in localStorage");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await getAPI(`/school-profile/${schoolId}`, {}, true);
-
-  //     if (!response.hasError && response.data && response.data.data) {
-  //       setSchool(response.data.data);
-
-  //       console.log("school profile", response.data.data);
-
-  //       // if no school profile found, i want to redirect to /complete-your-school-profile page
-
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         ...response.data.data,
-  //       }));
-  //     } else {
-  //       console.error("Invalid response format or error in response");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error fetching School:", err);
-  //   }
-  // };
 
   const fetchSchoolData = async () => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -250,7 +219,10 @@ const CompleteSchoolProfile = () => {
   };
 
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
+    cities.map((city) => ({
+      value: `${city}, ${state}, India`,
+      label: `${city}, ${state}, India`,
+    }))
   );
 
   const getBaseFileName = (url) => {
@@ -262,7 +234,6 @@ const CompleteSchoolProfile = () => {
     localStorage.removeItem("userDetails");
     window.location.href = "/login";
   };
-
 
   return (
     <>
@@ -279,12 +250,12 @@ const CompleteSchoolProfile = () => {
                       </h4>
 
                       <button
-                      type="button"
-                      className="btn btn-primary custom-submit-button"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </button>
+                        type="button"
+                        className="btn btn-primary custom-submit-button"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
                     </div>
                   </div>
                   <form onSubmit={handleUpdate}>
@@ -296,7 +267,7 @@ const CompleteSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="schoolName" className="form-label">
-                            School Name <span className="text-danger">*</span> 
+                            School Name <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -333,7 +304,7 @@ const CompleteSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="principalName" className="form-label">
-                            Principal Name 
+                            Principal Name
                           </label>
                           <input
                             type="text"
@@ -352,7 +323,8 @@ const CompleteSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="mobileNo" className="form-label">
-                            School Mobile Number <span className="text-danger">*</span>
+                            School Mobile Number{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="tel"
@@ -405,7 +377,7 @@ const CompleteSchoolProfile = () => {
                     </div>
 
                     <h4 className="card-title text-center custom-heading-font">
-                      School Address Details 
+                      School Address Details
                     </h4>
                     <hr></hr>
 
@@ -433,23 +405,32 @@ const CompleteSchoolProfile = () => {
                             htmlFor="schoolLocation"
                             className="form-label"
                           >
-                            School Location <span className="text-danger">*</span>
+                            School Location{" "}
+                            <span className="text-danger">*</span>
                           </label>
-                          <select
-                            id="schoolLocation"
+
+                          <Select
+                            id="cityStateCountry"
                             name="schoolLocation"
-                            className="form-control"
-                            value={formData.schoolLocation}
-                            onChange={handleChange}
+                            options={cityOptions}
+                            value={cityOptions.find(
+                              (option) =>
+                                option.value === formData.schoolLocation
+                            )}
+                            onChange={(selectedOption) =>
+                              setFormData((prevState) => ({
+                                ...prevState,
+                                schoolLocation: selectedOption
+                                  ? selectedOption.value
+                                  : "",
+                              }))
+                            }
+                            placeholder="Select City-State-Country"
+                            isSearchable
                             required
-                          >
-                            <option value="">Select City-State-Country</option>
-                            {cityOptions.map((option, index) => (
-                              <option key={index} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
                         </div>
                       </div>
                       <div className="col-md-4">
@@ -472,7 +453,8 @@ const CompleteSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="panNo" className="form-label">
-                            School Pin Code <span className="text-danger">*</span>
+                            School Pin Code{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -489,7 +471,7 @@ const CompleteSchoolProfile = () => {
                     </div>
                     <div className="d-flex justify-content-between align-items-center gap-1">
                       <h4 className="card-title flex-grow-1 custom-heading-font mb-3">
-                        Delivery Address Details 
+                        Delivery Address Details
                       </h4>
                       <h4 className="mb-3"> Same As Above</h4>
 
@@ -511,7 +493,8 @@ const CompleteSchoolProfile = () => {
                     <div className="row">
                       <div className="mb-3">
                         <label htmlFor="deliveryAddress" className="form-label">
-                          Delivery Address <span className="text-danger">*</span>
+                          Delivery Address{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
                           <input
@@ -548,46 +531,50 @@ const CompleteSchoolProfile = () => {
                             htmlFor="deliveryLocation"
                             className="form-label"
                           >
-                            Delivery Location <span className="text-danger">*</span>
+                            Delivery Location{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           {formData.sameAsSchoolAddress ? (
-                            <select
-                              id="deliveryLocation"
-                              name="deliveryLocation"
-                              className="form-control"
-                              value={formData.schoolLocation}
-                              onChange={handleChange}
-                              required
-                              disabled
-                            >
-                              <option value="">
-                                Select City-State-Country
-                              </option>
-                              {cityOptions.map((option, index) => (
-                                <option key={index} value={option}>
-                                  {option}
-                                </option>
-                              ))}
-                            </select>
-                          ) : (
-                            <select
-                              id="deliveryLocation"
-                              name="deliveryLocation"
-                              className="form-control"
-                              value={formData.deliveryLocation}
-                              onChange={handleChange}
-                              required
-                            >
-                              <option value="">
-                                Select City-State-Country
-                              </option>
-                              {cityOptions.map((option, index) => (
-                                <option key={index} value={option}>
-                                  {option}
-                                </option>
-                              ))}
-                            </select>
-                          )}
+                          
+                          <Select
+                          id="deliveryLocation"
+                          name="deliveryLocation"
+                          options={cityOptions}
+                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
+                          onChange={(selectedOption) =>
+                            setFormData((prevState) => ({
+                              ...prevState,
+                              schoolLocation: selectedOption ? selectedOption.value : "",
+                            }))
+                          }
+                          placeholder="Select City-State-Country"
+                          isSearchable
+                          required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
+                          
+                        ) : (
+                          
+                          <Select
+                          id="deliveryLocation"
+                          name="deliveryLocation"
+                          options={cityOptions}
+                          value={cityOptions.find(option => option.value === formData.deliveryLocation)}
+                          onChange={(selectedOption) =>
+                            setFormData((prevState) => ({
+                              ...prevState,
+                              deliveryLocation: selectedOption ? selectedOption.value : "",
+                            }))
+                          }
+                          placeholder="Select City-State-Country"
+                          isSearchable
+                          required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
+                        )}
+
                         </div>
                       </div>
                       <div className="col-md-4">
@@ -596,7 +583,8 @@ const CompleteSchoolProfile = () => {
                             htmlFor="deliveryLandMark"
                             className="form-label"
                           >
-                            Delivery LandMark <span className="text-danger">*</span>
+                            Delivery LandMark{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           {formData.sameAsSchoolAddress ? (
                             <input
@@ -630,7 +618,8 @@ const CompleteSchoolProfile = () => {
                             htmlFor="deliveryPincode"
                             className="form-label"
                           >
-                            Delivery Pincode <span className="text-danger">*</span>
+                            Delivery Pincode{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           {formData.sameAsSchoolAddress ? (
                             <input
@@ -678,7 +667,6 @@ const CompleteSchoolProfile = () => {
                             className="form-control"
                             value={formData.numberOfStudents}
                             onChange={handleChange}
-                          
                             placeholder="Example : 500"
                           />
                         </div>
@@ -686,7 +674,7 @@ const CompleteSchoolProfile = () => {
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="profileImage" className="form-label">
-                            Profile Image 
+                            Profile Image
                           </label>
                           <input
                             type="file"
@@ -716,7 +704,8 @@ const CompleteSchoolProfile = () => {
                             htmlFor="affiliationUpto"
                             className="form-label"
                           >
-                            Affiliation Upto <span className="text-danger">*</span>
+                            Affiliation Upto{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <select
                             id="affiliationUpto"
@@ -748,7 +737,8 @@ const CompleteSchoolProfile = () => {
                             htmlFor="affiliationCertificate"
                             className="form-label"
                           >
-                            Affiliation Certificate <span className="text-danger">*</span>
+                            Affiliation Certificate{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="file"

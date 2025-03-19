@@ -6,6 +6,7 @@ import getAPI from "../../../../api/getAPI";
 import { toast } from "react-toastify";
 
 import { format } from "date-fns";
+import { formatCost } from "../../../CommonFunction";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -28,7 +29,7 @@ const TrackOrderHistoryTable = () => {
         ) {
           setOrderDetails(response.data.data);
 
-          console.log("Order Details", response.data.data);
+          console.log("Order Details in Admin", response.data.data);
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -195,7 +196,7 @@ const TrackOrderHistoryTable = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>{order.totalAmountBeforeGstAndDiscount}</td>
+                          <td>{formatCost(order.totalAmountBeforeGstAndDiscount)}</td>
                           <td>{order.edprowiseStatus}</td>
                           <td>
                             <div className="d-flex gap-2">

@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import getAPI from "../../../api/getAPI";
+
+import getAPI from "../../../../api/getAPI";
+
 import { format } from "date-fns";
-import { formatCost } from "../../CommonFunction";
+import { formatCost } from "../../../CommonFunction";
+
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   return format(new Date(dateString), "dd/MM/yyyy");
 };
 
-const SellerDashboardRecentOrders = () => {
+const SchoolDashboardRecentOrders = () => {
   const [orderDetails, setOrderDetails] = useState([]);
 
   const fetchOrderData = async () => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-    const sellerId = userDetails?.id;
+    const schoolId = userDetails?.schoolId;
 
-    if (!sellerId) {
-      console.error("Seller ID is missing");
+    if (!schoolId) {
+      console.error("School ID is missing");
       return;
     }
 
     try {
       const response = await getAPI(
-        `/order-details-by-seller-id/${sellerId}`,
+        `/order-details-by-school-id/${schoolId}`,
         {},
         true
       );
@@ -35,6 +35,7 @@ const SellerDashboardRecentOrders = () => {
         Array.isArray(response.data.data)
       ) {
         setOrderDetails(response.data.data);
+
         console.log("Order Details", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
@@ -89,7 +90,7 @@ const SellerDashboardRecentOrders = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All Orders List</h4>
+                <h4 className="card-title flex-grow-1">View All Orders List</h4>
               </div>
               <div>
                 <div className="table-responsive">
@@ -110,10 +111,12 @@ const SellerDashboardRecentOrders = () => {
                           </div>
                         </th>
                         <th>Order Number</th>
-                        <th>Status</th>
+                        <th>Name of Supplier</th>
                         <th>Expected Delivery Date</th>
-                        <th>Total Invoice Amount</th>
-                        <th>Final ReceivableFrom</th>
+                        <th>Actual Delivery Date</th>
+                        <th>Invoice Amount</th>
+                        <th>Advance Adjustment</th>
+                        <th>Status</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -135,10 +138,16 @@ const SellerDashboardRecentOrders = () => {
                             </div>
                           </td>
                           <td>{order.orderNumber}</td>
-                          <td>{order.supplierStatus}</td>
+                          <td>{order.companyName}</td>
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
-                          <td>{formatCost(order.totalAmount)}</td>
-                          <td>{formatCost(order.finalReceivableFromEdprowise)}</td>
+                          <td>
+                            {order.actualDeliveryDate
+                              ? formatDate(order.actualDeliveryDate)
+                              : "Null"}
+                          </td>
+                          <td>{formatCost(order.totalAmountBeforeGstAndDiscount)}</td>
+                          <td>{formatCost(order.advanceAdjustment)}</td>
+                          <td>{order.buyerStatus}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -188,14 +197,11 @@ const SellerDashboardRecentOrders = () => {
                 </nav>
               </div>
             </div>
-            {/* end card */}
           </div>
-          {/* end col */}
         </div>
-        {/* end row */}
       </div>
     </>
   );
 };
 
-export default SellerDashboardRecentOrders;
+export default SchoolDashboardRecentOrders;

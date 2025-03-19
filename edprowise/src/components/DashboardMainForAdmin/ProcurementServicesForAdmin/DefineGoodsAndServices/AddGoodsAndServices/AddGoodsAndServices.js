@@ -79,14 +79,7 @@ const AddCategory = () => {
     }
   };
 
-  // i want handle below html like:-
-
-  // 1) if there is no main category data at that time i want to show input type text field for all three like mainCategoryName , categoryName and subCategoryName
-
-  // 2) if there is main category data at that time i want to show list of main category and according to it show list of category and input type text field for subcategory name
-
-  // 3) if there is main category data but not category data for that particular mainCategory at that time i want to show input type text field for categoryName and subCategoryName
-
+  
   return (
     <div className="container">
       <div className="row">
@@ -106,9 +99,9 @@ const AddCategory = () => {
                   <div className="col-md-4">
                     <div className="mb-6">
                       <label htmlFor="mainCategoryId" className="form-label">
-                        {mainCategories.length > 0
-                          ? "Main Category List"
-                          : "Main Category Name"}
+                                                 {mainCategories.length > 0
+      ? <>Main Category List <span className="text-danger">*</span></>
+      : <>Main Category Name <span className="text-danger">*</span></>}
                       </label>
                       {mainCategories.length > 0 ? (
                         <select

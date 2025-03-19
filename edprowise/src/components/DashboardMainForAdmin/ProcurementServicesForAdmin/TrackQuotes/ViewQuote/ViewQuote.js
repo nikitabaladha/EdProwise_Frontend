@@ -15,6 +15,7 @@ import getAPI from "../../../../../api/getAPI";
 import putAPI from "../../../../../api/putAPI";
 
 import { format } from "date-fns";
+import { formatCost } from "../../../../CommonFunction";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -30,10 +31,6 @@ const ViewQuote = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchQuoteData = async () => {
-    // if (!enquiryNumber || !sellerId) {
-    //   console.error("Enquiry Number or Seller ID is missing");
-    //   return;
-    // }
     console.log("Enquiry Number", enquiryNumber);
     console.log("Seller ID", sellerId);
     try {
@@ -141,10 +138,6 @@ const ViewQuote = () => {
     }
   };
 
-  // if (!quote) {
-  //   return <div>No quote details available.</div>;
-  // }
-
   return (
     <>
       <div className="container">
@@ -177,59 +170,67 @@ const ViewQuote = () => {
                           />
                         </Link>
 
-                        <Link
-                          onClick={openUpdateSubmittedQuoteModal}
-                          className="btn btn-soft-primary btn-sm"
-                          title="Edit"
-                          data-bs-toggle="popover"
-                          data-bs-trigger="hover"
-                        >
-                          <iconify-icon
-                            icon="solar:pen-2-broken"
-                            className="align-middle fs-18"
-                          />
-                        </Link>
-
-                        {currentQuote?.venderStatus === "Pending" && (
+                        {["Quote Requested", "Quote Received"].includes(
+                          currentQuote?.edprowiseStatus
+                        ) && (
                           <>
-                            <button
-                              className="btn btn-success btn-sm"
-                              onClick={() =>
-                                handleVenderStatusUpdate("Quote Accepted")
-                              }
+                            <Link
+                              onClick={openUpdateSubmittedQuoteModal}
+                              className="btn btn-soft-primary btn-sm"
+                              title="Edit"
+                              data-bs-toggle="popover"
+                              data-bs-trigger="hover"
                             >
-                              Accept
-                            </button>
-                            <button
-                              className="btn btn-danger btn-sm"
-                              onClick={() =>
-                                handleVenderStatusUpdate("Quote Not Accepted")
-                              }
-                            >
-                              Reject
-                            </button>
+                              <iconify-icon
+                                icon="solar:pen-2-broken"
+                                className="align-middle fs-18"
+                              />
+                            </Link>
+                            {currentQuote?.venderStatus === "Pending" && (
+                              <>
+                                <button
+                                  className="btn btn-success btn-sm"
+                                  onClick={() =>
+                                    handleVenderStatusUpdate("Quote Accepted")
+                                  }
+                                >
+                                  Accept
+                                </button>
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() =>
+                                    handleVenderStatusUpdate(
+                                      "Quote Not Accepted"
+                                    )
+                                  }
+                                >
+                                  Reject
+                                </button>
+                              </>
+                            )}
+                            {currentQuote?.venderStatus ===
+                              "Quote Accepted" && (
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() =>
+                                  handleVenderStatusUpdate("Quote Not Accepted")
+                                }
+                              >
+                                Reject
+                              </button>
+                            )}
+                            {currentQuote?.venderStatus ===
+                              "Quote Not Accepted" && (
+                              <button
+                                className="btn btn-success btn-sm"
+                                onClick={() =>
+                                  handleVenderStatusUpdate("Quote Accepted")
+                                }
+                              >
+                                Accept
+                              </button>
+                            )}
                           </>
-                        )}
-                        {currentQuote?.venderStatus === "Quote Accepted" && (
-                          <button
-                            className="btn btn-danger btn-sm"
-                            onClick={() =>
-                              handleVenderStatusUpdate("Quote Not Accepted")
-                            }
-                          >
-                            Reject
-                          </button>
-                        )}
-                        {currentQuote?.venderStatus ===
-                          "Quote Not Accepted" && (
-                          <button
-                            className="btn btn-success btn-sm"
-                            onClick={() =>
-                              handleVenderStatusUpdate("Quote Accepted")
-                            }
-                          >
-                            Accept
-                          </button>
                         )}
                       </div>
                     </div>
@@ -296,7 +297,7 @@ const ViewQuote = () => {
                         Quoted Amount
                       </label>
                       <p className="form-control">
-                        {currentQuote?.quotedAmount}
+                        {formatCost(currentQuote?.quotedAmount)}
                       </p>
                     </div>
                   </div>
@@ -310,7 +311,8 @@ const ViewQuote = () => {
                         Advances Required Amount
                       </label>
                       <p className="form-control">
-                        {currentQuote?.advanceRequiredAmount}
+                        {formatCost(currentQuote?.advanceRequiredAmount) ||
+                          "Not Provided"}
                       </p>
                     </div>
                   </div>
@@ -326,7 +328,7 @@ const ViewQuote = () => {
                         Remarks from Supplier
                       </label>
                       <p className="form-control">
-                        {currentQuote?.remarksFromSupplier}
+                        {currentQuote?.remarksFromSupplier || "Not Provided"}
                       </p>
                     </div>
                   </div>
@@ -337,7 +339,7 @@ const ViewQuote = () => {
                         Description
                       </label>
                       <p className="form-control">
-                        {currentQuote?.description}
+                        {currentQuote?.description || "Not Provided"}
                       </p>
                     </div>
                   </div>

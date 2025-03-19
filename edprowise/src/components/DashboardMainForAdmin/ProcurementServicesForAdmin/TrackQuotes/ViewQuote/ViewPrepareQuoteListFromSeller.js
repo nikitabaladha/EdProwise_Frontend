@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import getAPI from "../../../../../api/getAPI";
 import putAPI from "../../../../../api/putAPI";
 import { Modal } from "react-bootstrap";
+import { formatCost } from "../../../../CommonFunction";
 
 const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
   const location = useLocation();
@@ -173,7 +174,24 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                         <th>Discount Amount</th>
                         <th>GST Amount</th>
                         <th>Total Amount</th>
-                        <th>Action</th>
+                        {/* I want this action tag if and only if */}
+                        {/* <th>
+                              {quote.updateCountBySeller === 0 &&
+                              (quote.supplierStatus === "Quote Requested" ||
+                                quote.supplierStatus === "Quote Submitted") ? (
+                                "Action"
+                              ) : null}
+                            </th> */}
+                        <th>
+                          {preparedQuotes.length > 0 &&
+                          preparedQuotes[0].updateCountBySeller === 0 &&
+                          (preparedQuotes[0].supplierStatus ===
+                            "Quote Requested" ||
+                            preparedQuotes[0].supplierStatus ===
+                              "Quote Submitted")
+                            ? "Action"
+                            : null}
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -259,7 +277,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                   className="form-control"
                                 />
                               ) : (
-                                quote.listingRate
+                                formatCost(quote.listingRate)
                               )}
                             </td>
                             <td>
@@ -292,7 +310,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                 quote.quantity
                               )}
                             </td>
-                            <td>{quote.finalRateBeforeDiscount}</td>
+                            <td>{formatCost(quote.finalRateBeforeDiscount)}</td>
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input
@@ -308,8 +326,8 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                 quote.discount
                               )}
                             </td>
-                            <td>{quote.finalRate}</td>
-                            <td>{quote.taxableValue}</td>
+                            <td>{formatCost(quote.finalRate)}</td>
+                            <td>{formatCost(quote.taxableValue)}</td>
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input
@@ -325,7 +343,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                 quote.cgstRate
                               )}
                             </td>
-                            <td>{quote.cgstAmount}</td>
+                            <td>{formatCost(quote.cgstAmount)}</td>
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input
@@ -341,7 +359,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                 quote.sgstRate
                               )}
                             </td>
-                            <td>{quote.sgstAmount}</td>
+                            <td>{formatCost(quote.sgstAmount)}</td>
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input
@@ -357,38 +375,45 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                 quote.igstRate
                               )}
                             </td>
-                            <td>{quote.igstAmount}</td>
-                            <td>{quote.amountBeforeGstAndDiscount}</td>
-                            <td>{quote.discountAmount}</td>
-                            <td>{quote.gstAmount}</td>
-                            <td>{quote.totalAmount}</td>
+                            <td>{formatCost(quote.igstAmount)}</td>
+                            <td>
+                              {formatCost(quote.amountBeforeGstAndDiscount)}
+                            </td>
+                            <td>{formatCost(quote.discountAmount)}</td>
+                            <td>{formatCost(quote.gstAmount)}</td>
+                            <td>{formatCost(quote.totalAmount)}</td>
 
                             <td>
-                              <button
-                                className="btn btn-primary"
-                                onClick={() => {
-                                  if (editedQuote[quote._id]) {
-                                    handleUpdate(quote._id);
-                                  } else {
-                                    setEditedQuote((prev) => ({
-                                      ...prev,
-                                      [quote._id]: {
-                                        subcategoryName: quote.subcategoryName,
-                                        hsnSacc: quote.hsnSacc,
-                                        listingRate: quote.listingRate,
-                                        edprowiseMargin: quote.edprowiseMargin,
-                                        quantity: quote.quantity,
-                                        discount: quote.discount,
-                                        cgstRate: quote.cgstRate,
-                                        sgstRate: quote.sgstRate,
-                                        igstRate: quote.igstRate,
-                                      },
-                                    }));
-                                  }
-                                }}
-                              >
-                                {editedQuote[quote._id] ? "Save" : "Edit"}
-                              </button>
+                              {quote.supplierStatus === "Quote Requested" ||
+                              quote.supplierStatus === "Quote Submitted" ? (
+                                <button
+                                  className="btn btn-primary"
+                                  onClick={() => {
+                                    if (editedQuote[quote._id]) {
+                                      handleUpdate(quote._id);
+                                    } else {
+                                      setEditedQuote((prev) => ({
+                                        ...prev,
+                                        [quote._id]: {
+                                          subcategoryName:
+                                            quote.subcategoryName,
+                                          hsnSacc: quote.hsnSacc,
+                                          listingRate: quote.listingRate,
+                                          edprowiseMargin:
+                                            quote.edprowiseMargin,
+                                          quantity: quote.quantity,
+                                          discount: quote.discount,
+                                          cgstRate: quote.cgstRate,
+                                          sgstRate: quote.sgstRate,
+                                          igstRate: quote.igstRate,
+                                        },
+                                      }));
+                                    }
+                                  }}
+                                >
+                                  {editedQuote[quote._id] ? "Save" : "Edit"}
+                                </button>
+                              ) : null}
                             </td>
                           </tr>
                         ))
@@ -420,18 +445,6 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                           currentPage === page ? "active" : ""
                         }`}
                       >
-                        {/* <button
-                          className="page-link"
-                          onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
-                        >
-                          {page}
-                        </button> */}
-
                         <button
                           className={`page-link pagination-button ${
                             currentPage === page ? "active" : ""

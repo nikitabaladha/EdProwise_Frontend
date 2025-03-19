@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import getAPI from "../../../../../api/getAPI";
+import { formatCost } from "../../../../CommonFunction";
 
 import { Modal } from "react-bootstrap";
 
@@ -132,23 +133,23 @@ const ViewPrepareQuoteListFromSeller = () => {
                               </div>
                             </td>
                             <td>{quote.hsnSacc}</td>
-                            <td>{quote.listingRate}</td>
+                            <td>{formatCost(quote.listingRate)}</td>
 
                             <td>{quote.quantity}</td>
-                            <td>{quote.finalRateBeforeDiscount}</td>
+                            <td>{formatCost(quote.finalRateBeforeDiscount)}</td>
                             <td>{quote.discount}</td>
-                            <td>{quote.finalRate}</td>
-                            <td>{quote.taxableValue}</td>
+                            <td>{formatCost(quote.finalRate)}</td>
+                            <td>{formatCost(quote.taxableValue)}</td>
                             <td>{quote.cgstRate}</td>
-                            <td>{quote.cgstAmount}</td>
+                            <td>{formatCost(quote.cgstAmount)}</td>
                             <td>{quote.sgstRate}</td>
-                            <td>{quote.sgstAmount}</td>
+                            <td>{formatCost(quote.sgstAmount)}</td>
                             <td>{quote.igstRate}</td>
-                            <td>{quote.igstAmount}</td>
-                            <td>{quote.amountBeforeGstAndDiscount}</td>
-                            <td>{quote.discountAmount}</td>
-                            <td>{quote.gstAmount}</td>
-                            <td>{quote.totalAmount}</td>
+                            <td>{formatCost(quote.igstAmount)}</td>
+                            <td>{formatCost(quote.amountBeforeGstAndDiscount)}</td>
+                            <td>{formatCost(quote.discountAmount)}</td>
+                            <td>{formatCost(quote.gstAmount)}</td>
+                            <td>{formatCost(quote.totalAmount)}</td>
                           </tr>
                         ))
                       ) : (

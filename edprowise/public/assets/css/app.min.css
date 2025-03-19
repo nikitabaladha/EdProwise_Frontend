@@ -3,6 +3,27 @@
 
 /*By Nikita: Custom css Start*/
 
+/* Custom styles for react-select placeholder */
+/* Target the placeholder */
+.custom-react-select .react-select__placeholder {
+  font-size: 0.875rem !important;
+}
+
+/* Target the control (main container) */
+.custom-react-select .react-select__control {
+  font-size: 0.875rem !important;
+  min-height: 38px !important;
+}
+
+/* Target the dropdown menu */
+.custom-react-select .react-select__menu {
+  font-size: 0.875rem !important;
+}
+
+/* Target the dropdown options */
+.custom-react-select .react-select__option {
+  font-size: 0.875rem !important;
+}
 /* Input Css Starts */
 
 input::placeholder{

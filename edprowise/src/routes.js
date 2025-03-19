@@ -91,6 +91,8 @@ import ContactUsEdprowise from "./components/DashboardMainForAdmin/Enquiry/Conta
 import ViewEnquiryDetails from "./components/DashboardMainForAdmin/Enquiry/ViewEnquiryDetails.js";
 
 // ================================ Admin Procurement Services========================================
+import AdminProcurementDashboard from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ProcurementDashboard/ProcurementDashboard"
+
 
 import TrackQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/TrackQuoteTable";
 import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
@@ -131,6 +133,7 @@ import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashb
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
 
 // ================================ School Procurement Services========================================
+import SchoolProcurementDashboard from "./components/DashboardMainForSchool/ProcurementServices/ProcurementDashboard/ProcurementDashboard"
 
 import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/TrackQuoteTable";
 import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/RequestQuote/RequestQuote";
@@ -155,6 +158,8 @@ import UpdateSellerProfile from "./components/DashboardMainForSeller/UpdateSelle
 import ChangePasswordForSeller from "./components/DashboardMainForSeller/ChangePassword/ChangePassword";
 import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
 import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
+
+import SellerProcurementDashboard from "./components/DashboardMainForSeller/ProcurementServicesForSeller/ProcurementDashboard/ProcurementDashboard"
 
 import TrackQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/TrackQuoteTable";
 import ViewRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
@@ -255,6 +260,7 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<Dashboard />} />
+      
         {/* Main Dashboard Route */}
         <Route path="view-admin-profile" element={<ViewAdminProfile />} />
         <Route path="update-admin-profile" element={<UpdateAdminProfile />} />
@@ -303,6 +309,10 @@ const AppRoutes = () => {
         />
         {/*======================= Procurement Services Routes================== */}
         <Route
+          path="procurement-services/dashboard"
+          element={<AdminProcurementDashboard />}
+        />
+        <Route
           path="procurement-services/track-quote"
           element={<TrackQuoteTableForAdmin />}
         />
@@ -326,18 +336,7 @@ const AppRoutes = () => {
           path="procurement-services/view-order-history"
           element={<ViewOrderHistoryForAdmin />}
         />
-        {/* <Route
-          path="procurement-services/define-goods-services/main-category"
-          element={<MainCategory />}
-        >
-          <Route path="add-main-category" element={<AddMainCategory />} />
-        </Route> */}
-        {/* <Route
-          path="procurement-services/define-goods-services/category"
-          element={<Category />}
-        >
-          <Route path="add-category" element={<AddCategory />} />
-        </Route> */}
+        
         <Route
           path="procurement-services/good-services"
           element={<SubCategory />}
@@ -390,6 +389,11 @@ const AppRoutes = () => {
 
         <Route index element={<SchoolDashboard />} />
 
+
+        <Route
+          path="procurement-services/dashboard"
+          element={<SchoolProcurementDashboard />}
+        />
         <Route
           path="procurement-services/track-quote"
           element={<TrackQuoteTable />}
@@ -456,6 +460,11 @@ const AppRoutes = () => {
         />
 
         {/* Procurement Services Routes */}
+        <Route
+          path="procurement-services/dashboard"
+          element={<SellerProcurementDashboard />}
+        />
+
         <Route
           path="procurement-services/track-quote"
           element={<TrackQuoteTableForSeller />}

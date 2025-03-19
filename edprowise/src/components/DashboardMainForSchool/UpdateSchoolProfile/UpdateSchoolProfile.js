@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import getAPI from "../../../api/getAPI";
 import putAPI from "../../../api/putAPI";
+import Select from "react-select";
 
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
@@ -187,7 +188,10 @@ const UpdateSchoolProfile = () => {
   };
 
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
+    cities.map((city) => ({
+      value: `${city}, ${state}, India`,
+      label: `${city}, ${state}, India`,
+    }))
   );
 
   const getBaseFileName = (url) => {
@@ -244,7 +248,7 @@ const UpdateSchoolProfile = () => {
                             id="contactPersonName"
                             name="contactPersonName"
                             className="form-control"
-                            value={formData.contactPersonName}
+                            value={formData.contactPersonName || "Not Provided"}
                             onChange={handleChange}
                             // required
                           />
@@ -260,7 +264,7 @@ const UpdateSchoolProfile = () => {
                             id="principalName"
                             name="principalName"
                             className="form-control"
-                            value={formData.principalName}
+                            value={formData.principalName || "Not Provided"}
                             onChange={handleChange}
                             // required
                           />
@@ -315,7 +319,7 @@ const UpdateSchoolProfile = () => {
                             id="mobileNo"
                             name="schoolAlternateContactNo"
                             className="form-control"
-                            value={formData.schoolAlternateContactNo}
+                            value={formData.schoolAlternateContactNo || "Not Provided"}
                             onChange={handleChange}
                             // required
                           />
@@ -352,21 +356,23 @@ const UpdateSchoolProfile = () => {
                           >
                             School Location <span className="text-danger">*</span>
                           </label>
-                          <select
-                            id="schoolLocation"
-                            name="schoolLocation"
-                            className="form-control"
-                            value={formData.schoolLocation}
-                            onChange={handleChange}
-                            required
-                          >
-                            <option value="">Select City-State-Country</option>
-                            {cityOptions.map((option, index) => (
-                              <option key={index} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
+                          <Select
+                          id="cityStateCountry"
+                          name="schoolLocation"
+                          options={cityOptions}
+                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
+                          onChange={(selectedOption) =>
+                            setFormData((prevState) => ({
+                              ...prevState,
+                              schoolLocation: selectedOption ? selectedOption.value : "",
+                            }))
+                          }
+                          placeholder="Select City-State-Country"
+                          isSearchable
+                          required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
                         </div>
                       </div>
 
@@ -439,21 +445,28 @@ const UpdateSchoolProfile = () => {
                             Delivery Location <span className="text-danger">*</span>
 
                           </label>
-                          <select
-                            id="deliveryLocation"
-                            name="deliveryLocation"
-                            className="form-control"
-                            value={formData.deliveryLocation}
-                            onChange={handleChange}
-                            required
-                          >
-                            <option value="">Select City-State-Country</option>
-                            {cityOptions.map((option, index) => (
-                              <option key={index} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
+                          
+                          <Select
+                        id="deliveryLocation"
+                        name="deliveryLocation"
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === formData.deliveryLocation
+                        )}
+                        onChange={(selectedOption) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            deliveryLocation: selectedOption
+                              ? selectedOption.value
+                              : "",
+                          }))
+                        }
+                        placeholder="Select City-State-Country"
+                        isSearchable
+                        required
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
+                      />
                         </div>
                       </div>
                       <div className="col-md-4">
@@ -516,6 +529,7 @@ const UpdateSchoolProfile = () => {
                             value={formData.numberOfStudents}
                             onChange={handleChange}
                             // required
+                            placeholder="Not Provided"
                           />
                         </div>
                       </div>

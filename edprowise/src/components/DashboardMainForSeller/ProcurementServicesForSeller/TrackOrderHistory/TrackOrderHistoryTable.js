@@ -6,6 +6,7 @@ import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
 import UpdateOrderDetailsModal from "./UpdateOrderDetailsModal";
 import putAPI from "../../../../api/putAPI";
+import { formatCost } from "../../../CommonFunction";
 
 import { format } from "date-fns";
 
@@ -346,7 +347,7 @@ const TrackOrderHistoryTable = () => {
                           <td>{order.supplierStatus}</td>
 
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
-                          <td>{order.totalAmount}</td>
+                          <td>{formatCost(order.totalAmount)}</td>
 
                           <td>
                             <div className="d-flex gap-2">

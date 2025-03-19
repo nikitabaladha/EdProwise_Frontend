@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
 import putAPI from "../../../../api/putAPI";
+import { formatCost } from "../../../CommonFunction";
 
 import { toast } from "react-toastify";
 
@@ -228,7 +229,7 @@ const TrackOrderHistoryTable = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>{order.totalAmountBeforeGstAndDiscount}</td>
+                          <td>{formatCost(order.totalAmountBeforeGstAndDiscount)}</td>
                           <td>{order.buyerStatus}</td>
                           <td>
                             <select

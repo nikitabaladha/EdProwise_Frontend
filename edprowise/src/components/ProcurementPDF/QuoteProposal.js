@@ -76,13 +76,13 @@ const QuoteProposal = () => {
 
   const downloadPDF = async () => {
     const element = pdfRef.current;
-    const canvas = await html2canvas(element, { scale: 2 });
+    const canvas = await html2canvas(element, { scale: 2});
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
 
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
+    const pdfHeight = 300;
+   
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("QuoteProposal.pdf");
   };
@@ -109,6 +109,8 @@ const QuoteProposal = () => {
       <div
         ref={pdfRef}
         style={{
+          width: "max-content",
+          height:"max-content",
           padding: "50px",
           fontFamily: "Arial, sans-serif",
           fontSize: "15px",
@@ -603,7 +605,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.finalRateBeforeDiscount}
+                    {item.finalRate}
                   </td>
                   <td
                     style={{

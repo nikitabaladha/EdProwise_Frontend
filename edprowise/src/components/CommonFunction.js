@@ -1,5 +1,13 @@
 // src/utils/numberToWords.js
 
+export const formatCost = (value) => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 2,
+  }).format(value);
+};
+
 const convertToWords = (n) => {
   const units = [
     "",

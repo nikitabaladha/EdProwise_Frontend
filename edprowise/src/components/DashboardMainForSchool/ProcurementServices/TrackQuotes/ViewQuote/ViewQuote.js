@@ -8,11 +8,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import autoTable from "jspdf-autotable";
 import jsPDF from "jspdf";
+import { formatCost } from "../../../../CommonFunction";
 
 import ViewPrepareQuoteListFromSeller from "./ViewPrepareQuoteListFromSeller";
 
 import getAPI from "../../../../../api/getAPI";
-import putAPI from "../../../../../api/putAPI";
 
 import { format } from "date-fns";
 
@@ -198,7 +198,7 @@ const ViewQuote = () => {
                     <label htmlFor="quotedAmount" className="form-label">
                       Quoted Amount
                     </label>
-                    <p className="form-control">{currentQuote?.quotedAmount}</p>
+                    <p className="form-control">{formatCost(currentQuote?.quotedAmount)}</p>
                   </div>
                 </div>
                 <div className="col-md-6">
@@ -211,7 +211,7 @@ const ViewQuote = () => {
                       Advances Required Amount
                     </label>
                     <p className="form-control">
-                      {currentQuote?.advanceRequiredAmount}
+                      {formatCost(currentQuote?.advanceRequiredAmount)}
                     </p>
                   </div>
                 </div>
@@ -224,7 +224,7 @@ const ViewQuote = () => {
                       Remarks from Supplier
                     </label>
                     <p className="form-control">
-                      {currentQuote?.remarksFromSupplier}
+                      {currentQuote?.remarksFromSupplier || "Not Provided"}
                     </p>
                   </div>
                 </div>
@@ -234,7 +234,7 @@ const ViewQuote = () => {
                     <label htmlFor="description" className="form-label">
                       Description
                     </label>
-                    <p className="form-control">{currentQuote?.description}</p>
+                    <p className="form-control">{currentQuote?.description || "Not Provided"}</p>
                   </div>
                 </div>
               </div>

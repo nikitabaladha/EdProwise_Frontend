@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import ReasonModal from "./ReasonModal";
+import { formatCost } from "../../../../CommonFunction";
 
 import jsPDF from "jspdf";
 import { format } from "date-fns";
@@ -135,6 +136,7 @@ const ViewAllQuoteTable = () => {
     navigate(`/school-dashboard/procurement-services/view-cart`, {
       state: {
         enquiryNumber: quote.enquiryNumber,
+        buyerStatus:quote.buyerStatus,
       },
     });
   };
@@ -283,8 +285,9 @@ const ViewAllQuoteTable = () => {
                           <td>
                             {formatDate(quote.expectedDeliveryDateBySeller)}
                           </td>
-                          <td>{quote.quotedAmount}</td>
-                          <td>{quote.remarksFromSupplier}</td>
+                          <td>{formatCost(quote.quotedAmount)}</td>
+                          <td>{quote.remarksFromSupplier || "Not Provided"}</td>
+                          
                           <td>
                             <div className="d-flex gap-2">
                               <Link

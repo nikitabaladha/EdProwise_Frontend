@@ -11,6 +11,7 @@ import putAPI from "../../../../../api/putAPI";
 
 import jsPDF from "jspdf";
 import { format } from "date-fns";
+import { formatCost } from "../../../../CommonFunction";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -197,8 +198,8 @@ const ViewAllQuoteTable = () => {
                           <td>
                             {formatDate(quote.expectedDeliveryDateBySeller)}
                           </td>
-                          <td>{quote.quotedAmount}</td>
-                          <td>{quote.remarksFromSupplier}</td>
+                          <td>{formatCost(quote.quotedAmount)}</td>
+                          <td>{quote.remarksFromSupplier || "Not Provided"}</td>
 
                           <td>
                             <div className="d-flex gap-2">
@@ -232,57 +233,65 @@ const ViewAllQuoteTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              {quote.venderStatus === "Pending" && (
+
+                              {["Quote Requested", "Quote Received"].includes(
+                                quote?.edprowiseStatus
+                              ) && (
                                 <>
-                                  <button
-                                    className="btn btn-success btn-sm"
-                                    onClick={() =>
-                                      handleVenderStatusUpdate(
-                                        quote.sellerId,
-                                        "Quote Accepted"
-                                      )
-                                    }
-                                  >
-                                    Accept
-                                  </button>
-                                  <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() =>
-                                      handleVenderStatusUpdate(
-                                        quote.sellerId,
-                                        "Quote Not Accepted"
-                                      )
-                                    }
-                                  >
-                                    Reject
-                                  </button>
+                                  {quote.venderStatus === "Pending" && (
+                                    <>
+                                      <button
+                                        className="btn btn-success btn-sm"
+                                        onClick={() =>
+                                          handleVenderStatusUpdate(
+                                            quote.sellerId,
+                                            "Quote Accepted"
+                                          )
+                                        }
+                                      >
+                                        Accept
+                                      </button>
+                                      <button
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() =>
+                                          handleVenderStatusUpdate(
+                                            quote.sellerId,
+                                            "Quote Not Accepted"
+                                          )
+                                        }
+                                      >
+                                        Reject
+                                      </button>
+                                    </>
+                                  )}
+                                  {quote.venderStatus === "Quote Accepted" && (
+                                    <button
+                                      className="btn btn-danger btn-sm"
+                                      onClick={() =>
+                                        handleVenderStatusUpdate(
+                                          quote.sellerId,
+                                          "Quote Not Accepted"
+                                        )
+                                      }
+                                    >
+                                      Reject
+                                    </button>
+                                  )}
+                                  {quote.venderStatus ===
+                                    "Quote Not Accepted" && (
+                                    <button
+                                      className="btn btn-success btn-sm"
+                                      onClick={() =>
+                                        handleVenderStatusUpdate(
+                                          quote.sellerId,
+                                          "Quote Accepted"
+                                        )
+                                      }
+                                    >
+                                      Accept
+                                    </button>
+                                  )}
                                 </>
-                              )}
-                              {quote.venderStatus === "Quote Accepted" && (
-                                <button
-                                  className="btn btn-danger btn-sm"
-                                  onClick={() =>
-                                    handleVenderStatusUpdate(
-                                      quote.sellerId,
-                                      "Quote Not Accepted"
-                                    )
-                                  }
-                                >
-                                  Reject
-                                </button>
-                              )}
-                              {quote.venderStatus === "Quote Not Accepted" && (
-                                <button
-                                  className="btn btn-success btn-sm"
-                                  onClick={() =>
-                                    handleVenderStatusUpdate(
-                                      quote.sellerId,
-                                      "Quote Accepted"
-                                    )
-                                  }
-                                >
-                                  Accept
-                                </button>
                               )}
                             </div>
                           </td>

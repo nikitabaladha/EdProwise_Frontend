@@ -25,6 +25,9 @@ const UpdateSchool = ({ updateSchool }) => {
     panFile: null,
   });
 
+  // const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
+  //   cities.map((city) => `${city}, ${state}, India`)
+  // );
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
     cities.map((city) => ({
       value: `${city}, ${state}, India`,
@@ -185,8 +188,7 @@ const UpdateSchool = ({ updateSchool }) => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="mobileNo" className="form-label">
-                        School Mobile Number{" "}
-                        <span className="text-danger">*</span>
+                        School Mobile Number <span className="text-danger">*</span>
                       </label>
                       <input
                         type="tel"
@@ -236,33 +238,43 @@ const UpdateSchool = ({ updateSchool }) => {
 
                 <div className="row">
                   <div className="col-md-6">
-                    
                     <div className="mb-3">
                       <label htmlFor="cityStateCountry" className="form-label">
-                        City-State-Country{" "}
-                        <span className="text-danger">*</span>
+                        City-State-Country <span className="text-danger">*</span>
                       </label>
-                      <Select
+                      {/* <select
                         id="cityStateCountry"
                         name="schoolLocation"
-                        options={cityOptions}
-                        value={cityOptions.find(
-                          (option) => option.value === formData.schoolLocation
-                        )}
-                        onChange={(selectedOption) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            schoolLocation: selectedOption
-                              ? selectedOption.value
-                              : "",
-                          }))
-                        }
-                        placeholder="Select City-State-Country"
-                        isSearchable
+                        className="form-control"
+                        value={formData.schoolLocation}
+                        onChange={handleChange}
                         required
-                        classNamePrefix="react-select"
-                        className="custom-react-select"
-                      />
+                      >
+                        <option value="">Select City-State-Country</option>
+                        {cityOptions.map((option, index) => (
+                          <option key={index} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select> */}
+
+                      <Select
+                          id="cityStateCountry"
+                          name="schoolLocation"
+                          options={cityOptions}
+                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
+                          onChange={(selectedOption) =>
+                            setFormData((prevState) => ({
+                              ...prevState,
+                              schoolLocation: selectedOption ? selectedOption.value : "",
+                            }))
+                          }
+                          placeholder="Select City-State-Country"
+                          isSearchable
+                          required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -328,8 +340,7 @@ const UpdateSchool = ({ updateSchool }) => {
                         htmlFor="affiliationCertificate"
                         className="form-label"
                       >
-                        Affiliation Certificate{" "}
-                        <span className="text-danger">*</span>
+                        Affiliation Certificate <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"

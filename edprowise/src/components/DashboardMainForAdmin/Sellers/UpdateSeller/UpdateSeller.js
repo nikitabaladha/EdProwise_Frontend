@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import getAPI from "../../../../api/getAPI";
 import putAPI from "../../../../api/putAPI";
 import CityData from "../../../CityData.json";
+import Select from "react-select";
 
 const UpdateSeller = () => {
   const location = useLocation();
@@ -47,9 +48,11 @@ const UpdateSeller = () => {
   const [sellerProfile, setSellerProfile] = useState(null);
 
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
+    cities.map((city) => ({
+      value: `${city}, ${state}, India`,
+      label: `${city}, ${state}, India`,
+    }))
   );
-
   const sellerProfileRef = useRef(null);
   const panFileRef = useRef(null);
   const gstFileRef = useRef(null);
@@ -332,7 +335,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.companyName}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -347,7 +350,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.companyType}
                         onChange={handleChange}
-                        required
+                        // required
                       >
                         <option value="">Select Company Type</option>
                         <option value="Public Limited">Public Limited</option>
@@ -372,7 +375,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.gstin}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -416,7 +419,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.pan}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -459,7 +462,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.tan || "Not Provided"}
                         onChange={handleChange}
-                        required
+                        // required
                         
                       />
                     </div>
@@ -503,7 +506,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.cin || "Not Provided"}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -549,7 +552,7 @@ const UpdateSeller = () => {
                       rows={3}
                       value={formData.address}
                       onChange={handleChange}
-                      required
+                      // required
                     />
                   </div>
                 </div>
@@ -559,21 +562,28 @@ const UpdateSeller = () => {
                       <label htmlFor="cityStateCountry" className="form-label">
                         City State Country Location <span className="text-danger">*</span>
                       </label>
-                      <select
+                      
+                      <Select
                         id="cityStateCountry"
                         name="cityStateCountry"
-                        className="form-control"
-                        value={formData.cityStateCountry}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select City-State-Country</option>
-                        {cityOptions.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === formData.cityStateCountry
+                        )}
+                        onChange={(selectedOption) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cityStateCountry: selectedOption
+                              ? selectedOption.value
+                              : "",
+                          }))
+                        }
+                        placeholder="Select City-State-Country"
+                        isSearchable
+                        // required
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
+                      />
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -588,7 +598,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.landmark}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -604,7 +614,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.pincode}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -626,7 +636,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.contactNo}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -663,7 +673,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.emailId}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -711,7 +721,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.accountNo}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -727,7 +737,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.ifsc}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -743,7 +753,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.bankName}
                         onChange={handleChange}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -847,7 +857,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.turnover}
                         onChange={handleChange}
-                        required
+                       
                       >
                         <option value="">Select Company Ternover</option>
                           <option value="1 to 10 Lakh">

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import { formatCost } from "../../../../CommonFunction";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -220,7 +221,7 @@ const ViewOrderHistory = () => {
                         Invoice Amount
                       </label>
                       <p className="form-control">
-                        {order.totalAmountBeforeGstAndDiscount}
+                        {formatCost(order.totalAmountBeforeGstAndDiscount)}
                       </p>
                     </div>
                   </div>
@@ -231,7 +232,7 @@ const ViewOrderHistory = () => {
                       <label htmlFor="advanceAdjustment" className="form-label">
                         Advance Adjustment
                       </label>
-                      <p className="form-control">{order.advanceAdjustment}</p>
+                      <p className="form-control">{formatCost(order.advanceAdjustment)}</p>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -239,35 +240,23 @@ const ViewOrderHistory = () => {
                       <label htmlFor="tdsValue" className="form-label">
                         TDS Value
                       </label>
-                      <p className="form-control">{order.tdsValue}</p>
+                      <p className="form-control">{formatCost(order.tdsValue)}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="row">
-                  {/* <div className="col-md-6">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="finalPayableAmountWithoutTDS"
-                        className="form-label"
-                      >
-                        Final Payable Amt Without TDS
-                      </label>
-                      <p className="form-control">
-                        {order.finalPayableAmountWithoutTDS}
-                      </p>
-                    </div>
-                  </div> */}
+                  
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label
                         htmlFor="finalPayableAmountWithTDS"
                         className="form-label"
                       >
-                        Final Payable Amt With TDS
+                        Final Payable Amount
                       </label>
                       <p className="form-control">
-                        {order.finalPayableAmountWithTDS}
+                        {formatCost(order.finalPayableAmountWithTDS)}
                       </p>
                     </div>
                   </div>
@@ -280,7 +269,7 @@ const ViewOrderHistory = () => {
                         Other Charges
                       </label>
                       <p className="form-control">
-                        {order.otherCharges}
+                        {formatCost(order.otherCharges)}
                       </p>
                     </div>
                   </div>
@@ -513,9 +502,9 @@ const ViewOrderHistory = () => {
                             </td>
 
                             <td>{order.quantity}</td>
-                            <td>{order.listingRate}</td>
+                            <td>{formatCost(order.listingRate)}</td>
                             <td>{order.discount}</td>
-                            <td>{order.finalRate}</td>
+                            <td>{formatCost(order.finalRate)}</td>
                           </tr>
                         ))
                       ) : (

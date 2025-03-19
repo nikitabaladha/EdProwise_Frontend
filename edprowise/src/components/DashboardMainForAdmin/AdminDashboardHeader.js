@@ -287,38 +287,8 @@ const AdminDashboardHeader = () => {
                   </div>
                 </div>
               </div>
-              {/* Theme Setting */}
-              <div className="topbar-item d-none d-md-flex">
-                <button
-                  type="button"
-                  className="topbar-button"
-                  id="theme-settings-btn"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target=""
-                  aria-controls="theme-settings-offcanvas"
-                >
-                  <iconify-icon
-                    icon="solar:settings-bold-duotone"
-                    className="fs-24 align-middle"
-                  />
-                </button>
-              </div>
-              {/* Activity */}
-              <div className="topbar-item d-none d-md-flex">
-                <button
-                  type="button"
-                  className="topbar-button"
-                  id="theme-settings-btn"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#theme-activity-offcanvas"
-                  aria-controls="theme-settings-offcanvas"
-                >
-                  <iconify-icon
-                    icon="solar:clock-circle-bold-duotone"
-                    className="fs-24 align-middle"
-                  />
-                </button>
-              </div>
+              
+              
               {/* User */}
               <div className="dropdown topbar-item">
                 <Link
@@ -334,8 +304,7 @@ const AdminDashboardHeader = () => {
                       src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${adminProfile?.edprowiseProfile}`}
                       className="rounded-circle"
                       alt="logo light"
-                      // width={32}
-                      // height={32}
+                      
                       style={{ objectFit: "cover" }}
                     />
                   </span>

@@ -8,6 +8,9 @@ import QuoteRequestModal from "./QuoteRequestModal";
 const ViewCart = () => {
   const location = useLocation();
   const { enquiryNumber } = location.state || {};
+  const buyerStaus = location?.state?.buyerStatus
+
+  console.log("Buyer status",buyerStaus)
 
   const [carts, setCarts] = useState({});
   const [items, setItems] = useState({});
@@ -123,7 +126,7 @@ const ViewCart = () => {
 
     setIsModalOpen(true);
   };
-  console.log(carts);
+  
   return (
     <>
       <div className="container">
@@ -151,6 +154,7 @@ const ViewCart = () => {
                   <div className="card-header d-flex justify-content-between align-items-center gap-1">
                     <h4 className="card-title flex-grow-1">{companyName}</h4>
 
+                    {(buyerStaus === "Quote Requested" || buyerStaus === "Quote Received") && (
                     <Link
                       onClick={(e) => {
                         e.preventDefault();
@@ -163,6 +167,7 @@ const ViewCart = () => {
                         className="align-middle fs-18"
                       />
                     </Link>
+                  )}
                   </div>
 
                   <div>

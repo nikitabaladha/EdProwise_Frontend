@@ -6,6 +6,7 @@ import CityData from "../../../../CityData.json";
 import { Modal, Button } from "react-bootstrap";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
+import Select from "react-select";
 
 const AddressModal = ({ onClose, cart, formData }) => {
   const [school, setSchool] = useState(null);
@@ -53,7 +54,10 @@ const AddressModal = ({ onClose, cart, formData }) => {
   };
 
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
+    cities.map((city) => ({
+      value: `${city}, ${state}, India`,
+      label: `${city}, ${state}, India`,
+    }))
   );
 
   const handleSubmit = async (e) => {
@@ -138,7 +142,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                     <div className="col-md-12">
                       <div className="mb-2">
                         <label htmlFor="deliveryAddress" className="form-label">
-                          Delivery Address
+                          Delivery Address <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -146,6 +150,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                           value={school?.deliveryAddress}
                           onChange={handleInputChange}
                           className="form-control"
+                          required
                         />
                       </div>
                     </div>
@@ -155,29 +160,33 @@ const AddressModal = ({ onClose, cart, formData }) => {
                           htmlFor="deliveryLocation"
                           className="form-label"
                         >
-                          Delivery Location
+                          Delivery Location <span className="text-danger">*</span>
                         </label>
-                        <select
-                          id="deliveryLocation"
-                          name="deliveryLocation"
-                          className="form-control"
-                          value={school?.deliveryLocation}
-                          onChange={handleInputChange}
-                          required
-                        >
-                          <option value="">Select City-State-Country</option>
-                          {cityOptions.map((option, index) => (
-                            <option key={index} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
+                        
+                        <Select
+                        id="deliveryLocation"
+                        name="deliveryLocation"
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === school?.deliveryLocation
+                        )}
+                        onChange={(selectedOption) =>
+                          setSchool(prev => ({
+                            ...prev,
+                            deliveryLocation: selectedOption ? selectedOption.value : ""
+                          }))                        }
+                        placeholder="Select City-State-Country"
+                        isSearchable
+                        required
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
+                      />
                       </div>
                     </div>
                     <div className="col-md-12">
                       <div className="mb-2">
                         <label htmlFor="landMark" className="form-label">
-                          Landmark
+                          Landmark <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -185,13 +194,14 @@ const AddressModal = ({ onClose, cart, formData }) => {
                           value={school?.deliveryLandMark}
                           onChange={handleInputChange}
                           className="form-control"
+                          required
                         />
                       </div>
                     </div>
                     <div className="col-md-12">
                       <div className="mb-2">
                         <label htmlFor="deliveryPincode" className="form-label">
-                          Pin Code
+                          Pin Code <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -199,6 +209,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                           value={school?.deliveryPincode}
                           onChange={handleInputChange}
                           className="form-control"
+                          required
                         />
                       </div>
                     </div>
@@ -208,7 +219,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                           htmlFor="expectedDeliveryDate"
                           className="form-label"
                         >
-                          Expected Delivery Date
+                          Expected Delivery Date <span className="text-danger">*</span>
                         </label>
                         <input
                           type="date"
@@ -216,6 +227,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
                           onChange={handleDateChange}
                           className="form-control"
                           value={expectedDeliveryDate}
+                          required
                         />
                       </div>
                     </div>

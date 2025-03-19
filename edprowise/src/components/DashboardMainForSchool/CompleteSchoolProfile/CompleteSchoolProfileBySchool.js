@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import CityData from "../../CityData.json";
+import Select from "react-select";
 
 const CompleteSchoolProfile = () => {
   const navigate = useNavigate();
@@ -180,12 +181,12 @@ const CompleteSchoolProfile = () => {
   };
 
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
+    cities.map((city) => ({
+      value: `${city}, ${state}, India`,
+      label: `${city}, ${state}, India`,
+    }))
   );
 
-  const getBaseFileName = (url) => {
-    return url ? url.split("/").pop() : "";
-  };
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
@@ -361,21 +362,24 @@ const CompleteSchoolProfile = () => {
                         <label htmlFor="schoolLocation" className="form-label">
                           School Location <span className="text-danger">*</span>
                         </label>
-                        <select
-                          id="schoolLocation"
+                        
+                        <Select
+                          id="cityStateCountry"
                           name="schoolLocation"
-                          className="form-control"
-                          value={formData.schoolLocation}
-                          onChange={handleChange}
+                          options={cityOptions}
+                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
+                          onChange={(selectedOption) =>
+                            setFormData((prevState) => ({
+                              ...prevState,
+                              schoolLocation: selectedOption ? selectedOption.value : "",
+                            }))
+                          }
+                          placeholder="Select City-State-Country"
+                          isSearchable
                           required
-                        >
-                          <option value="">Select City-State-Country</option>
-                          {cityOptions.map((option, index) => (
-                            <option key={index} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -479,38 +483,44 @@ const CompleteSchoolProfile = () => {
                           Delivery Location <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
-                          <select
-                            id="deliveryLocation"
-                            name="deliveryLocation"
-                            className="form-control"
-                            value={formData.schoolLocation}
-                            onChange={handleChange}
-                            required
-                            disabled
-                          >
-                            <option value="">Select City-State-Country</option>
-                            {cityOptions.map((option, index) => (
-                              <option key={index} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
+                          
+                          <Select
+                          id="deliveryLocation"
+                          name="deliveryLocation"
+                          options={cityOptions}
+                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
+                          onChange={(selectedOption) =>
+                            setFormData((prevState) => ({
+                              ...prevState,
+                              schoolLocation: selectedOption ? selectedOption.value : "",
+                            }))
+                          }
+                          placeholder="Select City-State-Country"
+                          isSearchable
+                          required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
+                          
                         ) : (
-                          <select
-                            id="deliveryLocation"
-                            name="deliveryLocation"
-                            className="form-control"
-                            value={formData.deliveryLocation}
-                            onChange={handleChange}
-                            required
-                          >
-                            <option value="">Select City-State-Country</option>
-                            {cityOptions.map((option, index) => (
-                              <option key={index} value={option}>
-                                {option}
-                              </option>
-                            ))}
-                          </select>
+                          
+                          <Select
+                          id="deliveryLocation"
+                          name="deliveryLocation"
+                          options={cityOptions}
+                          value={cityOptions.find(option => option.value === formData.deliveryLocation)}
+                          onChange={(selectedOption) =>
+                            setFormData((prevState) => ({
+                              ...prevState,
+                              deliveryLocation: selectedOption ? selectedOption.value : "",
+                            }))
+                          }
+                          placeholder="Select City-State-Country"
+                          isSearchable
+                          required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
                         )}
                       </div>
                     </div>

@@ -269,7 +269,7 @@ const SchoolDashboardHeader = () => {
                       </div>
                     </Link>
                     {/* Item */}
-                    <Link to="" className="dropdown-item py-3 border-bottom">
+                     <Link to="" className="dropdown-item py-3 border-bottom">
                       <div className="d-flex">
                         <div className="flex-shrink-0">
                           <img
@@ -283,7 +283,7 @@ const SchoolDashboardHeader = () => {
                           <p className="mb-0 text-wrap">Commented on Admin</p>
                         </div>
                       </div>
-                    </Link>
+                    </Link> 
                   </div>
                   <div className="text-center py-3">
                     <Link to="to" className="btn btn-primary btn-sm">
@@ -293,38 +293,7 @@ const SchoolDashboardHeader = () => {
                   </div>
                 </div>
               </div>
-              {/* Theme Setting */}
-              <div className="topbar-item d-none d-md-flex">
-                <button
-                  type="button"
-                  className="topbar-button"
-                  id="theme-settings-btn"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target=""
-                  aria-controls="theme-settings-offcanvas"
-                >
-                  <iconify-icon
-                    icon="solar:settings-bold-duotone"
-                    className="fs-24 align-middle"
-                  />
-                </button>
-              </div>
-              {/* Activity */}
-              <div className="topbar-item d-none d-md-flex">
-                <button
-                  type="button"
-                  className="topbar-button"
-                  id="theme-settings-btn"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#theme-activity-offcanvas"
-                  aria-controls="theme-settings-offcanvas"
-                >
-                  <iconify-icon
-                    icon="solar:clock-circle-bold-duotone"
-                    className="fs-24 align-middle"
-                  />
-                </button>
-              </div>
+              
               {/* User */}
               <div className="dropdown topbar-item">
                 <Link

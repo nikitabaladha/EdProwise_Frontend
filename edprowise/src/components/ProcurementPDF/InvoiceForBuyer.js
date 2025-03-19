@@ -85,16 +85,17 @@ const InvoiceForBuyer = () => {
 
   const downloadPDF = async () => {
     const element = pdfRef.current;
-    const canvas = await html2canvas(element, { scale: 2 });
+    const canvas = await html2canvas(element, { scale: 2});
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
 
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
+    const pdfHeight = 300;
+   
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Invoice.pdf");
   };
+
 
   return (
     <div className="m-2" style={{ color: "black" }}>
@@ -117,6 +118,8 @@ const InvoiceForBuyer = () => {
       <div
         ref={pdfRef}
         style={{
+          width: "max-content",
+          height:"max-content",
           padding: "50px",
           fontFamily: "Arial, sans-serif",
           fontSize: "15px",
@@ -229,7 +232,7 @@ const InvoiceForBuyer = () => {
                   }}
                   colSpan="2"
                 >
-                  {edprowiseCompanyName}
+                  Name : {edprowiseCompanyName}
                 </td>
                 <td
                   style={{
@@ -252,7 +255,7 @@ const InvoiceForBuyer = () => {
                   }}
                   colSpan="2"
                 >
-                  {edprowiseAddress}
+                  Address : {edprowiseAddress}
                 </td>
 
                 <td
@@ -272,14 +275,13 @@ const InvoiceForBuyer = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    width: "30%",
+                    // width: "30%",
                     borderRight: "1px solid black",
                   }}
                   colSpan="2"
                 >
-                  {edprowiseCityStateCountry}, {edprowisePincode}
+                  City : {edprowiseCityStateCountry}, {edprowisePincode}
                 </td>
-
                 <td
                   style={{
                     borderRight: "none",
@@ -321,13 +323,15 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
+                   
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
+                    width: "40%",
                     fontWeight: "normal",
                   }}
                 >
-                  Invoice No. : {invoiceForSchool}
+                    Invoice No. : {invoiceForSchool}
                 </th>
               </tr>
             </thead>
@@ -360,12 +364,14 @@ const InvoiceForBuyer = () => {
               <tr>
                 <td
                   style={{
+                    border: "none",
                     padding: "8px",
                     textAlign: "left",
                   }}
                   colSpan="2"
                 >
                   Address : {schoolDeliveryAddress}
+
                 </td>
 
                 <td
@@ -396,19 +402,21 @@ const InvoiceForBuyer = () => {
                     borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
+                    width: "30%",
                   }}
                 >
-                  State :{schoolDeliveryLocation?.split(",")[1]}
-                </td>
+                  State :{schoolDeliveryLocation?.split(",")[1]}                
+                  </td>
                 <td
                   style={{
                     borderRight: "none",
                     borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
+                    
                   }}
                 >
-                  Advance Amount Received :
+                  Advance Amount Received : 
                 </td>
               </tr>
               <tr>
@@ -416,6 +424,7 @@ const InvoiceForBuyer = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
+                    width: "30%",
                     border: "none",
                   }}
                 >
@@ -426,26 +435,22 @@ const InvoiceForBuyer = () => {
                     borderRight: "1px solid black",
                     padding: "8px",
                     textAlign: "left",
+                    width: "30%",
                   }}
                 >
                   Email ID : {schoolEmailId}
                 </td>
                 <td
                   style={{
+                    borderRight: "none",
+                    borderTop: "none",
                     padding: "8px",
-                    border: "none",
-                    width: "20%",
+                    textAlign: "left",
+                    
                   }}
                 >
-                  GSTIN :
+                  GSTIN : 
                 </td>
-                <td
-                  style={{
-                    border: "none",
-                    padding: "8px",
-                    width: "20%",
-                  }}
-                ></td>
               </tr>
             </tbody>
           </table>
@@ -477,18 +482,12 @@ const InvoiceForBuyer = () => {
                 <td
                   style={{
                     padding: "8px",
-                    width: "20%",
+                    width: "40%",
                   }}
                 >
                   PAN : {schoolPanNumber}
                 </td>
-                <td
-                  style={{
-                    border: "none",
-                    padding: "8px",
-                    width: "20%",
-                  }}
-                ></td>
+                
               </tr>
             </thead>
             <tbody>
@@ -666,7 +665,7 @@ const InvoiceForBuyer = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.finalRateBeforeDiscount}
+                    {item.finalRate}
                   </td>
                   <td
                     style={{

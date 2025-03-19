@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import CityData from "../../CityData.json";
 import getAPI from "../../../api/getAPI";
+import Select from "react-select";
 
 const UpdateAdminProfile = () => {
   const location = useLocation();
@@ -138,8 +139,12 @@ const UpdateAdminProfile = () => {
   };
 
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
+    cities.map((city) => ({
+      value: `${city}, ${state}, India`,
+      label: `${city}, ${state}, India`,
+    }))
   );
+
 
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -351,21 +356,28 @@ const UpdateAdminProfile = () => {
                       <label htmlFor="cityStateCountry" className="form-label">
                         City, State, Country <span className="text-danger">*</span>
                       </label>
-                      <select
+                             <Select
                         id="cityStateCountry"
-                        name="cityStateCountry"
-                        className="form-control"
-                        value={formData.cityStateCountry}
-                        onChange={handleChange}
+                        name="schoolLocation"
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === formData.cityStateCountry
+                        )}
+                        onChange={(selectedOption) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cityStateCountry: selectedOption
+                              ? selectedOption.value
+                              : "",
+                          }))
+                        }
+                        placeholder="Select City-State-Country"
+                        isSearchable
                         required
-                      >
-                        <option value="">Select City-State-Country</option>
-                        {cityOptions.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
+                      />
+
                     </div>
                   </div>
                   <div className="col-md-4">

@@ -4,8 +4,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import CityData from "../../../CityData.json";
-import Select from "react-select";
-
 
 const AddNewSchool = ({ addSchool }) => {
   const [formData, setFormData] = useState({
@@ -24,10 +22,7 @@ const AddNewSchool = ({ addSchool }) => {
   const navigate = useNavigate();
 
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => ({
-      value: `${city}, ${state}, India`,
-      label: `${city}, ${state}, India`,
-    }))
+    cities.map((city) => `${city}, ${state}, India`)
   );
 
   const handleChange = (e) => {
@@ -210,26 +205,27 @@ const AddNewSchool = ({ addSchool }) => {
                           htmlFor="cityStateCountry"
                           className="form-label"
                         >
-                          City-State-Country
+                          City-State-Country{" "}
                           <span className="text-danger">*</span>
                         </label>
-                        <Select
+                        <select
                           id="cityStateCountry"
                           name="schoolLocation"
-                          options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              schoolLocation: selectedOption ? selectedOption.value : "",
-                            }))
-                          }
-                          placeholder="Select City-State-Country"
-                          isSearchable
+                          className="form-control"
+                          value={formData.schoolLocation}
+                          onChange={handleChange}
                           required
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
+                        >
+                          {/* here i want to allow search functionality from the cityOptions so if user want
+                           he can select any one and after selection it should be placed as a fomdata value to send
+                           in backend at time of submit  */}
+                          <option value="">Select City-State-Country</option>
+                          {cityOptions.map((option, index) => (
+                            <option key={index} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                     <div className="col-md-6">

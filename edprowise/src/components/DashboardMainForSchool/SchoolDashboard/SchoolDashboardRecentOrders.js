@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import getAPI from "../../../api/getAPI";
 
 import { format } from "date-fns";
+import { formatCost } from "../../CommonFunction";
+
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -143,8 +145,8 @@ const SchoolDashboardRecentOrders = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>{order.totalAmountBeforeGstAndDiscount}</td>
-                          <td>{order.advanceAdjustment}</td>
+                          <td>{formatCost(order.totalAmountBeforeGstAndDiscount)}</td>
+                          <td>{formatCost(order.advanceAdjustment)}</td>
                           <td>{order.buyerStatus}</td>
                         </tr>
                       ))}
