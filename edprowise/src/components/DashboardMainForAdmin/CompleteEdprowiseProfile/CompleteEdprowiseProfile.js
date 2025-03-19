@@ -291,13 +291,13 @@ const CompleteEdprowiseProfile = () => {
                         
                         <Select
                           id="cityStateCountry"
-                          name="schoolLocation"
+                          name="cityStateCountry"
                           options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
+                          value={cityOptions.find(option => option.value === formData.cityStateCountry)}
                           onChange={(selectedOption) =>
                             setFormData((prevState) => ({
                               ...prevState,
-                              schoolLocation: selectedOption ? selectedOption.value : "",
+                              cityStateCountry: selectedOption ? selectedOption.value : "",
                             }))
                           }
                           placeholder="Select City-State-Country"
