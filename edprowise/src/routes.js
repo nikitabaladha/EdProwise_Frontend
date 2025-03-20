@@ -170,6 +170,10 @@ import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
 
+
+import SearchResults from "./components/DashboardMainForAdmin/SearchResults.js"
+
+
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -251,6 +255,7 @@ const AppRoutes = () => {
       />
 
       {/* ===================================================Admin Routes==================================== */}
+      {/* <Route path="/search-results" element={<SearchResults />} /> */}
       <Route
         path="/admin-dashboard"
         element={
@@ -259,7 +264,9 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       >
+        
         <Route index element={<Dashboard />} />
+        
       
         {/* Main Dashboard Route */}
         <Route path="view-admin-profile" element={<ViewAdminProfile />} />

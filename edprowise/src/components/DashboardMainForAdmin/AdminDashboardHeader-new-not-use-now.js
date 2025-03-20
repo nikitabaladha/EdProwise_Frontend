@@ -9,9 +9,9 @@ import { BiLogOut } from "react-icons/bi";
 import { IoKeyOutline } from "react-icons/io5";
 
 import { ThemeContext } from "../ThemeProvider";
-
 import getAPI from "../../api/getAPI";
 import { useNavigate } from "react-router-dom";
+import SearchComponent from "./SearchComponent"; // Import the SearchComponent
 
 const AdminDashboardHeader = () => {
   const navigate = useNavigate();
@@ -343,21 +343,7 @@ const AdminDashboardHeader = () => {
               </div>
               {/* App Search*/}
               {/* see this is my search form right now  its not working but i want that whatever i type here it took me to the page whereever that word match in entire application */}
-              <form className="app-search d-none d-md-block ms-2">
-                <div className="position-relative">
-                  <input
-                    type="search"
-                    className="form-control"
-                    placeholder="Search..."
-                    autoComplete="off"
-                    defaultValue=""
-                  />
-                  <iconify-icon
-                    icon="solar:magnifer-linear"
-                    className="search-widget-icon"
-                  />
-                </div>
-              </form>
+              <SearchComponent /> {/* Replace the old search form with the new SearchComponent */}
             </div>
           </div>
         </div>
