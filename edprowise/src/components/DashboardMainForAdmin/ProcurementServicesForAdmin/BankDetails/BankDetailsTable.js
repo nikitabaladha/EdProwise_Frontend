@@ -1,55 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
+import { toast } from "react-toastify";
+import getAPI from "../../../../api/getAPI";
+import ConfirmationDialog from "../../../ConfirmationDialog";
 
 const BankDetailsTable = () => {
-  const navigate = useNavigate();
+  const [bankDetails, setBankDetails] = useState([]);
 
-  const [bankDetails] = useState([
-    {
-      id: 1,
-      accountNo: "1234567890",
-      bankName: "State Bank of India",
-      ifscCode: "SBIN0001234",
-      typeOfAccount: "Savings",
-    },
-    {
-      id: 2,
-      accountNo: "9876543210",
-      bankName: "HDFC Bank",
-      ifscCode: "HDFC0005678",
-      typeOfAccount: "Current",
-    },
-    {
-      id: 3,
-      accountNo: "1122334455",
-      bankName: "ICICI Bank",
-      ifscCode: "ICIC0009876",
-      typeOfAccount: "Savings",
-    },
-    {
-      id: 4,
-      accountNo: "2233445566",
-      bankName: "Axis Bank",
-      ifscCode: "UTIB0006543",
-      typeOfAccount: "Current",
-    },
-    {
-      id: 5,
-      accountNo: "5566778899",
-      bankName: "Bank of Baroda",
-      ifscCode: "BARB0IND123",
-      typeOfAccount: "Savings",
-    },
-  ]);
+  const [selectedBankDetails, setSelectedBankDetails] = useState(null);
+
+  const fetchBankDetailData = async () => {
+    try {
+      const response = await getAPI(`/bank-detail`, {}, true);
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setBankDetails(response.data.data);
+        console.log("Bank Detail data", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Bank Detail List:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBankDetailData();
+  }, []);
+
+  const navigate = useNavigate();
 
   const handleExport = () => {
     const filteredData = bankDetails.map((bankDetail) => ({
-      AccountNo: bankDetail.accountNo,
+      AccountNumber: bankDetail.accountNumber,
       BankName: bankDetail.bankName,
       IFSCCode: bankDetail.ifscCode,
-      TypeOfAccount: bankDetail.typeOfAccount,
+      TypeOfAccount: bankDetail.accountType,
     }));
 
     exportToExcel(filteredData, "BankDetails", "Bank Detail Data");
@@ -67,6 +59,60 @@ const BankDetailsTable = () => {
     });
   };
 
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteType, setDeleteType] = useState("");
+
+  const openDeleteDialog = (bankDetail) => {
+    setSelectedBankDetails(bankDetail);
+    setIsDeleteDialogOpen(true);
+    setDeleteType("bankDetail");
+  };
+
+  const handleDeleteConfirmed = (_id) => {
+    setBankDetails((prevBankDetails) =>
+      prevBankDetails.filter((bankDetail) => bankDetail._id !== _id)
+    );
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+    setSelectedBankDetails(null);
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [bankDetailsPerPage] = useState(10);
+
+  const indexOfLastBankDetail = currentPage * bankDetailsPerPage;
+  const indexOfFirstBankDetail = indexOfLastBankDetail - bankDetailsPerPage;
+  const currentBankDetails = bankDetails.slice(
+    indexOfFirstBankDetail,
+    indexOfLastBankDetail
+  );
+
+  const totalPages = Math.ceil(bankDetails.length / bankDetailsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const pageRange = 1;
+
+  const startPage = Math.max(1, currentPage - pageRange);
+  const endPage = Math.min(totalPages, currentPage + pageRange);
+
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
+
   return (
     <>
       <div className="container-fluid">
@@ -83,12 +129,6 @@ const BankDetailsTable = () => {
                 </Link>
 
                 <div className="text-end">
-                  {/* <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
-                    Export
-                  </Link> */}
                   <Link onClick={handleExport} class="text-primary">
                     Export
                     <i class="bx bx-export ms-1"></i>
@@ -121,27 +161,27 @@ const BankDetailsTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {bankDetails.map((bankDetail) => (
-                        <tr key={bankDetail.id}>
+                      {currentBankDetails.map((bankDetail) => (
+                        <tr key={bankDetail._id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${bankDetail.id}`}
+                                id={`customCheck${bankDetail._id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${bankDetail.id}`}
+                                htmlFor={`customCheck${bankDetail._id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{bankDetail.accountNo}</td>
+                          <td>{bankDetail.accountNumber}</td>
                           <td>{bankDetail.bankName}</td>
                           <td>{bankDetail.ifscCode}</td>
-                          <td>{bankDetail.typeOfAccount}</td>
+                          <td>{bankDetail.accountType}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -155,7 +195,13 @@ const BankDetailsTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-danger btn-sm">
+                              <Link
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openDeleteDialog(bankDetail);
+                                }}
+                                className="btn btn-soft-danger btn-sm"
+                              >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -173,24 +219,39 @@ const BankDetailsTable = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <Link className="page-link">Previous</Link>
-                    </li>
-                    <li className="page-item active">
-                      <Link
+                      <button
                         className="page-link"
-                        style={{ backgroundColor: "red", borderColor: "red" }}
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
                       >
-                        1
-                      </Link>
+                        Previous
+                      </button>
                     </li>
+                    {pagesToShow.map((page) => (
+                      <li
+                        key={page}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
+                      >
+                        <button
+                          className={`page-link pagination-button ${
+                            currentPage === page ? "active" : ""
+                          }`}
+                          onClick={() => handlePageClick(page)}
+                        >
+                          {page}
+                        </button>
+                      </li>
+                    ))}
                     <li className="page-item">
-                      <Link className="page-link">2</Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link">3</Link>
-                    </li>
-                    <li className="page-item">
-                      <Link className="page-link">Next</Link>
+                      <button
+                        className="page-link"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
                     </li>
                   </ul>
                 </nav>
@@ -199,6 +260,14 @@ const BankDetailsTable = () => {
           </div>
         </div>
       </div>
+      {isDeleteDialogOpen && (
+        <ConfirmationDialog
+          onClose={handleDeleteCancel}
+          deleteType={deleteType}
+          id={selectedBankDetails._id}
+          onDeleted={() => handleDeleteConfirmed(selectedBankDetails._id)}
+        />
+      )}
     </>
   );
 };

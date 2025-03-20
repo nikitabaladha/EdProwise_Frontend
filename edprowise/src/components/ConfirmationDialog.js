@@ -51,6 +51,12 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete Cart.",
     idKey: "id",
   },
+  bankDetail: {
+    getEndpoint: (id) => `/bank-detail/${id}`,
+    successMessage: "Bank Detail successfully deleted!",
+    errorMessage: "Failed to delete Bank Detail.",
+    idKey: "bankDetailId",
+  },
   requestdemo: {
     getEndpoint: (id) => `/delete-request/${id}`,
     successMessage: "Demo request successfully deleted!",

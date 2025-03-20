@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import putAPI from "../../../../../api/putAPI";
 
 const UpdateBankDetail = () => {
   const location = useLocation();
-  const bankDetail = location.state?.bankDetail || {};
+  const bankDetail = location.state?.bankDetail;
+  const bankDetailId = location.state?.bankDetail?._id;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -37,18 +39,39 @@ const UpdateBankDetail = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
+    const formDataToSend = new FormData();
+    for (const key in formData) {
+      if (formData[key] instanceof File) {
+        formDataToSend.append(key, formData[key]);
+      } else {
+        formDataToSend.append(key, formData[key] || "");
+      }
+    }
+
     try {
-      // Simulate API update request
-      console.log("Updated Bank Detail:", formData);
+      const response = await putAPI(
+        `/bank-detail/${bankDetailId}`,
+        formDataToSend,
+        true
+      );
 
-      // Show success message
-      toast.success("Bank detail updated successfully!");
+      if (!response.data.hasError) {
+        toast.success("Admin updated successfully!");
 
-      // Navigate back or to a different page
-      navigate(-1);
+        navigate(-1);
+      } else {
+        toast.error(response.data.message || "Failed to update Bank Detail.");
+      }
     } catch (error) {
-      console.error("Error updating bank detail:", error);
-      toast.error("Failed to update bank detail. Please try again.");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     }
   };
 

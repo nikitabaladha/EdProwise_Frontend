@@ -2,21 +2,24 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import postAPI from "../../../../../api/postAPI";
 
 const AddNewBankDetail = () => {
   const [formData, setFormData] = useState({
     accountNumber: "",
     bankName: "",
     ifscCode: "",
-    typeOfAccount: "",
+    accountType: "",
   });
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+
+    setFormData((prevState) => ({
+      ...prevState,
+
       [name]: value,
     }));
   };
@@ -24,11 +27,38 @@ const AddNewBankDetail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Saved Bank Detail:");
+    try {
+      const response = await postAPI(
+        "/bank-detail",
+        {
+          accountNumber: formData.accountNumber,
+          bankName: formData.bankName,
+          ifscCode: formData.ifscCode,
+          accountType: formData.accountType,
+        },
+        true
+      );
 
-    // Show success toast and redirect to bank details table
-    toast.success("Bank detail added successfully!");
-    navigate(-1);
+      if (!response.hasError) {
+        toast.success("Bank Detail added successfully");
+
+        setFormData({
+          accountNumber: "",
+          bankName: "",
+          ifscCode: "",
+          accountType: "",
+        });
+
+        navigate(-1);
+      } else {
+        toast.error(response.message || "Failed to add Bank Detail");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
+    }
   };
 
   return (
@@ -99,16 +129,16 @@ const AddNewBankDetail = () => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label htmlFor="typeOfAccount" className="form-label">
+                        <label htmlFor="accountType" className="form-label">
                           Type of Account
                         </label>
                         <select
-                          id="typeOfAccount"
-                          name="typeOfAccount"
+                          id="accountType"
+                          name="accountType"
                           className="form-control"
-                          value={formData.typeOfAccount}
+                          value={formData.accountType}
                           onChange={handleChange}
-                          required
+                          // required
                         >
                           <option value="">Select Account Type</option>
                           <option value="Current">Current</option>
@@ -122,7 +152,7 @@ const AddNewBankDetail = () => {
                       type="submit"
                       className="btn btn-primary custom-submit-button"
                     >
-                      Add New Bank Detail
+                      Submit
                     </button>
                   </div>
                 </form>

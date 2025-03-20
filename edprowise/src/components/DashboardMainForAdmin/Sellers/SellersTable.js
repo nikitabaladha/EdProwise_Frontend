@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -8,10 +8,9 @@ import getAPI from "../../../api/getAPI";
 
 import ConfirmationDialog from "../../ConfirmationDialog";
 const SellersTable = () => {
-const [sellers, setSellers] = useState([]);
+  const [sellers, setSellers] = useState([]);
 
-    const [selectedSeller, setSelectedSeller] = useState(null);
-  
+  const [selectedSeller, setSelectedSeller] = useState(null);
 
   const fetchSellersData = async () => {
     try {
@@ -34,7 +33,6 @@ const [sellers, setSellers] = useState([]);
   useEffect(() => {
     fetchSellersData();
   }, []);
-
 
   const navigate = useNavigate();
 
