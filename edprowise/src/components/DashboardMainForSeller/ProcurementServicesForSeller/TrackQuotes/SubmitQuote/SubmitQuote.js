@@ -175,7 +175,8 @@ const SubmitQuote = () => {
                           htmlFor="expectedDeliveryDateBySeller"
                           className="form-label"
                         >
-                          Expected Delivery Date by Seller <span className="text-danger">*</span>
+                          Expected Delivery Date by Seller{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           required

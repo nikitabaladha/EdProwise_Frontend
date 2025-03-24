@@ -161,37 +161,123 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
-
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label
-                        htmlFor="invoiceAmountToBuyer"
-                        className="form-label"
-                      >
-                        Invoice Amount to Buyer
+                      <label htmlFor="advanceAdjustment" className="form-label">
+                        Advance Adjustment
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalAmountBeforeGstAndDiscount)}
+                        {formatCost(order.advanceAdjustment)}
                       </p>
                     </div>
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="taxableValue" className="form-label">
-                        Taxable Value
+                      <label htmlFor="otherCharges" className="form-label">
+                        Other Charges
                       </label>
-                      <p className="form-control">{formatCost(order.totalTaxableValue)}</p>
+                      <p className="form-control">
+                        {formatCost(order.otherCharges)}
+                      </p>
                     </div>
                   </div>
                 </div>
 
+                <div className="container">
+                  <div className="card-header mb-2">
+                    <h4 className="card-title text-center custom-heading-font">
+                      Invoice To Buyer
+                    </h4>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="taxableValue" className="form-label">
+                          Taxable Value
+                        </label>
+                        <p className="form-control">
+                          {formatCost(order.totalTaxableValue)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="gstAmount" className="form-label">
+                          GST Amount
+                        </label>
+                        <p className="form-control">
+                          {formatCost(order.totalGstAmount)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="totalInvoiceAmount"
+                          className="form-label"
+                        >
+                          Total Invoice Amount
+                        </label>
+                        <p className="form-control">
+                          {formatCost(order.totalAmount)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="tdsValue" className="form-label">
+                          TDS Value
+                        </label>
+                        <p className="form-control">
+                          {formatCost(order.tdsValue)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="finalPayableAmountWithTDS"
+                          className="form-label"
+                        >
+                          Balance Amount
+                        </label>
+                        <p className="form-control">
+                          {formatCost(order.finalPayableAmountWithTDS)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="container">
+                  <div className="card-header mb-2">
+                    <h4 className="card-title text-center custom-heading-font">
+                      Invoice To EdProwise
+                    </h4>
+                  </div>
+                </div>
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="gstAmount" className="form-label">
-                        GST Amount
+                      <label htmlFor="taxableValue" className="form-label">
+                        Taxable Value For EdProwise
                       </label>
-                      <p className="form-control">{formatCost(order.totalGstAmount)}</p>
+                      <p className="form-control">
+                        {formatCost(order.totalTaxableValueForEdprowise)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="gstAmount" className="form-label">
+                        GST Amount For EdProwise
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order.totalGstAmountForEdprowise)}
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -200,64 +286,40 @@ const ViewOrderHistory = () => {
                         htmlFor="totalInvoiceAmount"
                         className="form-label"
                       >
-                        Total Invoice Amount
-                      </label>
-                      <p className="form-control">{formatCost(order.totalAmount)}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="advanceAdjustment" className="form-label">
-                        Advance Adjustment
-                      </label>
-                      <p className="form-control">{formatCost(order.advanceAdjustment)}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
-                      </label>
-                      <p className="form-control">{formatCost(order.otherCharges)}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="finalReceivableFromEdProwise"
-                        className="form-label"
-                      >
-                        Final Receivable from EdProwise
+                        Total Invoice Amount For EdProwise
                       </label>
                       <p className="form-control">
-                        {formatCost(order.finalReceivableFromEdprowise)}
+                        {formatCost(order.totalAmountForEdprowise)}
                       </p>
                     </div>
                   </div>
+                </div>
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="tdsValue" className="form-label">
-                        TDS Value
+                      <label
+                        htmlFor="tdsValueForEdprowise"
+                        className="form-label"
+                      >
+                        TDS Value For EdProwise
                       </label>
-                      <p className="form-control">{formatCost(order.tdsValue)}</p>
+                      <p className="form-control">
+                        {formatCost(order.tdsValueForEdprowise)}
+                      </p>
                     </div>
                   </div>
-                </div>
-
-                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
                         htmlFor="finalPayableAmountWithTDS"
                         className="form-label"
                       >
-                        Final Payable Amount
+                        Final Payable Amount For EdProwise
                       </label>
                       <p className="form-control">
-                        {formatCost(order.finalPayableAmountWithTDS)}
+                        {formatCost(
+                          order.finalPayableAmountWithTDSForEdprowise
+                        )}
                       </p>
                     </div>
                   </div>
@@ -277,7 +339,6 @@ const ViewOrderHistory = () => {
           </div>
         </div>
       </div>
-
       <div className="container">
         <div className="row">
           <div className="col-xl-12">

@@ -79,23 +79,23 @@ const InvoiceForBuyer = () => {
     totalSgstAmount,
     totalIgstAmount,
     totalTaxAmount,
+    totalFinalRate,
   } = quoteProposalData || {};
 
   const pdfRef = useRef();
 
   const downloadPDF = async () => {
     const element = pdfRef.current;
-    const canvas = await html2canvas(element, { scale: 2});
+    const canvas = await html2canvas(element, { scale: 2 });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
 
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = 300;
-   
+
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Invoice.pdf");
   };
-
 
   return (
     <div className="m-2" style={{ color: "black" }}>
@@ -119,7 +119,7 @@ const InvoiceForBuyer = () => {
         ref={pdfRef}
         style={{
           width: "max-content",
-          height:"max-content",
+          height: "max-content",
           padding: "50px",
           fontFamily: "Arial, sans-serif",
           fontSize: "15px",
@@ -323,7 +323,6 @@ const InvoiceForBuyer = () => {
                 </th>
                 <th
                   style={{
-                   
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -331,7 +330,7 @@ const InvoiceForBuyer = () => {
                     fontWeight: "normal",
                   }}
                 >
-                    Invoice No. : {invoiceForSchool}
+                  Invoice No. : {invoiceForSchool}
                 </th>
               </tr>
             </thead>
@@ -371,7 +370,6 @@ const InvoiceForBuyer = () => {
                   colSpan="2"
                 >
                   Address : {schoolDeliveryAddress}
-
                 </td>
 
                 <td
@@ -405,18 +403,17 @@ const InvoiceForBuyer = () => {
                     width: "30%",
                   }}
                 >
-                  State :{schoolDeliveryLocation?.split(",")[1]}                
-                  </td>
+                  State :{schoolDeliveryLocation?.split(",")[1]}
+                </td>
                 <td
                   style={{
                     borderRight: "none",
                     borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
-                    
                   }}
                 >
-                  Advance Amount Received : 
+                  Advance Amount Received :
                 </td>
               </tr>
               <tr>
@@ -446,10 +443,9 @@ const InvoiceForBuyer = () => {
                     borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
-                    
                   }}
                 >
-                  GSTIN : 
+                  GSTIN :
                 </td>
               </tr>
             </tbody>
@@ -487,7 +483,6 @@ const InvoiceForBuyer = () => {
                 >
                   PAN : {schoolPanNumber}
                 </td>
-                
               </tr>
             </thead>
             <tbody>
@@ -730,9 +725,7 @@ const InvoiceForBuyer = () => {
                     border: "1px solid black",
                     padding: "8px",
                   }}
-                >
-                  {totalFinalRateBeforeDiscount}
-                </td>
+                ></td>
                 <td
                   style={{
                     border: "1px solid black",

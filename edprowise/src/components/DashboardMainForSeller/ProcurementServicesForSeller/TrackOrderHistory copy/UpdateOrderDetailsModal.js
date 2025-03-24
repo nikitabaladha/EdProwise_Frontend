@@ -17,7 +17,7 @@ const UpdateOrderDetailsModal = ({
   const [orderDetailsFromSeller, setOrderDetailsFromSeller] = useState({
     actualDeliveryDate: "",
     otherCharges: "",
-    // finalReceivableFromEdprowise: "",
+    finalReceivableFromEdprowise: "",
   });
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const UpdateOrderDetailsModal = ({
 
             setOrderDetailsFromSeller({
               otherCharges,
-              // finalReceivableFromEdprowise,
+              finalReceivableFromEdprowise,
 
               actualDeliveryDate: formattedDate,
             });
@@ -68,11 +68,13 @@ const UpdateOrderDetailsModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { actualDeliveryDate, otherCharges } = orderDetailsFromSeller;
+    const { actualDeliveryDate, otherCharges, finalReceivableFromEdprowise } =
+      orderDetailsFromSeller;
 
     const dataToSend = {
       actualDeliveryDate,
       otherCharges,
+      finalReceivableFromEdprowise,
     };
 
     try {
@@ -87,6 +89,7 @@ const UpdateOrderDetailsModal = ({
         setOrderDetailsFromSeller({
           actualDeliveryDate,
           otherCharges,
+          finalReceivableFromEdprowise,
         });
         onOrderDetailsUpdated();
         onClose();
@@ -151,6 +154,24 @@ const UpdateOrderDetailsModal = ({
                       />
                     </div>
 
+                    <div className="mb-2">
+                      <label
+                        htmlFor="finalReceivableFromEdprowise"
+                        className="form-label"
+                      >
+                        Final Receivable From Edprowise
+                      </label>
+                      <input
+                        type="number"
+                        name="finalReceivableFromEdprowise"
+                        value={
+                          orderDetailsFromSeller.finalReceivableFromEdprowise
+                        }
+                        onChange={handleInputChange}
+                        className="form-control"
+                        placeholder="100000"
+                      />
+                    </div>
                     <div className="text-end">
                       <Button variant="success" type="submit">
                         Update

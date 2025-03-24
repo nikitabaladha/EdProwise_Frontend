@@ -68,30 +68,35 @@ const InvoiceForEdProwise = () => {
     totalAmountBeforeGstAndDiscount,
     totalDiscountAmount,
     totalGstAmount,
-    totalAmount,
+    totalTaxAmountForEdprowise,
+    totalAmountForEdprowise,
     totalTaxableValue,
+    totalTaxableValueForEdprowise,
     totalCgstAmount,
     totalSgstAmount,
     totalIgstAmount,
     totalTaxAmount,
+    totalFinalRateForEdprowise,
+    totalCgstAmountForEdprowise,
+
+    totalSgstAmountForEdprowise,
+    totalIgstAmountForEdprowise,
   } = quoteProposalData || {};
 
   const pdfRef = useRef();
 
-  
   const downloadPDF = async () => {
     const element = pdfRef.current;
-    const canvas = await html2canvas(element, { scale: 2});
+    const canvas = await html2canvas(element, { scale: 2 });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
 
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = 300;
-   
+
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("Invoice.pdf");
   };
-
 
   return (
     <div className="m-2" style={{ color: "black" }}>
@@ -115,10 +120,8 @@ const InvoiceForEdProwise = () => {
       <div
         ref={pdfRef}
         style={{
-          
-
           width: "max-content",
-          height:"max-content",
+          height: "max-content",
           padding: "50px",
           fontFamily: "Arial, sans-serif",
           fontSize: "15px",
@@ -180,7 +183,7 @@ const InvoiceForEdProwise = () => {
               </tr>
             </tbody>
           </table>
-        <table
+          <table
             style={{
               width: "100%",
               borderCollapse: "collapse",
@@ -303,8 +306,8 @@ const InvoiceForEdProwise = () => {
                 </td>
               </tr>
             </tbody>
-        </table>
-        <table
+          </table>
+          <table
             style={{
               width: "100%",
               borderCollapse: "collapse",
@@ -331,7 +334,6 @@ const InvoiceForEdProwise = () => {
                 </th>
                 <th
                   style={{
-                   
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -339,7 +341,7 @@ const InvoiceForEdProwise = () => {
                     fontWeight: "normal",
                   }}
                 >
-                    Invoice No. : {invoiceForEdprowise}
+                  Invoice No. : {invoiceForEdprowise}
                 </th>
               </tr>
             </thead>
@@ -412,18 +414,17 @@ const InvoiceForEdProwise = () => {
                     width: "30%",
                   }}
                 >
-                  State: {edprowiseCityStateCountry?.split(",")[1]}                
-                  </td>
+                  State: {edprowiseCityStateCountry?.split(",")[1]}
+                </td>
                 <td
                   style={{
                     borderRight: "none",
                     borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
-                    
                   }}
                 >
-                  Advance Amount Received : 
+                  Advance Amount Received :
                 </td>
               </tr>
               <tr>
@@ -453,15 +454,14 @@ const InvoiceForEdProwise = () => {
                     borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
-                    
                   }}
                 >
-                  GSTIN : {edprowiseGstin} 
+                  GSTIN : {edprowiseGstin}
                 </td>
               </tr>
             </tbody>
-        </table>
-        <table
+          </table>
+          <table
             style={{
               width: "100%",
               borderCollapse: "collapse",
@@ -677,7 +677,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.finalRate}
+                    {item.finalRateForEdprowise}
                   </td>
                   <td
                     style={{
@@ -686,7 +686,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.taxableValue}
+                    {item.taxableValueForEdprowise}
                   </td>
 
                   <td
@@ -696,7 +696,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.gstAmount}
+                    {item.gstAmountForEdprowise}
                   </td>
                   <td
                     style={{
@@ -705,7 +705,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.totalAmount}
+                    {item.totalAmountForEdprowise}
                   </td>
                 </tr>
               ))}
@@ -742,8 +742,14 @@ const InvoiceForEdProwise = () => {
                     border: "1px solid black",
                     padding: "8px",
                   }}
+                ></td>
+                <td
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                  }}
                 >
-                  {totalFinalRateBeforeDiscount}
+                  {totalTaxableValueForEdprowise}
                 </td>
                 <td
                   style={{
@@ -751,15 +757,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalTaxableValue}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                  }}
-                >
-                  {totalGstAmount}
+                  {totalTaxAmountForEdprowise}
                 </td>
                 <td
                   style={{
@@ -768,7 +766,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalAmount}
+                  {totalAmountForEdprowise}
                 </td>
               </tr>
             </tbody>
@@ -782,7 +780,9 @@ const InvoiceForEdProwise = () => {
           >
             <div className="row p-2">
               <h5>
-                <strong>Amount In Words : {convertToWords(totalAmount)}</strong>
+                <strong>
+                  Amount In Words : {convertToWords(totalAmountForEdprowise)}
+                </strong>
               </h5>
             </div>
           </table>
@@ -939,7 +939,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.taxableValue}
+                    {item.taxableValueForEdprowise}
                   </td>
                   <td
                     style={{
@@ -957,7 +957,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.cgstAmount}
+                    {item.cgstAmountForEdprowise}
                   </td>
                   <td
                     style={{
@@ -975,7 +975,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.sgstAmount}
+                    {item.sgstAmountForEdprowise}
                   </td>
                   <td
                     style={{
@@ -993,7 +993,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.igstAmount}
+                    {item.igstAmountForEdprowise}
                   </td>
                 </tr>
               ))}
@@ -1017,7 +1017,7 @@ const InvoiceForEdProwise = () => {
                     width: "10%",
                   }}
                 >
-                  {totalTaxableValue}
+                  {totalTaxableValueForEdprowise}
                 </td>
                 <td
                   style={{
@@ -1033,7 +1033,7 @@ const InvoiceForEdProwise = () => {
                     width: "10%",
                   }}
                 >
-                  {totalCgstAmount}
+                  {totalCgstAmountForEdprowise}
                 </td>
                 <td
                   style={{
@@ -1049,7 +1049,7 @@ const InvoiceForEdProwise = () => {
                     width: "10%",
                   }}
                 >
-                  {totalSgstAmount}
+                  {totalSgstAmountForEdprowise}
                 </td>
                 <td
                   style={{
@@ -1065,7 +1065,7 @@ const InvoiceForEdProwise = () => {
                     width: "10%",
                   }}
                 >
-                  {totalIgstAmount}
+                  {totalIgstAmountForEdprowise}
                 </td>
                 <td
                   style={{
@@ -1075,7 +1075,7 @@ const InvoiceForEdProwise = () => {
                     width: "5%",
                   }}
                 >
-                  {totalTaxAmount}
+                  {totalTaxAmountForEdprowise}
                 </td>
               </tr>
             </tbody>

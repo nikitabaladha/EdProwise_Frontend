@@ -8,11 +8,10 @@ import autoTable from "jspdf-autotable";
 import { useLocation } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import putAPI from "../../../../../api/putAPI";
+
 import jsPDF from "jspdf";
 import { format } from "date-fns";
 import { formatCost } from "../../../../CommonFunction";
-import { Modal, Button } from "react-bootstrap";
-import { RxCross1 } from "react-icons/rx";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -27,8 +26,6 @@ const ViewAllQuoteTable = () => {
   const navigate = useNavigate();
 
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [rejectComment, setRejectComment] = useState("");
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -137,16 +134,6 @@ const ViewAllQuoteTable = () => {
     }
   };
 
-  const openRejectCommentModal = (comment) => {
-    setRejectComment(comment);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setRejectComment("");
-  };
-
   return (
     <>
       <div className="container-fluid">
@@ -187,8 +174,6 @@ const ViewAllQuoteTable = () => {
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
                         <th>Status From Buyer</th>
-                        {submittedQuotes?.venderStatusFromBuyer ===
-                          "Quote Not Accepted" && <th>Status From Buyer</th>}
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -225,8 +210,9 @@ const ViewAllQuoteTable = () => {
                                 <button
                                   className="btn btn-danger btn-sm"
                                   onClick={() =>
-                                    openRejectCommentModal(
-                                      quote.rejectCommentFromBuyer
+                                    handleVenderStatusUpdate(
+                                      quote.sellerId,
+                                      "Quote Not Accepted"
                                     )
                                   }
                                 >
@@ -338,10 +324,10 @@ const ViewAllQuoteTable = () => {
         </div>
       </div>
 
-      {/* Modal for Reject Comment From Buyer */}
+      {/* if there is reject comment From buyer button click i just want to open this modal to show the comment read only  */}
       <Modal
-        show={showModal}
-        onHide={closeModal}
+        show={true}
+        onHide={onClose}
         centered
         dialogClassName="custom-modal"
       >
@@ -352,9 +338,6 @@ const ViewAllQuoteTable = () => {
                 <div className="card">
                   <div className="card-body custom-heading-padding">
                     <div className="row">
-                      <div className="text-end">
-                        <RxCross1 onClick={closeModal} className="ms-2" />
-                      </div>
                       <div className="col-md-12">
                         <div className="mb-2">
                           <label
@@ -362,11 +345,12 @@ const ViewAllQuoteTable = () => {
                             className="form-label"
                           >
                             Reject Comment From Buyer
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
                             name="rejectCommentFromBuyer"
-                            value={rejectComment}
+                            value={quote?.rejectCommentFromBuyer}
                             readOnly
                             className="form-control"
                           />

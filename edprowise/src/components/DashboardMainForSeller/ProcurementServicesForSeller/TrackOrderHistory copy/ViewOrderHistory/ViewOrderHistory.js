@@ -1,14 +1,13 @@
+import React, { useState, useEffect } from "react";
+
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import getAPI from "../../../../../api/getAPI";
+import { Link } from "react-router-dom";
+import { Modal } from "react-bootstrap";
+import { formatCost } from "../../../../CommonFunction";
 
 import { format } from "date-fns";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
-import React, { useState, useEffect } from "react";
-import getAPI from "../../../../../api/getAPI";
-import { Modal } from "react-bootstrap";
-
-import { formatCost } from "../../../../CommonFunction";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -17,15 +16,17 @@ const formatDate = (dateString) => {
 
 const ViewOrderHistory = () => {
   const location = useLocation();
-  const order = location?.state?.order;
-  const orderNumber = order?.orderNumber;
+  const order = location.state?.order;
+  const orderNumber = order.orderNumber;
+  const sellerId = order.sellerId;
 
   const enquiryNumber = location.state?.enquiryNumber;
 
-  const schoolId = location.state?.schoolId;
-  const sellerId = location.state?.sellerId;
-
   const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    navigate("/seller-dashboard/procurement-services/pay-to-edprowise");
+  };
 
   const [quote, setQuote] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -34,23 +35,30 @@ const ViewOrderHistory = () => {
 
   useEffect(() => {
     if (!enquiryNumber) return;
-    fetchRequestedQuoteData();
-  }, [enquiryNumber]);
+    const fetchQuoteData = async () => {
+      try {
+        const response = await getAPI(
+          `/get-according-to-category-filter/${enquiryNumber}`,
+          {},
+          true
+        );
 
-  const fetchRequestedQuoteData = async () => {
-    try {
-      const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
-
-      if (!response.hasError && response.data.data.products) {
-        setQuote(response.data.data.products);
-        console.log("product data from function", response.data.data.products);
-      } else {
-        console.error("Invalid response format or error in response");
+        if (!response.hasError && response.data.data.products) {
+          setQuote(response.data.data.products);
+          console.log(
+            "product data from function",
+            response.data.data.products
+          );
+        } else {
+          console.error("Invalid response format or error in response");
+        }
+      } catch (err) {
+        console.error("Error fetching quote:", err);
       }
-    } catch (err) {
-      console.error("Error fetching quote:", err);
-    }
-  };
+    };
+
+    fetchQuoteData();
+  }, [enquiryNumber]);
 
   const fetchOrderDetails = async () => {
     try {
@@ -78,111 +86,14 @@ const ViewOrderHistory = () => {
     fetchOrderDetails();
   }, [enquiryNumber]);
 
-  // if (!order) {
-  //   return <div>No order details available.</div>;
-  // }
-
-  const fetchInvoiceDataForEdprowise = async () => {
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
-      return;
-    }
-
-    try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
-      );
-
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
-
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(
-          `/admin-dashboard/procurement-services/invoice-for-edprowise`,
-          {
-            state: { prepareQuoteData, quoteProposalData, profileData },
-          }
-        );
-      } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
-      }
-    } catch (err) {
-      console.error("Error fetching data:", err);
-    }
-  };
-
-  const fetchInvoiceDataForBuyer = async () => {
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
-      return;
-    }
-
-    try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
-      );
-
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
-
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/admin-dashboard/procurement-services/invoice-for-buyer`, {
-          state: { prepareQuoteData, quoteProposalData, profileData },
-        });
-      } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
-      }
-    } catch (err) {
-      console.error("Error fetching data:", err);
-    }
-  };
-
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowModal(true);
   };
+
+  if (!order) {
+    return <div>No order details available.</div>;
+  }
 
   return (
     <>
@@ -202,18 +113,10 @@ const ViewOrderHistory = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="nameOfSupplier" className="form-label">
-                        Name Of Supplier
-                      </label>
-                      <p className="form-control">{order?.companyName}</p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
                       <label htmlFor="orderNumber" className="form-label">
                         Order Number
                       </label>
-                      <p className="form-control">{order?.orderNumber}</p>
+                      <p className="form-control">{order.orderNumber}</p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -222,13 +125,10 @@ const ViewOrderHistory = () => {
                         Order Date
                       </label>
                       <p className="form-control">
-                        {formatDate(order?.createdAt)}
+                        {formatDate(order.createdAt)}
                       </p>
                     </div>
                   </div>
-                </div>
-
-                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
@@ -239,10 +139,13 @@ const ViewOrderHistory = () => {
                       </label>
 
                       <p className="form-control">
-                        {formatDate(order?.expectedDeliveryDate)}
+                        {formatDate(order.expectedDeliveryDate)}
                       </p>
                     </div>
                   </div>
+                </div>
+
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
@@ -252,130 +155,46 @@ const ViewOrderHistory = () => {
                         Actual Delivery Date
                       </label>
                       <p className="form-control">
-                        {order?.actualDeliveryDate
-                          ? formatDate(order?.actualDeliveryDate)
+                        {order.actualDeliveryDate
+                          ? formatDate(order.actualDeliveryDate)
                           : "Null"}
                       </p>
                     </div>
                   </div>
+
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="advanceAdjustment" className="form-label">
-                        Advance Adjustment
+                      <label
+                        htmlFor="invoiceAmountToBuyer"
+                        className="form-label"
+                      >
+                        Invoice Amount to Buyer
                       </label>
                       <p className="form-control">
-                        {formatCost(order?.advanceAdjustment)}
+                        {formatCost(order.totalAmountBeforeGstAndDiscount)}
                       </p>
                     </div>
                   </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order?.otherCharges)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="container">
-                  <div className="card-header mb-2">
-                    <h4 className="card-title text-center custom-heading-font">
-                      Invoice To Buyer
-                    </h4>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="taxableValue" className="form-label">
-                          Taxable Value
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.totalTaxableValue)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="gstAmount" className="form-label">
-                          GST Amount
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.totalGstAmount)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label
-                          htmlFor="totalInvoiceAmount"
-                          className="form-label"
-                        >
-                          Total Invoice Amount
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.totalAmount)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="tdsValue" className="form-label">
-                          TDS Value
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.tdsValue)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label
-                          htmlFor="finalPayableAmountWithTDS"
-                          className="form-label"
-                        >
-                          Balance Amount
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.finalPayableAmountWithTDS)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="container">
-                  <div className="card-header mb-2">
-                    <h4 className="card-title text-center custom-heading-font">
-                      Invoice To EdProwise
-                    </h4>
-                  </div>
-                </div>
-                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="taxableValue" className="form-label">
-                        Taxable Value For EdProwise
+                        Taxable Value
                       </label>
                       <p className="form-control">
-                        {formatCost(order?.totalTaxableValueForEdprowise)}
+                        {formatCost(order.totalTaxableValue)}
                       </p>
                     </div>
                   </div>
+                </div>
+
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="gstAmount" className="form-label">
-                        GST Amount For EdProwise
+                        GST Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order?.totalGstAmountForEdprowise)}
+                        {formatCost(order.totalGstAmount)}
                       </p>
                     </div>
                   </div>
@@ -385,25 +204,72 @@ const ViewOrderHistory = () => {
                         htmlFor="totalInvoiceAmount"
                         className="form-label"
                       >
-                        Total Invoice Amount For EdProwise
+                        Total Invoice Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order?.totalAmountForEdprowise)}
+                        {formatCost(order.totalAmount)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="advanceAdjustment" className="form-label">
+                        Advance Adjustment
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order.advanceAdjustment)}
                       </p>
                     </div>
                   </div>
                 </div>
+
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="otherCharges" className="form-label">
+                        Other Charges
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order.otherCharges)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="finalReceivableFromEdProwise"
+                        className="form-label"
+                      >
+                        Final Receivable from EdProwise
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order.finalReceivableFromEdprowise)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="tdsValue" className="form-label">
+                        TDS Value
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order.tdsValue)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
-                        htmlFor="tdsValueForEdprowise"
+                        htmlFor="finalPayableAmountWithTDS"
                         className="form-label"
                       >
-                        TDS Value For EdProwise
+                        Final Payable Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order?.tdsValueForEdprowise)}
+                        {formatCost(order.finalPayableAmountWithTDS)}
                       </p>
                     </div>
                   </div>
@@ -413,64 +279,22 @@ const ViewOrderHistory = () => {
                         htmlFor="finalPayableAmountWithTDS"
                         className="form-label"
                       >
-                        Balance Amount For EdProwise
+                        Invoice To Buyer
                       </label>
                       <p className="form-control">
-                        {formatCost(
-                          order?.finalPayableAmountWithTDSForEdprowise
-                        )}
+                        {formatCost(order.finalPayableAmountWithTDS)}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Invoices For Buyer An dEdprowise */}
-                <div className="d-flex justify-content-between">
-                  <Link>
-                    {["Ready For Transit", "In-Transit", "Delivered"].includes(
-                      order?.supplierStatus
-                    ) && (
-                      <Link
-                        onClick={() => fetchInvoiceDataForEdprowise()}
-                        className="btn btn-soft-info btn-sm"
-                        title="Download PDF Invoice For Edprowise"
-                        data-bs-toggle="popover"
-                        data-bs-trigger="hover"
-                      >
-                        Download Invoice For Edprowise {}
-                        <iconify-icon
-                          icon="solar:download-broken"
-                          className="align-middle fs-18"
-                        />{" "}
-                      </Link>
-                    )}
-                  </Link>
-
-                  <Link>
-                    {["Ready For Transit", "In-Transit", "Delivered"].includes(
-                      order?.supplierStatus
-                    ) && (
-                      <Link
-                        onClick={() => fetchInvoiceDataForBuyer()}
-                        className="btn btn-soft-info btn-sm"
-                        title="Download PDF Invoice For Buyer"
-                        data-bs-toggle="popover"
-                        data-bs-trigger="hover"
-                      >
-                        Download Invoice For Buyer {}
-                        <iconify-icon
-                          icon="solar:download-broken"
-                          className="align-middle fs-18"
-                        />{" "}
-                      </Link>
-                    )}
-                  </Link>
-
+                <div className="text-end">
                   <button
                     type="button"
                     className="btn btn-primary custom-submit-button"
+                    onClick={handleNavigation}
                   >
-                    Pay Online
+                    Pay To EdProwise
                   </button>
                 </div>
               </div>
@@ -478,6 +302,7 @@ const ViewOrderHistory = () => {
           </div>
         </div>
       </div>
+
       <div className="container">
         <div className="row">
           <div className="col-xl-12">
@@ -515,7 +340,7 @@ const ViewOrderHistory = () => {
                         <th>Unit</th>
                         <th>Product Description</th>
                         <th>Quote Requested Date</th>
-                        <th>Delivery Expected Date</th>
+                        <th>DeliveryExpectedDate</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -541,20 +366,24 @@ const ViewOrderHistory = () => {
                             <td>
                               <div className="d-flex align-items-center gap-2">
                                 {product.productImage && (
-                                  <img
-                                    className="avatar-md"
-                                    alt={product.subCategoryName}
-                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
-                                    onClick={() =>
-                                      handleImageClick(
-                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
-                                      )
-                                    }
-                                  />
+                                  <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                    <img
+                                      className="avatar-md"
+                                      alt={product.subCategoryName}
+                                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                      onClick={() =>
+                                        handleImageClick(
+                                          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
+                                        )
+                                      }
+                                    />
+                                  </div>
                                 )}
-                                <Link className="text-dark fw-medium">
-                                  {product.subCategoryName}
-                                </Link>
+                                <div>
+                                  <Link className="text-dark fw-medium">
+                                    {product.subCategoryName}
+                                  </Link>
+                                </div>
                               </div>
                             </td>
                             <td>{product.categoryName}</td>
@@ -571,8 +400,6 @@ const ViewOrderHistory = () => {
                     </tbody>
                   </table>
                 </div>
-
-                {/* end table-responsive */}
               </div>
             </div>
           </div>
@@ -679,6 +506,7 @@ const ViewOrderHistory = () => {
           </div>
         </div>
       </div>
+
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Body className="text-center">
           <img

@@ -136,7 +136,7 @@ const ViewAllQuoteTable = () => {
     navigate(`/school-dashboard/procurement-services/view-cart`, {
       state: {
         enquiryNumber: quote.enquiryNumber,
-        buyerStatus:quote.buyerStatus,
+        buyerStatus: quote.buyerStatus,
       },
     });
   };
@@ -287,7 +287,7 @@ const ViewAllQuoteTable = () => {
                           </td>
                           <td>{formatCost(quote.quotedAmount)}</td>
                           <td>{quote.remarksFromSupplier || "Not Provided"}</td>
-                          
+
                           <td>
                             <div className="d-flex gap-2">
                               <Link
