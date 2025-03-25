@@ -104,11 +104,11 @@ const BlogSection = () => {
           </div>
 
           <div className={`show-tab ${activeTab === "pressMediaSection" ? "active" : ""}`} id="pressMediaSection">
-          <PressMediaSection/>
+          {/* <PressMediaSection/> */}
           </div>
 
           <div className={`show-tab ${activeTab === "awardsSection" ? "active" : ""}`} id="awardsSection">
-          <AwardSection/>
+          {/* <AwardSection/> */}
           </div>
         </div>
       </section>

@@ -41,6 +41,12 @@ import SchoolWebsiteDesign from "./components/ServiceSection/ServiceDetails/Scho
 import TermsPage from "./components/PrivacyPage/TermsPage.js";
 import RequestDemoForm from "./components/HomeSection/RequestDemoForm.js";
 
+import StudentZoneFullBlog from "./components/CommunitySection/SubSection/StudentZoneBlog/StudentZoneFullBlog.js";
+import StudentZoneFullBlog2 from "./components/CommunitySection/SubSection/StudentZoneBlog/StudentZoneFullBlog2.js";
+import EducatorZoneBlog1 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog1.js";
+import EducatorZoneBlog2 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog2.js";
+import EducatorZoneBlog3 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog3.js";
+
 // =================================Signup Login Routes================================================
 
 import AdminLogin from "./components/Login/AdminLogin";
@@ -91,8 +97,7 @@ import ContactUsEdprowise from "./components/DashboardMainForAdmin/Enquiry/Conta
 import ViewEnquiryDetails from "./components/DashboardMainForAdmin/Enquiry/ViewEnquiryDetails.js";
 
 // ================================ Admin Procurement Services========================================
-import AdminProcurementDashboard from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ProcurementDashboard/ProcurementDashboard"
-
+import AdminProcurementDashboard from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/ProcurementDashboard/ProcurementDashboard";
 
 import TrackQuoteTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/TrackQuoteTable";
 import ViewRequestedQuoteForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
@@ -133,7 +138,7 @@ import SchoolDashboardMain from "./components/DashboardMainForSchool/SchoolDashb
 import SchoolDashboard from "./components/DashboardMainForSchool/SchoolDashboard/SchoolDashboard";
 
 // ================================ School Procurement Services========================================
-import SchoolProcurementDashboard from "./components/DashboardMainForSchool/ProcurementServices/ProcurementDashboard/ProcurementDashboard"
+import SchoolProcurementDashboard from "./components/DashboardMainForSchool/ProcurementServices/ProcurementDashboard/ProcurementDashboard";
 
 import TrackQuoteTable from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/TrackQuoteTable";
 import RequestQuote from "./components/DashboardMainForSchool/ProcurementServices/TrackQuotes/RequestQuote/RequestQuote";
@@ -169,7 +174,6 @@ import AddConcessionForm from "./components/DashboardMainForSchool/FeesModuleSer
 import ViewStudentConcessionDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/ConcessionForm/ViewStudentConcessionForm/ViewStudentConcessionDetails.js";
 import UpdateConcessionForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/ConcessionForm/UpdateConcessionForm/UpdateConcessionForm.js";
 
-
 import ClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/ClassAndSection.js";
 import FeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructure.js";
 import SchoolShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/SchoolShifts.js";
@@ -191,7 +195,7 @@ import ChangePasswordForSeller from "./components/DashboardMainForSeller/ChangeP
 import SellerDashboardMain from "./components/DashboardMainForSeller/SellerDashboardMain";
 import SellerDashboard from "./components/DashboardMainForSeller/SellerDashboard/SellerDashboard";
 
-import SellerProcurementDashboard from "./components/DashboardMainForSeller/ProcurementServicesForSeller/ProcurementDashboard/ProcurementDashboard"
+import SellerProcurementDashboard from "./components/DashboardMainForSeller/ProcurementServicesForSeller/ProcurementDashboard/ProcurementDashboard";
 
 import TrackQuoteTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/TrackQuoteTable";
 import ViewRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
@@ -202,9 +206,7 @@ import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
 
-
-import SearchResults from "./components/DashboardMainForAdmin/SearchResults.js"
-
+import SearchResults from "./components/DashboardMainForAdmin/SearchResults.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -296,10 +298,8 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       >
-        
         <Route index element={<Dashboard />} />
-        
-      
+
         {/* Main Dashboard Route */}
         <Route path="view-admin-profile" element={<ViewAdminProfile />} />
         <Route path="update-admin-profile" element={<UpdateAdminProfile />} />
@@ -375,7 +375,7 @@ const AppRoutes = () => {
           path="procurement-services/view-order-history"
           element={<ViewOrderHistoryForAdmin />}
         />
-        
+
         <Route
           path="procurement-services/good-services"
           element={<SubCategory />}
@@ -428,7 +428,7 @@ const AppRoutes = () => {
 
         <Route index element={<SchoolDashboard />} />
 
-{/* ============Procurement Services========== */}
+        {/* ============Procurement Services========== */}
         <Route
           path="procurement-services/dashboard"
           element={<SchoolProcurementDashboard />}
@@ -476,7 +476,6 @@ const AppRoutes = () => {
           element={<InvoiceForBuyerForAll />}
         />
 
-
         {/* ***********Fees Module********* */}
         <Route
           path="fees-module/form/registration"
@@ -487,43 +486,112 @@ const AppRoutes = () => {
           element={<StudentRegistrationForm />}
         />
         <Route
-           path="fees-module/form/registed-student-info"
-           element={<ViewStudentInfoRegister/>}
+          path="fees-module/form/registed-student-info"
+          element={<ViewStudentInfoRegister />}
         />
-        <Route path="fees-module/form/update-registed-student-info" element={<UpdateStudentRegistrationForm/>} />
-        <Route path="fees-module/form/registration-form/sucess" element={<RegistrationOfficialDetails/>}/>
+        <Route
+          path="fees-module/form/update-registed-student-info"
+          element={<UpdateStudentRegistrationForm />}
+        />
+        <Route
+          path="fees-module/form/registration-form/sucess"
+          element={<RegistrationOfficialDetails />}
+        />
 
-        <Route path="fees-module/form/admission-list" element={<StudentAdmissionListTable/>}/>
-        <Route path="fees-module/form/admission-form" element={<StudentAdmissionForm/>}/>
-        <Route path="fees-module/form/admission-form/admission-details" element={<AdmissionOfficialInformation/>}/>
-        <Route path="fees-module/form/view-admission-details" element={<ViewStudentAdmissionDetails/>}/>
-        <Route path="fees-module/form/update-admission-form" element={<UpdateAdmissionForm/>} />
+        <Route
+          path="fees-module/form/admission-list"
+          element={<StudentAdmissionListTable />}
+        />
+        <Route
+          path="fees-module/form/admission-form"
+          element={<StudentAdmissionForm />}
+        />
+        <Route
+          path="fees-module/form/admission-form/admission-details"
+          element={<AdmissionOfficialInformation />}
+        />
+        <Route
+          path="fees-module/form/view-admission-details"
+          element={<ViewStudentAdmissionDetails />}
+        />
+        <Route
+          path="fees-module/form/update-admission-form"
+          element={<UpdateAdmissionForm />}
+        />
 
-        <Route path="fees-module/form/trasfer-certificate-list" element={<StudentTCFormTable/>}/>
-        <Route path="fees-module/form/trasfer-certificate-form" element={<StudentAddTCForm/>}/>
-        <Route path="fees-module/form/view-trasfer-certificate-details" element={<ViewTCFormDetails/>}/>
-        <Route path="fees-module/form/update-trasfer-certificate-form" element={<UpdateTCForm/>}/>
+        <Route
+          path="fees-module/form/trasfer-certificate-list"
+          element={<StudentTCFormTable />}
+        />
+        <Route
+          path="fees-module/form/trasfer-certificate-form"
+          element={<StudentAddTCForm />}
+        />
+        <Route
+          path="fees-module/form/view-trasfer-certificate-details"
+          element={<ViewTCFormDetails />}
+        />
+        <Route
+          path="fees-module/form/update-trasfer-certificate-form"
+          element={<UpdateTCForm />}
+        />
 
-        <Route path="fees-module/form/concession-table" element={<ConcessionStudentListTable/>}/>
-        <Route path="fees-module/form/concession-form" element={<AddConcessionForm/>}/>
-        <Route path="fees-module/form/view-concession-details" element={<ViewStudentConcessionDetails/>}/>
-        <Route path="fees-module/form/update-concession-form" element={<UpdateConcessionForm/>}/>
+        <Route
+          path="fees-module/form/concession-table"
+          element={<ConcessionStudentListTable />}
+        />
+        <Route
+          path="fees-module/form/concession-form"
+          element={<AddConcessionForm />}
+        />
+        <Route
+          path="fees-module/form/view-concession-details"
+          element={<ViewStudentConcessionDetails />}
+        />
+        <Route
+          path="fees-module/form/update-concession-form"
+          element={<UpdateConcessionForm />}
+        />
 
-        <Route path="fees-module/admin-setting/class-section" element={<ClassAndSection/>}/>
-        <Route path="fees-module/admin-setting/class-section/create-class-section" element={<CreateClassAndSection/>} />
+        <Route
+          path="fees-module/admin-setting/class-section"
+          element={<ClassAndSection />}
+        />
+        <Route
+          path="fees-module/admin-setting/class-section/create-class-section"
+          element={<CreateClassAndSection />}
+        />
 
-        <Route path="fees-module/admin-setting/fees-type-list" element={<TypeOfFeesList/>}/>
-        <Route path="fees-module/admin-setting/fees-type-list/add-fees-type" element={<AddFeesType/>}/>
+        <Route
+          path="fees-module/admin-setting/fees-type-list"
+          element={<TypeOfFeesList />}
+        />
+        <Route
+          path="fees-module/admin-setting/fees-type-list/add-fees-type"
+          element={<AddFeesType />}
+        />
 
-        <Route path="fees-module/admin-setting/fees-structure" element={<FeesStructureListTable/>}/>
-        <Route path="fees-module/admin-setting/fees-structure/add-fees-structure" element={<FeesStructure/>}/>
+        <Route
+          path="fees-module/admin-setting/fees-structure"
+          element={<FeesStructureListTable />}
+        />
+        <Route
+          path="fees-module/admin-setting/fees-structure/add-fees-structure"
+          element={<FeesStructure />}
+        />
 
-        <Route path="fees-module/admin-setting/shifts" element={<SchoolShifts/>}/>
-        <Route path="fees-module/admin-setting/shifts/add-shift" element={<AddShifts/>}/>
+        <Route
+          path="fees-module/admin-setting/shifts"
+          element={<SchoolShifts />}
+        />
+        <Route
+          path="fees-module/admin-setting/shifts/add-shift"
+          element={<AddShifts />}
+        />
 
-        <Route 
+        <Route
           path="fees-module/fees-receipts/school-fees"
-          element={<SchoolFeesReceipts/>}
+          element={<SchoolFeesReceipts />}
         />
       </Route>
       {/* =========================================Seller Routes============================================= */}
@@ -662,6 +730,31 @@ const AppRoutes = () => {
         <Route
           path="services/digital-services/school-Website-Design"
           element={<SchoolWebsiteDesign />}
+        />
+
+        <Route
+          path="community-connect/student-zone/proposed-exam-reforms-by-CBSE"
+          element={<StudentZoneFullBlog />}
+        />
+
+        <Route
+          path="community-connect/student-zone/how-to-be-successful"
+          element={<StudentZoneFullBlog2 />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/how-to-be-successful-teacher"
+          element={<EducatorZoneBlog1 />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/teaching-strategies-pedagogy"
+          element={<EducatorZoneBlog2 />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/teacher-well-being"
+          element={<EducatorZoneBlog3 />}
         />
       </Route>
     </Routes>

@@ -1,28 +1,27 @@
 import React from "react";
-
+import { Link, useLocation,  } from "react-router-dom";
 const StudentZoneSection = () => {
   const blogPosts = [
     {
       date: "25 Sep 2023",
       author: "Anne William",
-      title: "The Surprising Reason College Tuition Is Crazy Expensive",
-      image: "/assets/website-images/blog/img-1.webp",
-      link: "blog-single.html",
+      title: "Proposed Exam Reforms by CBSE: A Step Towards Reducing Academic Stress and Improving Learning Outcomes",
+      image: "/assets/website-images/blog-details/CBSE-exam-reform.jpg",
+      link: "/community-connect/student-zone/proposed-exam-reforms-by-CBSE"
     },
     {
       date: "26 Sep 2023",
       author: "Robert Fox",
-      title: "Become a great WordPress & PHP developer.",
-      image: "/assets/website-images/blog/img-2.webp",
-      link: "blog-single.html",
+      title: "How to Be Successful in the CBSE Board Exam: Tips and Strategies for Students",
+      image: "/assets/website-images/blog-details/howtosuccessfulstudent.jpg",
+      link:"/community-connect/student-zone/how-to-be-successful"
     },
-    {
-      date: "28 Sep 2023",
-      author: "Devon Lane",
-      title: "A critical review of mobile learning integration",
-      image: "/assets/website-images/blog/img-3.webp",
-      link: "blog-single.html",
-    },
+    // {
+    //   date: "28 Sep 2023",
+    //   author: "Devon Lane",
+    //   title: "A critical review of mobile learning integration",
+    //   image: "/assets/website-images/blog/img-3.webp",
+    // },
   ];
 
   return (
@@ -38,18 +37,18 @@ const StudentZoneSection = () => {
               <img src={post.image} alt={post.title} />
             </div>
             <div className="wpo-blog-content">
-              <ul className="blog-list-ul">
+              {/* <ul className="blog-list-ul">
                 <li>{post.date}</li>
                 <li>
                   By <a >{post.author}</a>
                 </li>
-              </ul>
+              </ul> */}
               <h2 className="font-weight-web-h2">
                 <a >{post.title}</a>
               </h2>
-              <a  className="more">
+              <Link to={post.link}  className="more">
                 Continue Reading
-              </a>
+              </Link>
             </div>
           </div>
         </div>

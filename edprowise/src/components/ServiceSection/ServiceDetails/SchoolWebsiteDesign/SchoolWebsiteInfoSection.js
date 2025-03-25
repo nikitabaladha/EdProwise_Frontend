@@ -7,21 +7,33 @@ const SchoolWebsiteInfoSection = () => {
               const courses = [
                 {
                   id: "1",
-                  icon: "Manage Fees with",
-                  title: "Maximize",
-                  serviceid: "Efficiency"
+                  icon: "Transform School",
+                  title: "Websites ",
+                  serviceid: "Beautifully"
                 },
                 {
                   id: "2",
-                  icon: "Digital Payments",
-                  title: "Smarter",
-                  serviceid: "Education"
+                  icon: "Upgrade School",
+                  title: "Websites",
+                  serviceid: "Instantly"
                 },
                 {
                   id: "3",
-                  icon: "Seamless Transactions",
-                  title: "Smooth",
-                  serviceid: "Operations"
+                  icon: "Customize School",
+                  title: "Websites ",
+                  serviceid: "Uniquely"
+                },
+                {
+                  id: "4",
+                  icon: "Optimize School",
+                  title: "Websites ",
+                  serviceid: "Perfectly"
+                },
+                {
+                  id: "5",
+                  icon: "Innovate School",
+                  title: "Websites ",
+                  serviceid: "Dynamically"
                 },
               ];
             
@@ -36,11 +48,11 @@ const SchoolWebsiteInfoSection = () => {
               }, [courses.length, intervalTime]);
   return (
     <>
-    <section className="static-hero-s2 static-hero-service pb-3 pt-3">
-      <div className="hero-container">
-        <div className="hero-inner p-0">
-          <div className="container-fluid ">
-            <div className="hero-content hero-service-content">
+    <section className="static-hero-s2 home-hero-section pb-3 pt-3">
+      <div className="hero-container home-hero-container">
+        <div className="hero-inner home-hero-inner p-0">
+          <div className="container-fluid home-hero-container-fluid">
+            <div className="hero-content" style={{order:"2"}}>
               {/* Slide Title */}
               <div data-swiper-parallax="300" className="slide-title">
                 <h2 className="font-family-web">
@@ -57,7 +69,7 @@ const SchoolWebsiteInfoSection = () => {
               {/* Slide Text */}
               <div data-swiper-parallax="400" className="slide-text">
                 <p className="text-black">
-                  Inspiring growth, fostering innovation, shaping the future, and cultivating success in education.
+                Showcase your school’s excellence with a beautifully designed, mobile-friendly website that informs, engages, and inspires.
                 </p>
               </div>
               <div data-swiper-parallax="500" className="slide-btns">
@@ -66,8 +78,9 @@ const SchoolWebsiteInfoSection = () => {
                 </Link>
               </div>
             </div>
-            <div className="student-pic student-service-pic">
-              <img src="/assets/images/Fees-service.png" alt="Student" />
+            {/* student-service-pic */}
+            <div className="student-pic home-hero-student-pic service-subpage-image ">
+              <img src="/assets/website-images/event/Website.png" alt="Student" />
               <div className="wp-shape-1">
                 <img src="/assets/website-images/slider/shape-1.svg" alt="Shape 1" />
               </div>

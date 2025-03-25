@@ -1,125 +1,60 @@
 import React, { useEffect, useRef, useState } from "react";
-
+import Slider from "react-slick";
 const EdprowiseTalk = () => {
-  const carouselRef = useRef(null);
+  // const carouselRef = useRef(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
 
   const slides = [
     {
       icon: "fi flaticon-training",
       title: "CRM Driven Process",
-      // description: "We have highly expert mentors for our student’s best support.",
+      color:"#f2be00",
     },
     {
       icon: "fi flaticon-support",
       title: "Instant User Support",
-      // description: "We are always here to help our students and solve problems.",
+      color:"#15a382"
     },
     {
       icon: "fi flaticon-e-learning",
       title: "Guide, Manual & Training",
-      // description: "We have highly expert mentors for our student’s best support.",
+      color:"#0568fc",
     },
     {
       icon: "fi flaticon-medal-1",
       title: "Highly Trained Team",
-      // description: "We are always here to help our students and solve problems.",
+      color:"#fa416c",
     },
   ];
 
-  useEffect(() => {
-    const carouselContainer = carouselRef.current;
-    const items = carouselContainer.querySelectorAll(".grid-web");
-    const totalItems = items.length;
 
-    let currentIndex = 1; // Start at the first real item
-    const intervalTime = 4000; // Time between slides in milliseconds
-    let autoplayInterval;
+  // Slick slider settings
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4, 
+    slidesToScroll: 1,
+    autoplay: false, 
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 991, 
+        settings: {
+          slidesToShow: 2, 
+          autoplay:true,
 
-    // Clone first and last items for infinite loop effect
-    const firstClone = items[0].cloneNode(true);
-    const lastClone = items[totalItems - 2].cloneNode(true);
-
-    // Add clones to the DOM for mobile view
-    if (isMobile) {
-      carouselContainer.appendChild(firstClone);
-      carouselContainer.insertBefore(lastClone, items[0]);
-    }
-
-    // Update carousel position
-    function updateCarousel() {
-      const itemWidth = items[0].offsetWidth;
-      carouselContainer.style.transition = "transform 0.5s ease-in-out";
-      carouselContainer.style.transform = `translateX(-${
-        currentIndex * itemWidth
-      }px)`;
-    }
-
-    // Move to the next slide
-    function moveToNextSlide() {
-      const itemWidth = items[0].offsetWidth;
-      currentIndex++;
-      updateCarousel();
-
-      if (currentIndex === totalItems + 1) {
-        // Reset to the first real item
-        setTimeout(() => {
-          carouselContainer.style.transition = "none";
-          currentIndex = 1;
-          carouselContainer.style.transform = `translateX(-${
-            currentIndex * itemWidth
-          }px)`;
-        }, 500); // Match transition duration
-      }
-    }
-
-    // Move to the previous slide
-    function moveToPrevSlide() {
-      const itemWidth = items[0].offsetWidth;
-      currentIndex--;
-      updateCarousel();
-
-      if (currentIndex === 0) {
-        // Reset to the last real item
-        setTimeout(() => {
-          carouselContainer.style.transition = "none";
-          currentIndex = totalItems;
-          carouselContainer.style.transform = `translateX(-${
-            currentIndex * itemWidth
-          }px)`;
-        }, 500); // Match transition duration
-      }
-    }
-
-    // Start autoplay only for mobile
-    function startAutoplay() {
-      if (isMobile) {
-        autoplayInterval = setInterval(moveToNextSlide, intervalTime);
-      }
-    }
-
-    // Stop autoplay
-    function stopAutoplay() {
-      clearInterval(autoplayInterval);
-    }
-
-    // Handle window resize
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 992);
-    };
-
-    // Initialize autoplay if mobile
-    if (isMobile) {
-      startAutoplay();
-    }
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      stopAutoplay();
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [isMobile]);
+        },
+      },
+      {
+        breakpoint: 768, 
+        settings: {
+          slidesToShow: 1, 
+          autoplay:true,
+        },
+      },
+    ],
+  };
 
   return (
     <>
@@ -135,14 +70,16 @@ const EdprowiseTalk = () => {
                 </div>
               </div>
             </div>
-            <div className="wpo-choose-grids clearfix" ref={carouselRef}>
+            
+            <div className="wpo-choose-grids clearfix" >
+              <Slider {...settings}>
               {slides.map((slide, index) => (
                 <div
                   className="grid-web"
                   key={index}
-                  style={{ display: "inline-flex !important" }}
+                  // style={{ display: "inline-flex !important" }}
                 >
-                  <div className="icon">
+                  <div className="icon" style={{ background: slide.color }}>
                     <i className={slide.icon}></i>
                   </div>
                   <div className="info">
@@ -151,6 +88,7 @@ const EdprowiseTalk = () => {
                   </div>
                 </div>
               ))}
+              </Slider>
             </div>
           </div>
         </div>

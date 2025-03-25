@@ -7,21 +7,27 @@ const SchoolApplicationInfoSection = () => {
               const courses = [
                 {
                   id: "1",
-                  icon: "Manage Fees with",
-                  title: "Maximize",
-                  serviceid: "Efficiency"
+                  icon: " Unify School",
+                  title: "Experience",
+                  serviceid: "Intelligently"
                 },
                 {
                   id: "2",
-                  icon: "Digital Payments",
-                  title: "Smarter",
-                  serviceid: "Education"
+                  icon: "Enhance School",
+                  title: "Communication",
+                  serviceid: "Smartly"
                 },
                 {
                   id: "3",
-                  icon: "Seamless Transactions",
-                  title: "Smooth",
-                  serviceid: "Operations"
+                  icon: " Unify School",
+                  title: "Stakeholder ",
+                  serviceid: "Easily"
+                },
+                {
+                  id: "4",
+                  icon: "Revolutionize School ",
+                  title: "Management",
+                  serviceid: "Effectively"
                 },
               ];
             
@@ -36,11 +42,11 @@ const SchoolApplicationInfoSection = () => {
               }, [courses.length, intervalTime]);
   return (
     <>
-       <section className="static-hero-s2 static-hero-service pb-3 pt-3">
-         <div className="hero-container">
-           <div className="hero-inner p-0">
-             <div className="container-fluid ">
-               <div className="hero-content hero-service-content">
+       <section className="static-hero-s2 home-hero-section pb-3 pt-3">
+         <div className="hero-container home-hero-container">
+           <div className="hero-inner home-hero-inner p-0">
+             <div className="container-fluid home-hero-container-fluid">
+               <div className="hero-content" style={{order:"2"}}>
                  {/* Slide Title */}
                  <div data-swiper-parallax="300" className="slide-title">
                    <h2 className="font-family-web">
@@ -57,7 +63,7 @@ const SchoolApplicationInfoSection = () => {
                  {/* Slide Text */}
                  <div data-swiper-parallax="400" className="slide-text">
                    <p className="text-black">
-                     Inspiring growth, fostering innovation, shaping the future, and cultivating success in education.
+                   Bringing your school community together with real-time updates, easy communication, and seamless management—all in one app.
                    </p>
                  </div>
                  <div data-swiper-parallax="500" className="slide-btns">
@@ -66,8 +72,8 @@ const SchoolApplicationInfoSection = () => {
                    </Link>
                  </div>
                </div>
-               <div className="student-pic student-service-pic">
-                 <img src="/assets/images/Fees-service.png" alt="Student" />
+               <div className="student-pic home-hero-student-pic service-subpage-image">
+                 <img src="/assets/website-images/event/App.png" alt="Student" />
                  <div className="wp-shape-1">
                    <img src="/assets/website-images/slider/shape-1.svg" alt="Shape 1" />
                  </div>

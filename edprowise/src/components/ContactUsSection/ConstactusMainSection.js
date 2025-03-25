@@ -6,6 +6,7 @@ const ConstactusMainSection = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    query:"",
     phone: "",
     service: "",
     note: "",
@@ -20,7 +21,7 @@ const ConstactusMainSection = () => {
     e.preventDefault(); // Prevent the default form submission
 
     // Validate form data
-    if (!formData.name || !formData.email || !formData.phone || !formData.service) {
+    if (!formData.name || !formData.email || !formData.query || !formData.phone || !formData.service) {
       toast.error("Please fill in all required fields.");
       return;
     }
@@ -36,7 +37,7 @@ const ConstactusMainSection = () => {
 
       if (!response.hasError) {
         toast.success("Thank you! Your message has been sent.");
-        setFormData({ name: "", email: "", phone: "", service: "", note: "" }); 
+        setFormData({ name: "", email: "",query:"", phone: "", service: "", note: "" }); 
         
       } else {
         toast.error(response.message || "Error occurred while sending message. Please try again later.");
@@ -128,6 +129,17 @@ const ConstactusMainSection = () => {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Your Email*"
+                      required
+                    />
+                  </div>
+                  <div className="fullwidth">
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="query"
+                      value={formData.query}
+                      onChange={handleChange}
+                      placeholder="Query*"
                       required
                     />
                   </div>

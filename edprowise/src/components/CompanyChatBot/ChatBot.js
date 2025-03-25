@@ -60,54 +60,164 @@ const ChatBot = () => {
         setStep((prev) => prev + 1);
     };
 
-    const handleSubmitUserInfo = async () => {
-        if (!userInfo.name || !userInfo.email || !userInfo.phone || !userInfo.service) {
-            setStep(0);
-            return;
-        }
+    // const handleSubmitUserInfo = async () => {
+    //     if (!userInfo.name || !userInfo.email || !userInfo.phone || !userInfo.service) {
+    //         setStep(0);
+    //         return;
+    //     }
 
-        try {
-            console.log(userInfo);
+    //     try {
+    //         console.log(userInfo);
             
-            const response = await postAPI('/contactus', userInfo, {
-                'Content-Type': 'application/json'
-            }, true);
-            console.log(response);
+    //         const response = await postAPI('/contactuss', userInfo, {
+    //             'Content-Type': 'application/json'
+    //         }, true);
+    //         console.log(response);
 
-            setChatHistory((prev) => {
-                const finalMessage = questions[5];
-                if (!prev.some((msg) => msg.text === finalMessage)) {
-                    return [...prev, { role: 'model', text: finalMessage }];
-                }
-                return prev;
-            });
-            // setChatHistory((prev) => [...prev, { role: 'model', text: questions[5] }]);
-            setStep(5);
-        } catch (error) {
-            console.error('Error submitting user info:', error);
-            alert('Error submitting your information. Please try again.');
-            return setStep(0);
-        }
-    };
+    //         setChatHistory((prev) => {
+    //             const finalMessage = questions[5];
+    //             if (!prev.some((msg) => msg.text === finalMessage)) {
+    //                 return [...prev, { role: 'model', text: finalMessage }];
+    //             }
+    //             return prev;
+    //         });
+
+    //         setStep(5);
+    //     } catch (error) {
+    //         console.error('Error submitting user info:', error);
+    //         alert('Error submitting your information. Please try again.');
+    //         return setStep(0);
+    //     }
+    // };
+
+    // const handleSubmitUserInfo = async () => {
+    //     if (!userInfo.name || !userInfo.email || !userInfo.phone || !userInfo.service) {
+    //         setStep(0);
+    //         return;
+    //     }
+    //     try {
+    //         console.log(userInfo);
+            
+    //         const response = await postAPI('/contactuss', userInfo, {
+    //             'Content-Type': 'application/json'
+    //         }, true);
+    //         console.log(response);
+    
+    //         setChatHistory((prev) => {
+    //             const finalMessage = questions[5]; 
+    //             if (!prev.some((msg) => msg.text === finalMessage)) {
+    //                 return [...prev, { role: 'model', text: finalMessage }];
+    //             }
+    //             return prev;
+    //         });
+    //         if (!response.hasError) {
+    //             console.log("userinfo submitted");
+    //             setStep(5);
+                
+    //           } else {
+    //             console.log("pls fill again");
+                
+    //           }
+            
+    //     } catch (error) {
+    //         console.error("error while submitting");
+           
+    //        setChatHistory((prev) => [...prev, { role: 'model', text: "Sorry, some error occurred. Please fill the details again." }]);
+
+    //         setUserInfo({ name: '', email: '', phone: '', service: '', note: '' });
+    //         setStep(0); 
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     if (step < questions.length) {
+    //         const currentQuestion = questions[step];
+    //         setChatHistory((prev) => {
+    //             // Ensure questions are not added twice
+    //             if (!prev.some((msg) => msg.text === currentQuestion)) {
+    //                 return [...prev, { role: 'model', text: currentQuestion }];
+    //             }
+    //             return prev;
+    //         });
+    //     }
+    
+    //     // Automatically submit when the user reaches the last input
+    //     if (step === 5) {
+    //         handleSubmitUserInfo();
+    //     }
+    // }, [step]);
 
     useEffect(() => {
+        const accessToken = localStorage.getItem("accessToken");
+        const userDetails = localStorage.getItem("userDetails");
+    
+        if (accessToken && userDetails) {
+            // If user is already authenticated, skip questions and go directly to chat
+            setChatHistory([{ role: "model", text: "Hello, How can I help you?" }]);
+            setStep(5); // Skip to the help message step
+            return;
+        }
+    
         if (step < questions.length) {
             const currentQuestion = questions[step];
             setChatHistory((prev) => {
-                // Ensure questions are not added twice
                 if (!prev.some((msg) => msg.text === currentQuestion)) {
                     return [...prev, { role: 'model', text: currentQuestion }];
                 }
                 return prev;
             });
         }
-
-        // Automatically submit when the user reaches the last input
+    
         if (step === 5) {
             handleSubmitUserInfo();
         }
     }, [step]);
-
+    
+    const handleSubmitUserInfo = async () => {
+        if (!userInfo.name || !userInfo.email || !userInfo.phone || !userInfo.service) {
+            setStep(0); 
+            return;
+        }
+    
+        try {
+            console.log(userInfo);
+    
+            const response = await postAPI('/contactus', userInfo, {
+                'Content-Type': 'application/json'
+            }, true);
+            console.log(response);
+    
+            // If API call is successful, show the final message
+            if (!response.hasError) {
+                console.log("userinfo submitted");
+                setChatHistory((prev) => {
+                    const finalMessage = questions[5];
+                    if (!prev.some((msg) => msg.text === finalMessage)) {
+                        return [...prev, { role: 'model', text: finalMessage }];
+                    }
+                    return prev;
+                });
+                setStep(5); // Proceed to the help message
+            } else {
+                throw new Error("Form submission failed"); // Trigger error handling
+            }
+        } catch (error) {
+            console.error("Error while submitting");
+    
+            // Display the error message and reset the chat history to the initial state
+            setChatHistory([
+                { hideInChat: true, role: "model", text: companyInfo },
+                { role: 'model', text: "Sorry, some error occurred. Please fill the details again." },
+                { role: 'model', text: questions[0] } // Restart from the first question
+            ]);
+    
+            // Reset user information and restart from the first question
+            setUserInfo({ name: '', email: '', phone: '', service: '', note: '' });
+            setStep(0); // Restart from the first question
+        }
+    };
+    
+    
     const generateBotResponse = async (history) => {
         const updateHistory = (text, isError = false) => {
             setChatHistory(prev => [...prev.filter(msg => msg.text !== "Thinking..."), { role: "model", text, isError }]);
@@ -140,7 +250,7 @@ const ChatBot = () => {
                 setShowPopup(true);
                 setTimeout(() => setShowPopup(false), 5000); // Hide after 5 seconds
             }
-        }, 15000);
+        }, 60000);
 
         return () => clearInterval(interval);
     }, [showChatbot]);
@@ -157,7 +267,7 @@ const ChatBot = () => {
 
                 {showPopup && (
                     <div className="chatbot-popup-message">
-                        <p className='mb-0'>👋 Hello! I am EDI, here to help you.</p>
+                        <p className='mb-0'>👋 Hello! I am Edi, here to help you.</p>
                     </div>
                 )}
             </button>
@@ -166,7 +276,7 @@ const ChatBot = () => {
                     <div className='header-info'>
                         {/* <ChatbotIcon /> */}
                         <span className='message-bot-img'><img src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlMTEelnh5ku1vaSWwLN2blXbK4qGNASRy4w&s"} alt={""} /></span>
-                        <h2 className='logo-text m-0'>EDI</h2>
+                        <h2 className='logo-text m-0'>Edi</h2>
                     </div>
                     <button onClick={() => setShowChatbot(prev => !prev)} className='material-symbols-rounded'><IoIosArrowRoundDown /></button>
                 </div>

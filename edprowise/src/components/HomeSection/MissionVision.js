@@ -1,65 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
+import Slider from "react-slick";
 
 const VisionMissionSection = () => {
-  const carouselRef = useRef(null);
-
-  useEffect(() => {
-    const carouselContainer = carouselRef.current;
-    const items = carouselContainer.querySelectorAll(".cart-vm");
-    const totalItems = items.length;
-    let currentIndex = 0;
-    const intervalTime = 4000; 
-    let autoplayInterval;
-
-    
-    const updateCarousel = () => {
-      carouselContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
-    };
-
-    // Move to the next slide
-    const moveToNextSlide = () => {
-      currentIndex = (currentIndex + 1) % totalItems;
-      updateCarousel();
-    };
-
-    // Start autoplay
-    const startAutoplay = () => {
-      autoplayInterval = setInterval(moveToNextSlide, intervalTime);
-    };
-
-    // Stop autoplay
-    const stopAutoplay = () => {
-      clearInterval(autoplayInterval);
-      autoplayInterval = null;
-    };
-
-    // Handle screen resizing
-    const handleResize = () => {
-      if (window.innerWidth > 991) {
-        stopAutoplay();
-        currentIndex = 0; // Reset index on desktop
-        carouselContainer.style.transform = "translateX(0)"; // Reset position
-      } else {
-        if (!autoplayInterval) {
-          startAutoplay();
-        }
-      }
-    };
-
-    // Initialize autoplay below 991px
-    if (window.innerWidth <= 991) {
-      startAutoplay();
-      updateCarousel();
-    }
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      stopAutoplay();
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   const data = [
     {
       id: 1,
@@ -73,7 +15,7 @@ const VisionMissionSection = () => {
       ),
       title: "Mission",
       description:
-       "To empower educational institutions with innovative solutions that enhance learning environments, streamline operations, and foster continuous growth and development."
+        "To empower educational institutions with innovative solutions that enhance learning environments, streamline operations, and foster continuous growth and development."
     },
     {
       id: 2,
@@ -81,7 +23,7 @@ const VisionMissionSection = () => {
       icon: <div className="cart-vm-icon">👁️</div>,
       title: "Vision",
       description:
-      "Transforming education to drive societal progress & economic growth in India by delivering innovative, impactful solutions that empower institutions & inspire future leaders.",
+        "Transforming education to drive societal progress & economic growth in India by delivering innovative, impactful solutions that empower institutions & inspire future leaders."
     },
     {
       id: 3,
@@ -89,9 +31,40 @@ const VisionMissionSection = () => {
       icon: <div className="cart-vm-icon">💎</div>,
       title: "Value",
       description:
-        "At Edprowise, our values center around innovation, integrity, customer-centricity, collaboration, and continuous learning, empowering growth and success",
+        "At Edprowise, our values center around innovation, integrity, customer-centricity, collaboration, and continuous learning, empowering growth and success"
     },
   ];
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: false,
+    autoplaySpeed: 4000,
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 992,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          autoplay: true,
+          autoplaySpeed: 4000,
+        },  
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          autoplay: true,
+          autoplaySpeed: 4000,
+        },  
+      },
+    ]
+  };
 
   return (
     <section
@@ -107,7 +80,7 @@ const VisionMissionSection = () => {
           </div>
         </div>
         <div className="mission-vision-section-wrapper">
-          <div className="mission-vision-section" ref={carouselRef}>
+          <Slider {...settings}>
             {data.map((item) => (
               <div key={item.id} className="cart-vm">
                 <div className={`cart-vm-circle ${item.className}`}>
@@ -119,7 +92,7 @@ const VisionMissionSection = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </Slider>
         </div>
       </div>
       <div className="shape-1">

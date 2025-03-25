@@ -11,14 +11,14 @@ const GallerySection = () => {
   const [modalImage, setModalImage] = useState(null);
 
   const portfolioItems = [
-    { id: 1, image: "/assets/website-images/portfolio/1.webp" },
-    { id: 2, image: "/assets/website-images/portfolio/2.webp" },
-    { id: 3, image: "/assets/website-images/portfolio/3.webp" },
-    { id: 4, image: "/assets/website-images/portfolio/5.webp" },
-    { id: 5, image: "/assets/website-images/portfolio/4.webp" },
-    { id: 6, image: "/assets/website-images/portfolio/6.webp" },
-    { id: 7, image: "/assets/website-images/portfolio/7.webp" },
-    { id: 8, image: "/assets/website-images/portfolio/8.webp" },
+    { id: 1, image: "/assets/website-images/portfolio/11.webp" },
+    { id: 2, image: "/assets/website-images/portfolio/12.webp" },
+    { id: 3, image: "/assets/website-images/portfolio/13.webp" },
+    { id: 4, image: "/assets/website-images/portfolio/14.webp" },
+    // { id: 5, image: "/assets/website-images/portfolio/5.webp" },
+    // { id: 6, image: "/assets/website-images/portfolio/6.webp" },
+    // { id: 7, image: "/assets/website-images/portfolio/7.webp" },
+    // { id: 8, image: "/assets/website-images/portfolio/8.webp" },
   ];
 
   // Function to shuffle the images

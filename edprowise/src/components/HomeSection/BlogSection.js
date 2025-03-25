@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
 import { Link } from "react-router-dom";
 
 const blogPosts = [
@@ -29,7 +30,7 @@ const blogPosts = [
 ];
 
 const BlogItem = ({ date, author, title, image, link }) => (
-  <div className="col col-lg-4 col-md-6 col-12 carousel-item-blog">
+  <div className="carousel-item-blog">
     <div className="wpo-blog-item">
       <div className="wpo-blog-img">
         <img src={image} alt={title} />
@@ -53,92 +54,55 @@ const BlogItem = ({ date, author, title, image, link }) => (
 );
 
 const BlogSection = () => {
-  const carouselRef = useRef(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 991);
 
   useEffect(() => {
-    const carouselContainer = carouselRef.current;
-    const items = carouselContainer.querySelectorAll(".carousel-item-blog");
-    const totalItems = items.length;
-    let currentIndex = 1; // Start at the first real item
-    const intervalTime = 4000; // Time between slides in milliseconds
-    let autoplayInterval;
-
-    // Clone first and last items for infinite loop effect
-    const firstClone = items[0].cloneNode(true);
-    const lastClone = items[totalItems - 1].cloneNode(true);
-
-    // Add clones to the DOM for mobile view
-    if (isMobile) {
-      carouselContainer.appendChild(firstClone);
-      carouselContainer.insertBefore(lastClone, items[0]);
-    }
-
-    // Update carousel position
-    function updateCarousel() {
-      const itemWidth = items[0].offsetWidth;
-      carouselContainer.style.transition = "transform 0.5s ease-in-out";
-      carouselContainer.style.transform = `translateX(-${
-        currentIndex * itemWidth
-      }px)`;
-    }
-
-    // Move to the next slide
-    function moveToNextSlide() {
-      const itemWidth = items[0].offsetWidth;
-      currentIndex++;
-      updateCarousel();
-
-      if (currentIndex === totalItems + 1) {
-        // Reset to the first real item
-        setTimeout(() => {
-          carouselContainer.style.transition = "none";
-          currentIndex = 1;
-          carouselContainer.style.transform = `translateX(-${
-            currentIndex * itemWidth
-          }px)`;
-        }, 500); // Match transition duration
-      }
-    }
-
-    // Start autoplay only for mobile
-    function startAutoplay() {
-      if (isMobile) {
-        autoplayInterval = setInterval(moveToNextSlide, intervalTime);
-      }
-    }
-
-    // Stop autoplay
-    function stopAutoplay() {
-      clearInterval(autoplayInterval);
-    }
-
-    // Handle window resize
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 991);
-    };
-
-    // Initialize autoplay if mobile
-    if (isMobile) {
-      startAutoplay();
-    }
-
+    const handleResize = () => setIsMobile(window.innerWidth <= 991);
     window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    return () => {
-      stopAutoplay();
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [isMobile]);
+  const settings = isMobile
+    ? {
+        infinite: true,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        speed: 500,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        responsive: [
+          {
+            breakpoint: 767,
+            settings: {
+              swipe: true, 
+              touchMove: true,
+              slidesToShow: 1,
+              slidesToScroll: 1,
+            },
+          },
+        ],
+      }
+    : {
+        infinite: false, // No looping
+        autoplay: false, // Disable autoplay
+        slidesToShow: 3, // Show 3 items
+        slidesToScroll: 1, // Keep it consistent
+        arrows: false, // Hide arrows
+        dots: false, // Hide dots
+      };
 
   return (
-    <section className="wpo-blog-section section-padding pt-0 pb-1" id="blog" style={{ background: "#fcf9ef" }}>
+    <section
+      className="wpo-blog-section section-padding pt-0 pb-1"
+      id="blog"
+      style={{ background: "#fcf9ef" }}
+    >
       <div className="container edprowise-choose-container">
         <div className="wpo-section-title-s2 mb-2">
           <h2 className="font-family-web">Our Latest News</h2>
         </div>
         <div className="wpo-blog-items">
-          <div className="row-web row-blog" ref={carouselRef}>
+          <Slider {...settings}>
             {blogPosts.map((post) => (
               <BlogItem
                 key={post.id}
@@ -149,7 +113,7 @@ const BlogSection = () => {
                 link={post.link}
               />
             ))}
-          </div>
+          </Slider>
         </div>
       </div>
     </section>

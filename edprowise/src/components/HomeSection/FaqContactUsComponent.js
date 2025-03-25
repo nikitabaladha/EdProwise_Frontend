@@ -8,6 +8,7 @@ const FaqContactUsComponent = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    query:"",
     phone: "",
     service: "",
     note: "",
@@ -22,7 +23,7 @@ const FaqContactUsComponent = () => {
     e.preventDefault(); // Prevent the default form submission
 
     // Validate form data
-    if (!formData.name || !formData.email || !formData.phone || !formData.service) {
+    if (!formData.name || !formData.email || !formData.query || !formData.phone || !formData.service) {
       toast.error("Please fill in all required fields.");
       return;
     }
@@ -38,7 +39,7 @@ const FaqContactUsComponent = () => {
 
       if (!response.hasError) {
         toast.success("Thank you! Your message has been sent.");
-        setFormData({ name: "", email: "", phone: "", service: "", note: "" }); 
+        setFormData({ name: "", email: "",query: "", phone: "", service: "", note: "" }); 
         
       } else {
         toast.error(response.message || "Error occurred while sending message. Please try again later.");
@@ -72,7 +73,7 @@ const FaqContactUsComponent = () => {
           </div>
 
           <div className="col-12 col-md-12 col-lg-6">     
-            <section className="wpo-contact-pg-section section-padding">
+            <section className="wpo-contact-pg-section section-padding pt-0">
               <div className="container">
                 <div className="row">
                   <div className="col col-lg-12  ">
@@ -98,6 +99,7 @@ const FaqContactUsComponent = () => {
                             value={formData.name}
                             onChange={handleChange}
                             placeholder="Your Name*"
+                            required
                           />
                         </div>
                         <div>
@@ -108,6 +110,18 @@ const FaqContactUsComponent = () => {
                             value={formData.email}
                             onChange={handleChange}
                             placeholder="Your Email*"
+                            required
+                          />
+                        </div>
+                        <div className='fullwidth'>
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="query"
+                            value={formData.query}
+                            onChange={handleChange}
+                            placeholder="Your query*"
+                            required
                           />
                         </div>
                         <div>
@@ -118,6 +132,7 @@ const FaqContactUsComponent = () => {
                             value={formData.phone}
                             onChange={handleChange}
                             placeholder="Your Phone*"
+                            required
                           />
                         </div>
                         <div>
@@ -129,7 +144,7 @@ const FaqContactUsComponent = () => {
                             required
                           >
                             <option value="">
-                              Subject
+                              Subject*
                             </option>
                             <option value="Web Development">Web Development</option>
                             <option value="Web Design">Web Design</option>

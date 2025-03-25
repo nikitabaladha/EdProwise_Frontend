@@ -1,3 +1,4 @@
+
 import react, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { RiEmotionHappyLine } from "react-icons/ri";
@@ -144,39 +145,40 @@ const HomeMainSection = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
-  const searchBoxRef = useRef(null); 
+  const searchBoxRef = useRef(null);
+  const duplicatedFeaturesData = [...featuresData, ...featuresData];
 
   const serviceData = [
-    { title: "School Fees Management Software - Pixel Fees", send:"/services/digital-services/fees", },
-    { title: "Payroll Management Software – Ease Payroll", send:"/services/digital-services/payroll"},
-    { title: "Financial Management Software – Book Sync", send:"/services/digital-services/booksync" },
-    { title: "School Operational Management Software", send:"/services/digital-services/schooloperation" },
-    { title: "School Mobile Application", send:"/services/digital-services/schoolApplication" },
-    { title: "School Website Design", send:"/services/digital-services/school-Website-Design" },
-    { title: "Digital Exam Result System", send:"/services/digital-services" },
-    { title: "Digital Student Attendance", send:"/services/digital-services" },
-    { title: "Digital Staff Attendance", send:"/services/digital-services" },
-    { title: "Library Management Software", send:"/services/digital-services" },
-    {title:"Entrance Management Software", send:"/services/digital-services"},
-    {title:"Online Payment Gateway", send:"/services/digital-services"},
-    {title:"SMS & WhatsApp Integration Services", send:"/services/digital-services"},
-    {title:"PF Consultancy", send:"/services/business-services"},
-    {title:"ESI Consultancy", send:"/services/business-services"},
-    {title:"Affiliation Support", send:"/services/business-services"},
-    {title:"International Tour Management", send:"/services/business-services"},
-    {title:"Student Counselling", send:"/services/business-services"},
-    {title:"Training & Workshop for Teache", send:"/services/business-services"},
-    
+    { title: "School Fees Management Software - Pixel Fees", send: "/services/digital-services/fees", },
+    { title: "Payroll Management Software – Ease Payroll", send: "/services/digital-services/payroll" },
+    { title: "Financial Management Software – Book Sync", send: "/services/digital-services/booksync" },
+    { title: "School Operational Management Software", send: "/services/digital-services/schooloperation" },
+    { title: "School Mobile Application", send: "/services/digital-services/schoolApplication" },
+    { title: "School Website Design", send: "/services/digital-services/school-Website-Design" },
+    { title: "Digital Exam Result System", send: "/services/digital-services" },
+    { title: "Digital Student Attendance", send: "/services/digital-services" },
+    { title: "Digital Staff Attendance", send: "/services/digital-services" },
+    { title: "Library Management Software", send: "/services/digital-services" },
+    { title: "Entrance Management Software", send: "/services/digital-services" },
+    { title: "Online Payment Gateway", send: "/services/digital-services" },
+    { title: "SMS & WhatsApp Integration Services", send: "/services/digital-services" },
+    { title: "PF Consultancy", send: "/services/business-services" },
+    { title: "ESI Consultancy", send: "/services/business-services" },
+    { title: "Affiliation Support", send: "/services/business-services" },
+    { title: "International Tour Management", send: "/services/business-services" },
+    { title: "Student Counselling", send: "/services/business-services" },
+    { title: "Training & Workshop for Teache", send: "/services/business-services" },
+
   ];
 
-  
+
   const filteredServices = searchQuery
     ? serviceData.filter((service) =>
       service.title.toLowerCase().includes(searchQuery.toLowerCase())
     )
     : serviceData.slice(0, 5);
 
-  
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
@@ -252,24 +254,24 @@ const HomeMainSection = () => {
                   </div>
                   {/* Service suggestions dropdown list-unstyled */}
                   {isExpanded && (
-                    <ul className="service-suggestions slide-text pb-2  "> 
+                    <ul className="service-suggestions slide-text pb-2  ">
                       {filteredServices.length > 0 ? (
                         filteredServices.map((service, index) => (
-                        <Link to={service.send} >
-                         <li className="d-flex justify-content-between text-black mb-1 align-item-center pl-2 ">
-                           <div
-                            key={index}
-                            className="service-item pl-1"
-                            onClick={() => {
-                              setSearchQuery(service.title);
-                              setIsExpanded(false);
-                            }}
-                          >
-                            {service.title}
-                          </div>
-                          <span className=""><IoIosSend /></span>
-                         </li>
-                         </Link>
+                          <Link to={service.send} >
+                            <li className="d-flex justify-content-between text-black mb-1 align-item-center pl-2 ">
+                              <div
+                                key={index}
+                                className="service-item pl-1"
+                                onClick={() => {
+                                  setSearchQuery(service.title);
+                                  setIsExpanded(false);
+                                }}
+                              >
+                                {service.title}
+                              </div>
+                              <span className=""><IoIosSend /></span>
+                            </li>
+                          </Link>
                         ))
                       ) : (
                         <div className="no-results">No services found</div>
@@ -287,35 +289,49 @@ const HomeMainSection = () => {
               </div>
 
               {/* Student Picture with Shapes */}
-             <div className="home-hero-outer-pic">
-             <div className="student-pic home-hero-student-pic">
-                <img src="assets/website-images/slider/2.webp" alt="Student" />
-                <div className="wp-shape-1">
+              <div className="home-hero-outer-pic">
+                <div className="student-pic home-hero-student-pic home-page-section-img hero-section-img-small">
+                  {/* <img src="assets/website-images/event/HomePage.png" alt="Student" /> */}
+                  <div className="wpo-about-img" style={{ textAlign: "center" }}>
                   <img
-                    src="assets/website-images/slider/shape-1.svg"
-                    alt="Shape 1"
+                    src="/assets/images/EdProwiseFavicon.png"
+                    alt=""
+                    style={{ width: "29%" }}
                   />
-                </div>
-                <div className="wp-shape-2">
-                  <img
-                    src="assets/website-images/slider/shape-2.svg"
-                    alt="Shape 2"
-                  />
-                </div>
-                <div className="wp-shape-3">
-                  <img
-                    src="assets/website-images/slider/shape-3.svg"
-                    alt="Shape 3"
-                  />
-                </div>
-                <div className="wp-shape-4">
-                  <img
-                    src="assets/website-images/slider/shape-4.svg"
-                    alt="Shape 4"
-                  />
+                  <div className="back-shapee">
+                    <img
+                      src="/assets/website-images/event/HomePage.png"
+                      alt=""
+                      style={{ width: "80%" }}
+                    />
+                  </div>
+                </div> 
+                  <div className="wp-shape-1">
+                    <img
+                      src="assets/website-images/slider/shape-1.svg"
+                      alt="Shape 1"
+                    />
+                  </div>
+                  <div className="wp-shape-2">
+                    <img
+                      src="assets/website-images/slider/shape-2.svg"
+                      alt="Shape 2"
+                    />
+                  </div>
+                  <div className="wp-shape-3">
+                    <img
+                      src="assets/website-images/slider/shape-3.svg"
+                      alt="Shape 3"
+                    />
+                  </div>
+                  <div className="wp-shape-4">
+                    <img
+                      src="assets/website-images/slider/shape-4.svg"
+                      alt="Shape 4"
+                    />
+                  </div>
                 </div>
               </div>
-             </div>
             </div>
           </div>
         </div>
@@ -343,12 +359,12 @@ const HomeMainSection = () => {
                 >
                   <div
                     className={`feature-item-wrap ${window.innerWidth <= 992
-                        ? index === currentIndex
-                          ? "active"
-                          : ""
-                        : activeIndex === index
-                          ? "active"
-                          : ""
+                      ? index === currentIndex
+                        ? "active"
+                        : ""
+                      : activeIndex === index
+                        ? "active"
+                        : ""
                       }`}
                   >
                     <div className="feature-item d-flex feature-itemm-small">

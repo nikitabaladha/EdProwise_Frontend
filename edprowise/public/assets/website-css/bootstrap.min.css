@@ -4310,6 +4310,7 @@ fieldset:disabled .btn {
 .accordion-item {
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.75rem !important;
 }
 .accordion-item:first-of-type {
   border-top-left-radius: 0.25rem;
@@ -6085,7 +6086,7 @@ fieldset:disabled .btn {
   display: inline-grid !important;
 }
 
-.grid-flex{
+.grid-flex {
   display: inline-flex;
 }
 .d-grid {

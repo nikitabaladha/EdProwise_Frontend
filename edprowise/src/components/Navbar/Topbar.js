@@ -11,14 +11,25 @@ const Topbar = () => {
             <div className="contact-intro">
               <ul>
                 <li>
-                  <i className="fi flaticon-phone-call"></i> +91-9958528306
+                  <i className="fi flaticon-phone-call"></i>
+                  <a href="tel:+919958528306" style={{ color: "white" }}>
+                    +91-9958528306
+                  </a>
                 </li>
                 <li>
-                  <i className="fi flaticon-email"></i> info@edprowise.com
+                  <i className="fi flaticon-email"></i>
+                  <a
+                    href="mailto:info@edprowise.com"
+                    style={{ color: "white" }}
+                  >
+                    info@edprowise.com
+                  </a>
                 </li>
                 <li className="contact-location">
-                  <i className="fi flaticon-maps-and-flags"></i> New Delhi,
-                  Delhi, India
+                  <i className="fi flaticon-maps-and-flags"></i>
+                  <a href="" style={{ color: "white" }}>
+                    New Delhi, Delhi, India.
+                  </a>
                 </li>
               </ul>
             </div>

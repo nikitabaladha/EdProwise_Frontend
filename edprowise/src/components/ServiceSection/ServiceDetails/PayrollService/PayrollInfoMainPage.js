@@ -60,11 +60,11 @@ const PayrollInfoMainPage = () => {
               }, [courses.length, intervalTime]);
   return (
      <>
-        <section className="static-hero-s2 static-hero-service pb-3 pt-3">
-          <div className="hero-container">
-            <div className="hero-inner p-0">
-              <div className="container-fluid ">
-                <div className="hero-content hero-service-content">
+        <section className="static-hero-s2 home-hero-section pb-3 pt-3">
+          <div className="hero-container home-hero-container">
+            <div className="hero-inner home-hero-inner p-0">
+              <div className="container-fluid home-hero-container-fluid ">
+                <div className="hero-content" style={{order:"2"}}>
                   {/* Slide Title */}
                   <div data-swiper-parallax="300" className="slide-title">
                     <h2 className="font-family-web">
@@ -90,8 +90,8 @@ const PayrollInfoMainPage = () => {
                     </Link>
                   </div>
                 </div>
-                <div className="student-pic student-service-pic">
-                  <img src="/assets/images/Fees-service.png" alt="Student" />
+                <div className="student-pic home-hero-student-pic service-subpage-image">
+                  <img src="/assets/website-images/event/Ease Payroll.png" alt="Student" />
                   <div className="wp-shape-1">
                     <img src="/assets/website-images/slider/shape-1.svg" alt="Shape 1" />
                   </div>

@@ -7,7 +7,7 @@ const TeamSection = () => {
       role: "CEO",
       image: "assets/website-images/kunalCEO-preview (1).jpg",
       description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
+        " CA with 5 Year of Experience in Corporate Finance",
       socialLinks: {
         linkedin: " https://www.linkedin.com/in/ca-kunal-shah-a7618a100?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
       },
@@ -17,7 +17,7 @@ const TeamSection = () => {
       role: "COO",
       image: "assets/website-images/jayGupta-preview (1).jpg",
       description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
+        "CA with 5 Year of experience in Audit",
       socialLinks: {
         linkedin: "#",
       },
@@ -27,7 +27,7 @@ const TeamSection = () => {
       role: "CTO",
       image: "assets/website-images/dhirajsir-preview (1).jpg",
       description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
+        "3yrs of experience in Software Life Cycle",
       socialLinks: {
         linkedin: "https://www.linkedin.com/in/dhiru805",
       },
@@ -37,7 +37,7 @@ const TeamSection = () => {
       role: "CFO",
       image: "assets/website-images/DhruvPhota.jpg",
       description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, provident!",
+        "CA With 5 Year of experience in Audit",
       socialLinks: {
         linkedin: "#",
       },
@@ -50,8 +50,8 @@ const TeamSection = () => {
         <div className="wpo-section-title-s2">
           {/* <small>Our Professionals</small> */}
           <h2>
-          Meet the   
-            <span>
+          Meet the    
+            <span style={{margin:"0 5px"}} >
              Exceptional
               <i className="shape">
                 <svg
@@ -74,7 +74,7 @@ const TeamSection = () => {
                   <div className="wpo-team-img">
                     <div className="wpo-team-img-box">
                       <img src={member.image} alt={member.name} />
-                      <div className="profile-info">
+                      <div className="profile-info team-profile-info">
                         <p className="team-para">{member.description}</p>
                       </div>
                       <ul>

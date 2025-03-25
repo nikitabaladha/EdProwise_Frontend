@@ -337,33 +337,31 @@ const Header = () => {
                         )}
                       </li>
                     ))}
-                    {window.innerWidth <= 992 ? (
-                      localStorage.getItem("accessToken") &&
-                      localStorage.getItem("userDetails") ? (
-                        <>
-                          <li className="menu-item">
-                            <Link
-                              to="/dashboard"
-                              onClick={(event) => handleSignIn(event)}
-                            >
-                              Dashboard
-                            </Link>
-                          </li>
-                          <li className="menu-item">
-                            <Link onClick={handleLogout}>Logout</Link>
-                          </li>
-                        </>
-                      ) : (
-                        <>
-                          <li className="menu-item">
-                            <Link to="/signup">Sign Up</Link>
-                          </li>
-                          <li className="menu-item">
-                            <Link to="/login">Sign In</Link>
-                          </li>
-                        </>
-                      )
-                    ) : null}
+                    {localStorage.getItem("accessToken") &&
+                    localStorage.getItem("userDetails") ? (
+                      <>
+                        <li className="menu-item sign-up-in-mobile">
+                          <Link
+                            to="/dashboard"
+                            onClick={(event) => handleSignIn(event)}
+                          >
+                            Dashboard
+                          </Link>
+                        </li>
+                        <li className="menu-item sign-up-in-mobile">
+                          <Link onClick={handleLogout}>Logout</Link>
+                        </li>
+                      </>
+                    ) : (
+                      <>
+                        <li className="menu-item sign-up-in-mobile">
+                          <Link to="/signup">Sign Up</Link>
+                        </li>
+                        <li className="menu-item sign-up-in-mobile">
+                          <Link to="/login">Sign In</Link>
+                        </li>
+                      </>
+                    )}
                   </ul>
                   {/* Signup Login Button */}
                 </div>
@@ -374,8 +372,7 @@ const Header = () => {
                   localStorage.getItem("userDetails") ? (
                     <>
                       <div className="close-form">
-
-                      <Link
+                        <Link
                           className="login"
                           onClick={(event) => handleSignIn(event)}
                         >
@@ -386,7 +383,7 @@ const Header = () => {
                             <i className="fi flaticon-charity"></i>
                           </span>
                         </Link>
-                      
+
                         <Link className="theme-btn" onClick={handleLogout}>
                           <span className="text font-family-web login-weight">
                             Logout

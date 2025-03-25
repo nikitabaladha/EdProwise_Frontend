@@ -16,7 +16,9 @@ const ChatMessage = ({ chat, handleInputChange }) => {
             </div>
             {chat.text === "What service are you interested in?" && (
                 <div className="service-options mt-0">
+                    <ol type='1'>
                     {services.map((service, index) => (
+                        <li key={index} className='chat-service-tabs'>
                         <button
                             key={index}
                             className="service-btn"
@@ -24,7 +26,9 @@ const ChatMessage = ({ chat, handleInputChange }) => {
                         >
                             {service}
                         </button>
+                        </li> 
                     ))}
+                    </ol>
                 </div>
             )}
         </>)
