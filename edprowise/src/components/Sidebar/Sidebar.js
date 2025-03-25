@@ -190,22 +190,22 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
               {
                 label: "Registration Form",
                 link: "/school-dashboard/fees-module/form/registration",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Admission Form",
                 link: "/school-dashboard/fees-module/form/admission-list",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "TC Form",
                 link: "/school-dashboard/fees-module/form/trasfer-certificate-list",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Concession Form",
                 link: "/school-dashboard/fees-module/form/concession-table",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
             ],
           },
@@ -217,17 +217,17 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
               {
                 label: "School Fees",
                 link: "/school-dashboard/fees-module/fees-receipts/school-fees",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Board Registration Fees",
                 link: "/school-dashboard/fees-module/fees-receipts/board-registration-fees",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Board Exam fees",
                 link: "/school-dashboard/fees-module/fees-receipts/board-exam-fees",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
             ],
           },
@@ -239,22 +239,22 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
               {
                 label: "Shift",
                 link: "/school-dashboard/fees-module/admin-setting/shifts",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Class & Section",
                 link: "/school-dashboard/fees-module/admin-setting/class-section",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Fees Types",
                 link: "/school-dashboard/fees-module/admin-setting/fees-type-list",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Fees Structure",
                 link: "/school-dashboard/fees-module/admin-setting/fees-structure",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                icon: "solar:users-group-rounded-bold-duotone",
               },
             ],
           },
@@ -304,10 +304,44 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
 
   const menuItems = menuConfig[userRole] || menuConfig["Guest"];
 
+  // if (!Object.keys(openMenus).length) {
+  //   if (currentRoute.indexOf("procurement-services"))
+  //     toggleMenu("procurementServices");
+  //   if (currentRoute.indexOf("fees-module")) {
+  //     if (currentRoute.indexOf("form")) toggleMenu("form", "feesmodule");
+  //     else toggleMenu("feesmodule");
+  //   }
+  // }
+
   const renderMenuItem = (item, parentId = null) => {
-    const isActive = item.children
-      ? item.children.some((child) => currentRoute === child.link)
-      : currentRoute === item.link;
+    // const isActive = item.children
+    //   ? item.children.some((child) => currentRoute === child.link)
+    //   : currentRoute === item.link;
+
+    let findChilderRoute = null;
+    item?.children?.forEach((child) => {
+      if (currentRoute === child.link) findChilderRoute = child;
+      if (!findChilderRoute) {
+        item?.children?.forEach((subChild) => {
+          subChild.children?.forEach((childOfChild) => {
+            if (currentRoute === childOfChild.link) {
+              findChilderRoute = childOfChild;
+              if (!findChilderRoute.id) findChilderRoute.id = subChild.id;
+              if (!findChilderRoute.parentId)
+                findChilderRoute.parentId = item.id;
+            }
+          });
+        });
+      }
+    });
+    const checkItemIsCurrentRoute = currentRoute === item.link;
+    const isActive = findChilderRoute || checkItemIsCurrentRoute;
+    if (!Object.keys(openMenus).length && isActive) {
+      toggleMenu(
+        findChilderRoute?.id || item?.id,
+        findChilderRoute?.parentId || parentId
+      );
+    }
 
     return (
       <li className={`nav-item ${isActive ? "active" : ""}`} key={item.id}>

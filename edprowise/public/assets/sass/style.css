@@ -13896,7 +13896,7 @@ img {
 .wpo-about-section-s3 .wpo-about-wrap .wpo-about-img .back-shape img,
 .wpo-about-section-s4 .wpo-about-wrap .wpo-about-img .back-shape img,
 .wpo-about-section-s5 .wpo-about-wrap .wpo-about-img .back-shape img,
-.student-pic .wpo-about-img {
+.student-pic .wpo-about-img .back-shapee img {
   -webkit-animation: circle 60s linear infinite;
   animation: circle 60s linear infinite;
   width: 100%;
