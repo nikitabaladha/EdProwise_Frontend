@@ -322,23 +322,26 @@ const TrackQuoteTable = ({}) => {
                                     className="align-middle fs-18"
                                   />
                                 </Link>
-                                <Link
-                                  onClick={() =>
-                                    fetchPrepareQuoteAndProposalData(
-                                      quote.enquiryNumber,
-                                      quote.schoolId
-                                    )
-                                  }
-                                  className="btn btn-soft-info btn-sm"
-                                  title="Download PDF"
-                                  data-bs-toggle="popover"
-                                  data-bs-trigger="hover"
-                                >
-                                  <iconify-icon
-                                    icon="solar:download-broken"
-                                    className="align-middle fs-18"
-                                  />
-                                </Link>
+
+                                {preparedQuotes[quote.enquiryNumber] ? (
+                                  <Link
+                                    onClick={() =>
+                                      fetchPrepareQuoteAndProposalData(
+                                        quote.enquiryNumber,
+                                        quote.schoolId
+                                      )
+                                    }
+                                    className="btn btn-soft-info btn-sm"
+                                    title="Download PDF"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:download-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                ) : null}
 
                                 {preparedQuotes[quote.enquiryNumber] ? null : (
                                   <button

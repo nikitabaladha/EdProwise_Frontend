@@ -266,7 +266,15 @@ const ViewAllQuoteTable = () => {
                         <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
-                        <th>Action</th>
+                        {/* <th>Action</th> */}
+
+                        {(submittedQuotes.some(
+                          (quote) => quote.venderStatusFromBuyer === "Pending"
+                        ) ||
+                          submittedQuotes.some(
+                            (quote) =>
+                              quote.venderStatusFromBuyer === "Quote Accepted"
+                          )) && <th>Action</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -290,37 +298,36 @@ const ViewAllQuoteTable = () => {
 
                           <td>
                             <div className="d-flex gap-2">
-                              <Link
-                                onClick={(event) =>
-                                  navigateToViewQuote(event, quote)
-                                }
-                                className="btn btn-light btn-sm"
-                              >
-                                <iconify-icon
-                                  icon="solar:eye-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
-                              <Link
-                                onClick={() =>
-                                  fetchPrepareQuoteAndProposalData(
-                                    quote?.enquiryNumber,
-                                    quote?.sellerId
-                                  )
-                                }
-                                className="btn btn-soft-info btn-sm"
-                                title="Download PDF"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
-                              >
-                                <iconify-icon
-                                  icon="solar:download-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
-
                               {quote.venderStatusFromBuyer === "Pending" && (
                                 <>
+                                  <Link
+                                    onClick={(event) =>
+                                      navigateToViewQuote(event, quote)
+                                    }
+                                    className="btn btn-light btn-sm"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:eye-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                  <Link
+                                    onClick={() =>
+                                      fetchPrepareQuoteAndProposalData(
+                                        quote?.enquiryNumber,
+                                        quote?.sellerId
+                                      )
+                                    }
+                                    className="btn btn-soft-info btn-sm"
+                                    title="Download PDF"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:download-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
                                   <Link
                                     className="btn btn-light btn-sm"
                                     onClick={(event) => {
@@ -348,6 +355,42 @@ const ViewAllQuoteTable = () => {
                                   </button>
                                 </>
                               )}
+                              {quote.venderStatusFromBuyer ===
+                                "Quote Accepted" && (
+                                <>
+                                  <Link
+                                    onClick={(event) =>
+                                      navigateToViewQuote(event, quote)
+                                    }
+                                    className="btn btn-light btn-sm"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:eye-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                  <Link
+                                    onClick={() =>
+                                      fetchPrepareQuoteAndProposalData(
+                                        quote?.enquiryNumber,
+                                        quote?.sellerId
+                                      )
+                                    }
+                                    className="btn btn-soft-info btn-sm"
+                                    title="Download PDF"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:download-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                </>
+                              )}
+
+                              {quote.venderStatusFromBuyer ===
+                                "Quote Not Accepted" || <></>}
                             </div>
                           </td>
                         </tr>

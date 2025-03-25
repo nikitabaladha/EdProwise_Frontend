@@ -66,7 +66,6 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       //   icon: "solar:widget-5-bold-duotone",
       //   link: "/admin-dashboard",
       // },
-
       ...(email === "edprowise@gmail.com"
         ? [
             {

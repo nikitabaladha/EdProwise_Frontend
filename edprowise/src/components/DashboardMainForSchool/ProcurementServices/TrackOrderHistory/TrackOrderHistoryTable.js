@@ -99,33 +99,6 @@ const TrackOrderHistoryTable = () => {
     exportToExcel(formattedData, "Ordered Products", "Ordered_Products");
   };
 
-  const handleUpdateTDSStatus = async (
-    enquiryNumber,
-    quoteNumber,
-    sellerId,
-    newtDSAmount
-  ) => {
-    try {
-      const response = await putAPI(
-        `/update-tds?enquiryNumber=${enquiryNumber}&quoteNumber=${quoteNumber}&sellerId=${sellerId}`,
-        { tDSAmount: Number(newtDSAmount) },
-        true
-      );
-
-      if (!response.hasError) {
-        toast.success(`TDS updated to "${newtDSAmount}" successfully!`);
-        fetchOrderData();
-      } else {
-        toast.error(response.message || "Failed to update status");
-      }
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          "An unexpected error occurred. Please try again."
-      );
-    }
-  };
-
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolsPerPage] = useState(10);
 
@@ -199,7 +172,6 @@ const TrackOrderHistoryTable = () => {
                         <th>Actual Delivery Date</th>
                         <th>Invoice Amount</th>
                         <th>Status</th>
-                        <th>Select TDS</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -229,37 +201,11 @@ const TrackOrderHistoryTable = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>{formatCost(order.totalAmountBeforeGstAndDiscount)}</td>
-                          <td>{order.buyerStatus}</td>
                           <td>
-                            <select
-                              id="tdsAmount"
-                              name="tdsAmount"
-                              className="form-control"
-                              value={
-                                order.tDSAmount !== null &&
-                                order.tDSAmount !== undefined
-                                  ? order.tDSAmount.toString()
-                                  : ""
-                              }
-                              onChange={(e) =>
-                                handleUpdateTDSStatus(
-                                  order.enquiryNumber,
-                                  order.quoteNumber,
-                                  order.sellerId,
-                                  e.target.value
-                                )
-                              }
-                              required
-                            >
-                              <option value="">Select TDS</option>
-                              <option value="0">0</option>
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="10">10</option>
-                              <option value="20.8">20.8</option>
-                            </select>
+                            {formatCost(order.totalAmountBeforeGstAndDiscount)}
                           </td>
+                          <td>{order.buyerStatus}</td>
+
                           <td>
                             <div className="d-flex gap-2">
                               <Link

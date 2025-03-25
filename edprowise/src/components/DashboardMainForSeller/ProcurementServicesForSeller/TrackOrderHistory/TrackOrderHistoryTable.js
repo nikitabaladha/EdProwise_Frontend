@@ -67,13 +67,6 @@ const TrackOrderHistoryTable = () => {
     closeUpdateOrderDetailsModal();
   };
 
-  const navigateToViewOrder = (event, order, enquiryNumber) => {
-    event.preventDefault();
-    navigate(`/seller-dashboard/procurement-services/view-order-history`, {
-      state: { order, enquiryNumber },
-    });
-  };
-
   const openUpdateOrderDetailsModal = (event, orderNumber) => {
     event.preventDefault();
     setSelectedOrderNumber(orderNumber);
@@ -82,6 +75,13 @@ const TrackOrderHistoryTable = () => {
 
   const closeUpdateOrderDetailsModal = () => {
     setIsModalOpen(false);
+  };
+
+  const navigateToViewOrder = (event, order, enquiryNumber) => {
+    event.preventDefault();
+    navigate(`/seller-dashboard/procurement-services/view-order-history`, {
+      state: { order, enquiryNumber },
+    });
   };
 
   const handleExport = () => {
@@ -492,18 +492,6 @@ const TrackOrderHistoryTable = () => {
                           currentPage === page ? "active" : ""
                         }`}
                       >
-                        {/* <button
-                          className="page-link"
-                          onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
-                        >
-                          {page}
-                        </button> */}
-
                         <button
                           className={`page-link pagination-button ${
                             currentPage === page ? "active" : ""

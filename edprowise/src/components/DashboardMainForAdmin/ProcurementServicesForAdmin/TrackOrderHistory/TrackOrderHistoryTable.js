@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
 import { toast } from "react-toastify";
+import UpdateTDSModal from "./UpdateTDSModal";
 
 import { format } from "date-fns";
 import { formatCost } from "../../../CommonFunction";
@@ -17,30 +18,49 @@ const TrackOrderHistoryTable = () => {
   const navigate = useNavigate();
 
   const [orderDetails, setOrderDetails] = useState([]);
+  const [selectedTds, setSelectedTds] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchOrderData = async () => {
+    try {
+      const response = await getAPI(`/order-details`, {}, true);
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setOrderDetails(response.data.data);
+        console.log("Order Details in Admin", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Order details:", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchOrderData = async () => {
-      try {
-        const response = await getAPI(`/order-details`, {}, true);
-        if (
-          !response.hasError &&
-          response.data &&
-          Array.isArray(response.data.data)
-        ) {
-          setOrderDetails(response.data.data);
-
-          console.log("Order Details in Admin", response.data.data);
-        } else {
-          console.error("Invalid response format or error in response");
-        }
-      } catch (err) {
-        console.error("Error fetching Order details:", err);
-      }
-    };
-
     fetchOrderData();
   }, []);
 
+  const handleTDSUpdated = () => {
+    fetchOrderData();
+    closeUpdateTDSModal();
+  };
+
+  const openUpdateTDSModal = (event, enquiryNumber, quoteNumber, sellerId) => {
+    console.log("enquiryNumber", enquiryNumber);
+    console.log("quoteNumber", quoteNumber);
+    console.log("sellerId", sellerId);
+
+    event.preventDefault();
+    setSelectedTds({ enquiryNumber, quoteNumber, sellerId });
+    setIsModalOpen(true);
+  };
+
+  const closeUpdateTDSModal = () => {
+    setIsModalOpen(false);
+  };
   const navigateToViewOrder = (
     event,
     order,
@@ -167,6 +187,7 @@ const TrackOrderHistoryTable = () => {
                         <th>Actual Delivery Date</th>
                         <th>Invoice Amount</th>
                         <th>Status</th>
+                        <th>TDS Amount</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -196,10 +217,33 @@ const TrackOrderHistoryTable = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>{formatCost(order.totalAmountBeforeGstAndDiscount)}</td>
+                          <td>
+                            {formatCost(order.totalAmountBeforeGstAndDiscount)}
+                          </td>
                           <td>{order.edprowiseStatus}</td>
+                          <td>{order.tDSAmount}</td>
+
                           <td>
                             <div className="d-flex gap-2">
+                              <Link
+                                onClick={(event) =>
+                                  openUpdateTDSModal(
+                                    event,
+                                    order.enquiryNumber,
+                                    order.quoteNumber,
+                                    order.sellerId
+                                  )
+                                }
+                                className="btn btn-soft-primary btn-sm"
+                                title="Edit TDS"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                              >
+                                <iconify-icon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
                               <Link
                                 onClick={(event) =>
                                   navigateToViewOrder(
@@ -283,6 +327,16 @@ const TrackOrderHistoryTable = () => {
           </div>
         </div>
       </div>
+      {isModalOpen && (
+        <UpdateTDSModal
+          isOpen={isModalOpen}
+          onClose={closeUpdateTDSModal}
+          onTDSUpdated={handleTDSUpdated}
+          enquiryNumber={selectedTds?.enquiryNumber}
+          quoteNumber={selectedTds?.quoteNumber}
+          sellerId={selectedTds?.sellerId}
+        />
+      )}
     </>
   );
 };

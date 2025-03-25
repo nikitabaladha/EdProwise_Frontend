@@ -6,53 +6,53 @@ import { Modal, Button } from "react-bootstrap";
 import getAPI from "../../../../api/getAPI";
 import putAPI from "../../../../api/putAPI";
 
-import { format, parseISO } from "date-fns";
-
-const UpdateOrderDetailsModal = ({
+const UpdateTDSModal = ({
   isOpen,
   onClose,
-  orderNumber,
-  onOrderDetailsUpdated,
+  enquiryNumber,
+  quoteNumber,
+  sellerId,
+  onTDSUpdated,
 }) => {
-  const [orderDetailsFromSeller, setOrderDetailsFromSeller] = useState({
-    actualDeliveryDate: "",
-    otherCharges: "",
+  console.log("enquiryNumber", enquiryNumber);
+  console.log("quoteNumber", quoteNumber);
+
+  console.log("sellerId", sellerId);
+
+  const [tdsDetails, setTdsDetails] = useState({
+    tDSAmount: "",
   });
 
   useEffect(() => {
     if (isOpen) {
-      const fetchOrderDetailsFromSeller = async () => {
+      const fetchTDSAmount = async () => {
         try {
           const response = await getAPI(
-            `/get-by-order-number?orderNumber=${orderNumber}`
+            `/tds-amount?enquiryNumber=${enquiryNumber}&quoteNumber=${quoteNumber}&sellerId=${sellerId}`
           );
           if (!response.hasError && response.data && response.data.data) {
-            const { actualDeliveryDate, otherCharges } = response.data.data;
+            console.log("response", response);
 
-            const formattedDate = format(
-              parseISO(actualDeliveryDate),
-              "yyyy-MM-dd"
-            );
+            const tDSAmount = response.data.data;
 
-            setOrderDetailsFromSeller({
-              otherCharges,
-              actualDeliveryDate: formattedDate,
+            setTdsDetails({
+              tDSAmount: tDSAmount || 0,
             });
           } else {
             console.error("Invalid response format or error in response");
           }
         } catch (err) {
-          console.error("Error fetching Order Details from Seller:", err);
+          console.error("Error fetching TDS Amount:", err);
         }
       };
 
-      fetchOrderDetailsFromSeller();
+      fetchTDSAmount();
     }
-  }, [isOpen, orderNumber]);
+  }, [isOpen, enquiryNumber, quoteNumber, sellerId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setOrderDetailsFromSeller((prevState) => ({
+    setTdsDetails((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -61,30 +61,26 @@ const UpdateOrderDetailsModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { actualDeliveryDate, otherCharges } = orderDetailsFromSeller;
+    const { tDSAmount } = tdsDetails;
 
     const dataToSend = {
-      actualDeliveryDate,
-      otherCharges,
+      tDSAmount,
     };
 
     try {
       const response = await putAPI(
-        `/order-details?orderNumber=${orderNumber}&sellerId`,
+        `/update-tds?enquiryNumber=${enquiryNumber}&quoteNumber=${quoteNumber}&sellerId=${sellerId}`,
         dataToSend,
         true
       );
 
       if (!response.hasError) {
-        toast.success("Quote Updated successfully");
-        setOrderDetailsFromSeller({
-          actualDeliveryDate,
-          otherCharges,
-        });
-        onOrderDetailsUpdated();
+        toast.success("TDS Updated successfully");
+        setTdsDetails({ tDSAmount });
+        onTDSUpdated();
         onClose();
       } else {
-        toast.error(response.message || "Failed to update Order Details");
+        toast.error(response.message || "Failed to update TDS");
       }
     } catch (error) {
       toast.error(
@@ -110,37 +106,22 @@ const UpdateOrderDetailsModal = ({
                   <div className="container">
                     <div className="card-header mb-2">
                       <h4 className="card-title text-center custom-heading-font">
-                        Update Order Details
+                        Update TDS Amount
                       </h4>
                     </div>
                   </div>
                   <form onSubmit={handleSubmit}>
                     <div className="mb-2">
-                      <label
-                        htmlFor="actualDeliveryDate"
-                        className="form-label"
-                      >
-                        Actual Delivery Date
-                      </label>
-                      <input
-                        type="date"
-                        name="actualDeliveryDate"
-                        value={orderDetailsFromSeller.actualDeliveryDate}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
+                      <label htmlFor="tDSAmount" className="form-label">
+                        TDS %
                       </label>
                       <input
                         type="number"
-                        name="otherCharges"
-                        value={orderDetailsFromSeller.otherCharges}
+                        name="tDSAmount"
+                        value={tdsDetails.tDSAmount}
                         onChange={handleInputChange}
                         className="form-control"
-                        placeholder="200"
+                        // placeholder="2"
                       />
                     </div>
 
@@ -167,4 +148,4 @@ const UpdateOrderDetailsModal = ({
   );
 };
 
-export default UpdateOrderDetailsModal;
+export default UpdateTDSModal;
