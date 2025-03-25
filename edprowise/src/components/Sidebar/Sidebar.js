@@ -362,7 +362,7 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
     >
       {/* Sidebar Logo */}
       <div className="logo-box">
-        <Link to="" className="logo-dark">
+        <Link to="/" className="logo-dark">
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
             className="logo-sm"
@@ -372,7 +372,7 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             className="logo-lg"
           />
         </Link>
-        <Link to="" className="logo-light">
+        <Link to="/" className="logo-light">
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
             className="logo-sm"

@@ -138,12 +138,15 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                         <th>Discount Amount</th>
                         <th>GST Amount</th>
                         <th>Total Amount</th>
-                        <th>
-                          {preparedQuotes.length > 0 &&
-                            preparedQuotes[0].updateCountBySeller === 0 && (
-                              <th>Action</th>
-                            )}
-                        </th>
+
+                        {preparedQuotes.some(
+                          (quote) =>
+                            quote.updateCountBySeller === 0 &&
+                            (quote.supplierStatus === "Quote Requested" ||
+                              quote.supplierStatus === "Quote Submitted")
+                        ) ? (
+                          <th>Action</th>
+                        ) : null}
                       </tr>
                     </thead>
                     <tbody>

@@ -266,7 +266,6 @@ const ViewAllQuoteTable = () => {
                         <th>Expected Delivery Date (Mention by Seller)</th>
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
-                        {/* <th>Action</th> */}
 
                         {(submittedQuotes.some(
                           (quote) => quote.venderStatusFromBuyer === "Pending"

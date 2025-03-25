@@ -345,10 +345,8 @@ const TrackOrderHistoryTable = () => {
                           </td>
                           <td>{order.orderNumber}</td>
                           <td>{order.supplierStatus}</td>
-
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>{formatCost(order.totalAmount)}</td>
-
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -366,22 +364,57 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                onClick={(event) =>
-                                  openUpdateOrderDetailsModal(
-                                    event,
-                                    order.orderNumber
-                                  )
-                                }
-                                className="btn btn-soft-primary btn-sm"
-                                title="Edit"
-                              >
-                                <iconify-icon
-                                  icon="solar:pen-2-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
-                              <select
+
+                              <>
+                                {order.orderStatus !== "Close" ? (
+                                  <>
+                                    <Link
+                                      onClick={(event) =>
+                                        openUpdateOrderDetailsModal(
+                                          event,
+                                          order.orderNumber
+                                        )
+                                      }
+                                      className="btn btn-soft-primary btn-sm"
+                                      title="Edit"
+                                    >
+                                      <iconify-icon
+                                        icon="solar:pen-2-broken"
+                                        className="align-middle fs-18"
+                                      />
+                                    </Link>
+                                    <select
+                                      id="supplierStatus"
+                                      name="supplierStatus"
+                                      className="form-control"
+                                      value={order.supplierStatus}
+                                      onChange={(e) =>
+                                        handleUpdateOrderStatus(
+                                          order.enquiryNumber,
+                                          e.target.value
+                                        )
+                                      }
+                                      required
+                                    >
+                                      <option value="">Select Status</option>
+                                      <option value="Work In Progress">
+                                        Work In Progress
+                                      </option>
+                                      <option value="Ready For Transit">
+                                        Ready For Transit
+                                      </option>
+                                      <option value="In-Transit">
+                                        In-Transit
+                                      </option>
+                                      <option value="Delivered">
+                                        Delivered
+                                      </option>
+                                    </select>
+                                  </>
+                                ) : null}
+                              </>
+
+                              {/* <select
                                 id="supplierStatus"
                                 name="supplierStatus"
                                 className="form-control"
@@ -403,7 +436,7 @@ const TrackOrderHistoryTable = () => {
                                 </option>
                                 <option value="In-Transit">In-Transit</option>
                                 <option value="Delivered">Delivered</option>
-                              </select>
+                              </select> */}
 
                               <Link>
                                 {[

@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { Link, useLocation,  } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 const Footer = () => {
   const location = useLocation();
-const navigate = useNavigate();
+  const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
@@ -11,7 +11,7 @@ const navigate = useNavigate();
   const handleDownload = (tabName) => {
     if (tabName === "brochureSection") {
       const link = document.createElement("a");
-      link.href = "/assets/website-images/EdProwise Brochure.pdf"; 
+      link.href = "/assets/website-images/EdProwise Brochure.pdf";
       link.download = "EdProwise-Brochure.pdf";
       document.body.appendChild(link);
       link.click();
@@ -19,11 +19,11 @@ const navigate = useNavigate();
     }
   };
 
-  const handleHomePageRender=(event)=>{
+  const handleHomePageRender = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    navigate(`/`)
-  }
+    navigate(`/`);
+  };
 
   const menuData = [
     { name: "Home", link: "/" },
@@ -56,7 +56,6 @@ const navigate = useNavigate();
       name: "Download Brochure",
     },
     { name: "Become A Supplier", link: "/signup" },
-   
   ];
   return (
     <footer className="wpo-site-footer">
@@ -67,7 +66,10 @@ const navigate = useNavigate();
             <div className="col col-lg-3 col-md-6 col-12 col-sm-12 mt-0">
               <div className="widget about-widget">
                 <div className="logo widget-title">
-                  <Link onClick={(event) => handleHomePageRender(event)} className="navbar-brand">
+                  <Link
+                    onClick={(event) => handleHomePageRender(event)}
+                    className="navbar-brand"
+                  >
                     <img
                       src="/assets/website-images/EdProwise New Logo White-1.png"
                       width="180px"
@@ -76,8 +78,11 @@ const navigate = useNavigate();
                   </Link>
                 </div>
                 <p>
-                  Market place for school which offers wide range of services including technology integration, professional development, providing holistic support tailored to enhance every aspect of educational operations. 
-                {/* Startup founded on the principle of empowering educational institutions, specializes in delivering various services to educational institution */}
+                  Market place for school which offers wide range of services
+                  including technology integration, professional development,
+                  providing holistic support tailored to enhance every aspect of
+                  educational operations.
+                  {/* Startup founded on the principle of empowering educational institutions, specializes in delivering various services to educational institution */}
                 </p>
                 <div className="social">
                   <ul>
@@ -132,10 +137,12 @@ const navigate = useNavigate();
                   <h3>Useful Links</h3>
                 </div>
                 <ul>
-                {useLinks.map((menu, index) => (
+                  {useLinks.map((menu, index) => (
                     <li key={index}>
                       {index === 3 ? (
-                        <Link onClick={() => handleDownload("brochureSection")}>{menu.name}</Link>
+                        <Link onClick={() => handleDownload("brochureSection")}>
+                          {menu.name}
+                        </Link>
                       ) : (
                         <Link to={menu.link}>{menu.name}</Link>
                       )}
@@ -157,11 +164,10 @@ const navigate = useNavigate();
                     </li>
                     <li>
                       <i className="fi flaticon-phone-call"></i>+91-9958528306
-                      
                     </li>
                     <li>
-                      <i className="fi flaticon-placeholder"></i> New Delhi, Delhi, India.
-                      
+                      <i className="fi flaticon-placeholder"></i> New Delhi,
+                      Delhi, India.
                     </li>
                   </ul>
                 </div>
@@ -176,10 +182,10 @@ const navigate = useNavigate();
           <div className="row align-items-center">
             <div className="col col-lg-6 col-md-12 col-12">
               <ul>
-              <li>
-  &copy; {new Date().getFullYear()} <a>Edprowise</a>. All rights reserved.
-</li>
-
+                <li>
+                  All Copyright © {new Date().getFullYear()} EdProwise Tech PVT
+                  LTD. All Rights Reserved.
+                </li>
               </ul>
             </div>
             <div className="col col-lg-6 col-md-12 col-12">

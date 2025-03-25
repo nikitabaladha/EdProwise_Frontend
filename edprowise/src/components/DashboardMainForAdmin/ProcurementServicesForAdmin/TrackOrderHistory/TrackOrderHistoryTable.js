@@ -5,6 +5,7 @@ import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
 import { toast } from "react-toastify";
 import UpdateTDSModal from "./UpdateTDSModal";
+import putAPI from "../../../../api/putAPI";
 
 import { format } from "date-fns";
 import { formatCost } from "../../../CommonFunction";
@@ -72,6 +73,32 @@ const TrackOrderHistoryTable = () => {
     navigate(`/admin-dashboard/procurement-services/view-order-history`, {
       state: { order, enquiryNumber, schoolId, sellerId },
     });
+  };
+
+  const handleOrderStatusUpdate = async (
+    sellerId,
+    enquiryNumber,
+    newStatus
+  ) => {
+    try {
+      const response = await putAPI(
+        `/update-order-status?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        { orderStatus: newStatus },
+        true
+      );
+
+      if (!response.hasError) {
+        toast.success(`Order status updated to "${newStatus}" successfully!`);
+        fetchOrderData();
+      } else {
+        toast.error(response.message || "Failed to update Order status");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
+    }
   };
 
   const handleExport = () => {
@@ -222,7 +249,6 @@ const TrackOrderHistoryTable = () => {
                           </td>
                           <td>{order.edprowiseStatus}</td>
                           <td>{order.tDSAmount}</td>
-
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -261,6 +287,40 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
+
+                              {["Delivered"].includes(
+                                order?.edprowiseStatus
+                              ) && (
+                                <>
+                                  {order.orderStatus !== "Close" ? (
+                                    <button
+                                      className="btn btn-danger btn-sm"
+                                      onClick={() =>
+                                        handleOrderStatusUpdate(
+                                          order.sellerId,
+                                          order.enquiryNumber,
+                                          "Close"
+                                        )
+                                      }
+                                    >
+                                      Close
+                                    </button>
+                                  ) : (
+                                    <button
+                                      className="btn btn-success btn-sm"
+                                      onClick={() =>
+                                        handleOrderStatusUpdate(
+                                          order.sellerId,
+                                          order.enquiryNumber,
+                                          "Open"
+                                        )
+                                      }
+                                    >
+                                      Open
+                                    </button>
+                                  )}
+                                </>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -289,18 +349,6 @@ const TrackOrderHistoryTable = () => {
                           currentPage === page ? "active" : ""
                         }`}
                       >
-                        {/* <button
-                          className="page-link"
-                          onClick={() => handlePageClick(page)}
-                          style={{
-                            backgroundColor:
-                              currentPage === page ? "#ff947d" : "",
-                            color: currentPage === page ? "#fff" : "#424e5a",
-                          }}
-                        >
-                          {page}
-                        </button> */}
-
                         <button
                           className={`page-link pagination-button ${
                             currentPage === page ? "active" : ""

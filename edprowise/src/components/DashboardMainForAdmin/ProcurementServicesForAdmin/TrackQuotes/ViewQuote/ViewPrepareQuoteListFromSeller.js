@@ -174,14 +174,6 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                         <th>Discount Amount</th>
                         <th>GST Amount</th>
                         <th>Total Amount</th>
-                        {/* I want this action tag if and only if */}
-                        {/* <th>
-                              {quote.updateCountBySeller === 0 &&
-                              (quote.supplierStatus === "Quote Requested" ||
-                                quote.supplierStatus === "Quote Submitted") ? (
-                                "Action"
-                              ) : null}
-                            </th> */}
                         <th>
                           {preparedQuotes.length > 0 &&
                           preparedQuotes[0].updateCountBySeller === 0 &&
