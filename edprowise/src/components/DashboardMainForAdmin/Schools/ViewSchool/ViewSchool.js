@@ -11,7 +11,6 @@ import ConfirmationDialog from "../../../ConfirmationDialog";
 
 const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   const location = useLocation();
-  const school = location.state?.school;
 
   const navigate = useNavigate();
 
@@ -25,15 +24,31 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   const [deleteType, setDeleteType] = useState("");
   const [subscription, setSubscription] = useState([]);
 
-  const fetchUserData = async () => {
-    if (!school?.schoolId) {
-      console.error("School ID is missing.");
-      return;
-    }
+  const schoolId = location.state?.schoolId;
+  const searchQuery = location.state?.searchQuery;
 
+  const [school, setSchool] = useState(null);
+
+  const fetchSchoolData = async () => {
+    try {
+      const response = await getAPI(`/school-profile/${schoolId}`, {}, true);
+
+      if (!response.hasError && response.data && response.data.data) {
+        setSchool(response.data.data);
+
+        console.log("school data from view school", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching School:", err);
+    }
+  };
+
+  const fetchUserData = async () => {
     try {
       const response = await getAPI(
-        `/get-all-user-by-school-id/${school.schoolId}`,
+        `/get-all-user-by-school-id/${schoolId}`,
         {},
         true
       );
@@ -53,16 +68,8 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   };
 
   const fetchSubscriptionData = async () => {
-    if (!school?.schoolId) {
-      console.error("School ID is missing.");
-      return;
-    }
     try {
-      const response = await getAPI(
-        `/subscription/${school.schoolId}`,
-        {},
-        true
-      );
+      const response = await getAPI(`/subscription/${schoolId}`, {}, true);
       if (
         !response.hasError &&
         response.data &&
@@ -79,13 +86,14 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   };
 
   useEffect(() => {
-    fetchUserData();
-    fetchSubscriptionData();
-  }, [school]);
-
-  if (!school) {
-    return <p>No school selected.</p>;
-  }
+    if (schoolId) {
+      fetchSchoolData();
+      fetchUserData();
+      fetchSubscriptionData();
+    } else {
+      console.error("No school ID provided");
+    }
+  }, [schoolId]);
 
   const openAddDialog = (school) => {
     setSelectedSchool(school);
@@ -189,8 +197,8 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                     <div className="d-flex align-items-center">
                       <div className="rounded bg-light d-flex align-items-center justify-content-center">
                         <img
-                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`}
-                          alt={`${school.schoolName} Profile`}
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
+                          alt={`${school?.schoolName} Profile`}
                           className="avatar-md"
                           style={{
                             objectFit: "cover",
@@ -208,35 +216,43 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                         School Name
                       </label>
                       <p className="form-control" aria-placeholder="ABC XYZ">
-                        {school.schoolName}
+                        {school?.schoolName}
                       </p>
                     </div>
                     <div className="mb-3">
                       <label htmlFor="address" className="form-label">
                         School Address
                       </label>
-                      <p className="form-control">{school.schoolAddress}</p>
+                      <p className="form-control">{school?.schoolAddress}</p>
                     </div>
 
                     <div className="mb-3">
                       <label htmlFor="cityStateCountry" className="form-label">
                         City-State-Country
                       </label>
-                      <p className="form-control">{school.schoolLocation}</p>
+                      <p className="form-control">{school?.schoolLocation}</p>
                     </div>
                   </div>
                   <div className="col-md-3">
                     <div className="mb-3">
+                      {/* This schoolId  */}
+                      <label htmlFor="schoolId" className="form-label">
+                        School Id
+                      </label>
+                      <p className="form-control">{school?.schoolId}</p>
+                    </div>
+                    <div className="mb-3">
                       <label htmlFor="mobileNo" className="form-label">
                         School Mobile Number
                       </label>
-                      <p className="form-control">{school.schoolMobileNo}</p>
+                      <p className="form-control">{school?.schoolMobileNo}</p>
                     </div>
+
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
                         School Email
                       </label>
-                      <p className="form-control">{school.schoolEmail}</p>
+                      <p className="form-control">{school?.schoolEmail}</p>
                     </div>
                   </div>
                 </div>
@@ -247,13 +263,13 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                       <label htmlFor="affiliationUpto" className="form-label">
                         Affiliation Upto
                       </label>
-                      <p className="form-control">{school.affiliationUpto}</p>
+                      <p className="form-control">{school?.affiliationUpto}</p>
                     </div>
                     <div className="mb-3">
                       <label htmlFor="panNumber" className="form-label">
                         PAN Number
                       </label>
-                      <p className="form-control">{school.panNo}</p>
+                      <p className="form-control">{school?.panNo}</p>
                     </div>
                   </div>
 
@@ -265,8 +281,8 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                       >
                         Affiliation Certificate
                       </label>
-                      {school.affiliationCertificate ? (
-                        school.affiliationCertificate.endsWith(".pdf") ? (
+                      {school?.affiliationCertificate ? (
+                        school?.affiliationCertificate.endsWith(".pdf") ? (
                           <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
                             <div
                               style={{
@@ -275,7 +291,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                               }}
                             >
                               <Viewer
-                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
+                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.affiliationCertificate}`}
                               />
                             </div>
                           </Worker>
@@ -288,7 +304,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                             }}
                           >
                             <img
-                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
+                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.affiliationCertificate}`}
                               alt="Affiliation Certificate"
                               style={{ width: "100%", height: "auto" }}
                             />
@@ -305,8 +321,8 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                       <label htmlFor="panFile" className="form-lsabel">
                         PAN File
                       </label>
-                      {school.panFile ? (
-                        school.panFile.endsWith(".pdf") ? (
+                      {school?.panFile ? (
+                        school?.panFile.endsWith(".pdf") ? (
                           <Worker workerUrl={process.env.REACT_APP_WORKER_URL}>
                             <div
                               style={{
@@ -315,7 +331,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                               }}
                             >
                               <Viewer
-                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
+                                fileUrl={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.panFile}`}
                               />
                             </div>
                           </Worker>
@@ -328,7 +344,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                             }}
                           >
                             <img
-                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
+                              src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.panFile}`}
                               alt="Affiliation Certificate"
                               style={{ width: "100%", height: "auto" }}
                             />
@@ -360,7 +376,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">
-                  Users of {school.schoolName}{" "}
+                  Users of {school?.schoolName}{" "}
                 </h4>
                 <Link
                   onClick={(e) => {
@@ -398,8 +414,8 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {users.map((user) => (
-                        <tr key={user._id}>
+                      {users?.map((user) => (
+                        <tr key={user?._id}>
                           <td style={{ width: 20 }}>
                             <div className="form-check ms-1">
                               <input
@@ -413,8 +429,8 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                               />
                             </div>
                           </td>
-                          <td>{user.role}</td>
-                          <td>{user.userId}</td>
+                          <td>{user?.role}</td>
+                          <td>{user?.userId}</td>
                           <td>******</td>
                           <td>
                             <div className="d-flex gap-2">
@@ -452,7 +468,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
           </div>
         </div>
 
-        {subscription.length > 0 ? (
+        {subscription?.length > 0 ? (
           <div className="row p-2">
             <div className="col-xl-12">
               <div className="card">
@@ -493,7 +509,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {subscription.map((subscriptions) => (
+                        {subscription?.map((subscriptions) => (
                           <tr key={subscriptions.id}>
                             <td>
                               <div className="form-check ms-1">
@@ -510,14 +526,14 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                                 </label>
                               </div>
                             </td>
-                            <td>{subscriptions.subscriptionFor}</td>
+                            <td>{subscriptions?.subscriptionFor}</td>
                             <td>
                               {new Date(
-                                subscriptions.subscriptionStartDate
+                                subscriptions?.subscriptionStartDate
                               ).toLocaleDateString()}
                             </td>
-                            <td>{subscriptions.subscriptionNoOfMonth}</td>
-                            <td>{subscriptions.monthlyRate}</td>
+                            <td>{subscriptions?.subscriptionNoOfMonth}</td>
+                            <td>{subscriptions?.monthlyRate}</td>
                             <td>
                               <div className="d-flex gap-2">
                                 <Link

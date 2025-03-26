@@ -6,8 +6,7 @@ import { useNavigate } from "react-router-dom";
 import CityData from "../../../CityData.json";
 import Select from "react-select";
 
-
-const AddNewSchool = ({ addSchool }) => {
+const AddNewSchool = () => {
   const [formData, setFormData] = useState({
     schoolName: "",
     schoolMobileNo: "",
@@ -66,23 +65,6 @@ const AddNewSchool = ({ addSchool }) => {
 
       if (!response.hasError) {
         toast.success("School added successfully");
-
-        const newSchool = {
-          _id: response.data.data._id,
-          schoolId: response.data.data.schoolId,
-          schoolName: response.data.data.schoolName,
-          schoolMobileNo: response.data.data.schoolMobileNo,
-          schoolEmail: response.data.data.schoolEmail,
-          schoolAddress: response.data.data.schoolAddress,
-          schoolLocation: response.data.data.schoolLocation,
-          affiliationUpto: response.data.data.affiliationUpto,
-          panNo: response.data.data.panNo,
-          profileImage: response.data.data.profileImage,
-          affiliationCertificate: response.data.data.affiliationCertificate,
-          panFile: response.data.data.panFile,
-        };
-
-        addSchool(newSchool);
 
         setFormData({
           schoolName: "",
@@ -217,11 +199,15 @@ const AddNewSchool = ({ addSchool }) => {
                           id="cityStateCountry"
                           name="schoolLocation"
                           options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
+                          value={cityOptions.find(
+                            (option) => option.value === formData.schoolLocation
+                          )}
                           onChange={(selectedOption) =>
                             setFormData((prevState) => ({
                               ...prevState,
-                              schoolLocation: selectedOption ? selectedOption.value : "",
+                              schoolLocation: selectedOption
+                                ? selectedOption.value
+                                : "",
                             }))
                           }
                           placeholder="Select City-State-Country"

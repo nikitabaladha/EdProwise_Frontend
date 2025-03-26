@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import CityData from "../../../CityData.json";
 import Select from "react-select";
 
-const UpdateSchool = ({ updateSchool }) => {
+const UpdateSchool = () => {
   const location = useLocation();
   const school = location.state?.school;
   const navigate = useNavigate();
@@ -90,23 +90,6 @@ const UpdateSchool = ({ updateSchool }) => {
 
       if (!response.data.hasError) {
         toast.success("School updated successfully!");
-
-        const newUpdatedSchool = {
-          _id: response.data.data._id,
-          schoolId: response.data.data.schoolId,
-          schoolName: response.data.data.schoolName,
-          schoolMobileNo: response.data.data.schoolMobileNo,
-          schoolEmail: response.data.data.schoolEmail,
-          schoolAddress: response.data.data.schoolAddress,
-          schoolLocation: response.data.data.schoolLocation,
-          affiliationUpto: response.data.data.affiliationUpto,
-          panNo: response.data.data.panNo,
-          profileImage: response.data.data.profileImage,
-          affiliationCertificate: response.data.data.affiliationCertificate,
-          panFile: response.data.data.panFile,
-        };
-
-        updateSchool(newUpdatedSchool);
 
         // Reset formData state
         setFormData({
@@ -236,7 +219,6 @@ const UpdateSchool = ({ updateSchool }) => {
 
                 <div className="row">
                   <div className="col-md-6">
-                    
                     <div className="mb-3">
                       <label htmlFor="cityStateCountry" className="form-label">
                         City-State-Country{" "}

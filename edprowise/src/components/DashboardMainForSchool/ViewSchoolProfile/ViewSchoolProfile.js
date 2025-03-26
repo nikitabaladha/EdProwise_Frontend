@@ -12,10 +12,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 const ViewSchoolProfile = () => {
   const location = useLocation();
-  // const schoolId = location.state?._id;
-  const schoolId = location.state?.schoolId;
 
   const navigate = useNavigate();
+
+  const schoolId = location.state?.schoolId;
 
   const [school, setSchool] = useState(null);
 
@@ -122,7 +122,9 @@ const ViewSchoolProfile = () => {
                         <label htmlFor="principalName" className="form-label">
                           Principal Name
                         </label>
-                        <p className="form-control">{school.principalName || "Not Provided"}</p>
+                        <p className="form-control">
+                          {school.principalName || "Not Provided"}
+                        </p>
                       </div>
                       <div className="mb-3">
                         <label htmlFor="schoolMobileNo" className="form-label">

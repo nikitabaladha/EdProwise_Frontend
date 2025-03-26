@@ -4,9 +4,8 @@ import AdminDashboardHeader from "./AdminDashboardHeader";
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
 
-// this is my entire application wrapped inside this 
+// this is my entire application wrapped inside this
 const AdminDashboardMain = () => {
-  
   return (
     <div className="wrapper">
       <AdminDashboardHeader />

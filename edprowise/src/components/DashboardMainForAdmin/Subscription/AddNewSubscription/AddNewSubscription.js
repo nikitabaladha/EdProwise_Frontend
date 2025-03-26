@@ -146,7 +146,8 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="subscriptionFor" className="form-label">
-                        Subscription Module  <span className="text-danger">*</span>
+                        Subscription Module{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <select
                         id="subscriptionFor"
@@ -172,7 +173,8 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                         htmlFor="subscriptionStartDate"
                         className="form-label"
                       >
-                        Subscription Start Date <span className="text-danger">*</span>
+                        Subscription Start Date{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"

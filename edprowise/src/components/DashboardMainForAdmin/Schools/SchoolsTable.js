@@ -1,18 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../export-excel";
 import { toast } from "react-toastify";
+import getAPI from "../../../api/getAPI";
 
 import ConfirmationDialog from "../../ConfirmationDialog";
-const SchoolsTable = ({
-  schools,
-  setSchools,
-  selectedSchool,
-  setSelectedSchool,
-}) => {
+const SchoolsTable = () => {
   const navigate = useNavigate();
+
+  const [schools, setSchools] = useState([]);
+
+  const [selectedSchool, setSelectedSchool] = useState(null);
+
+  const fetchSchoolData = async () => {
+    try {
+      const response = await getAPI(`/school`, {}, true);
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setSchools(response.data.data);
+        console.log("school data", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching School List:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSchoolData();
+  }, []);
 
   const handleExport = () => {
     if (!schools.length) {
@@ -74,9 +96,12 @@ const SchoolsTable = ({
     navigate(`/admin-dashboard/schools/add-new-school`);
   };
 
-  const navigateToViewSchool = (event, school) => {
+  const navigateToViewSchool = (event, schoolId) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/schools/view-school`, { state: { school } });
+    console.log("schoolId from navigate function", schoolId);
+    navigate(`/admin-dashboard/schools/view-school`, {
+      state: { schoolId },
+    });
   };
 
   const navigateToUpdateSchool = (event, school) => {
@@ -209,7 +234,7 @@ const SchoolsTable = ({
                             <div className="d-flex gap-2">
                               <Link
                                 onClick={(event) =>
-                                  navigateToViewSchool(event, school)
+                                  navigateToViewSchool(event, school.schoolId)
                                 }
                                 className="btn btn-light btn-sm"
                               >

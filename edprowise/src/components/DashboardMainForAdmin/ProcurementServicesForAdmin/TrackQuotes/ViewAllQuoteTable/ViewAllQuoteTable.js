@@ -21,7 +21,9 @@ const formatDate = (dateString) => {
 
 const ViewAllQuoteTable = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
+
+  const enquiryNumber =
+    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
   const schoolId = location.state?.schoolId;
 
   const navigate = useNavigate();

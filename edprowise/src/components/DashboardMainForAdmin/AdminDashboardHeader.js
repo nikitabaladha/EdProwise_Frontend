@@ -1,10 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
-import { BiMessageDots } from "react-icons/bi";
-import { IoWalletOutline } from "react-icons/io5";
-import { IoMdHelpCircleOutline } from "react-icons/io";
-import { PiLockKeyBold } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
 import { IoKeyOutline } from "react-icons/io5";
 
@@ -94,6 +90,85 @@ const AdminDashboardHeader = () => {
     navigate("/admin-dashboard/change-edprowise-admin-password", {
       state: { adminProfile },
     });
+  };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+
+  const handleSearch = async (event) => {
+    if (event.key === "Enter" || event.type === "click") {
+      event.preventDefault();
+
+      if (!searchQuery.trim()) {
+        setShowResults(false);
+        return;
+      }
+
+      try {
+        const response = await getAPI(
+          `/global-search?query=${encodeURIComponent(searchQuery)}`,
+          {},
+          true
+        );
+
+        if (response.data?.success) {
+          if (response.data.data.length > 0) {
+            const result = response.data.data[0];
+
+            if (result.type === "quoteRequest") {
+              navigate(
+                `/admin-dashboard/procurement-services/view-requested-quote`,
+                {
+                  state: { searchEnquiryNumber: result.text },
+                }
+              );
+            } else if (result.type === "school") {
+              navigate(`/admin-dashboard/schools/view-school`, {
+                state: {
+                  schoolId: result.schoolId || result.text,
+                  searchQuery: searchQuery,
+                },
+              });
+            }
+          } else {
+            setSearchResults([
+              {
+                type: "noResults",
+                text: "No matching records found",
+              },
+            ]);
+            setShowResults(true);
+          }
+        }
+      } catch (err) {
+        console.error("Search error:", err);
+        setSearchResults([
+          {
+            type: "error",
+            text: "Search failed. Please try again.",
+          },
+        ]);
+        setShowResults(true);
+      }
+    }
+  };
+
+  const handleResultClick = (result) => {
+    if (result.type === "quoteRequest") {
+      navigate(`/admin-dashboard/procurement-services/view-requested-quote`, {
+        state: { searchEnquiryNumber: result.text },
+      });
+    } else if (result.type === "school") {
+      navigate(`/admin-dashboard/schools/view-school`, {
+        state: {
+          schoolId: result.schoolId || result.text,
+          searchQuery: searchQuery,
+        },
+      });
+    }
+    setShowResults(false);
+    setSearchQuery("");
   };
 
   return (
@@ -287,8 +362,6 @@ const AdminDashboardHeader = () => {
                   </div>
                 </div>
               </div>
-              
-              
               {/* User */}
               <div className="dropdown topbar-item">
                 <Link
@@ -304,7 +377,6 @@ const AdminDashboardHeader = () => {
                       src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${adminProfile?.edprowiseProfile}`}
                       className="rounded-circle"
                       alt="logo light"
-                      
                       style={{ objectFit: "cover" }}
                     />
                   </span>
@@ -341,9 +413,10 @@ const AdminDashboardHeader = () => {
                   </Link>
                 </div>
               </div>
-              {/* App Search*/}
-              {/* see this is my search form right now  its not working but i want that whatever i type here it took me to the page whereever that word match in entire application */}
-              <form className="app-search d-none d-md-block ms-2">
+              <form
+                className="app-search d-none d-md-block ms-2"
+                onSubmit={(e) => e.preventDefault()}
+              >
                 <div className="position-relative">
                   <input
                     type="search"
@@ -351,11 +424,54 @@ const AdminDashboardHeader = () => {
                     placeholder="Search..."
                     autoComplete="off"
                     defaultValue=""
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearch}
                   />
                   <iconify-icon
                     icon="solar:magnifer-linear"
                     className="search-widget-icon"
+                    onClick={handleSearch}
+                    style={{ cursor: "pointer" }}
                   />
+
+                  {showResults && (
+                    <div className="search-results-dropdown">
+                      {searchResults.map((result) => (
+                        <div
+                          key={`${result.type}-${result.id}`}
+                          className="search-result-item"
+                          onClick={() => handleResultClick(result)}
+                        >
+                          {/* i want to allow schoolName also */}
+                          {result.type === "school" && (
+                            <>
+                              <iconify-icon
+                                icon="solar:school-outline"
+                                className="me-2"
+                              />
+                              {result.exactMatchForSchoolEmail ? (
+                                <>Email: {result.text}</>
+                              ) : result.exactMatchForSchoolId ? (
+                                <>School ID: {result.text}</>
+                              ) : result.exactMatchForSchoolName ? (
+                                <>School Name: {result.text}</>
+                              ) : (
+                                <>{result.text}</>
+                              )}
+                            </>
+                          )}
+
+                          {result.type === "noResults" && (
+                            <span className="text-muted">{result.text}</span>
+                          )}
+                          {result.type === "error" && (
+                            <span className="text-danger">{result.text}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </form>
             </div>

@@ -193,7 +193,8 @@ const AddNewAdmin = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="password" className="form-label">
-                        Retype New Password <span className="text-danger">*</span>
+                        Retype New Password{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <div style={{ position: "relative" }}>
                         <input

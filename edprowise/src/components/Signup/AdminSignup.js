@@ -220,7 +220,7 @@ const Signup = () => {
                       onChange={handleChange}
                       required
                       className="form-control pe-5"
-                      placeholder="Conform password"
+                      placeholder="Confirm password"
                     />
                     {showConformPassword ? (
                       <FaEye

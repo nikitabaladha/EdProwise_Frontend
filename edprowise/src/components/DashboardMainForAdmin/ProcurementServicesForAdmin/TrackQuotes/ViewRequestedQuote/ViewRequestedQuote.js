@@ -1,18 +1,13 @@
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import "react-toastify/dist/ReactToastify.css";
-
-import getAPI from "../../../../../api/getAPI";
-
-import ViewAllQuoteTable from "../ViewAllQuoteTable/ViewAllQuoteTable";
-
 import { format } from "date-fns";
 import { Modal } from "react-bootstrap";
- 
+
+import getAPI from "../../../../../api/getAPI";
+import ViewAllQuoteTable from "../ViewAllQuoteTable/ViewAllQuoteTable";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -21,19 +16,15 @@ const formatDate = (dateString) => {
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
-  const schoolId = location.state?.schoolId;
-
-  console.log("Location schoolId", schoolId);
-
   const navigate = useNavigate();
 
+  const enquiryNumber =
+    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
+  const schoolId = location.state?.schoolId;
+
   const [quotes, setQuotes] = useState([]);
-
   const [isQuoteTableVisible, setIsQuoteTableVisible] = useState(false);
-
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
-
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
@@ -79,11 +70,6 @@ const ViewRequestedQuote = () => {
           ...prev,
           [enquiryNumber]: response.data.data,
         }));
-        console.log(
-          "Submitted Quote data from view requested quote",
-          enquiryNumber,
-          response.data.data
-        );
       } else {
         console.error("Invalid response format or error in response");
       }
