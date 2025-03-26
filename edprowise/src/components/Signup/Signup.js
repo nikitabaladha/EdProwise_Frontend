@@ -138,6 +138,11 @@ const Signup = () => {
                     onChange={handleChange}
                     placeholder="User ID"
                     required=""
+                    onKeyDown={(e) => {
+                      if (e.key === " ") {
+                        e.preventDefault();
+                      }
+                    }}
                   />
 
                   <div
@@ -163,7 +168,7 @@ const Signup = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -174,7 +179,7 @@ const Signup = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -204,7 +209,7 @@ const Signup = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -215,7 +220,7 @@ const Signup = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -265,8 +270,7 @@ const Signup = () => {
                     </button>
                   </div>
                   <Link to="/" onClick={navigateToHomes}>
-                    {" "}
-                    Go to Home{" "}
+                    Go to Home
                   </Link>
                   <div className=" mt-3 text-center">
                     <Link onClick={navigateToLogin}>

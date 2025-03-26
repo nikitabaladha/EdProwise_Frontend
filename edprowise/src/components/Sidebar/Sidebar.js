@@ -60,12 +60,12 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
 
   const menuConfig = {
     Admin: [
-      // {
-      //   id: "dashboard",
-      //   label: "Dashboard",
-      //   icon: "solar:widget-5-bold-duotone",
-      //   link: "/admin-dashboard",
-      // },
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        icon: "solar:widget-5-bold-duotone",
+        link: "/admin-dashboard",
+      },
       ...(email === "edprowise@gmail.com"
         ? [
             {

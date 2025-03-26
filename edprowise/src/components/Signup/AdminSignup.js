@@ -86,6 +86,16 @@ const Signup = () => {
     setShowConformPassword((prev) => !prev);
   };
 
+  const navigateToHomes = (event) => {
+    event.preventDefault();
+    navigate("/");
+  };
+
+  const navigateToLogin = (event) => {
+    event.preventDefault();
+    navigate("/login/admin");
+  };
+
   return (
     <>
       <div className="form-body form-left">
@@ -150,6 +160,11 @@ const Signup = () => {
                     className="form-control"
                     id="email"
                     placeholder="Enter email address"
+                    onKeyDown={(e) => {
+                      if (e.key === " ") {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                   <div
                     style={{
@@ -174,7 +189,7 @@ const Signup = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -185,7 +200,7 @@ const Signup = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -214,7 +229,7 @@ const Signup = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -225,7 +240,7 @@ const Signup = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -249,6 +264,14 @@ const Signup = () => {
                     >
                       Sign Up
                     </button>
+                  </div>
+                  <Link to="/" onClick={navigateToHomes}>
+                    Go to Home
+                  </Link>
+                  <div className=" mt-3 text-center">
+                    <Link onClick={navigateToLogin}>
+                      If you are Registered, Sign In Here
+                    </Link>
                   </div>
                 </form>
               </div>

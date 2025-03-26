@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import postAPI from "../../api/postAPI";
@@ -53,17 +51,23 @@ const UserLogin = () => {
             if (userDetails.status === "Pending") {
               return navigate(`/complete-school-profile`);
             } else if (userDetails.status === "Completed") {
-              return navigate("/school-dashboard/procurement-services/dashboard");
+              return navigate(
+                "/school-dashboard/procurement-services/dashboard"
+              );
             }
           } else if (userDetails.role === "Auditor") {
-            return navigate("/auditor-dashboard/procurement-services/dashboard");
+            return navigate(
+              "/auditor-dashboard/procurement-services/dashboard"
+            );
           } else if (userDetails.role === "User") {
             return navigate("/user-dashboard/procurement-services/dashboard");
           } else if (userDetails && userDetails.role === "Seller") {
             if (userDetails.status === "Pending") {
               return navigate(`/complete-seller-profile`);
             } else if (userDetails.status === "Completed") {
-              return navigate("/seller-dashboard/procurement-services/dashboard");
+              return navigate(
+                "/seller-dashboard/procurement-services/dashboard"
+              );
             }
           } else {
             toast.error("No dashboard available for your role!");
@@ -126,8 +130,13 @@ const UserLogin = () => {
                     name="userId"
                     value={formData.userId}
                     onChange={handleChange}
-                    placeholder="User  ID"
+                    placeholder="User ID"
                     required=""
+                    onKeyDown={(e) => {
+                      if (e.key === " ") {
+                        e.preventDefault();
+                      }
+                    }}
                   />
 
                   <div
@@ -153,7 +162,7 @@ const UserLogin = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -164,7 +173,7 @@ const UserLogin = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />

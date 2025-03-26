@@ -115,14 +115,14 @@ const Header = () => {
         route =
           user.status === "Pending"
             ? "/complete-school-profile"
-            : "/school-dashboard";
+            : "/school-dashboard/procurement-services/dashboard";
         break;
 
       case "Seller":
         route =
           user.status === "Pending"
             ? "/complete-seller-profile"
-            : "/seller-dashboard";
+            : "/seller-dashboard/procurement-services/dashboard";
         break;
 
       case "Admin":

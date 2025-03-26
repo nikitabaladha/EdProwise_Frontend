@@ -649,19 +649,6 @@ const AppRoutes = () => {
           element={<PayToEdProwiseForSeller />}
         />
 
-        {/* <Route
-          path="procurement-services/submitted-quote"
-          element={<SubmittedQuoteTableForSeller />}
-        /> */}
-        {/* <Route
-          path="procurement-services/view-submitted-quote"
-          element={<ViewSubmittedQuote />}
-        /> */}
-
-        {/* <Route
-          path="procurement-services/prepared-quote"
-          element={<PreparedQuote />}
-        /> */}
         <Route
           path="procurement-services/invoice-for-edprowise"
           element={<InvoiceForEdProwiseForAll />}

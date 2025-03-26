@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import postAPI from "../../api/postAPI";
@@ -43,7 +41,7 @@ const AdminLogin = () => {
           navigate(
             userDetails.status === "Pending"
               ? "/complete-admin-profile"
-              : "/admin-dashboard/procurement-services/dashboard"
+              : "/admin-dashboard"
           );
         }
       } else {
@@ -60,6 +58,16 @@ const AdminLogin = () => {
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+
+  const navigateToHome = (event) => {
+    event.preventDefault();
+    navigate("/");
+  };
+  const navigateToSignup = (event) => {
+    event.preventDefault();
+    navigate("/signup/admin");
+  };
+
   return (
     <>
       <div className="form-body form-left">
@@ -105,8 +113,13 @@ const AdminLogin = () => {
                     onChange={handleChange}
                     placeholder="E-mail Address"
                     required=""
+                    onKeyDown={(e) => {
+                      if (e.key === " ") {
+                        e.preventDefault();
+                      }
+                    }}
                   />
-
+                  {/* the eye logo is liitlebit at bottom side plese make it center  */}
                   <div
                     style={{
                       position: "relative",
@@ -130,7 +143,7 @@ const AdminLogin = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -141,7 +154,7 @@ const AdminLogin = () => {
                           position: "absolute",
                           right: "10px",
                           top: "50%",
-                          transform: "translateY(-50%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />
@@ -165,6 +178,16 @@ const AdminLogin = () => {
                     >
                       Login
                     </button>
+                  </div>
+
+                  <Link to="/" onClick={navigateToHome}>
+                    {" "}
+                    Go to Home{" "}
+                  </Link>
+                  <div className=" mt-3 text-center">
+                    <Link onClick={navigateToSignup}>
+                      If you are not Register, Sign Up Here
+                    </Link>
                   </div>
                 </form>
               </div>
