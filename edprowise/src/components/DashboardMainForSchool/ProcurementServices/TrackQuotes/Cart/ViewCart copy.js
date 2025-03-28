@@ -4,8 +4,7 @@ import getAPI from "../../../../../api/getAPI";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-import OrderPlaceModal from "./OrderPlaceModal";
-
+import QuoteRequestModal from "./QuoteRequestModal";
 const ViewCart = () => {
   const location = useLocation();
   const { enquiryNumber } = location.state || {};
@@ -116,7 +115,7 @@ const ViewCart = () => {
     });
   };
 
-  const handleOpenOrderPlaceModal = () => {
+  const handleOpenQuoteModal = () => {
     if (!enquiryNumber) {
       console.error("Enquiry number is missing!");
       return;
@@ -133,7 +132,7 @@ const ViewCart = () => {
           <h3 className="card-title flex-grow-1">Cart List</h3>
           <button
             className="btn btn-soft-danger btn-sm d-flex align-items-center gap-2"
-            onClick={handleOpenOrderPlaceModal}
+            onClick={handleOpenQuoteModal}
           >
             <iconify-icon
               icon="solar:cart-check-broken"
@@ -152,6 +151,7 @@ const ViewCart = () => {
                 <div key={companyName} className="card">
                   <div className="card-header d-flex justify-content-between align-items-center gap-1">
                     <h4 className="card-title flex-grow-1">{companyName}</h4>
+
                     {(buyerStaus === "Quote Requested" ||
                       buyerStaus === "Quote Received") && (
                       <Link
@@ -325,11 +325,10 @@ const ViewCart = () => {
       )} */}
 
       {isModalOpen && (
-        <OrderPlaceModal
+        <QuoteRequestModal
           onClose={handleCloseModal}
           enquiryNumber={modalEnquiryNumber}
           carts={carts}
-          fetchCartData={fetchCartData}
         />
       )}
     </>

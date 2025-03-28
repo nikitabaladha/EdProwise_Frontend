@@ -7,7 +7,7 @@ import postAPI from "../../../../../api/postAPI";
 import CityData from "../../../../CityData.json";
 import Select from "react-select";
 
-const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
+const OrderPlaceModal = ({ onClose, enquiryNumber, carts, fetchCartData }) => {
   const [quoteRequest, setQuoteRequest] = useState(null);
 
   const fetchQuoteRequestData = async () => {
@@ -45,7 +45,6 @@ const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare the products array with cartIds
     const products = Object.values(carts)
       .flat()
       .map((cartItem) => ({
@@ -68,6 +67,7 @@ const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
       if (!response.hasError) {
         toast.success("Order Placed successfully");
         onClose();
+        await fetchCartData();
       } else {
         toast.error(response.message || "Failed to place order");
       }
@@ -227,4 +227,4 @@ const QuoteRequestModal = ({ onClose, enquiryNumber, carts }) => {
   );
 };
 
-export default QuoteRequestModal;
+export default OrderPlaceModal;
