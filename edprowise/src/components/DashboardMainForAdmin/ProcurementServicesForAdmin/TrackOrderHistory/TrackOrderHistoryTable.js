@@ -50,10 +50,6 @@ const TrackOrderHistoryTable = () => {
   };
 
   const openUpdateTDSModal = (event, enquiryNumber, quoteNumber, sellerId) => {
-    console.log("enquiryNumber", enquiryNumber);
-    console.log("quoteNumber", quoteNumber);
-    console.log("sellerId", sellerId);
-
     event.preventDefault();
     setSelectedTds({ enquiryNumber, quoteNumber, sellerId });
     setIsModalOpen(true);
@@ -62,6 +58,7 @@ const TrackOrderHistoryTable = () => {
   const closeUpdateTDSModal = () => {
     setIsModalOpen(false);
   };
+
   const navigateToViewOrder = (
     event,
     order,

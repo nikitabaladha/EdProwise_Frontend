@@ -177,7 +177,6 @@ const ViewOrderHistory = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -210,28 +209,6 @@ const ViewOrderHistory = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="advanceAdjustment" className="form-label">
-                        Advance Adjustment
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order?.advanceAdjustment)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order?.otherCharges)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
                       <label htmlFor="taxableValue" className="form-label">
                         Taxable Value
                       </label>
@@ -240,6 +217,8 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
+                </div>
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="gstAmount" className="form-label">
@@ -250,8 +229,6 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
-                </div>
-                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
@@ -268,10 +245,32 @@ const ViewOrderHistory = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="tdsValue" className="form-label">
-                        TDS Value
+                        TDS Amount
                       </label>
                       <p className="form-control">
                         {formatCost(order?.tdsValue)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="advanceAdjustment" className="form-label">
+                        Advance Adjustment
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.advanceAdjustment)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="otherCharges" className="form-label">
+                        Other Charges
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.otherCharges)}
                       </p>
                     </div>
                   </div>
