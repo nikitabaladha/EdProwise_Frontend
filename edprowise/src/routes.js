@@ -126,6 +126,15 @@ import AddCategory from "./components/DashboardMainForAdmin/ProcurementServicesF
 import SubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/SubCategory.js";
 import AddSubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/AddSubCategory.js";
 import UpdateSubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/UpdateSubCategory.js";
+
+// ====================EmailSettings====================================
+// add on admin umesh new routes 
+import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettings/SMTPHostSettings/SMTPHostSettings.js";
+import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
+import SchoolRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRegistrationEmailTamplate.js";
+import SellerRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SellerRegistrationEmailTamplate.js";
+
+
 // ================School Routes=============School Routes============School Routes===========================
 
 import CompleteSchoolProfile from "./components/DashboardMainForSchool/CompleteSchoolProfile/CompleteSchoolProfile";
@@ -407,7 +416,16 @@ const AppRoutes = () => {
           path="procurement-services/invoice-for-buyer"
           element={<InvoiceForBuyerForAll />}
         />
+
+        {/* *********************New Routes************* */}
+        <Route path="email/smtp-setting" element={<SMTPHostSettings/>} />
+        <Route path="email/templates" element={<EmailTemplatesList/>}/>
+        <Route path="email/templates/school-registration-template" element={<SchoolRegistrationEmailTamplate/>}/>
+        <Route path="email/templates/seller-registration-template" element={<SellerRegistrationEmailTamplate/>}/>
+
       </Route>
+
+      {/* ===================================================School Routes==================================== */}
 
       <Route
         path="/school-dashboard"
