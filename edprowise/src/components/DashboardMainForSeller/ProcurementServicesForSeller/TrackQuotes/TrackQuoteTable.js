@@ -302,6 +302,7 @@ const TrackQuoteTable = ({}) => {
                                     .supplierStatus
                                 : "Quote Requested"}
                             </td>
+
                             <td>
                               <div className="d-flex gap-2">
                                 <Link

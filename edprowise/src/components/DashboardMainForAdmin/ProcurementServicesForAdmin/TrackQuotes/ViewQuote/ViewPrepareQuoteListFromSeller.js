@@ -251,7 +251,10 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                         <th>Total Amount</th>
                         <th>
                           {preparedQuotes.length > 0 &&
-                          preparedQuotes[0].supplierStatus === "Quote Submitted"
+                          (preparedQuotes[0].supplierStatus ===
+                            "Quote Submitted" ||
+                            preparedQuotes[0].supplierStatus ===
+                              "Quote Rejected")
                             ? "Action"
                             : null}
                         </th>
@@ -541,7 +544,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                             <td>{formatCost(quote.totalAmount)}</td>
 
                             <td>
-                              {quote.supplierStatus === "Quote Requested" ||
+                              {quote.supplierStatus === "Quote Rejected" ||
                               quote.supplierStatus === "Quote Submitted" ? (
                                 <button
                                   className="btn btn-primary"

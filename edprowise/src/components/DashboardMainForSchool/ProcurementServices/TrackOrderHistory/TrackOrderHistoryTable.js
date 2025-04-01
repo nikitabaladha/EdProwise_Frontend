@@ -167,6 +167,7 @@ const TrackOrderHistoryTable = () => {
                           </div>
                         </th>
                         <th>Order Number</th>
+                        <th>Enquiry Number</th>
                         <th>Name of Supplier</th>
                         <th>Expected Delivery Date</th>
                         <th>Actual Delivery Date</th>
@@ -194,6 +195,7 @@ const TrackOrderHistoryTable = () => {
                             </div>
                           </td>
                           <td>{order.orderNumber}</td>
+                          <td>{order.enquiryNumber}</td>
                           <td>{order.companyName}</td>
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>

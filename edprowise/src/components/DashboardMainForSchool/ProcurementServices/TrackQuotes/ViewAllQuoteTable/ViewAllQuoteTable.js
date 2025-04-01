@@ -267,6 +267,13 @@ const ViewAllQuoteTable = () => {
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
 
+                        {submittedQuotes.some(
+                          (quote) =>
+                            quote.venderStatusFromBuyer !== "Pending" ||
+                            quote.venderStatusFromBuyer !== "Quote Accepted" ||
+                            quote.venderStatusFromBuyer !== "Quote Not Accepted"
+                        ) && <th>Status</th>}
+
                         {(submittedQuotes.some(
                           (quote) => quote.venderStatusFromBuyer === "Pending"
                         ) ||
@@ -295,6 +302,12 @@ const ViewAllQuoteTable = () => {
                           <td>{formatCost(quote.quotedAmount)}</td>
                           <td>{quote.remarksFromSupplier || "Not Provided"}</td>
 
+                          {quote.venderStatusFromBuyer !== "Pending" &&
+                            quote.venderStatusFromBuyer !== "Quote Accepted" &&
+                            quote.venderStatusFromBuyer !==
+                              "Quote Not Accepted" && (
+                              <td>{quote.venderStatusFromBuyer}</td>
+                            )}
                           <td>
                             <div className="d-flex gap-2">
                               {quote.venderStatusFromBuyer === "Pending" && (
