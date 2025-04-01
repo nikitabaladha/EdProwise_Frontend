@@ -24,6 +24,9 @@ const ViewRequestedQuote = () => {
   const location = useLocation();
   const enquiryNumber = location.state?.enquiryNumber;
 
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const sellerId = userDetails?.id;
+
   const navigate = useNavigate();
 
   const [quote, setQuote] = useState([]);
@@ -170,9 +173,6 @@ const ViewRequestedQuote = () => {
     setPrepareProducts(updatedProducts);
   };
 
-  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-  const sellerId = userDetails?.id;
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -260,6 +260,33 @@ const ViewRequestedQuote = () => {
       }
     } catch (err) {
       console.error("Error fetching quote proposal:", err);
+    }
+  };
+
+  const [locationData, setLocationData] = useState({
+    schoolState: null,
+    sellerState: null,
+    edprowiseState: null,
+  });
+
+  const fetchLocationData = async () => {
+    try {
+      const response = await getAPI(
+        `/get-location?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        {},
+        true
+      );
+      if (!response.hasError && response.data) {
+        setLocationData({
+          schoolState: response.data.data.schoolState,
+          sellerState: response.data.data.sellerState,
+          edprowiseState: response.data.data.edprowiseState,
+        });
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Location:", err);
     }
   };
 
@@ -372,11 +399,13 @@ const ViewRequestedQuote = () => {
                     <button
                       type="button"
                       className="btn btn-primary custom-submit-button"
-                      onClick={() =>
-                        setIsPrepareQuoteTableVisible(
-                          !isPrepareQuoteTableVisible
-                        )
-                      }
+                      onClick={() => {
+                        fetchLocationData().then(() => {
+                          setIsPrepareQuoteTableVisible(
+                            !isPrepareQuoteTableVisible
+                          );
+                        });
+                      }}
                     >
                       {isPrepareQuoteTableVisible
                         ? "Hide Quote"
@@ -412,6 +441,7 @@ const ViewRequestedQuote = () => {
           handleChange={handleChange}
           handleImageChange={handleImageChange}
           handleSubmit={handleSubmit}
+          locationData={locationData}
         />
       )}
 

@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { format } from "date-fns";
-// import convertToWOrds from "../../../CommonFunction.js";
 import convertToWords from "../CommonFunction";
 
 const formatDate = (dateString) => {
@@ -72,7 +71,6 @@ const InvoiceForBuyer = () => {
     totalFinalRateBeforeDiscount,
     totalAmountBeforeGstAndDiscount,
     totalDiscountAmount,
-    totalGstAmount,
     totalAmount,
     totalTaxableValue,
     totalCgstAmount,
@@ -740,7 +738,7 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalGstAmount}
+                  {totalTaxAmount}
                 </td>
                 <td
                   style={{

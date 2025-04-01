@@ -12,6 +12,66 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
   const [editedQuote, setEditedQuote] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
+  const [locationData, setLocationData] = useState({
+    schoolState: null,
+    sellerState: null,
+    edprowiseState: null,
+  });
+
+  useEffect(() => {
+    const fetchLocationData = async () => {
+      try {
+        const response = await getAPI(
+          `/get-location?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+          {},
+          true
+        );
+        if (!response.hasError && response.data) {
+          setLocationData({
+            schoolState: response.data.data.schoolState,
+            sellerState: response.data.data.sellerState,
+            edprowiseState: response.data.data.edprowiseState,
+          });
+        } else {
+          console.error("Invalid response format or error in response");
+        }
+      } catch (err) {
+        console.error("Error fetching Location:", err);
+      }
+    };
+
+    fetchLocationData();
+  }, [enquiryNumber]);
+
+  const shouldShowCGST_SGST = () => {
+    if (!locationData) return false;
+    const { schoolState, sellerState, edprowiseState } = locationData;
+
+    if (schoolState === edprowiseState && edprowiseState === sellerState) {
+      return true;
+    } else if (
+      schoolState === edprowiseState &&
+      edprowiseState !== sellerState
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const shouldShowIGST = () => {
+    if (!locationData) return false;
+    const { schoolState, sellerState, edprowiseState } = locationData;
+
+    if (schoolState !== edprowiseState && edprowiseState === sellerState) {
+      return true;
+    } else if (
+      schoolState !== edprowiseState &&
+      edprowiseState !== sellerState
+    ) {
+      return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     if (!sellerId || !enquiryNumber) return;
@@ -128,12 +188,55 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                         <th>Discount %</th>
                         <th>Final Rate</th>
                         <th>Taxable Value</th>
-                        <th>CGST Rate</th>
-                        <th>CGST Amount</th>
-                        <th>SGST Rate</th>
-                        <th>SGST Amount</th>
-                        <th>IGST Rate</th>
-                        <th>IGST Amount</th>
+
+                        {preparedQuotes.some(
+                          (quote) => quote.cgstRate !== 0
+                        ) ? (
+                          <th>CGST Rate</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.cgstAmount !== 0
+                        ) ? (
+                          <th>CGST Amount</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.sgstRate !== 0
+                        ) ? (
+                          <th>SGST Rate</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.sgstAmount !== 0
+                        ) ? (
+                          <th>SGST Amount</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.igstRate !== 0
+                        ) ? (
+                          <th>IGST Rate</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.igstAmount !== 0
+                        ) ? (
+                          <th>IGST Amount</th>
+                        ) : (
+                          <></>
+                        )}
+
                         <th>Amount Before GST & Discount</th>
                         <th>Discount Amount</th>
                         <th>GST Amount</th>
@@ -283,54 +386,85 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                             </td>
                             <td>{formatCost(quote.finalRate)}</td>
                             <td>{formatCost(quote.taxableValue)}</td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="cgstRate"
-                                  value={editedQuote[quote._id].cgstRate}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.cgstRate
-                              )}
-                            </td>
-                            <td>{formatCost(quote.cgstAmount)}</td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="sgstRate"
-                                  value={editedQuote[quote._id].sgstRate}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.sgstRate
-                              )}
-                            </td>
-                            <td>{formatCost(quote.sgstAmount)}</td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="igstRate"
-                                  value={editedQuote[quote._id].igstRate}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.igstRate
-                              )}
-                            </td>
-                            <td>{formatCost(quote.igstAmount)}</td>
+
+                            {shouldShowCGST_SGST() && quote?.cgstRate !== 0 ? (
+                              <td>
+                                {editedQuote[quote._id] ? (
+                                  <input
+                                    type="number"
+                                    name="cgstRate"
+                                    value={
+                                      editedQuote[quote._id].cgstRate || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleInputChange(quote._id, e)
+                                    }
+                                    className="form-control"
+                                  />
+                                ) : (
+                                  quote?.cgstRate
+                                )}
+                              </td>
+                            ) : null}
+
+                            {quote.cgstAmount !== 0 ? (
+                              <td>{formatCost(quote.cgstAmount)}</td>
+                            ) : (
+                              <></>
+                            )}
+
+                            {shouldShowCGST_SGST() && quote?.sgstRate !== 0 ? (
+                              <td>
+                                {editedQuote[quote._id] ? (
+                                  <input
+                                    type="number"
+                                    name="sgstRate"
+                                    value={
+                                      editedQuote[quote._id].sgstRate || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleInputChange(quote._id, e)
+                                    }
+                                    className="form-control"
+                                  />
+                                ) : (
+                                  quote?.sgstRate
+                                )}
+                              </td>
+                            ) : null}
+
+                            {quote.sgstAmount !== 0 ? (
+                              <td>{formatCost(quote.sgstAmount)}</td>
+                            ) : (
+                              <></>
+                            )}
+
+                            {shouldShowIGST() && quote?.igstRate !== 0 ? (
+                              <td>
+                                {editedQuote[quote._id] ? (
+                                  <input
+                                    type="number"
+                                    name="igstRate"
+                                    value={
+                                      editedQuote[quote._id].igstRate || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleInputChange(quote._id, e)
+                                    }
+                                    className="form-control"
+                                  />
+                                ) : (
+                                  quote?.igstRate
+                                )}
+                              </td>
+                            ) : null}
+
+                            {quote.igstAmount !== 0 ? (
+                              <td>{formatCost(quote.igstAmount)}</td>
+                            ) : (
+                              <></>
+                            )}
+
                             <td>
                               {formatCost(quote.amountBeforeGstAndDiscount)}
                             </td>

@@ -146,7 +146,9 @@ const ViewPrepareQuoteListFromSeller = () => {
                             <td>{formatCost(quote.sgstAmount)}</td>
                             <td>{quote.igstRate}</td>
                             <td>{formatCost(quote.igstAmount)}</td>
-                            <td>{formatCost(quote.amountBeforeGstAndDiscount)}</td>
+                            <td>
+                              {formatCost(quote.amountBeforeGstAndDiscount)}
+                            </td>
                             <td>{formatCost(quote.discountAmount)}</td>
                             <td>{formatCost(quote.gstAmount)}</td>
                             <td>{formatCost(quote.totalAmount)}</td>

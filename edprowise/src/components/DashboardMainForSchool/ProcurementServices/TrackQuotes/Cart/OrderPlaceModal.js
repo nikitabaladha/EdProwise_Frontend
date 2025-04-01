@@ -58,6 +58,7 @@ const OrderPlaceModal = ({ onClose, enquiryNumber, carts, fetchCartData }) => {
       deliveryLocation: quoteRequest?.deliveryLocation,
       deliveryLandMark: quoteRequest?.deliveryLandMark,
       deliveryPincode: quoteRequest?.deliveryPincode,
+      // sellerExprectedDeliverydate
       expectedDeliveryDate: quoteRequest?.expectedDeliveryDate,
     };
 

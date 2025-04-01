@@ -258,7 +258,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  {sellerCityStateCountry}, {edprowisePincode}
+                  {edprowiseCityStateCountry}, {edprowisePincode}
                 </td>
 
                 <td
@@ -701,7 +701,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalGstAmount}
+                  {totalTaxAmount}
                 </td>
                 <td
                   style={{

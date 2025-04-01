@@ -5,8 +5,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { format } from "date-fns";
-// import convertToWOrds from "../../../CommonFunction.js";
-// import convertToWords from "../../CommonFunction.js";
+
 import convertToWords from "../CommonFunction";
 
 const formatDate = (dateString) => {
@@ -436,7 +435,7 @@ const InvoiceForEdProwise = () => {
                     border: "none",
                   }}
                 >
-                  Contact No : {edprowiseAlternateContactNo}
+                  Contact No : {edprowiseContactNo}
                 </td>
                 <td
                   style={{
