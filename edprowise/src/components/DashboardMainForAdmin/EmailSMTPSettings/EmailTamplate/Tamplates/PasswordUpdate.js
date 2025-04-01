@@ -7,10 +7,10 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 
-const SellerRegistrationEmailTamplate = () => {
+const PasswordUpdateEmailTamplate = () => {
     const [formData, setFormData] = useState({
         mailFrom: "",
-        subject: "As A Seller Registration Sucessful", 
+        subject: "Password Update", 
         content: "",
       });
     
@@ -108,7 +108,7 @@ const SellerRegistrationEmailTamplate = () => {
                               id="name"
                               name="name"
                               className="form-control"
-                              defaultValue="As A Seller Registration Successful"
+                              defaultValue="Password Update"
                               required
                             />
                           </div>
@@ -236,4 +236,4 @@ const SellerRegistrationEmailTamplate = () => {
   )
 }
 
-export default SellerRegistrationEmailTamplate
+export default PasswordUpdateEmailTamplate;

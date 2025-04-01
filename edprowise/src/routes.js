@@ -133,6 +133,7 @@ import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettin
 import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
 import SchoolRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRegistrationEmailTamplate.js";
 import SellerRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SellerRegistrationEmailTamplate.js";
+import PasswordUpdateEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/PasswordUpdate.js";
 
 
 // ================School Routes=============School Routes============School Routes===========================
@@ -422,6 +423,8 @@ const AppRoutes = () => {
         <Route path="email/templates" element={<EmailTemplatesList/>}/>
         <Route path="email/templates/school-registration-template" element={<SchoolRegistrationEmailTamplate/>}/>
         <Route path="email/templates/seller-registration-template" element={<SellerRegistrationEmailTamplate/>}/>
+        <Route path="email/templates/password-update-template" element={<PasswordUpdateEmailTamplate/>}/>
+
 
       </Route>
 

@@ -5,7 +5,8 @@ const EmailTemplatesList = () => {
     const navigate = useNavigate();
     const tamplateList = [
         { TamplateName: "School Registration ", sendTo: "/admin-dashboard/email/templates/school-registration-template" },
-        { TamplateName: "Seller Registration", sendTo: "/admin-dashboard/email/templates/seller-registration-template" },
+        { TamplateName: "Seller Registration",  sendTo: "/admin-dashboard/email/templates/seller-registration-template" },
+        { TamplateName: "Password Update",      sendTo: "/admin-dashboard/email/templates/password-update-template"}
       ];
       const navigateToView = (event, path) => {
         event.preventDefault();
