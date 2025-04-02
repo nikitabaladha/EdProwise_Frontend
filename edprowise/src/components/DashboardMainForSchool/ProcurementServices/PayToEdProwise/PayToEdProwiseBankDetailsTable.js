@@ -1,73 +1,60 @@
 import React, { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+import { exportToExcel } from "../../../export-excel";
+import { toast } from "react-toastify";
 import getAPI from "../../../../api/getAPI";
 
-import { format } from "date-fns";
-import { formatCost } from "../../../CommonFunction";
+const BankDetailsTable = () => {
+  const [bankDetails, setBankDetails] = useState([]);
 
-const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
-  return format(new Date(dateString), "dd/MM/yyyy");
-};
+  const [selectedBankDetails, setSelectedBankDetails] = useState(null);
 
-const SchoolDashboardRecentOrders = () => {
-  const [orderDetails, setOrderDetails] = useState([]);
-
-  const navigate = useNavigate();
-
-  const fetchOrderData = async () => {
-    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-    const schoolId = userDetails?.schoolId;
-
-    if (!schoolId) {
-      console.error("School ID is missing");
-      return;
-    }
-
+  const fetchBankDetailData = async () => {
     try {
-      const response = await getAPI(
-        `/order-details-by-school-id/${schoolId}`,
-        {},
-        true
-      );
+      const response = await getAPI(`/bank-detail`, {}, true);
       if (
         !response.hasError &&
         response.data &&
         Array.isArray(response.data.data)
       ) {
-        setOrderDetails(response.data.data);
-
-        console.log("Order Details", response.data.data);
+        setBankDetails(response.data.data);
+        console.log("Bank Detail data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
     } catch (err) {
-      console.error("Error fetching Order details:", err);
+      console.error("Error fetching Bank Detail List:", err);
     }
   };
 
   useEffect(() => {
-    fetchOrderData();
+    fetchBankDetailData();
   }, []);
 
-  const navigateToRequestQuote = (event) => {
-    event.preventDefault();
-    navigate(`/school-dashboard/procurement-services/request-quote`);
+  const handleExport = () => {
+    const filteredData = bankDetails.map((bankDetail) => ({
+      AccountNumber: bankDetail.accountNumber,
+      BankName: bankDetail.bankName,
+      IFSCCode: bankDetail.ifscCode,
+      TypeOfAccount: bankDetail.accountType,
+    }));
+
+    exportToExcel(filteredData, "BankDetails", "Bank Detail Data");
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [schoolsPerPage] = useState(10);
+  const [bankDetailsPerPage] = useState(10);
 
-  const indexOfLastSchool = currentPage * schoolsPerPage;
-  const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
-  const currentOrderDetails = orderDetails.slice(
-    indexOfFirstSchool,
-    indexOfLastSchool
+  const indexOfLastBankDetail = currentPage * bankDetailsPerPage;
+  const indexOfFirstBankDetail = indexOfLastBankDetail - bankDetailsPerPage;
+  const currentBankDetails = bankDetails.slice(
+    indexOfFirstBankDetail,
+    indexOfLastBankDetail
   );
 
-  const totalPages = Math.ceil(orderDetails.length / schoolsPerPage);
+  const totalPages = Math.ceil(bankDetails.length / bankDetailsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -98,17 +85,18 @@ const SchoolDashboardRecentOrders = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">View All Orders List</h4>
-                <Link
-                  onClick={(event) => navigateToRequestQuote(event)}
-                  className="btn btn-sm btn-primary"
-                >
-                  Request Quote
-                </Link>
+                <h4 className="card-title flex-grow-1">All Bank Details</h4>
+                <Link className="btn btn-sm btn-primary">Pay Online</Link>
+                <div className="text-end">
+                  <Link onClick={handleExport} class="text-primary">
+                    Export
+                    <i class="bx bx-export ms-1"></i>
+                  </Link>
+                </div>
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
+                  <table className="table align-middle mb-0 table-hover table-centered text-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -124,54 +112,39 @@ const SchoolDashboardRecentOrders = () => {
                             />
                           </div>
                         </th>
-                        <th>Order Number</th>
-                        <th>Enquiry Number</th>
-                        <th>Name of Supplier</th>
-                        <th>Expected Delivery Date</th>
-                        <th>Actual Delivery Date</th>
-                        <th>Invoice Amount</th>
-                        <th>Advance Adjustment</th>
-                        <th>Status</th>
+                        <th>Account No.</th>
+                        <th>Bank Name</th>
+                        <th>IFSC Code</th>
+                        <th>Type of Account</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {currentOrderDetails.map((order) => (
-                        <tr key={order.id}>
+                      {currentBankDetails.map((bankDetail) => (
+                        <tr key={bankDetail._id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id={`customCheck${order.id}`}
+                                id={`customCheck${bankDetail._id}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`customCheck${order.id}`}
+                                htmlFor={`customCheck${bankDetail._id}`}
                               >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
-                          <td>{order.orderNumber}</td>
-                          <td>{order.enquiryNumber}</td>
-                          <td>{order.companyName}</td>
-                          <td>{formatDate(order.expectedDeliveryDate)}</td>
-                          <td>
-                            {order.actualDeliveryDate
-                              ? formatDate(order.actualDeliveryDate)
-                              : "Null"}
-                          </td>
-                          <td>
-                            {formatCost(order.totalAmountBeforeGstAndDiscount)}
-                          </td>
-                          <td>{formatCost(order.advanceAdjustment)}</td>
-                          <td>{order.buyerStatus}</td>
+                          <td>{bankDetail.accountNumber}</td>
+                          <td>{bankDetail.bankName}</td>
+                          <td>{bankDetail.ifscCode}</td>
+                          <td>{bankDetail.accountType}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                {/* end table-responsive */}
               </div>
               <div className="card-footer border-top">
                 <nav aria-label="Page navigation example">
@@ -222,4 +195,4 @@ const SchoolDashboardRecentOrders = () => {
   );
 };
 
-export default SchoolDashboardRecentOrders;
+export default BankDetailsTable;

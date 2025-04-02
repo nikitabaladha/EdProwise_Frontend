@@ -187,13 +187,11 @@ const CompleteSchoolProfile = () => {
     }))
   );
 
-
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userDetails");
     window.location.href = "/login";
   };
-
 
   return (
     <>
@@ -281,7 +279,8 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="mobileNo" className="form-label">
-                          School Mobile Number <span className="text-danger">*</span>
+                          School Mobile Number{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="tel"
@@ -362,16 +361,20 @@ const CompleteSchoolProfile = () => {
                         <label htmlFor="schoolLocation" className="form-label">
                           School Location <span className="text-danger">*</span>
                         </label>
-                        
+
                         <Select
                           id="cityStateCountry"
                           name="schoolLocation"
                           options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
+                          value={cityOptions.find(
+                            (option) => option.value === formData.schoolLocation
+                          )}
                           onChange={(selectedOption) =>
                             setFormData((prevState) => ({
                               ...prevState,
-                              schoolLocation: selectedOption ? selectedOption.value : "",
+                              schoolLocation: selectedOption
+                                ? selectedOption.value
+                                : "",
                             }))
                           }
                           placeholder="Select City-State-Country"
@@ -423,7 +426,6 @@ const CompleteSchoolProfile = () => {
                     </h4>
                     <h4 className="mb-3"> Same As Above</h4>
 
-                    
                     <div className="form-check ms-1">
                       <input
                         type="checkbox"
@@ -438,7 +440,6 @@ const CompleteSchoolProfile = () => {
                         htmlFor="sameAsSchoolAddress"
                       />
                     </div>
-                   
                   </div>
                   <div className="row">
                     <div className="mb-3">
@@ -480,47 +481,55 @@ const CompleteSchoolProfile = () => {
                           htmlFor="deliveryLocation"
                           className="form-label"
                         >
-                          Delivery Location <span className="text-danger">*</span>
+                          Delivery Location{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
-                          
                           <Select
-                          id="deliveryLocation"
-                          name="deliveryLocation"
-                          options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              schoolLocation: selectedOption ? selectedOption.value : "",
-                            }))
-                          }
-                          placeholder="Select City-State-Country"
-                          isSearchable
-                          required
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
-                          
+                            id="deliveryLocation"
+                            name="deliveryLocation"
+                            options={cityOptions}
+                            value={cityOptions.find(
+                              (option) =>
+                                option.value === formData.schoolLocation
+                            )}
+                            onChange={(selectedOption) =>
+                              setFormData((prevState) => ({
+                                ...prevState,
+                                schoolLocation: selectedOption
+                                  ? selectedOption.value
+                                  : "",
+                              }))
+                            }
+                            placeholder="Select City-State-Country"
+                            isSearchable
+                            required
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
                         ) : (
-                          
                           <Select
-                          id="deliveryLocation"
-                          name="deliveryLocation"
-                          options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.deliveryLocation)}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              deliveryLocation: selectedOption ? selectedOption.value : "",
-                            }))
-                          }
-                          placeholder="Select City-State-Country"
-                          isSearchable
-                          required
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
+                            id="deliveryLocation"
+                            name="deliveryLocation"
+                            options={cityOptions}
+                            value={cityOptions.find(
+                              (option) =>
+                                option.value === formData.deliveryLocation
+                            )}
+                            onChange={(selectedOption) =>
+                              setFormData((prevState) => ({
+                                ...prevState,
+                                deliveryLocation: selectedOption
+                                  ? selectedOption.value
+                                  : "",
+                              }))
+                            }
+                            placeholder="Select City-State-Country"
+                            isSearchable
+                            required
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
                         )}
                       </div>
                     </div>
@@ -530,7 +539,8 @@ const CompleteSchoolProfile = () => {
                           htmlFor="deliveryLandMark"
                           className="form-label"
                         >
-                          Delivery LandMark <span className="text-danger">*</span>
+                          Delivery LandMark{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
                           <input
@@ -561,7 +571,8 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="deliveryPincode" className="form-label">
-                          Delivery Pincode <span className="text-danger">*</span>
+                          Delivery Pincode{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
                           <input
@@ -625,7 +636,6 @@ const CompleteSchoolProfile = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-                          
                         />
                       </div>
                     </div>
@@ -634,7 +644,8 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="affiliationUpto" className="form-label">
-                          Affiliation Upto <span className="text-danger">*</span>
+                          Affiliation Upto{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
                           id="affiliationUpto"
@@ -652,6 +663,9 @@ const CompleteSchoolProfile = () => {
                           <option value="Secondary (Upto Class 10)">
                             Secondary (Upto Class 10)
                           </option>
+                          <option value="Senior Secondary">
+                            Senior Secondary
+                          </option>
                           <option value="Higher Secondary (Upto Class 12)">
                             Higher Secondary (Upto Class 12)
                           </option>
@@ -666,7 +680,8 @@ const CompleteSchoolProfile = () => {
                           htmlFor="affiliationCertificate"
                           className="form-label"
                         >
-                          Affiliation Certificate <span className="text-danger">*</span>
+                          Affiliation Certificate{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="file"

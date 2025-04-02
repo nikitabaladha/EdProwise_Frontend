@@ -147,7 +147,7 @@ const RequestQuote = () => {
               <div className="container">
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
-                    Request New Quote
+                    Request For Quote
                   </h4>
                 </div>
               </div>
@@ -156,7 +156,8 @@ const RequestQuote = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="category" className="form-label">
-                        Product Required – Select category <span className="text-danger">*</span>
+                        Product Required – Select category{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <select
                         id="category"
@@ -178,7 +179,8 @@ const RequestQuote = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="subCategory" className="form-label">
-                        Product Required – Select sub category <span className="text-danger">*</span>
+                        Product Required – Select sub category{" "}
+                        <span className="text-danger">*</span>
                       </label>
 
                       <select

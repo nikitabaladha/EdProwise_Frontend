@@ -21,7 +21,6 @@ const ViewOrderHistory = () => {
   const orderNumber = order?.orderNumber;
 
   const enquiryNumber = location.state?.enquiryNumber;
-
   const schoolId = location.state?.schoolId;
   const sellerId = location.state?.sellerId;
 
@@ -77,10 +76,6 @@ const ViewOrderHistory = () => {
   useEffect(() => {
     fetchOrderDetails();
   }, [enquiryNumber]);
-
-  // if (!order) {
-  //   return <div>No order details available.</div>;
-  // }
 
   const fetchInvoiceDataForEdprowise = async () => {
     if (!sellerId || !enquiryNumber || !schoolId) {
@@ -302,7 +297,6 @@ const ViewOrderHistory = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -349,7 +343,39 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
+
+                  {order?.cgstRate !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="cgstRate" className="form-label">
+                          CGST Rate
+                        </label>
+                        <p className="form-control">{order?.cgstRate}</p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.sgstRate !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="sgstRate" className="form-label">
+                          SGST Rate
+                        </label>
+                        <p className="form-control">{order?.sgstRate}</p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.igstRate !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="igstRate" className="form-label">
+                          IGST Rate
+                        </label>
+                        <p className="form-control">{order?.igstRate}</p>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
+
                 <div className="container">
                   <div className="card-header mb-2">
                     <h4 className="card-title text-center custom-heading-font">
@@ -443,6 +469,51 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
+                  {order?.cgstRateForEdprowise !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="cgstRateForEdprowise"
+                          className="form-label"
+                        >
+                          CGST Rate For Edprowise
+                        </label>
+                        <p className="form-control">
+                          {order?.cgstRateForEdprowise}
+                        </p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.sgstRateForEdprowise !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="sgstRateForEdprowise"
+                          className="form-label"
+                        >
+                          SGST Rate For Edprowise
+                        </label>
+                        <p className="form-control">
+                          {order?.sgstRateForEdprowise}
+                        </p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.igstRateForEdprowise !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="igstRateForEdprowise"
+                          className="form-label"
+                        >
+                          IGST Rate For Edprowise
+                        </label>
+                        <p className="form-control">
+                          {order?.igstRateForEdprowise}
+                        </p>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center">

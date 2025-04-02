@@ -110,10 +110,10 @@ const SellerDashboardRecentOrders = () => {
                           </div>
                         </th>
                         <th>Order Number</th>
+                        <th>Enquiry Number</th>
                         <th>Status</th>
                         <th>Expected Delivery Date</th>
                         <th>Total Invoice Amount</th>
-                        <th>Final ReceivableFrom</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -135,10 +135,10 @@ const SellerDashboardRecentOrders = () => {
                             </div>
                           </td>
                           <td>{order.orderNumber}</td>
+                          <td>{order.enquiryNumber}</td>
                           <td>{order.supplierStatus}</td>
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>{formatCost(order.totalAmount)}</td>
-                          <td>{formatCost(order.finalReceivableFromEdprowise)}</td>
                         </tr>
                       ))}
                     </tbody>

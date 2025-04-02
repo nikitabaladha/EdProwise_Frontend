@@ -269,18 +269,15 @@ const ViewAllQuoteTable = () => {
 
                         {submittedQuotes.some(
                           (quote) =>
-                            quote.venderStatusFromBuyer !== "Pending" ||
-                            quote.venderStatusFromBuyer !== "Quote Accepted" ||
+                            quote.venderStatusFromBuyer !== "Pending" &&
+                            quote.venderStatusFromBuyer !== "Quote Accepted" &&
                             quote.venderStatusFromBuyer !== "Quote Not Accepted"
                         ) && <th>Status</th>}
 
-                        {(submittedQuotes.some(
-                          (quote) => quote.venderStatusFromBuyer === "Pending"
-                        ) ||
-                          submittedQuotes.some(
-                            (quote) =>
-                              quote.venderStatusFromBuyer === "Quote Accepted"
-                          )) && <th>Action</th>}
+                        {submittedQuotes.some(
+                          (quote) =>
+                            quote.venderStatusFromBuyer !== "Quote Not Accepted"
+                        ) && <th>Action</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -310,6 +307,46 @@ const ViewAllQuoteTable = () => {
                             )}
                           <td>
                             <div className="d-flex gap-2">
+                              {(quote.venderStatusFromBuyer ===
+                                "Order Placed" ||
+                                quote.venderStatusFromBuyer ===
+                                  "Work In Progress" ||
+                                quote.venderStatusFromBuyer ===
+                                  "Ready For Transit" ||
+                                quote.venderStatusFromBuyer === "In-Transit" ||
+                                quote.venderStatusFromBuyer ===
+                                  "Delivered") && (
+                                <>
+                                  <Link
+                                    onClick={(event) =>
+                                      navigateToViewQuote(event, quote)
+                                    }
+                                    className="btn btn-light btn-sm"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:eye-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                  <Link
+                                    onClick={() =>
+                                      fetchPrepareQuoteAndProposalData(
+                                        quote?.enquiryNumber,
+                                        quote?.sellerId
+                                      )
+                                    }
+                                    className="btn btn-soft-info btn-sm"
+                                    title="Download PDF"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:download-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                </>
+                              )}
                               {quote.venderStatusFromBuyer === "Pending" && (
                                 <>
                                   <Link
@@ -365,39 +402,6 @@ const ViewAllQuoteTable = () => {
                                   >
                                     Reject Quote
                                   </button>
-                                </>
-                              )}
-                              {quote.venderStatusFromBuyer ===
-                                "Quote Accepted" && (
-                                <>
-                                  <Link
-                                    onClick={(event) =>
-                                      navigateToViewQuote(event, quote)
-                                    }
-                                    className="btn btn-light btn-sm"
-                                  >
-                                    <iconify-icon
-                                      icon="solar:eye-broken"
-                                      className="align-middle fs-18"
-                                    />
-                                  </Link>
-                                  <Link
-                                    onClick={() =>
-                                      fetchPrepareQuoteAndProposalData(
-                                        quote?.enquiryNumber,
-                                        quote?.sellerId
-                                      )
-                                    }
-                                    className="btn btn-soft-info btn-sm"
-                                    title="Download PDF"
-                                    data-bs-toggle="popover"
-                                    data-bs-trigger="hover"
-                                  >
-                                    <iconify-icon
-                                      icon="solar:download-broken"
-                                      className="align-middle fs-18"
-                                    />
-                                  </Link>
                                 </>
                               )}
 

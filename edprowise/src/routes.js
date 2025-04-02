@@ -153,7 +153,7 @@ import ViewCart from "./components/DashboardMainForSchool/ProcurementServices/Tr
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
-import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
+import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise.js";
 
 // =====================================School Fees Module==============================================
 
@@ -204,7 +204,8 @@ import SubmitQuote from "./components/DashboardMainForSeller/ProcurementServices
 
 import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
-import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
+
+import PayToEdprowiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise.js";
 
 import SearchResults from "./components/DashboardMainForAdmin/SearchResults.js";
 
@@ -646,7 +647,7 @@ const AppRoutes = () => {
         />
         <Route
           path="procurement-services/Pay-to-edprowise"
-          element={<PayToEdProwiseForSeller />}
+          element={<PayToEdprowiseForSeller />}
         />
 
         <Route

@@ -292,8 +292,8 @@ const UpdateSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="mobileNo" className="form-label">
-                            School Mobile Number <span className="text-danger">*</span>
-
+                            School Mobile Number{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="tel"
@@ -319,7 +319,10 @@ const UpdateSchoolProfile = () => {
                             id="mobileNo"
                             name="schoolAlternateContactNo"
                             className="form-control"
-                            value={formData.schoolAlternateContactNo || "Not Provided"}
+                            value={
+                              formData.schoolAlternateContactNo ||
+                              "Not Provided"
+                            }
                             onChange={handleChange}
                             // required
                           />
@@ -354,25 +357,31 @@ const UpdateSchoolProfile = () => {
                             htmlFor="schoolLocation"
                             className="form-label"
                           >
-                            School Location <span className="text-danger">*</span>
+                            School Location{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <Select
-                          id="cityStateCountry"
-                          name="schoolLocation"
-                          options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              schoolLocation: selectedOption ? selectedOption.value : "",
-                            }))
-                          }
-                          placeholder="Select City-State-Country"
-                          isSearchable
-                          required
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
+                            id="cityStateCountry"
+                            name="schoolLocation"
+                            options={cityOptions}
+                            value={cityOptions.find(
+                              (option) =>
+                                option.value === formData.schoolLocation
+                            )}
+                            onChange={(selectedOption) =>
+                              setFormData((prevState) => ({
+                                ...prevState,
+                                schoolLocation: selectedOption
+                                  ? selectedOption.value
+                                  : "",
+                              }))
+                            }
+                            placeholder="Select City-State-Country"
+                            isSearchable
+                            required
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
                         </div>
                       </div>
 
@@ -380,7 +389,6 @@ const UpdateSchoolProfile = () => {
                         <div className="mb-3">
                           <label htmlFor="panNo" className="form-label">
                             Land Mark <span className="text-danger">*</span>
-
                           </label>
                           <input
                             type="text"
@@ -397,8 +405,8 @@ const UpdateSchoolProfile = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="schoolPinCode" className="form-label">
-                            School Pin Code <span className="text-danger">*</span>
-
+                            School Pin Code{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -421,8 +429,8 @@ const UpdateSchoolProfile = () => {
                     <div className="row">
                       <div className="mb-3">
                         <label htmlFor="deliveryAddress" className="form-label">
-                          Delivery Address <span className="text-danger">*</span>
-
+                          Delivery Address{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -442,31 +450,32 @@ const UpdateSchoolProfile = () => {
                             htmlFor="deliveryLocation"
                             className="form-label"
                           >
-                            Delivery Location <span className="text-danger">*</span>
-
+                            Delivery Location{" "}
+                            <span className="text-danger">*</span>
                           </label>
-                          
+
                           <Select
-                        id="deliveryLocation"
-                        name="deliveryLocation"
-                        options={cityOptions}
-                        value={cityOptions.find(
-                          (option) => option.value === formData.deliveryLocation
-                        )}
-                        onChange={(selectedOption) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            deliveryLocation: selectedOption
-                              ? selectedOption.value
-                              : "",
-                          }))
-                        }
-                        placeholder="Select City-State-Country"
-                        isSearchable
-                        required
-                        classNamePrefix="react-select"
-                        className="custom-react-select"
-                      />
+                            id="deliveryLocation"
+                            name="deliveryLocation"
+                            options={cityOptions}
+                            value={cityOptions.find(
+                              (option) =>
+                                option.value === formData.deliveryLocation
+                            )}
+                            onChange={(selectedOption) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryLocation: selectedOption
+                                  ? selectedOption.value
+                                  : "",
+                              }))
+                            }
+                            placeholder="Select City-State-Country"
+                            isSearchable
+                            required
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
                         </div>
                       </div>
                       <div className="col-md-4">
@@ -475,8 +484,8 @@ const UpdateSchoolProfile = () => {
                             htmlFor="deliveryLandMark"
                             className="form-label"
                           >
-                            Delivery LandMark <span className="text-danger">*</span>
-
+                            Delivery LandMark{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -495,8 +504,8 @@ const UpdateSchoolProfile = () => {
                             htmlFor="deliveryPincode"
                             className="form-label"
                           >
-                            Delivery Pin Code <span className="text-danger">*</span>
-
+                            Delivery Pin Code{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -566,8 +575,8 @@ const UpdateSchoolProfile = () => {
                             htmlFor="affiliationUpto"
                             className="form-label"
                           >
-                            Affiliation Upto <span className="text-danger">*</span>
-
+                            Affiliation Upto{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <select
                             id="affiliationUpto"
@@ -585,6 +594,9 @@ const UpdateSchoolProfile = () => {
                             <option value="Secondary (Upto Class 10)">
                               Secondary (Upto Class 10)
                             </option>
+                            <option value="Senior Secondary">
+                              Senior Secondary
+                            </option>
                             <option value="Higher Secondary (Upto Class 12)">
                               Higher Secondary (Upto Class 12)
                             </option>
@@ -599,7 +611,8 @@ const UpdateSchoolProfile = () => {
                             htmlFor="affiliationCertificate"
                             className="form-label"
                           >
-                            Affiliation Certificate <span className="text-danger">*</span>
+                            Affiliation Certificate{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="file"
@@ -627,7 +640,6 @@ const UpdateSchoolProfile = () => {
                         <div className="mb-3">
                           <label htmlFor="panNo" className="form-label">
                             PAN Number <span className="text-danger">*</span>
-
                           </label>
                           <input
                             type="text"

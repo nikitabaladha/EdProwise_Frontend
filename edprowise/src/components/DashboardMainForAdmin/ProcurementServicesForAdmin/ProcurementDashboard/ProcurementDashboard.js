@@ -4,31 +4,11 @@ import getAPI from "../../../../api/getAPI";
 import ProcurementDashboardInformationCards from "./ProcurementDashboardInformationCards";
 import ProcurementDashboardPerformance from "./ProcurementDashboardPerformance";
 import ProcurementDashboardConversions from "./ProcurementDashboardConversions";
-import ProcurementDashboardRecentSchools from "./ProcurementDashboardRecentSchools";
+import ProcurementDashboardRecentOrders from "./ProcurementDashboardRecentOrders";
 
 const Dashboard = () => {
-  const [schools, setSchools] = useState([]);
   const [totalCounts, setTotalCounts] = useState({});
   const [performance, setPerformance] = useState([]);
-
-  const [selectedSchool, setSelectedSchool] = useState(null);
-
-  const fetchSchoolData = async () => {
-    try {
-      const response = await getAPI(`/school`, {}, true);
-      if (
-        !response.hasError &&
-        response.data &&
-        Array.isArray(response.data.data)
-      ) {
-        setSchools(response.data.data);
-      } else {
-        console.error("Invalid response format or error in response");
-      }
-    } catch (err) {
-      console.error("Error fetching School List:", err);
-    }
-  };
 
   const fetchTotalCounts = async () => {
     try {
@@ -61,7 +41,6 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchSchoolData();
     fetchTotalCounts();
     fetchPerformance(new Date().getFullYear());
   }, []);
@@ -82,12 +61,7 @@ const Dashboard = () => {
           <div />
         </div>
 
-        <ProcurementDashboardRecentSchools
-          schools={schools}
-          setSchools={setSchools}
-          selectedSchool={selectedSchool}
-          setSelectedSchool={setSelectedSchool}
-        />
+        <ProcurementDashboardRecentOrders />
       </div>
     </>
   );

@@ -160,26 +160,6 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
-                  {/* <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="advanceAdjustment" className="form-label">
-                        Advance Adjustment
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order.advanceAdjustment)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order.otherCharges)}
-                      </p>
-                    </div>
-                  </div> */}
                 </div>
 
                 <div className="container">
@@ -196,7 +176,7 @@ const ViewOrderHistory = () => {
                         Taxable Value
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalTaxableValue)}
+                        {formatCost(order?.totalTaxableValue)}
                       </p>
                     </div>
                   </div>
@@ -206,7 +186,7 @@ const ViewOrderHistory = () => {
                         GST Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalGstAmount)}
+                        {formatCost(order?.totalGstAmount)}
                       </p>
                     </div>
                   </div>
@@ -219,7 +199,7 @@ const ViewOrderHistory = () => {
                         Total Invoice Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalAmount)}
+                        {formatCost(order?.totalAmount)}
                       </p>
                     </div>
                   </div>
@@ -227,11 +207,21 @@ const ViewOrderHistory = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
+                      <label htmlFor="tdsValue" className="form-label">
+                        TDS Amount
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.tdsValue)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
                       <label htmlFor="advanceAdjustment" className="form-label">
                         Advance Adjustment
                       </label>
                       <p className="form-control">
-                        {formatCost(order.advanceAdjustment)}
+                        {formatCost(order?.advanceAdjustment)}
                       </p>
                     </div>
                   </div>
@@ -241,22 +231,11 @@ const ViewOrderHistory = () => {
                         Other Charges
                       </label>
                       <p className="form-control">
-                        {formatCost(order.otherCharges)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="tdsValue" className="form-label">
-                        TDS Value
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order.tdsValue)}
+                        {formatCost(order?.otherCharges)}
                       </p>
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -267,11 +246,43 @@ const ViewOrderHistory = () => {
                         Balance Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.finalPayableAmountWithTDS)}
+                        {formatCost(order?.finalPayableAmountWithTDS)}
                       </p>
                     </div>
                   </div>
+
+                  {order?.cgstRate !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="cgstRate" className="form-label">
+                          CGST Rate
+                        </label>
+                        <p className="form-control">{order?.cgstRate}</p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.sgstRate !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="sgstRate" className="form-label">
+                          SGST Rate
+                        </label>
+                        <p className="form-control">{order?.sgstRate}</p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.igstRate !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="igstRate" className="form-label">
+                          IGST Rate
+                        </label>
+                        <p className="form-control">{order?.igstRate}</p>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
+
                 <div className="container">
                   <div className="card-header mb-2">
                     <h4 className="card-title text-center custom-heading-font">
@@ -286,7 +297,7 @@ const ViewOrderHistory = () => {
                         Taxable Value For EdProwise
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalTaxableValueForEdprowise)}
+                        {formatCost(order?.totalTaxableValueForEdprowise)}
                       </p>
                     </div>
                   </div>
@@ -296,7 +307,7 @@ const ViewOrderHistory = () => {
                         GST Amount For EdProwise
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalGstAmountForEdprowise)}
+                        {formatCost(order?.totalGstAmountForEdprowise)}
                       </p>
                     </div>
                   </div>
@@ -309,7 +320,7 @@ const ViewOrderHistory = () => {
                         Total Invoice Amount For EdProwise
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalAmountForEdprowise)}
+                        {formatCost(order?.totalAmountForEdprowise)}
                       </p>
                     </div>
                   </div>
@@ -317,11 +328,24 @@ const ViewOrderHistory = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
+                      <label
+                        htmlFor="tdsValueForEdprowise"
+                        className="form-label"
+                      >
+                        TDS Amount For EdProwise
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.tdsValueForEdprowise)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
                       <label htmlFor="advanceAdjustment" className="form-label">
                         Advance Adjustment
                       </label>
                       <p className="form-control">
-                        {formatCost(order.advanceAdjustment)}
+                        {formatCost(order?.advanceAdjustment)}
                       </p>
                     </div>
                   </div>
@@ -331,25 +355,11 @@ const ViewOrderHistory = () => {
                         Other Charges
                       </label>
                       <p className="form-control">
-                        {formatCost(order.otherCharges)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="tdsValueForEdprowise"
-                        className="form-label"
-                      >
-                        TDS Value For EdProwise
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order.tdsValueForEdprowise)}
+                        {formatCost(order?.otherCharges)}
                       </p>
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -357,15 +367,60 @@ const ViewOrderHistory = () => {
                         htmlFor="finalPayableAmountWithTDS"
                         className="form-label"
                       >
-                        Balance Amount For Edprowise
+                        Balance Amount For EdProwise
                       </label>
                       <p className="form-control">
                         {formatCost(
-                          order.finalPayableAmountWithTDSForEdprowise
+                          order?.finalPayableAmountWithTDSForEdprowise
                         )}
                       </p>
                     </div>
                   </div>
+                  {order?.cgstRateForEdprowise !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="cgstRateForEdprowise"
+                          className="form-label"
+                        >
+                          CGST Rate For Edprowise
+                        </label>
+                        <p className="form-control">
+                          {order?.cgstRateForEdprowise}
+                        </p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.sgstRateForEdprowise !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="sgstRateForEdprowise"
+                          className="form-label"
+                        >
+                          SGST Rate For Edprowise
+                        </label>
+                        <p className="form-control">
+                          {order?.sgstRateForEdprowise}
+                        </p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.igstRateForEdprowise !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="igstRateForEdprowise"
+                          className="form-label"
+                        >
+                          IGST Rate For Edprowise
+                        </label>
+                        <p className="form-control">
+                          {order?.igstRateForEdprowise}
+                        </p>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="text-end">

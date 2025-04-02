@@ -535,46 +535,52 @@ const CompleteSchoolProfile = () => {
                             <span className="text-danger">*</span>
                           </label>
                           {formData.sameAsSchoolAddress ? (
-                          
-                          <Select
-                          id="deliveryLocation"
-                          name="deliveryLocation"
-                          options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              schoolLocation: selectedOption ? selectedOption.value : "",
-                            }))
-                          }
-                          placeholder="Select City-State-Country"
-                          isSearchable
-                          required
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
-                          
-                        ) : (
-                          
-                          <Select
-                          id="deliveryLocation"
-                          name="deliveryLocation"
-                          options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.deliveryLocation)}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              deliveryLocation: selectedOption ? selectedOption.value : "",
-                            }))
-                          }
-                          placeholder="Select City-State-Country"
-                          isSearchable
-                          required
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
-                        )}
-
+                            <Select
+                              id="deliveryLocation"
+                              name="deliveryLocation"
+                              options={cityOptions}
+                              value={cityOptions.find(
+                                (option) =>
+                                  option.value === formData.schoolLocation
+                              )}
+                              onChange={(selectedOption) =>
+                                setFormData((prevState) => ({
+                                  ...prevState,
+                                  schoolLocation: selectedOption
+                                    ? selectedOption.value
+                                    : "",
+                                }))
+                              }
+                              placeholder="Select City-State-Country"
+                              isSearchable
+                              required
+                              classNamePrefix="react-select"
+                              className="custom-react-select"
+                            />
+                          ) : (
+                            <Select
+                              id="deliveryLocation"
+                              name="deliveryLocation"
+                              options={cityOptions}
+                              value={cityOptions.find(
+                                (option) =>
+                                  option.value === formData.deliveryLocation
+                              )}
+                              onChange={(selectedOption) =>
+                                setFormData((prevState) => ({
+                                  ...prevState,
+                                  deliveryLocation: selectedOption
+                                    ? selectedOption.value
+                                    : "",
+                                }))
+                              }
+                              placeholder="Select City-State-Country"
+                              isSearchable
+                              required
+                              classNamePrefix="react-select"
+                              className="custom-react-select"
+                            />
+                          )}
                         </div>
                       </div>
                       <div className="col-md-4">
@@ -722,6 +728,9 @@ const CompleteSchoolProfile = () => {
                             </option>
                             <option value="Secondary (Upto Class 10)">
                               Secondary (Upto Class 10)
+                            </option>
+                            <option value="Senior Secondary">
+                              Senior Secondary
                             </option>
                             <option value="Higher Secondary (Upto Class 12)">
                               Higher Secondary (Upto Class 12)

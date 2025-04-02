@@ -3,12 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
-import putAPI from "../../../../api/putAPI";
-import { formatCost } from "../../../CommonFunction";
-
 import { toast } from "react-toastify";
+import putAPI from "../../../../api/putAPI";
 
 import { format } from "date-fns";
+import { formatCost } from "../../../CommonFunction";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -21,28 +20,15 @@ const TrackOrderHistoryTable = () => {
   const [orderDetails, setOrderDetails] = useState([]);
 
   const fetchOrderData = async () => {
-    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-    const schoolId = userDetails?.schoolId;
-
-    if (!schoolId) {
-      console.error("School ID is missing");
-      return;
-    }
-
     try {
-      const response = await getAPI(
-        `/order-details-by-school-id/${schoolId}`,
-        {},
-        true
-      );
+      const response = await getAPI(`/order-details`, {}, true);
       if (
         !response.hasError &&
         response.data &&
         Array.isArray(response.data.data)
       ) {
         setOrderDetails(response.data.data);
-
-        console.log("Order Details From school", response.data.data);
+        console.log("Order Details in Admin", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -55,18 +41,6 @@ const TrackOrderHistoryTable = () => {
     fetchOrderData();
   }, []);
 
-  const navigateToViewOrder = (event, order, enquiryNumber) => {
-    console.log("Navigating to view order", event, order, enquiryNumber);
-    event.preventDefault();
-    navigate(`/school-dashboard/procurement-services/view-order-history`, {
-      state: { order, enquiryNumber },
-    });
-  };
-
-  const handleNavigation = () => {
-    navigate("/school-dashboard/procurement-services/pay-to-edprowise");
-  };
-
   const handleExport = () => {
     if (!orderDetails.length) {
       toast.error("No data available to export");
@@ -74,33 +48,35 @@ const TrackOrderHistoryTable = () => {
     }
 
     const formattedData = orderDetails.map((order) => ({
-      Order_Number: order.orderNumber || "N/A",
-      Enquiry_Number: order.enquiryNumber || "N/A",
-      Quote_Number: order.quoteNumber || "N/A",
-      Company_Name: order.companyName || "N/A",
-      Seller_ID: order.sellerId || "N/A",
-      School_ID: order.schoolId || "N/A",
-      Actual_Delivery_Date: formatDate(order.actualDeliveryDate),
+      Order_ID: order._id,
+      Order_Number: order.orderNumber,
+      Enquiry_Number: order.enquiryNumber,
+      Seller_ID: order.sellerId,
+      School_ID: order.schoolId,
+      Company_Name: order.companyName,
+      Other_Charges: order.otherCharges,
+      Final_Receivable_From_Edprowise: order.finalReceivableFromEdprowise,
       Expected_Delivery_Date: formatDate(order.expectedDeliveryDate),
-      Supplier_Status: order.supplierStatus || "N/A",
-      Buyer_Status: order.buyerStatus || "N/A",
-      Edprowise_Status: order.edprowiseStatus || "N/A",
-      Other_Charges: order.otherCharges || 0,
-      Total_Amount_Before_GST: order.totalAmountBeforeGstAndDiscount || 0,
-      Total_Amount: order.totalAmount || 0,
-      Total_Taxable_Value: order.totalTaxableValue || 0,
-      Total_GST_Amount: order.totalGstAmount || 0,
-      Final_Payable_Amount_Without_TDS: order.finalPayableAmountWithoutTDS || 0,
-      Final_Payable_Amount_With_TDS: order.finalPayableAmountWithTDS || 0,
-      TDS_Amount: order.tDSAmount || 0,
-      Advance_Adjustment: order.advanceAdjustment || 0,
+      Supplier_Status: order.supplierStatus,
+      Buyer_Status: order.buyerStatus,
+      Edprowise_Status: order.edprowiseStatus,
+      Total_Amount_Before_GST_And_Discount:
+        order.totalAmountBeforeGstAndDiscount,
+      Total_Amount: order.totalAmount,
+      Total_Taxable_Value: order.totalTaxableValue,
+      Total_GST_Amount: order.totalGstAmount,
+      Advance_Adjustment: order.advanceAdjustment,
+      Final_Payable_Amount_Without_TDS: order.finalPayableAmountWithoutTDS,
+      Final_Payable_Amount_With_TDS: order.finalPayableAmountWithTDS,
+      TDS_Amount: order.tDSAmount,
+      Created_At: formatDate(order.createdAt),
     }));
 
-    exportToExcel(formattedData, "Ordered Products", "Ordered_Products");
+    exportToExcel(formattedData, "Order Details", "Order_Details");
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [schoolsPerPage] = useState(10);
+  const [schoolsPerPage] = useState(5);
 
   const indexOfLastSchool = currentPage * schoolsPerPage;
   const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
@@ -142,7 +118,13 @@ const TrackOrderHistoryTable = () => {
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">View All Orders List</h4>
                 <div className="text-end">
-                  <Link onClick={handleExport} class="text-primary">
+                  <Link
+                    onClick={handleExport}
+                    class="text-primary"
+                    title="Export Excel File"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                  >
                     Export
                     <i class="bx bx-export ms-1"></i>
                   </Link>
@@ -173,7 +155,7 @@ const TrackOrderHistoryTable = () => {
                         <th>Actual Delivery Date</th>
                         <th>Invoice Amount</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>TDS Amount</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -206,37 +188,8 @@ const TrackOrderHistoryTable = () => {
                           <td>
                             {formatCost(order.totalAmountBeforeGstAndDiscount)}
                           </td>
-                          <td>{order.buyerStatus}</td>
-
-                          <td>
-                            <div className="d-flex gap-2">
-                              <Link
-                                onClick={(event) =>
-                                  navigateToViewOrder(
-                                    event,
-                                    order,
-                                    order.enquiryNumber
-                                  )
-                                }
-                                className="btn btn-light btn-sm"
-                              >
-                                <iconify-icon
-                                  icon="solar:eye-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
-
-                              {/* <button
-                                className="btn btn-success btn-sm"
-                                title="Pay"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
-                                onClick={handleNavigation}
-                              >
-                                Pay
-                              </button> */}
-                            </div>
-                          </td>
+                          <td>{order.edprowiseStatus}</td>
+                          <td>{order.tDSAmount}</td>
                         </tr>
                       ))}
                     </tbody>

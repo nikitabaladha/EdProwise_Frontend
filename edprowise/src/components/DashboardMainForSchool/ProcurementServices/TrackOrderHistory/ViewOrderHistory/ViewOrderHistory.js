@@ -288,6 +288,38 @@ const ViewOrderHistory = () => {
                     </div>
                   </div>
                 </div>
+                <div className="row">
+                  {order?.cgstRate !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="cgstRate" className="form-label">
+                          CGST Rate
+                        </label>
+                        <p className="form-control">{order?.cgstRate}</p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.sgstRate !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="sgstRate" className="form-label">
+                          SGST Rate
+                        </label>
+                        <p className="form-control">{order?.sgstRate}</p>
+                      </div>
+                    </div>
+                  ) : null}
+                  {order?.igstRate !== 0 ? (
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="igstRate" className="form-label">
+                          IGST Rate
+                        </label>
+                        <p className="form-control">{order?.igstRate}</p>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
 
                 <div className="d-flex justify-content-between">
                   <Link>

@@ -41,7 +41,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     };
 
     fetchLocationData();
-  }, [enquiryNumber]);
+  }, [enquiryNumber, sellerId]);
 
   const shouldShowCGST_SGST = () => {
     if (!locationData) return false;

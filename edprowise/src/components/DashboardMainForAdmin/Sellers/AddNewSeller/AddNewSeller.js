@@ -138,7 +138,6 @@ const AddNewSeller = () => {
       if (!response.hasError) {
         console.log("profile storage data", response.data.data);
 
-       
         setFormData({
           companyName: "",
           companyType: "",
@@ -426,17 +425,23 @@ const AddNewSeller = () => {
                           htmlFor="cityStateCountry"
                           className="form-label"
                         >
-                          City State Country Location <span className="text-danger">*</span>
+                          City State Country Location{" "}
+                          <span className="text-danger">*</span>
                         </label>
-                                                <Select
+                        <Select
                           id="cityStateCountry"
                           name="cityStateCountry"
                           options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.cityStateCountry)}
+                          value={cityOptions.find(
+                            (option) =>
+                              option.value === formData.cityStateCountry
+                          )}
                           onChange={(selectedOption) =>
                             setFormData((prevState) => ({
                               ...prevState,
-                              cityStateCountry: selectedOption ? selectedOption.value : "",
+                              cityStateCountry: selectedOption
+                                ? selectedOption.value
+                                : "",
                             }))
                           }
                           placeholder="Select City-State-Country"
@@ -554,7 +559,6 @@ const AddNewSeller = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-                          
                         />
                       </div>
                     </div>
@@ -568,7 +572,8 @@ const AddNewSeller = () => {
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="accountNo" className="form-label">
-                          Bank Account Number <span className="text-danger">*</span>
+                          Bank Account Number{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -624,7 +629,8 @@ const AddNewSeller = () => {
                           htmlFor="accountHolderName"
                           className="form-label"
                         >
-                          Account Holder Name <span className="text-danger">*</span>
+                          Account Holder Name{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -664,7 +670,8 @@ const AddNewSeller = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="noOfEmployees" className="form-label">
-                          Number Of Employees <span className="text-danger">*</span>
+                          Number Of Employees{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
                           id="noOfEmployees"
@@ -688,7 +695,7 @@ const AddNewSeller = () => {
                             50 to 100 Employees
                           </option>
                           <option value="More than 100 Employees">
-                          More than 100 Employees
+                            More than 100 Employees
                           </option>
                         </select>
                       </div>
@@ -715,7 +722,7 @@ const AddNewSeller = () => {
                         <label htmlFor="turnover" className="form-label">
                           Company Turnover
                         </label>
-                        
+
                         <select
                           id="turnover"
                           name="turnover"
@@ -724,18 +731,14 @@ const AddNewSeller = () => {
                           onChange={handleChange}
                           // required
                         >
-                          <option value="">Select Company Ternover</option>
-                          <option value="1 to 10 Lakh">
-                          1 to 10 Lakh
-                          </option>
-                          <option value="10 to 50 Lakh">
-                          10 to 50 Lakh
-                          </option>
+                          <option value="">Select Company Turnover</option>
+                          <option value="1 to 10 Lakh">1 to 10 Lakh</option>
+                          <option value="10 to 50 Lakh">10 to 50 Lakh</option>
                           <option value="50 Lakh to 1 Crore">
-                          50 Lakh to 1 Crore
+                            50 Lakh to 1 Crore
                           </option>
                           <option value="More than 1 Crore">
-                          More than 1 Crore
+                            More than 1 Crore
                           </option>
                         </select>
                       </div>
@@ -777,7 +780,8 @@ const AddNewSeller = () => {
                               htmlFor="subCategories"
                               className="form-label"
                             >
-                              Subcategories <span className="text-danger">*</span>
+                              Subcategories{" "}
+                              <span className="text-danger">*</span>
                             </label>
                             <div>
                               {(subCategories[product.categoryId] || []).map(
