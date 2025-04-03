@@ -257,12 +257,10 @@ const AddNewSchool = () => {
                           <option value="Primary (Upto Class 5)">
                             Primary (Upto Class 5)
                           </option>
-                          <option value="Secondary (Upto Class 10)">
-                            Secondary (Upto Class 10)
+                          <option value="Senior Secondary (Upto Class 12)">
+                            Senior Secondary (Upto Class 12)
                           </option>
-                          <option value="Senior Secondary">
-                            Senior Secondary
-                          </option>
+
                           <option value="Higher Secondary (Upto Class 12)">
                             Higher Secondary (Upto Class 12)
                           </option>

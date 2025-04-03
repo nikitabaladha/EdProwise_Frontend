@@ -18,62 +18,24 @@ const UpdateSubCategory = () => {
     subCategoryName: "",
     categoryId: "",
     mainCategoryId: "",
-    edprowiseMargin: "",
   });
-  const [isLoading, setIsLoading] = useState(true);
 
+  // Fetch main categories on mount
   useEffect(() => {
     const fetchMainCategories = async () => {
       try {
         const response = await getAPI("/main-category", true);
         if (!response.hasError) {
           setMainCategories(response.data.data);
-
-          // If we have a subCategory with mainCategoryId, set it immediately
-          if (subCategory?.mainCategoryId) {
-            setMainCategoryId(subCategory.mainCategoryId);
-            await fetchCategoriesForMainCategory(subCategory.mainCategoryId);
-          }
         } else {
           toast.error(`Failed to fetch Main Categories: ${response.message}`);
         }
       } catch (error) {
         toast.error("An error occurred while fetching main categories.");
-      } finally {
-        setIsLoading(false);
       }
     };
-
     fetchMainCategories();
   }, []);
-
-  const fetchCategoriesForMainCategory = async (mainCatId) => {
-    try {
-      const response = await getAPI(`/category/${mainCatId}`, {}, true);
-      if (!response.hasError && Array.isArray(response.data.data)) {
-        setCategories(response.data.data);
-
-        // If we have a subCategory with categoryId, set it immediately
-        if (subCategory?.categoryId) {
-          setCategoryId(subCategory.categoryId);
-          const selectedCategory = response.data.data.find(
-            (cat) => cat.id === subCategory.categoryId
-          );
-          if (selectedCategory) {
-            setFormData((prev) => ({
-              ...prev,
-              edprowiseMargin: selectedCategory.edprowiseMargin || "",
-              subCategoryName: subCategory.subCategoryName || "",
-            }));
-          }
-        }
-      } else {
-        toast.error("Failed to load categories.");
-      }
-    } catch (err) {
-      toast.error("Error fetching categories.");
-    }
-  };
 
   // Fetch categories when main category is selected
   const handleMainCategoryChange = async (e) => {
@@ -81,33 +43,60 @@ const UpdateSubCategory = () => {
     setMainCategoryId(selectedMainCategoryId);
     setCategoryId("");
     setCategories([]);
-    setFormData((prev) => ({
-      ...prev,
-      edprowiseMargin: "",
-      categoryId: "",
-    }));
 
     if (selectedMainCategoryId) {
-      await fetchCategoriesForMainCategory(selectedMainCategoryId);
+      try {
+        const response = await getAPI(
+          `/category/${selectedMainCategoryId}`,
+          {},
+          true
+        );
+        if (!response.hasError && Array.isArray(response.data.data)) {
+          setCategories(response.data.data);
+        } else {
+          toast.error("Failed to load categories.");
+        }
+      } catch (err) {
+        toast.error("Error fetching categories.");
+      }
     }
   };
 
   // Handle category selection
   const handleCategoryChange = (e) => {
-    const selectedCategoryId = e.target.value;
-    setCategoryId(selectedCategoryId);
-
-    // Find the selected category and set its edprowiseMargin
-    const selectedCategory = categories.find(
-      (cat) => cat.id === selectedCategoryId
-    );
-    if (selectedCategory) {
-      setFormData((prev) => ({
-        ...prev,
-        edprowiseMargin: selectedCategory.edprowiseMargin || "",
-      }));
-    }
+    setCategoryId(e.target.value);
   };
+
+  // Populate form with existing data
+  useEffect(() => {
+    if (subCategory) {
+      setFormData({
+        subCategoryName: subCategory.subCategoryName || "",
+      });
+      setMainCategoryId(subCategory.mainCategoryId || "");
+      setCategoryId(subCategory.categoryId || "");
+
+      // Fetch categories for the selected main category
+      const fetchCategoriesForMainCategory = async () => {
+        try {
+          const response = await getAPI(
+            `/category/${subCategory.mainCategoryId}`,
+            {},
+            true
+          );
+          if (!response.hasError && Array.isArray(response.data.data)) {
+            setCategories(response.data.data);
+          } else {
+            toast.error("Failed to load categories.");
+          }
+        } catch (err) {
+          toast.error("Error fetching categories.");
+        }
+      };
+
+      fetchCategoriesForMainCategory();
+    }
+  }, [subCategory]);
 
   // Handle input change
   const handleChange = (e) => {
@@ -125,7 +114,6 @@ const UpdateSubCategory = () => {
           subCategoryName: formData.subCategoryName,
           categoryId,
           mainCategoryId,
-          edprowiseMargin: formData.edprowiseMargin,
         },
         {},
         true
@@ -143,10 +131,6 @@ const UpdateSubCategory = () => {
       );
     }
   };
-
-  if (isLoading) {
-    return <div className="text-center">Loading...</div>;
-  }
 
   return (
     <div className="container">
@@ -203,25 +187,6 @@ const UpdateSubCategory = () => {
                           </option>
                         ))}
                       </select>
-                    </div>
-                  </div>
-
-                  {/* Edprowise Margin */}
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label htmlFor="edprowiseMargin" className="form-label">
-                        Edprowise Margin (%)
-                      </label>
-                      <input
-                        type="number"
-                        name="edprowiseMargin"
-                        value={formData.edprowiseMargin}
-                        onChange={handleChange}
-                        className="form-control"
-                        min="0"
-                        max="100"
-                        step="0.01"
-                      />
                     </div>
                   </div>
 

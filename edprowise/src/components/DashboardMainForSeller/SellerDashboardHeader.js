@@ -277,7 +277,7 @@ const SellerDashboardHeader = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* User */}
               <div className="dropdown topbar-item">
                 <Link

@@ -189,11 +189,7 @@ const ViewAllQuoteTable = () => {
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
                         <th>Status</th>
-                        {/* 
-                        {submittedQuotes.some(
-                          (quote) =>
-                            quote.venderStatusFromBuyer === "Quote Not Accepted"
-                        ) && <th>Status From Buyer</th>} */}
+
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -222,12 +218,6 @@ const ViewAllQuoteTable = () => {
                           <td>{formatCost(quote.quotedAmount)}</td>
                           <td>{quote.remarksFromSupplier || "Not Provided"}</td>
 
-                          {/* {(quote.venderStatusFromBuyer ===
-                            "Quote Not Accepted" ||
-                            quote.venderStatusFromBuyer ===
-                              "Quote Accepted") && (
-                            <td>{quote.venderStatusFromBuyer}</td>
-                          )} */}
                           <td>{quote.venderStatusFromBuyer}</td>
 
                           <td>

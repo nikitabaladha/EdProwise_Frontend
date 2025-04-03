@@ -66,7 +66,6 @@ const MainCategoryTable = () => {
       Category_Name: subCategory.categoryName,
       MainCategory_Id: subCategory.mainCategoryId,
       MainCategory_Name: subCategory.mainCategoryName,
-      Edprowise_Margin: subCategory.edprowiseMargin,
     }));
 
     exportToExcel(formattedData, "SubCategory", "SubCategory");
@@ -172,7 +171,6 @@ const MainCategoryTable = () => {
                         </th>
                         <th>Main Category </th>
                         <th>Category </th>
-                        <th>Edprowise Margin</th>
                         <th>Sub Category</th>
                         <th>Action</th>
                       </tr>
@@ -197,7 +195,6 @@ const MainCategoryTable = () => {
                           </td>
                           <td>{subCategory.mainCategoryName}</td>
                           <td>{subCategory.categoryName}</td>
-                          <td>{subCategory.edprowiseMargin}</td>
                           <td>{subCategory.subCategoryName}</td>
 
                           <td>

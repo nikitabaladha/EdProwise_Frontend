@@ -299,12 +299,12 @@ const ViewAllQuoteTable = () => {
                           <td>{formatCost(quote.quotedAmount)}</td>
                           <td>{quote.remarksFromSupplier || "Not Provided"}</td>
 
-                          {quote.venderStatusFromBuyer !== "Pending" &&
+                          {(quote.venderStatusFromBuyer !== "Pending" &&
                             quote.venderStatusFromBuyer !== "Quote Accepted" &&
                             quote.venderStatusFromBuyer !==
                               "Quote Not Accepted" && (
                               <td>{quote.venderStatusFromBuyer}</td>
-                            )}
+                            )) || <td></td>}
                           <td>
                             <div className="d-flex gap-2">
                               {(quote.venderStatusFromBuyer ===
