@@ -74,9 +74,6 @@ const PrepareQuoteTable = ({
                       Listing Rate <span className="text-danger">*</span>
                     </th>
                     <th>
-                      EdProwise Margin % <span className="text-danger">*</span>
-                    </th>
-                    <th>
                       Quantity <span className="text-danger">*</span>
                     </th>
                     <th>
@@ -110,6 +107,7 @@ const PrepareQuoteTable = ({
                           className="form-control"
                           value={product.subCategoryName || ""}
                           onChange={(e) => handleChange(index, e)}
+                          readOnly
                         />
                       </td>
                       <td>
@@ -130,15 +128,7 @@ const PrepareQuoteTable = ({
                           onChange={(e) => handleChange(index, e)}
                         />
                       </td>
-                      <td>
-                        <input
-                          type="number"
-                          name="edprowiseMargin"
-                          className="form-control"
-                          value={product.edprowiseMargin || ""}
-                          onChange={(e) => handleChange(index, e)}
-                        />
-                      </td>
+
                       <td>
                         <input
                           type="number"
@@ -148,7 +138,6 @@ const PrepareQuoteTable = ({
                           onChange={(e) => handleChange(index, e)}
                         />
                       </td>
-
                       <td>
                         <input
                           type="number"
@@ -158,7 +147,6 @@ const PrepareQuoteTable = ({
                           onChange={(e) => handleChange(index, e)}
                         />
                       </td>
-
                       {shouldShowCGST_SGST() && (
                         <td>
                           <input
@@ -170,7 +158,6 @@ const PrepareQuoteTable = ({
                           />
                         </td>
                       )}
-
                       {shouldShowCGST_SGST() && (
                         <td>
                           <input
@@ -182,7 +169,6 @@ const PrepareQuoteTable = ({
                           />
                         </td>
                       )}
-
                       {shouldShowIGST() && (
                         <td>
                           <input
@@ -194,7 +180,6 @@ const PrepareQuoteTable = ({
                           />
                         </td>
                       )}
-
                       <td>
                         <input
                           type="file"

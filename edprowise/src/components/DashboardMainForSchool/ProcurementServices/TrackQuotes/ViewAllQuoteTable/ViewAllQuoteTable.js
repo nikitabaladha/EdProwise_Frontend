@@ -105,11 +105,12 @@ const ViewAllQuoteTable = () => {
       );
 
       if (!response.hasError && response.data.data) {
-        const cartData = response.data.data;
+        const groupedData = response.data.data.groupedData || {};
 
-        const totalCount = Object.keys(cartData).length;
+        // Count the number of company keys in groupedData
+        const companyCount = Object.keys(groupedData).length;
 
-        setCartCount(totalCount);
+        setCartCount(companyCount);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -267,12 +268,7 @@ const ViewAllQuoteTable = () => {
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
 
-                        {submittedQuotes.some(
-                          (quote) =>
-                            quote.venderStatusFromBuyer !== "Pending" &&
-                            quote.venderStatusFromBuyer !== "Quote Accepted" &&
-                            quote.venderStatusFromBuyer !== "Quote Not Accepted"
-                        ) && <th>Status</th>}
+                        <th>Status</th>
 
                         {submittedQuotes.some(
                           (quote) =>
@@ -299,16 +295,13 @@ const ViewAllQuoteTable = () => {
                           <td>{formatCost(quote.quotedAmount)}</td>
                           <td>{quote.remarksFromSupplier || "Not Provided"}</td>
 
-                          {(quote.venderStatusFromBuyer !== "Pending" &&
-                            quote.venderStatusFromBuyer !== "Quote Accepted" &&
-                            quote.venderStatusFromBuyer !==
-                              "Quote Not Accepted" && (
-                              <td>{quote.venderStatusFromBuyer}</td>
-                            )) || <td></td>}
+                          <td>{quote.venderStatusFromBuyer}</td>
                           <td>
                             <div className="d-flex gap-2">
                               {(quote.venderStatusFromBuyer ===
                                 "Order Placed" ||
+                                quote.venderStatusFromBuyer ===
+                                  "Quote Accepted" ||
                                 quote.venderStatusFromBuyer ===
                                   "Work In Progress" ||
                                 quote.venderStatusFromBuyer ===

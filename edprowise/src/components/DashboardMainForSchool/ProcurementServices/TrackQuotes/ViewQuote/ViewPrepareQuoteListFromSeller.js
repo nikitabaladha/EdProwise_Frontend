@@ -80,12 +80,53 @@ const ViewPrepareQuoteListFromSeller = () => {
                         <th>Discount %</th>
                         <th>Final Rate</th>
                         <th>Taxable Value</th>
-                        <th>CGST Rate</th>
-                        <th>CGST Amount</th>
-                        <th>SGST Rate</th>
-                        <th>SGST Amount</th>
-                        <th>IGST Rate</th>
-                        <th>IGST Amount</th>
+                        {preparedQuotes.some(
+                          (quote) => quote.cgstRate !== 0
+                        ) ? (
+                          <th>CGST Rate</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.cgstAmount !== 0
+                        ) ? (
+                          <th>CGST Amount</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.sgstRate !== 0
+                        ) ? (
+                          <th>SGST Rate</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.sgstAmount !== 0
+                        ) ? (
+                          <th>SGST Amount</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.igstRate !== 0
+                        ) ? (
+                          <th>IGST Rate</th>
+                        ) : (
+                          <></>
+                        )}
+
+                        {preparedQuotes.some(
+                          (quote) => quote.igstAmount !== 0
+                        ) ? (
+                          <th>IGST Amount</th>
+                        ) : (
+                          <></>
+                        )}
                         <th>Amount Before GST & Discount</th>
                         <th>Discount Amount</th>
                         <th>GST Amount</th>
@@ -140,12 +181,35 @@ const ViewPrepareQuoteListFromSeller = () => {
                             <td>{quote.discount}</td>
                             <td>{formatCost(quote.finalRate)}</td>
                             <td>{formatCost(quote.taxableValue)}</td>
-                            <td>{quote.cgstRate}</td>
-                            <td>{formatCost(quote.cgstAmount)}</td>
-                            <td>{quote.sgstRate}</td>
-                            <td>{formatCost(quote.sgstAmount)}</td>
-                            <td>{quote.igstRate}</td>
-                            <td>{formatCost(quote.igstAmount)}</td>
+                            {quote?.cgstRate !== 0 ? (
+                              <td>{quote?.cgstRate}</td>
+                            ) : null}
+
+                            {quote.cgstAmount !== 0 ? (
+                              <td>{formatCost(quote.cgstAmount)}</td>
+                            ) : (
+                              <></>
+                            )}
+
+                            {quote?.sgstRate !== 0 ? (
+                              <td>{quote?.sgstRate}</td>
+                            ) : null}
+
+                            {quote.sgstAmount !== 0 ? (
+                              <td>{formatCost(quote.sgstAmount)}</td>
+                            ) : (
+                              <></>
+                            )}
+
+                            {quote?.igstRate !== 0 ? (
+                              <td>{quote?.igstRate}</td>
+                            ) : null}
+
+                            {quote.igstAmount !== 0 ? (
+                              <td>{formatCost(quote.igstAmount)}</td>
+                            ) : (
+                              <></>
+                            )}
                             <td>
                               {formatCost(quote.amountBeforeGstAndDiscount)}
                             </td>

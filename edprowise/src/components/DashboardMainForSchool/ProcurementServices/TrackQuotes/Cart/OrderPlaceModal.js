@@ -6,9 +6,20 @@ import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import CityData from "../../../../CityData.json";
 import Select from "react-select";
-
-const OrderPlaceModal = ({ onClose, enquiryNumber, carts, fetchCartData }) => {
+import { useNavigate } from "react-router-dom";
+const OrderPlaceModal = ({
+  onClose,
+  enquiryNumber,
+  carts,
+  fetchCartData,
+  latestDeliveryDate,
+}) => {
+  // if no latestDeiveryDate or no carts fount then show <div>No cart data found</div>  to avoid run time error
+  const navigate = useNavigate();
   const [quoteRequest, setQuoteRequest] = useState(null);
+  const [deliveryDate, setDeliveryDate] = useState(
+    latestDeliveryDate ? latestDeliveryDate.split("T")[0] : ""
+  );
 
   const fetchQuoteRequestData = async () => {
     try {
@@ -42,8 +53,24 @@ const OrderPlaceModal = ({ onClose, enquiryNumber, carts, fetchCartData }) => {
     }));
   };
 
+  const handleDateChange = (e) => {
+    setDeliveryDate(e.target.value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate required fields
+    if (
+      !quoteRequest?.deliveryAddress ||
+      !quoteRequest?.deliveryLocation ||
+      !quoteRequest?.deliveryLandMark ||
+      !quoteRequest?.deliveryPincode ||
+      !deliveryDate
+    ) {
+      toast.error("Please fill all required fields");
+      return;
+    }
 
     const products = Object.values(carts)
       .flat()
@@ -54,12 +81,11 @@ const OrderPlaceModal = ({ onClose, enquiryNumber, carts, fetchCartData }) => {
     const formDataToSend = {
       enquiryNumber,
       products,
-      deliveryAddress: quoteRequest?.deliveryAddress,
-      deliveryLocation: quoteRequest?.deliveryLocation,
-      deliveryLandMark: quoteRequest?.deliveryLandMark,
-      deliveryPincode: quoteRequest?.deliveryPincode,
-      // sellerExprectedDeliverydate
-      expectedDeliveryDate: quoteRequest?.expectedDeliveryDate,
+      deliveryAddress: quoteRequest.deliveryAddress,
+      deliveryLocation: quoteRequest.deliveryLocation,
+      deliveryLandMark: quoteRequest.deliveryLandMark,
+      deliveryPincode: quoteRequest.deliveryPincode,
+      expectedDeliveryDate: deliveryDate,
     };
 
     try {
@@ -69,6 +95,7 @@ const OrderPlaceModal = ({ onClose, enquiryNumber, carts, fetchCartData }) => {
         toast.success("Order Placed successfully");
         onClose();
         await fetchCartData();
+        navigate(-1);
       } else {
         toast.error(response.message || "Failed to place order");
       }
@@ -86,6 +113,10 @@ const OrderPlaceModal = ({ onClose, enquiryNumber, carts, fetchCartData }) => {
       label: `${city}, ${state}, India`,
     }))
   );
+
+  if (!carts || Object.keys(carts).length === 0 || !latestDeliveryDate) {
+    return <></>;
+  }
 
   return (
     <Modal show={true} onHide={onClose} centered dialogClassName="custom-modal">
@@ -195,12 +226,10 @@ const OrderPlaceModal = ({ onClose, enquiryNumber, carts, fetchCartData }) => {
                         <input
                           type="date"
                           name="expectedDeliveryDate"
-                          onChange={handleInputChange}
+                          onChange={handleDateChange}
                           className="form-control"
-                          value={
-                            quoteRequest?.expectedDeliveryDate?.split("T")[0] ||
-                            ""
-                          }
+                          value={deliveryDate}
+                          min={new Date().toISOString().split("T")[0]}
                           required
                         />
                       </div>

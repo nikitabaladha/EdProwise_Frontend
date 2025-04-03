@@ -155,6 +155,7 @@ const UpdateSubmittedQuoteModal = ({
                         onChange={handleInputChange}
                         className="form-control"
                         required
+                        readOnly
                       />
                     </div>
                     <div className="mb-3">
@@ -192,7 +193,8 @@ const UpdateSubmittedQuoteModal = ({
                         htmlFor="expectedDeliveryDateBySeller"
                         className="form-label"
                       >
-                        Expected Delivery Date <span className="text-danger">*</span>
+                        Expected Delivery Date{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"

@@ -182,7 +182,6 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                         <th>Product Subcategory</th>
                         <th>HSN/SACC</th>
                         <th>Listing Rate</th>
-                        <th>EdProwise Margin %</th>
                         <th>Quantity</th>
                         <th>Final Rate Before Discount</th>
                         <th>Discount %</th>
@@ -338,21 +337,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                 formatCost(quote.listingRate)
                               )}
                             </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="edprowiseMargin"
-                                  value={editedQuote[quote._id].edprowiseMargin}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.edprowiseMargin
-                              )}
-                            </td>
+
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input

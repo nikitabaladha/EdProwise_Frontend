@@ -346,21 +346,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                 formatCost(quote.listingRate)
                               )}
                             </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="edprowiseMargin"
-                                  value={editedQuote[quote._id].edprowiseMargin}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                />
-                              ) : (
-                                quote.edprowiseMargin
-                              )}
-                            </td>
+                            <td>{quote.edprowiseMargin}</td>
                             <td>
                               {editedQuote[quote._id] ? (
                                 <input
@@ -417,26 +403,6 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                               <td>{quote?.cgstRate}</td>
                             )}
 
-                            {/* {shouldShowCGST_SGST() && quote?.cgstRate !== 0 ? (
-                              <td>
-                                {editedQuote[quote._id] ? (
-                                  <input
-                                    type="number"
-                                    name="cgstRate"
-                                    value={
-                                      editedQuote[quote._id].cgstRate || ""
-                                    }
-                                    onChange={(e) =>
-                                      handleInputChange(quote._id, e)
-                                    }
-                                    className="form-control"
-                                  />
-                                ) : (
-                                  quote?.cgstRate
-                                )}
-                              </td>
-                            ) : null} */}
-                            {/* <td>{quote.cgstRate}</td> */}
                             <td>{formatCost(quote.cgstAmount)}</td>
 
                             {shouldShowCGST_SGST() && quote?.sgstRate !== 0 ? (
@@ -460,28 +426,6 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                             ) : (
                               <td>{quote?.sgstRate}</td>
                             )}
-
-                            {/* {shouldShowCGST_SGST() && quote?.sgstRate !== 0 ? (
-                              <td>
-                                {editedQuote[quote._id] ? (
-                                  <input
-                                    type="number"
-                                    name="sgstRate"
-                                    value={
-                                      editedQuote[quote._id].sgstRate || ""
-                                    }
-                                    onChange={(e) =>
-                                      handleInputChange(quote._id, e)
-                                    }
-                                    className="form-control"
-                                  />
-                                ) : (
-                                  quote?.sgstRate
-                                )}
-                              </td>
-                            ) : null} */}
-
-                            {/* <td>{quote.sgstRate}</td> */}
 
                             <td>{formatCost(quote.sgstAmount)}</td>
 
@@ -507,26 +451,6 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                               <td>{quote?.igstRate}</td>
                             )}
 
-                            {/* {shouldShowIGST() && quote?.igstRate !== 0 ? (
-                              <td>
-                                {editedQuote[quote._id] ? (
-                                  <input
-                                    type="number"
-                                    name="igstRate"
-                                    value={
-                                      editedQuote[quote._id].igstRate || ""
-                                    }
-                                    onChange={(e) =>
-                                      handleInputChange(quote._id, e)
-                                    }
-                                    className="form-control"
-                                  />
-                                ) : (
-                                  quote?.igstRate
-                                )}
-                              </td>
-                            ) : null} */}
-                            {/* <td>{quote.igstRate}</td> */}
                             <td>{formatCost(quote.igstAmount)}</td>
                             <td>{quote?.cgstRateForEdprowise}</td>
                             <td>{formatCost(quote.sgstAmountForEdprowise)}</td>

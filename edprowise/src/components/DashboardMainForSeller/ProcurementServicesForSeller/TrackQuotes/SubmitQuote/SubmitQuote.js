@@ -104,7 +104,6 @@ const SubmitQuote = () => {
 
       if (!response.hasError) {
         toast.success("Quote Submitted successfully");
-        // As soon as this toast message is shown after that i want to show  Warning message
         setSubmittedQuote({
           quotedAmount: "",
           description: "",
@@ -115,11 +114,6 @@ const SubmitQuote = () => {
         });
 
         setShowWarning(true);
-
-        // navigate(
-        //   "/seller-dashboard/procurement-services/view-requested-quote",
-        //   { state: { enquiryNumber: enquiryNumber } }
-        // );
       } else {
         toast.error(response.message || "Failed to Prepare quote");
       }
@@ -166,6 +160,7 @@ const SubmitQuote = () => {
                           onChange={handleInputChange}
                           className="form-control"
                           required
+                          readOnly
                         />
                       </div>
                     </div>
@@ -189,7 +184,6 @@ const SubmitQuote = () => {
                       </div>
                     </div>
                   </div>
-
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -202,7 +196,6 @@ const SubmitQuote = () => {
                           value={submittedQuote.description}
                           onChange={handleInputChange}
                           className="form-control"
-                          // required
                           placeholder="Example : All Products are good"
                         />
                       </div>
@@ -221,7 +214,6 @@ const SubmitQuote = () => {
                           value={submittedQuote.remarksFromSupplier}
                           onChange={handleInputChange}
                           className="form-control"
-                          // required
                           placeholder="Example : All Products are good"
                         />
                       </div>

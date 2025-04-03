@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import OrderPlaceModal from "./OrderPlaceModal";
 
+import { formatCost } from "../../../../CommonFunction";
+
 const ViewCart = () => {
   const location = useLocation();
   const { enquiryNumber } = location.state || {};
@@ -21,6 +23,8 @@ const ViewCart = () => {
 
   const [modalEnquiryNumber, setModalEnquiryNumber] = useState(null);
 
+  const [latestDeliveryDate, setLatestDeliveryDate] = useState("");
+
   useEffect(() => {
     if (!enquiryNumber) return;
     fetchCartData();
@@ -35,13 +39,19 @@ const ViewCart = () => {
       );
 
       if (!response.hasError && response.data.data) {
-        setCarts(response.data.data);
-        console.log("carts", response.data.data);
+        setCarts(response.data.data.groupedData || {});
+        setLatestDeliveryDate(response.data.data.latestDeliveryDate);
+        console.log(
+          "carts from view cart",
+          response.data.data.latestDeliveryDate
+        );
       } else {
         console.error("Invalid response format or error in response");
+        setCarts({});
       }
     } catch (err) {
       console.error("Error fetching cart data:", err);
+      setCarts({});
     }
   };
 
@@ -143,7 +153,7 @@ const ViewCart = () => {
           </button>
         </div>
 
-        {Object.keys(carts).length === 0 ? (
+        {carts && Object.keys(carts).length === 0 ? (
           <p>No cart data available.</p>
         ) : (
           Object.entries(carts).map(([companyName, items]) => (
@@ -199,12 +209,41 @@ const ViewCart = () => {
                             <th>Discount %</th>
                             <th>Final Rate</th>
                             <th>Taxable Value</th>
-                            <th>CGST Rate</th>
-                            <th>CGST Amount</th>
-                            <th>SGST Rate</th>
-                            <th>SGST Amount</th>
-                            <th>IGST Rate</th>
-                            <th>IGST Amount</th>
+                            {items.some((item) => item?.cgstRate !== 0) ? (
+                              <th>CGST Rate</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item?.cgstAmount !== 0) ? (
+                              <th>CGST Amount</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item?.sgstRate !== 0) ? (
+                              <th>SGST Rate</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item?.sgstAmount !== 0) ? (
+                              <th>SGST Amount</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item.igstRate !== 0) ? (
+                              <th>IGST Rate</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item?.igstAmount !== 0) ? (
+                              <th>IGST Amount</th>
+                            ) : (
+                              <></>
+                            )}
                             <th>Amount Before GST & Discount</th>
                             <th>Discount Amount</th>
                             <th>GST Amount</th>
@@ -256,12 +295,35 @@ const ViewCart = () => {
                               <td>{item.discount}</td>
                               <td>{item.finalRate}</td>
                               <td>{item.taxableValue}</td>
-                              <td>{item.cgstRate}</td>
-                              <td>{item.cgstAmount}</td>
-                              <td>{item.sgstRate}</td>
-                              <td>{item.sgstAmount}</td>
-                              <td>{item.igstRate}</td>
-                              <td>{item.igstAmount}</td>
+                              {item?.cgstRate !== 0 ? (
+                                <td>{item?.cgstRate}</td>
+                              ) : null}
+
+                              {item.cgstAmount !== 0 ? (
+                                <td>{formatCost(item.cgstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
+
+                              {item?.sgstRate !== 0 ? (
+                                <td>{item?.sgstRate}</td>
+                              ) : null}
+
+                              {item.sgstAmount !== 0 ? (
+                                <td>{formatCost(item.sgstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
+
+                              {item?.igstRate !== 0 ? (
+                                <td>{item?.igstRate}</td>
+                              ) : null}
+
+                              {item.igstAmount !== 0 ? (
+                                <td>{formatCost(item.igstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
                               <td>{item.amountBeforeGstAndDiscount}</td>
                               <td>{item.discountAmount}</td>
                               <td>{item.gstAmount}</td>
@@ -330,6 +392,7 @@ const ViewCart = () => {
           enquiryNumber={modalEnquiryNumber}
           carts={carts}
           fetchCartData={fetchCartData}
+          latestDeliveryDate={latestDeliveryDate}
         />
       )}
     </>
