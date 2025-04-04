@@ -139,6 +139,23 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         icon: "solar:wallet-money-bold",
         link: "/admin-dashboard/enquiry",
       },
+      {
+        id: "emailSettings",
+        label: "Email Settings",
+        icon: "solar:wallet-money-bold",
+        children: [
+          {
+            label: "SMTP Settings",
+            link: "/admin-dashboard/email/smtp-setting",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Email Templates",
+            link: "/admin-dashboard/email/templates",
+            icon: "solar:book-bookmark-bold-duotone",
+          },
+        ],
+      },
     ],
 
     School: [

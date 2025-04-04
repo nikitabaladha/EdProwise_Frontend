@@ -16886,6 +16886,7 @@ fieldset:disabled .btn {
   -webkit-box-shadow: none;
   box-shadow: none;
   height: 42px;
+  width: 370px;
 }
 
 .topbar .app-search .search-widget-icon {

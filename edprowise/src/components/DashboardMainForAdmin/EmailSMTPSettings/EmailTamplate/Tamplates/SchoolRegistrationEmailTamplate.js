@@ -3,8 +3,8 @@ import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import { toast } from "react-toastify";
 
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 const SchoolRegistrationEmailTamplate = () => {
   const [formData, setFormData] = useState({
@@ -132,7 +132,10 @@ const SchoolRegistrationEmailTamplate = () => {
                     </div>
                   </div>
                   <div className="d-flex justify-content-end">
-                    <button type="submit" className="btn btn-primary custom-submit-button">
+                    <button
+                      type="submit"
+                      className="btn btn-primary custom-submit-button"
+                    >
                       Save
                     </button>
                   </div>
@@ -154,16 +157,19 @@ const SchoolRegistrationEmailTamplate = () => {
                 </div>
                 <div className="row">
                   <p className="col-6">
-                    Company Name: <span className="text-primary">{`{mailForm}`}</span>
+                    Company Name:{" "}
+                    <span className="text-primary">{`{mailForm}`}</span>
                   </p>
                   <p className="col-6">
-                    UserName: <span className="text-primary">{`{userName}`}</span>
+                    UserName:{" "}
+                    <span className="text-primary">{`{userName}`}</span>
                   </p>
                   <p className="col-6">
                     Email: <span className="text-primary">{`{email}`}</span>
                   </p>
                   <p className="col-6">
-                    Password: <span className="text-primary">{`{password}`}</span>
+                    Password:{" "}
+                    <span className="text-primary">{`{password}`}</span>
                   </p>
                   <p className="col-6">
                     Role: <span className="text-primary">{`{role}`}</span>
@@ -211,7 +217,7 @@ const SchoolRegistrationEmailTamplate = () => {
                         <label htmlFor="emailMessage" className="form-label">
                           Email Message
                         </label>
-                        <ReactQuill 
+                        <ReactQuill
                           theme="snow"
                           value={formData.content}
                           onChange={handleContentChange}
@@ -220,7 +226,10 @@ const SchoolRegistrationEmailTamplate = () => {
                     </div>
                   </div>
                   <div className="d-flex justify-content-end">
-                    <button type="submit" className="btn btn-primary custom-submit-button">
+                    <button
+                      type="submit"
+                      className="btn btn-primary custom-submit-button"
+                    >
                       Save
                     </button>
                   </div>
