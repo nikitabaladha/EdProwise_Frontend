@@ -79,9 +79,21 @@ const PrepareQuoteTable = ({
                     <th>
                       Discount % <span className="text-danger">*</span>
                     </th>
-                    {shouldShowCGST_SGST() && <th>CGST Rate</th>}
-                    {shouldShowCGST_SGST() && <th>SGST Rate</th>}
-                    {shouldShowIGST() && <th>IGST Rate</th>}
+                    {shouldShowCGST_SGST() && (
+                      <th>
+                        CGST Rate <span className="text-danger">*</span>
+                      </th>
+                    )}
+                    {shouldShowCGST_SGST() && (
+                      <th>
+                        SGST Rate <span className="text-danger">*</span>
+                      </th>
+                    )}
+                    {shouldShowIGST() && (
+                      <th>
+                        IGST Rate <span className="text-danger">*</span>
+                      </th>
+                    )}
                     <th>Upload Sample Images of Products</th>
                   </tr>
                 </thead>
@@ -155,6 +167,7 @@ const PrepareQuoteTable = ({
                             className="form-control"
                             value={product.cgstRate || ""}
                             onChange={(e) => handleChange(index, e)}
+                            required
                           />
                         </td>
                       )}
@@ -166,6 +179,7 @@ const PrepareQuoteTable = ({
                             className="form-control"
                             value={product.sgstRate || ""}
                             onChange={(e) => handleChange(index, e)}
+                            required
                           />
                         </td>
                       )}
@@ -177,6 +191,7 @@ const PrepareQuoteTable = ({
                             className="form-control"
                             value={product.igstRate || ""}
                             onChange={(e) => handleChange(index, e)}
+                            required
                           />
                         </td>
                       )}

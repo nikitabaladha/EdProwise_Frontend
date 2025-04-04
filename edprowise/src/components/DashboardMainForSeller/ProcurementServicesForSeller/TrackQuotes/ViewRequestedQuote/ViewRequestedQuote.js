@@ -89,15 +89,11 @@ const ViewRequestedQuote = () => {
     fetchPreparedQuotes();
   }, [enquiryNumber]);
 
-  // here in prepare quotes by default i am showing all field blank but at place of subcategoryName
-  // i want to show response.data.data.products.subcategoryName and at place of edprowiseMargin i want to show response.data.data.products.edprowiseMargin ,
-  // basically whichever is coming from get api /get-according-to-category-filter/
-  // so user dont need to fill this both field at time of create
-
   const [prepareProducts, setPrepareProducts] = useState(
     quote.map((product) => ({
       srNo: "",
       subCategoryName: "",
+      subCategoryId: "",
       prepareQuoteImage: null,
       hsnSacc: "",
       listingRate: "",
@@ -136,11 +132,12 @@ const ViewRequestedQuote = () => {
         quote.map((product, index) => ({
           srNo: index + 1,
           subCategoryName: product.subCategoryName || "",
+          subCategoryId: product.subCategoryId || "",
           prepareQuoteImage: null,
           hsnSacc: "",
           listingRate: "",
           edprowiseMargin: product.edprowiseMargin || "",
-          quantity: "",
+          quantity: product.quantity || "",
           discount: "",
           cgstRate: "",
           sgstRate: "",
@@ -150,55 +147,28 @@ const ViewRequestedQuote = () => {
     }
   }, [quote]);
 
-  // at time of add product add product according to count of Requested Quote Details  so no extra row added
-  // and make sure when user remove product and after that user will agin add new row at that time
-  //  new added row shold have product.subcategoryname and product.edprowise margin which is remaining
-
-  // const handleAddProduct = () => {
-  //   setPrepareProducts((prev) => [
-  //     ...prev,
-  //     {
-  //       srNo: prev.length + 1,
-  //       subCategoryName: "",
-  //       prepareQuoteImage: null,
-  //       hsnSacc: "",
-  //       listingRate: "",
-  //       edprowiseMargin: "",
-  //       quantity: "",
-  //       discount: "",
-  //       cgstRate: "",
-  //       sgstRate: "",
-  //       igstRate: "",
-  //     },
-  //   ]);
-  // };
-
-  // const handleRemoveProduct = (index) => {
-  //   const updatedProducts = prepareProducts.filter((_, i) => i !== index);
-  //   setPrepareProducts(updatedProducts);
-  // };
-
-  // In ViewRequestedQuote component
-
   const handleAddProduct = () => {
-    // Get all subcategory names from the original quote
     const allSubCategories = quote.map((product) => product.subCategoryName);
-    // Get all edprowise margins from the original quote
     const allMargins = quote.map((product) => product.edprowiseMargin);
+    const allSubCategoryIds = quote.map((product) => product.subCategoryId);
+    const allQuantities = quote.map((product) => product.quantity);
 
-    // Get subcategory names already used in prepareProducts
     const usedSubCategories = prepareProducts.map(
       (product) => product.subCategoryName
     );
 
-    // Find the first unused subcategory name
     const availableSubCategory = allSubCategories.find(
       (name) => !usedSubCategories.includes(name)
     );
 
-    // Find the corresponding margin for the available subcategory
     const availableMargin =
       allMargins[allSubCategories.indexOf(availableSubCategory)];
+
+    const availableQuantity =
+      allQuantities[allSubCategories.indexOf(availableSubCategory)];
+
+    const availableSubCategoryId =
+      allSubCategoryIds[allSubCategories.indexOf(availableSubCategory)];
 
     if (!availableSubCategory) {
       toast.warning("All available products have been added");
@@ -210,11 +180,12 @@ const ViewRequestedQuote = () => {
       {
         srNo: prev.length + 1,
         subCategoryName: availableSubCategory || "",
+        subCategoryId: availableSubCategoryId || "",
         prepareQuoteImage: null,
         hsnSacc: "",
         listingRate: "",
         edprowiseMargin: availableMargin || "",
-        quantity: "",
+        quantity: availableQuantity || "",
         discount: "",
         cgstRate: "",
         sgstRate: "",
@@ -244,6 +215,7 @@ const ViewRequestedQuote = () => {
     prepareProducts.forEach((product, index) => {
       const productData = {
         subcategoryName: product.subCategoryName,
+        subCategoryId: product.subCategoryId,
         hsnSacc: product.hsnSacc,
         listingRate: product.listingRate,
         edprowiseMargin: product.edprowiseMargin,

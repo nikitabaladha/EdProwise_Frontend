@@ -317,6 +317,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                     handleInputChange(quote._id, e)
                                   }
                                   className="form-control"
+                                  required
                                 />
                               ) : (
                                 quote.hsnSacc
@@ -332,6 +333,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                     handleInputChange(quote._id, e)
                                   }
                                   className="form-control"
+                                  required
                                 />
                               ) : (
                                 formatCost(quote.listingRate)
@@ -348,6 +350,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                     handleInputChange(quote._id, e)
                                   }
                                   className="form-control"
+                                  required
                                 />
                               ) : (
                                 quote.quantity
@@ -364,6 +367,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                     handleInputChange(quote._id, e)
                                   }
                                   className="form-control"
+                                  required
                                 />
                               ) : (
                                 quote.discount
@@ -385,6 +389,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                       handleInputChange(quote._id, e)
                                     }
                                     className="form-control"
+                                    required
                                   />
                                 ) : (
                                   quote?.cgstRate
@@ -411,6 +416,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                       handleInputChange(quote._id, e)
                                     }
                                     className="form-control"
+                                    required
                                   />
                                 ) : (
                                   quote?.sgstRate
@@ -437,6 +443,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                       handleInputChange(quote._id, e)
                                     }
                                     className="form-control"
+                                    required
                                   />
                                 ) : (
                                   quote?.igstRate

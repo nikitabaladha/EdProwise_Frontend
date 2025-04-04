@@ -293,6 +293,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                       handleInputChange(quote._id, e)
                                     }
                                     className="form-control"
+                                    required
                                   />
                                 ) : (
                                   <>
@@ -326,6 +327,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                     handleInputChange(quote._id, e)
                                   }
                                   className="form-control"
+                                  required
                                 />
                               ) : (
                                 quote.hsnSacc
@@ -341,6 +343,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                     handleInputChange(quote._id, e)
                                   }
                                   className="form-control"
+                                  required
                                 />
                               ) : (
                                 formatCost(quote.listingRate)
@@ -357,6 +360,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                     handleInputChange(quote._id, e)
                                   }
                                   className="form-control"
+                                  required
                                 />
                               ) : (
                                 quote.quantity
@@ -373,6 +377,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                     handleInputChange(quote._id, e)
                                   }
                                   className="form-control"
+                                  required
                                 />
                               ) : (
                                 quote.discount
@@ -394,6 +399,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                       handleInputChange(quote._id, e)
                                     }
                                     className="form-control"
+                                    required
                                   />
                                 ) : (
                                   quote?.cgstRate
@@ -418,6 +424,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                       handleInputChange(quote._id, e)
                                     }
                                     className="form-control"
+                                    required
                                   />
                                 ) : (
                                   quote?.sgstRate
@@ -442,6 +449,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                       handleInputChange(quote._id, e)
                                     }
                                     className="form-control"
+                                    required
                                   />
                                 ) : (
                                   quote?.igstRate
