@@ -218,6 +218,10 @@ import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/Procure
 
 import SearchResults from "./components/DashboardMainForAdmin/SearchResults.js";
 
+// umesh Added
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword.js";
+import NewPassword from "./components/ForgotPassword/NewPassword.js";
+
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -260,6 +264,24 @@ const AppRoutes = () => {
         element={
           <PublicRoute>
             <AdminSignup />
+          </PublicRoute>
+        }
+      />
+      {/* umesh added */}
+      <Route 
+        path="/forgot-password"
+        element={
+          <PublicRoute>
+            <ForgotPassword/>
+          </PublicRoute>
+        }
+      />
+
+<Route 
+        path="/forgot-password/new-password"
+        element={
+          <PublicRoute>
+            <NewPassword/>
           </PublicRoute>
         }
       />
@@ -314,8 +336,8 @@ const AppRoutes = () => {
         <Route path="view-admin-profile" element={<ViewAdminProfile />} />
         <Route path="update-admin-profile" element={<UpdateAdminProfile />} />
         <Route
-          path="change-edprowise-admin-password"
-          element={<ChangePasswordForAdmin />}
+            path="change-edprowise-admin-password"
+            element={<ChangePasswordForAdmin />}
         />
 
         {/* School Table page and it's Add, View, Update Routes */}

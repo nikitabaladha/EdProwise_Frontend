@@ -35,12 +35,17 @@ const PasswordUpdateEmailTamplate = () => {
           const fetchSettings = async () => {
             try {
               const response = await getAPI("/get-smtp-email-settings", {}, true);
-              if (!response.hasError) {
+              if (!response.hasError && response.data?.data) {
                 setFormData((prevData) => ({
                   ...prevData,
                   mailFrom: response.data.data.mailFromName || "",
                 }));
-              }
+              }else {
+                setFormData((prevData) => ({
+                    ...prevData,
+                    mailFrom: "",
+                }));
+            }
             } catch (err) {
               toast.error("Error fetching email settings: " + err.message);
             }
@@ -48,13 +53,18 @@ const PasswordUpdateEmailTamplate = () => {
       
           const fetchEmailTemplate = async () => {
             try {
-              const response = await getAPI("/get-seller-registration-templates", {}, true);
-              if (!response.hasError) {
+              const response = await getAPI("/get-password-templates", {}, true);
+              if (!response.hasError&& response.data?.data && response.data.data.content) {
                 setFormData((prevData) => ({
                   ...prevData,
                   content: response.data.data.content || "",
                 }));
-              }
+              } else {
+                setFormData((prevData) => ({
+                    ...prevData,
+                    content: "",
+                }));
+            }
             } catch (err) {
               toast.error("Error fetching email template: " + err.message);
             }
@@ -68,7 +78,7 @@ const PasswordUpdateEmailTamplate = () => {
           e.preventDefault();
       
           try {
-            const response = await postAPI("/post-seller-registration-templates", formData, true);
+            const response = await postAPI("/post-password-templates", formData, true);
             if (!response.hasError) {
               toast.success("Email template saved successfully!");
             } else {

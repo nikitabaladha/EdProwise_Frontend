@@ -29,6 +29,11 @@ const UserLogin = () => {
     event.preventDefault();
     navigate("/");
   };
+  const navigateToForgotPassword = (event) => {
+    event.preventDefault();
+    navigate("/forgot-password");
+  };
+  
   const navigateToSignup = (event) => {
     event.preventDefault();
     navigate("/signup");
@@ -198,10 +203,17 @@ const UserLogin = () => {
                       Sign In
                     </button>
                   </div>
+                  <div className=" text-center">
+                  <Link onClick={navigateToForgotPassword} >
+                    Forgot Password?{"  "}
+                  </Link>
+                  </div>
+                  <div className=" mt-3 text-center">
                   <Link to="/" onClick={navigateToHome}>
-                    {" "}
+                    {"  "}
                     Go to Home{" "}
                   </Link>
+                  </div>
                   <div className=" mt-3 text-center">
                     <Link onClick={navigateToSignup}>
                       If you are not Register, Sign Up Here
