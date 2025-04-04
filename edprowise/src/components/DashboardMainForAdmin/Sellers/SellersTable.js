@@ -100,9 +100,9 @@ const SellersTable = () => {
     navigate(`/admin-dashboard/sellers/add-new-seller`);
   };
 
-  const navigateToViewSeller = (event, seller) => {
+  const navigateToViewSeller = (event, sellerId) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/sellers/view-seller`, { state: { seller } });
+    navigate(`/admin-dashboard/sellers/view-seller`, { state: { sellerId } });
   };
 
   const navigateToUpdateSeller = (event, seller) => {
@@ -210,6 +210,7 @@ const SellersTable = () => {
                           </td>
 
                           <td>{seller.randomId}</td>
+
                           <td>
                             <div className="d-flex align-items-center gap-2">
                               <div className="rounded bg-light d-flex align-items-center justify-content-center">
@@ -235,7 +236,7 @@ const SellersTable = () => {
                             <div className="d-flex gap-2">
                               <Link
                                 onClick={(event) =>
-                                  navigateToViewSeller(event, seller)
+                                  navigateToViewSeller(event, seller.sellerId)
                                 }
                                 className="btn btn-light btn-sm"
                               >

@@ -55,11 +55,11 @@ const TrackOrderHistoryTable = () => {
     fetchOrderData();
   }, []);
 
-  const navigateToViewOrder = (event, order, enquiryNumber) => {
+  const navigateToViewOrder = (event, order, orderNumber, enquiryNumber) => {
     console.log("Navigating to view order", event, order, enquiryNumber);
     event.preventDefault();
     navigate(`/school-dashboard/procurement-services/view-order-history`, {
-      state: { order, enquiryNumber },
+      state: { order, orderNumber, enquiryNumber },
     });
   };
 
@@ -215,6 +215,7 @@ const TrackOrderHistoryTable = () => {
                                   navigateToViewOrder(
                                     event,
                                     order,
+                                    order.orderNumber,
                                     order.enquiryNumber
                                   )
                                 }

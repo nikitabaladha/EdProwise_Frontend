@@ -77,10 +77,16 @@ const TrackOrderHistoryTable = () => {
     setIsModalOpen(false);
   };
 
-  const navigateToViewOrder = (event, order, enquiryNumber) => {
+  const navigateToViewOrder = (
+    event,
+    order,
+    orderNumber,
+    enquiryNumber,
+    sellerId
+  ) => {
     event.preventDefault();
     navigate(`/seller-dashboard/procurement-services/view-order-history`, {
-      state: { order, enquiryNumber },
+      state: { order, orderNumber, enquiryNumber, sellerId },
     });
   };
 
@@ -358,7 +364,9 @@ const TrackOrderHistoryTable = () => {
                                   navigateToViewOrder(
                                     event,
                                     order,
-                                    order.enquiryNumber
+                                    order.orderNumber,
+                                    order.enquiryNumber,
+                                    order.sellerId
                                   )
                                 }
                                 className="btn btn-light btn-sm"

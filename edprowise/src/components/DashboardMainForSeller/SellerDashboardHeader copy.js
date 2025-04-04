@@ -1,19 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
-import { BiMessageDots } from "react-icons/bi";
-import { IoWalletOutline } from "react-icons/io5";
-import { IoMdHelpCircleOutline } from "react-icons/io";
-import { PiLockKeyBold } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
 import { IoKeyOutline } from "react-icons/io5";
-
 import { ThemeContext } from "../ThemeProvider";
 import getAPI from "../../api/getAPI";
 import { useNavigate } from "react-router-dom";
-import SearchComponent from "./SearchComponent"; // Import the SearchComponent
 
-const AdminDashboardHeader = () => {
+const SellerDashboardHeader = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -21,8 +15,27 @@ const AdminDashboardHeader = () => {
     localStorage.removeItem("userDetails");
     window.location.href = "/login";
   };
+  const [sellerProfile, setSellerProfile] = useState(null);
 
-  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const fetchSellerProfileData = async () => {
+    try {
+      const response = await getAPI(`/seller-profile`, {}, true);
+
+      if (!response.hasError && response.data && response.data.data) {
+        setSellerProfile(response.data.data);
+
+        console.log("seller data from heder", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Seller data:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSellerProfileData();
+  }, []);
 
   const toggleSidebar = () => {
     const htmlElement = document.documentElement;
@@ -60,40 +73,96 @@ const AdminDashboardHeader = () => {
 
   const { theme, toggleTheme } = useContext(ThemeContext);
 
-  const [adminProfile, setAdminProfile] = useState(null);
-
-  const fetchEdprowiseProfileData = async () => {
-    try {
-      const response = await getAPI(`/edprowise-profile`, {}, true);
-
-      if (!response.hasError && response.data && response.data.data) {
-        setAdminProfile(response.data.data);
-
-        console.log("Admin data from heder", response.data.data);
-      } else {
-        console.error("Invalid response format or error in response");
-      }
-    } catch (err) {
-      console.error("Error fetching Admin data:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchEdprowiseProfileData();
-  }, []);
-
-  const navigateToViewAdminProfile = (event, _id) => {
+  const navigateToViewSellerProfile = (event, _id) => {
     event.preventDefault();
-    navigate("/admin-dashboard/view-admin-profile", {
+    navigate("/seller-dashboard/view-seller-profile", {
       state: { _id },
     });
   };
 
-  const navigateToChangeAdminPassword = (event, adminProfile) => {
+  const navigateToChangeSellerPassword = (event, sellerProfile) => {
     event.preventDefault();
-    navigate("/admin-dashboard/change-edprowise-admin-password", {
-      state: { adminProfile },
+    navigate("/seller-dashboard/change-seller-password", {
+      state: { sellerProfile },
     });
+  };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+
+  const handleSearch = async (event) => {
+    if (event.key === "Enter" || event.type === "click") {
+      event.preventDefault();
+
+      if (!searchQuery.trim()) {
+        setShowResults(false);
+        return;
+      }
+
+      try {
+        const response = await getAPI(
+          `/global-search?query=${encodeURIComponent(searchQuery)}`,
+          {},
+          true
+        );
+
+        if (response.data?.success) {
+          if (response.data.data.length > 0) {
+            const result = response.data.data[0];
+
+            if (result.type === "quoteRequest") {
+              navigate(
+                `/seller-dashboard/procurement-services/view-requested-quote`,
+                {
+                  state: { searchEnquiryNumber: result.text },
+                }
+              );
+            }
+            if (result.type === "orderFromBuyer") {
+              navigate(
+                `/seller-dashboard/procurement-services/view-order-history`,
+                {
+                  state: { searchOrderNumber: result.text },
+                }
+              );
+            }
+          } else {
+            setSearchResults([
+              {
+                type: "noResults",
+                text: "No matching records found",
+              },
+            ]);
+            setShowResults(true);
+          }
+        }
+      } catch (err) {
+        console.error("Search error:", err);
+        setSearchResults([
+          {
+            type: "error",
+            text: "Search failed. Please try again.",
+          },
+        ]);
+        setShowResults(true);
+      }
+    }
+  };
+
+  const handleResultClick = (result) => {
+    if (result.type === "quoteRequest") {
+      navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
+        state: { searchEnquiryNumber: result.text },
+      });
+    }
+    if (result.type === "orderFromBuyer") {
+      navigate(`/seller-dashboard/procurement-services/view-order-history`, {
+        state: { searchOrderNumber: result.text },
+      });
+    }
+    setShowResults(false);
+    setSearchQuery("");
   };
 
   return (
@@ -120,7 +189,7 @@ const AdminDashboardHeader = () => {
               {/* Menu Toggle Button */}
               <div className="topbar-item">
                 <h4 className="fw-bold topbar-button pe-none text-uppercase mb-0">
-                  Welcome! {userDetails?.firstName} {userDetails?.lastName}
+                  Welcome! {sellerProfile?.companyName}
                 </h4>
               </div>
             </div>
@@ -180,7 +249,6 @@ const AdminDashboardHeader = () => {
                     </div>
                   </div>
                   <div data-simplebar="" style={{ maxHeight: 280 }}>
-                    {/* Item */}
                     <Link
                       to=""
                       className="dropdown-item py-3 border-bottom text-wrap"
@@ -287,8 +355,7 @@ const AdminDashboardHeader = () => {
                   </div>
                 </div>
               </div>
-              
-              
+
               {/* User */}
               <div className="dropdown topbar-item">
                 <Link
@@ -301,10 +368,9 @@ const AdminDashboardHeader = () => {
                 >
                   <span className="d-flex align-items-center">
                     <img
-                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${adminProfile?.edprowiseProfile}`}
+                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.sellerProfile}`}
                       className="rounded-circle"
                       alt="logo light"
-                      
                       style={{ objectFit: "cover" }}
                     />
                   </span>
@@ -313,19 +379,19 @@ const AdminDashboardHeader = () => {
                   <Link
                     className="dropdown-item"
                     onClick={(event) =>
-                      navigateToViewAdminProfile(event, adminProfile?._id)
+                      navigateToViewSellerProfile(event, sellerProfile?._id)
                     }
                   >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">
-                      {userDetails?.firstName} {userDetails?.lastName}
+                      {sellerProfile?.companyName}
                     </span>
                   </Link>
 
                   <Link
                     className="dropdown-item"
                     onClick={(event) =>
-                      navigateToChangeAdminPassword(event, adminProfile)
+                      navigateToChangeSellerPassword(event, sellerProfile)
                     }
                   >
                     <IoKeyOutline className="bx bx-message-dots text-muted fs-18 align-middle me-1" />
@@ -342,8 +408,21 @@ const AdminDashboardHeader = () => {
                 </div>
               </div>
               {/* App Search*/}
-              {/* see this is my search form right now  its not working but i want that whatever i type here it took me to the page whereever that word match in entire application */}
-              <SearchComponent /> {/* Replace the old search form with the new SearchComponent */}
+              <form className="app-search d-none d-md-block ms-2">
+                <div className="position-relative">
+                  <input
+                    type="search"
+                    className="form-control"
+                    placeholder="Search..."
+                    autoComplete="off"
+                    defaultValue=""
+                  />
+                  <iconify-icon
+                    icon="solar:magnifer-linear"
+                    className="search-widget-icon"
+                  />
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -352,4 +431,4 @@ const AdminDashboardHeader = () => {
   );
 };
 
-export default AdminDashboardHeader;
+export default SellerDashboardHeader;

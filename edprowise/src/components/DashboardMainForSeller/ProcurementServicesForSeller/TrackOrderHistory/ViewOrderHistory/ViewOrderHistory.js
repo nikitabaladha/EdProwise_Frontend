@@ -16,11 +16,9 @@ const formatDate = (dateString) => {
 
 const ViewOrderHistory = () => {
   const location = useLocation();
-  const order = location.state?.order;
-  const orderNumber = order.orderNumber;
-  const sellerId = order.sellerId;
 
-  const enquiryNumber = location.state?.enquiryNumber;
+  const orderNumber =
+    location.state?.orderNumber || location.state?.searchOrderNumber;
 
   const navigate = useNavigate();
 
@@ -33,8 +31,35 @@ const ViewOrderHistory = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
+  const [order, setOrderDetails] = useState([]);
+  const [sellerId, setSellerId] = useState("");
+  const [enquiryNumber, setEnquiryNumber] = useState("");
+
+  const fetchOrderData = async () => {
+    try {
+      const response = await getAPI(
+        `/order-details-by-orderNumber/${orderNumber}`,
+        {},
+        true
+      );
+      if (!response.hasError && response.data.data) {
+        setOrderDetails(response.data.data);
+        setSellerId(response.data.data.sellerId);
+        setEnquiryNumber(response.data.data.enquiryNumber);
+        console.log("Order Details", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Order details:", err);
+    }
+  };
+
   useEffect(() => {
-    if (!enquiryNumber) return;
+    fetchOrderData();
+  }, []);
+
+  useEffect(() => {
     const fetchQuoteData = async () => {
       try {
         const response = await getAPI(
@@ -91,9 +116,9 @@ const ViewOrderHistory = () => {
     setShowModal(true);
   };
 
-  if (!order) {
-    return <div>No order details available.</div>;
-  }
+  // if (!order) {
+  //   return <div>No order details available.</div>;
+  // }
 
   return (
     <>

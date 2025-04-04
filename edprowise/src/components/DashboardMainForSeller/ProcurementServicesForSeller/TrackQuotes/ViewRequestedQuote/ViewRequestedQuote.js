@@ -22,7 +22,9 @@ const formatDate = (dateString) => {
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
+
+  const enquiryNumber =
+    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const sellerId = userDetails?.id;

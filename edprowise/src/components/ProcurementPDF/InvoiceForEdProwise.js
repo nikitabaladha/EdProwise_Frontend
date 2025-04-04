@@ -947,7 +947,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.cgstRate}
+                    {item.cgstRateForEdprowise}
                   </td>
                   <td
                     style={{
@@ -965,7 +965,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.sgstRate}
+                    {item.sgstRateForEdprowise}
                   </td>
                   <td
                     style={{
@@ -983,7 +983,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.igstRate}
+                    {item.igstRateForEdprowise}
                   </td>
                   <td
                     style={{

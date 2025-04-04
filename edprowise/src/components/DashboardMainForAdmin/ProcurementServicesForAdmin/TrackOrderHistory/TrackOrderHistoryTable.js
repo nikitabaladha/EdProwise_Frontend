@@ -62,13 +62,14 @@ const TrackOrderHistoryTable = () => {
   const navigateToViewOrder = (
     event,
     order,
+    orderNumber,
     enquiryNumber,
     schoolId,
     sellerId
   ) => {
     event.preventDefault();
     navigate(`/admin-dashboard/procurement-services/view-order-history`, {
-      state: { order, enquiryNumber, schoolId, sellerId },
+      state: { order, orderNumber, enquiryNumber, schoolId, sellerId },
     });
   };
 
@@ -274,6 +275,7 @@ const TrackOrderHistoryTable = () => {
                                   navigateToViewOrder(
                                     event,
                                     order,
+                                    order.orderNumber,
                                     order.enquiryNumber,
                                     order.schoolId,
                                     order.sellerId

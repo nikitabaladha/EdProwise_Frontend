@@ -25,7 +25,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   const [subscription, setSubscription] = useState([]);
 
   const schoolId = location.state?.schoolId;
-  const searchQuery = location.state?.searchQuery;
 
   const [school, setSchool] = useState(null);
 

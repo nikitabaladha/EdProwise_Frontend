@@ -123,10 +123,25 @@ const AdminDashboardHeader = () => {
                   state: { searchEnquiryNumber: result.text },
                 }
               );
+            }
+            if (result.type === "orderFromBuyer") {
+              navigate(
+                `/admin-dashboard/procurement-services/view-order-history`,
+                {
+                  state: { searchOrderNumber: result.text },
+                }
+              );
             } else if (result.type === "school") {
               navigate(`/admin-dashboard/schools/view-school`, {
                 state: {
                   schoolId: result.schoolId || result.text,
+                  searchQuery: searchQuery,
+                },
+              });
+            } else if (result.type === "seller") {
+              navigate(`/admin-dashboard/sellers/view-seller`, {
+                state: {
+                  sellerId: result.sellerId || result.text,
                   searchQuery: searchQuery,
                 },
               });
@@ -159,10 +174,22 @@ const AdminDashboardHeader = () => {
       navigate(`/admin-dashboard/procurement-services/view-requested-quote`, {
         state: { searchEnquiryNumber: result.text },
       });
+    }
+    if (result.type === "orderFromBuyer") {
+      navigate(`/admin-dashboard/procurement-services/view-order-history`, {
+        state: { searchOrderNumber: result.text },
+      });
     } else if (result.type === "school") {
       navigate(`/admin-dashboard/schools/view-school`, {
         state: {
           schoolId: result.schoolId || result.text,
+          searchQuery: searchQuery,
+        },
+      });
+    } else if (result.type === "seller") {
+      navigate(`/admin-dashboard/sellers/view-seller`, {
+        state: {
+          sellerId: result.sellerId || result.text,
           searchQuery: searchQuery,
         },
       });
@@ -443,7 +470,7 @@ const AdminDashboardHeader = () => {
                           className="search-result-item"
                           onClick={() => handleResultClick(result)}
                         >
-                          {/* i want to allow schoolName also */}
+                          {/* School*/}
                           {result.type === "school" && (
                             <>
                               <iconify-icon
@@ -452,10 +479,32 @@ const AdminDashboardHeader = () => {
                               />
                               {result.exactMatchForSchoolEmail ? (
                                 <>Email: {result.text}</>
+                              ) : result.exactMatchForSchoolMobileNumber ? (
+                                <>Mobile Number: {result.text}</>
                               ) : result.exactMatchForSchoolId ? (
                                 <>School ID: {result.text}</>
                               ) : result.exactMatchForSchoolName ? (
                                 <>School Name: {result.text}</>
+                              ) : (
+                                <>{result.text}</>
+                              )}
+                            </>
+                          )}
+                          {/* Seller */}
+                          {result.type === "seller" && (
+                            <>
+                              <iconify-icon
+                                icon="solar:school-outline"
+                                className="me-2"
+                              />
+                              {result.exactMatchForSellerEmail ? (
+                                <>Email: {result.text}</>
+                              ) : result.exactMatchForSellerMobileNumber ? (
+                                <>Mobile Number: {result.text}</>
+                              ) : result.exactMatchForCompanyName ? (
+                                <>Comapny Name: {result.text}</>
+                              ) : result.exactMatchForSellerRandomId ? (
+                                <>Random Id: {result.text}</>
                               ) : (
                                 <>{result.text}</>
                               )}

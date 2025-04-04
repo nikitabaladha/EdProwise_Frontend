@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import autoTable from "jspdf-autotable";
+
 import { useLocation } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import ReasonModal from "./ReasonModal";
 import { formatCost } from "../../../../CommonFunction";
 
-import jsPDF from "jspdf";
 import { format } from "date-fns";
 
 const formatDate = (dateString) => {
@@ -21,7 +19,9 @@ const formatDate = (dateString) => {
 
 const ViewAllQuoteTable = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
+
+  const enquiryNumber =
+    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
 
   const navigate = useNavigate();
 

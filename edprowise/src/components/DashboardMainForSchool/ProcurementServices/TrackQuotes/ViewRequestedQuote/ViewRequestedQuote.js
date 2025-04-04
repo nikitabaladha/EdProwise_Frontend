@@ -20,7 +20,9 @@ const formatDate = (dateString) => {
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
+
+  const enquiryNumber =
+    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
 
   const navigate = useNavigate();
 
@@ -197,8 +199,6 @@ const ViewRequestedQuote = () => {
                   </tbody>
                 </table>
               </div>
-
-              
 
               <div className="d-flex justify-content-between mt-2">
                 {Object.values(submittedQuotes).some(

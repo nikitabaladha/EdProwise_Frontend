@@ -9,24 +9,25 @@ import { Link } from "react-router-dom";
 const ViewSeller = () => {
   const location = useLocation();
 
-  const profileId = location.state?.seller.sellerId;
-  console.log("profileId");
+  const sellerId = location.state?.sellerId;
+  console.log("sellerId", sellerId);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (profileId) {
+    if (sellerId) {
       fetchSellerProfileData();
     } else {
       console.error("No profile ID provided");
     }
-  }, [profileId]);
+  }, [sellerId]);
 
   const [sellerProfile, setSellerProfile] = useState(null);
 
   const fetchSellerProfileData = async () => {
     try {
       const response = await getAPI(
-        `/seller-profile-get-by-id/${profileId}`,
+        `/seller-profile-get-by-id/${sellerId}`,
         {},
         true
       );
