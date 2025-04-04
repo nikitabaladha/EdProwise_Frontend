@@ -89,6 +89,13 @@ import AddNewSubscription from "./components/DashboardMainForAdmin/Subscription/
 import ViewSubscriptions from "./components/DashboardMainForAdmin/Subscription/ViewSubscription/ViewSubscription";
 import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/UpdateSubscription/UpdateSubscription";
 
+// =====================================EmailSettings====================================
+import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettings/SMTPHostSettings/SMTPHostSettings.js";
+import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
+import SchoolRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRegistrationEmailTamplate.js";
+import SellerRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SellerRegistrationEmailTamplate.js";
+import PasswordUpdateEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/PasswordUpdate.js";
+
 // ========================================Fees module===========================================
 
 import ViewRequestsForDemo from "./components/DashboardMainForAdmin/ViewRequestsForDemo/ViewRequestsForDemo.js";
@@ -195,7 +202,9 @@ import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/Procu
 
 import PayToEdprowiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise.js";
 
-import SearchResults from "./components/DashboardMainForAdmin/SearchResults.js";
+// umesh Added
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword.js";
+import NewPassword from "./components/ForgotPassword/NewPassword.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -244,6 +253,24 @@ const AppRoutes = () => {
       />
 
       <Route
+        path="/forgot-password"
+        element={
+          <PublicRoute>
+            <ForgotPassword />
+          </PublicRoute>
+        }
+      />
+
+      <Route
+        path="/forgot-password/new-password"
+        element={
+          <PublicRoute>
+            <NewPassword />
+          </PublicRoute>
+        }
+      />
+
+      <Route
         path="/complete-admin-profile"
         element={
           <PrivateRoute>
@@ -278,7 +305,6 @@ const AppRoutes = () => {
       />
 
       {/* ===================================================Admin Routes==================================== */}
-      {/* <Route path="/search-results" element={<SearchResults />} /> */}
       <Route
         path="/admin-dashboard"
         element={
@@ -396,8 +422,25 @@ const AppRoutes = () => {
           path="procurement-services/invoice-for-buyer"
           element={<InvoiceForBuyerForAll />}
         />
+
+        {/*=============================== Email routes================== */}
+        <Route path="email/smtp-setting" element={<SMTPHostSettings />} />
+        <Route path="email/templates" element={<EmailTemplatesList />} />
+        <Route
+          path="email/templates/school-registration-template"
+          element={<SchoolRegistrationEmailTamplate />}
+        />
+        <Route
+          path="email/templates/seller-registration-template"
+          element={<SellerRegistrationEmailTamplate />}
+        />
+        <Route
+          path="email/templates/password-update-template"
+          element={<PasswordUpdateEmailTamplate />}
+        />
       </Route>
 
+      {/* ==========================================Schhool Routes================================*/}
       <Route
         path="/school-dashboard"
         element={
@@ -583,6 +626,7 @@ const AppRoutes = () => {
           element={<SchoolFeesReceipts />}
         />
       </Route>
+
       {/* =========================================Seller Routes============================================= */}
 
       <Route

@@ -1904,6 +1904,7 @@ ul.service-suggestions.slide-text.pb-2 {
 
 .cart-vm {
   position: relative;
+  margin-top: 10px;
   width: 250px; /* Adjust width as needed */
   height: 250px; /* Initial height */
   border-radius: 125px; /* Creates the rounded oval shape */
