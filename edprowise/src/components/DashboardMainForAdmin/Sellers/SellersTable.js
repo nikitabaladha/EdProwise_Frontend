@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import { exportToExcel } from "../../export-excel";
 import { toast } from "react-toastify";
 import getAPI from "../../../api/getAPI";
+import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
 
-import ConfirmationDialog from "../../ConfirmationDialog";
 const SellersTable = () => {
   const [sellers, setSellers] = useState([]);
 
@@ -89,10 +89,17 @@ const SellersTable = () => {
     setSelectedSeller(null);
   };
 
-  const handleDeleteConfirmed = (sellerId) => {
-    setSellers((prevSellers) =>
-      prevSellers.filter((seller) => seller.sellerId !== sellerId)
-    );
+  const handleDeleteConfirmed = async (sellerId) => {
+    try {
+      setSellers((prevSellers) =>
+        prevSellers.filter((seller) => seller.sellerId !== sellerId)
+      );
+    } catch (error) {
+      console.error("Error deleting seller:", error);
+      toast.error("Failed to delete seller. Please try again.");
+
+      fetchSellersData();
+    }
   };
 
   const navigateToAddNewSeller = (event) => {
@@ -322,7 +329,7 @@ const SellersTable = () => {
         </div>
       </div>
       {isDeleteDialogOpen && (
-        <ConfirmationDialog
+        <StatusDeleteConfirmDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
           id={selectedSeller.sellerId}

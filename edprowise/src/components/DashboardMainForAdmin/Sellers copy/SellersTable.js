@@ -6,125 +6,118 @@ import { exportToExcel } from "../../export-excel";
 import { toast } from "react-toastify";
 import getAPI from "../../../api/getAPI";
 
-import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
+import ConfirmationDialog from "../../ConfirmationDialog";
+const SellersTable = () => {
+  const [sellers, setSellers] = useState([]);
 
-const SchoolsTable = () => {
-  const navigate = useNavigate();
+  const [selectedSeller, setSelectedSeller] = useState(null);
 
-  const [schools, setSchools] = useState([]);
-
-  const [selectedSchool, setSelectedSchool] = useState(null);
-
-  const fetchSchoolData = async () => {
+  const fetchSellersData = async () => {
     try {
-      const response = await getAPI(`/school`, {}, true);
+      const response = await getAPI(`/seller-profile-get-all`, {}, true);
       if (
         !response.hasError &&
         response.data &&
         Array.isArray(response.data.data)
       ) {
-        setSchools(response.data.data);
-        console.log("school data", response.data.data);
+        setSellers(response.data.data);
+        console.log("seller data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
     } catch (err) {
-      console.error("Error fetching School List:", err);
+      console.error("Error fetching Seller List:", err);
     }
   };
 
   useEffect(() => {
-    fetchSchoolData();
+    fetchSellersData();
   }, []);
 
+  const navigate = useNavigate();
+
   const handleExport = () => {
-    if (!schools.length) {
+    if (!sellers.length) {
       toast.error("No data available to export");
       return;
     }
 
-    const formattedData = schools.map((school) => ({
-      School_ID: school.schoolId,
-      School_Name: school.schoolName,
-      PAN_Number: school.panNo,
-      School_Address: school.schoolAddress,
-      School_Location: school.schoolLocation,
-      Landmark: school.landMark,
-      School_Pincode: school.schoolPincode,
-      Delivery_Address: school.deliveryAddress,
-      Delivery_Location: school.deliveryLocation,
-      Delivery_Landmark: school.deliveryLandMark,
-      Delivery_Pincode: school.deliveryPincode,
-      School_Mobile_No: school.schoolMobileNo,
-      School_Alternate_Contact_No: school.schoolAlternateContactNo,
-      School_Email: school.schoolEmail,
-      Contact_Person_Name: school.contactPersonName,
-      Number_of_Students: school.numberOfStudents,
-      Principal_Name: school.principalName,
-      Affiliation_Upto: school.affiliationUpto,
-      PAN_File_URL: school.panFile,
-      Profile_Image_URL: school.profileImage,
-      Affiliation_Certificate_URL: school.affiliationCertificate,
-      Created_At: school.createdAt,
-      Updated_At: school.updatedAt,
+    const formattedData = sellers.map((seller) => ({
+      Seller_ID: seller.sellerId,
+      Random_ID: seller.randomId,
+      Company_Name: seller.companyName,
+      Company_Type: seller.companyType,
+      GSTIN: seller.gstin,
+      PAN: seller.pan,
+      TAN: seller.tan,
+      CIN: seller.cin,
+      Address: seller.address,
+      City_State_Country: seller.cityStateCountry,
+      Landmark: seller.landmark,
+      Pincode: seller.pincode,
+      Contact_No: seller.contactNo,
+      Alternate_Contact_No: seller.alternateContactNo,
+      Email_ID: seller.emailId,
+      Bank_Account_No: seller.accountNo,
+      IFSC_Code: seller.ifsc,
+      Account_Holder_Name: seller.accountHolderName,
+      Bank_Name: seller.bankName,
+      Branch_Name: seller.branchName,
+      No_of_Employees: seller.noOfEmployees,
+      CEO_Name: seller.ceoName,
+      Annual_Turnover: seller.turnover,
+      Seller_Profile_Image: seller.sellerProfile,
+      Created_At: seller.createdAt,
+      Updated_At: seller.updatedAt,
     }));
 
-    exportToExcel(formattedData, "Schools", "Schools");
+    exportToExcel(formattedData, "Sellers", "Sellers");
   };
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
 
-  const openDeleteDialog = (school) => {
-    setSelectedSchool(school);
+  const openDeleteDialog = (seller) => {
+    console.log("open delete dialog", seller);
+    setSelectedSeller(seller);
     setIsDeleteDialogOpen(true);
-    setDeleteType("school");
+    setDeleteType("seller");
   };
 
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
-    setSelectedSchool(null);
+    setSelectedSeller(null);
   };
 
-  const handleDeleteConfirmed = async (schoolId) => {
-    try {
-      setSchools((prevSchools) =>
-        prevSchools.filter((school) => school.schoolId !== schoolId)
-      );
-    } catch (error) {
-      console.error("Error deleting school:", error);
-      toast.error("Failed to delete school. Please try again.");
-
-      fetchSchoolData();
-    }
+  const handleDeleteConfirmed = (sellerId) => {
+    setSellers((prevSellers) =>
+      prevSellers.filter((seller) => seller.sellerId !== sellerId)
+    );
   };
 
-  const navigateToAddNewSchool = (event) => {
+  const navigateToAddNewSeller = (event) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/schools/add-new-school`);
+    navigate(`/admin-dashboard/sellers/add-new-seller`);
   };
 
-  const navigateToViewSchool = (event, schoolId) => {
+  const navigateToViewSeller = (event, sellerId) => {
     event.preventDefault();
-    console.log("schoolId from navigate function", schoolId);
-    navigate(`/admin-dashboard/schools/view-school`, {
-      state: { schoolId },
-    });
+    navigate(`/admin-dashboard/sellers/view-seller`, { state: { sellerId } });
   };
 
-  const navigateToUpdateSchool = (event, school) => {
+  const navigateToUpdateSeller = (event, seller) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/schools/update-school`, { state: { school } });
+    navigate(`/admin-dashboard/sellers/update-seller`, { state: { seller } });
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [schoolsPerPage] = useState(10);
+  const [sellersPerPage] = useState(10);
 
-  const indexOfLastSchool = currentPage * schoolsPerPage;
-  const indexOfFirstSchool = indexOfLastSchool - schoolsPerPage;
-  const currentSchools = schools.slice(indexOfFirstSchool, indexOfLastSchool);
+  const indexOfLastSeller = currentPage * sellersPerPage;
+  const indexOfFirstSeller = indexOfLastSeller - sellersPerPage;
+  const currentSellers = sellers.slice(indexOfFirstSeller, indexOfLastSeller);
 
-  const totalPages = Math.ceil(schools.length / schoolsPerPage);
+  const totalPages = Math.ceil(sellers.length / sellersPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -156,12 +149,12 @@ const SchoolsTable = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All School List</h4>
+                <h4 className="card-title flex-grow-1">All Seller List</h4>
                 <Link
-                  onClick={(event) => navigateToAddNewSchool(event)}
+                  onClick={(event) => navigateToAddNewSeller(event)}
                   className="btn btn-sm btn-primary"
                 >
-                  Add School
+                  Add Seller
                 </Link>
 
                 <div className="text-end">
@@ -189,17 +182,17 @@ const SchoolsTable = () => {
                             />
                           </div>
                         </th>
-                        <th>School Id</th>
-                        <th className="text-start">School Name</th>
-                        <th>School Mobile No</th>
-                        <th>School Email</th>
-                        <th>School PAN</th>
+                        <th>SellerId</th>
+                        <th className="text-start">Company Name</th>
+                        <th>Seller Mobile No</th>
+                        <th>Seller Email</th>
+                        <th>Seller PAN</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {currentSchools.map((school) => (
-                        <tr key={school._id}>
+                      {currentSellers.map((seller) => (
+                        <tr key={seller._id}>
                           <td>
                             <div className="form-check ms-1">
                               <input
@@ -215,14 +208,15 @@ const SchoolsTable = () => {
                               </label>
                             </div>
                           </td>
-                          <td>{school.schoolId}</td>
+
+                          <td>{seller.randomId}</td>
 
                           <td>
                             <div className="d-flex align-items-center gap-2">
                               <div className="rounded bg-light d-flex align-items-center justify-content-center">
                                 <img
-                                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`}
-                                  alt={`${school.schoolName} Profile`}
+                                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${seller.sellerProfile}`}
+                                  alt={`${seller.companyName} Profile`}
                                   className="avatar-md"
                                   style={{
                                     objectFit: "cover",
@@ -232,17 +226,17 @@ const SchoolsTable = () => {
                                   }}
                                 />
                               </div>
-                              <div>{school.schoolName}</div>
+                              <div>{seller.companyName}</div>
                             </div>
                           </td>
-                          <td>{school.schoolMobileNo}</td>
-                          <td>{school.schoolEmail}</td>
-                          <td>{school.panNo}</td>
+                          <td>{seller.contactNo}</td>
+                          <td>{seller.emailId}</td>
+                          <td>{seller.pan}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link
                                 onClick={(event) =>
-                                  navigateToViewSchool(event, school.schoolId)
+                                  navigateToViewSeller(event, seller.sellerId)
                                 }
                                 className="btn btn-light btn-sm"
                               >
@@ -253,7 +247,7 @@ const SchoolsTable = () => {
                               </Link>
                               <Link
                                 onClick={(event) =>
-                                  navigateToUpdateSchool(event, school)
+                                  navigateToUpdateSeller(event, seller)
                                 }
                                 className="btn btn-soft-primary btn-sm"
                               >
@@ -266,7 +260,7 @@ const SchoolsTable = () => {
                                 className="btn btn-soft-danger btn-sm"
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  openDeleteDialog(school);
+                                  openDeleteDialog(seller);
                                 }}
                               >
                                 <iconify-icon
@@ -328,10 +322,10 @@ const SchoolsTable = () => {
         </div>
       </div>
       {isDeleteDialogOpen && (
-        <StatusDeleteConfirmDialog
+        <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
-          id={selectedSchool.schoolId}
+          id={selectedSeller.sellerId}
           onDeleted={handleDeleteConfirmed}
         />
       )}
@@ -339,4 +333,4 @@ const SchoolsTable = () => {
   );
 };
 
-export default SchoolsTable;
+export default SellersTable;

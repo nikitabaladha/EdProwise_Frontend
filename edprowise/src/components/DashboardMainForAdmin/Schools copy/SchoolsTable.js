@@ -6,8 +6,7 @@ import { exportToExcel } from "../../export-excel";
 import { toast } from "react-toastify";
 import getAPI from "../../../api/getAPI";
 
-import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
-
+import ConfirmationDialog from "../../ConfirmationDialog";
 const SchoolsTable = () => {
   const navigate = useNavigate();
 
@@ -86,17 +85,10 @@ const SchoolsTable = () => {
     setSelectedSchool(null);
   };
 
-  const handleDeleteConfirmed = async (schoolId) => {
-    try {
-      setSchools((prevSchools) =>
-        prevSchools.filter((school) => school.schoolId !== schoolId)
-      );
-    } catch (error) {
-      console.error("Error deleting school:", error);
-      toast.error("Failed to delete school. Please try again.");
-
-      fetchSchoolData();
-    }
+  const handleDeleteConfirmed = (_id) => {
+    setSchools((prevSchools) =>
+      prevSchools.filter((school) => school._id !== _id)
+    );
   };
 
   const navigateToAddNewSchool = (event) => {
@@ -328,10 +320,10 @@ const SchoolsTable = () => {
         </div>
       </div>
       {isDeleteDialogOpen && (
-        <StatusDeleteConfirmDialog
+        <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
-          id={selectedSchool.schoolId}
+          id={selectedSchool._id}
           onDeleted={handleDeleteConfirmed}
         />
       )}

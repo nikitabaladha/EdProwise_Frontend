@@ -7,68 +7,6 @@ import AddressModal from "./AddressModal";
 import Select from "react-select";
 
 const RequestQuote = () => {
-  const unitOptions = [
-    { value: "Piece", label: "Piece" },
-    { value: "Monthly", label: "Monthly" },
-    { value: "Yearly", label: "Yearly" },
-    { value: "Quarterly", label: "Quarterly" },
-    { value: "Kg", label: "Kg" },
-    { value: "Project", label: "Project" },
-    { value: "Sq. feet", label: "Sq. feet" },
-    { value: "BAG - BAGS", label: "BAG - BAGS" },
-    { value: "BAL - BALE", label: "BAL - BALE" },
-    { value: "BDL - BUNDLES", label: "BDL - BUNDLES" },
-    { value: "BKL - BUCKLES", label: "BKL - BUCKLES" },
-    { value: "BOU - BILLION OF UNITS", label: "BOU - BILLION OF UNITS" },
-    { value: "BOX - BOX", label: "BOX - BOX" },
-    { value: "BTL - BOTTLES", label: "BTL - BOTTLES" },
-    { value: "BUN - BUNCHES", label: "BUN - BUNCHES" },
-    { value: "CAN - CANS", label: "CAN - CANS" },
-    { value: "CBM - CUBIC METERS", label: "CBM - CUBIC METERS" },
-    { value: "CCM - CUBIC CENTIMETERS", label: "CCM - CUBIC CENTIMETERS" },
-    { value: "CMS - CENTIMETERS", label: "CMS - CENTIMETERS" },
-    { value: "CTN - CARTONS", label: "CTN - CARTONS" },
-    { value: "DOZ - DOZENS", label: "DOZ - DOZENS" },
-    { value: "DRM - DRUMS", label: "DRM - DRUMS" },
-    { value: "GGK - GREAT GROSS", label: "GGK - GREAT GROSS" },
-    { value: "GMS - GRAMMES", label: "GMS - GRAMMES" },
-    { value: "GRS - GROSS", label: "GRS - GROSS" },
-    { value: "GYD - GROSS YARDS", label: "GYD - GROSS YARDS" },
-    { value: "KGS - KILOGRAMS", label: "KGS - KILOGRAMS" },
-    { value: "KLR - KILOLITRE", label: "KLR - KILOLITRE" },
-    { value: "KME - KILOMETRE", label: "KME - KILOMETRE" },
-    { value: "LTR - LITRES", label: "LTR - LITRES" },
-    { value: "MLT - MILILITRE", label: "MLT - MILILITRE" },
-    { value: "MTR - METERS", label: "MTR - METERS" },
-    { value: "MTS - METRIC TON", label: "MTS - METRIC TON" },
-    { value: "NOS - NUMBERS", label: "NOS - NUMBERS" },
-    { value: "OTH - OTHERS", label: "OTH - OTHERS" },
-    { value: "PAC - PACKS", label: "PAC - PACKS" },
-    { value: "PCS - PIECES", label: "PCS - PIECES" },
-    { value: "PRS - PAIRS", label: "PRS - PAIRS" },
-    { value: "QTL - QUINTAL", label: "QTL - QUINTAL" },
-    { value: "ROL - ROLLS", label: "ROL - ROLLS" },
-    { value: "SET - SETS", label: "SET - SETS" },
-    { value: "SQF - SQUARE FEET", label: "SQF - SQUARE FEET" },
-    { value: "SQM - SQUARE METERS", label: "SQM - SQUARE METERS" },
-    { value: "SQY - SQUARE YARDS", label: "SQY - SQUARE YARDS" },
-    { value: "TBS - TABLETS", label: "TBS - TABLETS" },
-    { value: "TGM - TEN GROSS", label: "TGM - TEN GROSS" },
-    { value: "THD - THOUSANDS", label: "THD - THOUSANDS" },
-    { value: "TON - TONNES", label: "TON - TONNES" },
-    { value: "TUB - TUBES", label: "TUB - TUBES" },
-    { value: "UGS - US GALLONS", label: "UGS - US GALLONS" },
-    { value: "UNT - UNITS", label: "UNT - UNITS" },
-    { value: "YDS - YARDS", label: "YDS - YARDS" },
-  ];
-
-  const handleUnitChange = (selectedOption) => {
-    setFormData((prev) => ({
-      ...prev,
-      unit: selectedOption.value,
-    }));
-  };
-
   const [formData, setFormData] = useState({
     categoryId: "",
     subCategoryId: "",
@@ -307,21 +245,93 @@ const RequestQuote = () => {
                       <label htmlFor="unit" className="form-label">
                         Unit <span className="text-danger">*</span>
                       </label>
-
+                      {/* why select is not showing any list  */}
                       <Select
                         id="unit"
                         name="unit"
-                        options={unitOptions}
-                        value={unitOptions.find(
-                          (option) => option.value === formData.unit
-                        )}
-                        onChange={handleUnitChange}
+                        value={formData.unit}
+                        onChange={handleChange}
+                        required
                         isSearchable
-                        placeholder="Select Unit"
                         classNamePrefix="react-select"
                         className="custom-react-select"
-                        required
-                      />
+                      >
+                        <option value="">Select Unit</option>
+                        <option value="Piece">Piece</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Yearly">Yearly</option>
+                        <option value="Quarterly">Quarterly</option>
+                        <option value="Kg">Kg</option>
+                        <option value="Project">Project</option>
+                        <option value="Sq. feet">Sq. feet</option>
+                        <option value="BAG - BAGS">BAG - BAGS</option>
+                        <option value="BAL - BALE">BAL - BALE</option>
+                        <option value="BDL - BUNDLES">BDL - BUNDLES</option>
+                        <option value="BKL - BUCKLES">BKL - BUCKLES</option>
+                        <option value="BOU - BILLION OF UNITS">
+                          BOU - BILLION OF UNITS
+                        </option>
+                        <option value="BOX - BOX">BOX - BOX</option>
+                        <option value="BTL - BOTTLES">BTL - BOTTLES</option>
+                        <option value="BUN - BUNCHES">BUN - BUNCHES</option>
+                        <option value="CAN - CANS">CAN - CANS</option>
+                        <option value="CBM - CUBIC METERS">
+                          CBM - CUBIC METERS
+                        </option>
+                        <option value="CCM - CUBIC CENTIMETERS">
+                          CCM - CUBIC CENTIMETERS
+                        </option>
+                        <option value="CMS - CENTIMETERS">
+                          CMS - CENTIMETERS
+                        </option>
+                        <option value="CTN - CARTONS">CTN - CARTONS</option>
+                        <option value="DOZ - DOZENS">DOZ - DOZENS</option>
+                        <option value="DRM - DRUMS">DRM - DRUMS</option>
+                        <option value="GGK - GREAT GROSS">
+                          GGK - GREAT GROSS
+                        </option>
+                        <option value="GMS - GRAMMES">GMS - GRAMMES</option>
+                        <option value="GRS - GROSS">GRS - GROSS</option>
+                        <option value="GYD - GROSS YARDS">
+                          GYD - GROSS YARDS
+                        </option>
+                        <option value="KGS - KILOGRAMS">KGS - KILOGRAMS</option>
+                        <option value="KLR - KILOLITRE">KLR - KILOLITRE</option>
+                        <option value="KME - KILOMETRE">KME - KILOMETRE</option>
+                        <option value="LTR - LITRES">LTR - LITRES</option>
+                        <option value="MLT - MILILITRE">MLT - MILILITRE</option>
+                        <option value="MTR - METERS">MTR - METERS</option>
+                        <option value="MTS - METRIC TON">
+                          MTS - METRIC TON
+                        </option>
+                        <option value="NOS - NUMBERS">NOS - NUMBERS</option>
+                        <option value="OTH - OTHERS">OTH - OTHERS</option>
+                        <option value="PAC - PACKS">PAC - PACKS</option>
+                        <option value="PCS - PIECES">PCS - PIECES</option>
+                        <option value="PRS - PAIRS">PRS - PAIRS</option>
+                        <option value="QTL - QUINTAL">QTL - QUINTAL</option>
+                        <option value="ROL - ROLLS">ROL - ROLLS</option>
+                        <option value="SET - SETS">SET - SETS</option>
+                        <option value="SQF - SQUARE FEET">
+                          SQF - SQUARE FEET
+                        </option>
+                        <option value="SQM - SQUARE METERS">
+                          SQM - SQUARE METERS
+                        </option>
+                        <option value="SQY - SQUARE YARDS">
+                          SQY - SQUARE YARDS
+                        </option>
+                        <option value="TBS - TABLETS">TBS - TABLETS</option>
+                        <option value="TGM - TEN GROSS">TGM - TEN GROSS</option>
+                        <option value="THD - THOUSANDS">THD - THOUSANDS</option>
+                        <option value="TON - TONNES">TON - TONNES</option>
+                        <option value="TUB - TUBES">TUB - TUBES</option>
+                        <option value="UGS - US GALLONS">
+                          UGS - US GALLONS
+                        </option>
+                        <option value="UNT - UNITS">UNT - UNITS</option>
+                        <option value="YDS - YARDS">YDS - YARDS</option>
+                      </Select>
                     </div>
                   </div>
                   <div className="col-md-6">

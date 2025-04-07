@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import postAPI from "../../../api/postAPI";
-import getAPI from "../../../api/getAPI";
+import getAPI from "../../../../api/getAPI";
+import postAPI from "../../../../api/postAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import CityData from "../../CityData.json";
+import CityData from "../../../CityData.json";
 import Select from "react-select";
 
-const CompleteSellerProfile = () => {
+const AddNewSeller = () => {
   const [formData, setFormData] = useState({
     companyName: "",
     companyType: "",
@@ -130,14 +130,13 @@ const CompleteSellerProfile = () => {
 
     try {
       const response = await postAPI(
-        "/seller-profile",
+        "/seller-profile-by-admin",
         data,
         { "Content-Type": "multipart/form-data" },
         true
       );
       if (!response.hasError) {
         console.log("profile storage data", response.data.data);
-        const userId = response.data.data.sellerId;
 
         setFormData({
           companyName: "",
@@ -168,15 +167,8 @@ const CompleteSellerProfile = () => {
           gstFile: null,
         });
         setDealingProducts([]);
-        const updatedUserResponse = await getAPI(`/get-seller-by-id/${userId}`);
-        if (!updatedUserResponse.hasError) {
-          localStorage.setItem(
-            "userDetails",
-            JSON.stringify(updatedUserResponse.data.data)
-          );
-        }
-        toast.success("Seller Profile added successfully");
-        navigate("/seller-dashboard");
+        toast.success("Seller added successfully");
+        navigate(-1);
       } else {
         toast.error(response.message || "Failed to add seller profile");
       }
@@ -193,11 +185,6 @@ const CompleteSellerProfile = () => {
       label: `${city}, ${state}, India`,
     }))
   );
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userDetails");
-    window.location.href = "/login";
-  };
 
   return (
     <>
@@ -207,17 +194,10 @@ const CompleteSellerProfile = () => {
             <div className="card m-2">
               <div className="card-body custom-heading-padding">
                 <div className="container">
-                  <div className="card-header mb-2 d-flex justify-content-between align-items-center">
+                  <div className="card-header mb-2">
                     <h4 className="card-title custom-heading-font">
                       Add New Seller
                     </h4>
-                    <button
-                      type="button"
-                      className="btn btn-primary custom-submit-button"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </button>
                   </div>
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -448,7 +428,6 @@ const CompleteSellerProfile = () => {
                           City State Country Location{" "}
                           <span className="text-danger">*</span>
                         </label>
-
                         <Select
                           id="cityStateCountry"
                           name="cityStateCountry"
@@ -743,6 +722,7 @@ const CompleteSellerProfile = () => {
                         <label htmlFor="turnover" className="form-label">
                           Company Turnover
                         </label>
+
                         <select
                           id="turnover"
                           name="turnover"
@@ -751,7 +731,7 @@ const CompleteSellerProfile = () => {
                           onChange={handleChange}
                           // required
                         >
-                          <option value="">Select Company Ternover</option>
+                          <option value="">Select Company Turnover</option>
                           <option value="1 to 10 Lakh">1 to 10 Lakh</option>
                           <option value="10 to 50 Lakh">10 to 50 Lakh</option>
                           <option value="50 Lakh to 1 Crore">
@@ -884,4 +864,4 @@ const CompleteSellerProfile = () => {
   );
 };
 
-export default CompleteSellerProfile;
+export default AddNewSeller;
