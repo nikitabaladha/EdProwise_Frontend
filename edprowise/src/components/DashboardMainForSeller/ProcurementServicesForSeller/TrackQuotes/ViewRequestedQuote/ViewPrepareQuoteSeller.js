@@ -6,8 +6,11 @@ import getAPI from "../../../../../api/getAPI";
 import putAPI from "../../../../../api/putAPI";
 import { Modal } from "react-bootstrap";
 import { formatCost } from "../../../../CommonFunction";
+import { useNavigate } from "react-router-dom";
 
 const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
+  const navigate = useNavigate();
+
   const [preparedQuotes, setPreparedQuotes] = useState([]);
   const [editedQuote, setEditedQuote] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -152,6 +155,14 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     setShowModal(true);
   };
 
+  // here i want to pass enquiryNumber at time of navigate but its not working
+  const navigateToViewSubmitQuote = (event) => {
+    event.preventDefault();
+    navigate(`/seller-dashboard/procurement-services/submit-quote`, {
+      state: { enquiryNumber: enquiryNumber },
+    });
+  };
+
   return (
     <>
       <div className="container">
@@ -160,7 +171,17 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">Prepared Quote List</h4>
+                <div className="text-end">
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={(event) => navigateToViewSubmitQuote(event)}
+                  >
+                    View Submited Quote
+                  </button>
+                </div>
               </div>
+
               <div>
                 <div className="table-responsive">
                   <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
@@ -182,6 +203,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                         <th>Product Subcategory</th>
                         <th>HSN/SACC</th>
                         <th>Listing Rate</th>
+                        <th>Edprowise Margin</th>
                         <th>Quantity</th>
                         <th>Final Rate Before Discount</th>
                         <th>Discount %</th>
@@ -339,6 +361,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                 formatCost(quote.listingRate)
                               )}
                             </td>
+                            <td>{quote?.edprowiseMargin}</td>
 
                             <td>
                               {editedQuote[quote._id] ? (

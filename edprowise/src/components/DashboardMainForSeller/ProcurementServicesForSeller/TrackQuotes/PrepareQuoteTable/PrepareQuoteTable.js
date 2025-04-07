@@ -74,6 +74,9 @@ const PrepareQuoteTable = ({
                       Listing Rate <span className="text-danger">*</span>
                     </th>
                     <th>
+                      Edprowise Margin <span className="text-danger">*</span>
+                    </th>
+                    <th>
                       Quantity <span className="text-danger">*</span>
                     </th>
                     <th>
@@ -138,6 +141,15 @@ const PrepareQuoteTable = ({
                           className="form-control"
                           value={product.listingRate || ""}
                           onChange={(e) => handleChange(index, e)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          name="edprowiseMargin"
+                          className="form-control"
+                          value={product.edprowiseMargin || ""}
+                          readOnly
                         />
                       </td>
 

@@ -9,6 +9,7 @@ import postAPI from "../../../../../api/postAPI";
 import Select from "react-select";
 
 const AddressModal = ({ onClose, cart, formData }) => {
+  const navigate = useNavigate();
   const [school, setSchool] = useState(null);
   const [expectedDeliveryDate, setExpectedDeliveryDate] = useState("");
 
@@ -112,6 +113,7 @@ const AddressModal = ({ onClose, cart, formData }) => {
       if (!response.hasError) {
         toast.success("Quote Requested successfully");
         onClose();
+        navigate(-1);
       } else {
         toast.error(response.message || "Failed to request quote");
       }
@@ -142,7 +144,8 @@ const AddressModal = ({ onClose, cart, formData }) => {
                     <div className="col-md-12">
                       <div className="mb-2">
                         <label htmlFor="deliveryAddress" className="form-label">
-                          Delivery Address <span className="text-danger">*</span>
+                          Delivery Address{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -160,27 +163,32 @@ const AddressModal = ({ onClose, cart, formData }) => {
                           htmlFor="deliveryLocation"
                           className="form-label"
                         >
-                          Delivery Location <span className="text-danger">*</span>
+                          Delivery Location{" "}
+                          <span className="text-danger">*</span>
                         </label>
-                        
+
                         <Select
-                        id="deliveryLocation"
-                        name="deliveryLocation"
-                        options={cityOptions}
-                        value={cityOptions.find(
-                          (option) => option.value === school?.deliveryLocation
-                        )}
-                        onChange={(selectedOption) =>
-                          setSchool(prev => ({
-                            ...prev,
-                            deliveryLocation: selectedOption ? selectedOption.value : ""
-                          }))                        }
-                        placeholder="Select City-State-Country"
-                        isSearchable
-                        required
-                        classNamePrefix="react-select"
-                        className="custom-react-select"
-                      />
+                          id="deliveryLocation"
+                          name="deliveryLocation"
+                          options={cityOptions}
+                          value={cityOptions.find(
+                            (option) =>
+                              option.value === school?.deliveryLocation
+                          )}
+                          onChange={(selectedOption) =>
+                            setSchool((prev) => ({
+                              ...prev,
+                              deliveryLocation: selectedOption
+                                ? selectedOption.value
+                                : "",
+                            }))
+                          }
+                          placeholder="Select City-State-Country"
+                          isSearchable
+                          required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
                       </div>
                     </div>
                     <div className="col-md-12">
@@ -219,7 +227,8 @@ const AddressModal = ({ onClose, cart, formData }) => {
                           htmlFor="expectedDeliveryDate"
                           className="form-label"
                         >
-                          Expected Delivery Date <span className="text-danger">*</span>
+                          Expected Delivery Date{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="date"

@@ -18,14 +18,8 @@ const ViewSchoolProfile = () => {
   const schoolId = location.state?.schoolId;
 
   const [school, setSchool] = useState(null);
-
-  useEffect(() => {
-    if (schoolId) {
-      fetchSchoolData();
-    } else {
-      console.error("No school ID provided");
-    }
-  }, [schoolId]);
+  const [users, setUsers] = useState([]);
+  const [subscription, setSubscription] = useState([]);
 
   const fetchSchoolData = async () => {
     try {
@@ -46,9 +40,55 @@ const ViewSchoolProfile = () => {
     }
   };
 
+  const fetchUserData = async () => {
+    try {
+      const response = await getAPI(
+        `/get-all-user-by-school-id/${schoolId}`,
+        {},
+        true
+      );
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setUsers(response.data.data);
+        console.log("all users", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching User:", err);
+    }
+  };
+
+  const fetchSubscriptionData = async () => {
+    try {
+      const response = await getAPI(`/subscription/${schoolId}`, {}, true);
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setSubscription(response.data.data);
+        console.log("All setSubscriptions", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching User:", err);
+    }
+  };
+
   useEffect(() => {
-    fetchSchoolData();
-  }, []);
+    if (schoolId) {
+      fetchSchoolData();
+      fetchUserData();
+      fetchSubscriptionData();
+    } else {
+      console.error("No school ID provided");
+    }
+  }, [schoolId]);
 
   const navigateToUpdateSchoolProfile = (event, _id, schoolId) => {
     event.preventDefault();
@@ -138,15 +178,33 @@ const ViewSchoolProfile = () => {
                         </label>
                         <p className="form-control">{school.schoolEmail}</p>
                       </div>
+                      <div className="mb-3">
+                        <label
+                          htmlFor="numberOfStudents"
+                          className="form-label"
+                        >
+                          Number Of Students
+                        </label>
+                        <p className="form-control">
+                          {school.numberOfStudents || "Not Provided"}
+                        </p>
+                      </div>
                     </div>
 
                     <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="userId" className="form-label">
+                          User Id
+                        </label>
+                        <p className="form-control">{school?.userId}</p>
+                      </div>
                       <div className="mb-3">
                         <label htmlFor="schoolName" className="form-label">
                           School Name
                         </label>
                         <p className="form-control">{school.schoolName}</p>
                       </div>
+
                       <div className="mb-3">
                         <label
                           htmlFor="contactPersonName"
@@ -167,17 +225,6 @@ const ViewSchoolProfile = () => {
                         </label>
                         <p className="form-control">
                           {school.schoolAlternateContactNo || "Not Provided"}
-                        </p>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="numberOfStudents"
-                          className="form-label"
-                        >
-                          Number Of Students
-                        </label>
-                        <p className="form-control">
-                          {school.numberOfStudents || "Not Provided"}
                         </p>
                       </div>
                     </div>
@@ -395,6 +442,139 @@ const ViewSchoolProfile = () => {
               </div>
             </div>
           </div>
+
+          <div className="row p-2">
+            <div className="col-xl-12">
+              <div className="card">
+                <div className="card-header d-flex justify-content-between align-items-center gap-1">
+                  <h4 className="card-title flex-grow-1">
+                    Users of {school?.schoolName}{" "}
+                  </h4>
+                </div>
+
+                <div>
+                  <div className="table-responsive">
+                    <table className="table align-middle mb-0 table-hover table-centered text-center">
+                      <thead className="bg-light-subtle">
+                        <tr>
+                          <th style={{ width: 20 }}>
+                            <div className="form-check ms-1">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="customCheck1"
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="customCheck1"
+                              />
+                            </div>
+                          </th>
+                          <th>Role</th>
+                          <th>User Id</th>
+                          <th>Password</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {users?.map((user) => (
+                          <tr key={user?._id}>
+                            <td style={{ width: 20 }}>
+                              <div className="form-check ms-1">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customCheck1"
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="customCheck1"
+                                />
+                              </div>
+                            </td>
+                            <td>{user?.role}</td>
+                            <td>{user?.userId}</td>
+                            <td>******</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {subscription?.length > 0 ? (
+            <div className="row p-2">
+              <div className="col-xl-12">
+                <div className="card">
+                  <div className="card-header d-flex justify-content-between align-items-center gap-1">
+                    <h4 className="card-title flex-grow-1">
+                      All Subscription List
+                    </h4>
+                  </div>
+                  <div>
+                    <div className="table-responsive">
+                      <table className="table align-middle mb-0 table-hover table-centered text-center">
+                        <thead className="bg-light-subtle">
+                          <tr>
+                            <th style={{ width: 20 }}>
+                              <div className="form-check ms-1">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id="customCheck1"
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="customCheck1"
+                                />
+                              </div>
+                            </th>
+                            <th>Subscription Module</th>
+                            <th>Subscription Start Date</th>
+                            <th>No. Of Months</th>
+                            <th>Monthly Rate</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {subscription?.map((subscriptions) => (
+                            <tr key={subscriptions.id}>
+                              <td>
+                                <div className="form-check ms-1">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    id="customCheck2"
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="customCheck2"
+                                  >
+                                    &nbsp;
+                                  </label>
+                                </div>
+                              </td>
+                              <td>{subscriptions?.subscriptionFor}</td>
+                              <td>
+                                {new Date(
+                                  subscriptions?.subscriptionStartDate
+                                ).toLocaleDateString()}
+                              </td>
+                              <td>{subscriptions?.subscriptionNoOfMonth}</td>
+                              <td>{subscriptions?.monthlyRate}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="row"></div>
+          )}
         </div>
       )}
     </>

@@ -5,8 +5,21 @@ import { AiFillProduct } from "react-icons/ai";
 import { AiOutlineProduct } from "react-icons/ai";
 import { GiMoneyStack } from "react-icons/gi";
 import { PiMoneyWavyBold } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 
 const DashboardInformationCards = ({ totalCounts }) => {
+  const navigate = useNavigate();
+
+  const navigateToTrackQuote = (event) => {
+    event.preventDefault();
+    navigate("/seller-dashboard/procurement-services/track-quote");
+  };
+
+  const navigateToOrders = (event) => {
+    event.preventDefault();
+    navigate("/seller-dashboard/procurement-services/track-order-history");
+  };
+
   const cardData = [
     {
       icon: <IoNewspaperOutline className="fs-36 text-info" />,
@@ -16,6 +29,7 @@ const DashboardInformationCards = ({ totalCounts }) => {
       badgeIcon: "ti ti-arrow-badge-up",
       widgetIcon: <IoNewspaperOutline className="widget-icon" />,
       textColor: "text-info",
+      onClick: navigateToTrackQuote,
     },
     {
       icon: <PiShoppingCartBold className="fs-36 text-success" />,
@@ -25,8 +39,8 @@ const DashboardInformationCards = ({ totalCounts }) => {
       badgeIcon: "ti ti-arrow-badge-down",
       widgetIcon: <PiShoppingCartBold className="widget-icon" />,
       textColor: "text-success",
+      onClick: navigateToOrders,
     },
-
     {
       icon: <AiFillProduct className="fs-36 text-danger" />,
       value: totalCounts.totalSubcategory || 0,
@@ -46,22 +60,27 @@ const DashboardInformationCards = ({ totalCounts }) => {
       textColor: "text-orange",
     },
   ];
+
   return (
     <div className="row">
       {cardData.map((card, index) => (
-        <div className="col-md-3">
-          <div className="card">
+        <div className="col-md-3" key={index}>
+          <div
+            className="card cursor-pointer"
+            onClick={card.onClick}
+            style={{ cursor: "pointer" }}
+          >
             <div className="card-body overflow-hidden position-relative">
-              {card.icon}
+              <div className="text-center">
+                {card.icon}
 
-              <h3 className="mb-0 fw-bold mt-3 mb-1">{card.value}</h3>
-              <p className="text-muted">{card.label}</p>
+                <h3 className="mb-0 fw-bold mt-3 mb-1">{card.value}</h3>
+                <p className="text-muted">{card.label}</p>
+              </div>
 
               {card.widgetIcon}
-            </div>{" "}
-            {/* end card-body */}
-          </div>{" "}
-          {/* end card */}
+            </div>
+          </div>
         </div>
       ))}
     </div>

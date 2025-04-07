@@ -203,7 +203,7 @@ const ViewCart = () => {
                             <th>Sr</th>
                             <th>Product Subcategory</th>
                             <th>HSN/SACC</th>
-                            <th>Listing Rate</th>
+                            {/* <th>Listing Rate</th> */}
                             <th>Quantity</th>
                             <th>Final Rate Before Discount</th>
                             <th>Discount %</th>
@@ -289,7 +289,7 @@ const ViewCart = () => {
                                 </div>
                               </td>
                               <td>{item.hsnSacc}</td>
-                              <td>{item.listingRate}</td>
+                              {/* <td>{item.listingRate}</td> */}
                               <td>{item.quantity}</td>
                               <td>{item.finalRateBeforeDiscount}</td>
                               <td>{item.discount}</td>

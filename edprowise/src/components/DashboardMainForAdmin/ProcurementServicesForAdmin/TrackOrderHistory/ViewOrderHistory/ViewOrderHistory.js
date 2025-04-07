@@ -370,37 +370,29 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
-
-                  {order?.cgstRate !== 0 ? (
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="cgstRate" className="form-label">
-                          CGST Rate
-                        </label>
-                        <p className="form-control">{order?.cgstRate}</p>
-                      </div>
-                    </div>
-                  ) : null}
-                  {order?.sgstRate !== 0 ? (
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="sgstRate" className="form-label">
-                          SGST Rate
-                        </label>
-                        <p className="form-control">{order?.sgstRate}</p>
-                      </div>
-                    </div>
-                  ) : null}
-                  {order?.igstRate !== 0 ? (
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="igstRate" className="form-label">
-                          IGST Rate
-                        </label>
-                        <p className="form-control">{order?.igstRate}</p>
-                      </div>
-                    </div>
-                  ) : null}
+                </div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <div>
+                    {["Ready For Transit", "In-Transit", "Delivered"].includes(
+                      order?.supplierStatus
+                    ) && (
+                      <>
+                        <Link
+                          onClick={() => fetchInvoiceDataForBuyer()}
+                          className="btn btn-soft-info btn-sm"
+                          title="Download PDF Invoice For Buyer"
+                          data-bs-toggle="popover"
+                          data-bs-trigger="hover"
+                        >
+                          Download Invoice For Buyer
+                          <iconify-icon
+                            icon="solar:download-broken"
+                            className="align-middle fs-18"
+                          />
+                        </Link>
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 <div className="container">
@@ -414,7 +406,7 @@ const ViewOrderHistory = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="taxableValue" className="form-label">
-                        Taxable Value For EdProwise
+                        Taxable Value
                       </label>
                       <p className="form-control">
                         {formatCost(order?.totalTaxableValueForEdprowise)}
@@ -424,7 +416,7 @@ const ViewOrderHistory = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="gstAmount" className="form-label">
-                        GST Amount For EdProwise
+                        GST Amount
                       </label>
                       <p className="form-control">
                         {formatCost(order?.totalGstAmountForEdprowise)}
@@ -437,7 +429,7 @@ const ViewOrderHistory = () => {
                         htmlFor="totalInvoiceAmount"
                         className="form-label"
                       >
-                        Total Invoice Amount For EdProwise
+                        Total Invoice Amount
                       </label>
                       <p className="form-control">
                         {formatCost(order?.totalAmountForEdprowise)}
@@ -452,7 +444,7 @@ const ViewOrderHistory = () => {
                         htmlFor="tdsValueForEdprowise"
                         className="form-label"
                       >
-                        TDS Amount For EdProwise
+                        TDS Amount
                       </label>
                       <p className="form-control">
                         {formatCost(order?.tdsValueForEdprowise)}
@@ -487,7 +479,7 @@ const ViewOrderHistory = () => {
                         htmlFor="finalPayableAmountWithTDS"
                         className="form-label"
                       >
-                        Balance Amount For EdProwise
+                        Balance Amount
                       </label>
                       <p className="form-control">
                         {formatCost(
@@ -496,51 +488,6 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
-                  {order?.cgstRateForEdprowise !== 0 ? (
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label
-                          htmlFor="cgstRateForEdprowise"
-                          className="form-label"
-                        >
-                          CGST Rate For Edprowise
-                        </label>
-                        <p className="form-control">
-                          {order?.cgstRateForEdprowise}
-                        </p>
-                      </div>
-                    </div>
-                  ) : null}
-                  {order?.sgstRateForEdprowise !== 0 ? (
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label
-                          htmlFor="sgstRateForEdprowise"
-                          className="form-label"
-                        >
-                          SGST Rate For Edprowise
-                        </label>
-                        <p className="form-control">
-                          {order?.sgstRateForEdprowise}
-                        </p>
-                      </div>
-                    </div>
-                  ) : null}
-                  {order?.igstRateForEdprowise !== 0 ? (
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label
-                          htmlFor="igstRateForEdprowise"
-                          className="form-label"
-                        >
-                          IGST Rate For Edprowise
-                        </label>
-                        <p className="form-control">
-                          {order?.igstRateForEdprowise}
-                        </p>
-                      </div>
-                    </div>
-                  ) : null}
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center">
@@ -557,20 +504,6 @@ const ViewOrderHistory = () => {
                           data-bs-trigger="hover"
                         >
                           Download Invoice For Edprowise
-                          <iconify-icon
-                            icon="solar:download-broken"
-                            className="align-middle fs-18"
-                          />
-                        </Link>
-
-                        <Link
-                          onClick={() => fetchInvoiceDataForBuyer()}
-                          className="btn btn-soft-info btn-sm"
-                          title="Download PDF Invoice For Buyer"
-                          data-bs-toggle="popover"
-                          data-bs-trigger="hover"
-                        >
-                          Download Invoice For Buyer
                           <iconify-icon
                             icon="solar:download-broken"
                             className="align-middle fs-18"

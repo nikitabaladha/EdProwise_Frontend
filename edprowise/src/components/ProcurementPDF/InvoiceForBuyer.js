@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { format } from "date-fns";
+
+import { formatCost } from "../CommonFunction";
 import convertToWords from "../CommonFunction";
 
 const formatDate = (dateString) => {
@@ -164,7 +166,6 @@ const InvoiceForBuyer = () => {
                   Tax Invoice
                 </td>
 
-                {/* (Original for Recipient) Column */}
                 <td
                   style={{
                     width: "33%",
@@ -506,7 +507,7 @@ const InvoiceForBuyer = () => {
                     borderBottom: "none",
                   }}
                 >
-                  All Amount are in INR
+                  All Amounts are in INR
                 </td>
               </tr>
               <tr>
@@ -608,7 +609,7 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                   }}
                 >
-                  GST Amt
+                  GST Amount
                 </th>
                 <th
                   style={{
@@ -667,7 +668,7 @@ const InvoiceForBuyer = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.taxableValue}
+                    {formatCost(item.taxableValue)}
                   </td>
 
                   <td
@@ -677,7 +678,7 @@ const InvoiceForBuyer = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.gstAmount}
+                    {formatCost(item.gstAmount)}
                   </td>
                   <td
                     style={{
@@ -686,7 +687,7 @@ const InvoiceForBuyer = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.totalAmount}
+                    {formatCost(item.totalAmount)}
                   </td>
                 </tr>
               ))}
@@ -730,7 +731,7 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalTaxableValue}
+                  {formatCost(totalTaxableValue)}
                 </td>
                 <td
                   style={{
@@ -738,7 +739,7 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalTaxAmount}
+                  {formatCost(totalTaxAmount)}
                 </td>
                 <td
                   style={{
@@ -747,7 +748,7 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalAmount}
+                  {formatCost(totalAmount)}
                 </td>
               </tr>
             </tbody>
@@ -854,7 +855,7 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt
+                  Amount
                 </th>
                 <th
                   style={{
@@ -870,7 +871,7 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt
+                  Amount
                 </th>
                 <th
                   style={{
@@ -886,7 +887,7 @@ const InvoiceForBuyer = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt
+                  Amount
                 </th>
                 <th
                   style={{
@@ -918,7 +919,7 @@ const InvoiceForBuyer = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.taxableValue}
+                    {formatCost(item.taxableValue)}
                   </td>
                   <td
                     style={{
@@ -936,7 +937,7 @@ const InvoiceForBuyer = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.cgstAmount}
+                    {formatCost(item.cgstAmount)}
                   </td>
                   <td
                     style={{
@@ -954,7 +955,7 @@ const InvoiceForBuyer = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.sgstAmount}
+                    {formatCost(item.sgstAmount)}
                   </td>
                   <td
                     style={{
@@ -972,7 +973,7 @@ const InvoiceForBuyer = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.igstAmount}
+                    {formatCost(item.igstAmount)}
                   </td>
                 </tr>
               ))}
@@ -995,7 +996,7 @@ const InvoiceForBuyer = () => {
                     width: "10%",
                   }}
                 >
-                  {totalTaxableValue}
+                  {formatCost(totalTaxableValue)}
                 </td>
                 <td
                   style={{
@@ -1011,7 +1012,7 @@ const InvoiceForBuyer = () => {
                     width: "10%",
                   }}
                 >
-                  {totalCgstAmount}
+                  {formatCost(totalCgstAmount)}
                 </td>
                 <td
                   style={{
@@ -1027,7 +1028,7 @@ const InvoiceForBuyer = () => {
                     width: "10%",
                   }}
                 >
-                  {totalSgstAmount}
+                  {formatCost(totalSgstAmount)}
                 </td>
                 <td
                   style={{
@@ -1043,7 +1044,7 @@ const InvoiceForBuyer = () => {
                     width: "10%",
                   }}
                 >
-                  {totalIgstAmount}
+                  {formatCost(totalIgstAmount)}
                 </td>
                 <td
                   style={{
@@ -1053,7 +1054,7 @@ const InvoiceForBuyer = () => {
                     width: "5%",
                   }}
                 >
-                  {totalTaxAmount}
+                  {formatCost(totalTaxAmount)}
                 </td>
               </tr>
             </tbody>

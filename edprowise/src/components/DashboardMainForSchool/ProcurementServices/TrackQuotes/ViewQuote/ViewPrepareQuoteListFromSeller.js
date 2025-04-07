@@ -74,7 +74,7 @@ const ViewPrepareQuoteListFromSeller = () => {
                         </th>
                         <th>Product Subcategory</th>
                         <th>HSN/SACC</th>
-                        <th>Listing Rate</th>
+                        {/* <th>Listing Rate</th> */}
                         <th>Quantity</th>
                         <th>Final Rate Before Discount</th>
                         <th>Discount %</th>
@@ -174,7 +174,7 @@ const ViewPrepareQuoteListFromSeller = () => {
                               </div>
                             </td>
                             <td>{quote.hsnSacc}</td>
-                            <td>{formatCost(quote.listingRate)}</td>
+                            {/* <td>{formatCost(quote.listingRate)}</td> */}
 
                             <td>{quote.quantity}</td>
                             <td>{formatCost(quote.finalRateBeforeDiscount)}</td>

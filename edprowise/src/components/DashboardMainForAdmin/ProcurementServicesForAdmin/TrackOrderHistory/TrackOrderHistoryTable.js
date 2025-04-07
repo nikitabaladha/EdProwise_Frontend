@@ -244,9 +244,7 @@ const TrackOrderHistoryTable = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>
-                            {formatCost(order.totalAmountBeforeGstAndDiscount)}
-                          </td>
+                          <td>{formatCost(order.totalAmount)}</td>
                           <td>{order.edprowiseStatus}</td>
                           <td>{order.tDSAmount}</td>
                           <td>

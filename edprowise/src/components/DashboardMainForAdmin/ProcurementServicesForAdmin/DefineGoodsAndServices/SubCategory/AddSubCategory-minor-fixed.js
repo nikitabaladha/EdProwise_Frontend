@@ -4,10 +4,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import postAPI from "../../../../../api/postAPI";
 import getAPI from "../../../../../api/getAPI";
+import CreatableSelect from "react-select/creatable";
 
 const AddCategory = () => {
   const [mainCategories, setMainCategories] = useState([]);
-
   const [categoryRows, setCategoryRows] = useState([
     {
       mainCategoryName: "",
@@ -17,7 +17,6 @@ const AddCategory = () => {
       selectedEdprowiseMargin: "",
     },
   ]);
-
   const [showOtherFields, setShowOtherFields] = useState(false);
 
   const navigate = useNavigate();
@@ -38,13 +37,19 @@ const AddCategory = () => {
     fetchMainCategories();
   }, []);
 
-  const handleMainCategoryChange = async (index, selectedMainCategoryId) => {
+  const handleMainCategoryChange = async (
+    index,
+    selectedMainCategoryId,
+    selectedMainCategoryName = null
+  ) => {
     const updatedRows = [...categoryRows];
-    updatedRows[index].mainCategoryId = selectedMainCategoryId;
-    updatedRows[index].categories = [];
-    updatedRows[index].categoryId = "";
 
     if (selectedMainCategoryId) {
+      updatedRows[index].mainCategoryId = selectedMainCategoryId;
+      updatedRows[index].mainCategoryName = "";
+      updatedRows[index].categories = [];
+      updatedRows[index].categoryId = "";
+
       try {
         const response = await getAPI(
           `/category/${selectedMainCategoryId}`,
@@ -59,9 +64,21 @@ const AddCategory = () => {
       } catch (err) {
         toast.error("Error fetching categories.");
       }
+    } else if (selectedMainCategoryName) {
+      updatedRows[index].mainCategoryId = "";
+      updatedRows[index].mainCategoryName = selectedMainCategoryName;
+      updatedRows[index].categories = [];
+      updatedRows[index].categoryId = "";
     }
+
     setCategoryRows(updatedRows);
   };
+
+  // const handleRowChange = (index, field, value) => {
+  //   const updatedRows = [...categoryRows];
+  //   updatedRows[index][field] = value;
+  //   setCategoryRows(updatedRows);
+  // };
 
   const handleRowChange = (index, field, value) => {
     const updatedRows = [...categoryRows];
@@ -114,17 +131,7 @@ const AddCategory = () => {
             categoryId: row.categoryId,
             mainCategoryId: row.mainCategoryId,
           };
-          const response = await postAPI(
-            "/sub-category",
-            subCategoryData,
-            {},
-            true
-          );
-          if (!response.hasError) {
-            toast.success("Goods and Service Created Successfully");
-          } else {
-            toast.error(`Failed to create Sub Category: ${response.message}`);
-          }
+          await postAPI("/sub-category", subCategoryData, {}, true);
         } else if (row.mainCategoryId && !row.categoryId) {
           subCategoryData = {
             subCategoryName: row.subCategoryName,
@@ -132,17 +139,12 @@ const AddCategory = () => {
             mainCategoryId: row.mainCategoryId,
             edprowiseMargin: row.edprowiseMargin,
           };
-          const response = await postAPI(
+          await postAPI(
             "/sub-category-without-category-id",
             subCategoryData,
             {},
             true
           );
-          if (!response.hasError) {
-            toast.success("Goods and Service Created Successfully");
-          } else {
-            toast.error(`Failed to create Category: ${response.message}`);
-          }
         } else if (!row.mainCategoryId && !row.categoryId) {
           subCategoryData = {
             subCategoryName: row.subCategoryName,
@@ -150,32 +152,33 @@ const AddCategory = () => {
             mainCategoryName: row.mainCategoryName,
             edprowiseMargin: row.edprowiseMargin,
           };
-          const response = await postAPI(
-            "/sub-category-without-ids",
-            subCategoryData,
-            {},
-            true
-          );
-          if (!response.hasError) {
-            toast.success("Goods and Service Created Successfully");
-          } else {
-            toast.error(`Failed to create Main Category: ${response.message}`);
-          }
+          await postAPI("/sub-category-without-ids", subCategoryData, {}, true);
         }
       }
-      navigate(-1);
+      toast.success("Product Category Created Successfully");
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      } else {
-        console.log(error);
-        toast.error("An unexpected error occurred. Please try again.");
-      }
+      console.error("Error response:", error.response);
+      const errorMessage =
+        error.response?.data?.message ||
+        "An error occurred while processing the request.";
+      toast.error(errorMessage);
     }
+  };
+
+  const mainCategoryOptions = mainCategories.map((mainCategory) => ({
+    value: mainCategory._id,
+    label: mainCategory.mainCategoryName,
+  }));
+
+  // Function to generate category options for CreatableSelect
+  const getCategoryOptions = (row) => {
+    if (row.mainCategoryId && row.categories) {
+      return row.categories.map((category) => ({
+        value: category.id,
+        label: category.categoryName,
+      }));
+    }
+    return [];
   };
 
   return (
@@ -193,33 +196,74 @@ const AddCategory = () => {
                   </h4>
                 </div>
               </div>
-              {/* below form works fine if there is mainCategoryId and categoryid  at that time it preftcly stores existing edprowise margin so the api /sub-category
-works fine but i also want to show existing edprowise margin also which is connected with that perticular categoryId but in read only form
 
-now see if there is Add Custom Goods And Services at that time if user select maincategory and for category if he chooses from any existing category at that time also 
-i want to show existing edprowise margin in read only form 
-But if user selects main category and for category if he gives category from input type text at that time i want that there should be edprowise margin field 
-in which he can type what ever number he want
-and if for  Add Custom Goods And Services if user dont choose any main category but type the main category at that time he will also type category in input type text
-at that time also i want to give edprowise margin for input type text so user will type what ever he want so do it for me  
-*/}
               <form onSubmit={handleSubmit}>
                 {categoryRows.map((row, index) => (
-                  <div className="row" key={index}>
+                  <div className="row mb-2" key={index}>
                     <div className="col-md-3">
-                      {!showOtherFields && mainCategories.length > 0 ? (
+                      {showOtherFields ? (
+                        <>
+                          <label
+                            htmlFor={`mainCategory-${index}`}
+                            className="form-label"
+                          >
+                            Main Category
+                          </label>
+                          <CreatableSelect
+                            id={`mainCategory-${index}`}
+                            options={mainCategoryOptions}
+                            value={
+                              row.mainCategoryId
+                                ? mainCategoryOptions.find(
+                                    (opt) => opt.value === row.mainCategoryId
+                                  )
+                                : row.mainCategoryName
+                                ? { value: null, label: row.mainCategoryName }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              if (selectedOption) {
+                                if (selectedOption.__isNew__) {
+                                  handleMainCategoryChange(
+                                    index,
+                                    null,
+                                    selectedOption.label
+                                  );
+                                } else {
+                                  handleMainCategoryChange(
+                                    index,
+                                    selectedOption.value
+                                  );
+                                }
+                              } else {
+                                handleMainCategoryChange(index, "");
+                              }
+                            }}
+                            isClearable
+                            placeholder="Select or create..."
+                            formatCreateLabel={(inputValue) =>
+                              `Create "${inputValue}"`
+                            }
+                            noOptionsMessage={() =>
+                              "Type to create new main category"
+                            }
+                            className="react-select-container"
+                            classNamePrefix="react-select"
+                          />
+                        </>
+                      ) : (
                         <>
                           <label
                             htmlFor={`mainCategoryId-${index}`}
                             className="form-label"
                           >
-                            Main Category List
+                            Main Category
                           </label>
                           <select
                             required
                             className="form-control"
                             id={`mainCategoryId-${index}`}
-                            value={row.mainCategoryId}
+                            value={row.mainCategoryId || ""}
                             onChange={(e) =>
                               handleMainCategoryChange(index, e.target.value)
                             }
@@ -235,48 +279,82 @@ at that time also i want to give edprowise margin for input type text so user wi
                             ))}
                           </select>
                         </>
-                      ) : (
-                        <>
-                          <label
-                            htmlFor={`mainCategoryName-${index}`}
-                            className="form-label"
-                          >
-                            Main Category Name
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={row.mainCategoryName}
-                            onChange={(e) =>
-                              handleRowChange(
-                                index,
-                                "mainCategoryName",
-                                e.target.value
-                              )
-                            }
-                            required
-                          />
-                        </>
                       )}
                     </div>
 
                     <>
-                      {!showOtherFields &&
-                      row.mainCategoryId &&
-                      row.categories.length > 0 ? (
+                      {showOtherFields ? (
+                        <>
+                          <div className="col-md-3">
+                            <label
+                              htmlFor={`category-${index}`}
+                              className="form-label"
+                            >
+                              Category
+                            </label>
+                            <CreatableSelect
+                              id={`category-${index}`}
+                              options={getCategoryOptions(row)}
+                              value={
+                                row.categoryId
+                                  ? getCategoryOptions(row).find(
+                                      (opt) => opt.value === row.categoryId
+                                    )
+                                  : row.categoryName
+                                  ? { value: null, label: row.categoryName }
+                                  : null
+                              }
+                              onChange={(selectedOption) => {
+                                if (selectedOption) {
+                                  if (selectedOption.__isNew__) {
+                                    handleRowChange(
+                                      index,
+                                      "categoryName",
+                                      selectedOption.label
+                                    );
+                                    handleRowChange(index, "categoryId", "");
+                                  } else {
+                                    handleRowChange(
+                                      index,
+                                      "categoryId",
+                                      selectedOption.value
+                                    );
+                                    handleRowChange(index, "categoryName", "");
+                                  }
+                                } else {
+                                  handleRowChange(index, "categoryId", "");
+                                  handleRowChange(index, "categoryName", "");
+                                }
+                              }}
+                              isClearable
+                              placeholder="Select or create..."
+                              formatCreateLabel={(inputValue) =>
+                                `Create "${inputValue}"`
+                              }
+                              noOptionsMessage={() =>
+                                "Type to create new category"
+                              }
+                              className="react-select-container"
+                              classNamePrefix="react-select"
+                            />
+                          </div>
+                        </>
+                      ) : !showOtherFields &&
+                        row.mainCategoryId &&
+                        row.categories.length > 0 ? (
                         <>
                           <div className="col-md-3">
                             <label
                               htmlFor={`categoryId-${index}`}
                               className="form-label"
                             >
-                              Category List
+                              Category
                             </label>
                             <select
                               required
                               className="form-control"
                               id={`categoryId-${index}`}
-                              value={row.categoryId}
+                              value={row.categoryId || ""}
                               onChange={(e) =>
                                 handleRowChange(
                                   index,
@@ -293,7 +371,6 @@ at that time also i want to give edprowise margin for input type text so user wi
                               ))}
                             </select>
                           </div>
-
                           <div className="col-md-2">
                             <label
                               htmlFor={`edprowiseMargin-${index}`}
@@ -316,11 +393,12 @@ at that time also i want to give edprowise margin for input type text so user wi
                               htmlFor={`categoryName-${index}`}
                               className="form-label"
                             >
-                              Category Name
+                              Category
                             </label>
                             <input
                               type="text"
                               className="form-control"
+                              id={`categoryName-${index}`}
                               value={row.categoryName}
                               onChange={(e) =>
                                 handleRowChange(
@@ -330,9 +408,9 @@ at that time also i want to give edprowise margin for input type text so user wi
                                 )
                               }
                               required
+                              placeholder="Enter category name"
                             />
                           </div>
-
                           <div className="col-md-2">
                             <label
                               htmlFor={`edprowiseMargin-${index}`}
@@ -360,13 +438,17 @@ at that time also i want to give edprowise margin for input type text so user wi
                         </>
                       )}
                     </>
-                    <div className="col-md-2">
-                      <label htmlFor="subCategoryName" className="form-label">
-                        Sub Category Name
+                    <div className="col-md-3">
+                      <label
+                        htmlFor={`subCategoryName-${index}`}
+                        className="form-label"
+                      >
+                        Sub Category
                       </label>
                       <input
                         type="text"
                         className="form-control"
+                        id={`subCategoryName-${index}`}
                         value={row.subCategoryName}
                         onChange={(e) =>
                           handleRowChange(
@@ -376,39 +458,56 @@ at that time also i want to give edprowise margin for input type text so user wi
                           )
                         }
                         required
+                        placeholder="Enter sub category"
                       />
                     </div>
 
-                    <div className="col-md-2 d-flex align-items-center mt-3">
-                      <button
-                        type="button"
-                        className="btn btn-success me-2"
-                        onClick={addRow}
-                      >
-                        Add
-                      </button>
-                      {index > 0 && (
-                        <button
-                          type="button"
-                          className="btn btn-danger"
-                          onClick={() => removeRow(index)}
-                        >
-                          Remove
-                        </button>
+                    <div className="col-md-1 d-flex align-items-end">
+                      {!showOtherFields && (
+                        <>
+                          {index === 0 ? (
+                            <button
+                              type="button"
+                              className="btn btn-success btn-md"
+                              onClick={addRow}
+                            >
+                              +
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-md"
+                              onClick={() => removeRow(index)}
+                            >
+                              -
+                            </button>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
                 ))}
 
-                <div className="d-flex justify-content-between mt-3">
+                <div className="d-flex justify-content-between mt-3 mx-2">
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={() => setShowOtherFields(!showOtherFields)}
+                    onClick={() => {
+                      if (!showOtherFields) {
+                        setCategoryRows([
+                          {
+                            mainCategoryName: "",
+                            categoryName: "",
+                            subCategoryName: "",
+                          },
+                        ]);
+                      }
+                      setShowOtherFields(!showOtherFields);
+                    }}
                   >
                     {showOtherFields
-                      ? "Add Goods And Services"
-                      : "Add Custom Goods And Services"}
+                      ? "Use Existing Categories"
+                      : "Add Custom Categories"}
                   </button>
                   <button type="submit" className="btn btn-primary">
                     Submit

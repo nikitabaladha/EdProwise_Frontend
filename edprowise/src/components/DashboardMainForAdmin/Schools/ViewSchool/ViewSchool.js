@@ -9,13 +9,14 @@ import { Link } from "react-router-dom";
 import AddConfirmationDialog from "../AddConfirmationDialog";
 import ConfirmationDialog from "../../../ConfirmationDialog";
 
-const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
+const ViewSchool = () => {
   const location = useLocation();
 
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedSubscription, setSelectedsubscription] = useState(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -433,7 +434,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                           <td>******</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link
+                              {/* <Link
                                 className="btn btn-light btn-sm"
                                 onClick={(e) => {
                                   e.preventDefault();
@@ -443,7 +444,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link>
+                              </Link> */}
 
                               <Link className="btn btn-soft-danger btn-sm">
                                 <iconify-icon

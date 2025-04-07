@@ -105,6 +105,12 @@ const ViewSellerProfile = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
+                      <label htmlFor="randomId" className="form-label">
+                        Seller Id
+                      </label>
+                      <p className="form-control">{sellerProfile?.randomId}</p>
+                    </div>
+                    <div className="mb-3">
                       <label htmlFor="companyName" className="form-label">
                         Company Name
                       </label>
@@ -112,6 +118,7 @@ const ViewSellerProfile = () => {
                         {sellerProfile?.companyName}
                       </p>
                     </div>
+
                     <div className="mb-3">
                       <label htmlFor="gstin" className="form-label">
                         GSTIN
@@ -122,10 +129,19 @@ const ViewSellerProfile = () => {
                       <label htmlFor="tan" className="form-label">
                         TAN Number
                       </label>
-                      <p className="form-control">{sellerProfile?.tan || "Not Provided"}</p>
+                      <p className="form-control">
+                        {sellerProfile?.tan || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="userId" className="form-label">
+                        User Id
+                      </label>
+                      <p className="form-control">{sellerProfile?.userId}</p>
+                    </div>
+
                     <div className="mb-3">
                       <label htmlFor="companyType" className="form-label">
                         Company Type
@@ -144,12 +160,14 @@ const ViewSellerProfile = () => {
                       <label htmlFor="cin" className="form-label">
                         CIN Number
                       </label>
-                      <p className="form-control">{sellerProfile?.cin || "Not Provided"}</p>
+                      <p className="form-control">
+                        {sellerProfile?.cin || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                 </div>
                 <div className="row">
-                <div className="col-md-3">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="panFile" className="form-label">
                         PAN File
@@ -454,7 +472,9 @@ const ViewSellerProfile = () => {
                       <label htmlFor="ceoName" className="form-label">
                         CEO Name
                       </label>
-                      <p className="form-control">{sellerProfile?.ceoName || "Not Provided"}</p>
+                      <p className="form-control">
+                        {sellerProfile?.ceoName || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -462,7 +482,9 @@ const ViewSellerProfile = () => {
                       <label htmlFor="turnover" className="form-label">
                         Company Turnover
                       </label>
-                      <p className="form-control">{sellerProfile?.turnover || "Not Provided"}</p>
+                      <p className="form-control">
+                        {sellerProfile?.turnover || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                 </div>

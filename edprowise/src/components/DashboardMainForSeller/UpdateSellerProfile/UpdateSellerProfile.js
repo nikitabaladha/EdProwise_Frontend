@@ -383,7 +383,7 @@ const UpdateSeller = () => {
                         id="gstFile"
                         name="gstFile"
                         className="form-control"
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={gstFileRef}
                         // required
@@ -425,7 +425,7 @@ const UpdateSeller = () => {
                         id="panFile"
                         name="panFile"
                         className="form-control"
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={panFileRef}
                         // required
@@ -467,7 +467,7 @@ const UpdateSeller = () => {
                         id="tanFile"
                         name="tanFile"
                         className="form-control"
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={tanFileRef}
                         // required
@@ -511,7 +511,7 @@ const UpdateSeller = () => {
                         id="cinFile"
                         name="cinFile"
                         className="form-control"
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={cinFileRef}
                         // required
@@ -557,7 +557,7 @@ const UpdateSeller = () => {
                         <span className="text-danger">*</span>
                       </label>
 
-                                            <Select
+                      <Select
                         id="cityStateCountry"
                         name="cityStateCountry"
                         options={cityOptions}

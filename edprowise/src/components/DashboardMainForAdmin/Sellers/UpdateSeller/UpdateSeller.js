@@ -260,7 +260,7 @@ const UpdateSeller = () => {
 
       if (!response.data.hasError) {
         toast.success("Seller updated successfully!");
-        
+
         setFormData({
           companyName: "",
           companyType: "",
@@ -379,7 +379,7 @@ const UpdateSeller = () => {
                       />
                     </div>
                   </div>
-                   <div className="col-md-6">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="gstFile" className="form-label">
                         GST File <span className="text-danger">*</span>
@@ -389,7 +389,7 @@ const UpdateSeller = () => {
                         id="gstFile"
                         name="gstFile"
                         className="form-control"
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={gstFileRef}
                         // required
@@ -397,14 +397,12 @@ const UpdateSeller = () => {
                       {seller?.gstFile ? (
                         <div>
                           <small>
-                            Existing GST File:{" "}
-                            {getBaseFileName(seller.gstFile)}
+                            Existing GST File: {getBaseFileName(seller.gstFile)}
                           </small>
                         </div>
                       ) : null}
                     </div>
                   </div>
-                  
                 </div>
                 <div className="row">
                   <div className="col-md-6">
@@ -433,7 +431,7 @@ const UpdateSeller = () => {
                         id="panFile"
                         name="panFile"
                         className="form-control"
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={panFileRef}
                         // required
@@ -441,16 +439,15 @@ const UpdateSeller = () => {
                       {seller?.panFile ? (
                         <div>
                           <small>
-                            Existing PAN File:{" "}
-                            {getBaseFileName(seller.panFile)}
+                            Existing PAN File: {getBaseFileName(seller.panFile)}
                           </small>
                         </div>
                       ) : null}
                     </div>
                   </div>
-                  
-                  </div>
-                  <div className="row"><div className="col-md-6">
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="tan" className="form-label">
                         TAN Number
@@ -463,7 +460,6 @@ const UpdateSeller = () => {
                         value={formData.tan || "Not Provided"}
                         onChange={handleChange}
                         // required
-                        
                       />
                     </div>
                   </div>
@@ -477,7 +473,7 @@ const UpdateSeller = () => {
                         id="tanFile"
                         name="tanFile"
                         className="form-control"
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={tanFileRef}
                         // required
@@ -485,15 +481,16 @@ const UpdateSeller = () => {
                       {seller?.tanFile ? (
                         <div>
                           <small>
-                            Existing TAN File:{" "}
-                            {getBaseFileName(seller.tanFile)}
+                            Existing TAN File: {getBaseFileName(seller.tanFile)}
                           </small>
                         </div>
-                      ) : <h5>Not Provided</h5> }
+                      ) : (
+                        <h5>Not Provided</h5>
+                      )}
                     </div>
-                  </div></div>
+                  </div>
+                </div>
                 <div className="row">
-                  
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="cin" className="form-label">
@@ -520,7 +517,7 @@ const UpdateSeller = () => {
                         id="cinFile"
                         name="cinFile"
                         className="form-control"
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={cinFileRef}
                         // required
@@ -528,11 +525,12 @@ const UpdateSeller = () => {
                       {seller?.cinFile ? (
                         <div>
                           <small>
-                            Existing PAN File:{" "}
-                            {getBaseFileName(seller.cinFile)}
+                            Existing PAN File: {getBaseFileName(seller.cinFile)}
                           </small>
                         </div>
-                      ) : <h5>Not Provided</h5> }
+                      ) : (
+                        <h5>Not Provided</h5>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -560,9 +558,10 @@ const UpdateSeller = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="cityStateCountry" className="form-label">
-                        City State Country Location <span className="text-danger">*</span>
+                        City State Country Location{" "}
+                        <span className="text-danger">*</span>
                       </label>
-                      
+
                       <Select
                         id="cityStateCountry"
                         name="cityStateCountry"
@@ -712,7 +711,8 @@ const UpdateSeller = () => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="accountNo" className="form-label">
-                        Bank Account Number <span className="text-danger">*</span>
+                        Bank Account Number{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -762,7 +762,8 @@ const UpdateSeller = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="accountHolderName" className="form-label">
-                        Account Holder Name <span className="text-danger">*</span>
+                        Account Holder Name{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -800,7 +801,8 @@ const UpdateSeller = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="noOfEmployees" className="form-label">
-                        Number Of Employees <span className="text-danger">*</span>
+                        Number Of Employees{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <select
                         id="noOfEmployees"
@@ -845,11 +847,11 @@ const UpdateSeller = () => {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="turnover" className="form-label">
-                        Company Turnover 
+                        Company Turnover
                       </label>
                       <select
                         id="turnover"
@@ -857,21 +859,16 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.turnover}
                         onChange={handleChange}
-                       
                       >
                         <option value="">Select Company Ternover</option>
-                          <option value="1 to 10 Lakh">
-                          1 to 10 Lakh
-                          </option>
-                          <option value="10 to 50 Lakh">
-                          10 to 50 Lakh
-                          </option>
-                          <option value="50 Lakh to 1 Crore">
+                        <option value="1 to 10 Lakh">1 to 10 Lakh</option>
+                        <option value="10 to 50 Lakh">10 to 50 Lakh</option>
+                        <option value="50 Lakh to 1 Crore">
                           50 Lakh to 1 Crore
-                          </option>
-                          <option value="More than 1 Crore">
+                        </option>
+                        <option value="More than 1 Crore">
                           More than 1 Crore
-                          </option>
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -988,7 +985,6 @@ const UpdateSeller = () => {
         </div>
       </div>
     </div>
-    
   );
 };
 

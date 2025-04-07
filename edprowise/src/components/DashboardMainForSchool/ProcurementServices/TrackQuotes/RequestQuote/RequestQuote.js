@@ -232,7 +232,7 @@ const RequestQuote = () => {
                         id="productImage"
                         name="productImage"
                         className="form-control"
-                        accept="image/*,application/pdf"
+                        accept="image/*"
                         onChange={handleChange}
                       />
                     </div>

@@ -149,7 +149,7 @@ const SellersTable = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All School List</h4>
+                <h4 className="card-title flex-grow-1">All Seller List</h4>
                 <Link
                   onClick={(event) => navigateToAddNewSeller(event)}
                   className="btn btn-sm btn-primary"
