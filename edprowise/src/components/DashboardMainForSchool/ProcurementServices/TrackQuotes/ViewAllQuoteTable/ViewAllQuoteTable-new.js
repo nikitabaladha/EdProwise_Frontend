@@ -155,42 +155,33 @@ const ViewAllQuoteTable = () => {
 
   const handleExport = () => {};
 
-  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+  const generatePDF = async () => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
-      toast.error("Required information is missing");
-      return;
-    }
-
     try {
+      debugger;
       const response = await getAPI(
-        `/generate-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
-        {},
+        `/generate-pdf?schoolId=${schoolId}`,
+        { responseType: "blob" },
         true
       );
 
-      // write your code here
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
 
-      if (!response.hasError && response.data) {
-        // Navigate with the entire response data
-        // navigate(`/school-dashboard/procurement-services/quote-proposal`, {
-        //   state: {
-        //     prepareQuoteData: response.data.prepareQuotes,
-        //     quoteProposalData: response.data.quoteProposal,
-        //     profileData: response.data.profileData,
-        //   },
-        // });
-      } else {
-        toast.error(response.message || "Failed to fetch quote data");
-      }
+      window.open(url);
+
+      // const link = document.createElement("a");
+      // link.href = url;
+      // link.download = `report-${schoolId}.pdf`; // Choose the filename here
+      // document.body.appendChild(link);
+      // link.click();
     } catch (err) {
-      console.error("Error fetching data:", err);
-      toast.error("An error occurred while fetching quote data");
+      console.error("Error fetching cart data:", err);
     }
   };
+
   return (
     <>
       <div className="container">
@@ -309,7 +300,7 @@ const ViewAllQuoteTable = () => {
                                   </Link>
                                   <Link
                                     onClick={() =>
-                                      fetchPrepareQuoteAndProposalData(
+                                      generatePDF(
                                         quote?.enquiryNumber,
                                         quote?.sellerId
                                       )
@@ -341,7 +332,7 @@ const ViewAllQuoteTable = () => {
                                   </Link>
                                   <Link
                                     onClick={() =>
-                                      fetchPrepareQuoteAndProposalData(
+                                      generatePDF(
                                         quote?.enquiryNumber,
                                         quote?.sellerId
                                       )

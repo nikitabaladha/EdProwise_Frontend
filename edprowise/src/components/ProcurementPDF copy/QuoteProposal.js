@@ -9,7 +9,6 @@ import convertToWords from "../CommonFunction.js";
 
 import { format } from "date-fns";
 
-// i want to pass that data here but here i am not able to get it
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   return format(new Date(dateString), "dd/MM/yyyy");
@@ -17,23 +16,10 @@ const formatDate = (dateString) => {
 
 const QuoteProposal = () => {
   const location = useLocation();
+  const { prepareQuoteData, quoteProposalData, profileData } =
+    location.state || {};
 
-  const {
-    prepareQuoteData = [],
-    quoteProposalData = {},
-    profileData = {},
-  } = location.state || {};
-
-  // const { prepareQuoteData, quoteProposalData, profileData } =
-  //   location.state || {};
-
-  console.log(
-    "prepareQuoteData from quote proposal of school",
-    prepareQuoteData
-  );
-
-  // prepareQuoteData from quote proposal of school undefined
-
+  // Extract total values from profileData
   const {
     buyerName,
     schoolContactNumber,

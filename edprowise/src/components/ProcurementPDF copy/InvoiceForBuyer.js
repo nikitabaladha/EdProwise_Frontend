@@ -4,40 +4,32 @@ import html2canvas from "html2canvas";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import { formatCost } from "../CommonFunction";
-import convertToWords from "../CommonFunction.js";
-
 import { format } from "date-fns";
 
-// i want to pass that data here but here i am not able to get it
+import { formatCost } from "../CommonFunction";
+import convertToWords from "../CommonFunction";
+
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   return format(new Date(dateString), "dd/MM/yyyy");
 };
 
-const QuoteProposal = () => {
+const InvoiceForBuyer = () => {
   const location = useLocation();
+  const { prepareQuoteData, quoteProposalData, profileData } =
+    location.state || {};
 
-  const {
-    prepareQuoteData = [],
-    quoteProposalData = {},
-    profileData = {},
-  } = location.state || {};
-
-  // const { prepareQuoteData, quoteProposalData, profileData } =
-  //   location.state || {};
-
-  console.log(
-    "prepareQuoteData from quote proposal of school",
-    prepareQuoteData
-  );
-
-  // prepareQuoteData from quote proposal of school undefined
-
+  // Extract total values from profileData
   const {
     buyerName,
     schoolContactNumber,
+    schoolEmailId,
     schoolPanNumber,
+    schoolAddress,
+    schoolLocation,
+    schoolLandmark,
+    schoolPincode,
+
     schoolDeliveryAddress,
     schoolDeliveryLocation,
     quoteRequestedDate,
@@ -69,6 +61,10 @@ const QuoteProposal = () => {
     edprowiseContactNo,
     edprowiseAlternateContactNo,
     edprowiseEmailId,
+
+    invoiceDate,
+    invoiceForSchool,
+    invoiceForEdprowise,
   } = profileData || {};
 
   // Extract total values from quoteProposalData
@@ -77,13 +73,13 @@ const QuoteProposal = () => {
     totalFinalRateBeforeDiscount,
     totalAmountBeforeGstAndDiscount,
     totalDiscountAmount,
-    totalGstAmount,
     totalAmount,
     totalTaxableValue,
     totalCgstAmount,
     totalSgstAmount,
     totalIgstAmount,
     totalTaxAmount,
+    totalFinalRate,
   } = quoteProposalData || {};
 
   const pdfRef = useRef();
@@ -98,7 +94,7 @@ const QuoteProposal = () => {
     const pdfHeight = 300;
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("QuoteProposal.pdf");
+    pdf.save("Invoice.pdf");
   };
 
   return (
@@ -119,7 +115,6 @@ const QuoteProposal = () => {
           Download PDF
         </button>
       </div>
-
       <div
         ref={pdfRef}
         style={{
@@ -148,7 +143,7 @@ const QuoteProposal = () => {
               <tr>
                 <td
                   style={{
-                    width: "20%",
+                    width: "33%",
                   }}
                 >
                   <div className="mt-3">
@@ -161,14 +156,26 @@ const QuoteProposal = () => {
                 </td>
                 <td
                   style={{
-                    width: "80%",
+                    width: "33%",
                     textAlign: "center",
                     fontWeight: "bold",
                     fontSize: "20px",
                     border: "none",
                   }}
                 >
-                  Quote/Proposal
+                  Tax Invoice
+                </td>
+
+                <td
+                  style={{
+                    width: "33%",
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    fontSize: "15px",
+                    border: "none",
+                  }}
+                >
+                  (Original for Recipient)
                 </td>
               </tr>
             </tbody>
@@ -224,7 +231,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  {edprowiseCompanyName}
+                  Name : {edprowiseCompanyName}
                 </td>
                 <td
                   style={{
@@ -247,7 +254,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  {edprowiseAddress}
+                  Address : {edprowiseAddress}
                 </td>
 
                 <td
@@ -267,20 +274,20 @@ const QuoteProposal = () => {
                   style={{
                     padding: "8px",
                     textAlign: "left",
-                    width: "30%",
+                    // width: "30%",
                     borderRight: "1px solid black",
                   }}
                   colSpan="2"
                 >
-                  {edprowiseCityStateCountry}, {edprowisePincode}
+                  City : {edprowiseCityStateCountry}, {edprowisePincode}
                 </td>
-
                 <td
                   style={{
                     borderRight: "none",
                     borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
+                    borderBottom: " 1px solid black",
                   }}
                 >
                   Email ID : {edprowiseEmailId}
@@ -288,7 +295,6 @@ const QuoteProposal = () => {
               </tr>
             </tbody>
           </table>
-
           <table
             style={{
               width: "100%",
@@ -312,11 +318,10 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  <strong>Quote to </strong>
+                  <strong>Consignee</strong>
                 </th>
                 <th
                   style={{
-                    borderTop: "1px solid black",
                     borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
@@ -324,7 +329,7 @@ const QuoteProposal = () => {
                     fontWeight: "normal",
                   }}
                 >
-                  Enquiry No. : {enquiryNumber}
+                  Invoice No. : {invoiceForSchool}
                 </th>
               </tr>
             </thead>
@@ -334,37 +339,14 @@ const QuoteProposal = () => {
                   style={{
                     borderTop: "none",
                     borderBottom: "none",
-                    padding: "8px",
-                    textAlign: "left",
-                  }}
-                  colSpan="2"
-                >
-                  Buyer Name : {buyerName}
-                </td>
-                <td
-                  style={{
-                    padding: "8px",
-                    textAlign: "left",
-                    borderLeft: "1px solid black",
-                    borderTop: "none",
-                    borderBottom: "none",
-                  }}
-                >
-                  Quote Requested Date : {formatDate(quoteRequestedDate)}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    border: "none",
-                    padding: "8px",
-                    textAlign: "left",
-                  }}
-                  colSpan="2"
-                >
-                  Delivery Address : {schoolDeliveryAddress}
-                </td>
 
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                  colSpan="2"
+                >
+                  Name : {buyerName}
+                </td>
                 <td
                   style={{
                     padding: "8px",
@@ -374,7 +356,7 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  Quote No. : {quoteNumber}
+                  Invoice Date : {formatDate(invoiceDate)}
                 </td>
               </tr>
               <tr>
@@ -386,31 +368,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  City : {schoolDeliveryLocation?.split(",")[0]}
-                </td>
-
-                <td
-                  style={{
-                    padding: "8px",
-                    textAlign: "left",
-                    borderLeft: "1px solid black",
-                    borderTop: "none",
-                    borderBottom: "none",
-                  }}
-                >
-                  Quote/Proposal Date : {formatDate(quoteProposalDate)}
-                </td>
-              </tr>
-              <tr>
-                <td
-                  style={{
-                    border: "none",
-                    padding: "8px",
-                    textAlign: "left",
-                  }}
-                  colSpan="2"
-                >
-                  State : {schoolDeliveryLocation?.split(",")[1]}
+                  Address : {schoolDeliveryAddress}
                 </td>
 
                 <td
@@ -428,61 +386,117 @@ const QuoteProposal = () => {
               <tr>
                 <td
                   style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
                     border: "none",
+                  }}
+                >
+                  City : {schoolDeliveryLocation?.split(",")[0]}
+                </td>
+                <td
+                  style={{
+                    borderRight: "1px solid black",
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
+                  }}
+                >
+                  State :{schoolDeliveryLocation?.split(",")[1]}
+                </td>
+                <td
+                  style={{
+                    borderRight: "none",
+                    borderTop: "none",
                     padding: "8px",
                     textAlign: "left",
                   }}
-                  colSpan="2"
+                >
+                  Advance Amount Received :
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
+                    border: "none",
+                  }}
+                >
+                  Contact No : {schoolContactNumber}
+                </td>
+                <td
+                  style={{
+                    borderRight: "1px solid black",
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
+                  }}
+                >
+                  Email ID : {schoolEmailId}
+                </td>
+                <td
+                  style={{
+                    borderRight: "none",
+                    borderTop: "none",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
                 >
                   GSTIN :
                 </td>
-
-                <td
-                  style={{
-                    padding: "8px",
-                    textAlign: "left",
-                    borderLeft: "1px solid black",
-                    borderTop: "none",
-                    borderBottom: "none",
-                  }}
-                >
-                  Advance Amount Required : {advanceRequiredAmount}
-                </td>
               </tr>
+            </tbody>
+          </table>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              marginBottom: "20px",
+              margin: "0",
+              padding: "0",
+            }}
+          >
+            <thead>
               <tr>
-                <td
+                <th
                   style={{
-                    border: "none",
+                    borderLeft: "none",
+                    borderTop: "none",
+                    borderRight: "1px solid black",
+                    borderBottom: "none",
                     padding: "8px",
                     textAlign: "left",
+                    width: "60%",
                   }}
                   colSpan="2"
+                >
+                  Buyer
+                </th>
+                <td
+                  style={{
+                    padding: "8px",
+                    width: "40%",
+                  }}
                 >
                   PAN : {schoolPanNumber}
                 </td>
-
-                <td
-                  style={{
-                    padding: "8px",
-                    textAlign: "left",
-                    borderLeft: "1px solid black",
-                    borderTop: "none",
-                    borderBottom: "none",
-                  }}
-                >
-                  Expected Delivery Date : {formatDate(expectedDeliveryDate)}
-                </td>
               </tr>
+            </thead>
+            <tbody>
               <tr>
                 <td
                   style={{
-                    border: "none",
+                    borderTop: "none",
+                    borderBottom: "none",
+
                     padding: "8px",
                     textAlign: "left",
                   }}
                   colSpan="2"
                 >
-                  Contact No. : {schoolContactNumber}
+                  Name : {buyerName}
                 </td>
                 <td
                   style={{
@@ -496,9 +510,43 @@ const QuoteProposal = () => {
                   All Amounts are in INR
                 </td>
               </tr>
+              <tr>
+                <td
+                  style={{
+                    borderRight: "1px solid black",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                  colSpan="2"
+                >
+                  Address : {schoolAddress}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{
+                    padding: "8px",
+                    textAlign: "left",
+                    width: "30%",
+                    border: "none",
+                  }}
+                >
+                  City : {schoolLocation?.split(",")[0]}
+                </td>
+                <td
+                  style={{
+                    borderRight: "1px solid black",
+                    padding: "8px",
+                    textAlign: "left",
+                  }}
+                >
+                  State : {schoolLocation?.split(",")[1]}
+                </td>
+              </tr>
             </tbody>
           </table>
 
+          {/* calculations */}
           <table
             style={{
               width: "100%",
@@ -515,11 +563,11 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  Sr
+                  Sr.
                 </th>
                 <th
                   style={{
-                    width: "30%",
+                    width: "45%",
                     border: "1px solid black",
                     padding: "8px",
                   }}
@@ -551,17 +599,9 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  Amount before GST & Disc
+                  Taxable Value
                 </th>
-                <th
-                  style={{
-                    width: "10%",
-                    border: "1px solid black",
-                    padding: "8px",
-                  }}
-                >
-                  Discount Amount
-                </th>
+
                 <th
                   style={{
                     width: "10%",
@@ -573,7 +613,7 @@ const QuoteProposal = () => {
                 </th>
                 <th
                   style={{
-                    width: "5%",
+                    width: "10%",
                     borderTop: "1px solid black",
                     padding: "8px",
                   }}
@@ -596,7 +636,7 @@ const QuoteProposal = () => {
                   </td>
                   <td
                     style={{
-                      width: "30%",
+                      width: "45%",
                       border: "1px solid black",
                       padding: "8px",
                     }}
@@ -619,7 +659,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.finalRateBeforeDiscount}
+                    {item.finalRate}
                   </td>
                   <td
                     style={{
@@ -628,17 +668,9 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {formatCost(item.amountBeforeGstAndDiscount)}
+                    {formatCost(item.taxableValue)}
                   </td>
-                  <td
-                    style={{
-                      width: "10%",
-                      border: "1px solid black",
-                      padding: "8px",
-                    }}
-                  >
-                    {formatCost(item.discountAmount)}
-                  </td>
+
                   <td
                     style={{
                       width: "10%",
@@ -650,7 +682,7 @@ const QuoteProposal = () => {
                   </td>
                   <td
                     style={{
-                      width: "5%",
+                      width: "10%",
                       borderTop: "1px solid black",
                       padding: "8px",
                     }}
@@ -699,15 +731,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  {formatCost(totalAmountBeforeGstAndDiscount)}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                  }}
-                >
-                  {formatCost(totalDiscountAmount)}
+                  {formatCost(totalTaxableValue)}
                 </td>
                 <td
                   style={{
@@ -1043,7 +1067,7 @@ const QuoteProposal = () => {
           >
             <div style={{ height: "120px" }} className="row p-2">
               <div style={{ marginBottom: "90px" }}>
-                <h5 className="text-end" style={{ color: "black" }}>
+                <h5 className="text-end">
                   <strong>For EdProwise Tech Pvt. Ltd</strong>
                 </h5>
               </div>
@@ -1060,4 +1084,4 @@ const QuoteProposal = () => {
   );
 };
 
-export default QuoteProposal;
+export default InvoiceForBuyer;

@@ -155,42 +155,57 @@ const ViewAllQuoteTable = () => {
 
   const handleExport = () => {};
 
+  // right now i have setup here to fetch data from diffrent apis and transfer that data
   const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
     if (!sellerId || !enquiryNumber || !schoolId) {
       console.error("Seller ID, Enquiry Number, or School ID is missing");
-      toast.error("Required information is missing");
       return;
     }
 
     try {
-      const response = await getAPI(
-        `/generate-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
-        {},
-        true
+      // Fetch Prepare Quote data
+      const prepareQuoteResponse = await getAPI(
+        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
       );
 
-      // write your code here
+      // Fetch Quote Proposal data
+      const quoteProposalResponse = await getAPI(
+        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+      );
 
-      if (!response.hasError && response.data) {
-        // Navigate with the entire response data
-        // navigate(`/school-dashboard/procurement-services/quote-proposal`, {
-        //   state: {
-        //     prepareQuoteData: response.data.prepareQuotes,
-        //     quoteProposalData: response.data.quoteProposal,
-        //     profileData: response.data.profileData,
-        //   },
-        // });
+      // Fetch Profile data based on the schoolId
+      const profileResponse = await getAPI(
+        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
+      );
+
+      if (
+        !prepareQuoteResponse.hasError &&
+        prepareQuoteResponse.data &&
+        !quoteProposalResponse.hasError &&
+        quoteProposalResponse.data &&
+        !profileResponse.hasError &&
+        profileResponse.data
+      ) {
+        const prepareQuoteData = prepareQuoteResponse.data.data;
+        const quoteProposalData = quoteProposalResponse.data.data;
+        const profileData = profileResponse.data.data;
+
+        navigate(`/school-dashboard/procurement-services/quote-proposal`, {
+          state: { prepareQuoteData, quoteProposalData, profileData },
+        });
       } else {
-        toast.error(response.message || "Failed to fetch quote data");
+        console.error(
+          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
+        );
       }
     } catch (err) {
       console.error("Error fetching data:", err);
-      toast.error("An error occurred while fetching quote data");
     }
   };
+
   return (
     <>
       <div className="container">
