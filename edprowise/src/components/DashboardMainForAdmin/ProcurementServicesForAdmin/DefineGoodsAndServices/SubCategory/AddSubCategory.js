@@ -193,16 +193,6 @@ const AddCategory = () => {
                   </h4>
                 </div>
               </div>
-              {/* below form works fine if there is mainCategoryId and categoryid  at that time it preftcly stores existing edprowise margin so the api /sub-category
-works fine but i also want to show existing edprowise margin also which is connected with that perticular categoryId but in read only form
-
-now see if there is Add Custom Goods And Services at that time if user select maincategory and for category if he chooses from any existing category at that time also 
-i want to show existing edprowise margin in read only form 
-But if user selects main category and for category if he gives category from input type text at that time i want that there should be edprowise margin field 
-in which he can type what ever number he want
-and if for  Add Custom Goods And Services if user dont choose any main category but type the main category at that time he will also type category in input type text
-at that time also i want to give edprowise margin for input type text so user will type what ever he want so do it for me  
-*/}
               <form onSubmit={handleSubmit}>
                 {categoryRows.map((row, index) => (
                   <div className="row" key={index}>
