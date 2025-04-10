@@ -449,7 +449,7 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       >
-        <Route index element={<SchoolDashboard />} />
+        <Route index element={<SchoolProcurementDashboard />} />
         {/*School Dashboard Route */}
         <Route path="view-school-profile" element={<ViewSchoolProfile />} />
         <Route path="update-school-profile" element={<UpdateSchoolProfile />} />
@@ -639,7 +639,7 @@ const AppRoutes = () => {
       >
         {/*Seller Dashboard Route */}
 
-        <Route index element={<SellerDashboard />} />
+        <Route index element={<SellerProcurementDashboard />} />
 
         <Route path="view-seller-profile" element={<ViewSellerProfile />} />
         <Route path="update-seller-profile" element={<UpdateSellerProfile />} />

@@ -19,7 +19,7 @@ const ViewRequestedQuote = () => {
   const navigate = useNavigate();
 
   const enquiryNumber =
-    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
+    location.state?.enquiryNumber || location.state?.searchEnquiryNumber;
   const schoolId = location.state?.schoolId;
 
   const [quotes, setQuotes] = useState([]);
@@ -207,10 +207,7 @@ const ViewRequestedQuote = () => {
         </div>
 
         {isQuoteTableVisible && quotes.length > 0 ? (
-          <ViewAllQuoteTable
-            enquiryNumber={enquiryNumber}
-            schoolId={schoolId}
-          />
+          <ViewAllQuoteTable />
         ) : (
           <div className="row"></div>
         )}

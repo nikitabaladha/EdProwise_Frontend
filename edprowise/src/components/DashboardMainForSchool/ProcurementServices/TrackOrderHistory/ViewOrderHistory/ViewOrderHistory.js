@@ -8,6 +8,7 @@ import getAPI from "../../../../../api/getAPI";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { formatCost } from "../../../../CommonFunction";
+import { toast } from "react-toastify";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -102,55 +103,44 @@ const ViewOrderHistory = () => {
     }
   };
 
-  const fetchInvoiceDataForBuyer = async (enquiryNumber, sellerId) => {
+  const generateInvoicePDFForBuyer = async (enquiryNumber, sellerId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
+    const missingFields = [];
+    if (!sellerId) missingFields.push("Seller ID");
+    if (!enquiryNumber) missingFields.push("Enquiry Number");
+    if (!schoolId) missingFields.push("School ID");
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
 
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const response = await getAPI(
+        `/generate-buyer-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "buyer-invoice.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/school-dashboard/procurement-services/invoice-for-buyer`, {
-          state: { prepareQuoteData, quoteProposalData, profileData },
-        });
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch invoice data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching invoice data");
     }
   };
+
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowModal(true);
@@ -352,9 +342,9 @@ const ViewOrderHistory = () => {
                     {["Ready For Transit", "In-Transit", "Delivered"].includes(
                       order.supplierStatus
                     ) && (
-                      <Link
+                      <button
                         onClick={() =>
-                          fetchInvoiceDataForBuyer(
+                          generateInvoicePDFForBuyer(
                             order?.enquiryNumber,
                             order?.sellerId
                           )
@@ -369,7 +359,7 @@ const ViewOrderHistory = () => {
                           icon="solar:download-broken"
                           className="align-middle fs-18"
                         />{" "}
-                      </Link>
+                      </button>
                     )}
                   </Link>
 

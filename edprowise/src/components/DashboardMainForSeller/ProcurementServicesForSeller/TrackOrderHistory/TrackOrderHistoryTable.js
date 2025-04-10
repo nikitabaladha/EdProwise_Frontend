@@ -153,106 +153,79 @@ const TrackOrderHistoryTable = () => {
     }
   };
 
-  const fetchInvoiceDataForEdprowise = async (enquiryNumber, schoolId) => {
+  const generateInvoicePDFForEdprowise = async (enquiryNumber, schoolId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const sellerId = userDetails?.id;
 
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
+    const missingFields = [];
+    if (!sellerId) missingFields.push("Seller ID");
+    if (!enquiryNumber) missingFields.push("Enquiry Number");
+    if (!schoolId) missingFields.push("School ID");
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
 
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const response = await getAPI(
+        `/generate-edprowise-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "edprowise-invoice.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(
-          `/seller-dashboard/procurement-services/invoice-for-edprowise`,
-          {
-            state: { prepareQuoteData, quoteProposalData, profileData },
-          }
-        );
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch invoice data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching invoice data");
     }
   };
 
-  const fetchInvoiceDataForBuyer = async (enquiryNumber, schoolId) => {
+  const generateInvoicePDFForBuyer = async (enquiryNumber, schoolId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const sellerId = userDetails?.id;
 
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
+    const missingFields = [];
+    if (!sellerId) missingFields.push("Seller ID");
+    if (!enquiryNumber) missingFields.push("Enquiry Number");
+    if (!schoolId) missingFields.push("School ID");
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
 
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const response = await getAPI(
+        `/generate-buyer-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "buyer-invoice.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/seller-dashboard/procurement-services/invoice-for-buyer`, {
-          state: { prepareQuoteData, quoteProposalData, profileData },
-        });
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch invoice data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching invoice data");
     }
   };
 
@@ -426,39 +399,15 @@ const TrackOrderHistoryTable = () => {
                                 ) : null}
                               </>
 
-                              {/* <select
-                                id="supplierStatus"
-                                name="supplierStatus"
-                                className="form-control"
-                                value={order.supplierStatus}
-                                onChange={(e) =>
-                                  handleUpdateOrderStatus(
-                                    order.enquiryNumber,
-                                    e.target.value
-                                  )
-                                }
-                                required
-                              >
-                                <option value="">Select Status</option>
-                                <option value="Work In Progress">
-                                  Work In Progress
-                                </option>
-                                <option value="Ready For Transit">
-                                  Ready For Transit
-                                </option>
-                                <option value="In-Transit">In-Transit</option>
-                                <option value="Delivered">Delivered</option>
-                              </select> */}
-
                               <Link>
                                 {[
                                   "Ready For Transit",
                                   "In-Transit",
                                   "Delivered",
                                 ].includes(order.supplierStatus) && (
-                                  <Link
+                                  <button
                                     onClick={() =>
-                                      fetchInvoiceDataForEdprowise(
+                                      generateInvoicePDFForEdprowise(
                                         order.enquiryNumber,
                                         order.schoolId
                                       )
@@ -472,7 +421,7 @@ const TrackOrderHistoryTable = () => {
                                       icon="solar:download-broken"
                                       className="align-middle fs-18"
                                     />
-                                  </Link>
+                                  </button>
                                 )}
                               </Link>
 
@@ -482,9 +431,9 @@ const TrackOrderHistoryTable = () => {
                                   "In-Transit",
                                   "Delivered",
                                 ].includes(order.supplierStatus) && (
-                                  <Link
+                                  <button
                                     onClick={() =>
-                                      fetchInvoiceDataForBuyer(
+                                      generateInvoicePDFForBuyer(
                                         order.enquiryNumber,
                                         order.schoolId
                                       )
@@ -498,7 +447,7 @@ const TrackOrderHistoryTable = () => {
                                       icon="solar:download-broken"
                                       className="align-middle fs-18"
                                     />
-                                  </Link>
+                                  </button>
                                 )}
                               </Link>
 

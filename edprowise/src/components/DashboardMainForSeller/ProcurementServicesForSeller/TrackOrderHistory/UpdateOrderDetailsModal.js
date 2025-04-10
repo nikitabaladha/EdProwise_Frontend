@@ -115,6 +115,7 @@ const UpdateOrderDetailsModal = ({
                     </div>
                   </div>
                   <form onSubmit={handleSubmit}>
+                    {/* this works perfectly fine but by default i want to show current date or todays date */}
                     <div className="mb-2">
                       <label
                         htmlFor="actualDeliveryDate"
@@ -140,7 +141,7 @@ const UpdateOrderDetailsModal = ({
                         value={orderDetailsFromSeller.otherCharges}
                         onChange={handleInputChange}
                         className="form-control"
-                        placeholder="200"
+                        placeholder="Example : 200"
                       />
                     </div>
 

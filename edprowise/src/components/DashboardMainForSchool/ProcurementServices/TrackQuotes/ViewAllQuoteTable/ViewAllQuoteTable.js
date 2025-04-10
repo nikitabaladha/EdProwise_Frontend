@@ -9,6 +9,7 @@ import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import ReasonModal from "./ReasonModal";
 import { formatCost } from "../../../../CommonFunction";
+import { RxCross1 } from "react-icons/rx";
 
 import { format } from "date-fns";
 
@@ -21,7 +22,7 @@ const ViewAllQuoteTable = () => {
   const location = useLocation();
 
   const enquiryNumber =
-    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
+    location.state?.enquiryNumber || location.state?.searchEnquiryNumber;
 
   const navigate = useNavigate();
 
@@ -153,36 +154,36 @@ const ViewAllQuoteTable = () => {
     setIsModalOpen(false);
   };
 
-  const handleExport = () => {};
-
-  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+  const generateQuotePDF = async (enquiryNumber, sellerId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
-      toast.error("Required information is missing");
+    const missingFields = [];
+    if (!sellerId) missingFields.push("Seller ID");
+    if (!enquiryNumber) missingFields.push("Enquiry Number");
+    if (!schoolId) missingFields.push("School ID");
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
 
     try {
       const response = await getAPI(
-        `/generate-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
-        {},
+        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        { responseType: "blob" },
         true
       );
 
       // write your code here
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "quote.pdf";
+      link.click();
 
       if (!response.hasError && response.data) {
-        // Navigate with the entire response data
-        // navigate(`/school-dashboard/procurement-services/quote-proposal`, {
-        //   state: {
-        //     prepareQuoteData: response.data.prepareQuotes,
-        //     quoteProposalData: response.data.quoteProposal,
-        //     profileData: response.data.profileData,
-        //   },
-        // });
       } else {
         toast.error(response.message || "Failed to fetch quote data");
       }
@@ -191,6 +192,7 @@ const ViewAllQuoteTable = () => {
       toast.error("An error occurred while fetching quote data");
     }
   };
+
   return (
     <>
       <div className="container">
@@ -201,13 +203,6 @@ const ViewAllQuoteTable = () => {
                 <h4 className="card-title flex-grow-1">View All Quote List</h4>
                 <div className="text-end">
                   <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
-                    Export
-                  </Link>
-
-                  <Link
                     className="btn btn-light btn-sm"
                     onClick={(event) => {
                       if (submittedQuotes.length > 0) {
@@ -216,6 +211,9 @@ const ViewAllQuoteTable = () => {
                         toast.error("No quotes available to view cart.");
                       }
                     }}
+                    title="View Cart"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
                   >
                     <iconify-icon
                       icon="solar:cart-large-minimalistic-broken"
@@ -300,6 +298,9 @@ const ViewAllQuoteTable = () => {
                                     onClick={(event) =>
                                       navigateToViewQuote(event, quote)
                                     }
+                                    title="View Quote"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
                                     className="btn btn-light btn-sm"
                                   >
                                     <iconify-icon
@@ -307,9 +308,9 @@ const ViewAllQuoteTable = () => {
                                       className="align-middle fs-18"
                                     />
                                   </Link>
-                                  <Link
+                                  <button
                                     onClick={() =>
-                                      fetchPrepareQuoteAndProposalData(
+                                      generateQuotePDF(
                                         quote?.enquiryNumber,
                                         quote?.sellerId
                                       )
@@ -323,7 +324,7 @@ const ViewAllQuoteTable = () => {
                                       icon="solar:download-broken"
                                       className="align-middle fs-18"
                                     />
-                                  </Link>
+                                  </button>
                                 </>
                               )}
                               {quote.venderStatusFromBuyer === "Pending" && (
@@ -333,15 +334,18 @@ const ViewAllQuoteTable = () => {
                                       navigateToViewQuote(event, quote)
                                     }
                                     className="btn btn-light btn-sm"
+                                    title="View Quote"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
                                   >
                                     <iconify-icon
                                       icon="solar:eye-broken"
                                       className="align-middle fs-18"
                                     />
                                   </Link>
-                                  <Link
+                                  <button
                                     onClick={() =>
-                                      fetchPrepareQuoteAndProposalData(
+                                      generateQuotePDF(
                                         quote?.enquiryNumber,
                                         quote?.sellerId
                                       )
@@ -355,22 +359,24 @@ const ViewAllQuoteTable = () => {
                                       icon="solar:download-broken"
                                       className="align-middle fs-18"
                                     />
-                                  </Link>
-                                  <Link
-                                    className="btn btn-light btn-sm"
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary custom-submit-button"
                                     onClick={(event) => {
                                       event.preventDefault();
                                       handleSubmit(event, quote);
                                     }}
+                                    title="Add to cart"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
                                   >
-                                    <iconify-icon
-                                      icon="solar:cart-plus-outline"
-                                      className="align-middle fs-18"
-                                    />
-                                  </Link>
-                                  <button
-                                    type="button"
-                                    className="btn btn-primary custom-submit-button"
+                                    Add to cart
+                                  </button>
+
+                                  <Link
+                                    className="btn btn-light btn-sm"
                                     onClick={(event) =>
                                       handleOpenModal(
                                         event,
@@ -378,9 +384,12 @@ const ViewAllQuoteTable = () => {
                                         quote?.sellerId
                                       )
                                     }
+                                    title="Reject Quote"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
                                   >
-                                    Reject Quote
-                                  </button>
+                                    <RxCross1 className="align-middle fs-18" />
+                                  </Link>
                                 </>
                               )}
 
