@@ -84,7 +84,7 @@ const WhyChooseUs = () => {
     <>
       <section
         className="wpo-courses-section-s2 section-padding pt-0 pb-1"
-        style={{ background: "white" }}
+        style={{background:"#fafaff", boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}
       >
         <div className="container">
           <div className="row-web">
@@ -184,7 +184,9 @@ const WhyChooseUs = () => {
           <img src="assets/website-images/shape/4.svg" alt="Shape 4" />
         </div>
       </section>
-      <section className="wpo-courses-section-s2 section-padding pt-0 pb-3">
+      <section className="wpo-courses-section-s2 section-padding pt-0 pb-3"
+      style={{background:"#fafaff", boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}
+      >
         <div className="container">
           <div className="row-web">
             <div className="col-12">

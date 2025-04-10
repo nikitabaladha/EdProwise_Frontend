@@ -95,7 +95,7 @@ const BlogSection = () => {
     <section
       className="wpo-blog-section section-padding pt-0 pb-1"
       id="blog"
-      style={{ background: "#fcf9ef" }}
+      style={{background:"#fafaff",boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}
     >
       <div className="container edprowise-choose-container">
         <div className="wpo-section-title-s2 mb-2">

@@ -120,7 +120,7 @@ const TestimonialSection = () => {
   };
 
   return (
-    <section className="wpo-courses-section-s2 section-padding pt-0 pb-1">
+    <section className="wpo-courses-section-s2 section-padding pt-0 pb-1" style={{background:"#fafaff",  boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}>
       <div className="container-fluid bg-body-tertiary py-3">
         <div className="row">
           <div className="col-12">

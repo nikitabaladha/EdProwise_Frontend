@@ -15,10 +15,20 @@ const GallerySection = () => {
     { id: 2, image: "/assets/website-images/portfolio/12.webp" },
     { id: 3, image: "/assets/website-images/portfolio/13.webp" },
     { id: 4, image: "/assets/website-images/portfolio/14.webp" },
-    // { id: 5, image: "/assets/website-images/portfolio/5.webp" },
-    // { id: 6, image: "/assets/website-images/portfolio/6.webp" },
-    // { id: 7, image: "/assets/website-images/portfolio/7.webp" },
-    // { id: 8, image: "/assets/website-images/portfolio/8.webp" },
+    { id: 5, image: "/assets/website-images/portfolio/15.png" },
+    { id: 6, image: "/assets/website-images/portfolio/16.png" },
+    { id: 7, image: "/assets/website-images/portfolio/17.png" },
+    { id: 8, image: "/assets/website-images/portfolio/18.png" },
+    { id: 9, image: "/assets/website-images/portfolio/19.png" },
+    { id: 10, image: "/assets/website-images/portfolio/20.png" },
+    { id: 11, image: "/assets/website-images/portfolio/21.png" },
+    { id: 12, image: "/assets/website-images/portfolio/22.png" },
+    { id: 13, image: "/assets/website-images/portfolio/23.png" },
+    { id: 14, image: "/assets/website-images/portfolio/24.png" },
+    { id: 15, image: "/assets/website-images/portfolio/25.png" },
+    { id: 16, image: "/assets/website-images/portfolio/26.png" },
+    { id: 17, image: "/assets/website-images/portfolio/27.png" },
+
   ];
 
   // Function to shuffle the images

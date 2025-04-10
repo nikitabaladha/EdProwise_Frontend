@@ -100,6 +100,15 @@ Version:        1.0.0
 
 /* Nikita Css Starts */
 /* Modal custom css  Start*/
+.accordion-body-wrapper {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.5s ease;
+}
+
+.contact-info-text{
+color: white;
+}
 
 .custom-modal .modal-body-scrollable {
   max-height: 80vh;
@@ -215,9 +224,9 @@ li.chat-service-tabs {
 
 .category-item-btn.active,
 .download-brocher-tab:hover {
-  color: white;
+  color:black;
   border: 3px solid white;
-  background-color: #007bff;
+  background-color:#ffC000;
 }
 
 .bg-bedcrum {
@@ -343,9 +352,9 @@ span.message-bot-img img {
 
 .category-item-btn.active,
 .download-brocher-tab:hover {
-  color: white;
+  color: black;
   border: 3px solid white;
-  background-color: #007bff;
+  background-color: #ffC000;
 }
 
 .service-text-header {
@@ -1094,8 +1103,8 @@ ul.service-suggestions.slide-text.pb-2 {
 }
 
 .category-item.active {
-  color: white;
-  background-color: #007bff;
+  color: black;
+  background-color: #04d3d4;
 }
 
 .scroll-btn {
@@ -1514,8 +1523,8 @@ ul.service-suggestions.slide-text.pb-2 {
   font-size: 0.9em;
   text-transform: uppercase;
   font-weight: 300;
-  color: #fff;
-  background-color: #4540e1;
+  color: black;
+  background-color: #04d3d4;
   border-radius: 20px;
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.19);
 }
@@ -1568,7 +1577,7 @@ ul.service-suggestions.slide-text.pb-2 {
 
 .theme-choose-btn.active,
 .tab-back.active {
-  background: #f2bc00;
+  background: #04d3d4;
 }
 
 .show-tab {
@@ -1589,8 +1598,8 @@ ul.service-suggestions.slide-text.pb-2 {
 }
 
 .slider {
-  background: white;
-  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.125);
+  background: #fafaff;
+  /* box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.125); */
   height: 100px;
   margin: auto;
   overflow: hidden;
@@ -1600,7 +1609,7 @@ ul.service-suggestions.slide-text.pb-2 {
 
 .sliderr {
   color: black;
-  background: #04d3d3;
+  background:#a9fffd;
   /* box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.125); */
   /* height: 100px; */
   margin: auto;
@@ -1904,6 +1913,7 @@ ul.service-suggestions.slide-text.pb-2 {
 
 .cart-vm {
   position: relative;
+  margin-top: 10px;
   width: 250px; /* Adjust width as needed */
   height: 250px; /* Initial height */
   border-radius: 125px; /* Creates the rounded oval shape */
@@ -2432,7 +2442,7 @@ img {
   font-style: normal;
   font-weight: 700;
   line-height: 75px;
-  margin-top: 10px;
+  /* margin-top: 10px; */
   text-align: center;
   z-index: 1;
 }
@@ -2527,7 +2537,7 @@ img {
   z-index: 1;
   position: relative;
   font-size: 18px;
-  background: #f2bc00;
+  background: #ffC000;
   font-family: "Urbanist";
   border-radius: 30px;
   font-weight: 600;
@@ -3783,7 +3793,7 @@ img {
 --------------------------------------------------------------*/
 /*-- 2.1 topbar-web --*/
 .topbar-web {
-  background: #4540e1;
+  background: black;
   padding: 0 60px;
 }
 
@@ -3937,7 +3947,7 @@ img {
 .topbar-web ul .fi:before {
   font-size: 15px;
   font-size: 1rem;
-  color: #fff;
+  color: white;
 }
 
 /* 2.2 navigation */
@@ -6017,7 +6027,7 @@ img {
 .static-hero-s5 .slide-title h2 {
   font-size: 95px;
   font-weight: 500;
-  line-height: 95px;
+  line-height: 85px;
   margin: 10px 0 15px;
   color: #fff;
   text-transform: capitalize;
@@ -6270,7 +6280,7 @@ img {
 .static-hero-s3 .slide-title h2,
 .static-hero-s4 .slide-title h2,
 .static-hero-s5 .slide-title h2 {
-  font-size: 50px;
+  font-size: 65px;
   font-style: normal;
   font-weight: 700;
   color: #1a1729;
@@ -7695,8 +7705,8 @@ img {
 .static-hero-s3 .hero-content .slide-title h2 span,
 .static-hero-s4 .hero-content .slide-title h2 span,
 .static-hero-s5 .hero-content .slide-title h2 span {
-  background: #4540e1;
-  color: #fff;
+  background: #04d3d4;
+  color: black;
   display: inline-block;
   padding: 0 10px;
   border-radius: 5px;
@@ -9108,8 +9118,8 @@ img {
   display: flex;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  border-top: 1px solid #d9d9d9;
-  border-bottom: 1px solid #d9d9d9;
+  /* border-top: 1px solid #d9d9d9; */
+  /* border-bottom: 1px solid #d9d9d9; */
   margin: 30px 0;
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
@@ -9737,7 +9747,6 @@ img {
 .wpo-courses-section-s2,
 .wpo-courses-section-s4,
 .wpo-courses-section-s5 {
-  background: #fcf9ef;
   z-index: 1;
   position: relative;
 }
@@ -12611,7 +12620,8 @@ img {
 /* 3.7 wpo-choose-section */
 .wpo-choose-section,
 .wpo-choose-section-s2 {
-  background: #fcf9ef;
+  /* background: #fcf9ef; */
+  background:#a9fffd;
   text-align: center;
   position: relative;
   z-index: 1;

@@ -10,7 +10,7 @@ const OrderDetailsWebSitePage = () => {
 
     return (
         <>
-            <section className="wpo-page-title service-sub-page-title">
+            <section className="wpo-page-title service-sub-page-title" style={{background:"#fafaff"}}>
                 <div className="container">
                     <div className="row">
                         <div className="col col-xs-12">

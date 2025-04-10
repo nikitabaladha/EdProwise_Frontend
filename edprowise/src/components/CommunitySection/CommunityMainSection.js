@@ -167,7 +167,7 @@ const CommunityMainSection = () => {
     //   </div>
     // </section>
 
-    <section className="wpo-blog-section section-padding p-0" id="blog">
+    <section className="wpo-blog-section section-padding p-0" id="blog" style={{background:"#fafaff"}}>
         <div className="nav-tabs-container">
           <section className="wpo-courses-section-s2 section-padding pt-0 pb-0">
             <div className="container-fluidd bg-bedcrum ">

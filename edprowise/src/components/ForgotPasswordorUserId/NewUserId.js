@@ -7,17 +7,16 @@ import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
-const NewPassword = (e) => {
+const NewUserId = (e) => {
     const location = useLocation();
     const navigate = useNavigate();
 
     const [generalError, setGeneralError] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
     
     const passedUserId = location?.state?.userId || ""; 
-    console.log("UserId :",passedUserId);
+
     
-    const [formData, setFormData] = useState({ password: "", confirmPassword: "" });
+    const [formData, setFormData] = useState({ userId: "", confirmUserId: "" });
 
     
     const handleChange = (e) => {
@@ -39,12 +38,12 @@ const NewPassword = (e) => {
     };
 
     
-    const handlePasswordSubmit = async (e) => {
+    const handleUserIdSubmit = async (e) => {
         e.preventDefault();
         setGeneralError("");
     
-        if (formData.password !== formData.confirmPassword) {
-          setGeneralError("Passwords do not match.");
+        if (formData.userId !== formData.confirmUserId) {
+          setGeneralError("UserId do not match.");
           return;
         }
     
@@ -55,16 +54,16 @@ const NewPassword = (e) => {
     
         try {
           const response = await putAPI(
-            "/reset-password",
+            "/reset-userid",
             {
               userId: passedUserId,
-              newPassword: formData.password,
+              NewUserId: formData.userId,
             },
             false
           );
     
           if (!response.hasError) {
-            toast.success("Password updated successfully.");
+            toast.success("UserId updated successfully.");
             navigate("/login");
           } else {
             setGeneralError(response.data.message);
@@ -77,9 +76,7 @@ const NewPassword = (e) => {
       };
     
 
-    const togglePasswordVisibility = () => {
-        setShowPassword((prev) => !prev);
-    };
+    
     return (
         <>
             <div className="form-body form-left">
@@ -116,7 +113,7 @@ const NewPassword = (e) => {
                                 </div>
                                 <h3 className="font-md">Whatever School Need, We Provide</h3>
                                 <p>We Listen...We Resolve...We Deliver</p>
-                                <form onSubmit={handlePasswordSubmit}>
+                                <form onSubmit={handleUserIdSubmit}>
                                     {/* <p style={{ fontSize: "1rem" }}> Enter the userId associated with your Edprowise account.</p> */}
                                     <div
                                         style={{
@@ -126,37 +123,14 @@ const NewPassword = (e) => {
                                         }}
                                     >
                                         <input
-                                            type={showPassword ? "text" : "password"}
-                                            name="password"
-                                            value={formData.password}
+                                            type="text"
+                                            name="userId"
+                                            value={formData.userId}
                                             onChange={handleChange}
                                             required
                                             className="form-control pe-5"
-                                            placeholder="Enter New Password"
+                                            placeholder="Enter New UserId"
                                         />
-                                        {showPassword ? (
-                                            <FaEye
-                                                onClick={togglePasswordVisibility}
-                                                style={{
-                                                    position: "absolute",
-                                                    right: "10px",
-                                                    top: "50%",
-                                                    transform: "translateY(-80%)",
-                                                    cursor: "pointer",
-                                                }}
-                                            />
-                                        ) : (
-                                            <FaEyeSlash
-                                                onClick={togglePasswordVisibility}
-                                                style={{
-                                                    position: "absolute",
-                                                    right: "10px",
-                                                    top: "50%",
-                                                    transform: "translateY(-80%)",
-                                                    cursor: "pointer",
-                                                }}
-                                            />
-                                        )}
                                     </div>
 
                                     <div
@@ -167,37 +141,14 @@ const NewPassword = (e) => {
                                         }}
                                     >
                                         <input
-                                            type={showPassword ? "text" : "password"}
-                                            name="confirmPassword"
-                                            value={formData.confirmPassword}
+                                            type="text"
+                                            name="confirmUserId"
+                                            value={formData.confirmUserId}
                                             onChange={handleChange}
                                             required
                                             className="form-control pe-5"
-                                            placeholder="Retype New Password"
+                                            placeholder="Retype New UserId"
                                         />
-                                        {showPassword ? (
-                                            <FaEye
-                                                onClick={togglePasswordVisibility}
-                                                style={{
-                                                    position: "absolute",
-                                                    right: "10px",
-                                                    top: "50%",
-                                                    transform: "translateY(-80%)",
-                                                    cursor: "pointer",
-                                                }}
-                                            />
-                                        ) : (
-                                            <FaEyeSlash
-                                                onClick={togglePasswordVisibility}
-                                                style={{
-                                                    position: "absolute",
-                                                    right: "10px",
-                                                    top: "50%",
-                                                    transform: "translateY(-80%)",
-                                                    cursor: "pointer",
-                                                }}
-                                            />
-                                        )}
                                     </div>
 
                                     {generalError && (
@@ -238,4 +189,4 @@ const NewPassword = (e) => {
     );
 };
 
-export default NewPassword;
+export default NewUserId;

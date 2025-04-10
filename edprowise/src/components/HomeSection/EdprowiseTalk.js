@@ -58,7 +58,7 @@ const EdprowiseTalk = () => {
 
   return (
     <>
-      <section className="wpo-choose-section-s2 section-padding pt-0 pb-1">
+      <section className="wpo-choose-section-s2 section-padding pt-0 pb-1" style={{ boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}} >
         <div className="container edprowise-choose-container">
           <div className="wpo-choose-wrap">
             <div className="row">
@@ -77,14 +77,14 @@ const EdprowiseTalk = () => {
                 <div
                   className="grid-web"
                   key={index}
-                  // style={{ display: "inline-flex !important" }}
+                  
                 >
                   <div className="icon" style={{ background: slide.color }}>
                     <i className={slide.icon}></i>
                   </div>
                   <div className="info">
                     <h3>{slide.title}</h3>
-                    <p>{slide.description}</p>
+                    
                   </div>
                 </div>
               ))}
@@ -94,8 +94,8 @@ const EdprowiseTalk = () => {
         </div>
       </section>
       <section
-        className="wpo-choose-section-s2 section-padding pt-lg-0 pb-lg-3"
-        style={{ background: "white" }}
+        className="wpo-choose-section-s2 section-padding pt-lg-0"
+        style={{background:"#fafaff", boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}
       >
         <div className="container edprowise-choose-container">
           <div className="row mb-2">

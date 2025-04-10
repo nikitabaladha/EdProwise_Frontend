@@ -8,7 +8,7 @@ const AboutusSection = () => {
     <>
       <section
         className="wpo-about-section-s2 pb-1 pt-2"
-        style={{ background: "#FCF9EF" }}
+        
       >
         <div className="container container-big">
           <div className="wpo-about-wrap" style={{padding:"0 1.5rem"}}>
@@ -100,7 +100,9 @@ const AboutusSection = () => {
           </div>
         </div>
       </section>
-      <section className="wpo-about-section section-padding p-2">
+      <section className="wpo-about-section section-padding p-2" 
+       style={{ background: "#a9fffd" }}
+      >
         <div className="container container-big">
           <div className="wpo-about-wrap">
             <div className="row align-items-center">

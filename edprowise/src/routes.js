@@ -55,6 +55,10 @@ import UserLogin from "./components/Login/UserLogin";
 import Signup from "./components/Signup/Signup";
 import AdminSignup from "./components/Signup/AdminSignup";
 
+// umesh new Added routes
+import ForgotPassword from "./components/ForgotPasswordorUserId/ForgotPassword.js";
+import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
+
 // ==============Admin Routes ====================Admin Routes ========================Admin Routes=========
 
 import ChangePasswordForAdmin from "./components/DashboardMainForAdmin/ChangePassword/ChangePassword";
@@ -211,16 +215,21 @@ import TrackQuoteTableForSeller from "./components/DashboardMainForSeller/Procur
 import ViewRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
 
 import SubmitQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/SubmitQuote/SubmitQuote";
-
 import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
 
-import SearchResults from "./components/DashboardMainForAdmin/SearchResults.js";
+// new Routes umesh from 7-4-25 
+// add on public 
+import ForgotUserId from "./components/ForgotPasswordorUserId/ForgotUserId.js";
+import NewUserId from "./components/ForgotPasswordorUserId/NewUserId.js";
 
-// umesh Added
-import ForgotPassword from "./components/ForgotPassword/ForgotPassword.js";
-import NewPassword from "./components/ForgotPassword/NewPassword.js";
+// add in admin
+import AdminRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/AdminRegistrationEmailTamplate.js";
+import UserIdUpdateEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/UserIdUpdate.js";
+import SchoolRequestForQuoteEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRequestForQuoteEmail.js";
+import QuoteProposalSentToSchoolEmailTemplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/QuoteProposalSentToSchoolEmailTemplate.js";
+
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -267,7 +276,7 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-      {/* umesh added */}
+     
       <Route 
         path="/forgot-password"
         element={
@@ -277,7 +286,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route 
+        <Route 
         path="/forgot-password/new-password"
         element={
           <PublicRoute>
@@ -285,6 +294,25 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+       {/* umesh added */}
+       <Route 
+        path="/forgot-userId"
+        element={
+          <PublicRoute>
+            <ForgotUserId/>
+          </PublicRoute>
+        }
+      />
+
+      <Route 
+        path="/forgot-userId/new-userId"
+        element={
+          <PublicRoute>
+            <NewUserId/>
+          </PublicRoute>
+        }
+      />
+      {/* end umesh */}
 
       <Route
         path="/complete-admin-profile"
@@ -446,8 +474,10 @@ const AppRoutes = () => {
         <Route path="email/templates/school-registration-template" element={<SchoolRegistrationEmailTamplate/>}/>
         <Route path="email/templates/seller-registration-template" element={<SellerRegistrationEmailTamplate/>}/>
         <Route path="email/templates/password-update-template" element={<PasswordUpdateEmailTamplate/>}/>
-
-
+        <Route path="email/templates/admin-registration-template" element={<AdminRegistrationEmailTamplate/>}/>
+        <Route path="email/templates/userid-update-template" element={<UserIdUpdateEmailTamplate/>}/>
+        <Route path="email/templates/reuest-for-quote" element={<SchoolRequestForQuoteEmail/>}/>
+        <Route path="email/templates/quote-proposal-template" element={<QuoteProposalSentToSchoolEmailTemplate/>}/>
       </Route>
 
       {/* ===================================================School Routes==================================== */}

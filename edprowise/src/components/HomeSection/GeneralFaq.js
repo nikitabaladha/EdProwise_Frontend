@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useRef, useEffect} from "react";
 const edprowiseData = [
     {
       id: "edprowiseOne",
@@ -53,12 +53,23 @@ const edprowiseData = [
 const GeneralFaq = () => {
 
    const [activeIndex, setActiveIndex] = useState(0); // State to track the active FAQ index
-      
+   const contentRefs = useRef([]);
         const handleAccordionClick = (index) => {
           setActiveIndex(index === activeIndex ? null : index); // Toggle the active index
         };
+
+        useEffect(() => {
+          contentRefs.current.forEach((ref, i) => {
+            if (!ref) return;
+            if (i === activeIndex) {
+              ref.style.maxHeight = ref.scrollHeight + "px";
+            } else {
+              ref.style.maxHeight = "0px";
+            }
+          });
+        }, [activeIndex]);
     return (
-      <section className="wpo-faq-section section-padding home-page-faq pt-lg-2 pb-lg-2">
+      <section className="wpo-faq-section section-padding home-page-faq pt-lg-2 pb-lg-2" style={{background:"#fafaff"}}>
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
@@ -83,8 +94,10 @@ const GeneralFaq = () => {
                               </button>
                             </h3>
                             <div
+                             ref={(el) => (contentRefs.current[index] = el)}
                               id={faq.id}
-                              className={`accordion-collapse collapse ${isActive ? "show" : ""}`}
+                               className="accordion-body-wrapper"
+                              // className={`accordion-collapse collapse ${isActive ? "show" : ""}`}
                               aria-labelledby={faq.headingId}
                               data-bs-parent="#accordionExample"
                             >

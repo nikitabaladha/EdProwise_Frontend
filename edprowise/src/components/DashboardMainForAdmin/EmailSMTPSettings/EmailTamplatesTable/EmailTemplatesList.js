@@ -4,9 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 const EmailTemplatesList = () => {
     const navigate = useNavigate();
     const tamplateList = [
+        { TamplateName: "Admin Registration ",  sendTo: "/admin-dashboard/email/templates/admin-registration-template" },
         { TamplateName: "School Registration ", sendTo: "/admin-dashboard/email/templates/school-registration-template" },
         { TamplateName: "Seller Registration",  sendTo: "/admin-dashboard/email/templates/seller-registration-template" },
-        { TamplateName: "Password Update",      sendTo: "/admin-dashboard/email/templates/password-update-template"}
+        { TamplateName: "Password Update",      sendTo: "/admin-dashboard/email/templates/password-update-template"},
+        { TamplateName: "UserId Update",        sendTo: "/admin-dashboard/email/templates/userid-update-template"},
+        { TamplateName: "School Request Quote",      sendTo: "/admin-dashboard/email/templates/reuest-for-quote"},
+        { TamplateName: "Quote Proposal Receive For School", sendTo: "/admin-dashboard/email/templates/quote-proposal-template"},
       ];
       const navigateToView = (event, path) => {
         event.preventDefault();

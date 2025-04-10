@@ -10,7 +10,7 @@ const HomeMainSection = () => {
   const slideTrackRef = useRef(null);
   const [counter, setCounter] = useState(0);
   const words = [
-    "Transforming",
+    "Improving",
     "Unlocking",
     "Redifining",
     "Nurturing",
@@ -18,10 +18,9 @@ const HomeMainSection = () => {
   const intervalTime = 3000;
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef(null);
-  // const intervalTime = 4000; // 4 seconds
   const [autoplay, setAutoplay] = useState(window.innerWidth <= 570);
   const [activeIndex, setActiveIndex] = useState(1);
-  const [translateValue, setTranslateValue] = useState(100); // Default to 100%
+  const [translateValue, setTranslateValue] = useState(100); 
 
   useEffect(() => {
     const handleResize = () => {
@@ -203,7 +202,7 @@ const HomeMainSection = () => {
           </div>
         </div>
       </section>
-      <section className="static-hero-s2 home-hero-section">
+      <section className="static-hero-s2 home-hero-section" >
         <div className="hero-container home-hero-container">
           <div className="hero-inner home-hero-inner p-0">
             <div className="container-fluid home-hero-container-fluid">
@@ -336,7 +335,7 @@ const HomeMainSection = () => {
           </div>
         </div>
       </section>
-      <section className="wpo-features-area section-padding pt-0" >
+      <section className="wpo-features-area section-padding pt-0" style={{background:"#fafaff", boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}} >
         <div className="container-fluid">
           <div className="features-wrap">
             <div
