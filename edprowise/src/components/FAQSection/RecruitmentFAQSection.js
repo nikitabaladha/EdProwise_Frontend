@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useRef, useEffect} from "react";
 const edprowiseRecruitmentData = [
     {
       id: "edprowiseRecruitmentOne",
@@ -87,10 +87,21 @@ const edprowiseRecruitmentData = [
   ];
 const RecruitmentFAQSection = () => {
   const [activeIndex, setActiveIndex] = useState(0); // State to track the active FAQ index
-    
+    const contentRefs = useRef([]);
       const handleAccordionClick = (index) => {
         setActiveIndex(index === activeIndex ? null : index); // Toggle the active index
       };
+
+      useEffect(() => {
+                contentRefs.current.forEach((ref, i) => {
+                  if (!ref) return;
+                  if (i === activeIndex) {
+                    ref.style.maxHeight = ref.scrollHeight + "px";
+                  } else {
+                    ref.style.maxHeight = "0px";
+                  }
+                });
+              }, [activeIndex]);
   return (
     <section className="wpo-faq-section section-padding pt-lg-2 pb-lg-2">
     <div className="container">
@@ -124,7 +135,8 @@ const RecruitmentFAQSection = () => {
                           </h3>
                           <div
                             id={faq.id}
-                            className={`accordion-collapse collapse ${isActive ? "show" : ""}`}
+                            ref={(el) => (contentRefs.current[index] = el)}
+                            className="accordion-body-wrapper"
                             aria-labelledby={faq.headingId}
                             data-bs-parent="#accordionExample"
                           >

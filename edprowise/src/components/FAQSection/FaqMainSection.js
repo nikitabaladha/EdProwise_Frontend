@@ -55,7 +55,7 @@ const FaqMainSection = () => {
   };
 
   return (
-    <section className="wpo-blog-section section-padding p-0" id="blog">
+    <section className="wpo-blog-section section-padding p-0" id="blog" style={{background:"#ffffff"}}>
       <div className="">
         <section className="wpo-courses-section-s2 section-padding pt-0 pb-0">
           <div className="container-fluidd bg-bedcrum pyy-3">

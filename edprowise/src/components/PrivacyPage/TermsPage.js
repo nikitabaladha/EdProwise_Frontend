@@ -26,7 +26,7 @@ const TermsPage = () => {
           <img src="/assets/website-images/shape/4.svg" alt="" />
         </div>
       </section>
-      <section className="wpo-terms-section section-padding">
+      <section className="wpo-terms-section section-padding" style={{background:"#ffffff"}}>
         <div className="container">
           <div className="row">
             <div className="col-lg-10 offset-lg-1">

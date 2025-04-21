@@ -178,7 +178,7 @@ const Footer = () => {
 
                     <li>
                       <i className="fi flaticon-placeholder"></i>
-                      <a href="" style={{ color: "white" }}>
+                      <a href="https://g.page/r/CTBN6r3t-9N3EBI/review" style={{ color: "white" }}>
                         New Delhi, Delhi, India.
                       </a>
                     </li>

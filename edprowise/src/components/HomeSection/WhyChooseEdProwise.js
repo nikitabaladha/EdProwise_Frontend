@@ -50,7 +50,7 @@ const WhyChooseEdProwise = () => {
   };
 
   return (
-    <section className="wpo-courses-section-s2 section-padding pt-0 pb-1">
+    <section className="wpo-courses-section-s2 section-padding section-background-box-shadow pt-2 pb-1">
       <div className="container edprowise-choose-container">
         <div className="row-web">
           <div className="col-12">
@@ -91,7 +91,7 @@ const WhyChooseEdProwise = () => {
 
 // Reusable Card Component
 const Card = React.forwardRef(({ item, maxHeight }, ref) => (
-  <div ref={ref} className="wpo-courses-item" style={{ minHeight: maxHeight }}>
+  <div ref={ref} className="wpo-courses-item" style={{ minHeight: maxHeight, }}>
     <div className="wpo-courses-text">
       <div className="courses-icon">{item.iconClass}</div>
       <h2 className="font-weight-web-h2">

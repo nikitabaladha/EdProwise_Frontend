@@ -150,8 +150,8 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             icon: "solar:users-group-rounded-bold-duotone",
           },
           {
-            label: "Email Templates",
-            link: "/admin-dashboard/email/templates",
+            label: "Marketing",
+            link: "/admin-dashboard/email/marketing",
             icon: "solar:book-bookmark-bold-duotone",
           },
         ],
@@ -272,6 +272,66 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
                 label: "Fees Structure",
                 link: "/school-dashboard/fees-module/admin-setting/fees-structure",
                 icon: "solar:users-group-rounded-bold-duotone",
+              },
+            ],
+          },
+          {
+            id: "payrollModule",
+            label: "Payroll Module",
+            icon: "solar:wallet-money-bold",
+            children: [
+              {
+                id: "adminSetting",
+                label: "Admin Setting",
+                icon: "solar:book-bookmark-bold-duotone",
+                children: [
+                  {
+                    label: "Employee Registration",
+                    link: "/school-dashboard/payroll-module/admin-setting/register-employee-list",
+                    // icon: "solar:users-group-rounded-bold-duotone",
+                  },
+                  {
+                    label: "LWD Details",
+                    link: "/school-dashboard/payroll-module/admin-setting/lwd-details",
+                    // icon: "solar:users-group-rounded-bold-duotone",
+                  },
+                  {
+                    label: "Define CTC Components",
+                    link: "/school-dashboard/payroll-module/admin-setting/define-ctc-components-list",
+                    // icon: "solar:users-group-rounded-bold-duotone",
+                  },
+                  {
+                    label: "CTC Update",
+                    link: "/school-dashboard/payroll-module/admin-setting/CTC-update",
+                    // icon: "solar:users-group-rounded-bold-duotone",
+                  },
+                  {
+                    label: "Payroll Process",
+                    link: "/school-dashboard/payroll-module/admin-setting/payroll-process",
+                    // icon: "solar:users-group-rounded-bold-duotone",
+                  },
+                  {
+                    label: "Salary Increment",
+                    link: "/school-dashboard/payroll-module/admin-setting/salary-increment",
+                    // icon: "solar:users-group-rounded-bold-duotone",
+                  },
+                  {
+                    label: "Form 16",
+                    link: "/school-dashboard/payroll-module/admin-setting/form-16-list",
+                    // icon: "solar:users-group-rounded-bold-duotone",
+                  },
+                ],
+              },
+              {
+                id: "employeeSelfService",
+                label: "Employee Self Service",
+                icon: "solar:book-bookmark-bold-duotone",
+                children: [
+                  {
+                    label: "Update Details",
+                    link: "/school-dashboard/payroll-module/employee-services/update-details",
+                  },
+                ],
               },
             ],
           },

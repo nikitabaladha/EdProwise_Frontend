@@ -12,22 +12,23 @@ const Topbar = () => {
               <ul>
                 <li>
                   <i className="fi flaticon-phone-call"></i>
-                  <a href="tel:+919958528306" style={{ color: "white" }}>
+                  <a className="contact-info-text" href="tel:+919958528306">
                     +91-9958528306
                   </a>
                 </li>
                 <li>
                   <i className="fi flaticon-email"></i>
                   <a
+                  className="contact-info-text"
                     href="mailto:info@edprowise.com"
-                    style={{ color: "white" }}
+                    
                   >
                     info@edprowise.com
                   </a>
                 </li>
                 <li className="contact-location">
                   <i className="fi flaticon-maps-and-flags"></i>
-                  <a href="" style={{ color: "white" }}>
+                  <a className="contact-info-text" href="https://g.page/r/CTBN6r3t-9N3EBI/review" >
                     New Delhi, Delhi, India.
                   </a>
                 </li>

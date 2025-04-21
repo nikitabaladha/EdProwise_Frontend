@@ -33,7 +33,7 @@ const OrderDetailsWebSitePage = () => {
                     <img src="assets/website-images/shape/4.svg" alt="" />
                 </div>
             </section>
-            <section className="wpo-blog-section section-padding" id="blog">
+            <section className="wpo-blog-section section-padding" id="blog" style={{background:"#ffffff"}}>
                 <div className="container">
                     <div className='tracking-details-outer-container'>
                     <div className="tracking-details-container">

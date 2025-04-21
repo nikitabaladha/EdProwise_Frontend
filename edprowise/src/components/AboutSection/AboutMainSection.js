@@ -50,7 +50,7 @@ const BlogSection = () => {
       };
     
   return (
-    <section className="wpo-blog-section section-padding p-0" id="blog">
+    <section className="wpo-blog-section section-padding p-0" id="blog" style={{background:"#ffffff"}}>
         <div className="nav-tabs-container">
           <section className="wpo-courses-section-s2 section-padding pt-0 pb-0">
             <div className="container-fluidd bg-bedcrum ">
@@ -73,11 +73,11 @@ const BlogSection = () => {
                     <button id="teamSection" className={`category-item-btn   ${activeTab === "teamSection" ? "active" : ""}`}
                       onClick={() => showTab("teamSection")}>Team</button>
 
-                    <button id="pressMediaSection" className={`category-item-btn   ${activeTab === "pressMediaSection" ? "active" : ""}`}
+                    {/* <button id="pressMediaSection" className={`category-item-btn   ${activeTab === "pressMediaSection" ? "active" : ""}`}
                       onClick={() => showTab("pressMediaSection")}>Press & Media</button>
 
                     <button id="awardsSection" className={`category-item-btn  ${activeTab === "awardsSection" ? "active" : ""}`}
-                      onClick={() => showTab("awardsSection")} > Awards</button>
+                      onClick={() => showTab("awardsSection")} > Awards</button> */}
 
                   </div>
                   {/* <button

@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useRef, useEffect} from "react";
 const pixelFeesData = [
     {
       id: "pixelFeesOne",
@@ -85,10 +85,21 @@ const pixelFeesData = [
   ];
 const PixelFeesFAQSection = () => {  
     const [activeIndex, setActiveIndex] = useState(0); // State to track the active FAQ index
-  
+  const contentRefs = useRef([]);
     const handleAccordionClick = (index) => {
       setActiveIndex(index === activeIndex ? null : index); // Toggle the active index
     };
+
+    useEffect(() => {
+              contentRefs.current.forEach((ref, i) => {
+                if (!ref) return;
+                if (i === activeIndex) {
+                  ref.style.maxHeight = ref.scrollHeight + "px";
+                } else {
+                  ref.style.maxHeight = "0px";
+                }
+              });
+            }, [activeIndex]);
     return (
       <section className="wpo-faq-section section-padding pt-lg-2 pb-lg-2">
       <div className="container">
@@ -121,8 +132,10 @@ const PixelFeesFAQSection = () => {
                               </button>
                             </h3>
                             <div
+                            ref={(el) => (contentRefs.current[index] = el)}
                               id={faq.id}
-                              className={`accordion-collapse collapse ${isActive ? "show" : ""}`}
+                              className="accordion-body-wrapper"
+                              // className={`accordion-collapse collapse ${isActive ? "show" : ""}`}
                               aria-labelledby={faq.headingId}
                               data-bs-parent="#accordionExample"
                             >

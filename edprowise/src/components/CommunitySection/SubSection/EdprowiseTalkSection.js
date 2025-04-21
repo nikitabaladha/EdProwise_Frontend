@@ -3,7 +3,7 @@ import React from "react";
 const EdprowiseTalkSection = () => {
   
   return (
-    <section className="wpo-choose-section-s2 section-padding pt-3 pb-3 "  style={{ background: "white" }}>
+    <section className="wpo-choose-section-s2 section-padding pt-3 pb-3 " style={{background:"#fafaff"}} >
     <div className="container edprowise-choose-container">
       {/* <div className="row"  >
         <div className="col-12">

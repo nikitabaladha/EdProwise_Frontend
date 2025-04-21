@@ -68,8 +68,8 @@ const VisionMissionSection = () => {
 
   return (
     <section
-      className="wpo-courses-section-s2 section-padding pt-0 pb-3"
-      style={{ background: "white" }}
+      className="wpo-courses-section-s2 section-padding section-background-box-shadow pt-2 pb-3"
+   
     >
       <div className="container">
         <div className="row-web">

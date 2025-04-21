@@ -26,7 +26,7 @@ const EducatorZoneSection = () => {
   ];
 
   return (
-    <section className="wpo-blog-section section-padding pt-lg-3 pb-lg-2 pt-mb-2 pb-mb-1" id="blog"  style={{ background: "#fcf9ef" }}>
+    <section className="wpo-blog-section section-padding pt-lg-3 pb-lg-2 pt-mb-2 pb-mb-1" id="blog" >
       <div className="container edprowise-choose-container">
       
         <div className="wpo-blog-items">

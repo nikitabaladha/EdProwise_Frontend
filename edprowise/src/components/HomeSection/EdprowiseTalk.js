@@ -19,6 +19,7 @@ const EdprowiseTalk = () => {
       icon: "fi flaticon-e-learning",
       title: "Guide, Manual & Training",
       color:"#0568fc",
+      padding: true,
     },
     {
       icon: "fi flaticon-medal-1",
@@ -58,7 +59,7 @@ const EdprowiseTalk = () => {
 
   return (
     <>
-      <section className="wpo-choose-section-s2 section-padding pt-0 pb-1">
+      <section className="wpo-choose-section-s2 section-padding pt-2 pb-2" style={{ boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}} >
         <div className="container edprowise-choose-container">
           <div className="wpo-choose-wrap">
             <div className="row">
@@ -75,16 +76,16 @@ const EdprowiseTalk = () => {
               <Slider {...settings}>
               {slides.map((slide, index) => (
                 <div
-                  className="grid-web"
+                  className={`grid-web ${slide.padding ? 'guid-traing' : ''}`}
                   key={index}
-                  // style={{ display: "inline-flex !important" }}
+
                 >
                   <div className="icon" style={{ background: slide.color }}>
                     <i className={slide.icon}></i>
                   </div>
                   <div className="info">
                     <h3>{slide.title}</h3>
-                    <p>{slide.description}</p>
+                    
                   </div>
                 </div>
               ))}
@@ -94,8 +95,8 @@ const EdprowiseTalk = () => {
         </div>
       </section>
       <section
-        className="wpo-choose-section-s2 section-padding pt-lg-0 pb-lg-3"
-        style={{ background: "white" }}
+        className="wpo-choose-section-s2 section-padding section-background-box-shadow pt-lg-2 pb-2"
+       
       >
         <div className="container edprowise-choose-container">
           <div className="row mb-2">

@@ -6,7 +6,7 @@ const ConstactusMainSection = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    query: "",
+    query:"",
     phone: "",
     service: "",
     note: "",
@@ -21,55 +21,36 @@ const ConstactusMainSection = () => {
     e.preventDefault(); // Prevent the default form submission
 
     // Validate form data
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.query ||
-      !formData.phone ||
-      !formData.service
-    ) {
+    if (!formData.name || !formData.email || !formData.query || !formData.phone || !formData.service) {
       toast.error("Please fill in all required fields.");
       return;
     }
 
     // Send the form data to the backend API
     try {
-      const response = await postAPI(
-        "/contactus",
-        formData,
-        {
+      const response = await postAPI("/contactus", 
+        formData,{
           "Content-Type": "application/json",
-        },
-        true
-      );
+          },
+    true);
+
 
       if (!response.hasError) {
         toast.success("Thank you! Your message has been sent.");
-        setFormData({
-          name: "",
-          email: "",
-          query: "",
-          phone: "",
-          service: "",
-          note: "",
-        });
+        setFormData({ name: "", email: "",query:"", phone: "", service: "", note: "" }); 
+        
       } else {
-        toast.error(
-          response.message ||
-            "Error occurred while sending message. Please try again later."
-        );
+        toast.error(response.message || "Error occurred while sending message. Please try again later.");
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error(
-        "Error occurred while sending message. Please try again later."
-      );
+      toast.error("Error occurred while sending message. Please try again later.");
     }
   };
 
   return (
     <>
-      <section className="wpo-contact-pg-section section-padding">
+      <section className="wpo-contact-pg-section section-padding" style={{background:"#ffffff"}}>
         <div className="container">
           <div className="row">
             <div className="col col-lg-10 offset-lg-1">
@@ -119,8 +100,7 @@ const ConstactusMainSection = () => {
               <div className="wpo-contact-title">
                 <h2>Have Any Question?</h2>
                 <p>
-                  Want to get in touch? We'd love to hear from you. Here's how
-                  you can reach us..
+                  Want to get in touch? We'd love to hear from you. Here's how you can reach us..
                 </p>
               </div>
               <div className="wpo-contact-form-area">
@@ -177,11 +157,13 @@ const ConstactusMainSection = () => {
                     <select
                       name="service"
                       className="form-control"
-                      value={formData.service}
+                      value={formData.service} 
                       onChange={handleChange}
                       required
                     >
-                      <option value="">Subject*</option>
+                      <option value=""> 
+                        Subject*
+                      </option>
                       <option value="Web Development">Web Development</option>
                       <option value="Web Design">Web Design</option>
                       <option value="Marketing">Marketing</option>
