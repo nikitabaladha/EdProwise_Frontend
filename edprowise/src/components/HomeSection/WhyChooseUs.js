@@ -83,8 +83,8 @@ const WhyChooseUs = () => {
   return (
     <>
       <section
-        className="wpo-courses-section-s2 section-padding pt-0 pb-1"
-        style={{background:"#fafaff", boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}
+        className="wpo-courses-section-s2 section-padding section-background-box-shadow pt-2 pb-1"
+     
       >
         <div className="container">
           <div className="row-web">
@@ -184,8 +184,8 @@ const WhyChooseUs = () => {
           <img src="assets/website-images/shape/4.svg" alt="Shape 4" />
         </div>
       </section>
-      <section className="wpo-courses-section-s2 section-padding pt-0 pb-3"
-      style={{background:"#fafaff", boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}
+      <section className="wpo-courses-section-s2 section-padding section-background-box-shadow pt-2 pb-3"
+    
       >
         <div className="container">
           <div className="row-web">

@@ -10,7 +10,12 @@ const EmailTemplatesList = () => {
         { TamplateName: "Password Update",      sendTo: "/admin-dashboard/email/templates/password-update-template"},
         { TamplateName: "UserId Update",        sendTo: "/admin-dashboard/email/templates/userid-update-template"},
         { TamplateName: "School Request Quote",      sendTo: "/admin-dashboard/email/templates/reuest-for-quote"},
+        { TamplateName: "Seller New Quote Request Receive",      sendTo: "/admin-dashboard/email/templates/seller-quote-receive-template"},
         { TamplateName: "Quote Proposal Receive For School", sendTo: "/admin-dashboard/email/templates/quote-proposal-template"},
+        { TamplateName: "Order Place Sucessfully",      sendTo: "/admin-dashboard/email/templates/order-place-template"},
+        { TamplateName: "Order Receive For Seller", sendTo: "/admin-dashboard/email/templates/order-receive-template"},
+        { TamplateName: "Order Delivered",      sendTo: "/admin-dashboard/email/templates/seller-quote-receive-template"},
+     
       ];
       const navigateToView = (event, path) => {
         event.preventDefault();

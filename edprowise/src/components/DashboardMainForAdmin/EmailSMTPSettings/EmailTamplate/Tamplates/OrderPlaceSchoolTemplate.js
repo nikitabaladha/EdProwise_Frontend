@@ -2,83 +2,92 @@ import React, { useState, useEffect } from "react";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import { toast } from "react-toastify";
+
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
 
-const SellerRegistrationEmailTamplate = () => {
-    const [formData, setFormData] = useState({
-        mailFrom: "",
-        subject: "As A Seller Registration Sucessful", 
-        content: "",
-      });
-    
-      // Handle input change
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-          ...prevData,
-          [name]: value,
-        }));
-      };
-    
-      // Handle content change for ReactQuill
-      const handleContentChange = (value) => {
-        setFormData((prevData) => ({
-          ...prevData,
-          content: value,
-        }));
-      };
-
-      useEffect(() => {
-          const fetchSettings = async () => {
-            try {
-              const response = await getAPI("/get-smtp-email-settings", {}, true);
-              if (!response.hasError) {
-                setFormData((prevData) => ({
-                  ...prevData,
-                  mailFrom: response.data.data.mailFromName || "",
-                }));
-              }
-            } catch (err) {
-              toast.error("Error fetching email settings: " + err.message);
-            }
-          };
+const OrderPlaceSchoolTemplate = () => {
+  const [formData, setFormData] = useState({
+          mailFrom: "",
+          subject: "Order Place Successfully", 
+          content: "",
+        });
       
-          const fetchEmailTemplate = async () => {
-            try {
-              const response = await getAPI("/get-seller-registration-templates", {}, true);
-              if (!response.hasError) {
-                setFormData((prevData) => ({
-                  ...prevData,
-                  content: response.data.data.content || "",
-                }));
-              }
-            } catch (err) {
-              toast.error("Error fetching email template: " + err.message);
-            }
-          };
-      
-          fetchSettings();
-          fetchEmailTemplate();
-        }, []);
-
-        const handleSubmit = async (e) => {
-          e.preventDefault();
-      
-          try {
-            const response = await postAPI("/post-seller-registration-templates", formData, true);
-            if (!response.hasError) {
-              toast.success("Email template saved successfully!");
-            } else {
-              toast.error("Failed to save email template.");
-            }
-          } catch (err) {
-            toast.error("Error saving email template: " + err.message);
-          }
+        // Handle input change
+        const handleChange = (e) => {
+          const { name, value } = e.target;
+          setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+          }));
         };
       
-    
+        // Handle content change for ReactQuill
+        const handleContentChange = (value) => {
+          setFormData((prevData) => ({
+            ...prevData,
+            content: value,
+          }));
+        };
+  
+        useEffect(() => {
+            const fetchSettings = async () => {
+              try {
+                const response = await getAPI("/get-smtp-email-settings", {}, true);
+                if (!response.hasError && response.data?.data) {
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    mailFrom: response.data.data.mailFromName || "",
+                  }));
+                }else {
+                  setFormData((prevData) => ({
+                      ...prevData,
+                      mailFrom: "",
+                  }));
+              }
+              } catch (err) {
+                toast.error("Error fetching email settings: " + err.message);
+              }
+            };
+        
+            const fetchEmailTemplate = async () => {
+              try {
+                const response = await getAPI("/get-order-place-templates", {}, true);
+                if (!response.hasError&& response.data?.data && response.data.data.content) {
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    content: response.data.data.content || "",
+                  }));
+                } else {
+                  setFormData((prevData) => ({
+                      ...prevData,
+                      content: "",
+                  }));
+              }
+              } catch (err) {
+                toast.error("Error fetching email template: " + err.message);
+              }
+            };
+        
+            fetchSettings();
+            fetchEmailTemplate();
+          }, []);
+  
+          const handleSubmit = async (e) => {
+            e.preventDefault();
+        
+            try {
+              const response = await postAPI("/post-order-place-templates", formData, true);
+              if (!response.hasError) {
+                toast.success("Email template saved successfully!");
+              } else {
+                toast.error("Failed to save email template.");
+              }
+            } catch (err) {
+              toast.error("Error saving email template: " + err.message);
+            }
+          };
   return (
         <div>
           <div className="container">
@@ -107,7 +116,7 @@ const SellerRegistrationEmailTamplate = () => {
                               id="name"
                               name="name"
                               className="form-control"
-                              defaultValue="As A Seller Registration Successful"
+                              defaultValue="Order Place Successfully"
                               required
                             />
                           </div>
@@ -235,4 +244,4 @@ const SellerRegistrationEmailTamplate = () => {
   )
 }
 
-export default SellerRegistrationEmailTamplate
+export default OrderPlaceSchoolTemplate;

@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import { toast } from "react-toastify";
+
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
 
-const SellerRegistrationEmailTamplate = () => {
+const NewQuoteReceiveSellerEmail = () => {
     const [formData, setFormData] = useState({
         mailFrom: "",
-        subject: "As A Seller Registration Sucessful", 
+        subject: "New Quote Request Receive", 
         content: "",
       });
     
@@ -47,7 +48,7 @@ const SellerRegistrationEmailTamplate = () => {
       
           const fetchEmailTemplate = async () => {
             try {
-              const response = await getAPI("/get-seller-registration-templates", {}, true);
+              const response = await getAPI("/get-seller-new-quote-templates", {}, true);
               if (!response.hasError) {
                 setFormData((prevData) => ({
                   ...prevData,
@@ -67,7 +68,7 @@ const SellerRegistrationEmailTamplate = () => {
           e.preventDefault();
       
           try {
-            const response = await postAPI("/post-seller-registration-templates", formData, true);
+            const response = await postAPI("/post-seller-new-quote-templates", formData, true);
             if (!response.hasError) {
               toast.success("Email template saved successfully!");
             } else {
@@ -107,7 +108,7 @@ const SellerRegistrationEmailTamplate = () => {
                               id="name"
                               name="name"
                               className="form-control"
-                              defaultValue="As A Seller Registration Successful"
+                              defaultValue="New Quote Request Receive"
                               required
                             />
                           </div>
@@ -235,4 +236,4 @@ const SellerRegistrationEmailTamplate = () => {
   )
 }
 
-export default SellerRegistrationEmailTamplate
+export default NewQuoteReceiveSellerEmail;

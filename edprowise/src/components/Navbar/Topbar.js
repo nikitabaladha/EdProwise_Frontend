@@ -28,7 +28,7 @@ const Topbar = () => {
                 </li>
                 <li className="contact-location">
                   <i className="fi flaticon-maps-and-flags"></i>
-                  <a className="contact-info-text" href="" >
+                  <a className="contact-info-text" href="https://g.page/r/CTBN6r3t-9N3EBI/review" >
                     New Delhi, Delhi, India.
                   </a>
                 </li>

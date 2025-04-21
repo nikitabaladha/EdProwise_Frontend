@@ -91,7 +91,7 @@ const ServiceMainSection = () => {
   
   return (
 
-    <section className="wpo-courses-section-s2 section-padding pt-0" style={{background:"#fafaff"}} >
+    <section className="wpo-courses-section-s2 section-padding pt-0" style={{background:"#ffffff"}} >
       <div className="nav-tabs-service-container">
       <section className="wpo-courses-section-s2 section-padding pt-0 pb-0">
         <div className="container-fluidd bg-bedcrum ">

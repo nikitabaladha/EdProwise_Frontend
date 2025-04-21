@@ -200,6 +200,20 @@ import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesReceipts
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
 
+// ******Payroll *****//
+import EmployeeRegistrationList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/EmployeeRegistrationList.js";
+import AddEmployeeRegistration from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/AddEmployeeRegistration.js";
+import UpdateEmployeeRegistrationForm from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/UpdateEmployeeRegistrationForm.js";
+import ViewEmployeeRegisterDetails from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/ViewEmployeeRegisterDetails.js";
+import UpdateEmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/UpdateDetails/UpdateEmployeeDetails.js";
+import CTCUpdate from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCUpdate/CTCUpdate.js";
+import DefineCtcComponentsList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCDefineComponents/DefineCtcComponentsList.js";
+import DefineCtcCOmponents from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCDefineComponents/DefineCtcCOmponents.js";
+import EmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/EmployeeSelfService/EmployeeDetails/EmployeeDetails.js";
+import AddProcessPayroll from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/ProcessPayroll/AddProcessPayroll.js";
+import AddSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/SalaryIncrement/AddSalaryIncrement.js";
+import Form16 from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/Form16/Form16.js";
+
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 
@@ -229,6 +243,10 @@ import AdminRegistrationEmailTamplate from "./components/DashboardMainForAdmin/E
 import UserIdUpdateEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/UserIdUpdate.js";
 import SchoolRequestForQuoteEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRequestForQuoteEmail.js";
 import QuoteProposalSentToSchoolEmailTemplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/QuoteProposalSentToSchoolEmailTemplate.js";
+import NewQuoteReceiveSellerEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/NewQuoteReceiveSellerEmail.js";
+import OrderPlaceSchoolTemplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/OrderPlaceSchoolTemplate.js";
+import OrderReceiveSellerTemplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/OrderReceiveSellerTemplate.js";
+import MarketingEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/Marketing/MarketingEmail.js";
 
 
 const PrivateRoute = ({ children }) => {
@@ -471,13 +489,7 @@ const AppRoutes = () => {
         {/* *********************New Routes************* */}
         <Route path="email/smtp-setting" element={<SMTPHostSettings/>} />
         <Route path="email/templates" element={<EmailTemplatesList/>}/>
-        <Route path="email/templates/school-registration-template" element={<SchoolRegistrationEmailTamplate/>}/>
-        <Route path="email/templates/seller-registration-template" element={<SellerRegistrationEmailTamplate/>}/>
-        <Route path="email/templates/password-update-template" element={<PasswordUpdateEmailTamplate/>}/>
-        <Route path="email/templates/admin-registration-template" element={<AdminRegistrationEmailTamplate/>}/>
-        <Route path="email/templates/userid-update-template" element={<UserIdUpdateEmailTamplate/>}/>
-        <Route path="email/templates/reuest-for-quote" element={<SchoolRequestForQuoteEmail/>}/>
-        <Route path="email/templates/quote-proposal-template" element={<QuoteProposalSentToSchoolEmailTemplate/>}/>
+        <Route path="email/marketing" element={<MarketingEmail/>}/>
       </Route>
 
       {/* ===================================================School Routes==================================== */}
@@ -666,6 +678,56 @@ const AppRoutes = () => {
           path="fees-module/fees-receipts/school-fees"
           element={<SchoolFeesReceipts />}
         />
+
+         {/* *****************************Payroll Module ***************************************** */}
+         <Route path="payroll-module/admin-setting/register-employee-list" 
+          element={<EmployeeRegistrationList/>}
+        />
+
+        <Route path="payroll-module/admin-setting/registration-form"
+        element={<AddEmployeeRegistration/>}
+        />
+
+        <Route path="payroll-module/admin-setting/update-registration-form"
+        element={<UpdateEmployeeRegistrationForm/>}/>
+
+        <Route path="payroll-module/admin-setting/view-registration-form"
+        element={<ViewEmployeeRegisterDetails/>}
+        />
+
+        <Route path="payroll-module/admin-setting/lwd-details"
+        element={<UpdateEmployeeDetails/>}
+        />
+
+        <Route path="payroll-module/admin-setting/CTC-Update"
+        element={<CTCUpdate/>}
+        />
+
+        <Route path="payroll-module/admin-setting/define-ctc-components-list"
+        element={<DefineCtcComponentsList/>}
+        />
+
+        <Route path="payroll-module/admin-setting/define-ctc-components"
+        element={<DefineCtcCOmponents/>}
+        />
+
+        <Route path="payroll-module/admin-setting/payroll-process"
+        element={<AddProcessPayroll/>}
+        />
+
+        <Route path="payroll-module/admin-setting/salary-increment"
+        element={<AddSalaryIncrement/>}
+        />
+
+        <Route path="payroll-module/admin-setting/form-16-list"
+        element={<Form16/>}
+        />
+
+                {/* ************Employee Self Services */}
+        <Route path="payroll-module/employee-services/update-details"
+        element={<EmployeeDetails/>}
+        />
+
       </Route>
       {/* =========================================Seller Routes============================================= */}
 

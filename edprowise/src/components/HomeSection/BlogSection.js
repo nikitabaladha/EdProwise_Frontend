@@ -93,9 +93,8 @@ const BlogSection = () => {
 
   return (
     <section
-      className="wpo-blog-section section-padding pt-0 pb-1"
+      className="wpo-blog-section section-padding section-background-box-shadow pt-2 pb-0"
       id="blog"
-      style={{background:"#fafaff",boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}
     >
       <div className="container edprowise-choose-container">
         <div className="wpo-section-title-s2 mb-2">

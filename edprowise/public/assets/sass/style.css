@@ -106,8 +106,17 @@ Version:        1.0.0
   transition: max-height 0.5s ease;
 }
 
+.section-background-box-shadow{
+  background: white !important;
+  box-shadow: #11111a1a 0px 0px 16px;
+}
+
 .contact-info-text{
 color: white;
+}
+
+.guid-traing{
+  padding: 0 20px 0 10px !important;
 }
 
 .custom-modal .modal-body-scrollable {
@@ -1104,7 +1113,7 @@ ul.service-suggestions.slide-text.pb-2 {
 
 .category-item.active {
   color: black;
-  background-color: #04d3d4;
+  background-color: #ffbf00;
 }
 
 .scroll-btn {
@@ -1524,13 +1533,14 @@ ul.service-suggestions.slide-text.pb-2 {
   text-transform: uppercase;
   font-weight: 300;
   color: black;
-  background-color: #04d3d4;
+  font-weight: bold;
+  background-color: #f2bc00;
   border-radius: 20px;
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.19);
 }
 
 .searchbox-wrap button span:hover {
-  background-color: #d6121f;
+  background-color: #be9914;
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.19);
   border: none;
 }
@@ -1577,7 +1587,7 @@ ul.service-suggestions.slide-text.pb-2 {
 
 .theme-choose-btn.active,
 .tab-back.active {
-  background: #04d3d4;
+  background: #f2bc00;
 }
 
 .show-tab {
@@ -1598,7 +1608,7 @@ ul.service-suggestions.slide-text.pb-2 {
 }
 
 .slider {
-  background: #fafaff;
+  background: white;
   /* box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.125); */
   height: 100px;
   margin: auto;
@@ -5260,12 +5270,12 @@ img {
   left: 0;
   width: 100%;
   z-index: 99;
-  background: transparent;
+  background: white !important;
 }
 
 .wpo-header-style-2 .navigation,
 .wpo-header-style-3 .navigation {
-  background: transparent;
+  background: white !important;
   border-radius: 5px;
   height: 70px;
   align-content: center;
@@ -6170,7 +6180,7 @@ img {
 .static-hero-s3,
 .static-hero-s4,
 .static-hero-s5 {
-  background: #eef9f6;
+  background: white;
   height: 900px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -6179,7 +6189,7 @@ img {
   z-index: 0;
   overflow: hidden;
   margin: 0 50px;
-  border-radius: 20px;
+  /* border-radius: 20px; */
 }
 
 @media (max-width: 1500px) {
@@ -7277,7 +7287,7 @@ img {
 .static-hero-s3,
 .static-hero-s4,
 .static-hero-s5 {
-  background: #fafaff;
+  background: white;
   height: 625px;
   margin: 0;
 }

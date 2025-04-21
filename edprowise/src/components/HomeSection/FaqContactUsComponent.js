@@ -53,7 +53,7 @@ const FaqContactUsComponent = () => {
   return (
     <>
     {/* <ToastContainer position="top-right"/> */}
-    <section className="wpo-courses-section-s2 section-padding pt-0 pb-1" style={{background:"#fafaff", boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}>
+    <section className="wpo-courses-section-s2 section-padding section-background-box-shadow pt-2 pb-1">
       <div className="container edprowise-choose-container">
         <div className="row-web">
           <div className="col-12">
@@ -64,7 +64,7 @@ const FaqContactUsComponent = () => {
         </div>
 
         <div className="row">
-          <div className="col-12 col-md-12 col-lg-6">
+          <div className="col-12 col-md-12 col-lg-6 p-0">
             <div className="wpo-blog-items">
               <div id="GeneralFaqSection">
                 <GeneralFaq />

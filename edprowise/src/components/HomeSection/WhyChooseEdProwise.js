@@ -50,7 +50,7 @@ const WhyChooseEdProwise = () => {
   };
 
   return (
-    <section className="wpo-courses-section-s2 section-padding pt-0 pb-1" style={{background:"#fafaff", boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}}>
+    <section className="wpo-courses-section-s2 section-padding section-background-box-shadow pt-2 pb-1">
       <div className="container edprowise-choose-container">
         <div className="row-web">
           <div className="col-12">

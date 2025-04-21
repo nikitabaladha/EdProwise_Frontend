@@ -50,7 +50,7 @@ const ConstactusMainSection = () => {
 
   return (
     <>
-      <section className="wpo-contact-pg-section section-padding" style={{background:"#fafaff"}}>
+      <section className="wpo-contact-pg-section section-padding" style={{background:"#ffffff"}}>
         <div className="container">
           <div className="row">
             <div className="col col-lg-10 offset-lg-1">

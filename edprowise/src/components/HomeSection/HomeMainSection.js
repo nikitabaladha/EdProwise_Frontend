@@ -335,7 +335,7 @@ const HomeMainSection = () => {
           </div>
         </div>
       </section>
-      <section className="wpo-features-area section-padding pt-0" style={{background:"#fafaff", boxShadow: "rgba(17, 17, 26, 0.1) 0px 0px 16px"}} >
+      <section className="wpo-features-area section-padding section-background-box-shadow pt-0" >
         <div className="container-fluid">
           <div className="features-wrap">
             <div

@@ -75,7 +75,7 @@ const GeneralFaq = () => {
             <div className="col-lg-12">
               <div className="wpo-faq-section">
                 <div className="row">
-                  <div className="col-lg-12 col-12">
+                  <div className="col-lg-12 col-12 p-0">
                     <div className="wpo-benefits-item">
                       <div className="accordion" id="accordionExample">
                         {edprowiseData.map((faq, index) => {
