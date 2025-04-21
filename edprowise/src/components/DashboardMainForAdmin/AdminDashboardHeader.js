@@ -123,8 +123,7 @@ const AdminDashboardHeader = () => {
                   state: { searchEnquiryNumber: result.text },
                 }
               );
-            }
-            if (result.type === "orderFromBuyer") {
+            } else if (result.type === "orderFromBuyer") {
               navigate(
                 `/admin-dashboard/procurement-services/view-order-history`,
                 {
@@ -132,26 +131,41 @@ const AdminDashboardHeader = () => {
                 }
               );
             } else if (result.type === "school") {
-              navigate(`/admin-dashboard/schools/view-school`, {
-                state: {
-                  schoolId: result.schoolId || result.text,
-                  searchQuery: searchQuery,
-                },
-              });
+              if (result.exactMatchForSchoolName) {
+                if (result.isSingleMatch) {
+                  navigate(`/admin-dashboard/schools/view-school`, {
+                    state: { schoolId: result.schoolId || result.text },
+                  });
+                } else {
+                  navigate(`/admin-dashboard/schools`, {
+                    state: { filterSchoolName: result.text },
+                  });
+                }
+              } else {
+                navigate(`/admin-dashboard/schools/view-school`, {
+                  state: { schoolId: result.schoolId || result.text },
+                });
+              }
             } else if (result.type === "seller") {
-              navigate(`/admin-dashboard/sellers/view-seller`, {
-                state: {
-                  sellerId: result.sellerId || result.text,
-                  searchQuery: searchQuery,
-                },
-              });
+              if (result.exactMatchForCompanyName) {
+                if (result.isSingleMatch) {
+                  navigate(`/admin-dashboard/sellers/view-seller`, {
+                    state: { sellerId: result.sellerId || result.id },
+                  });
+                } else {
+                  navigate(`/admin-dashboard/sellers`, {
+                    state: { filterCompanyName: result.text },
+                  });
+                }
+              } else {
+                navigate(`/admin-dashboard/sellers/view-seller`, {
+                  state: { sellerId: result.sellerId || result.id },
+                });
+              }
             }
           } else {
             setSearchResults([
-              {
-                type: "noResults",
-                text: "No matching records found",
-              },
+              { type: "noResults", text: "No matching records found" },
             ]);
             setShowResults(true);
           }
@@ -159,10 +173,7 @@ const AdminDashboardHeader = () => {
       } catch (err) {
         console.error("Search error:", err);
         setSearchResults([
-          {
-            type: "error",
-            text: "Search failed. Please try again.",
-          },
+          { type: "error", text: "Search failed. Please try again." },
         ]);
         setShowResults(true);
       }
@@ -174,25 +185,30 @@ const AdminDashboardHeader = () => {
       navigate(`/admin-dashboard/procurement-services/view-requested-quote`, {
         state: { searchEnquiryNumber: result.text },
       });
-    }
-    if (result.type === "orderFromBuyer") {
+    } else if (result.type === "orderFromBuyer") {
       navigate(`/admin-dashboard/procurement-services/view-order-history`, {
         state: { searchOrderNumber: result.text },
       });
     } else if (result.type === "school") {
-      navigate(`/admin-dashboard/schools/view-school`, {
-        state: {
-          schoolId: result.schoolId || result.text,
-          searchQuery: searchQuery,
-        },
-      });
+      if (result.exactMatchForSchoolName && !result.isSingleMatch) {
+        navigate(`/admin-dashboard/schools`, {
+          state: { filterSchoolName: result.text },
+        });
+      } else {
+        navigate(`/admin-dashboard/schools/view-school`, {
+          state: { schoolId: result.schoolId || result.text },
+        });
+      }
     } else if (result.type === "seller") {
-      navigate(`/admin-dashboard/sellers/view-seller`, {
-        state: {
-          sellerId: result.sellerId || result.text,
-          searchQuery: searchQuery,
-        },
-      });
+      if (result.exactMatchForCompanyName && !result.isSingleMatch) {
+        navigate(`/admin-dashboard/sellers`, {
+          state: { filterCompanyName: result.text },
+        });
+      } else {
+        navigate(`/admin-dashboard/sellers/view-seller`, {
+          state: { sellerId: result.sellerId || result.id },
+        });
+      }
     }
     setShowResults(false);
     setSearchQuery("");

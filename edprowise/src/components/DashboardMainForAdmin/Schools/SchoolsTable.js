@@ -1,41 +1,54 @@
 import React, { useState, useEffect } from "react";
-
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../export-excel";
 import { toast } from "react-toastify";
 import getAPI from "../../../api/getAPI";
-
 import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
 
 const SchoolsTable = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-
+  const [filterSchoolName, setFilterSchoolName] = useState("");
   const [schools, setSchools] = useState([]);
-
   const [selectedSchool, setSelectedSchool] = useState(null);
+
+  useEffect(() => {
+    if (location.state?.filterSchoolName) {
+      setFilterSchoolName(location.state.filterSchoolName);
+    }
+  }, [location]);
 
   const fetchSchoolData = async () => {
     try {
-      const response = await getAPI(`/school`, {}, true);
+      let url = "/school";
+      if (filterSchoolName) {
+        url += `?schoolName=${encodeURIComponent(filterSchoolName)}`;
+      }
+
+      const response = await getAPI(url, {}, true);
+
       if (
         !response.hasError &&
         response.data &&
         Array.isArray(response.data.data)
       ) {
         setSchools(response.data.data);
-        console.log("school data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
+        toast.error("Failed to fetch schools");
       }
     } catch (err) {
       console.error("Error fetching School List:", err);
+      toast.error("Error fetching school data");
     }
   };
 
   useEffect(() => {
     fetchSchoolData();
-  }, []);
+    setCurrentPage(1);
+  }, [filterSchoolName]);
 
   const handleExport = () => {
     if (!schools.length) {
@@ -91,11 +104,11 @@ const SchoolsTable = () => {
       setSchools((prevSchools) =>
         prevSchools.filter((school) => school.schoolId !== schoolId)
       );
+
+      fetchSchoolData();
     } catch (error) {
       console.error("Error deleting school:", error);
       toast.error("Failed to delete school. Please try again.");
-
-      fetchSchoolData();
     }
   };
 
@@ -150,7 +163,6 @@ const SchoolsTable = () => {
 
   return (
     <>
-      {" "}
       <div className="container-fluid">
         <div className="row">
           <div className="col-xl-12">

@@ -11,9 +11,7 @@ import ConfirmationDialog from "../../../ConfirmationDialog";
 
 const ViewSchool = () => {
   const location = useLocation();
-
   const navigate = useNavigate();
-
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedSchool, setSelectedSchool] = useState(null);
@@ -26,7 +24,6 @@ const ViewSchool = () => {
   const [subscription, setSubscription] = useState([]);
 
   const schoolId = location.state?.schoolId;
-
   const [school, setSchool] = useState(null);
 
   const fetchSchoolData = async () => {

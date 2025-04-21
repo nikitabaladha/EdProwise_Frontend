@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../export-excel";
 import { toast } from "react-toastify";
@@ -9,12 +10,20 @@ import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
 
 const SellersTable = () => {
   const [sellers, setSellers] = useState([]);
-
   const [selectedSeller, setSelectedSeller] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [filterCompanyName, setFilterCompanyName] = useState("");
 
   const fetchSellersData = async () => {
     try {
-      const response = await getAPI(`/seller-profile-get-all`, {}, true);
+      let url = "/seller-profile-get-all";
+      if (filterCompanyName) {
+        url += `?companyName=${encodeURIComponent(filterCompanyName)}`;
+      }
+
+      const response = await getAPI(url, {}, true);
+
       if (
         !response.hasError &&
         response.data &&
@@ -31,10 +40,15 @@ const SellersTable = () => {
   };
 
   useEffect(() => {
-    fetchSellersData();
-  }, []);
+    if (location.state?.filterCompanyName) {
+      setFilterCompanyName(location.state.filterCompanyName);
+    }
+  }, [location]);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    fetchSellersData();
+    setCurrentPage(1);
+  }, [filterCompanyName]);
 
   const handleExport = () => {
     if (!sellers.length) {
