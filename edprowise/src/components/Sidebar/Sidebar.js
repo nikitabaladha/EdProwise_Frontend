@@ -68,13 +68,13 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       },
       ...(email === "edprowise@gmail.com"
         ? [
-            {
-              id: "admin",
-              label: "Admins",
-              icon: "solar:users-group-rounded-bold-duotone",
-              link: "/admin-dashboard/admins",
-            },
-          ]
+          {
+            id: "admin",
+            label: "Admins",
+            icon: "solar:users-group-rounded-bold-duotone",
+            link: "/admin-dashboard/admins",
+          },
+        ]
         : []),
       {
         id: "school",
@@ -254,6 +254,21 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             icon: "solar:users-group-rounded-bold-duotone",
             children: [
               {
+                label: "Registartion Prefix",
+                link: "/school-dashboard/fees-module/admin-setting/prefix-setting/registartion-prefix",
+                icon: "solar:settings-bold-duotone"
+              },
+              {
+                label: "Admission Prefix",
+                link: "/school-dashboard/fees-module/admin-setting/prefix-setting/admission-prefix",
+                icon: "solar:settings-bold-duotone"
+              },
+              {
+                label: "Fine",
+                link: "/school-dashboard/fees-module/admin-setting/fine",
+                icon: "solar:document-bold-duotone"
+              },
+              {
                 label: "Shift",
                 link: "/school-dashboard/fees-module/admin-setting/shifts",
                 icon: "solar:users-group-rounded-bold-duotone",
@@ -330,18 +345,22 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
   //   }
   // }
 
+  const isCurrentRoute = (route) => currentRoute === route || currentRoute.startsWith(route + "/");
+
+
   const renderMenuItem = (item, parentId = null) => {
     // const isActive = item.children
     //   ? item.children.some((child) => currentRoute === child.link)
     //   : currentRoute === item.link;
 
     let findChilderRoute = null;
+
     item?.children?.forEach((child) => {
-      if (currentRoute === child.link) findChilderRoute = child;
+      if (isCurrentRoute(child.link)) findChilderRoute = child;
       if (!findChilderRoute) {
         item?.children?.forEach((subChild) => {
           subChild.children?.forEach((childOfChild) => {
-            if (currentRoute === childOfChild.link) {
+            if (isCurrentRoute(childOfChild.link)) {
               findChilderRoute = childOfChild;
               if (!findChilderRoute.id) findChilderRoute.id = subChild.id;
               if (!findChilderRoute.parentId)
@@ -351,14 +370,17 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         });
       }
     });
-    const checkItemIsCurrentRoute = currentRoute === item.link;
+
+    const checkItemIsCurrentRoute = isCurrentRoute(item.link);
     const isActive = findChilderRoute || checkItemIsCurrentRoute;
+
     if (!Object.keys(openMenus).length && isActive) {
       toggleMenu(
         findChilderRoute?.id || item?.id,
         findChilderRoute?.parentId || parentId
       );
     }
+
 
     return (
       <li className={`nav-item ${isActive ? "active" : ""}`} key={item.id}>
@@ -382,14 +404,25 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
               />
             </div>
             {openMenus[item.id] && (
-              <div className="collapse show">
-                <ul className="nav sub-navbar-nav">
+              <div className="collapse show" style={{ paddingLeft: parentId ? 30 : 20 }}>
+                <ul
+                  className="nav sub-navbar-nav"
+                  style={{
+                    listStyleType: "none",
+                    paddingLeft: 0,
+                    marginTop: 5,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                  }}
+                >
                   {item.children.map((subItem) =>
                     renderMenuItem(subItem, item.id)
                   )}
                 </ul>
               </div>
             )}
+
           </>
         ) : (
           <Link

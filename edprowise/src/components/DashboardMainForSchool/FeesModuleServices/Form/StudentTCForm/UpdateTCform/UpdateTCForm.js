@@ -1,12 +1,19 @@
-import React,{useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
+import getAPI from '../../../../../../api/getAPI';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import putAPI from '../../../../../../api/putAPI';
 
- const UpdateTCForm = () => {
+const UpdateTCForm = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const student = location.state?.student; // Get student data from state
-  
+  const student = location.state?.student;
+  const [classes, setClasses] = useState([]);
+  const [schoolId, setSchoolId] = useState('');
+
   const [formData, setFormData] = useState({
-    admissionNumber: '',
+    AdmissionNumber: '',
     firstName: '',
     middleName: '',
     lastName: '',
@@ -17,7 +24,7 @@ import { useLocation } from 'react-router-dom';
     motherName: '',
     dateOfIssue: '',
     dateOfAdmission: '',
-    studentLastClass: '',
+    masterDefineClass: '',
     percentageObtainInLastExam: '',
     qualifiedPromotionInHigherClass: '',
     whetherFaildInAnyClass: '',
@@ -26,43 +33,69 @@ import { useLocation } from 'react-router-dom';
     dateOfLastAttendanceAtSchool: '',
     reasonForLeaving: '',
     anyRemarks: '',
+    agreementChecked: false,
     name: '',
     paymentMode: '',
-    dateOfApplicationReceived: '',
-    feesReceivedBy: '',
-    transationOrChequetNumber: '',
-    receiptNumber: '',
-    certificateNumber: '',
+    chequeNumber: '',
+    bankName: ''
   });
+
+  useEffect(() => {
+    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    const id = userDetails?.schoolId;
+
+    if (!id) {
+      toast.error('School ID not found. Please log in again.');
+      return;
+    }
+
+    setSchoolId(id);
+  }, []);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!schoolId) return;
+        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        setClasses(response?.data?.data || []);
+      } catch (error) {
+        toast.error('Error fetching class and section data.');
+      }
+    };
+
+    fetchData();
+  }, [schoolId]);
 
   useEffect(() => {
     if (student) {
       setFormData({
-        admissionNumber: student.admissionNumber || '',
+        AdmissionNumber: student.AdmissionNumber || '',
         firstName: student.firstName || '',
         middleName: student.middleName || '',
         lastName: student.lastName || '',
-        dateOfBirth: student.dateOfBirth || '',
+        dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
         age: student.age || '',
         nationality: student.nationality || '',
         fatherName: student.fatherName || '',
         motherName: student.motherName || '',
-        dateOfIssue: student.dateOfIssue || '',
-        dateOfAdmission: student.dateOfAdmission || '',
-        studentLastClass: student.studentLastClass || '',
+        dateOfIssue: student.dateOfIssue ? student.dateOfIssue.split('T')[0] : '',
+        dateOfAdmission: student.dateOfAdmission ? student.dateOfAdmission.split('T')[0] : '',
+        masterDefineClass: student.masterDefineClass || '',
         percentageObtainInLastExam: student.percentageObtainInLastExam || '',
         qualifiedPromotionInHigherClass: student.qualifiedPromotionInHigherClass || '',
         whetherFaildInAnyClass: student.whetherFaildInAnyClass || '',
         anyOutstandingDues: student.anyOutstandingDues || '',
         moralBehaviour: student.moralBehaviour || '',
-        dateOfLastAttendanceAtSchool: student.dateOfLastAttendanceAtSchool || '',
+        dateOfLastAttendanceAtSchool: student.dateOfLastAttendanceAtSchool ? student.dateOfLastAttendanceAtSchool.split('T')[0] : '',
+        agreementChecked: student.agreementChecked || '',
         reasonForLeaving: student.reasonForLeaving || '',
         anyRemarks: student.anyRemarks || '',
         name: student.name || '',
         paymentMode: student.paymentMode || '',
-        dateOfApplicationReceived: student.dateOfApplicationReceived || '',
-        feesReceivedBy: student.feesReceivedBy || '',
-        transationOrChequetNumber: student.transationOrChequetNumber || '',
+        ApplicationReceivedOn: student.ApplicationReceivedOn ? student.ApplicationReceivedOn.split('T')[0] : '',
+        transactionNumber: student.transactionNumber || '',
         receiptNumber: student.receiptNumber || '',
         certificateNumber: student.certificateNumber || '',
       });
@@ -70,24 +103,51 @@ import { useLocation } from 'react-router-dom';
   }, [student]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    const { name, type, value, checked, files } = e.target;
+
+    if (type === 'checkbox') {
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else if (type === 'file') {
+      setFormData(prev => ({ ...prev, [name]: files[0] }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Implement your update logic here
-    // console.log('Updated Student Data:', formData);
-    // You can make an API call to update the student data
+
+    if (!formData.agreementChecked) {
+      toast.error("You must agree to the certificate purpose statement");
+      return;
+    }
+
+    const payload = {
+      ...formData,
+      schoolId,
+    };
+
+    try {
+      const response = await putAPI(`/update-TC-form/${student._id}`, payload);
+
+      if (!response.hasError) {
+        toast.success("Transfer Certificate update and submitted successfully!");
+        navigate(-1);
+      } else {
+        toast.error(response.message || "Something went wrong");
+      }
+    } catch (error) {
+      const backendMessage = error?.response?.data?.message;
+
+      if (backendMessage) {
+        toast.error(backendMessage);
+      } else {
+        toast.error('An error occurred during registration');
+      }
+    }
   };
 
 
-  if (!student) {
-    return <p>No student data available.</p>;
-  }
   return (
     <div className="container">
       <div className="row">
@@ -97,25 +157,26 @@ import { useLocation } from 'react-router-dom';
               <div className="container">
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
-                  Transfer Certificate Form
+                    Transfer Certificate Form
                   </h4>
                 </div>
               </div>
               <form onSubmit={""}>
                 <div className="row">
-                <div className="col-md-12">
+                  <div className="col-md-12">
                     <div className="mb-3">
-                      <label htmlFor="admissionNumber" className="form-label">
+                      <label htmlFor="AdmissionNumber" className="form-label">
                         Admission No
                       </label>
                       <input
                         type="text"
-                        id="admissionNumber"
-                        name="admissionNumber"
+                        id="AdmissionNumber"
+                        name="AdmissionNumber"
                         className="form-control"
-                        value={formData.admissionNumber}
-                        // onChange={handleChange}
+                        value={formData.AdmissionNumber}
+                        onChange={handleChange}
                         required
+                        disabled
                       />
                     </div>
                   </div>
@@ -123,7 +184,7 @@ import { useLocation } from 'react-router-dom';
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="firstName" className="form-label">
-                        First Name
+                        First Name<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -157,7 +218,7 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="lastName" className="form-label">
-                        Last Name
+                        Last Name<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -170,15 +231,15 @@ import { useLocation } from 'react-router-dom';
                       />
                     </div>
                   </div>
-                  
-            
+
+
                   <div className="col-md-2">
                     <div className="mb-3">
                       <label
                         htmlFor="dateOfBirth"
                         className="form-label"
                       >
-                        Date Of Birth
+                        Date Of Birth<span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -195,7 +256,7 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="age" className="form-label">
-                        age
+                        Age<span className="text-danger">*</span>
                       </label>
                       <input
                         type="number"
@@ -205,6 +266,7 @@ import { useLocation } from 'react-router-dom';
                         value={formData.age}
                         onChange={handleChange}
                         required
+                        disabled
                       />
                     </div>
                   </div>
@@ -213,7 +275,7 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="nationality" className="form-label">
-                        Nationality
+                        Nationality<span className="text-danger">*</span>
                       </label>
                       <select
                         id="nationality"
@@ -224,12 +286,12 @@ import { useLocation } from 'react-router-dom';
                         required
                       >
                         <option value="">Select Nationality</option>
-                        <option value="india">India</option>
-                        <option value="china">
-                          China
+                        <option value="India">India</option>
+                        <option value="International">
+                          International
                         </option>
-                        <option value="Usa">
-                          Usa
+                        <option value="SAARC Countries">
+                          SAARC Countries
                         </option>
                       </select>
                     </div>
@@ -239,7 +301,7 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="fatherName" className="form-label">
-                        Father Name
+                        Father Name<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -257,7 +319,7 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="motherName" className="form-label">
-                        Mother Name
+                        Mother Name<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -269,19 +331,16 @@ import { useLocation } from 'react-router-dom';
                         required
                       />
                     </div>
-                  </div>                 
+                  </div>
                 </div>
-
-              
-
                 <div className="row">
-                <div className="col-md-3">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label
                         htmlFor="dateOfIssue"
                         className="form-label"
                       >
-                        Date Of Issue
+                        Date Of Issue<span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -301,7 +360,7 @@ import { useLocation } from 'react-router-dom';
                         htmlFor="dateOfAdmission"
                         className="form-label"
                       >
-                        Date Of Admission In School
+                        Date Of Admission In School<span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -319,36 +378,31 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="studentLastClass" className="form-label">
-                        Class in Which Student Studied Last
+                        Class in Which Student Studied Last<span className="text-danger">*</span>
                       </label>
                       <select
-                        id="studentLastClass"
-                        name="studentLastClass"
+                        id="masterDefineClass"
+                        name="masterDefineClass"
                         className="form-control"
-                        value={formData.studentLastClass}
+                        value={formData.masterDefineClass}
                         onChange={handleChange}
                         required
                       >
-                        <option value="">Select Category</option>
-                        <option value="General">General</option>
-                        <option value="OBC">
-                          OBC
-                        </option>
-                        <option value="ST">
-                          ST
-                        </option>
-                        <option value="SC">
-                          SC
-                        </option>
+                        <option value="">Select Class</option>
+                        {classes.map((classItem) => (
+                          <option key={classItem._id} value={classItem._id}>
+                            {classItem.className}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
-                  
+
                   <div className="col-md-3">
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="percentageObtainInLastExam" className="form-label">
-                          Percentage/Gradem Obtain In Last Exam
+                        Percentage/Gradem Obtain In Last Exam<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -368,15 +422,15 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="qualifiedPromotionInHigherClass" className="form-label">
-                        Whether Qualified For Promotion In Higher Class
+                        Whether Qualified For Promotion In Higher Class<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
                         id="qualifiedPromotionInHigherClass"
                         name="qualifiedPromotionInHigherClass"
                         className="form-control"
-                      value={formData.qualifiedPromotionInHigherClass}
-                      onChange={handleChange}
+                        value={formData.qualifiedPromotionInHigherClass}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -384,15 +438,15 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="whetherFaildInAnyClass" className="form-label">
-                        Whether Failed In Any Class
+                        Whether Failed In Any Class<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
                         id="whetherFaildInAnyClass"
                         name="whetherFaildInAnyClass"
                         className="form-control"
-                      value={formData.whetherFaildInAnyClass}
-                      onChange={handleChange}
+                        value={formData.whetherFaildInAnyClass}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -401,15 +455,15 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="anyOutstandingDues" className="form-label">
-                        Any Outstanding Dues
+                        Any Outstanding Dues<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
                         id="anyOutstandingDues"
                         name="anyOutstandingDues"
                         className="form-control"
-                      value={formData.anyOutstandingDues}
-                      onChange={handleChange}
+                        value={formData.anyOutstandingDues}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -418,15 +472,15 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="moralBehaviour" className="form-label">
-                      Moral Behaviour
+                        Moral Behaviour<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
                         id="moralBehaviour"
                         name="moralBehaviour"
                         className="form-control"
-                      value={formData.moralBehaviour}
-                      onChange={handleChange}
+                        value={formData.moralBehaviour}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -437,7 +491,7 @@ import { useLocation } from 'react-router-dom';
                         htmlFor="dateOfLastAttendanceAtSchool"
                         className="form-label"
                       >
-                        Date Of Last Attendance At School
+                        Date Of Last Attendance At School<span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -455,15 +509,15 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="reasonForLeaving" className="form-label">
-                      Reason For Leaving
+                        Reason For Leaving
                       </label>
                       <input
                         type="text"
                         id="reasonForLeaving"
                         name="reasonForLeaving"
                         className="form-control"
-                      value={formData.reasonForLeaving}
-                      onChange={handleChange}
+                        value={formData.reasonForLeaving}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -472,53 +526,49 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="anyRemarks" className="form-label">
-                     Any Other Remarks
+                        Any Other Remarks
                       </label>
                       <input
                         type="text"
                         id="anyRemarks"
                         name="anyRemarks"
                         className="form-control"
-                      value={formData.anyRemarks}
-                      onChange={handleChange}
+                        value={formData.anyRemarks}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
                 </div>
-            
+
+
                 <div className="row">
+                  <div className="card-header mb-2">
+                    <h4 className="card-title text-center custom-heading-font">
+                      Understanding
+                    </h4>
+                  </div>
                   <div className="form-check ms-1 mb-2">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="agreementCheck"
+                      name="agreementChecked"
+                      checked={formData.agreementChecked}
+                      onChange={handleChange}
+
+                    />
                     <label
                       className="form-check-label"
-                      htmlFor="customCheck1"
+                      htmlFor="agreementCheck"
                     >
-                    The certificate is issued for the purpose of admission to other School.
+                      The certificate is issued for the purpose of admission to another School.
                     </label>
                   </div>
 
-                  {/* <div className="col-md-4">
-                    {" "}
-                    <div className="mb-4">
-                      <label htmlFor="signature" className="form-label">
-                        Signature
-                      </label>
-                      <input
-                        type="file"
-                        id="signature"
-                        name="signature"
-                        className="form-control"
-                        accept="image/*,application/pdf"
-                        // onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div> */}
-                  
-                  <div className="col-md-5">
-                    {" "}
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="name" className="form-label">
-                        Name
+                        Name <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -526,17 +576,15 @@ import { useLocation } from 'react-router-dom';
                         name="name"
                         className="form-control"
                         required
-                      value={formData.name}
-                      onChange={handleChange}
+                        value={formData.name}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
-
-                  <div className="col-md-4">
-                    {" "}
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="paymentMode" className="form-label">
-                        Payment Option
+                        Payment Option <span className="text-danger">*</span>
                       </label>
                       <select
                         id="paymentMode"
@@ -546,32 +594,52 @@ import { useLocation } from 'react-router-dom';
                         onChange={handleChange}
                         required
                       >
-                        <option value="">Select </option>
+                        <option value="">Select</option>
+                        <option value="Cash">Cash</option>
                         <option value="Cheque">Cheque</option>
-                        <option value="UPI">
-                          UPI
-                        </option>
-                        <option value="Credit Card">
-                          Credit Card
-                        </option>
-                        <option value="Cash">
-                          Cash
-                        </option>
+                        <option value="Online">Online</option>
                       </select>
                     </div>
-                    
                   </div>
-                  <div className="text-start">
-                      {" "}
-                      <button
-                        type="button"
-                        className="btn btn-primary custom-submit-button"
-                      >
-                        Proceed Further
-                      </button>
-                    </div> 
                 </div>
-                
+
+                {formData.paymentMode === 'Cheque' && (
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="chequeNumber" className="form-label">
+                          Cheque Number <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="chequeNumber"
+                          name="chequeNumber"
+                          className="form-control"
+                          value={formData.chequeNumber}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="bankName" className="form-label">
+                          Bank Name <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="bankName"
+                          name="bankName"
+                          className="form-control"
+                          value={formData.bankName}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
                     For Official Use Only
@@ -579,22 +647,23 @@ import { useLocation } from 'react-router-dom';
                 </div>
 
                 <div className="row">
-                <div className="col-md-4">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label
                         htmlFor="dateOfApplicationReceived"
                         className="form-label"
                       >
-                       Application Received On
+                        Application Received On
                       </label>
                       <input
                         type="date"
                         id="dateOfApplicationReceived"
                         name="dateOfApplicationReceived"
                         className="form-control"
-                        value={formData.dateOfApplicationReceived}
+                        value={formData.ApplicationReceivedOn}
                         onChange={handleChange}
                         required
+                        disabled
                       />
                     </div>
                   </div>
@@ -603,7 +672,7 @@ import { useLocation } from 'react-router-dom';
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="feesReceivedBy" className="form-label">
-                         Fees Received By
+                        Payment Mode
                       </label>
                       <input
                         type="text"
@@ -611,24 +680,25 @@ import { useLocation } from 'react-router-dom';
                         name="feesReceivedBy"
                         className="form-control"
                         required
-                      value={formData.feesReceivedBy}
-                      onChange={handleChange}
+                        value={formData.paymentMode}
+                        disabled
                       />
                     </div>
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="transationOrChequetNumber" className="form-label">
-                         Transaction No./Cheque No.
+                        Transaction No
                       </label>
                       <input
                         type="text"
                         id="transationOrChequetNumber"
                         name="transationOrChequetNumber"
                         className="form-control"
-                        value={formData.transationOrChequetNumber}
+                        value={formData.transactionNumber}
                         onChange={handleChange}
                         required
+                        disabled
                       />
                     </div>
                   </div>
@@ -636,7 +706,7 @@ import { useLocation } from 'react-router-dom';
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="receiptNumber" className="form-label">
-                         Receipts No.
+                        Receipts No.
                       </label>
                       <input
                         type="text"
@@ -646,13 +716,14 @@ import { useLocation } from 'react-router-dom';
                         value={formData.receiptNumber}
                         onChange={handleChange}
                         required
+                        disabled
                       />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="certificateNumber" className="form-label">
-                         Certificate No.
+                        Certificate No.
                       </label>
                       <input
                         type="text"
@@ -662,32 +733,27 @@ import { useLocation } from 'react-router-dom';
                         value={formData.certificateNumber}
                         onChange={handleChange}
                         required
+                        disabled
                       />
                     </div>
                   </div>
                 </div>
 
-               
+
                 <div className="d-flex justify-content-end">
-                <div className="mr-2">
-                  {" "}
-                  <button
-                    type="submit"
-                    className="btn btn-primary custom-submit-button"
+                  <div className="mr-2">
+                    {" "}
+                    <button
+                      type="submit"
+                      className="btn btn-primary custom-submit-button"
+                      onClick={handleSubmit}
+                    >
+                      Update & Submit For Principal Approval
+                    </button>
+                  </div>
+                  <div className="text" style={{ marginLeft: "2px" }}
                   >
-                    Update & Submit For Principal Approval
-                  </button>
-                </div>
-                <div className="text" style={{ marginLeft: "2px" }}
-                >
-                  {" "}
-                  <button
-                    type="button"
-                    className="btn btn-primary custom-submit-button"
-                  >
-                  Cancel
-                  </button>
-                </div>
+                  </div>
                 </div>
               </form>
             </div>

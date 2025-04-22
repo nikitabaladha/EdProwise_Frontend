@@ -1,107 +1,21 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import CityData from "../../../../../CityData.json";
+import React from "react";
+
+import useStudentRegistration from "./UseStudentRegistration";
 
 const StudentRegistrationForm = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    dateOfBirth: '',
-    nationality: '',
-    gender: '',
-    masterDefineClass: '',
-    masterDefineShift: '',
-    fatherName: '',
-    fatherContactNo: '',
-    motherName: '',
-    motherContactNo: '',
-    currentAddress: '',
-    cityStateCountry: '',
-    pincode: '',
-    previousSchoolName: '',
-    previousSchoolBoard: '',
-    addressOfpreviousSchool: '',
-    previousSchoolResult: null,
-    tcCertificate: null,
-    studentCategory: '',
-    howReachUs: '',
-    aadharPassportFile: null,
-    aadharPassportNumber: '',
-    castCertificate: null,
-    agreementChecked: false,
-    name: '',
-    paymentMode: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, type, value, checked, files } = e.target;
-
-    if (type === 'checkbox') {
-      setFormData(prev => ({ ...prev, [name]: checked }));
-    } else if (type === 'file') {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
-    }else {
-      // Handle nationality change
-      if (name === 'nationality') {
-        setFormData(prev => ({
-          ...prev,
-          nationality: value,
-          studentCategory: (value === 'SAARC Countries' || value === 'International') 
-            ? 'General' 
-            : prev.studentCategory
-        }));
-      } else {
-        setFormData(prev => ({ ...prev, [name]: value }));
-      }
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!formData.agreementChecked) {
-      alert('Please agree to the terms and conditions');
-      return;
-    }
-
-    const submissionData = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        if (value instanceof File) {
-          submissionData.append(key, value, value.name);
-        } else {
-          submissionData.append(key, value);
-        }
-      }
-    });
-
-    console.log('Form Data:', Object.fromEntries(submissionData));
-    try {
-      const response = await fetch('API', {
-        method: 'POST',
-        body: submissionData,
-      });
-      if (response.ok) {
-
-      } else {
-
-      }
-    } catch (error) {
-
-    }
-  };
-
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
-  );
-  const navigateToRegisterOfficialForm = (event) => {
-    event.preventDefault();
-    navigate(`/school-dashboard/fees-module/form/registration-form/sucess`);
-  };
-
-  const isNursery = formData.masterDefineClass === "Nursery";
+  const {
+    formData,
+    handleChange,
+    handleSave,
+    handleSubmit,
+    isSubmitting,
+    showAdditionalData,
+    classes,
+    shifts,
+    cityOptions,
+    isNursery,
+    handlePhotoUpload
+  } = useStudentRegistration();
 
   return <>
     <div className="container">
@@ -118,82 +32,139 @@ const StudentRegistrationForm = () => {
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="firstName" className="form-label">
-                        First Name
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        className="form-control"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        required
-                      />
+
+                  <div className="col-md-4 d-flex flex-column align-items-center">
+                    <div
+                      className="border rounded d-flex justify-content-center align-items-center mb-2"
+                      style={{
+                        width: "150px",
+                        height: "180px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {formData.studentPhoto ? (
+                        <img
+                          src={
+                            typeof formData.studentPhoto === "string"
+                              ? formData.studentPhoto
+                              : URL.createObjectURL(formData.studentPhoto)
+                          }
+                          alt="Passport"
+                          className="w-100 h-100 object-fit-cover"
+                        />
+                      ) : (
+                        <div className="text-secondary">Photo</div>
+                      )}
                     </div>
-                  </div>
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="middleName" className="form-label">
-                        Middle Name
+                    <div className="mb-3 w-100 text-center">
+                      <label className="form-label mb-1 d-block text-start">
                       </label>
                       <input
-                        type="text"
-                        id="middleName"
-                        name="middleName"
-                        className="form-control"
-                        value={formData.middleName}
-                        onChange={handleChange}
+                        type="file"
+                        id="studentPhoto"
+                        name="studentPhoto"
+                        className="d-none"
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
                         required
                       />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="lastName" className="form-label">
-                        Last Name
+                      <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
+                        Upload Photo
                       </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        className="form-control"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        required
-                      />
                     </div>
                   </div>
 
-                  <div className="col-md-2">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="dateOfBirth"
-                        className="form-label"
-                      >
-                        Date Of Birth
-                      </label>
-                      <input
-                        type="date"
-                        id="dateOfBirth"
-                        name="dateOfBirth"
-                        className="form-control"
-                        value={formData.dateOfBirth}
-                        onChange={handleChange}
-                        required
-                      />
+                  <div className="col-md-8">
+                    <div className="row">
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="firstName" className="form-label">
+                            First Name <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="firstName"
+                            name="firstName"
+                            className="form-control"
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="middleName" className="form-label">
+                            Middle Name
+                          </label>
+                          <input
+                            type="text"
+                            id="middleName"
+                            name="middleName"
+                            className="form-control"
+                            value={formData.middleName}
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="lastName" className="form-label">
+                            Last Name <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="lastName"
+                            name="lastName"
+                            className="form-control"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="dateOfBirth" className="form-label">
+                            Date Of Birth <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            id="dateOfBirth"
+                            name="dateOfBirth"
+                            className="form-control"
+                            value={formData.dateOfBirth}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="age" className="form-label">
+                            Age <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="age"
+                            name="age"
+                            className="form-control"
+                            value={formData.age}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </div>
 
-                  <div className="col-md-2">
+                <div className="row">
+                  <div className="col-md-3">
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="nationality" className="form-label">
-                        Nationality
+                        Nationality <span className="text-danger">*</span>
                       </label>
                       <select
                         id="nationality"
@@ -215,11 +186,11 @@ const StudentRegistrationForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-2">
+                  <div className="col-md-3">
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="gender" className="form-label">
-                        Gender
+                        Gender <span className="text-danger">*</span>
                       </label>
                       <select
                         id="gender"
@@ -237,12 +208,10 @@ const StudentRegistrationForm = () => {
                       </select>
                     </div>
                   </div>
-
                   <div className="col-md-3">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="masterDefineClass" className="form-label">
-                        Master Define Class
+                        Master Define Class <span className="text-danger">*</span>
                       </label>
                       <select
                         id="masterDefineClass"
@@ -253,58 +222,20 @@ const StudentRegistrationForm = () => {
                         required
                       >
                         <option value="">Select Master Define Class</option>
-                        <option value="Nursery">Nursery</option>
-                        <option value="LKG">
-                          LKG
-                        </option>
-                        <option value="UKG">
-                          UKG
-                        </option>
-                        <option value="1">
-                          1
-                        </option>
-                        <option value="2">
-                          2
-                        </option>
-                        <option value="3">
-                          3
-                        </option>
-                        <option value="4">
-                          4
-                        </option>
-                        <option value="5">
-                          5
-                        </option>
-                        <option value="6">
-                          6
-                        </option>
-                        <option value="7">
-                          7
-                        </option>
-                        <option value="8">
-                          8
-                        </option>
-                        <option value="9">
-                          9
-                        </option>
-                        <option value="10">
-                          10
-                        </option>
-                        <option value="11">
-                          11
-                        </option>
-                        <option value="12">
-                          12
-                        </option>
+                        {classes.map((classItem) => (
+                          <option key={classItem._id} value={classItem._id}>
+                            {classItem.className}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
 
+
                   <div className="col-md-3">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="masterDefineShift" className="form-label">
-                        Master Define Shift
+                        Master Define Shift <span className="text-danger">*</span>
                       </label>
                       <select
                         id="masterDefineShift"
@@ -315,13 +246,11 @@ const StudentRegistrationForm = () => {
                         required
                       >
                         <option value="">Select Master Define Shift</option>
-                        <option value="Morning">Morning</option>
-                        <option value="Afternoon">
-                          Afternoon
-                        </option>
-                        <option value="Evening">
-                          Evening
-                        </option>
+                        {shifts.map((shift) => (
+                          <option key={shift._id} value={shift._id}>
+                            {shift.masterDefineShiftName}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -330,7 +259,7 @@ const StudentRegistrationForm = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="fatherName" className="form-label">
-                        Father Name
+                        Father Name  <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -348,7 +277,7 @@ const StudentRegistrationForm = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="fatherContactNo" className="form-label">
-                        Father Contact Number
+                        Father Contact Number  <span className="text-danger">*</span>
                       </label>
                       <input
                         type="tel"
@@ -366,7 +295,7 @@ const StudentRegistrationForm = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="motherName" className="form-label">
-                        Mother Name
+                        Mother Name  <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -384,7 +313,7 @@ const StudentRegistrationForm = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="motherContactNo" className="form-label">
-                        Mother Contact Number
+                        Mother Contact Number  <span className="text-danger">*</span>
                       </label>
                       <input
                         type="tel"
@@ -403,7 +332,7 @@ const StudentRegistrationForm = () => {
                 <div className="row">
                   <div className="mb-3">
                     <label htmlFor="currentAddress" className="form-label">
-                      Current Address
+                      Current Address  <span className="text-danger">*</span>
                     </label>
                     <textarea
                       className="form-control"
@@ -424,7 +353,7 @@ const StudentRegistrationForm = () => {
                         htmlFor="cityStateCountry"
                         className="form-label"
                       >
-                        City-State-Country
+                        City-State-Country  <span className="text-danger">*</span>
                       </label>
 
                       <select
@@ -448,7 +377,7 @@ const StudentRegistrationForm = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
-                        Pincode
+                        Pincode  <span className="text-danger">*</span>
                       </label>
                       <input
                         type="number"
@@ -473,7 +402,7 @@ const StudentRegistrationForm = () => {
                           {" "}
                           <div className="mb-3">
                             <label htmlFor="previousSchoolName" className="form-label">
-                              Previous School Name
+                              Previous School Name  <span className="text-danger">*</span>
                             </label>
                             <input
                               type="text"
@@ -490,7 +419,7 @@ const StudentRegistrationForm = () => {
                           {" "}
                           <div className="mb-3">
                             <label htmlFor="addressOfpreviousSchool" className="form-label">
-                              Address Of Previous School
+                              Address Of Previous School  <span className="text-danger">*</span>
                             </label>
                             <input
                               type="text"
@@ -505,7 +434,7 @@ const StudentRegistrationForm = () => {
                         <div className="col-md-4">
                           <div className="mb-3">
                             <label htmlFor="previousSchoolBoard" className="form-label">
-                              Previous School Board
+                              Previous School Board  <span className="text-danger">*</span>
                             </label>
                             <input
                               type="text"
@@ -524,7 +453,7 @@ const StudentRegistrationForm = () => {
                               htmlFor="previousSchoolResult"
                               className="form-label"
                             >
-                              Result Of Previous School
+                              Result Of Previous School  <span className="text-danger">*</span>
                             </label>
                             <input
                               type="file"
@@ -544,7 +473,7 @@ const StudentRegistrationForm = () => {
                               htmlFor="tcCertificate"
                               className="form-label"
                             >
-                              TC Certificate
+                              TC Certificate <span className="text-danger">*</span>
                             </label>
                             <input
                               type="file"
@@ -566,7 +495,7 @@ const StudentRegistrationForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="studentCategory" className="form-label">
-                        Category
+                        Category <span className="text-danger">*</span>
                       </label>
                       <select
                         id="studentCategory"
@@ -596,7 +525,7 @@ const StudentRegistrationForm = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="castCertificate" className="form-label">
-                          Caste Certificate
+                          Caste Certificate <span className="text-danger">*</span>
                         </label>
                         <input
                           type="file"
@@ -611,13 +540,13 @@ const StudentRegistrationForm = () => {
                     </div>
                   )}
                   <div className="col-md-4">
-                    
+
                     <div className="mb-3">
                       <label
                         htmlFor="aadharPassportFile"
                         className="form-label"
                       >
-                        Aadhar/Passport Upload
+                        Aadhar/Passport Upload <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"
@@ -634,7 +563,7 @@ const StudentRegistrationForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="aadharPassportNumber" className="form-label">
-                        Aadhar/Passport Number
+                        Aadhar/Passport Number <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -651,7 +580,7 @@ const StudentRegistrationForm = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="howReachUs" className="form-label">
-                        How did you reach us
+                        How did you reach us <span className="text-danger">*</span>
                       </label>
                       <select
                         id="howReachUs"
@@ -678,84 +607,125 @@ const StudentRegistrationForm = () => {
 
                 </div>
 
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Understanding
-                  </h4>
-                </div>
-                <div className="row">
-                  <div className="form-check ms-1 mb-2">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="customCheck1"
-                      name="agreementChecked"
-                      checked={formData.agreementChecked}
-                      onChange={handleChange}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="customCheck1"
-                    >
-                      I Understand & agree that the registration of my word does not guarantee admission to the school & the registration fee is neither transferable not refundable.
-                    </label>
-                  </div>
-
-                  <div className="col-md-6">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="name" className="form-label">
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        className="form-control"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="paymentMode" className="form-label">
-                        Payment Option
-                      </label>
-                      <select
-                        id="paymentMode"
-                        name="paymentMode"
-                        className="form-control"
-                        value={formData.paymentMode}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select </option>
-                        <option value="Cash">
-                          Cash
-                        </option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="Online">
-                          Online
-                        </option>
-                      </select>
-                    </div>
-
-                  </div>
-                  <div className="text-end">
-                    {" "}
+                {!showAdditionalData ? (
+                  <div className="text-center">
                     <button
-                      type="submit"
+                      type="button"
                       className="btn btn-primary custom-submit-button"
-                      onClick={(event) => navigateToRegisterOfficialForm(event)}
+                      onClick={handleSave}
                     >
-                      Proceed Further
+                      Save & Continue
                     </button>
                   </div>
-                </div>
+                ) : (
+                  <div className="row">
+                    <div className="card-header mb-2">
+                      <h4 className="card-title text-center custom-heading-font">
+                        Understanding
+                      </h4>
+                    </div>
+                    <div className="form-check ms-1 mb-2">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id="customCheck1"
+                        name="agreementChecked"
+                        checked={formData.agreementChecked}
+                        onChange={handleChange}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="customCheck1"
+                      >
+                        I Understand & agree that the registration of my word does not guarantee admission to the school & the registration fee is neither transferable not refundable.
+                      </label>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="name" className="form-label">
+                          Name <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          className="form-control"
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="paymentMode" className="form-label">
+                          Payment Option  <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          id="paymentMode"
+                          name="paymentMode"
+                          className="form-control"
+                          value={formData.paymentMode}
+                          onChange={handleChange}
+                          required
+                        >
+                          <option value="">Select </option>
+                          <option value="Cash">Cash</option>
+                          <option value="Cheque">Cheque</option>
+                          <option value="Online">Online</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {formData.paymentMode === 'Cheque' && (
+                      <>
+                        <div className="col-md-3">
+                          <div className="mb-3">
+                            <label htmlFor="chequeNumber" className="form-label">
+                              Cheque Number <span className="text-danger">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              id="chequeNumber"
+                              name="chequeNumber"
+                              className="form-control"
+                              value={formData.chequeNumber}
+                              onChange={handleChange}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-3">
+                          <div className="mb-3">
+                            <label htmlFor="bankName" className="form-label">
+                              Bank Name <span className="text-danger">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              id="bankName"
+                              name="bankName"
+                              className="form-control"
+                              value={formData.bankName}
+                              onChange={handleChange}
+                              required
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    <div className="text-end">
+                      <button
+                        type="submit"
+                        className="btn btn-primary custom-submit-button"
+                      // disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Proceed Further' : 'Proceed Further'}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </form>
             </div>
           </div>
