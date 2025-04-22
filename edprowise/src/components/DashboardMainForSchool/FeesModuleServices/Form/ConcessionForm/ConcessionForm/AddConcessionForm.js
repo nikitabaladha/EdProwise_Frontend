@@ -1,119 +1,80 @@
-import React, { useState ,useRef} from 'react';
+import React from "react";
+import useConcessionForm from "./useConcessionForm";
 
 const ConcessionForm = () => {
-    
-    const [formData, setFormData] = useState({
-        admissionNumber: '',
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        class: '',
-        section: '',
-        concessionType: '',
-        castOrIncomeCertificate: null,
-        applicableAcademicYear: '',
-        concessionDetails: Array(4).fill({
-            installmentName: '',
-            feesType: '',
-            totalFees: '',
-            concessionPercentage: '',
-            concessionAmount: '',
-            balancePayable: ''
-        })
-    });
+    const {
+        formData,
+        classes,
+        sections,
+        feeTypes,
+        fileInputRef,
+        handleChange,
+        handleClassChange,
+        handleConcessionDetailChange,
+        handleSubmit,
+        cancelSubmittingForm,
+        toggleRowSelection,
+        showFullForm,
+        handleAdmissionSubmit,
+        existingStudents,
+        generateAcademicYears
+    } = useConcessionForm();
 
-    
-    const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === 'castOrIncomeCertificate') {
-            setFormData({
-                ...formData,
-                [name]: files[0]
-            });
-        } else {
-            setFormData({
-                ...formData,
-                [name]: value
-            });
-        }
-    };
-
-    
-    const handleConcessionDetailChange = (index, e) => {
-        const { name, value } = e.target;
-        const updatedConcessionDetails = [...formData.concessionDetails];
-        updatedConcessionDetails[index] = {
-            ...updatedConcessionDetails[index],
-            [name]: value
-        };
-
-        setFormData({
-            ...formData,
-            concessionDetails: updatedConcessionDetails
-        });
-    };
-
-   const fileInputRef = useRef(null);
-
-    const cancelSubmittingForm=()=>{
-        setFormData({
-            admissionNumber: '',
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        class: '',
-        section: '',
-        concessionType: '',
-        castOrIncomeCertificate: null,
-        applicableAcademicYear: '',
-        concessionDetails: Array(4).fill({
-            installmentName: '',
-            feesType: '',
-            totalFees: '',
-            concessionPercentage: '',
-            concessionAmount: '',
-            balancePayable: ''
-        })
-        })
-        if (fileInputRef.current) {
-            fileInputRef.current.value = ''; 
-        }
+    if (!showFullForm) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <div className="col-xl-12">
+                        <div className="card m-2">
+                            <div className="card-body custom-heading-padding">
+                                <div className="container">
+                                    <div className="card-header mb-2">
+                                        <h4 className="card-title text-center custom-heading-font">
+                                            Student Admission Form
+                                        </h4>
+                                    </div>
+                                </div>
+                                <form onSubmit={handleAdmissionSubmit}>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <div className="mb-3">
+                                                <label htmlFor="AdmissionNumber" className="form-label">
+                                                    Admission No
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="AdmissionNumber"
+                                                    name="AdmissionNumber"
+                                                    className="form-control"
+                                                    list="AdmissionNumbers"
+                                                    value={formData.AdmissionNumber}
+                                                    onChange={handleChange}
+                                                    required
+                                                    placeholder="Search or select admission number"
+                                                />
+                                                <datalist id="AdmissionNumbers">
+                                                    {existingStudents.map((student, index) => (
+                                                        <option key={index} value={student.AdmissionNumber}>
+                                                            {student.AdmissionNumber} - {student.firstName} {student.lastName}
+                                                        </option>
+                                                    ))}
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="text-end">
+                                        <button type="submit" className="btn btn-primary custom-submit-button">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
-
-    
-    const addConcessionDetailRow = () => {
-        setFormData({
-            ...formData,
-            concessionDetails: [
-                ...formData.concessionDetails,
-                {
-                    installmentName: '',
-                    feesType: '',
-                    totalFees: '',
-                    concessionPercentage: '',
-                    concessionAmount: '',
-                    balancePayable: ''
-                }
-            ]
-        });
-    };
-
-    
-    const removeConcessionDetailRow = (index) => {
-        if (index >= 4) { 
-            const updatedConcessionDetails = formData.concessionDetails.filter((_, i) => i !== index);
-            setFormData({
-                ...formData,
-                concessionDetails: updatedConcessionDetails
-            });
-        }
-    };
-
-    // Handle form submission
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(formData); 
-    };
 
     return (
         <div className="container">
@@ -132,17 +93,18 @@ const ConcessionForm = () => {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className="mb-3">
-                                            <label htmlFor="admissionNumber" className="form-label">
+                                            <label htmlFor="AdmissionNumber" className="form-label">
                                                 Admission No
                                             </label>
                                             <input
                                                 type="text"
-                                                id="admissionNumber"
-                                                name="admissionNumber"
+                                                id="AdmissionNumber"
+                                                name="AdmissionNumber"
                                                 className="form-control"
-                                                value={formData.admissionNumber}
+                                                value={formData.AdmissionNumber}
                                                 onChange={handleChange}
                                                 required
+                                                disabled
                                             />
                                         </div>
                                     </div>
@@ -150,7 +112,7 @@ const ConcessionForm = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="firstName" className="form-label">
-                                                First Name
+                                                First Name<span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -175,14 +137,13 @@ const ConcessionForm = () => {
                                                 className="form-control"
                                                 value={formData.middleName}
                                                 onChange={handleChange}
-                                                required
                                             />
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="lastName" className="form-label">
-                                                Last Name
+                                                Last Name<span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -198,42 +159,54 @@ const ConcessionForm = () => {
 
                                     <div className="col-md-4">
                                         <div className="mb-3">
-                                            <label htmlFor="class" className="form-label">
-                                                Class
+                                            <label htmlFor="masterDefineClass" className="form-label">
+                                                Class<span className="text-danger">*</span>
                                             </label>
-                                            <input
-                                                type="text"
-                                                id="class"
-                                                name="class"
+                                            <select
+                                                id="masterDefineClass"
+                                                name="masterDefineClass"
                                                 className="form-control"
-                                                value={formData.class}
-                                                onChange={handleChange}
+                                                value={formData.masterDefineClass}
+                                                onChange={handleClassChange}
                                                 required
-                                            />
+                                            >
+                                                <option value="">Select Class</option>
+                                                {classes.map((classItem) => (
+                                                    <option key={classItem._id} value={classItem._id}>
+                                                        {classItem.className}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="section" className="form-label">
-                                                Section
+                                                Section<span className="text-danger">*</span>
                                             </label>
-                                            <input
-                                                type="text"
+                                            <select
                                                 id="section"
                                                 name="section"
                                                 className="form-control"
                                                 value={formData.section}
                                                 onChange={handleChange}
                                                 required
-                                            />
+                                            >
+                                                <option value="">Select Section</option>
+                                                {sections.map((section) => (
+                                                    <option key={section._id} value={section._id}>
+                                                        {section.name}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="concessionType" className="form-label">
-                                                Concession Type
+                                                Concession Type<span className="text-danger">*</span>
                                             </label>
                                             <select
                                                 id="concessionType"
@@ -259,7 +232,7 @@ const ConcessionForm = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="castOrIncomeCertificate" className="form-label">
-                                                Caste/Income Certificate
+                                                Caste/Income Certificate<span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="file"
@@ -268,7 +241,7 @@ const ConcessionForm = () => {
                                                 className="form-control"
                                                 accept="image/*,application/pdf"
                                                 onChange={handleChange}
-                                                ref={fileInputRef} 
+                                                ref={fileInputRef}
                                                 required
                                             />
                                         </div>
@@ -277,19 +250,26 @@ const ConcessionForm = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="applicableAcademicYear" className="form-label">
-                                                Applicable Academic Year
+                                                Applicable Academic Year <span className="text-danger">*</span>
                                             </label>
-                                            <input
-                                                type="text"
+                                            <select
                                                 id="applicableAcademicYear"
                                                 name="applicableAcademicYear"
                                                 className="form-control"
                                                 value={formData.applicableAcademicYear}
                                                 onChange={handleChange}
                                                 required
-                                            />
+                                            >
+                                                <option value="">Select Academic Year</option>
+                                                {generateAcademicYears(2015, 2030).map((year) => (
+                                                    <option key={year} value={year}>
+                                                        {year}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
                                     </div>
+
                                 </div>
                                 <div className='row'>
                                     <div className="card-header mb-2">
@@ -325,20 +305,15 @@ const ConcessionForm = () => {
                                             </thead>
                                             <tbody>
                                                 {formData.concessionDetails.map((detail, index) => (
-                                                    <tr key={index}>
+                                                    <tr key={index} className={detail.selected ? 'table-primary' : ''}>
                                                         <td>
                                                             <div className="form-check ms-1">
                                                                 <input
                                                                     type="checkbox"
                                                                     className="form-check-input"
-                                                                    id={`customCheck${index}`}
+                                                                    checked={detail.selected || false}
+                                                                    onChange={() => toggleRowSelection(index)}
                                                                 />
-                                                                <label
-                                                                    className="form-check-label"
-                                                                    htmlFor={`customCheck${index}`}
-                                                                >
-                                                                    &nbsp;
-                                                                </label>
                                                             </div>
                                                         </td>
                                                         <td>
@@ -352,82 +327,75 @@ const ConcessionForm = () => {
                                                             />
                                                         </td>
                                                         <td>
-                                                            <input
-                                                                type="text"
+                                                            <select
                                                                 name="feesType"
                                                                 className="form-control"
-                                                                value={detail.feesType}
+                                                                value={detail.feesType || ""}
                                                                 onChange={(e) => handleConcessionDetailChange(index, e)}
                                                                 required
-                                                            />
+                                                                style={{ pointerEvents: 'none' }}
+                                                            >
+                                                                <option value="">Select Fee Type</option>
+                                                                {feeTypes.map((type) => (
+                                                                    <option key={type._id} value={type._id}>
+                                                                        {type.feesTypeName}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="text"
+                                                                type="number"
                                                                 name="totalFees"
-                                                                className="form-control"
+                                                                className="form-control text-end"
                                                                 value={detail.totalFees}
                                                                 onChange={(e) => handleConcessionDetailChange(index, e)}
+                                                                min="0"
+                                                                step="0.01"
                                                                 required
                                                             />
                                                         </td>
                                                         <td>
-                                                            <input
-                                                                type="text"
-                                                                name="concessionPercentage"
-                                                                className="form-control"
-                                                                value={detail.concessionPercentage}
-                                                                onChange={(e) => handleConcessionDetailChange(index, e)}
-                                                                required
-                                                            />
+                                                            <div className="input-group">
+                                                                <input
+                                                                    type="number"
+                                                                    name="concessionPercentage"
+                                                                    className="form-control text-end"
+                                                                    value={detail.concessionPercentage}
+                                                                    onChange={(e) => handleConcessionDetailChange(index, e)}
+                                                                    min="0"
+                                                                    max="100"
+                                                                    step="0.01"
+                                                                    required
+                                                                />
+                                                                <span className="input-group-text">%</span>
+                                                            </div>
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="text"
+                                                                type="number"
                                                                 name="concessionAmount"
-                                                                className="form-control"
+                                                                className="form-control text-end"
                                                                 value={detail.concessionAmount}
-                                                                onChange={(e) => handleConcessionDetailChange(index, e)}
+                                                                readOnly
                                                                 required
                                                             />
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="text"
+                                                                type="number"
                                                                 name="balancePayable"
-                                                                className="form-control"
+                                                                className="form-control text-end"
                                                                 value={detail.balancePayable}
-                                                                onChange={(e) => handleConcessionDetailChange(index, e)}
+                                                                readOnly
                                                                 required
                                                             />
-                                                        </td>
-                                                        <td>
-                                                            {index >= 4 && (
-                                                                <button
-                                                                    type="button"
-                                                                    className="btn btn-soft-danger btn-sm"
-                                                                    onClick={() => removeConcessionDetailRow(index)}
-                                                                >
-                                                                    <iconify-icon
-                                                                        icon="solar:trash-bin-minimalistic-2-broken"
-                                                                        className="align-middle fs-18"
-                                                                    />
-                                                                </button>
-                                                            )}
                                                         </td>
                                                     </tr>
                                                 ))}
                                             </tbody>
                                         </table>
-                                    </div>
-                                    <div className="text-center">
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary custom-submit-button"
-                                            onClick={addConcessionDetailRow}
-                                        >
-                                            Add Row
-                                        </button>
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-end">

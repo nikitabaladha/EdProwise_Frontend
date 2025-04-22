@@ -162,6 +162,8 @@ import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/Procure
 
 // =====================================School Fees Module==============================================
 
+// =====================================School Fees Module==============================================
+
 import StudentRegisterListTable from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/StudentRegisterListTable.js";
 import StudentRegistrationForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/StudentRegistrationForm.js";
 import ViewStudentInfoRegister from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/ViewStudentInfoRegister/ViewStudentInfoRegister.js";
@@ -181,15 +183,28 @@ import UpdateConcessionForm from "./components/DashboardMainForSchool/FeesModule
 
 import ClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/ClassAndSection.js";
 import FeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructure.js";
+import UpdateFeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/UpdateFeesStructure.js";
+import ViewFeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/ViewFeesStructure.js";
 import SchoolShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/SchoolShifts.js";
 import CreateClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/CreateClassAndSection.js";
+import UpdateClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/UpdateClassAndSection.js";
+import ViewClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/ViewClassAndSection.js";
 import TypeOfFeesList from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/DefineTypesOfFees/TypeOfFeesList.js";
 import AddFeesType from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/DefineTypesOfFees/AddFeesType.js";
+import UpdateFeesType from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/DefineTypesOfFees/UpdateFeesType.js";
 import AddShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/AddShifts.js";
+import UpdateShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/UpdateShifts.js";
 import FeesStructureListTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructureListTable.js";
 import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
+import StudentReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/Recipt.js";
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
+import PrefixSetting from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/RegistartionPrefix/PrefixTable.js";
+import AddPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/RegistartionPrefix/AddPrefix.js";
+import AdmissionPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/AdmissionPrefix/PrefixTable.js";
+import AddAdmissionPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/AdmissionPrefix/AddPrefix.js";
+import Fine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/FineTable.js";
+import AddFine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/Addfine.js";
 
 // ===================================PayRoll===========================
 import EmployeeRegistrationList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/EmployeeRegistrationList.js";
@@ -627,12 +642,27 @@ const AppRoutes = () => {
         />
 
         <Route
+          path="fees-module/admin-setting/class-section/update-class-section"
+          element={<UpdateClassAndSection />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/class-section/view-class-section"
+          element={<ViewClassAndSection />}
+        />
+
+        <Route
           path="fees-module/admin-setting/fees-type-list"
           element={<TypeOfFeesList />}
         />
         <Route
           path="fees-module/admin-setting/fees-type-list/add-fees-type"
           element={<AddFeesType />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-type-list/update-fees-type"
+          element={<UpdateFeesType />}
         />
 
         <Route
@@ -645,6 +675,16 @@ const AppRoutes = () => {
         />
 
         <Route
+          path="fees-module/admin-setting/fees-structure/update-fees-structure"
+          element={<UpdateFeesStructure />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/view-fees-structure"
+          element={<ViewFeesStructure />}
+        />
+
+        <Route
           path="fees-module/admin-setting/shifts"
           element={<SchoolShifts />}
         />
@@ -654,8 +694,42 @@ const AppRoutes = () => {
         />
 
         <Route
+          path="fees-module/admin-setting/shifts/update-shift"
+          element={<UpdateShifts />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/prefix-setting/registartion-prefix"
+          element={<PrefixSetting />}
+        />
+        <Route
+          path="fees-module/admin-setting/prefix-setting/registartion-prefix/add-prefix"
+          element={<AddPrefix />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/prefix-setting/admission-prefix"
+          element={<AdmissionPrefix />}
+        />
+        <Route
+          path="fees-module/admin-setting/prefix-setting/admission-prefix/add-prefix"
+          element={<AddAdmissionPrefix />}
+        />
+
+        <Route path="fees-module/admin-setting/fine" element={<Fine />} />
+        <Route
+          path="fees-module/admin-setting/fine/add-fine"
+          element={<AddFine />}
+        />
+
+        <Route
           path="fees-module/fees-receipts/school-fees"
           element={<SchoolFeesReceipts />}
+        />
+
+        <Route
+          path="fees-module/fees-receipts/school-fees/student-receipts"
+          element={<StudentReceipts />}
         />
 
         {/* *****************************Payroll Module ***************************************** */}

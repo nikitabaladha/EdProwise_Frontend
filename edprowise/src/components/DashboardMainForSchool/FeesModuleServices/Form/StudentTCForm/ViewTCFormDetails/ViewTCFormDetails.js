@@ -1,372 +1,689 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
-const ViewTCFormDetails = () => {
+import getAPI from '../../../../../../api/getAPI';
+import { toast } from 'react-toastify';
+
+
+const UpdateTCForm = () => {
   const location = useLocation();
-  const student = location.state?.student; // Get student data from state
+  const student = location.state?.student;
+  const [classes, setClasses] = useState([]);
+  const [schoolId, setSchoolId] = useState('');
+
+  const [formData, setFormData] = useState({
+    AdmissionNumber: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    dateOfBirth: '',
+    age: '',
+    nationality: '',
+    fatherName: '',
+    motherName: '',
+    dateOfIssue: '',
+    dateOfAdmission: '',
+    masterDefineClass: '',
+    percentageObtainInLastExam: '',
+    qualifiedPromotionInHigherClass: '',
+    whetherFaildInAnyClass: '',
+    anyOutstandingDues: '',
+    moralBehaviour: '',
+    dateOfLastAttendanceAtSchool: '',
+    reasonForLeaving: '',
+    anyRemarks: '',
+    agreementChecked: false,
+    name: '',
+    paymentMode: '',
+    chequeNumber: '',
+    bankName: ''
+  });
+
+  useEffect(() => {
+    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    const id = userDetails?.schoolId;
+
+    if (!id) {
+      toast.error('School ID not found. Please log in again.');
+      return;
+    }
+
+    setSchoolId(id);
+  }, []);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!schoolId) return;
+        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        setClasses(response?.data?.data || []);
+      } catch (error) {
+        toast.error('Error fetching class and section data.');
+      }
+    };
+
+    fetchData();
+  }, [schoolId]);
+
+  useEffect(() => {
+    if (student) {
+      setFormData({
+        AdmissionNumber: student.AdmissionNumber || '',
+        firstName: student.firstName || '',
+        middleName: student.middleName || '',
+        lastName: student.lastName || '',
+        dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
+        age: student.age || '',
+        nationality: student.nationality || '',
+        fatherName: student.fatherName || '',
+        motherName: student.motherName || '',
+        dateOfIssue: student.dateOfIssue ? student.dateOfIssue.split('T')[0] : '',
+        dateOfAdmission: student.dateOfAdmission ? student.dateOfAdmission.split('T')[0] : '',
+        masterDefineClass: student.masterDefineClass || '',
+        percentageObtainInLastExam: student.percentageObtainInLastExam || '',
+        qualifiedPromotionInHigherClass: student.qualifiedPromotionInHigherClass || '',
+        whetherFaildInAnyClass: student.whetherFaildInAnyClass || '',
+        anyOutstandingDues: student.anyOutstandingDues || '',
+        moralBehaviour: student.moralBehaviour || '',
+        dateOfLastAttendanceAtSchool: student.dateOfLastAttendanceAtSchool ? student.dateOfLastAttendanceAtSchool.split('T')[0] : '',
+        agreementChecked: student.agreementChecked || '',
+        reasonForLeaving: student.reasonForLeaving || '',
+        anyRemarks: student.anyRemarks || '',
+        name: student.name || '',
+        paymentMode: student.paymentMode || '',
+        ApplicationReceivedOn: student.ApplicationReceivedOn ? student.ApplicationReceivedOn.split('T')[0] : '',
+        // feesReceivedBy: student.feesReceivedBy || '',
+        transactionNumber: student.transactionNumber || '',
+        receiptNumber: student.receiptNumber || '',
+        certificateNumber: student.certificateNumber || '',
+      });
+    }
+  }, [student]);
+
   
-  if (!student) {
-    return <p>No student data available.</p>;
-  }
+
+
   return (
     <div className="container">
-    <div className="row">
-      <div className="col-xl-12">
-        <div className="card m-2">
-          <div className="card-body custom-heading-padding">
-            <div className="container">
-              <div className="card-header mb-2">
-                <h4 className="card-title text-center custom-heading-font">
-                Transfer Certificate Form
-                </h4>
-              </div>
-            </div>
-            <form onSubmit={""}>
-              <div className="row">
-              <div className="col-md-12">
-                  <div className="mb-3">
-                    <label htmlFor="admissionNumber" className="form-label">
-                      Admission No
-                    </label>
-                    <p className='form-control'>{student.admissionNumber}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="firstName" className="form-label">
-                      First Name
-                    </label>
-                    <p className='form-control'>{student.firstName}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="middleName" className="form-label">
-                      Middle Name
-                    </label>
-                    <p className='form-control'>{student.middleName}</p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="lastName" className="form-label">
-                      Last Name
-                    </label>
-                    <p className='form-control'>{student.lastName}</p>
-                  </div>
-                </div>
-                
-          
-                <div className="col-md-2">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="dateOfBirth"
-                      className="form-label"
-                    >
-                      Date Of Birth
-                    </label>
-                    <p className='form-control'>{student.dateOfBirth}</p>
-                  </div>
-                </div>
-                <div className="col-md-2">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="age" className="form-label">
-                      age
-                    </label>
-                    <p className='form-control'>{student.age}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-2">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="nationality" className="form-label">
-                      Nationality
-                    </label>
-                    <p className='form-control'>{student.nationality}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="fatherName" className="form-label">
-                      Father Name
-                    </label>
-                    <p className='form-control'>{student.fatherName}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="motherName" className="form-label">
-                      Mother Name
-                    </label>
-                    <p className='form-control'>{student.motherName}</p>
-                  </div>
-                </div>                 
-              </div>
-
-            
-
-              <div className="row">
-              <div className="col-md-3">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="dateOfIssue"
-                      className="form-label"
-                    >
-                      Date Of Issue
-                    </label>
-                    <p className='form-control'>{student.dateOfIssue}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="dateOfAdmission"
-                      className="form-label"
-                    >
-                      Date Of Admission In School
-                    </label>
-                    <p className='form-control'>{student.dateOfAdmission}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="studentLastClass" className="form-label">
-                      Class in Which Student Studied Last
-                    </label>
-                    <p className='form-control'>{student.studentLastClass}</p>
-                  </div>
-                </div>
-                
-                <div className="col-md-3">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="percentageObtainInLastExam" className="form-label">
-                        Percentage/Gradem Obtain In Last Exam
-                    </label>
-                    <p className='form-control'>{student.percentageObtainInLastExam}</p>
-                  </div>
+      <div className="row">
+        <div className="col-xl-12">
+          <div className="card m-2">
+            <div className="card-body custom-heading-padding">
+              <div className="container">
+                <div className="card-header mb-2">
+                  <h4 className="card-title text-center custom-heading-font">
+                    Transfer Certificate Form
+                  </h4>
                 </div>
               </div>
+              <form onSubmit={""}>
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="mb-3">
+                      <label htmlFor="AdmissionNumber" className="form-label">
+                        Admission No
+                      </label>
+                      <input
+                        type="text"
+                        id="AdmissionNumber"
+                        name="AdmissionNumber"
+                        className="form-control"
+                        value={formData.AdmissionNumber}
+                        disabled
+                      />
+                    </div>
+                  </div>
 
-              <div className="row">
-                <div className="col-md-6">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="qualifiedPromotionInHigherClass" className="form-label">
-                      Whether Qualified For Promotion In Higher Class
-                    </label>
-                    <p className='form-control'>{student.qualifiedPromotionInHigherClass}</p>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="firstName" className="form-label">
+                        First Name<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        className="form-control"
+                        value={formData.firstName}
+                       disabled
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="col-md-6">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="whetherFaildInAnyClass" className="form-label">
-                      Whether Failed In Any Class
-                    </label>
-                    <p className='form-control'>{student.whetherFaildInAnyClass}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="anyOutstandingDues" className="form-label">
-                      Any Outstanding Dues
-                    </label>
-                    <p className='form-control'>{student.anyOutstandingDues}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="moralBehaviour" className="form-label">
-                    Moral Behaviour
-                    </label>
-                    <p className='form-control'>{student.moralBehaviour}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-5">
-                  <div className="mb-3">
-                    <label
-                      htmlFor="dateOfLastAttendanceAtSchool"
-                      className="form-label"
-                    >
-                      Date Of Last Attendance At School
-                    </label>
-                    <p className='form-control'>{student.dateOfLastAttendanceAtSchool}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-7">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="reasonForLeaving" className="form-label">
-                    Reason For Leaving
-                    </label>
-                    <p className='form-control'>{student.reasonForLeaving}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-12">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="anyRemarks" className="form-label">
-                   Any Other Remarks
-                    </label>
-                    <p className='form-control'>{student.anyRemarks}</p>
-                  </div>
-                </div>
-              </div>
-          
-              <div className="row">
-                <div className="form-check ms-1 mb-2">
-                  <label
-                    className="form-check-label"
-                    htmlFor="customCheck1"
-                  >
-                  The certificate is issued for the purpose of admission to other School.
-                  </label>
-                </div>
-
-                {/* <div className="col-md-4">
-                  {" "}
-                  <div className="mb-4">
-                    <label htmlFor="signature" className="form-label">
-                      Signature
-                    </label>
-                    <input
-                      type="file"
-                      id="signature"
-                      name="signature"
-                      className="form-control"
-                      accept="image/*,application/pdf"
-                      // onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div> */}
-                
-                <div className="col-md-5">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="name" className="form-label">
-                      Name
-                    </label>
-                    <p className='form-control'>{student.name}</p>
-                  </div>
-                </div>
-
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="paymentMode" className="form-label">
-                      Payment Option
-                    </label>
-                    <p className='form-control'>{student.paymentMode}</p>
-                  </div>
-                  
-                </div>
-                {/* <div className="text-start">
+                  <div className="col-md-4">
                     {" "}
-                    <button
-                      type="button"
-                      className="btn btn-primary custom-submit-button"
-                    >
-                      Proceed Further
-                    </button>
-                  </div>  */}
-              </div>
-              
-              <div className="card-header mb-2">
-                <h4 className="card-title text-center custom-heading-font">
-                  For Official Use Only
-                </h4>
-              </div>
+                    <div className="mb-3">
+                      <label htmlFor="middleName" className="form-label">
+                        Middle Name
+                      </label>
+                      <input
+                        type="text"
+                        id="middleName"
+                        name="middleName"
+                        className="form-control"
+                        value={formData.middleName}
+                       disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="lastName" className="form-label">
+                        Last Name<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        className="form-control"
+                        value={formData.lastName}
+                       disabled
+                      />
+                    </div>
+                  </div>
 
-              <div className="row">
-              <div className="col-md-4">
-                  <div className="mb-3">
+
+                  <div className="col-md-2">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="dateOfBirth"
+                        className="form-label"
+                      >
+                        Date Of Birth<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        className="form-control"
+                        value={formData.dateOfBirth}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-2">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="age" className="form-label">
+                        Age<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="age"
+                        name="age"
+                        className="form-control"
+                        value={formData.age}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-2">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="nationality" className="form-label">
+                        Nationality<span className="text-danger">*</span>
+                      </label>
+                      <select
+                        id="nationality"
+                        name="nationality"
+                        className="form-control"
+                        value={formData.nationality}
+                        disabled
+                      >
+                        <option value="">Select Nationality</option>
+                        <option value="India">India</option>
+                        <option value="International">
+                          International
+                        </option>
+                        <option value="SAARC Countries">
+                          SAARC Countries
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="fatherName" className="form-label">
+                        Father Name<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="fatherName"
+                        name="fatherName"
+                        className="form-control"
+                        value={formData.fatherName}
+                       disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="motherName" className="form-label">
+                        Mother Name<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="motherName"
+                        name="motherName"
+                        className="form-control"
+                        value={formData.motherName}
+                      disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="dateOfIssue"
+                        className="form-label"
+                      >
+                        Date Of Issue<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="dateOfIssue"
+                        name="dateOfIssue"
+                        className="form-control"
+                        value={formData.dateOfIssue}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="dateOfAdmission"
+                        className="form-label"
+                      >
+                        Date Of Admission In School<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="dateOfAdmission"
+                        name="dateOfAdmission"
+                        className="form-control"
+                        value={formData.dateOfAdmission}
+                       disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="studentLastClass" className="form-label">
+                        Class in Which Student Studied Last<span className="text-danger">*</span>
+                      </label>
+                      <select
+                        id="masterDefineClass"
+                        name="masterDefineClass"
+                        className="form-control"
+                        value={formData.masterDefineClass}
+                         disabled
+                      >
+                        <option value="">Select Class</option>
+                        {classes.map((classItem) => (
+                          <option key={classItem._id} value={classItem._id}>
+                            {classItem.className}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="percentageObtainInLastExam" className="form-label">
+                        Percentage/Gradem Obtain In Last Exam<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="percentageObtainInLastExam"
+                        name="percentageObtainInLastExam"
+                        className="form-control"
+                        value={formData.percentageObtainInLastExam}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-6">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="qualifiedPromotionInHigherClass" className="form-label">
+                        Whether Qualified For Promotion In Higher Class<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="qualifiedPromotionInHigherClass"
+                        name="qualifiedPromotionInHigherClass"
+                        className="form-control"
+                        value={formData.qualifiedPromotionInHigherClass}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="whetherFaildInAnyClass" className="form-label">
+                        Whether Failed In Any Class<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="whetherFaildInAnyClass"
+                        name="whetherFaildInAnyClass"
+                        className="form-control"
+                        value={formData.whetherFaildInAnyClass}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-6">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="anyOutstandingDues" className="form-label">
+                        Any Outstanding Dues<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="anyOutstandingDues"
+                        name="anyOutstandingDues"
+                        className="form-control"
+                        value={formData.anyOutstandingDues}
+                       disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-6">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="moralBehaviour" className="form-label">
+                        Moral Behaviour<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="moralBehaviour"
+                        name="moralBehaviour"
+                        className="form-control"
+                        value={formData.moralBehaviour}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-5">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="dateOfLastAttendanceAtSchool"
+                        className="form-label"
+                      >
+                        Date Of Last Attendance At School<span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="dateOfLastAttendanceAtSchool"
+                        name="dateOfLastAttendanceAtSchool"
+                        className="form-control"
+                        value={formData.dateOfLastAttendanceAtSchool}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-7">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="reasonForLeaving" className="form-label">
+                        Reason For Leaving
+                      </label>
+                      <input
+                        type="text"
+                        id="reasonForLeaving"
+                        name="reasonForLeaving"
+                        className="form-control"
+                        value={formData.reasonForLeaving}
+                       disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-12">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="anyRemarks" className="form-label">
+                        Any Other Remarks
+                      </label>
+                      <input
+                        type="text"
+                        id="anyRemarks"
+                        name="anyRemarks"
+                        className="form-control"
+                        value={formData.anyRemarks}
+                       disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
+
+                <div className="row">
+                  <div className="card-header mb-2">
+                    <h4 className="card-title text-center custom-heading-font">
+                      Understanding
+                    </h4>
+                  </div>
+                  <div className="form-check ms-1 mb-2">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="agreementCheck"
+                      name="agreementChecked"
+                      checked={formData.agreementChecked}
+                      disabled
+
+                    />
                     <label
-                      htmlFor="dateOfApplicationReceived"
-                      className="form-label"
+                      className="form-check-label"
+                      htmlFor="agreementCheck"
                     >
-                     Application Received On
+                      The certificate is issued for the purpose of admission to another School.
                     </label>
-                    <p className='form-control'>{student.dateOfApplicationReceived}</p>
+                  </div>
+
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="name" className="form-label">
+                        Name <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        className="form-control"
+                        value={formData.name}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="paymentMode" className="form-label">
+                        Payment Option <span className="text-danger">*</span>
+                      </label>
+                      <select
+                        id="paymentMode"
+                        name="paymentMode"
+                        className="form-control"
+                        value={formData.paymentMode}
+                       disabled
+                      >
+                        <option value="">Select</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Cheque">Cheque</option>
+                        <option value="Online">Online</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 
-                <div className="col-md-4">
-                  {" "}
-                  <div className="mb-3">
-                    <label htmlFor="feesReceivedBy" className="form-label">
-                       Fees Received By
-                    </label>
-                    <p className='form-control'>{student.feesReceivedBy}</p>
+                {formData.paymentMode === 'Cheque' && (
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="chequeNumber" className="form-label">
+                          Cheque Number <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="chequeNumber"
+                          name="chequeNumber"
+                          className="form-control"
+                          value={formData.chequeNumber}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="bankName" className="form-label">
+                          Bank Name <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="bankName"
+                          name="bankName"
+                          className="form-control"
+                          value={formData.bankName}
+                         disabled
+                        />
+                      </div>
+                    </div>
                   </div>
+                )}
+
+                <div className="card-header mb-2">
+                  <h4 className="card-title text-center custom-heading-font">
+                    For Official Use Only
+                  </h4>
                 </div>
-                <div className="col-md-4">
-                  <div className="mb-3">
-                    <label htmlFor="transationOrChequetNumber" className="form-label">
-                       Transaction No./Cheque No.
-                    </label>
-                    <p className='form-control'>{student.transationOrChequetNumber}</p>
+
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="dateOfApplicationReceived"
+                        className="form-label"
+                      >
+                        Application Received On
+                      </label>
+                      <input
+                        type="date"
+                        id="dateOfApplicationReceived"
+                        name="dateOfApplicationReceived"
+                        className="form-control"
+                        value={formData.ApplicationReceivedOn}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="feesReceivedBy" className="form-label">
+                       Payment Mode
+                      </label>
+                      <input
+                        type="text"
+                        id="feesReceivedBy"
+                        name="feesReceivedBy"
+                        className="form-control"
+                        required
+                        value={formData.paymentMode}
+                      // onChange={handleChange}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="transationOrChequetNumber" className="form-label">
+                        Transaction No
+                      </label>
+                      <input
+                        type="text"
+                        id="transationOrChequetNumber"
+                        name="transationOrChequetNumber"
+                        className="form-control"
+                        value={formData.transactionNumber}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="receiptNumber" className="form-label">
+                        Receipts No.
+                      </label>
+                      <input
+                        type="text"
+                        id="receiptNumber"
+                        name="receiptNumber"
+                        className="form-control"
+                        value={formData.receiptNumber}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="certificateNumber" className="form-label">
+                        Certificate No.
+                      </label>
+                      <input
+                        type="text"
+                        id="certificateNumber"
+                        name="certificateNumber"
+                        className="form-control"
+                        value={formData.certificateNumber}
+                        disabled
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="receiptNumber" className="form-label">
-                       Receipts No.
-                    </label>
-                    <p className='form-control'>{student.receiptNumber}</p>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label htmlFor="certificateNumber" className="form-label">
-                       Certificate No.
-                    </label>
-                    <p className='form-control'>{student.certificateNumber}</p>
-                  </div>
-                </div>
-              </div>
 
-             
-              <div className="d-flex justify-content-end">
-              
-              <div className="text-end" style={{ marginLeft: "2px" }}
-              >
-                {" "}
-                <button
-                  type="button"
-                  className="btn btn-primary custom-submit-button"
-                  onClick={() => window.history.back()}
-                >
-                Back
-                </button>
-              </div>
-              </div>
-            </form>
+                <div className="d-flex justify-content-end">
+                  <div className="mr-2">
+                    {" "}
+                   
+                  </div>
+                  <div className="text" style={{ marginLeft: "2px" }}
+                  >
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   )
 }
-export default ViewTCFormDetails;
+export default UpdateTCForm;

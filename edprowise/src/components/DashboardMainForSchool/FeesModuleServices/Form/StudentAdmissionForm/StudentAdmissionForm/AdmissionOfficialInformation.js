@@ -1,58 +1,73 @@
-import React from 'react'
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+
+const formatDate = (isoDate) => {
+  if (!isoDate) return 'N/A';
+  const date = new Date(isoDate);
+  return date.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
 
 const AdmissionOfficialInformation = () => {
-  return (
+  const location = useLocation();
+  const student = location.state?.student;
 
-    <>
-    <div className="container">
-      <div className="row">
-        <div className="col-xl-12">
-          <div className="card m-2">
-            <div className="card-body custom-heading-padding">
-              <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Student Admission Details
-                  </h4>
-                </div>
+  if (!student) {
+    return (
+      <div className="container mt-5 text-center">
+        <div className="alert alert-warning">No student data available.</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container my-4">
+      <div className="row justify-content-center">
+        <div className="col-lg-10">
+          <div className="card shadow border-0">
+            <div className="card-header  bg-primary text-white text-center">
+              <h4 className="mb-0">Student Admission Details</h4>
+            </div>
+            <div className="card-body p-4">
+              <div className="table-responsive">
+                <table className="table table-bordered table-striped table-hover text-center">
+                  <tbody>
+                    <tr>
+                      <th>Application Received Date</th>
+                      <td>{formatDate(student?.createdAt)}</td>
+                    </tr>
+                    <tr>
+                      <th>Payment Mode</th>
+                      <td>{student.paymentMode || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <th>Transaction No./Cheque No.</th>
+                      <td>{student?.transactionNumber || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <th>Receipt No.</th>
+                      <td>{student?.receiptNumber || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <th>Date Of Receipt</th>
+                      <td>{formatDate(student?.applicationDate)}</td>
+                    </tr>
+                    <tr>
+                      <th>Admission No.</th>
+                      <td>{student?.AdmissionNumber || 'N/A'}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-  <table className="table table-bordered table-centered" style={{ width: 'auto', border: "1px solid black" }}>
-    
-    <tbody>
-      <tr>
-        <td style={{ border: "1px solid black" }}>Application Received Date</td>
-        <td style={{ border: "1px solid black" }}>19/02/2025</td>
-      </tr>
-      <tr>
-        <td style={{ border: "1px solid black" }}>Admission Fees Received By</td>
-        <td style={{ border: "1px solid black" }}>Jone</td>
-      </tr>
-      <tr>
-        <td style={{ border: "1px solid black" }}>Transaction No./Cheque No.</td>
-        <td style={{ border: "1px solid black" }}>TRA-12345</td>
-      </tr>
-      <tr>
-        <td style={{ border: "1px solid black" }}>Receipt No.</td>
-        <td style={{ border: "1px solid black" }}>REC-12345</td>
-      </tr>
-      <tr>
-        <td style={{ border: "1px solid black" }}>Date Of Receipt</td>
-        <td style={{ border: "1px solid black" }}>19/02/2025</td>
-      </tr>
-      <tr>
-        <td style={{ border: "1px solid black" }}>Admission No.</td>
-        <td style={{ border: "1px solid black" }}>ADM-SFS-000001</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    </>
-  )
-}
+  );
+};
+
 export default AdmissionOfficialInformation;

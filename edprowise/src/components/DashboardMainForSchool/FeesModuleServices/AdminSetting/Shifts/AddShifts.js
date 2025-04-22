@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import postAPI from '../../../../../api/postAPI';
+import { toast} from "react-toastify";
+import { useNavigate } from 'react-router-dom';
+
+
 
 const AddShifts = () => {
+  const navigate = useNavigate();
   const [shifts, setShifts] = useState([
     { shiftName: '', startTime: '', endTime: '' },
   ]);
@@ -19,6 +25,46 @@ const AddShifts = () => {
     setShifts(updatedShifts);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    for (const shift of shifts) {
+      if (!shift.shiftName || !shift.startTime || !shift.endTime) {
+        toast.error("Please fill in all fields before submitting.");
+        return;
+      }
+    }
+  
+    let allSuccessful = true;
+  
+    for (const shift of shifts) {
+      const payload = {
+        masterDefineShiftName: shift.shiftName,
+        startTime: shift.startTime,
+        endTime: shift.endTime,
+      };
+  
+      try {
+        const response = await postAPI('/master-define-shift', payload, {}, true);
+  
+        if (response.hasError) {
+          allSuccessful = false;
+          toast.error(response.message || 'Failed to create shift');
+        }
+      } catch (err) {
+        allSuccessful = false;
+        const errorText = err.response?.data?.message || err.message || 'Something went wrong!';
+        toast.error(errorText);
+      }
+    }
+  
+    if (allSuccessful) {
+      toast.success("shifts created successfully!");
+      navigate(-1);
+    }
+  };
+  
+
   return (
     <div className="container">
       <div className="row">
@@ -32,77 +78,60 @@ const AddShifts = () => {
                   </h4>
                 </div>
               </div>
-              <form>
+              <form onSubmit={handleSubmit}>
                 {shifts.map((shift, index) => (
-                  <div className="row align-items-center" key={index}>
+                  <div className="row align-items-end mb-3" key={index}>
                     <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor={`shiftName-${index}`} className="form-label">
-                          Shift Name
-                        </label>
-                        <input
-                          type="text"
-                          id={`shiftName-${index}`}
-                          name="shiftName"
-                          className="form-control"
-                          value={shift.shiftName}
-                          onChange={(e) => handleInputChange(index, 'shiftName', e.target.value)}
-                          required
-                        />
-                      </div>
+                      <label className="form-label">Shift Name {index + 1}</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={shift.shiftName}
+                        onChange={(e) => handleInputChange(index, 'shiftName', e.target.value)}
+                        required
+                      />
                     </div>
                     <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor={`startTime-${index}`} className="form-label">
-                          Start Time
-                        </label>
-                        <input
-                          type="time"
-                          id={`startTime-${index}`}
-                          name="startTime"
-                          className="form-control"
-                          value={shift.startTime}
-                          onChange={(e) => handleInputChange(index, 'startTime', e.target.value)}
-                        />
-                      </div>
+                      <label className="form-label">Start Time</label>
+                      <input
+                        type="time"
+                        className="form-control"
+                        value={shift.startTime}
+                        onChange={(e) => handleInputChange(index, 'startTime', e.target.value)}
+                      />
                     </div>
                     <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor={`endTime-${index}`} className="form-label">
-                          End Time
-                        </label>
-                        <input
-                          type="time"
-                          id={`endTime-${index}`}
-                          name="endTime"
-                          className="form-control"
-                          value={shift.endTime}
-                          onChange={(e) => handleInputChange(index, 'endTime', e.target.value)}
-                        />
-                      </div>
+                      <label className="form-label">End Time</label>
+                      <input
+                        type="time"
+                        className="form-control"
+                        value={shift.endTime}
+                        onChange={(e) => handleInputChange(index, 'endTime', e.target.value)}
+                      />
                     </div>
-                    <div className="col-md-3 text-center">
-                      <button
-                        type="button"
-                        className="btn btn-danger mt-3"
-                        onClick={() => handleDeleteShift(index)}
-                        disabled={shifts.length === 1} // Prevent deleting the last row
-                      >
-                        Delete
-                      </button>
+                    <div className="col-md-3 d-flex flex-row gap-2 mt-3">
+                      {index === shifts.length - 1 && (
+                        <button
+                          type="button"
+                          className="btn btn-success"
+                          onClick={handleAddShift}
+                        >
+                          Add
+                        </button>
+                      )}
+                      {index !== 0 && (
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          onClick={() => handleDeleteShift(index)}
+                        >
+                          Remove
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
 
-                <div className="text-center mb-3">
-                  <button
-                    type="button"
-                    className="btn btn-primary custom-submit-button"
-                    onClick={handleAddShift}
-                  >
-                    Add more Shifts
-                  </button>
-                </div>
                 <div className="text-end">
                   <button
                     type="submit"
