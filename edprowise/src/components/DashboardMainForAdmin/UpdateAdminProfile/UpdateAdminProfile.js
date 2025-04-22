@@ -77,6 +77,8 @@ const UpdateAdminProfile = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -88,6 +90,8 @@ const UpdateAdminProfile = () => {
         formData[key] instanceof File ? formData[key] : formData[key] || ""
       );
     }
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -135,6 +139,8 @@ const UpdateAdminProfile = () => {
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
 
@@ -144,7 +150,6 @@ const UpdateAdminProfile = () => {
       label: `${city}, ${state}, India`,
     }))
   );
-
 
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -252,7 +257,8 @@ const UpdateAdminProfile = () => {
 
                     <div className="mb-3">
                       <label htmlFor="gstin" className="form-label">
-                        Company GSTIN Number <span className="text-danger">*</span>
+                        Company GSTIN Number{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -265,7 +271,7 @@ const UpdateAdminProfile = () => {
                     </div>
                     <div className="mb-3">
                       <label htmlFor="tan" className="form-label">
-                        Company TAN Number 
+                        Company TAN Number
                       </label>
                       <input
                         type="text"
@@ -302,7 +308,8 @@ const UpdateAdminProfile = () => {
 
                     <div className="mb-3">
                       <label htmlFor="pan" className="form-label">
-                        Company PAN Number <span className="text-danger">*</span>
+                        Company PAN Number{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -354,9 +361,10 @@ const UpdateAdminProfile = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="cityStateCountry" className="form-label">
-                        City, State, Country <span className="text-danger">*</span>
+                        City, State, Country{" "}
+                        <span className="text-danger">*</span>
                       </label>
-                             <Select
+                      <Select
                         id="cityStateCountry"
                         name="schoolLocation"
                         options={cityOptions}
@@ -377,7 +385,6 @@ const UpdateAdminProfile = () => {
                         classNamePrefix="react-select"
                         className="custom-react-select"
                       />
-
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -423,7 +430,7 @@ const UpdateAdminProfile = () => {
                     <div className="mb-3">
                       <label htmlFor="contactNo" className="form-label">
                         Contact No <span className="text-danger">*</span>
-                      </label> 
+                      </label>
                       <input
                         type="text"
                         id="contactNo"
@@ -473,8 +480,12 @@ const UpdateAdminProfile = () => {
                   </div>
                 </div>
 
-                <button type="submit" className="btn btn-primary">
-                  Update Profile
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={sending}
+                >
+                  {sending ? "Updating..." : "Update Profile"}
                 </button>
               </form>
             </div>

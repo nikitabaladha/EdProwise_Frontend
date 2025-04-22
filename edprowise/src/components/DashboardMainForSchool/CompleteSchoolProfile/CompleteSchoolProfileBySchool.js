@@ -75,6 +75,8 @@ const CompleteSchoolProfile = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -115,6 +117,8 @@ const CompleteSchoolProfile = () => {
         formDataToSend.append(key, formData[key] || "");
       }
     }
+
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -177,6 +181,8 @@ const CompleteSchoolProfile = () => {
         console.log(error);
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
 
@@ -732,8 +738,9 @@ const CompleteSchoolProfile = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={sending}
                     >
-                      Submit
+                      {sending ? "Submitting..." : "Submit"}
                     </button>
                   </div>
                 </form>

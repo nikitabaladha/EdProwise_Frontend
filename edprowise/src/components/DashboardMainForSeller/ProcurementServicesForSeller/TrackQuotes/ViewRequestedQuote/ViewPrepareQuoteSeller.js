@@ -113,12 +113,16 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     }));
   };
 
+  const [sending, setSending] = useState(null);
+
   const handleUpdate = async (id) => {
     const formDataToSend = new FormData();
 
     for (const key in editedQuote[id]) {
       formDataToSend.append(key, editedQuote[id][key]);
     }
+
+    setSending(id);
 
     try {
       const response = await putAPI(
@@ -147,6 +151,8 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(null);
     }
   };
 
@@ -493,6 +499,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                 quote.supplierStatus === "Quote Submitted") ? (
                                 <button
                                   className="btn btn-primary"
+                                  disabled={sending === quote._id}
                                   onClick={() => {
                                     if (editedQuote[quote._id]) {
                                       handleUpdate(quote._id);
@@ -516,7 +523,11 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                     }
                                   }}
                                 >
-                                  {editedQuote[quote._id] ? "Save" : "Edit"}
+                                  {sending === quote._id
+                                    ? "Saving..."
+                                    : editedQuote[quote._id]
+                                    ? "Save"
+                                    : "Edit"}
                                 </button>
                               ) : null}
                             </td>

@@ -110,6 +110,8 @@ const AddNewSeller = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -127,6 +129,8 @@ const AddNewSeller = () => {
         );
       });
     });
+
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -176,6 +180,8 @@ const AddNewSeller = () => {
       toast.error(
         error?.response?.data?.message || "An unexpected error occurred."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -850,8 +856,9 @@ const AddNewSeller = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={sending}
                     >
-                      Submit
+                      {sending ? "Submitting..." : "Submit"}
                     </button>
                   </div>
                 </form>

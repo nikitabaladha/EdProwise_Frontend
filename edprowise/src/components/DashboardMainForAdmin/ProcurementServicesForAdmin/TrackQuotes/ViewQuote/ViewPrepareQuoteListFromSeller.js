@@ -11,9 +11,6 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
   const location = useLocation();
   const { sellerId, enquiryNumber } = location.state || {};
 
-  console.log("enquiryNumber from Admin", enquiryNumber);
-  console.log("sellerId from Admin", sellerId);
-
   const [preparedQuotes, setPreparedQuotes] = useState([]);
   const [editedQuote, setEditedQuote] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -120,12 +117,16 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
     }));
   };
 
+  const [sending, setSending] = useState(null);
+
   const handleUpdate = async (id) => {
     const formDataToSend = new FormData();
 
     for (const key in editedQuote[id]) {
       formDataToSend.append(key, editedQuote[id][key]);
     }
+
+    setSending(id);
 
     try {
       const response = await putAPI(
@@ -155,6 +156,8 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(null);
     }
   };
 
@@ -480,6 +483,7 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                               quote.supplierStatus === "Quote Submitted" ? (
                                 <button
                                   className="btn btn-primary"
+                                  disabled={sending === quote._id}
                                   onClick={() => {
                                     if (editedQuote[quote._id]) {
                                       handleUpdate(quote._id);
@@ -503,7 +507,11 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
                                     }
                                   }}
                                 >
-                                  {editedQuote[quote._id] ? "Save" : "Edit"}
+                                  {sending === quote._id
+                                    ? "Saving..."
+                                    : editedQuote[quote._id]
+                                    ? "Save"
+                                    : "Edit"}
                                 </button>
                               ) : null}
                             </td>

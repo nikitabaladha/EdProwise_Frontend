@@ -102,8 +102,13 @@ const AddCategory = () => {
     setCategoryRows(updatedRows);
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setSending(true);
+
     try {
       for (const row of categoryRows) {
         let subCategoryData = {};
@@ -175,6 +180,8 @@ const AddCategory = () => {
         console.log(error);
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
 
@@ -400,8 +407,12 @@ const AddCategory = () => {
                       ? "Add Goods And Services"
                       : "Add Custom Goods And Services"}
                   </button>
-                  <button type="submit" className="btn btn-primary">
-                    Submit
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={sending}
+                  >
+                    {sending ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </form>

@@ -850,7 +850,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  HSN/SAAC
+                  HSN/SAC
                 </th>
                 <th
                   style={{

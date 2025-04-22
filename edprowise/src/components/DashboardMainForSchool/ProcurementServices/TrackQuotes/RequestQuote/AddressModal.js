@@ -60,6 +60,8 @@ const AddressModal = ({ onClose, cart, formData }) => {
     }))
   );
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -96,10 +98,11 @@ const AddressModal = ({ onClose, cart, formData }) => {
       }
     });
 
-    console.log("FormData Entries:");
     for (const pair of formDataToSend.entries()) {
       console.log(pair[0], pair[1]);
     }
+
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -121,6 +124,8 @@ const AddressModal = ({ onClose, cart, formData }) => {
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -240,8 +245,14 @@ const AddressModal = ({ onClose, cart, formData }) => {
                       </div>
                     </div>
                     <div className="text-end">
-                      <Button variant="success" onClick={handleSubmit}>
-                        Request Quote
+                      <Button
+                        type="submit"
+                        variant="success"
+                        onClick={handleSubmit}
+                        disabled={sending}
+                        aria-busy={sending}
+                      >
+                        {sending ? "Quote Requesting..." : "Request Quote"}
                       </Button>
                       <Button
                         variant="secondary"

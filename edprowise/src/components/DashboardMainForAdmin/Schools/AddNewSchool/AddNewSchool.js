@@ -45,8 +45,12 @@ const AddNewSchool = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setSending(true);
 
     try {
       const data = new FormData();
@@ -92,6 +96,8 @@ const AddNewSchool = () => {
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -332,8 +338,9 @@ const AddNewSchool = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={sending}
                     >
-                      Add School
+                      {sending ? "Adding..." : "Add School"}
                     </button>
                   </div>
                 </form>

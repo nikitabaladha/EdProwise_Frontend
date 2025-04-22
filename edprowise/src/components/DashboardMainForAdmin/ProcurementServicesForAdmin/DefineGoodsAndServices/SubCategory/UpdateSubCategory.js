@@ -20,6 +20,7 @@ const UpdateSubCategory = () => {
     mainCategoryId: "",
     edprowiseMargin: "",
   });
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -115,8 +116,13 @@ const UpdateSubCategory = () => {
   };
 
   // Handle update
+
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -141,6 +147,8 @@ const UpdateSubCategory = () => {
       toast.error(
         error.response?.data?.message || "An unexpected error occurred."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -242,8 +250,12 @@ const UpdateSubCategory = () => {
                 </div>
 
                 <div className="text-end">
-                  <button type="submit" className="btn btn-primary">
-                    Update
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={sending}
+                  >
+                    {sending ? "Updating..." : "update"}
                   </button>
                 </div>
               </form>

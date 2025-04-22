@@ -117,6 +117,8 @@ const UpdateSchoolProfile = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -129,6 +131,8 @@ const UpdateSchoolProfile = () => {
         formDataToSend.append(key, formData[key] || "");
       }
     }
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -169,7 +173,7 @@ const UpdateSchoolProfile = () => {
         affiliationCertificateRef.current.value = "";
         panFileRef.current.value = "";
 
-        toast.success("School Profile successfully completed!");
+        toast.success("School Profile successfully updated!");
         navigate(`/school-dashboard`);
       } else {
         toast.error("Failed to update School.");
@@ -184,6 +188,8 @@ const UpdateSchoolProfile = () => {
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
 
@@ -679,8 +685,9 @@ const UpdateSchoolProfile = () => {
                       <button
                         type="submit"
                         className="btn btn-primary custom-submit-button"
+                        disabled={sending}
                       >
-                        Update School
+                        {sending ? "Updating..." : "Update School"}
                       </button>
                     </div>
                   </form>

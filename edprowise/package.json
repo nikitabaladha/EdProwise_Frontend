@@ -34,7 +34,8 @@
     "recharts": "^2.15.1",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^4.2.4",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "html2pdf.js": "^0.10.3"
   },
   "scripts": {
     "start": "react-scripts start",

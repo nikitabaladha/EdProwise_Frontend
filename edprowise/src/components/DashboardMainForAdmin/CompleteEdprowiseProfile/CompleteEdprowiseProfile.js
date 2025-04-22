@@ -44,6 +44,8 @@ const CompleteEdprowiseProfile = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -51,6 +53,8 @@ const CompleteEdprowiseProfile = () => {
     Object.keys(formData).forEach((key) => {
       data.append(key, formData[key]);
     });
+
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -100,6 +104,8 @@ const CompleteEdprowiseProfile = () => {
       toast.error(
         error?.response?.data?.message || "An unexpected error occurred."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -288,16 +294,21 @@ const CompleteEdprowiseProfile = () => {
                         >
                           City State Country Location
                         </label>
-                        
+
                         <Select
                           id="cityStateCountry"
                           name="cityStateCountry"
                           options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.cityStateCountry)}
+                          value={cityOptions.find(
+                            (option) =>
+                              option.value === formData.cityStateCountry
+                          )}
                           onChange={(selectedOption) =>
                             setFormData((prevState) => ({
                               ...prevState,
-                              cityStateCountry: selectedOption ? selectedOption.value : "",
+                              cityStateCountry: selectedOption
+                                ? selectedOption.value
+                                : "",
                             }))
                           }
                           placeholder="Select City-State-Country"
@@ -430,8 +441,9 @@ const CompleteEdprowiseProfile = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={sending}
                     >
-                      Submit Profile
+                      {sending ? "Submitting..." : "Submit Profile"}
                     </button>
                   </div>
                 </form>

@@ -24,8 +24,12 @@ const AddNewBankDetail = () => {
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -58,6 +62,8 @@ const AddNewBankDetail = () => {
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -151,8 +157,9 @@ const AddNewBankDetail = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={sending}
                     >
-                      Submit
+                      {sending ? "Submitting..." : "Submit"}
                     </button>
                   </div>
                 </form>

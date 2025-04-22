@@ -39,6 +39,8 @@ const UpdateAdmin = () => {
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -57,6 +59,8 @@ const UpdateAdmin = () => {
         formDataToSend.append(key, formData[key] || "");
       }
     }
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -82,9 +86,10 @@ const UpdateAdmin = () => {
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
-
 
   const [showNewPassword, setShowNewPassword] = useState(false);
   const toggleNewPasswordVisibility = () => {
@@ -208,7 +213,8 @@ const UpdateAdmin = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="password" className="form-label">
-                        Retype New Password <span className="text-danger">*</span>
+                        Retype New Password{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <div style={{ position: "relative" }}>
                         <input
@@ -295,8 +301,9 @@ const UpdateAdmin = () => {
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={sending}
                   >
-                    Update
+                    {sending ? "Updating..." : "Update"}
                   </button>
                 </div>
               </form>

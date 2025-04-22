@@ -110,6 +110,8 @@ const CompleteSellerProfile = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -127,6 +129,8 @@ const CompleteSellerProfile = () => {
         );
       });
     });
+
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -184,6 +188,8 @@ const CompleteSellerProfile = () => {
       toast.error(
         error?.response?.data?.message || "An unexpected error occurred."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -870,8 +876,9 @@ const CompleteSellerProfile = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={sending}
                     >
-                      Submit
+                      {sending ? "Submitting..." : "Submit"}
                     </button>
                   </div>
                 </form>

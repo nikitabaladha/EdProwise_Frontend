@@ -26,6 +26,8 @@ const AddNewAdmin = () => {
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -33,6 +35,8 @@ const AddNewAdmin = () => {
       toast.error("New Password and Confirm Password do not match.");
       return;
     }
+
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -66,6 +70,8 @@ const AddNewAdmin = () => {
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -239,8 +245,9 @@ const AddNewAdmin = () => {
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={sending}
                   >
-                    Submit
+                    {sending ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </form>

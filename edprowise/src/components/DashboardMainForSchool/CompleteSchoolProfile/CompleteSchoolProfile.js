@@ -111,6 +111,8 @@ const CompleteSchoolProfile = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -149,6 +151,8 @@ const CompleteSchoolProfile = () => {
         formDataToSend.append(key, formData[key] || "");
       }
     }
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -215,6 +219,8 @@ const CompleteSchoolProfile = () => {
         console.log(error);
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
 
@@ -815,8 +821,9 @@ const CompleteSchoolProfile = () => {
                       <button
                         type="submit"
                         className="btn btn-primary custom-submit-button"
+                        disabled={sending}
                       >
-                        Update School
+                        {sending ? "Updating..." : "Update School"}
                       </button>
                     </div>
                   </form>

@@ -202,6 +202,8 @@ const UpdateSeller = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -244,6 +246,7 @@ const UpdateSeller = () => {
       formDataToSend.append("gstFile", formData.gstFile);
     }
     formDataToSend.append("dealingProducts", JSON.stringify(dealingProducts));
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -291,6 +294,8 @@ const UpdateSeller = () => {
       toast.error(
         error.response?.data?.message || "An unexpected error occurred."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -549,7 +554,6 @@ const UpdateSeller = () => {
                   </div>
                 </div>
                 <div className="row">
-                  {/* i want font size 0.875 rem */}
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="cityStateCountry" className="form-label">
@@ -970,8 +974,9 @@ const UpdateSeller = () => {
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={sending}
                   >
-                    Submit
+                    {sending ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </form>

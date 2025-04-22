@@ -16,12 +16,17 @@ const ReasonModal = ({
   const handleInputChange = (e) => {
     setRejectCommentFromBuyer(e.target.value);
   };
+
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formDataToSend = {
       rejectCommentFromBuyer,
     };
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -43,6 +48,8 @@ const ReasonModal = ({
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -81,8 +88,14 @@ const ReasonModal = ({
                     </div>
 
                     <div className="text-end">
-                      <Button variant="success" onClick={handleSubmit}>
-                        Submit
+                      <Button
+                        type="submit"
+                        variant="success"
+                        onClick={handleSubmit}
+                        disabled={sending}
+                        aria-busy={sending}
+                      >
+                        {sending ? "Submitting..." : "Submit"}
                       </Button>
                       <Button
                         variant="secondary"

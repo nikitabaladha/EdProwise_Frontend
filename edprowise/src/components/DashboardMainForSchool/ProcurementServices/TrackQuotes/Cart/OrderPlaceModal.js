@@ -56,6 +56,8 @@ const OrderPlaceModal = ({
     setDeliveryDate(e.target.value);
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -87,6 +89,8 @@ const OrderPlaceModal = ({
       expectedDeliveryDate: deliveryDate,
     };
 
+    setSending(true);
+
     try {
       const response = await postAPI("/order-from-buyer", formDataToSend, true);
 
@@ -103,6 +107,8 @@ const OrderPlaceModal = ({
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -234,9 +240,16 @@ const OrderPlaceModal = ({
                       </div>
                     </div>
                     <div className="text-end">
-                      <Button variant="success" onClick={handleSubmit}>
-                        Place Order
+                      <Button
+                        type="submit"
+                        variant="success"
+                        onClick={handleSubmit}
+                        disabled={sending}
+                        aria-busy={sending}
+                      >
+                        {sending ? "Order placing..." : "Place Order"}
                       </Button>
+
                       <Button
                         variant="secondary"
                         onClick={onClose}

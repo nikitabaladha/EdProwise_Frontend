@@ -68,7 +68,7 @@ const PrepareQuoteTable = ({
                       Subcategory Name <span className="text-danger">*</span>
                     </th>
                     <th>
-                      HSN/SAAC <span className="text-danger">*</span>
+                      HSN/SAC <span className="text-danger">*</span>
                     </th>
                     <th>
                       Listing Rate <span className="text-danger">*</span>

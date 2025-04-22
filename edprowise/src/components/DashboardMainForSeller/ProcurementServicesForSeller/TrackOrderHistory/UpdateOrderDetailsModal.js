@@ -58,6 +58,8 @@ const UpdateOrderDetailsModal = ({
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -67,6 +69,8 @@ const UpdateOrderDetailsModal = ({
       actualDeliveryDate,
       otherCharges,
     };
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -91,6 +95,8 @@ const UpdateOrderDetailsModal = ({
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -146,9 +152,14 @@ const UpdateOrderDetailsModal = ({
                     </div>
 
                     <div className="text-end">
-                      <Button variant="success" type="submit">
-                        Update
+                      <Button
+                        variant="success"
+                        type="submit"
+                        disabled={sending}
+                      >
+                        {sending ? "Updating..." : "Update"}
                       </Button>
+
                       <Button
                         variant="secondary"
                         onClick={onClose}
