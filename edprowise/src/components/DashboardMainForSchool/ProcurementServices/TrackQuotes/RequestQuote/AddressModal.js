@@ -38,7 +38,6 @@ const AddressModal = ({ onClose, cart, formData }) => {
 
   useEffect(() => {
     fetchSchoolData();
-
     setExpectedDeliveryDate(new Date().toISOString().split("T")[0]);
   }, []);
 

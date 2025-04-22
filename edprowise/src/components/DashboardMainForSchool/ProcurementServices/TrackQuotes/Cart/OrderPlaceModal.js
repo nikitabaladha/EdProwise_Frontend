@@ -14,7 +14,6 @@ const OrderPlaceModal = ({
   fetchCartData,
   latestDeliveryDate,
 }) => {
-  // if no latestDeiveryDate or no carts fount then show <div>No cart data found</div>  to avoid run time error
   const navigate = useNavigate();
   const [quoteRequest, setQuoteRequest] = useState(null);
   const [deliveryDate, setDeliveryDate] = useState(

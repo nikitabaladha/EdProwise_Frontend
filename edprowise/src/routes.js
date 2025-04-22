@@ -93,11 +93,11 @@ import ViewSubscriptions from "./components/DashboardMainForAdmin/Subscription/V
 import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/UpdateSubscription/UpdateSubscription";
 
 // =====================================EmailSettings====================================
-import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettings/SMTPHostSettings/SMTPHostSettings.js";
-import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
-import SchoolRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRegistrationEmailTamplate.js";
-import SellerRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SellerRegistrationEmailTamplate.js";
-import PasswordUpdateEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/PasswordUpdate.js";
+// import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettings/SMTPHostSettings/SMTPHostSettings.js";
+// import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
+// import SchoolRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRegistrationEmailTamplate.js";
+// import SellerRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SellerRegistrationEmailTamplate.js";
+// import PasswordUpdateEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/PasswordUpdate.js";
 
 // ========================================Fees module===========================================
 
@@ -129,7 +129,6 @@ import UpdateSubCategory from "./components/DashboardMainForAdmin/ProcurementSer
 // add on admin umesh new routes
 import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettings/SMTPHostSettings/SMTPHostSettings.js";
 import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
-
 import MarketingEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/Marketing/MarketingEmail.js";
 
 // ================School Routes=============School Routes============School Routes===========================
@@ -228,8 +227,8 @@ import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/Procu
 import PayToEdprowiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise.js";
 
 // umesh Added
-import ForgotPassword from "./components/ForgotPassword/ForgotPassword.js";
-import NewPassword from "./components/ForgotPassword/NewPassword.js";
+import ForgotPassword from "./components/ForgotPasswordorUserId/ForgotPassword.js";
+import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
