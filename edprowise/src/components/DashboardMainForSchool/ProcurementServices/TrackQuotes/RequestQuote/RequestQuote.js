@@ -8,13 +8,10 @@ import Select from "react-select";
 
 const RequestQuote = () => {
   const unitOptions = [
-    { value: "Piece", label: "Piece" },
     { value: "Monthly", label: "Monthly" },
     { value: "Yearly", label: "Yearly" },
     { value: "Quarterly", label: "Quarterly" },
-    { value: "Kg", label: "Kg" },
     { value: "Project", label: "Project" },
-    { value: "Sq. feet", label: "Sq. feet" },
     { value: "BAG - BAGS", label: "BAG - BAGS" },
     { value: "BAL - BALE", label: "BAL - BALE" },
     { value: "BDL - BUNDLES", label: "BDL - BUNDLES" },

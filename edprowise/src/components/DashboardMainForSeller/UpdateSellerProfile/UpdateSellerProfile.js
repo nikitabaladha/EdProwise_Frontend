@@ -859,7 +859,7 @@ const UpdateSeller = () => {
                         value={formData.turnover}
                         onChange={handleChange}
                       >
-                        <option value="">Select Company Ternover</option>
+                        <option value="">Select Company Turnover</option>
                         <option value="1 to 10 Lakh">1 to 10 Lakh</option>
                         <option value="10 to 50 Lakh">10 to 50 Lakh</option>
                         <option value="50 Lakh to 1 Crore">

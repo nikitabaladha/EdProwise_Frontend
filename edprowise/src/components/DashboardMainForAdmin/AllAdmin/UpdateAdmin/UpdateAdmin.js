@@ -253,48 +253,6 @@ const UpdateAdmin = () => {
                       </div>
                     </div>
                   </div>
-
-                  {/* <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="password" className="form-label">
-                        Password
-                      </label>
-                      <div style={{ position: "relative" }}>
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          id="password"
-                          name="password"
-                          className="form-control"
-                          placeholder="********"
-                          onChange={handleChange}
-                          style={{ paddingRight: "40px" }}
-                        />
-                        {showPassword ? (
-                          <FaEye
-                            onClick={togglePasswordVisibility}
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                              cursor: "pointer",
-                            }}
-                          />
-                        ) : (
-                          <FaEyeSlash
-                            onClick={togglePasswordVisibility}
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                              cursor: "pointer",
-                            }}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
 
                 <div className="text-end">
