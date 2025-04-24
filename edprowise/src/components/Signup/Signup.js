@@ -45,6 +45,8 @@ const Signup = () => {
     setShowPassword((prev) => !prev);
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSignup = async (e) => {
     e.preventDefault();
 
@@ -52,6 +54,8 @@ const Signup = () => {
       toast.error("Password and Confirm Password do not match.");
       return;
     }
+
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -85,6 +89,8 @@ const Signup = () => {
         error?.response?.data?.message ||
           "An unexpected signup error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -258,17 +264,18 @@ const Signup = () => {
                   )}
                   <div className="form-button d-flex">
                     <button
-                      id="submit"
                       type="submit"
                       className="btn btn-primary"
+                      disabled={sending}
                       style={{
                         backgroundColor: "#ffc801",
                         borderColor: "#ffc801",
                       }}
                     >
-                      Sign Up
+                      {sending ? "Processing..." : "Sign Up"}
                     </button>
                   </div>
+
                   <Link to="/" onClick={navigateToHomes}>
                     Go to Home
                   </Link>

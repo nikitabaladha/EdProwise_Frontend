@@ -41,8 +41,13 @@ const UserLogin = () => {
     navigate("/signup");
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setSending(true);
+
     try {
       const response = await postAPI("/user-login", formData, false);
 
@@ -88,6 +93,8 @@ const UserLogin = () => {
         error?.response?.data?.message ||
           "An unexpected login error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -194,15 +201,15 @@ const UserLogin = () => {
                   )}
                   <div className="form-button d-flex">
                     <button
-                      id="submit"
                       type="submit"
                       className="btn btn-primary"
+                      disabled={sending}
                       style={{
                         backgroundColor: "#ffc801",
                         borderColor: "#ffc801",
                       }}
                     >
-                      Sign In
+                      {sending ? "Processing..." : "Login"}
                     </button>
                   </div>
                   <div className=" text-center">

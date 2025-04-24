@@ -200,8 +200,11 @@ const ViewRequestedQuote = () => {
     setPrepareProducts(productsWithUpdatedSrNo);
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSending(true);
 
     const formData = new FormData();
     formData.append("enquiryNumber", enquiryNumber);
@@ -259,6 +262,8 @@ const ViewRequestedQuote = () => {
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -466,6 +471,7 @@ const ViewRequestedQuote = () => {
           handleImageChange={handleImageChange}
           handleSubmit={handleSubmit}
           locationData={locationData}
+          sending={sending}
         />
       )}
 

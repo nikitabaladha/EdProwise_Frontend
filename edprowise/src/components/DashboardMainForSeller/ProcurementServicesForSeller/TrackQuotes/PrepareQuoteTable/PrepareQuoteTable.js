@@ -9,6 +9,7 @@ const PrepareQuoteTable = ({
   handleImageChange,
   handleSubmit,
   locationData,
+  sending,
 }) => {
   const shouldShowCGST_SGST = () => {
     const { schoolState, sellerState, edprowiseState } = locationData;
@@ -222,9 +223,14 @@ const PrepareQuoteTable = ({
               </table>
             </div>
             <div className="text-end m-2">
-              <button type="submit" className="btn btn-success me-2">
-                Submit
+              <button
+                type="submit"
+                className="btn btn-primary custom-submit-button"
+                disabled={sending}
+              >
+                {sending ? "Submitting..." : "Submit"}
               </button>
+
               <button type="button" className="btn btn-secondary">
                 Cancel
               </button>
