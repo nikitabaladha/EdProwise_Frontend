@@ -21,6 +21,7 @@ const UpdateSeller = () => {
     companyName: "",
     companyType: "",
     sellerProfile: null,
+    signature: null,
     gstin: "",
     pan: "",
     tan: "",
@@ -59,6 +60,7 @@ const UpdateSeller = () => {
   );
 
   const sellerProfileRef = useRef(null);
+  const signatureRef = useRef(null);
   const panFileRef = useRef(null);
   const gstFileRef = useRef(null);
   const tanFileRef = useRef(null);
@@ -66,6 +68,8 @@ const UpdateSeller = () => {
 
   // Preview states
   const [previewSellerProfileImage, setPreviewSellerProfileImage] =
+    useState(null);
+  const [previewSellerSinatureImage, setPreviewSellerSignatureImage] =
     useState(null);
   const [previewPanFile, setPreviewPanFile] = useState(null);
   const [isPanFilePDF, setIsPanFilePDF] = useState(false);
@@ -90,6 +94,8 @@ const UpdateSeller = () => {
       // Clean up object URLs to avoid memory leaks
       if (previewSellerProfileImage)
         URL.revokeObjectURL(previewSellerProfileImage);
+      if (previewSellerSinatureImage)
+        URL.revokeObjectURL(previewSellerSinatureImage);
       if (previewPanFile) URL.revokeObjectURL(previewPanFile);
       if (previewGstFile) URL.revokeObjectURL(previewGstFile);
       if (previewTanFile) URL.revokeObjectURL(previewTanFile);
@@ -97,6 +103,7 @@ const UpdateSeller = () => {
     };
   }, [
     previewSellerProfileImage,
+    previewSellerSinatureImage,
     previewPanFile,
     previewGstFile,
     previewTanFile,
@@ -127,6 +134,7 @@ const UpdateSeller = () => {
           companyName: response.data.data.companyName,
           companyType: response.data.data.companyType,
           sellerProfile: response.data.data.sellerProfile,
+          signature: response.data.data.signature,
           gstin: response.data.data.gstin,
           pan: response.data.data.pan,
           tan: response.data.data.tan,
@@ -255,6 +263,8 @@ const UpdateSeller = () => {
 
         if (name === "sellerProfile") {
           setPreviewSellerProfileImage(fileUrl);
+        } else if (name === "signature") {
+          setPreviewSellerSignatureImage(fileUrl);
         } else if (name === "panFile") {
           setPreviewPanFile(fileUrl);
           setIsPanFilePDF(file.type === "application/pdf");
@@ -308,6 +318,9 @@ const UpdateSeller = () => {
     if (formData.sellerProfile instanceof File) {
       formDataToSend.append("sellerProfile", formData.sellerProfile);
     }
+    if (formData.signature instanceof File) {
+      formDataToSend.append("signature", formData.signature);
+    }
     if (formData.panFile instanceof File) {
       formDataToSend.append("panFile", formData.panFile);
     }
@@ -340,6 +353,7 @@ const UpdateSeller = () => {
           companyName: "",
           companyType: "",
           sellerProfile: null,
+          signature: null,
           gstin: "",
           pan: "",
           tan: "",
@@ -475,7 +489,7 @@ const UpdateSeller = () => {
                 </h4>
                 <hr></hr>
                 <div className="row">
-                  <div className="col-md-4">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="sellerProfile" className="form-label">
                         Profile Image
@@ -501,7 +515,33 @@ const UpdateSeller = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="signature" className="form-label">
+                        Signature
+                      </label>
+                      <input
+                        type="file"
+                        id="signature"
+                        name="signature"
+                        className="form-control"
+                        accept="image/*"
+                        onChange={handleChange}
+                        ref={signatureRef}
+                      />
+                      <div className="d-flex justify-content-center mt-2">
+                        {renderFilePreview(
+                          previewSellerSinatureImage,
+                          false,
+                          formData.signature
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.signature}`
+                            : null,
+                          "Signature Preview"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="companyName" className="form-label">
                         Company Name <span className="text-danger">*</span>
@@ -551,7 +591,7 @@ const UpdateSeller = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="contactNo" className="form-label">
                         Contact Number <span className="text-danger">*</span>

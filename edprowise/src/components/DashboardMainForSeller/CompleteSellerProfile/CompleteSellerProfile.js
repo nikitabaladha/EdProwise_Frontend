@@ -12,6 +12,7 @@ const CompleteSellerProfile = () => {
     companyName: "",
     companyType: "",
     sellerProfile: null,
+    signature: null,
     gstin: "",
     pan: "",
     tan: "",
@@ -146,6 +147,7 @@ const CompleteSellerProfile = () => {
           companyName: "",
           companyType: "",
           sellerProfile: null,
+          signature: null,
           gstin: "",
           pan: "",
           tan: "",
@@ -556,7 +558,7 @@ const CompleteSellerProfile = () => {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="emailId" className="form-label">
                           Email ID <span className="text-danger">*</span>
@@ -573,7 +575,7 @@ const CompleteSellerProfile = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="sellerProfile" className="form-label">
                           Profile Image
@@ -582,6 +584,21 @@ const CompleteSellerProfile = () => {
                           type="file"
                           id="sellerProfile"
                           name="sellerProfile"
+                          className="form-control"
+                          accept="image/*"
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="signature" className="form-label">
+                          Signature
+                        </label>
+                        <input
+                          type="file"
+                          id="signature"
+                          name="signature"
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}

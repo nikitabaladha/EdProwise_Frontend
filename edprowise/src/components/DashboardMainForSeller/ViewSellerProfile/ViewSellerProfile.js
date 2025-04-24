@@ -82,7 +82,10 @@ const ViewSellerProfile = () => {
                 </h4>
 
                 <div className="row">
-                  <div className="col-md-4">
+                  <div className="col-md-3">
+                    <label htmlFor="sellerProfile" className="form-label">
+                      Seller Profile
+                    </label>
                     <div className="mb-3 d-flex justify-content-center">
                       <div className="rounded bg-light d-flex align-items-center justify-content-center">
                         <img
@@ -99,7 +102,27 @@ const ViewSellerProfile = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
+                    <label htmlFor="signature" className="form-label">
+                      Seller Signature
+                    </label>
+                    <div className="mb-3 d-flex justify-content-center">
+                      <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                        <img
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.signature}`}
+                          alt="Seller Signature"
+                          className="avatar-md"
+                          style={{
+                            objectFit: "cover",
+                            width: "200px",
+                            height: "200px",
+                            borderRadius: "10px",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="randomId" className="form-label">
                         Seller Id
@@ -129,7 +152,7 @@ const ViewSellerProfile = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="userId" className="form-label">
                         User Id
