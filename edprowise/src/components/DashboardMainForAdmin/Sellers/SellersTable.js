@@ -30,7 +30,6 @@ const SellersTable = () => {
         Array.isArray(response.data.data)
       ) {
         setSellers(response.data.data);
-        console.log("seller data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -92,7 +91,6 @@ const SellersTable = () => {
   const [deleteType, setDeleteType] = useState("");
 
   const openDeleteDialog = (seller) => {
-    console.log("open delete dialog", seller);
     setSelectedSeller(seller);
     setIsDeleteDialogOpen(true);
     setDeleteType("seller");

@@ -1,16 +1,14 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 
-
-
 const StudentAdmissionListTable = () => {
   const navigate = useNavigate();
   const [schoolId, setSchoolId] = useState(null);
-  const [studentData, setStudentData] = useState([]); 
+  const [studentData, setStudentData] = useState([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -30,8 +28,6 @@ const StudentAdmissionListTable = () => {
     );
   };
 
-
-
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
@@ -44,17 +40,17 @@ const StudentAdmissionListTable = () => {
     setSchoolId(id);
   }, []);
 
-
   useEffect(() => {
     if (!schoolId) return;
 
     const fetchStudents = async () => {
       try {
         const response = await getAPI(`/get-admission-form/${schoolId}`);
-        console.log("API response:", response);
-        
+
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
+          const studentArray = Array.isArray(response.data.data)
+            ? response.data.data
+            : [];
           setStudentData(studentArray);
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -80,21 +76,22 @@ const StudentAdmissionListTable = () => {
     });
   };
 
-  const navigateToUpdateAdmissionForm=(event,student)=>{
+  const navigateToUpdateAdmissionForm = (event, student) => {
     event.preventDefault();
-    navigate(`/school-dashboard/fees-module/form/update-admission-form`,{
-      state: { student },});
-  }
-  
+    navigate(`/school-dashboard/fees-module/form/update-admission-form`, {
+      state: { student },
+    });
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
 
-
-
-  
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
+  const currentStudent = studentData.slice(
+    indexOfFirstStudent,
+    indexOfLastStudent
+  );
 
   const totalPages = Math.ceil(studentData.length / studentListPerPage);
 
@@ -113,7 +110,10 @@ const StudentAdmissionListTable = () => {
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
 
   return (
     <>
@@ -123,11 +123,8 @@ const StudentAdmissionListTable = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">
-                Admission List
-                </h4>
+                <h4 className="card-title flex-grow-1">Admission List</h4>
                 <Link
-               
                   onClick={(event) => navigateToAdmission(event)}
                   className="btn btn-sm btn-primary"
                 >
@@ -186,27 +183,42 @@ const StudentAdmissionListTable = () => {
                           <td>{student.firstName}</td>
                           <td>{student.lastName}</td>
                           <td>{student.transactionNumber}</td>
-                          <td>{new Date(student.applicationDate).toLocaleDateString()}</td>
+                          <td>
+                            {new Date(
+                              student.applicationDate
+                            ).toLocaleDateString()}
+                          </td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link className="btn btn-light btn-sm"
-                              onClick={(event) => navigateToViewAdmissionInfo(event, student)}
+                              <Link
+                                className="btn btn-light btn-sm"
+                                onClick={(event) =>
+                                  navigateToViewAdmissionInfo(event, student)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link> 
-                              <Link className="btn btn-soft-primary btn-sm"
-                              onClick={(event) => navigateToUpdateAdmissionForm(event,student)}
+                              </Link>
+                              <Link
+                                className="btn btn-soft-primary btn-sm"
+                                onClick={(event) =>
+                                  navigateToUpdateAdmissionForm(event, student)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-danger btn-sm"
-                                  onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}>
+                              <Link
+                                className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openDeleteDialog(student);
+                                }}
+                              >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -278,7 +290,3 @@ const StudentAdmissionListTable = () => {
 };
 
 export default StudentAdmissionListTable;
-
-
-
-

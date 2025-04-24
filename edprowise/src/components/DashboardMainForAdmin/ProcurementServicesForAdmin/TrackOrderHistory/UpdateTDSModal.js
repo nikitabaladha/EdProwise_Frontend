@@ -14,11 +14,6 @@ const UpdateTDSModal = ({
   sellerId,
   onTDSUpdated,
 }) => {
-  console.log("enquiryNumber", enquiryNumber);
-  console.log("quoteNumber", quoteNumber);
-
-  console.log("sellerId", sellerId);
-
   const [tdsDetails, setTdsDetails] = useState({
     tDSAmount: "",
   });
@@ -31,8 +26,6 @@ const UpdateTDSModal = ({
             `/tds-amount?enquiryNumber=${enquiryNumber}&quoteNumber=${quoteNumber}&sellerId=${sellerId}`
           );
           if (!response.hasError && response.data && response.data.data) {
-            console.log("response", response);
-
             const tDSAmount = response.data.data;
 
             setTdsDetails({

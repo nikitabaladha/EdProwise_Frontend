@@ -7,12 +7,11 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ForgotUserId = (e) => {
   const [formData, setFormData] = useState({ email: "", verificationCode: "" });
-  const [step, setStep] = useState(1); 
+  const [step, setStep] = useState(1);
   const [generalError, setGeneralError] = useState("");
   const [userid, setUserId] = useState("");
   const [timeLeft, setTimeLeft] = useState(60);
   const [canResend, setCanResend] = useState(false);
-
 
   const navigate = useNavigate();
 
@@ -37,14 +36,16 @@ const ForgotUserId = (e) => {
   const handleSubmitUserId = async (e) => {
     e.preventDefault();
     try {
-      const response = await postAPI("/send-verification-code-onemail", { email: formData.email }, false);
-      console.log("responce: ", response);
+      const response = await postAPI(
+        "/send-verification-code-onemail",
+        { email: formData.email },
+        false
+      );
 
       if (!response.hasError) {
         toast.success(" Verification code sent on Register Email.");
-        const userId = response?.data?.userId
-        setUserId(userId)
-        console.log(userId);
+        const userId = response?.data?.userId;
+        setUserId(userId);
         setStep(2);
         setTimeLeft(60);
         setCanResend(false);
@@ -59,10 +60,14 @@ const ForgotUserId = (e) => {
   const handleSubmitCode = async (e) => {
     e.preventDefault();
     try {
-      const response = await postAPI("/verify-code", {
-        userId: userid,
-        verificationCode: formData.verificationCode,
-      }, false);
+      const response = await postAPI(
+        "/verify-code",
+        {
+          userId: userid,
+          verificationCode: formData.verificationCode,
+        },
+        false
+      );
 
       if (!response.hasError) {
         toast.success("Verification successful! .");
@@ -72,7 +77,8 @@ const ForgotUserId = (e) => {
         setGeneralError(response.data.message);
       }
     } catch (error) {
-      const errorMsg = error?.response?.data?.message || "Invalid code. Please try again.";
+      const errorMsg =
+        error?.response?.data?.message || "Invalid code. Please try again.";
       toast.error(errorMsg);
       setGeneralError(errorMsg);
       // setGeneralError("Invalid code. Please try again.");
@@ -81,7 +87,11 @@ const ForgotUserId = (e) => {
 
   const handleResendCode = async () => {
     try {
-      const response = await postAPI("/send-verification-code", { userId:userid }, false);
+      const response = await postAPI(
+        "/send-verification-code",
+        { userId: userid },
+        false
+      );
       if (!response.hasError) {
         toast.success("Verification code resent successfully.");
         const userId = response?.data?.userId;
@@ -105,7 +115,6 @@ const ForgotUserId = (e) => {
     }
     return () => clearTimeout(timer);
   }, [timeLeft, step]);
-
 
   return (
     <>
@@ -145,7 +154,11 @@ const ForgotUserId = (e) => {
                 <p>We Listen...We Resolve...We Deliver</p>
                 {step === 1 && (
                   <form onSubmit={handleSubmitUserId}>
-                    <p style={{ fontSize: "1rem" }}> Enter the email which associated with your Edprowise account.</p>
+                    <p style={{ fontSize: "1rem" }}>
+                      {" "}
+                      Enter the email which associated with your Edprowise
+                      account.
+                    </p>
                     <input
                       className="form-control"
                       type="email"
@@ -183,8 +196,11 @@ const ForgotUserId = (e) => {
                 )}
 
                 {step === 2 && (
-                  <form onSubmit={handleSubmitCode} >
-                    <p style={{ fontSize: "1rem" }}> Your verification code send on {formData.email}.</p>
+                  <form onSubmit={handleSubmitCode}>
+                    <p style={{ fontSize: "1rem" }}>
+                      {" "}
+                      Your verification code send on {formData.email}.
+                    </p>
                     <input
                       className="form-control"
                       type="text"
@@ -208,7 +224,8 @@ const ForgotUserId = (e) => {
 
                     {!canResend ? (
                       <p style={{ fontSize: "1rem" }}>
-                        Verification code valid for <strong>{timeLeft} seconds</strong>.
+                        Verification code valid for{" "}
+                        <strong>{timeLeft} seconds</strong>.
                       </p>
                     ) : (
                       <p style={{ fontSize: "1rem" }}>

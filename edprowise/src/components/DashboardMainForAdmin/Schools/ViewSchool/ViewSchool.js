@@ -32,8 +32,6 @@ const ViewSchool = () => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSchool(response.data.data);
-
-        console.log("school data from view school", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -55,7 +53,6 @@ const ViewSchool = () => {
         Array.isArray(response.data.data)
       ) {
         setUsers(response.data.data);
-        console.log("all users", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -73,7 +70,6 @@ const ViewSchool = () => {
         Array.isArray(response.data.data)
       ) {
         setSubscription(response.data.data);
-        console.log("All setSubscriptions", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -127,8 +123,6 @@ const ViewSchool = () => {
   };
 
   const navigateToViewSubscription = async (event, subscriptions) => {
-    console.log("navigateToViewSubscription", subscriptions);
-
     event.preventDefault();
 
     try {
@@ -138,7 +132,6 @@ const ViewSchool = () => {
         true
       );
       if (!response.hasError && response.data) {
-        console.log("navigateToViewSubscription", response.data);
         navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
           state: { subscriptions: response.data.data },
         });
@@ -191,7 +184,7 @@ const ViewSchool = () => {
 
                 <div className="row">
                   <div className="col-md-3">
-                    <div className="d-flex align-items-center">
+                    <div className="mb-3 d-flex justify-content-center">
                       <div className="rounded bg-light d-flex align-items-center justify-content-center">
                         <img
                           src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}

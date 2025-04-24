@@ -47,7 +47,6 @@ const Subscription = () => {
         Array.isArray(response.data.data)
       ) {
         setSubscription(response.data.data);
-        console.log("Subscription main page data fetch", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }

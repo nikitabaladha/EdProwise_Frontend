@@ -87,7 +87,6 @@ const RequestQuote = () => {
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-    console.log(formData);
   };
 
   const handleOpenModal = () => {

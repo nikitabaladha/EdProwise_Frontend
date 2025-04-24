@@ -18,7 +18,6 @@ const MainCategoryTable = () => {
         Array.isArray(response.data.data)
       ) {
         setSubCategories(response.data.data);
-        console.log("Sub Category data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -41,8 +40,6 @@ const MainCategoryTable = () => {
   };
 
   const navigateToUpdateSubCategory = (event, subCategory) => {
-    console.log("navigateToUpdateSubCategory", subCategory);
-
     event.preventDefault();
     navigate(
       `/admin-dashboard/procurement-services/good-services/update-goods-services`,
@@ -76,7 +73,6 @@ const MainCategoryTable = () => {
   const [deleteType, setDeleteType] = useState("");
 
   const openDeleteDialog = (subCategory) => {
-    console.log("openDeleteDialog", subCategory);
     setSelectedSubCategory(subCategory);
     setIsDeleteDialogOpen(true);
     setDeleteType("subCategory");
@@ -88,7 +84,6 @@ const MainCategoryTable = () => {
   };
 
   const handleDeleteConfirmed = (id) => {
-    console.log("Id", id);
     setSubCategories((prevSubCategories) =>
       prevSubCategories.filter((subCategory) => subCategory.id !== id)
     );

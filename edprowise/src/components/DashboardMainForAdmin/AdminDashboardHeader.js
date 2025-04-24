@@ -64,8 +64,6 @@ const AdminDashboardHeader = () => {
 
       if (!response.hasError && response.data && response.data.data) {
         setAdminProfile(response.data.data);
-
-        console.log("Admin data from heder", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }

@@ -39,7 +39,6 @@ const ViewOrderHistory = () => {
         setSchoolId(response.data.data.schoolId);
         setSellerId(response.data.data.sellerId);
         setEnquiryNumber(response.data.data.enquiryNumber);
-        console.log("Order Details", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -70,7 +69,6 @@ const ViewOrderHistory = () => {
 
       if (!response.hasError && response.data.data.products) {
         setQuote(response.data.data.products);
-        console.log("product data from function", response.data.data.products);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -89,10 +87,6 @@ const ViewOrderHistory = () => {
 
       if (!response.hasError && response.data.data) {
         setOrders(response.data.data);
-        console.log(
-          "order data from function from school order history",
-          response.data.data
-        );
       } else {
         console.error("Invalid response format or error in response");
       }

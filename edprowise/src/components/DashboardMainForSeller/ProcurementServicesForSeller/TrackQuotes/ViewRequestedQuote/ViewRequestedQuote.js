@@ -51,10 +51,6 @@ const ViewRequestedQuote = () => {
 
         if (!response.hasError && response.data.data.products) {
           setQuote(response.data.data.products);
-          console.log(
-            "product data from function",
-            response.data.data.products
-          );
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -237,10 +233,6 @@ const ViewRequestedQuote = () => {
     });
 
     formData.append("products", JSON.stringify(products));
-
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
 
     try {
       const response = await postAPI(

@@ -41,8 +41,6 @@ const TrackOrderHistoryTable = () => {
         Array.isArray(response.data.data)
       ) {
         setOrderDetails(response.data.data);
-
-        console.log("Order Details From school", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -56,7 +54,6 @@ const TrackOrderHistoryTable = () => {
   }, []);
 
   const navigateToViewOrder = (event, order, orderNumber, enquiryNumber) => {
-    console.log("Navigating to view order", event, order, enquiryNumber);
     event.preventDefault();
     navigate(`/school-dashboard/procurement-services/view-order-history`, {
       state: { order, orderNumber, enquiryNumber },

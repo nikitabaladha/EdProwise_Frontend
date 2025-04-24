@@ -30,17 +30,12 @@ const ViewQuote = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchQuoteData = async () => {
-    console.log("Enquiry Number", enquiryNumber);
-    console.log("Seller ID", sellerId);
-
     try {
       const response = await getAPI(
         `/submit-quote-by-status?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
       );
       if (!response.hasError && response.data && response.data.data) {
         setCurrentQuote(response.data.data);
-
-        console.log("Quote data fetched successfully:", response.data.data);
       } else {
         console.error("Error fetching quote data");
       }

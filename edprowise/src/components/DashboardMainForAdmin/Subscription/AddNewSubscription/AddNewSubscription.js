@@ -58,8 +58,6 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
       if (!response.hasError) {
         toast.success("Subscription added successfully");
 
-        console.log("response.data.data", response.data.data);
-
         const schoolId = response.data.data.schoolId;
 
         const schoolDetails = await getAPI(`/school/${schoolId}`, {}, true);

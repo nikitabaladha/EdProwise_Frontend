@@ -44,7 +44,6 @@ const ViewAllQuoteTable = () => {
 
       if (!response.hasError && response.data) {
         setSubmittedQuotes(response.data.data);
-        console.log("Submitted quotes", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }

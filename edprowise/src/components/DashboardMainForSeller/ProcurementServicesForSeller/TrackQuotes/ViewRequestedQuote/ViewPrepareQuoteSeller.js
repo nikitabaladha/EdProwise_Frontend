@@ -92,8 +92,6 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
 
       if (!response.hasError && response.data.data) {
         setPreparedQuotes(response.data.data);
-
-        console.log("View prepared Quote: " + response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }

@@ -23,8 +23,6 @@ const SellerDashboardHeader = () => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSellerProfile(response.data.data);
-
-        console.log("seller data from heder", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }

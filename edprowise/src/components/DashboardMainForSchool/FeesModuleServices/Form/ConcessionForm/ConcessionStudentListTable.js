@@ -5,8 +5,6 @@ import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 
-
-
 const ConcessionStudentListTable = () => {
   const navigate = useNavigate();
   const [schoolId, setSchoolId] = useState(null);
@@ -15,7 +13,6 @@ const ConcessionStudentListTable = () => {
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [classes, setClasses] = useState([]);
-
 
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
@@ -32,8 +29,6 @@ const ConcessionStudentListTable = () => {
     );
   };
 
-
-
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
@@ -46,17 +41,17 @@ const ConcessionStudentListTable = () => {
     setSchoolId(id);
   }, []);
 
-
   useEffect(() => {
     if (!schoolId) return;
 
     const fetchStudents = async () => {
       try {
         const response = await getAPI(`/get-concession-form/${schoolId}`);
-        console.log("API response:", response);
 
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.forms) ? response.data.forms : [];
+          const studentArray = Array.isArray(response.data.forms)
+            ? response.data.forms
+            : [];
           setStudentData(studentArray);
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -74,11 +69,15 @@ const ConcessionStudentListTable = () => {
     const fetchData = async () => {
       try {
         if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
-        console.log("Class and Section API Response:", response?.data?.data);
+        const response = await getAPI(
+          `/get-class-and-section/${schoolId}`,
+          {},
+          true
+        );
+
         setClasses(response?.data?.data || []);
       } catch (error) {
-        toast.error('Error fetching class and section data.');
+        toast.error("Error fetching class and section data.");
       }
     };
 
@@ -98,8 +97,6 @@ const ConcessionStudentListTable = () => {
     return section?.name || "N/A";
   };
 
-
-
   const navigateToConcessionForm = (event) => {
     event.preventDefault();
     navigate(`/school-dashboard/fees-module/form/concession-form`);
@@ -117,17 +114,17 @@ const ConcessionStudentListTable = () => {
     navigate(`/school-dashboard/fees-module/form/update-concession-form`, {
       state: { student },
     });
-  }
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
 
-
-
-
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
+  const currentStudent = studentData.slice(
+    indexOfFirstStudent,
+    indexOfLastStudent
+  );
 
   const totalPages = Math.ceil(studentData.length / studentListPerPage);
 
@@ -146,7 +143,10 @@ const ConcessionStudentListTable = () => {
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
 
   return (
     <>
@@ -156,11 +156,8 @@ const ConcessionStudentListTable = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">
-                  Concession List
-                </h4>
+                <h4 className="card-title flex-grow-1">Concession List</h4>
                 <Link
-
                   onClick={(event) => navigateToConcessionForm(event)}
                   className="btn btn-sm btn-primary"
                 >
@@ -216,30 +213,48 @@ const ConcessionStudentListTable = () => {
                             </div>
                           </td>
                           <td>{student.AdmissionNumber}</td>
-                          <td>{student.firstName} {student.lastName}</td>
+                          <td>
+                            {student.firstName} {student.lastName}
+                          </td>
                           <td>{getClassName(student.masterDefineClass)}</td>
-                          <td>{getSectionName(student.masterDefineClass, student.section)}</td>
+                          <td>
+                            {getSectionName(
+                              student.masterDefineClass,
+                              student.section
+                            )}
+                          </td>
                           <td>{student.concessionType}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link className="btn btn-light btn-sm"
-                                onClick={(event) => navigateToViewConcessionInfo(event, student)}
+                              <Link
+                                className="btn btn-light btn-sm"
+                                onClick={(event) =>
+                                  navigateToViewConcessionInfo(event, student)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-primary btn-sm"
-                                onClick={(event) => navigateToUpdateConcessionForm(event, student)}
+                              <Link
+                                className="btn btn-soft-primary btn-sm"
+                                onClick={(event) =>
+                                  navigateToUpdateConcessionForm(event, student)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-danger btn-sm"
-                                onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}>
+                              <Link
+                                className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openDeleteDialog(student);
+                                }}
+                              >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -268,12 +283,14 @@ const ConcessionStudentListTable = () => {
                     {pagesToShow.map((page) => (
                       <li
                         key={page}
-                        className={`page-item ${currentPage === page ? "active" : ""
-                          }`}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
                       >
                         <button
-                          className={`page-link pagination-button ${currentPage === page ? "active" : ""
-                            }`}
+                          className={`page-link pagination-button ${
+                            currentPage === page ? "active" : ""
+                          }`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -309,6 +326,3 @@ const ConcessionStudentListTable = () => {
 };
 
 export default ConcessionStudentListTable;
-
-
-

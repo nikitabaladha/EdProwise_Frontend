@@ -9,7 +9,6 @@ const ChangePassword = () => {
   const { state } = useLocation();
   const adminProfile = state?.adminProfile;
 
-  console.log("admin from change password", adminProfile);
   const navigate = useNavigate();
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));

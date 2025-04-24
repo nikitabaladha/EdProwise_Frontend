@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
@@ -26,14 +26,12 @@ const TypeOfFeesList = () => {
     const fetchFeesTypes = async () => {
       try {
         const data = await getAPI(`/getall-fess-type/${schoolId}`);
-        console.log("Raw API Response:", data);
+
         if (!data.hasError && Array.isArray(data.data.data)) {
           setFeesTypes(data.data.data);
-          console.log("Fees types set:", data.data.data);
         } else {
           console.error("Error fetching data:", data.message);
         }
-
       } catch (error) {
         console.error("Error fetching fees types:", error);
       }
@@ -41,7 +39,6 @@ const TypeOfFeesList = () => {
 
     fetchFeesTypes();
   }, []);
-
 
   const indexOfLast = currentPage * requestPerPage;
   const indexOfFirst = indexOfLast - requestPerPage;
@@ -60,8 +57,6 @@ const TypeOfFeesList = () => {
     setCurrentPage(page);
   };
 
-
-
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
     setIsDeleteDialogOpen(true);
@@ -78,15 +73,18 @@ const TypeOfFeesList = () => {
   };
 
   const navigateToAddNewTypeOfFees = () => {
-    navigate("/school-dashboard/fees-module/admin-setting/fees-type-list/add-fees-type");
+    navigate(
+      "/school-dashboard/fees-module/admin-setting/fees-type-list/add-fees-type"
+    );
   };
-
-
 
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
 
   return (
     <>
@@ -96,11 +94,16 @@ const TypeOfFeesList = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">List Of Fees</h4>
-                <button onClick={navigateToAddNewTypeOfFees} className="btn btn-sm btn-primary">
+                <button
+                  onClick={navigateToAddNewTypeOfFees}
+                  className="btn btn-sm btn-primary"
+                >
                   Add Type Of Fees
                 </button>
                 <div className="text-end">
-                  <button className="btn btn-sm btn-outline-light">Export</button>
+                  <button className="btn btn-sm btn-outline-light">
+                    Export
+                  </button>
                 </div>
               </div>
 
@@ -125,20 +128,30 @@ const TypeOfFeesList = () => {
                           <td>{feetype.feesTypeName}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <button className="btn btn-soft-primary btn-sm"
+                              <button
+                                className="btn btn-soft-primary btn-sm"
                                 onClick={() =>
-                                  navigate("/school-dashboard/fees-module/admin-setting/fees-type-list/update-fees-type", {
-                                    state: { feetype } 
-                                  })
+                                  navigate(
+                                    "/school-dashboard/fees-module/admin-setting/fees-type-list/update-fees-type",
+                                    {
+                                      state: { feetype },
+                                    }
+                                  )
                                 }
                               >
-                                <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
+                                <iconify-icon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
                               </button>
                               <button
                                 onClick={() => openDeleteDialog(feetype)}
                                 className="btn btn-soft-danger btn-sm"
                               >
-                                <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
+                                <iconify-icon
+                                  icon="solar:trash-bin-minimalistic-2-broken"
+                                  className="align-middle fs-18"
+                                />
                               </button>
                             </div>
                           </td>
@@ -146,7 +159,6 @@ const TypeOfFeesList = () => {
                       ))
                     )}
                   </tbody>
-
                 </table>
               </div>
 
@@ -154,19 +166,35 @@ const TypeOfFeesList = () => {
                 <nav aria-label="Page navigation">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <button className="page-link" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                      <button
+                        className="page-link"
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
+                      >
                         Previous
                       </button>
                     </li>
                     {pagesToShow.map((page) => (
-                      <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
-                        <button className="page-link" onClick={() => handlePageClick(page)}>
+                      <li
+                        key={page}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
+                      >
+                        <button
+                          className="page-link"
+                          onClick={() => handlePageClick(page)}
+                        >
                           {page}
                         </button>
                       </li>
                     ))}
                     <li className="page-item">
-                      <button className="page-link" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                      <button
+                        className="page-link"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                      >
                         Next
                       </button>
                     </li>

@@ -39,7 +39,6 @@ const ViewRequestedQuote = () => {
 
       if (!response.hasError && response.data.data.products) {
         setQuotes(response.data.data.products);
-        console.log("product data from function", response.data.data.products);
       } else {
         console.error("Invalid response format or error in response");
       }

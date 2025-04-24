@@ -5,7 +5,6 @@ import getAPI from "../../../api/getAPI";
 import { format } from "date-fns";
 import { formatCost } from "../../CommonFunction";
 
-
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   return format(new Date(dateString), "dd/MM/yyyy");
@@ -35,8 +34,6 @@ const SchoolDashboardRecentOrders = () => {
         Array.isArray(response.data.data)
       ) {
         setOrderDetails(response.data.data);
-
-        console.log("Order Details", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -145,7 +142,9 @@ const SchoolDashboardRecentOrders = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>{formatCost(order.totalAmountBeforeGstAndDiscount)}</td>
+                          <td>
+                            {formatCost(order.totalAmountBeforeGstAndDiscount)}
+                          </td>
                           <td>{formatCost(order.advanceAdjustment)}</td>
                           <td>{order.buyerStatus}</td>
                         </tr>

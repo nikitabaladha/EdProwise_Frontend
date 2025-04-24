@@ -27,11 +27,6 @@ const QuoteProposal = () => {
   // const { prepareQuoteData, quoteProposalData, profileData } =
   //   location.state || {};
 
-  console.log(
-    "prepareQuoteData from quote proposal of school",
-    prepareQuoteData
-  );
-
   // prepareQuoteData from quote proposal of school undefined
 
   const {

@@ -25,8 +25,6 @@ const ViewSeller = () => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSellerProfile(response.data.data);
-
-        console.log("seller data from view", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -63,21 +61,19 @@ const ViewSeller = () => {
 
                 <div className="row">
                   <div className="col-md-4">
-                    <div className="mb-3">
-                      <div className="d-flex align-items-center">
-                        <div className="rounded bg-light d-flex align-items-center justify-content-center">
-                          <img
-                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.sellerProfile}`}
-                            alt={`${sellerProfile?.companyName} Profile`}
-                            className="avatar-md"
-                            style={{
-                              objectFit: "cover",
-                              width: "200px",
-                              height: "200px",
-                              borderRadius: "10px",
-                            }}
-                          />
-                        </div>
+                    <div className="mb-3 d-flex justify-content-center">
+                      <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                        <img
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.sellerProfile}`}
+                          alt={`${sellerProfile?.companyName} Profile`}
+                          className="avatar-md"
+                          style={{
+                            objectFit: "cover",
+                            width: "200px",
+                            height: "200px",
+                            borderRadius: "10px",
+                          }}
+                        />
                       </div>
                     </div>
                   </div>

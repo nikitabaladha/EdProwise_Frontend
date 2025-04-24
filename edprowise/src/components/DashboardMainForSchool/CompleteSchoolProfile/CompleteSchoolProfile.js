@@ -55,8 +55,6 @@ const CompleteSchoolProfile = () => {
       if (!response.hasError && response.data && response.data.data) {
         setSchool(response.data.data);
 
-        console.log("school profile", response.data.data);
-
         setFormData((prev) => ({
           ...prev,
           ...response.data.data,

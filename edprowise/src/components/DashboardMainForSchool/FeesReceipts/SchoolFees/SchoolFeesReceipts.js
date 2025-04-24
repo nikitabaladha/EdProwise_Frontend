@@ -68,7 +68,8 @@ const SchoolFeesReceipts = () => {
                         <datalist id="AdmissionNumbers">
                           {existingStudents.map((student, index) => (
                             <option key={index} value={student.AdmissionNumber}>
-                              {student.AdmissionNumber} - {student.firstName} {student.lastName}
+                              {student.AdmissionNumber} - {student.firstName}{" "}
+                              {student.lastName}
                             </option>
                           ))}
                         </datalist>
@@ -76,7 +77,10 @@ const SchoolFeesReceipts = () => {
                     </div>
                   </div>
                   <div className="text-end">
-                    <button type="submit" className="btn btn-primary custom-submit-button">
+                    <button
+                      type="submit"
+                      className="btn btn-primary custom-submit-button"
+                    >
                       Submit
                     </button>
                   </div>
@@ -103,11 +107,15 @@ const SchoolFeesReceipts = () => {
                     <div className="row mt-3">
                       <div className="col-md-6">
                         <label className="form-label">Admission No.</label>
-                        <p className="form-control">{formData.AdmissionNumber}</p>
+                        <p className="form-control">
+                          {formData.AdmissionNumber}
+                        </p>
                       </div>
                       <div className="col-md-6">
                         <label className="form-label">Student Name</label>
-                        <p className="form-control">{formData.firstName} {formData.lastName}</p>
+                        <p className="form-control">
+                          {formData.firstName} {formData.lastName}
+                        </p>
                       </div>
                       <div className="col-md-6">
                         <label className="form-label">Class</label>
@@ -170,16 +178,33 @@ const SchoolFeesReceipts = () => {
                       <tbody>
                         {feeData?.concession?.applicableAcademicYear ? (
                           <tr
-                            className={selectedAcademicYear === feeData.concession.applicableAcademicYear ? 'table-primary' : ''}
-                            onClick={() => handleAcademicYearSelect(feeData.concession.applicableAcademicYear)}
-                            style={{ cursor: 'pointer' }}
+                            className={
+                              selectedAcademicYear ===
+                              feeData.concession.applicableAcademicYear
+                                ? "table-primary"
+                                : ""
+                            }
+                            onClick={() =>
+                              handleAcademicYearSelect(
+                                feeData.concession.applicableAcademicYear
+                              )
+                            }
+                            style={{ cursor: "pointer" }}
                           >
                             <td>
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                checked={selectedAcademicYear === feeData.concession.applicableAcademicYear || selectAll}
-                                onChange={() => handleAcademicYearSelect(feeData.concession.applicableAcademicYear)}
+                                checked={
+                                  selectedAcademicYear ===
+                                    feeData.concession.applicableAcademicYear ||
+                                  selectAll
+                                }
+                                onChange={() =>
+                                  handleAcademicYearSelect(
+                                    feeData.concession.applicableAcademicYear
+                                  )
+                                }
                               />
                             </td>
                             <td>{feeData.concession.applicableAcademicYear}</td>
@@ -218,7 +243,9 @@ const SchoolFeesReceipts = () => {
                 {showSecondTable && (
                   <div className="table-responsive mt-3">
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                      <h4 className="card-title text-start m-0">Installments</h4>
+                      <h4 className="card-title text-start m-0">
+                        Installments
+                      </h4>
                     </div>
                     <table className="table align-middle mb-0 table-hover table-centered text-center">
                       <thead className="bg-light-subtle">
@@ -244,22 +271,26 @@ const SchoolFeesReceipts = () => {
                           </tr>
                         )}
                         {totalInstallments.map((installmentNum) => {
-                          const installmentData = getInstallmentData(installmentNum);
-                          console.log(`Installment ${installmentNum} data:`, installmentData);
+                          const installmentData =
+                            getInstallmentData(installmentNum);
 
                           if (!installmentData.length) return null;
 
                           return (
                             <React.Fragment key={installmentNum}>
                               {installmentData.map((item, index) => {
-                                const concessionItem = feeData.concession?.concessionDetails?.find(
-                                  (cd) =>
-                                    cd.installmentName === item.installmentName &&
-                                    cd.feesType === item.feesTypeId._id
-                                );
+                                const concessionItem =
+                                  feeData.concession?.concessionDetails?.find(
+                                    (cd) =>
+                                      cd.installmentName ===
+                                        item.installmentName &&
+                                      cd.feesType === item.feesTypeId._id
+                                  );
 
-                                const concessionAmount = concessionItem?.concessionAmount || 0;
-                                const payableAmount = item.amount - concessionAmount;
+                                const concessionAmount =
+                                  concessionItem?.concessionAmount || 0;
+                                const payableAmount =
+                                  item.amount - concessionAmount;
                                 const fineAmount = item.fineAmount || 0;
                                 const totalPayable = payableAmount + fineAmount;
                                 const paidAmount = item.paidAmount || 0;
@@ -273,8 +304,14 @@ const SchoolFeesReceipts = () => {
                                           <input
                                             type="checkbox"
                                             className="form-check-input"
-                                            checked={selectedInstallments.includes(installmentNum)}
-                                            onChange={() => handleInstallmentSelection(installmentNum)}
+                                            checked={selectedInstallments.includes(
+                                              installmentNum
+                                            )}
+                                            onChange={() =>
+                                              handleInstallmentSelection(
+                                                installmentNum
+                                              )
+                                            }
                                           />
                                         </td>
                                         <td rowSpan={installmentData.length}>
@@ -282,18 +319,37 @@ const SchoolFeesReceipts = () => {
                                         </td>
                                       </>
                                     )}
-                                    <td style={{ display: 'flex', alignItems: 'center' }}>
+                                    <td
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                      }}
+                                    >
                                       <input
                                         type="checkbox"
                                         className="form-check-input"
-                                        checked={(selectedFeeTypesByInstallment[installmentNum] || []).includes(item.feesTypeId._id)}
-                                        onChange={() => handleFeeTypeSelection(installmentNum, item.feesTypeId._id)}
+                                        checked={(
+                                          selectedFeeTypesByInstallment[
+                                            installmentNum
+                                          ] || []
+                                        ).includes(item.feesTypeId._id)}
+                                        onChange={() =>
+                                          handleFeeTypeSelection(
+                                            installmentNum,
+                                            item.feesTypeId._id
+                                          )
+                                        }
                                       />
-                                      <span style={{ marginLeft: '10px' }}>
-                                        {getFeeTypeName(item.feesTypeId._id) || 'Fee Type Not Found'}
+                                      <span style={{ marginLeft: "10px" }}>
+                                        {getFeeTypeName(item.feesTypeId._id) ||
+                                          "Fee Type Not Found"}
                                       </span>
                                     </td>
-                                    <td>{new Date(item.dueDate).toLocaleDateString()}</td>
+                                    <td>
+                                      {new Date(
+                                        item.dueDate
+                                      ).toLocaleDateString()}
+                                    </td>
                                     <td>{item.amount}</td>
                                     <td>{fineAmount}</td>
                                     <td>{concessionAmount}</td>
@@ -328,7 +384,9 @@ const SchoolFeesReceipts = () => {
                         <button
                           type="button"
                           className="btn btn-primary"
-                          onClick={() => setShowProcessedData(!showProcessedData)}
+                          onClick={() =>
+                            setShowProcessedData(!showProcessedData)
+                          }
                           disabled={selectedInstallments.length === 0}
                         >
                           Processed Data
@@ -356,14 +414,17 @@ const SchoolFeesReceipts = () => {
                             <option value="">Select Payment Mode</option>
                             <option value="Cash">Cash</option>
                             <option value="Cheque">Cheque</option>
-                            <option value="Online Transfer">Online Transfer</option>
+                            <option value="Online Transfer">
+                              Online Transfer
+                            </option>
                           </select>
                         </div>
                       </div>
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="name" className="form-label">
-                            Collector Name <span className="text-danger">*</span>
+                            Collector Name{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -378,12 +439,16 @@ const SchoolFeesReceipts = () => {
                       </div>
                     </div>
 
-                    {formData.paymentMode === 'Cheque' && (
+                    {formData.paymentMode === "Cheque" && (
                       <div className="row">
                         <div className="col-md-6">
                           <div className="mb-3">
-                            <label htmlFor="chequeNumber" className="form-label">
-                              Cheque Number <span className="text-danger">*</span>
+                            <label
+                              htmlFor="chequeNumber"
+                              className="form-label"
+                            >
+                              Cheque Number{" "}
+                              <span className="text-danger">*</span>
                             </label>
                             <input
                               type="text"
@@ -422,7 +487,7 @@ const SchoolFeesReceipts = () => {
                         onClick={handleFinalSubmit}
                         disabled={isGenerating}
                       >
-                        {isGenerating ? 'Generating...' : 'Generate Receipt'}
+                        {isGenerating ? "Generating..." : "Generate Receipt"}
                       </button>
                     </div>
                   </>

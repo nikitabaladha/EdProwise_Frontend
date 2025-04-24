@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import getAPI from '../../../../../../api/getAPI';
-import { toast } from 'react-toastify';
-import validateBasicForm from '../FormValidation/FormValidation';
-import postAPI from '../../../../../../api/postAPI';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState, useEffect } from "react";
+import getAPI from "../../../../../../api/getAPI";
+import { toast } from "react-toastify";
+import validateBasicForm from "../FormValidation/FormValidation";
+import postAPI from "../../../../../../api/postAPI";
+import { useNavigate } from "react-router-dom";
 
 const StudentAddTCForm = () => {
   const navigate = useNavigate();
-  const [schoolId, setSchoolId] = useState('');
+  const [schoolId, setSchoolId] = useState("");
   const [existingStudents, setExistingStudents] = useState([]);
   const [classes, setClasses] = useState([]);
   const [showFullForm, setShowFullForm] = useState(false);
@@ -16,39 +15,39 @@ const StudentAddTCForm = () => {
   const [showAdditionalData, setShowAdditionalData] = useState(false);
 
   const [formData, setFormData] = useState({
-    AdmissionNumber: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    dateOfBirth: '',
-    age: '',
-    nationality: '',
-    fatherName: '',
-    motherName: '',
-    dateOfIssue: '',
-    dateOfAdmission: '',
-    masterDefineClass: '',
-    percentageObtainInLastExam: '',
-    qualifiedPromotionInHigherClass: '',
-    whetherFaildInAnyClass: '',
-    anyOutstandingDues: '',
-    moralBehaviour: '',
-    dateOfLastAttendanceAtSchool: '',
-    reasonForLeaving: '',
-    anyRemarks: '',
+    AdmissionNumber: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    dateOfBirth: "",
+    age: "",
+    nationality: "",
+    fatherName: "",
+    motherName: "",
+    dateOfIssue: "",
+    dateOfAdmission: "",
+    masterDefineClass: "",
+    percentageObtainInLastExam: "",
+    qualifiedPromotionInHigherClass: "",
+    whetherFaildInAnyClass: "",
+    anyOutstandingDues: "",
+    moralBehaviour: "",
+    dateOfLastAttendanceAtSchool: "",
+    reasonForLeaving: "",
+    anyRemarks: "",
     agreementChecked: false,
-    name: '',
-    paymentMode: '',
-    chequeNumber: '',
-    bankName: ''
+    name: "",
+    paymentMode: "",
+    chequeNumber: "",
+    bankName: "",
   });
 
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
 
     if (!id) {
-      toast.error('School ID not found. Please log in again.');
+      toast.error("School ID not found. Please log in again.");
       return;
     }
 
@@ -61,10 +60,11 @@ const StudentAddTCForm = () => {
     const fetchStudents = async () => {
       try {
         const response = await getAPI(`/get-admission-form/${schoolId}`);
-        console.log("API response:", response);
 
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
+          const studentArray = Array.isArray(response.data.data)
+            ? response.data.data
+            : [];
           setExistingStudents(studentArray);
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -82,10 +82,14 @@ const StudentAddTCForm = () => {
     const fetchData = async () => {
       try {
         if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const response = await getAPI(
+          `/get-class-and-section/${schoolId}`,
+          {},
+          true
+        );
         setClasses(response?.data?.data || []);
       } catch (error) {
-        toast.error('Error fetching class and section data.');
+        toast.error("Error fetching class and section data.");
       }
     };
 
@@ -95,12 +99,12 @@ const StudentAddTCForm = () => {
   const handleChange = (e) => {
     const { name, type, value, checked, files } = e.target;
 
-    if (type === 'checkbox') {
-      setFormData(prev => ({ ...prev, [name]: checked }));
-    } else if (type === 'file') {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
+    if (type === "checkbox") {
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else if (type === "file") {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -108,14 +112,15 @@ const StudentAddTCForm = () => {
     e.preventDefault();
 
     const selectedAdmissionNumber = formData.AdmissionNumber.trim();
-    
+
     const student = existingStudents.find(
       (s) => s.AdmissionNumber.trim() === selectedAdmissionNumber
     );
-    
 
     if (!student) {
-      toast.error('Invalid admission number. Please select a valid admission number from the list.');
+      toast.error(
+        "Invalid admission number. Please select a valid admission number from the list."
+      );
       return;
     }
 
@@ -125,20 +130,21 @@ const StudentAddTCForm = () => {
       firstName: student.firstName,
       middleName: student.middleName,
       lastName: student.lastName,
-      dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
+      dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split("T")[0] : "",
       nationality: student.nationality,
-      masterDefineClass: student?.masterDefineClass?._id || student?.masterDefineClass || '',
+      masterDefineClass:
+        student?.masterDefineClass?._id || student?.masterDefineClass || "",
       fatherName: student.fatherName,
       motherName: student.motherName,
       name: student.name,
       paymentMode: student.paymentMode,
-      dateOfAdmission: student.applicationDate ? student.applicationDate.split('T')[0] : '',
-
+      dateOfAdmission: student.applicationDate
+        ? student.applicationDate.split("T")[0]
+        : "",
     }));
 
     setShowFullForm(true);
   };
-
 
   useEffect(() => {
     if (formData.dateOfBirth) {
@@ -147,39 +153,40 @@ const StudentAddTCForm = () => {
         const today = new Date();
         if (birthDate > today) {
           toast.error("Date of birth cannot be in the future");
-          setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
+          setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
           return;
         }
         const maxAgeDate = new Date();
         maxAgeDate.setFullYear(maxAgeDate.getFullYear() - 120);
         if (birthDate < maxAgeDate) {
           toast.error("Please enter a valid date of birth");
-          setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
+          setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
           return;
         }
 
         let age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
 
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < birthDate.getDate())
+        ) {
           age--;
         }
 
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          age: age > 0 ? age.toString() : '0'
+          age: age > 0 ? age.toString() : "0",
         }));
-
       } catch (error) {
         console.error("Error calculating age:", error);
         toast.error("Invalid date format");
-        setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
+        setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
       }
     } else {
-      setFormData(prev => ({ ...prev, age: '' }));
+      setFormData((prev) => ({ ...prev, age: "" }));
     }
   }, [formData.dateOfBirth]);
-
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -195,38 +202,38 @@ const StudentAddTCForm = () => {
 
   const handleFinalSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!formData.agreementChecked) {
       toast.error("You must agree to the certificate purpose statement");
       return;
     }
-  
-    if (!formData.name || formData.name.trim() === '') {
+
+    if (!formData.name || formData.name.trim() === "") {
       toast.error("Please enter your name");
       return;
     }
-  
+
     if (!formData.paymentMode) {
       toast.error("Please select a payment option");
       return;
     }
-  
+
     if (
-      formData.paymentMode === 'Cheque' &&
+      formData.paymentMode === "Cheque" &&
       (!formData.chequeNumber || !formData.bankName)
     ) {
       toast.error("Please provide cheque number and bank name");
       return;
     }
-  
+
     const payload = {
       ...formData,
       schoolId,
     };
-  
+
     try {
-      const response = await postAPI('/create-TC-form', payload);
-  
+      const response = await postAPI("/create-TC-form", payload);
+
       if (!response.hasError) {
         toast.success("Transfer Certificate submitted successfully!");
         setShowFullForm(false);
@@ -236,16 +243,15 @@ const StudentAddTCForm = () => {
         toast.error(response.message || "Something went wrong");
       }
     } catch (error) {
-     const backendMessage = error?.response?.data?.message;
-     
-           if (backendMessage) {
-             toast.error(backendMessage);
-           } else {
-             toast.error('An error occurred during registration');
-           }
+      const backendMessage = error?.response?.data?.message;
+
+      if (backendMessage) {
+        toast.error(backendMessage);
+      } else {
+        toast.error("An error occurred during registration");
+      }
     }
   };
-  
 
   if (!showFullForm) {
     return (
@@ -257,7 +263,7 @@ const StudentAddTCForm = () => {
                 <div className="container">
                   <div className="card-header mb-2">
                     <h4 className="card-title text-center custom-heading-font">
-                    Transfer Certificate Form
+                      Transfer Certificate Form
                     </h4>
                   </div>
                 </div>
@@ -282,7 +288,8 @@ const StudentAddTCForm = () => {
                         <datalist id="AdmissionNumbers">
                           {existingStudents.map((student, index) => (
                             <option key={index} value={student.AdmissionNumber}>
-                              {student.AdmissionNumber} - {student.firstName} {student.lastName}
+                              {student.AdmissionNumber} - {student.firstName}{" "}
+                              {student.lastName}
                             </option>
                           ))}
                         </datalist>
@@ -290,7 +297,10 @@ const StudentAddTCForm = () => {
                     </div>
                   </div>
                   <div className="text-end">
-                    <button type="submit" className="btn btn-primary custom-submit-button">
+                    <button
+                      type="submit"
+                      className="btn btn-primary custom-submit-button"
+                    >
                       Submit
                     </button>
                   </div>
@@ -302,7 +312,6 @@ const StudentAddTCForm = () => {
       </div>
     );
   }
-
 
   return (
     <div className="container">
@@ -388,13 +397,9 @@ const StudentAddTCForm = () => {
                     </div>
                   </div>
 
-
                   <div className="col-md-2">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfBirth"
-                        className="form-label"
-                      >
+                      <label htmlFor="dateOfBirth" className="form-label">
                         Date Of Birth<span className="text-danger">*</span>
                       </label>
                       <input
@@ -443,12 +448,8 @@ const StudentAddTCForm = () => {
                       >
                         <option value="">Select Nationality</option>
                         <option value="India">India</option>
-                        <option value="International">
-                          International
-                        </option>
-                        <option value="SAARC Countries">
-                          SAARC Countries
-                        </option>
+                        <option value="International">International</option>
+                        <option value="SAARC Countries">SAARC Countries</option>
                       </select>
                     </div>
                   </div>
@@ -490,15 +491,10 @@ const StudentAddTCForm = () => {
                   </div>
                 </div>
 
-
-
                 <div className="row">
                   <div className="col-md-3">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfIssue"
-                        className="form-label"
-                      >
+                      <label htmlFor="dateOfIssue" className="form-label">
                         Date Of Issue<span className="text-danger">*</span>
                       </label>
                       <input
@@ -515,11 +511,9 @@ const StudentAddTCForm = () => {
 
                   <div className="col-md-3">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfAdmission"
-                        className="form-label"
-                      >
-                        Date Of Admission In School<span className="text-danger">*</span>
+                      <label htmlFor="dateOfAdmission" className="form-label">
+                        Date Of Admission In School
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -537,7 +531,8 @@ const StudentAddTCForm = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="studentLastClass" className="form-label">
-                        Class in Which Student Studied Last<span className="text-danger">*</span>
+                        Class in Which Student Studied Last
+                        <span className="text-danger">*</span>
                       </label>
                       <select
                         id="masterDefineClass"
@@ -560,8 +555,12 @@ const StudentAddTCForm = () => {
                   <div className="col-md-3">
                     {" "}
                     <div className="mb-3">
-                      <label htmlFor="percentageObtainInLastExam" className="form-label">
-                        Percentage/Gradem Obtain In Last Exam<span className="text-danger">*</span>
+                      <label
+                        htmlFor="percentageObtainInLastExam"
+                        className="form-label"
+                      >
+                        Percentage/Gradem Obtain In Last Exam
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -580,8 +579,12 @@ const StudentAddTCForm = () => {
                   <div className="col-md-6">
                     {" "}
                     <div className="mb-3">
-                      <label htmlFor="qualifiedPromotionInHigherClass" className="form-label">
-                        Whether Qualified For Promotion In Higher Class<span className="text-danger">*</span>
+                      <label
+                        htmlFor="qualifiedPromotionInHigherClass"
+                        className="form-label"
+                      >
+                        Whether Qualified For Promotion In Higher Class
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -596,8 +599,12 @@ const StudentAddTCForm = () => {
                   <div className="col-md-6">
                     {" "}
                     <div className="mb-3">
-                      <label htmlFor="whetherFaildInAnyClass" className="form-label">
-                        Whether Failed In Any Class<span className="text-danger">*</span>
+                      <label
+                        htmlFor="whetherFaildInAnyClass"
+                        className="form-label"
+                      >
+                        Whether Failed In Any Class
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -613,8 +620,12 @@ const StudentAddTCForm = () => {
                   <div className="col-md-6">
                     {" "}
                     <div className="mb-3">
-                      <label htmlFor="anyOutstandingDues" className="form-label">
-                        Any Outstanding Dues<span className="text-danger">*</span>
+                      <label
+                        htmlFor="anyOutstandingDues"
+                        className="form-label"
+                      >
+                        Any Outstanding Dues
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -650,7 +661,8 @@ const StudentAddTCForm = () => {
                         htmlFor="dateOfLastAttendanceAtSchool"
                         className="form-label"
                       >
-                        Date Of Last Attendance At School<span className="text-danger">*</span>
+                        Date Of Last Attendance At School
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -727,13 +739,13 @@ const StudentAddTCForm = () => {
                           name="agreementChecked"
                           checked={formData.agreementChecked}
                           onChange={handleChange}
-
                         />
                         <label
                           className="form-check-label"
                           htmlFor="agreementCheck"
                         >
-                          The certificate is issued for the purpose of admission to another School.
+                          The certificate is issued for the purpose of admission
+                          to another School.
                         </label>
                       </div>
 
@@ -756,7 +768,8 @@ const StudentAddTCForm = () => {
                       <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="paymentMode" className="form-label">
-                            Payment Option <span className="text-danger">*</span>
+                            Payment Option{" "}
+                            <span className="text-danger">*</span>
                           </label>
                           <select
                             id="paymentMode"
@@ -775,12 +788,16 @@ const StudentAddTCForm = () => {
                       </div>
                     </div>
 
-                    {formData.paymentMode === 'Cheque' && (
+                    {formData.paymentMode === "Cheque" && (
                       <div className="row">
                         <div className="col-md-6">
                           <div className="mb-3">
-                            <label htmlFor="chequeNumber" className="form-label">
-                              Cheque Number <span className="text-danger">*</span>
+                            <label
+                              htmlFor="chequeNumber"
+                              className="form-label"
+                            >
+                              Cheque Number{" "}
+                              <span className="text-danger">*</span>
                             </label>
                             <input
                               type="text"
@@ -829,6 +846,6 @@ const StudentAddTCForm = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 export default StudentAddTCForm;

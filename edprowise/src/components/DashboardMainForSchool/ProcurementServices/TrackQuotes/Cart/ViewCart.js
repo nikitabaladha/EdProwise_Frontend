@@ -41,10 +41,6 @@ const ViewCart = () => {
       if (!response.hasError && response.data.data) {
         setCarts(response.data.data.groupedData || {});
         setLatestDeliveryDate(response.data.data.latestDeliveryDate);
-        console.log(
-          "carts from view cart",
-          response.data.data.latestDeliveryDate
-        );
       } else {
         console.error("Invalid response format or error in response");
         setCarts({});
@@ -98,8 +94,6 @@ const ViewCart = () => {
   };
 
   const openDeleteDialog = (cart) => {
-    console.log("cartid: ", cart._id);
-
     setSelectedCart({ cart });
     setIsDeleteDialogOpen(true);
     setDeleteType("singleCart");
@@ -111,7 +105,6 @@ const ViewCart = () => {
   };
 
   const handleSingleDeleteConfirmed = (_id) => {
-    console.log("cartid from delete confirmed: " + _id);
     setCarts((prevCarts) => {
       const updatedCarts = { ...prevCarts };
       Object.keys(updatedCarts).forEach((companyName) => {

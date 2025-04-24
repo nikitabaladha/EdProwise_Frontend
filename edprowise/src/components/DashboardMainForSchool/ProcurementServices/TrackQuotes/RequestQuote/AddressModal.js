@@ -27,7 +27,6 @@ const AddressModal = ({ onClose, cart, formData }) => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSchool(response.data.data);
-        console.log("school data from header", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -97,10 +96,6 @@ const AddressModal = ({ onClose, cart, formData }) => {
         );
       }
     });
-
-    for (const pair of formDataToSend.entries()) {
-      console.log(pair[0], pair[1]);
-    }
 
     setSending(true);
 

@@ -11,7 +11,6 @@ import Select from "react-select";
 const UpdateAdminProfile = () => {
   const location = useLocation();
   const profileId = location.state?._id;
-  console.log("profileId", profileId);
 
   const navigate = useNavigate();
 
@@ -42,16 +41,12 @@ const UpdateAdminProfile = () => {
     }
   }, [profileId]);
 
-  console.log("Profile ID for fetching:", profileId);
-
   const fetchProfileData = async () => {
     try {
       const response = await getAPI(`/edprowise-profile`, {}, true);
 
       if (!response.hasError && response.data && response.data.data) {
         const profileData = response.data.data;
-
-        console.log("profileData after fetch", profileData);
 
         setFormData({
           companyName: profileData.companyName || "",
@@ -125,7 +120,7 @@ const UpdateAdminProfile = () => {
         edprowiseProfileRef.current.value = "";
 
         toast.success("Admin Profile successfully updated!");
-        navigate(`/admin-dashboard`);
+        navigate(-1);
       } else {
         toast.error("Failed to update Admin Profile.");
       }
@@ -211,7 +206,7 @@ const UpdateAdminProfile = () => {
                         onChange={handleChange}
                         ref={edprowiseProfileRef}
                       />
-                      <div className="mt-3">
+                      <div className="d-flex justify-content-center">
                         {previewImage ? (
                           <img
                             src={previewImage}
@@ -480,13 +475,15 @@ const UpdateAdminProfile = () => {
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={sending}
-                >
-                  {sending ? "Updating..." : "Update Profile"}
-                </button>
+                <div className="text-end">
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={sending}
+                  >
+                    {sending ? "Updating..." : "Update Profile"}
+                  </button>
+                </div>
               </form>
             </div>
           </div>

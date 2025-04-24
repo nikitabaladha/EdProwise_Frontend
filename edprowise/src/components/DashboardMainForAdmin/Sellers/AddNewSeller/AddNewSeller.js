@@ -140,8 +140,6 @@ const AddNewSeller = () => {
         true
       );
       if (!response.hasError) {
-        console.log("profile storage data", response.data.data);
-
         setFormData({
           companyName: "",
           companyType: "",

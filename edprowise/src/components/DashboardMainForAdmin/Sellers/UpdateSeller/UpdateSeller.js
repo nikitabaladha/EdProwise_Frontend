@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import CityData from "../../../CityData.json";
 import getAPI from "../../../../api/getAPI";
 import putAPI from "../../../../api/putAPI";
-import CityData from "../../../CityData.json";
 import Select from "react-select";
+import { Worker, Viewer } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import { SpecialZoomLevel } from "@react-pdf-viewer/core";
 
 const UpdateSeller = () => {
   const location = useLocation();
@@ -53,17 +57,51 @@ const UpdateSeller = () => {
       label: `${city}, ${state}, India`,
     }))
   );
+
   const sellerProfileRef = useRef(null);
   const panFileRef = useRef(null);
   const gstFileRef = useRef(null);
   const tanFileRef = useRef(null);
   const cinFileRef = useRef(null);
 
+  // Preview states
+  const [previewSellerProfileImage, setPreviewSellerProfileImage] =
+    useState(null);
+  const [previewPanFile, setPreviewPanFile] = useState(null);
+  const [isPanFilePDF, setIsPanFilePDF] = useState(false);
+
+  const [previewGstFile, setPreviewGstFile] = useState(null);
+  const [isGstFilePDF, setIsGstFilePDF] = useState(false);
+
+  const [previewTanFile, setPreviewTanFile] = useState(null);
+  const [isTanFilePDF, setIsTanFilePDF] = useState(false);
+
+  const [previewCinFile, setPreviewCinFile] = useState(null);
+  const [isCinFilePDF, setIsCinFilePDF] = useState(false);
+
   useEffect(() => {
     if (profileId) {
       fetchSellerProfileData();
     }
   }, [profileId]);
+
+  useEffect(() => {
+    return () => {
+      // Clean up object URLs to avoid memory leaks
+      if (previewSellerProfileImage)
+        URL.revokeObjectURL(previewSellerProfileImage);
+      if (previewPanFile) URL.revokeObjectURL(previewPanFile);
+      if (previewGstFile) URL.revokeObjectURL(previewGstFile);
+      if (previewTanFile) URL.revokeObjectURL(previewTanFile);
+      if (previewCinFile) URL.revokeObjectURL(previewCinFile);
+    };
+  }, [
+    previewSellerProfileImage,
+    previewPanFile,
+    previewGstFile,
+    previewTanFile,
+    previewCinFile,
+  ]);
 
   const fetchSellerProfileData = async () => {
     try {
@@ -73,6 +111,18 @@ const UpdateSeller = () => {
         true
       );
       if (!response.hasError && response.data && response.data.data) {
+        const isPanPDF = response.data.data.panFile?.endsWith(".pdf");
+        setIsPanFilePDF(isPanPDF);
+
+        const isGstPDF = response.data.data.gstFile?.endsWith(".pdf");
+        setIsGstFilePDF(isGstPDF);
+
+        const isTanPDF = response.data.data.tanFile?.endsWith(".pdf");
+        setIsTanFilePDF(isTanPDF);
+
+        const isCinPDF = response.data.data.cinFile?.endsWith(".pdf");
+        setIsCinFilePDF(isCinPDF);
+
         setFormData({
           companyName: response.data.data.companyName,
           companyType: response.data.data.companyType,
@@ -112,7 +162,6 @@ const UpdateSeller = () => {
         );
         setDealingProducts(normalizedProducts);
 
-        // Fetch subcategories for existing categories
         normalizedProducts.forEach((product) => {
           if (product.categoryId) {
             handleCategoryChange(product.categoryId, product.subCategoryIds);
@@ -192,11 +241,34 @@ const UpdateSeller = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (files) {
+      const file = files[0];
       setFormData((prev) => ({
         ...prev,
-        [name]: files[0],
+        [name]: file,
       }));
+
+      // Handle previews based on file type
+      if (file) {
+        const fileUrl = URL.createObjectURL(file);
+
+        if (name === "sellerProfile") {
+          setPreviewSellerProfileImage(fileUrl);
+        } else if (name === "panFile") {
+          setPreviewPanFile(fileUrl);
+          setIsPanFilePDF(file.type === "application/pdf");
+        } else if (name === "tanFile") {
+          setPreviewTanFile(fileUrl);
+          setIsTanFilePDF(file.type === "application/pdf");
+        } else if (name === "cinFile") {
+          setPreviewCinFile(fileUrl);
+          setIsCinFilePDF(file.type === "application/pdf");
+        } else if (name === "gstFile") {
+          setPreviewGstFile(fileUrl);
+          setIsGstFilePDF(file.type === "application/pdf");
+        }
+      }
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -249,7 +321,6 @@ const UpdateSeller = () => {
       formDataToSend.append("gstFile", formData.gstFile);
     }
     formDataToSend.append("dealingProducts", JSON.stringify(dealingProducts));
-
     setSending(true);
 
     try {
@@ -288,16 +359,13 @@ const UpdateSeller = () => {
           noOfEmployees: "",
           ceoName: "",
           turnover: "",
-          panFile: null,
-          tanFile: null,
-          cinFile: null,
-          gstFile: null,
         });
         navigate(-1);
       } else {
         toast.error("Failed to update Seller.");
       }
     } catch (error) {
+      console.error(error);
       toast.error(
         error.response?.data?.message || "An unexpected error occurred."
       );
@@ -306,8 +374,86 @@ const UpdateSeller = () => {
     }
   };
 
-  const getBaseFileName = (url) => {
-    return url ? url.split("/").pop() : "";
+  const renderFilePreview = (preview, isPDF, defaultPreview, altText) => {
+    const fileUrl = preview || defaultPreview;
+    const isPdfFile =
+      isPDF ||
+      (defaultPreview && defaultPreview.toLowerCase().endsWith(".pdf"));
+
+    // Fixed size container style
+    const containerStyle = {
+      width: "100%",
+      height: "200px",
+      border: "1px solid #ddd",
+      borderRadius: "4px",
+      overflow: "hidden",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "#f8f9fa",
+      marginBottom: "10px",
+    };
+
+    // Fixed size for both image and PDF content
+    const contentStyle = {
+      width: "100%",
+      height: "100%",
+      objectFit: "contain",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+
+    if (fileUrl) {
+      if (isPdfFile) {
+        return (
+          <div style={containerStyle}>
+            <Worker
+              workerUrl={
+                process.env.REACT_APP_WORKER_URL ||
+                "https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js"
+              }
+            >
+              <div style={contentStyle}>
+                <Viewer
+                  fileUrl={fileUrl}
+                  defaultScale={SpecialZoomLevel.PageFit}
+                  initialPage={0}
+                  scrollMode="none"
+                  renderError={(error) => (
+                    <div className="text-danger">
+                      Failed to load PDF: {error.message}
+                    </div>
+                  )}
+                />
+              </div>
+            </Worker>
+          </div>
+        );
+      } else {
+        return (
+          <div style={containerStyle}>
+            <div style={contentStyle}>
+              <img
+                src={fileUrl}
+                alt={altText}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </div>
+          </div>
+        );
+      }
+    } else {
+      return (
+        <div style={containerStyle}>
+          <div className="text-muted">No file uploaded</div>
+        </div>
+      );
+    }
   };
 
   return (
@@ -329,7 +475,33 @@ const UpdateSeller = () => {
                 </h4>
                 <hr></hr>
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="sellerProfile" className="form-label">
+                        Profile Image
+                      </label>
+                      <input
+                        type="file"
+                        id="sellerProfile"
+                        name="sellerProfile"
+                        className="form-control"
+                        accept="image/*"
+                        onChange={handleChange}
+                        ref={sellerProfileRef}
+                      />
+                      <div className="d-flex justify-content-center mt-2">
+                        {renderFilePreview(
+                          previewSellerProfileImage,
+                          false,
+                          formData.sellerProfile
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.sellerProfile}`
+                            : null,
+                          "Profile Preview"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="companyName" className="form-label">
                         Company Name <span className="text-danger">*</span>
@@ -341,11 +513,9 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.companyName}
                         onChange={handleChange}
-                        // required
+                        required
                       />
                     </div>
-                  </div>
-                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="companyType" className="form-label">
                         Company Type <span className="text-danger">*</span>
@@ -356,7 +526,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.companyType}
                         onChange={handleChange}
-                        // required
+                        required
                       >
                         <option value="">Select Company Type</option>
                         <option value="Public Limited">Public Limited</option>
@@ -366,10 +536,59 @@ const UpdateSeller = () => {
                         <option value="HUF">HUF</option>
                       </select>
                     </div>
+                    <div className="mb-3">
+                      <label htmlFor="emailId" className="form-label">
+                        Email ID <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        id="emailId"
+                        name="emailId"
+                        className="form-control"
+                        value={formData.emailId}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="contactNo" className="form-label">
+                        Contact Number <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        id="contactNo"
+                        name="contactNo"
+                        className="form-control"
+                        value={formData.contactNo}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label
+                        htmlFor="alternateContactNo"
+                        className="form-label"
+                      >
+                        Alternate Contact Number
+                      </label>
+                      <input
+                        type="tel"
+                        id="alternateContactNo"
+                        name="alternateContactNo"
+                        className="form-control"
+                        value={formData.alternateContactNo}
+                        onChange={handleChange}
+                        // required
+                        placeholder="Example : 1234567890"
+                      />
+                    </div>
                   </div>
                 </div>
+
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="gstin" className="form-label">
                         GSTIN <span className="text-danger">*</span>
@@ -381,11 +600,61 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.gstin}
                         onChange={handleChange}
-                        // required
+                        required
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="pan" className="form-label">
+                        PAN Number <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="pan"
+                        name="pan"
+                        className="form-control"
+                        value={formData.pan}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="tan" className="form-label">
+                        TAN Number
+                      </label>
+                      <input
+                        type="text"
+                        id="tan"
+                        name="tan"
+                        className="form-control"
+                        value={formData.tan}
+                        onChange={handleChange}
+                        placeholder="Example : PDES03028F "
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="cin" className="form-label">
+                        CIN Number
+                      </label>
+                      <input
+                        type="text"
+                        id="cin"
+                        name="cin"
+                        className="form-control"
+                        value={formData.cin}
+                        onChange={handleChange}
+                        placeholder="U12345MH2020PTC098765"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="gstFile" className="form-label">
                         GST File <span className="text-danger">*</span>
@@ -398,36 +667,21 @@ const UpdateSeller = () => {
                         accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={gstFileRef}
-                        // required
                       />
-                      {seller?.gstFile ? (
-                        <div>
-                          <small>
-                            Existing GST File: {getBaseFileName(seller.gstFile)}
-                          </small>
-                        </div>
-                      ) : null}
+
+                      <div className="d-flex justify-content-center mt-2">
+                        {renderFilePreview(
+                          previewGstFile,
+                          isGstFilePDF,
+                          formData.gstFile
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.gstFile}`
+                            : null,
+                          "GST File"
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="pan" className="form-label">
-                        PAN Number <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="pan"
-                        name="pan"
-                        className="form-control"
-                        value={formData.pan}
-                        onChange={handleChange}
-                        // required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="panFile" className="form-label">
                         PAN File <span className="text-danger">*</span>
@@ -440,39 +694,24 @@ const UpdateSeller = () => {
                         accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={panFileRef}
-                        // required
                       />
-                      {seller?.panFile ? (
-                        <div>
-                          <small>
-                            Existing PAN File: {getBaseFileName(seller.panFile)}
-                          </small>
-                        </div>
-                      ) : null}
+
+                      <div className="d-flex justify-content-center mt-2">
+                        {renderFilePreview(
+                          previewPanFile,
+                          isPanFilePDF,
+                          formData.panFile
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.panFile}`
+                            : null,
+                          "PAN File"
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="tan" className="form-label">
-                        TAN Number
-                      </label>
-                      <input
-                        type="text"
-                        id="tan"
-                        name="tan"
-                        className="form-control"
-                        value={formData.tan || "Not Provided"}
-                        onChange={handleChange}
-                        // required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="tanFile" className="form-label">
-                        TAN File
+                        TAN File <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"
@@ -482,41 +721,24 @@ const UpdateSeller = () => {
                         accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={tanFileRef}
-                        // required
                       />
-                      {seller?.tanFile ? (
-                        <div>
-                          <small>
-                            Existing TAN File: {getBaseFileName(seller.tanFile)}
-                          </small>
-                        </div>
-                      ) : (
-                        <h5>Not Provided</h5>
-                      )}
+
+                      <div className="d-flex justify-content-center mt-2">
+                        {renderFilePreview(
+                          previewTanFile,
+                          isTanFilePDF,
+                          formData.tanFile
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.tanFile}`
+                            : null,
+                          "TAN File"
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="cin" className="form-label">
-                        CIN Number
-                      </label>
-                      <input
-                        type="text"
-                        id="cin"
-                        name="cin"
-                        className="form-control"
-                        value={formData.cin || "Not Provided"}
-                        onChange={handleChange}
-                        // required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="cinFile" className="form-label">
-                        CIN File
+                        CIN File <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"
@@ -526,38 +748,42 @@ const UpdateSeller = () => {
                         accept="image/*,application/pdf"
                         onChange={handleChange}
                         ref={cinFileRef}
-                        // required
                       />
-                      {seller?.cinFile ? (
-                        <div>
-                          <small>
-                            Existing PAN File: {getBaseFileName(seller.cinFile)}
-                          </small>
-                        </div>
-                      ) : (
-                        <h5>Not Provided</h5>
-                      )}
+
+                      <div className="d-flex justify-content-center mt-2">
+                        {renderFilePreview(
+                          previewCinFile,
+                          isCinFilePDF,
+                          formData.cinFile
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.cinFile}`
+                            : null,
+                          "CIN File"
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
+
                 <h4 className="card-title text-center custom-heading-font">
                   Address Details
                 </h4>
                 <hr></hr>
                 <div className="row">
-                  <div className="mb-3">
-                    <label htmlFor="address" className="form-label">
-                      Address <span className="text-danger">*</span>
-                    </label>
-                    <textarea
-                      className="form-control"
-                      id="address"
-                      name="address"
-                      rows={3}
-                      value={formData.address}
-                      onChange={handleChange}
-                      // required
-                    />
+                  <div className="col-md-12">
+                    <div className="mb-3">
+                      <label htmlFor="address" className="form-label">
+                        Address <span className="text-danger">*</span>
+                      </label>
+                      <textarea
+                        className="form-control"
+                        id="address"
+                        name="address"
+                        rows={3}
+                        value={formData.address}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="row">
@@ -585,7 +811,7 @@ const UpdateSeller = () => {
                         }
                         placeholder="Select City-State-Country"
                         isSearchable
-                        // required
+                        required
                         classNamePrefix="react-select"
                         className="custom-react-select"
                       />
@@ -603,7 +829,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.landmark}
                         onChange={handleChange}
-                        // required
+                        required
                       />
                     </div>
                   </div>
@@ -619,96 +845,11 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.pincode}
                         onChange={handleChange}
-                        // required
+                        required
                       />
                     </div>
                   </div>
                 </div>
-                <h4 className="card-title text-center custom-heading-font">
-                  Contact Details
-                </h4>
-                <hr></hr>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="contactNo" className="form-label">
-                        Contact Number <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        id="contactNo"
-                        name="contactNo"
-                        className="form-control"
-                        value={formData.contactNo}
-                        onChange={handleChange}
-                        // required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="alternateContactNo"
-                        className="form-label"
-                      >
-                        Alternate Contact Number
-                      </label>
-                      <input
-                        type="tel"
-                        id="alternateContactNo"
-                        name="alternateContactNo"
-                        className="form-control"
-                        value={formData.alternateContactNo}
-                        onChange={handleChange}
-                        // required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="emailId" className="form-label">
-                        Email ID <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="emailId"
-                        name="emailId"
-                        className="form-control"
-                        value={formData.emailId}
-                        onChange={handleChange}
-                        // required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="sellerProfile" className="form-label">
-                        Profile Image
-                      </label>
-                      <input
-                        type="file"
-                        id="sellerProfile"
-                        name="sellerProfile"
-                        className="form-control"
-                        accept="image/*"
-                        onChange={handleChange}
-                        ref={sellerProfileRef}
-                        // required
-                      />
-                      {seller?.sellerProfile ? (
-                        <div>
-                          <small>
-                            Existing Profile Image:{" "}
-                            {getBaseFileName(seller.sellerProfile)}
-                          </small>
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-
                 <h4 className="card-title text-center custom-heading-font">
                   Bank Details
                 </h4>
@@ -727,7 +868,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.accountNo}
                         onChange={handleChange}
-                        // required
+                        required
                       />
                     </div>
                   </div>
@@ -743,7 +884,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.ifsc}
                         onChange={handleChange}
-                        // required
+                        required
                       />
                     </div>
                   </div>
@@ -759,7 +900,7 @@ const UpdateSeller = () => {
                         className="form-control"
                         value={formData.bankName}
                         onChange={handleChange}
-                        // required
+                        required
                       />
                     </div>
                   </div>
@@ -850,6 +991,7 @@ const UpdateSeller = () => {
                         value={formData.ceoName}
                         onChange={handleChange}
                         // required
+                        placeholder="Example : John Smith"
                       />
                     </div>
                   </div>

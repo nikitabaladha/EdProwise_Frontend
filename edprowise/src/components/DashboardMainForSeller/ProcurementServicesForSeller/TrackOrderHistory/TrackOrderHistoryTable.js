@@ -49,7 +49,6 @@ const TrackOrderHistoryTable = () => {
         Array.isArray(response.data.data)
       ) {
         setOrderDetails(response.data.data);
-        console.log("Order Details", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }

@@ -22,8 +22,6 @@ const TrackQuoteTable = ({}) => {
           Array.isArray(response.data.data)
         ) {
           setQuotes(response.data.data);
-
-          console.log("Quotes fetched successfully:", response.data.data);
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -61,11 +59,6 @@ const TrackQuoteTable = ({}) => {
           ...prev,
           [enquiryNumber]: response.data.data,
         }));
-        console.log(
-          "Submitted Quote data for",
-          enquiryNumber,
-          response.data.data
-        );
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -90,7 +83,7 @@ const TrackQuoteTable = ({}) => {
 
   const navigateToViewQuoteTable = (event, enquiryNumber) => {
     event.preventDefault();
-    console.log("viewQuoteTable navigation function", enquiryNumber);
+
     navigate(`/school-dashboard/procurement-services/view-quote-table`, {
       state: { enquiryNumber },
     });

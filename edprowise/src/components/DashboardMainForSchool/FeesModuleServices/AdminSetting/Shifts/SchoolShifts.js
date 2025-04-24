@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-import getAPI from '../../../../../api/getAPI';
+import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 
 const SchoolShifts = () => {
@@ -13,7 +13,6 @@ const SchoolShifts = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
-
 
   const [shifts, setShifts] = useState([]);
   const [schoolId, setSchoolId] = useState(null);
@@ -36,9 +35,10 @@ const SchoolShifts = () => {
     const fetchShifts = async () => {
       try {
         const response = await getAPI(`/master-define-shift/${schoolId}`);
-        console.log("Fetched Shifts:", response);
         if (!response.hasError) {
-          const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
+          const shiftArray = Array.isArray(response.data?.data)
+            ? response.data.data
+            : [];
           setShifts(shiftArray);
         } else {
           toast.error(response.message || "Failed to fetch shifts.");
@@ -52,12 +52,10 @@ const SchoolShifts = () => {
     fetchShifts();
   }, [schoolId]);
 
-
   const indexOfLastRequest = currentPage * requestPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
   const currentShifts = shifts.slice(indexOfFirstRequest, indexOfLastRequest);
   const totalPages = Math.ceil(shifts.length / requestPerPage);
-
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -101,11 +99,10 @@ const SchoolShifts = () => {
     });
   };
 
-
   const navigateToAddNewClass = (event) => {
     event.preventDefault();
     navigate(`/school-dashboard/fees-module/admin-setting/shifts/add-shift`);
-  }
+  };
   return (
     <>
       <div className="container-fluid">
@@ -122,9 +119,7 @@ const SchoolShifts = () => {
                 </Link>
 
                 <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">
-                    Export
-                  </Link>
+                  <Link className="btn btn-sm btn-outline-light">Export</Link>
                 </div>
               </div>
 
@@ -134,8 +129,15 @@ const SchoolShifts = () => {
                     <tr>
                       <th style={{ width: 20 }}>
                         <div className="form-check ms-1">
-                          <input type="checkbox" className="form-check-input" id="customCheck1" />
-                          <label className="form-check-label" htmlFor="customCheck1" />
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customCheck1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customCheck1"
+                          />
                         </div>
                       </th>
                       <th>Shift</th>
@@ -149,26 +151,38 @@ const SchoolShifts = () => {
                       <tr key={index}>
                         <td>
                           <div className="form-check ms-1">
-                            <input type="checkbox" className="form-check-input" id={`customCheck-${index}`} />
-                            <label className="form-check-label" htmlFor={`customCheck-${index}`}>&nbsp;</label>
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id={`customCheck-${index}`}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`customCheck-${index}`}
+                            >
+                              &nbsp;
+                            </label>
                           </div>
                         </td>
                         <td>{shift.masterDefineShiftName}</td>
                         <td>
-                          {new Date(shift.startTime).toLocaleTimeString('en-US', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true,
-                            timeZone: 'UTC'
-                          })}
+                          {new Date(shift.startTime).toLocaleTimeString(
+                            "en-US",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                              timeZone: "UTC",
+                            }
+                          )}
                         </td>
 
                         <td>
-                          {new Date(shift.endTime).toLocaleTimeString('en-US', {
-                            hour: '2-digit',
-                            minute: '2-digit',
+                          {new Date(shift.endTime).toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
                             hour12: true,
-                            timeZone: 'UTC'
+                            timeZone: "UTC",
                           })}
                         </td>
 
@@ -183,25 +197,36 @@ const SchoolShifts = () => {
                             <button
                               className="btn btn-soft-primary btn-sm"
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/shifts/update-shift", {
-                                  state: { shift }
-                                })
+                                navigate(
+                                  "/school-dashboard/fees-module/admin-setting/shifts/update-shift",
+                                  {
+                                    state: { shift },
+                                  }
+                                )
                               }
                             >
-                              <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
+                              <iconify-icon
+                                icon="solar:pen-2-broken"
+                                className="align-middle fs-18"
+                              />
                             </button>
 
                             <Link
-                              onClick={(e) => { e.preventDefault(); openDeleteDialog(shift); }}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                openDeleteDialog(shift);
+                              }}
                               className="btn btn-soft-danger btn-sm"
                             >
-                              <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
+                              <iconify-icon
+                                icon="solar:trash-bin-minimalistic-2-broken"
+                                className="align-middle fs-18"
+                              />
                             </Link>
                           </div>
                         </td>
                       </tr>
                     ))}
-
                   </tbody>
                 </table>
               </div>
@@ -210,14 +235,25 @@ const SchoolShifts = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <button className="page-link" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                      <button
+                        className="page-link"
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
+                      >
                         Previous
                       </button>
                     </li>
                     {pagesToShow.map((page) => (
-                      <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
+                      <li
+                        key={page}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
+                      >
                         <button
-                          className={`page-link pagination-button ${currentPage === page ? "active" : ""}`}
+                          className={`page-link pagination-button ${
+                            currentPage === page ? "active" : ""
+                          }`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -225,7 +261,11 @@ const SchoolShifts = () => {
                       </li>
                     ))}
                     <li className="page-item">
-                      <button className="page-link" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                      <button
+                        className="page-link"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                      >
                         Next
                       </button>
                     </li>
@@ -245,6 +285,6 @@ const SchoolShifts = () => {
         />
       )}
     </>
-  )
-}
+  );
+};
 export default SchoolShifts;

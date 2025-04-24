@@ -65,7 +65,6 @@ const CompleteEdprowiseProfile = () => {
       );
 
       if (!response.hasError) {
-        console.log("profile storage data", response.data.data);
         const userId = response.data.data.userId;
 
         setFormData({

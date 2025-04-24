@@ -119,7 +119,6 @@ const SchoolsTable = () => {
 
   const navigateToViewSchool = (event, schoolId) => {
     event.preventDefault();
-    console.log("schoolId from navigate function", schoolId);
     navigate(`/admin-dashboard/schools/view-school`, {
       state: { schoolId },
     });

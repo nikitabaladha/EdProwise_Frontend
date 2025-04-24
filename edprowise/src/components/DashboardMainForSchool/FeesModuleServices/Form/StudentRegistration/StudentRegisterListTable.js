@@ -1,16 +1,14 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 
-
-
 const StudentRegisterListTable = () => {
   const navigate = useNavigate();
   const [schoolId, setSchoolId] = useState(null);
-  const [studentData, setStudentData] = useState([]); 
+  const [studentData, setStudentData] = useState([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -30,8 +28,6 @@ const StudentRegisterListTable = () => {
     );
   };
 
-
-
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
@@ -44,17 +40,17 @@ const StudentRegisterListTable = () => {
     setSchoolId(id);
   }, []);
 
-
   useEffect(() => {
     if (!schoolId) return;
 
     const fetchStudents = async () => {
       try {
         const response = await getAPI(`/get-registartion-form/${schoolId}`);
-        console.log("API response:", response);
-        
+
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.students) ? response.data.students : [];
+          const studentArray = Array.isArray(response.data.students)
+            ? response.data.students
+            : [];
           setStudentData(studentArray);
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -80,22 +76,25 @@ const StudentRegisterListTable = () => {
     });
   };
 
-  const navigateToUpdateRegisterStudentInfo=(event,student)=>{
+  const navigateToUpdateRegisterStudentInfo = (event, student) => {
     event.preventDefault();
-    navigate(`/school-dashboard/fees-module/form/update-registed-student-info`, {
-      state: { student },
-    });
-  }
-  
+    navigate(
+      `/school-dashboard/fees-module/form/update-registed-student-info`,
+      {
+        state: { student },
+      }
+    );
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
 
-
-
-  
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
+  const currentStudent = studentData.slice(
+    indexOfFirstStudent,
+    indexOfLastStudent
+  );
 
   const totalPages = Math.ceil(studentData.length / studentListPerPage);
 
@@ -114,7 +113,10 @@ const StudentRegisterListTable = () => {
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
 
   return (
     <>
@@ -128,7 +130,6 @@ const StudentRegisterListTable = () => {
                   Registered Student List
                 </h4>
                 <Link
-               
                   onClick={(event) => navigateToRegisterStudent(event)}
                   className="btn btn-sm btn-primary"
                 >
@@ -187,27 +188,45 @@ const StudentRegisterListTable = () => {
                           <td>{student.firstName}</td>
                           <td>{student.lastName}</td>
                           <td>{student.transactionNumber}</td>
-                          <td>{new Date(student.registrationDate).toLocaleDateString()}</td>
+                          <td>
+                            {new Date(
+                              student.registrationDate
+                            ).toLocaleDateString()}
+                          </td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link className="btn btn-light btn-sm"
-                              onClick={(event) => navigateToRegisterStudentInfo(event, student)}
+                              <Link
+                                className="btn btn-light btn-sm"
+                                onClick={(event) =>
+                                  navigateToRegisterStudentInfo(event, student)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link> 
-                              <Link className="btn btn-soft-primary btn-sm"
-                              onClick={(event) => navigateToUpdateRegisterStudentInfo(event,student)}
+                              </Link>
+                              <Link
+                                className="btn btn-soft-primary btn-sm"
+                                onClick={(event) =>
+                                  navigateToUpdateRegisterStudentInfo(
+                                    event,
+                                    student
+                                  )
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-danger btn-sm"
-                                  onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}>
+                              <Link
+                                className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openDeleteDialog(student);
+                                }}
+                              >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -279,5 +298,3 @@ const StudentRegisterListTable = () => {
 };
 
 export default StudentRegisterListTable;
-
-

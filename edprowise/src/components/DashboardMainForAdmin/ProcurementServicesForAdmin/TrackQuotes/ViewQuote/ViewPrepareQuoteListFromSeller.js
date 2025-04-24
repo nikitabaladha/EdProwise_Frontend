@@ -37,16 +37,11 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
           true
         );
         if (!response.hasError && response.data) {
-          console.log("respondata", response.data.data);
           setLocationData1({
             schoolState: response.data.data.schoolState,
             sellerState: response.data.data.sellerState,
             edprowiseState: response.data.data.edprowiseState,
           });
-
-          setTimeout(() => {
-            console.log("Locationdata from admin", locationData);
-          }, 3000);
         } else {
           console.error("Invalid response format or error in response");
         }

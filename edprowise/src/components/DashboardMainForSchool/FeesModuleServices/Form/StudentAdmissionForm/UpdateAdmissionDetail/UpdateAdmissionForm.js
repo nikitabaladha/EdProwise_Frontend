@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import CityData from "../../../../../CityData.json";
-import { useNavigate, useLocation } from 'react-router-dom';
-import getAPI from '../../../../../../api/getAPI';
-import { toast } from 'react-toastify';
-import putAPI from '../../../../../../api/putAPI';
-import { validateFullForm } from '../FormValidation/FormValidation';
+import { useNavigate, useLocation } from "react-router-dom";
+import getAPI from "../../../../../../api/getAPI";
+import { toast } from "react-toastify";
+import putAPI from "../../../../../../api/putAPI";
+import { validateFullForm } from "../FormValidation/FormValidation";
 
 const UpdateAdmissionForm = () => {
   const navigate = useNavigate();
-  const [schoolId, setSchoolId] = useState('');
+  const [schoolId, setSchoolId] = useState("");
   const [existingStudents, setExistingStudents] = useState([]);
   const [showFullForm, setShowFullForm] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -21,52 +21,52 @@ const UpdateAdmissionForm = () => {
   const student = location.state?.student;
 
   const [formData, setFormData] = useState({
-    registrationNumber: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    dateOfBirth: '',
-    age: '',
-    nationality: '',
-    gender: '',
-    bloodGroup: '',
-    masterDefineClass: '',
-    masterDefineShift: '',
-    section: '',
-    currentAddress: '',
-    cityStateCountry: '',
-    pincode: '',
-    parentContactNumber: '',
-    motherLanguage: '',
-    previousSchoolName: '',
-    addressOfPreviousSchool: '',
-    previousSchoolBoard: '',
+    registrationNumber: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    dateOfBirth: "",
+    age: "",
+    nationality: "",
+    gender: "",
+    bloodGroup: "",
+    masterDefineClass: "",
+    masterDefineShift: "",
+    section: "",
+    currentAddress: "",
+    cityStateCountry: "",
+    pincode: "",
+    parentContactNumber: "",
+    motherLanguage: "",
+    previousSchoolName: "",
+    addressOfPreviousSchool: "",
+    previousSchoolBoard: "",
     previousSchoolResult: null,
     tcCertificate: null,
     proofOfResidence: null,
-    aadharPassportNumber: '',
+    aadharPassportNumber: "",
     aadharPassportFile: null,
-    studentCategory: '',
+    studentCategory: "",
     castCertificate: null,
     siblingInfoChecked: false,
     relationType: null,
-    siblingName: '',
+    siblingName: "",
     idCardFile: null,
-    parentalStatus: '',
-    fatherName: '',
-    fatherContactNo: '',
-    fatherQualification: '',
-    fatherProfession: '',
-    motherName: '',
-    motherContactNo: '',
-    motherQualification: '',
-    motherProfession: '',
+    parentalStatus: "",
+    fatherName: "",
+    fatherContactNo: "",
+    fatherQualification: "",
+    fatherProfession: "",
+    motherName: "",
+    motherContactNo: "",
+    motherQualification: "",
+    motherProfession: "",
     agreementChecked: false,
-    name: '',
-    paymentMode: '',
-    chequeNumber: '',
-    bankName: '',
-    admissionFeesReceivedBy: ''
+    name: "",
+    paymentMode: "",
+    chequeNumber: "",
+    bankName: "",
+    admissionFeesReceivedBy: "",
   });
 
   useEffect(() => {
@@ -88,52 +88,58 @@ const UpdateAdmissionForm = () => {
         firstName: student.firstName,
         middleName: student.middleName,
         lastName: student.lastName,
-        dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
-        age: student.age?.toString() || '',
+        dateOfBirth: student.dateOfBirth
+          ? student.dateOfBirth.split("T")[0]
+          : "",
+        age: student.age?.toString() || "",
         nationality: student.nationality,
         gender: student.gender,
         bloodGroup: student.bloodGroup,
-        masterDefineClass: student?.masterDefineClass?._id || student?.masterDefineClass || '',
-        masterDefineShift: student?.masterDefineShift?._id || student?.masterDefineShift || '',
-        section: student?.section?._id || student?.section || '',
+        masterDefineClass:
+          student?.masterDefineClass?._id || student?.masterDefineClass || "",
+        masterDefineShift:
+          student?.masterDefineShift?._id || student?.masterDefineShift || "",
+        section: student?.section?._id || student?.section || "",
         currentAddress: student.currentAddress,
         cityStateCountry: student.cityStateCountry,
         pincode: student.pincode,
-        parentContactNumber: student.parentContactNumber || '',
-        motherLanguage: student.motherLanguage || '',
-        previousSchoolName: student.previousSchoolName || '',
-        addressOfPreviousSchool: student.addressOfPreviousSchool || '',
-        previousSchoolBoard: student.previousSchoolBoard || '',
+        parentContactNumber: student.parentContactNumber || "",
+        motherLanguage: student.motherLanguage || "",
+        previousSchoolName: student.previousSchoolName || "",
+        addressOfPreviousSchool: student.addressOfPreviousSchool || "",
+        previousSchoolBoard: student.previousSchoolBoard || "",
         previousSchoolResult: student.previousSchoolResult || null,
         tcCertificate: student.tcCertificate || null,
         proofOfResidence: student.proofOfResidence || null,
-        aadharPassportNumber: student.aadharPassportNumber || '',
+        aadharPassportNumber: student.aadharPassportNumber || "",
         aadharPassportFile: student.aadharPassportFile || null,
-        studentCategory: student.studentCategory || '',
+        studentCategory: student.studentCategory || "",
         castCertificate: student.castCertificate || null,
         siblingInfoChecked: student.siblingInfoChecked || false,
         relationType: student.relationType || null,
-        siblingName: student.siblingName || '',
+        siblingName: student.siblingName || "",
         idCardFile: student.idCardFile || null,
-        parentalStatus: student.parentalStatus || '',
-        fatherName: student.fatherName || '',
-        fatherContactNo: student.fatherContactNo || '',
-        fatherQualification: student.fatherQualification || '',
-        fatherProfession: student.fatherProfession || '',
-        motherName: student.motherName || '',
-        motherContactNo: student.motherContactNo || '',
-        motherQualification: student.motherQualification || '',
-        motherProfession: student.motherProfession || '',
+        parentalStatus: student.parentalStatus || "",
+        fatherName: student.fatherName || "",
+        fatherContactNo: student.fatherContactNo || "",
+        fatherQualification: student.fatherQualification || "",
+        fatherProfession: student.fatherProfession || "",
+        motherName: student.motherName || "",
+        motherContactNo: student.motherContactNo || "",
+        motherQualification: student.motherQualification || "",
+        motherProfession: student.motherProfession || "",
         agreementChecked: student.agreementChecked || false,
-        name: student.name || '',
-        paymentMode: student.paymentMode || '',
-        chequeNumber: student?.chequeNumber || '',
-        bankName: student?.bankName || '',
-        admissionNumber: student.AdmissionNumber || '',
-        receiptNumber: student.receiptNumber || '',
-        transactionNumber: student.transactionNumber || '',
-        dateOfAdmission: student.dateOfAdmission ? student.dateOfAdmission.split('T')[0] : '',
-        admissionFeesReceivedBy: student.admissionFeesReceivedBy || ''
+        name: student.name || "",
+        paymentMode: student.paymentMode || "",
+        chequeNumber: student?.chequeNumber || "",
+        bankName: student?.bankName || "",
+        admissionNumber: student.AdmissionNumber || "",
+        receiptNumber: student.receiptNumber || "",
+        transactionNumber: student.transactionNumber || "",
+        dateOfAdmission: student.dateOfAdmission
+          ? student.dateOfAdmission.split("T")[0]
+          : "",
+        admissionFeesReceivedBy: student.admissionFeesReceivedBy || "",
       });
       setShowFullForm(true);
       setShowAdditionalData(true);
@@ -144,7 +150,11 @@ const UpdateAdmissionForm = () => {
     const fetchData = async () => {
       try {
         if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const response = await getAPI(
+          `/get-class-and-section/${schoolId}`,
+          {},
+          true
+        );
         setClasses(response?.data?.data || []);
       } catch (error) {
         toast.error("Error fetching class and section data.");
@@ -161,7 +171,9 @@ const UpdateAdmissionForm = () => {
       try {
         const response = await getAPI(`/master-define-shift/${schoolId}`);
         if (!response.hasError) {
-          const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
+          const shiftArray = Array.isArray(response.data?.data)
+            ? response.data.data
+            : [];
           setShifts(shiftArray);
         } else {
           toast.error(response.message || "Failed to fetch shifts.");
@@ -177,12 +189,12 @@ const UpdateAdmissionForm = () => {
 
   const handleClassChange = (e) => {
     const classId = e.target.value;
-    const selectedClass = classes.find(c => c._id === classId);
+    const selectedClass = classes.find((c) => c._id === classId);
 
     let filteredSections = selectedClass?.sections || [];
     if (formData.masterDefineShift) {
       filteredSections = filteredSections.filter(
-        section => section.shiftId === formData.masterDefineShift
+        (section) => section.shiftId === formData.masterDefineShift
       );
     }
 
@@ -191,7 +203,7 @@ const UpdateAdmissionForm = () => {
     setFormData({
       ...formData,
       masterDefineClass: classId,
-      section: ''
+      section: "",
     });
   };
 
@@ -200,45 +212,57 @@ const UpdateAdmissionForm = () => {
     let filteredSections = [];
 
     if (formData.masterDefineClass) {
-      const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
-      filteredSections = selectedClass?.sections.filter(
-        section => section.shiftId === shiftId
-      ) || [];
+      const selectedClass = classes.find(
+        (c) => c._id === formData.masterDefineClass
+      );
+      filteredSections =
+        selectedClass?.sections.filter(
+          (section) => section.shiftId === shiftId
+        ) || [];
     }
 
     setSections(filteredSections);
     setFormData({
       ...formData,
       masterDefineShift: shiftId,
-      section: ''
+      section: "",
     });
   };
 
   useEffect(() => {
     if (student && classes.length > 0 && shifts.length > 0) {
-      const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
+      const selectedClass = classes.find(
+        (c) => c._id === formData.masterDefineClass
+      );
       if (selectedClass) {
         const filteredSections = selectedClass.sections.filter(
-          section => section.shiftId === formData.masterDefineShift
+          (section) => section.shiftId === formData.masterDefineShift
         );
         setSections(filteredSections);
       }
     }
   }, [student, classes, shifts]);
 
-
   useEffect(() => {
-    if (formData.masterDefineClass && formData.masterDefineShift && classes.length > 0) {
-      const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
+    if (
+      formData.masterDefineClass &&
+      formData.masterDefineShift &&
+      classes.length > 0
+    ) {
+      const selectedClass = classes.find(
+        (c) => c._id === formData.masterDefineClass
+      );
       if (selectedClass) {
         const filteredSections = selectedClass.sections.filter(
-          section => section.shiftId === formData.masterDefineShift
+          (section) => section.shiftId === formData.masterDefineShift
         );
         setSections(filteredSections);
 
-
-        if (formData.section && !filteredSections.some(s => s._id === formData.section)) {
-          setFormData(prev => ({ ...prev, section: '' }));
+        if (
+          formData.section &&
+          !filteredSections.some((s) => s._id === formData.section)
+        ) {
+          setFormData((prev) => ({ ...prev, section: "" }));
         }
       }
     }
@@ -247,21 +271,22 @@ const UpdateAdmissionForm = () => {
   const handleChange = (e) => {
     const { name, type, value, checked, files } = e.target;
 
-    if (type === 'checkbox') {
-      setFormData(prev => ({ ...prev, [name]: checked }));
-    } else if (type === 'file') {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
+    if (type === "checkbox") {
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else if (type === "file") {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
     } else {
-      if (name === 'nationality') {
-        setFormData(prev => ({
+      if (name === "nationality") {
+        setFormData((prev) => ({
           ...prev,
           nationality: value,
-          studentCategory: (value === 'SAARC Countries' || value === 'International')
-            ? 'General'
-            : prev.studentCategory
+          studentCategory:
+            value === "SAARC Countries" || value === "International"
+              ? "General"
+              : prev.studentCategory,
         }));
       } else {
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
       }
     }
   };
@@ -273,36 +298,38 @@ const UpdateAdmissionForm = () => {
         const today = new Date();
         if (birthDate > today) {
           toast.error("Date of birth cannot be in the future");
-          setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
+          setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
           return;
         }
         const maxAgeDate = new Date();
         maxAgeDate.setFullYear(maxAgeDate.getFullYear() - 120);
         if (birthDate < maxAgeDate) {
           toast.error("Please enter a valid date of birth");
-          setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
+          setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
           return;
         }
 
         let age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
 
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < birthDate.getDate())
+        ) {
           age--;
         }
 
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          age: age > 0 ? age.toString() : '0'
+          age: age > 0 ? age.toString() : "0",
         }));
-
       } catch (error) {
         console.error("Error calculating age:", error);
         toast.error("Invalid date format");
-        setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
+        setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
       }
     } else {
-      setFormData(prev => ({ ...prev, age: '' }));
+      setFormData((prev) => ({ ...prev, age: "" }));
     }
   }, [formData.dateOfBirth]);
 
@@ -314,29 +341,34 @@ const UpdateAdmissionForm = () => {
     }
 
     const student = existingStudents.find(
-      s => s.registrationNumber === formData.registrationNumber
+      (s) => s.registrationNumber === formData.registrationNumber
     );
 
     if (student) {
       setSelectedStudent(student);
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         firstName: student.firstName,
         middleName: student.middleName,
         lastName: student.lastName,
-        dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
+        dateOfBirth: student.dateOfBirth
+          ? student.dateOfBirth.split("T")[0]
+          : "",
         nationality: student.nationality,
         gender: student.gender,
-        masterDefineClass: student?.masterDefineClass?._id || student?.masterDefineClass || '',
-        masterDefineShift: student?.masterDefineShift?._id || student?.masterDefineShift || '',
-        section: student?.section?._id || student?.section || '',
+        masterDefineClass:
+          student?.masterDefineClass?._id || student?.masterDefineClass || "",
+        masterDefineShift:
+          student?.masterDefineShift?._id || student?.masterDefineShift || "",
+        section: student?.section?._id || student?.section || "",
         currentAddress: student.currentAddress,
         cityStateCountry: student.cityStateCountry,
         pincode: student.pincode,
-        parentContactNumber: student.fatherContactNo || student.motherContactNo || '',
-        previousSchoolName: student.previousSchoolName || '',
-        addressOfPreviousSchool: student.addressOfpreviousSchool || '',
-        previousSchoolBoard: student.previousSchoolBoard || '',
+        parentContactNumber:
+          student.fatherContactNo || student.motherContactNo || "",
+        previousSchoolName: student.previousSchoolName || "",
+        addressOfPreviousSchool: student.addressOfpreviousSchool || "",
+        previousSchoolBoard: student.previousSchoolBoard || "",
         previousSchoolResult: student?.previousSchoolResult || null,
         tcCertificate: student?.tcCertificate || null,
         aadharPassportNumber: student.aadharPassportNumber,
@@ -357,7 +389,6 @@ const UpdateAdmissionForm = () => {
     setShowFullForm(true);
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -375,20 +406,23 @@ const UpdateAdmissionForm = () => {
       ...formData,
       ...(formData.siblingInfoChecked && {
         relationType: null,
-        siblingName: '',
-        idCardFile: null
-      })
+        siblingName: "",
+        idCardFile: null,
+      }),
     };
 
     const formDataObj = new FormData();
-
 
     Object.entries(submissionData).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
         if (value instanceof File) {
           formDataObj.append(key, value, value.name);
-        } else if (typeof value === 'string' && (key.endsWith('File') || key.endsWith('Certificate') || key.endsWith('Result'))) {
-
+        } else if (
+          typeof value === "string" &&
+          (key.endsWith("File") ||
+            key.endsWith("Certificate") ||
+            key.endsWith("Result"))
+        ) {
           formDataObj.append(key, value);
         } else if (Array.isArray(value)) {
           value.forEach((item) => {
@@ -400,33 +434,41 @@ const UpdateAdmissionForm = () => {
       }
     });
 
-    formDataObj.append('schoolId', schoolId);
+    formDataObj.append("schoolId", schoolId);
 
     try {
-      const response = await putAPI(`/update-admission-form/${student._id}`, formDataObj, {
-        'Content-Type': 'multipart/form-data',
-      });
-
-      console.log("API response:", response);
+      const response = await putAPI(
+        `/update-admission-form/${student._id}`,
+        formDataObj,
+        {
+          "Content-Type": "multipart/form-data",
+        }
+      );
 
       if (response?.hasError) {
-        toast.error(response.message || 'Something went wrong');
+        toast.error(response.message || "Something went wrong");
       } else {
-        toast.success(student ? 'Admission Form Updated successfully' : 'Admission Form Submitted successfully');
+        toast.success(
+          student
+            ? "Admission Form Updated successfully"
+            : "Admission Form Submitted successfully"
+        );
         const studentData = response.data?.student || response.student;
-        console.log("Student data to send in navigate state:", studentData);
-        navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
-          state: {
-            student: response.data?.admission || response.data?.student,
-          },
-        });
+        navigate(
+          `/school-dashboard/fees-module/form/admission-form/admission-details`,
+          {
+            state: {
+              student: response.data?.admission || response.data?.student,
+            },
+          }
+        );
       }
     } catch (error) {
       const backendMessage = error?.response?.data?.message;
       if (backendMessage) {
         toast.error(backendMessage);
       } else {
-        toast.error('An error occurred during registration');
+        toast.error("An error occurred during registration");
       }
     } finally {
       setIsSubmitting(false);
@@ -438,15 +480,15 @@ const UpdateAdmissionForm = () => {
   );
 
   const isNurseryClass = (classId) => {
-    const selectedClass = classes.find(c => c._id === classId);
+    const selectedClass = classes.find((c) => c._id === classId);
     return selectedClass?.className === "Nursery";
   };
 
   const isNursery = isNurseryClass(formData.masterDefineClass);
 
   const getFileNameFromPath = (path) => {
-    if (!path) return '';
-    return path.split('/').pop();
+    if (!path) return "";
+    return path.split("/").pop();
   };
 
   return (
@@ -466,7 +508,10 @@ const UpdateAdmissionForm = () => {
                 <div className="row">
                   <div className="col-md-12">
                     <div className="mb-3">
-                      <label htmlFor="registrationNumber" className="form-label">
+                      <label
+                        htmlFor="registrationNumber"
+                        className="form-label"
+                      >
                         Registration No
                       </label>
                       <input
@@ -532,10 +577,7 @@ const UpdateAdmissionForm = () => {
 
                   <div className="col-md-3">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfBirth"
-                        className="form-label"
-                      >
+                      <label htmlFor="dateOfBirth" className="form-label">
                         Date Of Birth<span className="text-danger">*</span>
                       </label>
                       <input
@@ -692,7 +734,10 @@ const UpdateAdmissionForm = () => {
                         value={formData.section}
                         onChange={handleChange}
                         required
-                        disabled={!formData.masterDefineShift || !formData.masterDefineClass}
+                        disabled={
+                          !formData.masterDefineShift ||
+                          !formData.masterDefineClass
+                        }
                       >
                         <option value="">Select Section</option>
                         {sections.map((section) => (
@@ -725,10 +770,7 @@ const UpdateAdmissionForm = () => {
                 <div className="row">
                   <div className="col-md-3">
                     <div className="mb-3">
-                      <label
-                        htmlFor="cityStateCountry"
-                        className="form-label"
-                      >
+                      <label htmlFor="cityStateCountry" className="form-label">
                         City-State-Country<span className="text-danger">*</span>
                       </label>
                       <select
@@ -767,7 +809,10 @@ const UpdateAdmissionForm = () => {
 
                   <div className="col-md-3">
                     <div className="mb-3">
-                      <label htmlFor="parentContactNumber" className="form-label">
+                      <label
+                        htmlFor="parentContactNumber"
+                        className="form-label"
+                      >
                         Parent Contact No.<span className="text-danger">*</span>
                       </label>
                       <input
@@ -804,8 +849,12 @@ const UpdateAdmissionForm = () => {
                     <div className="row">
                       <div className="col-md-6">
                         <div className="mb-3">
-                          <label htmlFor="previousSchoolName" className="form-label">
-                            Previous School Name<span className="text-danger">*</span>
+                          <label
+                            htmlFor="previousSchoolName"
+                            className="form-label"
+                          >
+                            Previous School Name
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -819,8 +868,12 @@ const UpdateAdmissionForm = () => {
                       </div>
                       <div className="col-md-6">
                         <div className="mb-3">
-                          <label htmlFor="addressOfPreviousSchool" className="form-label">
-                            Address Of Previous School<span className="text-danger">*</span>
+                          <label
+                            htmlFor="addressOfPreviousSchool"
+                            className="form-label"
+                          >
+                            Address Of Previous School
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -834,8 +887,12 @@ const UpdateAdmissionForm = () => {
                       </div>
                       <div className="col-md-4">
                         <div className="mb-3">
-                          <label htmlFor="previousSchoolBoard" className="form-label">
-                            Previous School Board<span className="text-danger">*</span>
+                          <label
+                            htmlFor="previousSchoolBoard"
+                            className="form-label"
+                          >
+                            Previous School Board
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -854,7 +911,8 @@ const UpdateAdmissionForm = () => {
                             htmlFor="previousSchoolResult"
                             className="form-label"
                           >
-                            Result Of Previous School<span className="text-danger">*</span>
+                            Result Of Previous School
+                            <span className="text-danger">*</span>
                           </label>
                           <input
                             type="file"
@@ -865,24 +923,26 @@ const UpdateAdmissionForm = () => {
                             onChange={handleChange}
                             required={!student?.previousSchoolResult}
                           />
-                          {typeof formData.previousSchoolResult === 'string' && (
+                          {typeof formData.previousSchoolResult ===
+                            "string" && (
                             <div className="text-muted small mt-1">
-                              Existing file: {getFileNameFromPath(formData.previousSchoolResult)}
+                              Existing file:{" "}
+                              {getFileNameFromPath(
+                                formData.previousSchoolResult
+                              )}
                             </div>
                           )}
                           {formData.previousSchoolResult instanceof File && (
                             <div className="text-muted small mt-1">
-                              New file selected: {formData.previousSchoolResult.name}
+                              New file selected:{" "}
+                              {formData.previousSchoolResult.name}
                             </div>
                           )}
                         </div>
                       </div>
                       <div className="col-md-4">
                         <div className="mb-3">
-                          <label
-                            htmlFor="tcCertificate"
-                            className="form-label"
-                          >
+                          <label htmlFor="tcCertificate" className="form-label">
                             TC Certificate<span className="text-danger">*</span>
                           </label>
                           <input
@@ -894,9 +954,10 @@ const UpdateAdmissionForm = () => {
                             onChange={handleChange}
                             required={!student?.tcCertificate}
                           />
-                          {typeof formData.tcCertificate === 'string' && (
+                          {typeof formData.tcCertificate === "string" && (
                             <div className="text-muted small mt-1">
-                              Existing file: {getFileNameFromPath(formData.tcCertificate)}
+                              Existing file:{" "}
+                              {getFileNameFromPath(formData.tcCertificate)}
                             </div>
                           )}
                           {formData.tcCertificate instanceof File && (
@@ -913,10 +974,7 @@ const UpdateAdmissionForm = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label
-                        htmlFor="proofOfResidence"
-                        className="form-label"
-                      >
+                      <label htmlFor="proofOfResidence" className="form-label">
                         Proof Of Residence<span className="text-danger">*</span>
                       </label>
                       <input
@@ -928,9 +986,10 @@ const UpdateAdmissionForm = () => {
                         onChange={handleChange}
                         required={!student?.proofOfResidence}
                       />
-                      {typeof formData.proofOfResidence === 'string' && (
+                      {typeof formData.proofOfResidence === "string" && (
                         <div className="text-muted small mt-1">
-                          Existing file: {getFileNameFromPath(formData.proofOfResidence)}
+                          Existing file:{" "}
+                          {getFileNameFromPath(formData.proofOfResidence)}
                         </div>
                       )}
                       {formData.proofOfResidence instanceof File && (
@@ -943,8 +1002,12 @@ const UpdateAdmissionForm = () => {
 
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="aadharPassportNumber" className="form-label">
-                        Aadhar/Passport Number<span className="text-danger">*</span>
+                      <label
+                        htmlFor="aadharPassportNumber"
+                        className="form-label"
+                      >
+                        Aadhar/Passport Number
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -964,7 +1027,8 @@ const UpdateAdmissionForm = () => {
                         htmlFor="aadharPassportFile"
                         className="form-label"
                       >
-                        Aadhar/Passport Upload<span className="text-danger">*</span>
+                        Aadhar/Passport Upload
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"
@@ -975,9 +1039,10 @@ const UpdateAdmissionForm = () => {
                         onChange={handleChange}
                         required={!student?.aadharPassportFile}
                       />
-                      {typeof formData.aadharPassportFile === 'string' && (
+                      {typeof formData.aadharPassportFile === "string" && (
                         <div className="text-muted small mt-1">
-                          Existing file: {getFileNameFromPath(formData.aadharPassportFile)}
+                          Existing file:{" "}
+                          {getFileNameFromPath(formData.aadharPassportFile)}
                         </div>
                       )}
                       {formData.aadharPassportFile instanceof File && (
@@ -999,7 +1064,10 @@ const UpdateAdmissionForm = () => {
                         className="form-control"
                         value={formData.studentCategory}
                         onChange={handleChange}
-                        disabled={formData.nationality === 'SAARC Countries' || formData.nationality === 'International'}
+                        disabled={
+                          formData.nationality === "SAARC Countries" ||
+                          formData.nationality === "International"
+                        }
                         required
                       >
                         <option value="">Select Category</option>
@@ -1015,7 +1083,8 @@ const UpdateAdmissionForm = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="castCertificate" className="form-label">
-                          Caste Certificate<span className="text-danger">*</span>
+                          Caste Certificate
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="file"
@@ -1026,9 +1095,10 @@ const UpdateAdmissionForm = () => {
                           onChange={handleChange}
                           required={!student?.castCertificate}
                         />
-                        {typeof formData.castCertificate === 'string' && (
+                        {typeof formData.castCertificate === "string" && (
                           <div className="text-muted small mt-1">
-                            Existing file: {getFileNameFromPath(formData.castCertificate)}
+                            Existing file:{" "}
+                            {getFileNameFromPath(formData.castCertificate)}
                           </div>
                         )}
                         {formData.castCertificate instanceof File && (
@@ -1056,10 +1126,7 @@ const UpdateAdmissionForm = () => {
                       checked={formData.siblingInfoChecked}
                       onChange={handleChange}
                     />
-                    <label
-                      className="form-check-label"
-                      htmlFor="customCheck1"
-                    >
+                    <label className="form-check-label" htmlFor="customCheck1">
                       Incase of no sibling Click here.
                     </label>
                   </div>
@@ -1073,7 +1140,7 @@ const UpdateAdmissionForm = () => {
                         id="relationType"
                         name="relationType"
                         className="form-control"
-                        value={formData.relationType || ''}
+                        value={formData.relationType || ""}
                         onChange={handleChange}
                         // required={!formData.siblingInfoChecked}
                         disabled={formData.siblingInfoChecked}
@@ -1118,9 +1185,10 @@ const UpdateAdmissionForm = () => {
                         // required={!formData.siblingInfoChecked}
                         disabled={formData.siblingInfoChecked}
                       />
-                      {typeof formData.idCardFile === 'string' && (
+                      {typeof formData.idCardFile === "string" && (
                         <div className="text-muted small mt-1">
-                          Existing file: {getFileNameFromPath(formData.idCardFile)}
+                          Existing file:{" "}
+                          {getFileNameFromPath(formData.idCardFile)}
                         </div>
                       )}
                       {formData.idCardFile instanceof File && (
@@ -1160,8 +1228,8 @@ const UpdateAdmissionForm = () => {
                   </div>
                 </div>
 
-                {formData.parentalStatus !== 'Single Mother' && (
-                  <div className='row'>
+                {formData.parentalStatus !== "Single Mother" && (
+                  <div className="row">
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="fatherName" className="form-label">
@@ -1174,7 +1242,7 @@ const UpdateAdmissionForm = () => {
                           className="form-control"
                           value={formData.fatherName}
                           onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Mother'}
+                          required={formData.parentalStatus !== "Single Mother"}
                         />
                       </div>
                     </div>
@@ -1182,7 +1250,8 @@ const UpdateAdmissionForm = () => {
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="fatherContactNo" className="form-label">
-                          Father Contact Number<span className="text-danger">*</span>
+                          Father Contact Number
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="tel"
@@ -1191,14 +1260,17 @@ const UpdateAdmissionForm = () => {
                           className="form-control"
                           value={formData.fatherContactNo}
                           onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Mother'}
+                          required={formData.parentalStatus !== "Single Mother"}
                         />
                       </div>
                     </div>
 
                     <div className="col-md-3">
                       <div className="mb-3">
-                        <label htmlFor="fatherQualification" className="form-label">
+                        <label
+                          htmlFor="fatherQualification"
+                          className="form-label"
+                        >
                           Father Higher Qualification
                         </label>
                         <input
@@ -1214,8 +1286,12 @@ const UpdateAdmissionForm = () => {
 
                     <div className="col-md-3">
                       <div className="mb-3">
-                        <label htmlFor="fatherProfession" className="form-label">
-                          Father Profession<span className="text-danger">*</span>
+                        <label
+                          htmlFor="fatherProfession"
+                          className="form-label"
+                        >
+                          Father Profession
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -1230,8 +1306,8 @@ const UpdateAdmissionForm = () => {
                   </div>
                 )}
 
-                {formData.parentalStatus !== 'Single Father' && (
-                  <div className='row'>
+                {formData.parentalStatus !== "Single Father" && (
+                  <div className="row">
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="motherName" className="form-label">
@@ -1244,7 +1320,7 @@ const UpdateAdmissionForm = () => {
                           className="form-control"
                           value={formData.motherName}
                           onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Father'}
+                          required={formData.parentalStatus !== "Single Father"}
                         />
                       </div>
                     </div>
@@ -1252,7 +1328,8 @@ const UpdateAdmissionForm = () => {
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="motherContactNo" className="form-label">
-                          Mother Contact Number<span className="text-danger">*</span>
+                          Mother Contact Number
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="tel"
@@ -1261,14 +1338,17 @@ const UpdateAdmissionForm = () => {
                           className="form-control"
                           value={formData.motherContactNo}
                           onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Father'}
+                          required={formData.parentalStatus !== "Single Father"}
                         />
                       </div>
                     </div>
 
                     <div className="col-md-3">
                       <div className="mb-3">
-                        <label htmlFor="motherQualification" className="form-label">
+                        <label
+                          htmlFor="motherQualification"
+                          className="form-label"
+                        >
                           Mother Higher Qualification
                         </label>
                         <input
@@ -1284,8 +1364,12 @@ const UpdateAdmissionForm = () => {
 
                     <div className="col-md-3">
                       <div className="mb-3">
-                        <label htmlFor="motherProfession" className="form-label">
-                          Mother Profession<span className="text-danger">*</span>
+                        <label
+                          htmlFor="motherProfession"
+                          className="form-label"
+                        >
+                          Mother Profession
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -1299,9 +1383,7 @@ const UpdateAdmissionForm = () => {
                     </div>
                   </div>
                 )}
-                {!showAdditionalData ? (
-                  null
-                ) : (
+                {!showAdditionalData ? null : (
                   <>
                     <div className="row">
                       <div className="card-header mb-2">
@@ -1323,7 +1405,10 @@ const UpdateAdmissionForm = () => {
                           className="form-check-label"
                           htmlFor="agreementCheck"
                         >
-                          I Understand & agree that the registration of my ward does not guarantee admission to the school & the registration fee is neither transferable nor refundable.
+                          I Understand & agree that the registration of my ward
+                          does not guarantee admission to the school & the
+                          registration fee is neither transferable nor
+                          refundable.
                         </label>
                       </div>
 
@@ -1365,13 +1450,16 @@ const UpdateAdmissionForm = () => {
                       </div>
                     </div>
 
-
-                    {formData.paymentMode === 'Cheque' && (
+                    {formData.paymentMode === "Cheque" && (
                       <div className="row">
                         <div className="col-md-6">
                           <div className="mb-3">
-                            <label htmlFor="chequeNumber" className="form-label">
-                              Cheque Number <span className="text-danger">*</span>
+                            <label
+                              htmlFor="chequeNumber"
+                              className="form-label"
+                            >
+                              Cheque Number{" "}
+                              <span className="text-danger">*</span>
                             </label>
                             <input
                               type="text"
@@ -1423,17 +1511,23 @@ const UpdateAdmissionForm = () => {
                             id="applicationDate"
                             name="applicationDate"
                             className="form-control"
-                            value={student?.applicationDate ? student.applicationDate.substring(0, 10) : ''}
+                            value={
+                              student?.applicationDate
+                                ? student.applicationDate.substring(0, 10)
+                                : ""
+                            }
                             onChange={handleChange}
                             disabled
                           />
-
                         </div>
                       </div>
 
                       <div className="col-md-4">
                         <div className="mb-3">
-                          <label htmlFor="admissionFeesReceivedBy" className="form-label">
+                          <label
+                            htmlFor="admissionFeesReceivedBy"
+                            className="form-label"
+                          >
                             Paymnet Mode
                           </label>
                           <input
@@ -1449,7 +1543,10 @@ const UpdateAdmissionForm = () => {
                       </div>
                       <div className="col-md-4">
                         <div className="mb-3">
-                          <label htmlFor="transactionNumber" className="form-label">
+                          <label
+                            htmlFor="transactionNumber"
+                            className="form-label"
+                          >
                             Transaction No./ Cheque No.
                           </label>
                           <input
@@ -1482,7 +1579,10 @@ const UpdateAdmissionForm = () => {
                       </div>
                       <div className="col-md-6">
                         <div className="mb-3">
-                          <label htmlFor="admissionNumber" className="form-label">
+                          <label
+                            htmlFor="admissionNumber"
+                            className="form-label"
+                          >
                             Admission No.
                           </label>
                           <input
@@ -1496,12 +1596,10 @@ const UpdateAdmissionForm = () => {
                           />
                         </div>
                       </div>
-
                     </div>
 
                     <div className="d-flex justify-content-end">
-                      <div className="text" style={{ marginLeft: "2px" }}>
-                      </div>
+                      <div className="text" style={{ marginLeft: "2px" }}></div>
                     </div>
                     <div className="text-end">
                       <button
@@ -1509,7 +1607,7 @@ const UpdateAdmissionForm = () => {
                         className="btn btn-primary custom-submit-button"
                         disabled={isSubmitting}
                       >
-                        {isSubmitting ? 'Submitting...' : 'Update'}
+                        {isSubmitting ? "Submitting..." : "Update"}
                       </button>
                     </div>
                   </>

@@ -45,10 +45,6 @@ const ViewRequestedQuote = () => {
 
       if (!response.hasError && response.data.data.products) {
         setQuotes(response.data.data.products);
-        console.log(
-          "get Quote List data from function",
-          response.data.data.products
-        );
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -83,11 +79,6 @@ const ViewRequestedQuote = () => {
           ...prev,
           [enquiryNumber]: response.data.data,
         }));
-        console.log(
-          "Submitted Quote data for",
-          enquiryNumber,
-          response.data.data
-        );
       } else {
         console.error("Invalid response format or error in response");
       }

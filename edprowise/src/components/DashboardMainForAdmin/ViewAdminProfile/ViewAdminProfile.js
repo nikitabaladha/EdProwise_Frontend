@@ -87,21 +87,19 @@ const ViewAdminProfile = () => {
 
                 <div className="row">
                   <div className="col-md-4">
-                    <div className="mb-3">
-                      <div className="d-flex align-items-center">
-                        <div className="rounded bg-light d-flex align-items-center justify-content-center">
-                          <img
-                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${adminProfile?.edprowiseProfile}`}
-                            alt={`${adminProfile?.companyName} Profile`}
-                            className="avatar-md"
-                            style={{
-                              objectFit: "cover",
-                              width: "200px",
-                              height: "200px",
-                              borderRadius: "10px",
-                            }}
-                          />
-                        </div>
+                    <div className="mb-3 d-flex justify-content-center">
+                      <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                        <img
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${adminProfile?.edprowiseProfile}`}
+                          alt={`${adminProfile?.companyName} Profile`}
+                          className="avatar-md"
+                          style={{
+                            objectFit: "cover",
+                            width: "200px",
+                            height: "200px",
+                            borderRadius: "10px",
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -124,7 +122,9 @@ const ViewAdminProfile = () => {
                       <label htmlFor="tan" className="form-label">
                         Company TAN Number
                       </label>
-                      <p className="form-control">{adminProfile?.tan || "Not Provided"}</p>
+                      <p className="form-control">
+                        {adminProfile?.tan || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -146,7 +146,9 @@ const ViewAdminProfile = () => {
                       <label htmlFor="cin" className="form-label">
                         Company CIN Number
                       </label>
-                      <p className="form-control">{adminProfile?.cin || "Not Provided"}</p>
+                      <p className="form-control">
+                        {adminProfile?.cin || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -156,11 +158,13 @@ const ViewAdminProfile = () => {
                 </h4>
                 <hr></hr>
                 <div className="row">
-                  <div className="mb-3">
-                    <label htmlFor="address" className="form-label">
-                      Address
-                    </label>
-                    <p className="form-control">{adminProfile?.address}</p>
+                  <div className="col-md-12">
+                    <div className="mb-3">
+                      <label htmlFor="address" className="form-label">
+                        Address
+                      </label>
+                      <p className="form-control">{adminProfile?.address}</p>
+                    </div>
                   </div>
                 </div>
                 <div className="row">
