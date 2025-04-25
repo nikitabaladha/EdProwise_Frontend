@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 import "lightbox2/dist/css/lightbox.css";
 import "lightbox2/dist/js/lightbox-plus-jquery.js";
 
@@ -95,10 +96,10 @@ const GallerySection = () => {
       {/* Modal Popup */}
       {showModal && (
         <div className="image-modal">
-          <div className="modal-content">
+          <div className="modal-contentt">
             <img src={modalImage} alt="Modal" className="modal-image" />
             <div className="modal-close" onClick={closeModal}>
-              <IoMdCloseCircle />
+              <IoIosCloseCircleOutline />
             </div>
           </div>
         </div>

@@ -116,7 +116,7 @@ const UserLogin = () => {
             <div className="form-content justify-content-end">
               <div className="form-items">
                 <div className="website-logoo-inside logo-normal">
-                  <Link to="/" className="custom-link">
+                  <Link onClick={navigateToHome} className="custom-link">
                     <div>
                       <img
                         className="logos"
@@ -127,7 +127,7 @@ const UserLogin = () => {
                   </Link>
                 </div>
                 <h3 className="font-md">Whatever School Need, We Provide</h3>
-                <p>We Listen...We Resolve...We Deliver</p>
+                <p>We Listen... We Resolve... We Deliver</p>
                 <form onSubmit={handleSubmit}>
                   <input
                     className="form-control"
@@ -208,13 +208,13 @@ const UserLogin = () => {
                     Forgot Password?{"  "}
                   </Link>
                   </div>
-                  <div className=" mt-3 text-center">
+                  {/* <div className=" mt-3 text-center">
                   <Link to="/" onClick={navigateToHome}>
                     {"  "}
                     Go to Home{" "}
                   </Link>
-                  </div>
-                  <div className=" mt-3 text-center">
+                  </div> */}
+                  <div className="mt-2 text-center">
                     <Link onClick={navigateToSignup}>
                       If you are not Register, Sign Up Here
                     </Link>

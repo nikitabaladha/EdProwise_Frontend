@@ -120,7 +120,7 @@ const Signup = () => {
             <div className="form-content justify-content-end">
               <div className="form-items">
                 <div className="website-logoo-inside logo-normal">
-                  <Link to="" className="custom-link">
+                  <Link to="/" className="custom-link">
                     <div>
                       <img
                         className="logos"
@@ -131,7 +131,7 @@ const Signup = () => {
                   </Link>
                 </div>
                 <h3 className="font-md">Whatever School Need, We Provide</h3>
-                <p>We Listen...We Resolve...We Deliver</p>
+                <p>We Listen... We Resolve... We Deliver</p>
                 <form onSubmit={handleSignup}>
                   <input
                     className="form-control"
@@ -265,10 +265,7 @@ const Signup = () => {
                       Sign Up
                     </button>
                   </div>
-                  <Link to="/" onClick={navigateToHomes}>
-                    Go to Home
-                  </Link>
-                  <div className=" mt-3 text-center">
+                  <div className=" mt-2 text-center">
                     <Link onClick={navigateToLogin}>
                       If you are Registered, Sign In Here
                     </Link>

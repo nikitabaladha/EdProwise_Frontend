@@ -26,6 +26,12 @@ const ConstactusMainSection = () => {
       return;
     }
 
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("Phone number must be exactly 10 digits.");
+      return;
+    }
+    
     // Send the form data to the backend API
     try {
       const response = await postAPI("/contactus", 
@@ -50,7 +56,7 @@ const ConstactusMainSection = () => {
 
   return (
     <>
-      <section className="wpo-contact-pg-section section-padding" style={{background:"#ffffff"}}>
+      <section className="wpo-contact-pg-section section-padding">
         <div className="container">
           <div className="row">
             <div className="col col-lg-10 offset-lg-1">
@@ -172,6 +178,7 @@ const ConstactusMainSection = () => {
                   <div className="fullwidth">
                     <textarea
                       className="form-control"
+                      style={{border:"1px soild black !important"}}
                       name="note"
                       value={formData.note}
                       onChange={handleChange}

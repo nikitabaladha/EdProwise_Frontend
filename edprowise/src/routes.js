@@ -200,7 +200,7 @@ import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesReceipts
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
 
-// ******Payroll *****//
+// ******Payroll add umesh *****//
 import EmployeeRegistrationList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/EmployeeRegistrationList.js";
 import AddEmployeeRegistration from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/AddEmployeeRegistration.js";
 import UpdateEmployeeRegistrationForm from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/UpdateEmployeeRegistrationForm.js";

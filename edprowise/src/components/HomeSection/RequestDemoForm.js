@@ -164,7 +164,9 @@ const RequestDemoForm = () => {
                     </div>
                   )}
                   <div className="fullwidth">
-                    <textarea className="form-control" name="note" placeholder="Additional requirements or questions..."></textarea>
+                    <textarea className="form-control"
+                    style={{border: "1px solid black"}}
+                    name="note" placeholder="Additional requirements or questions..."></textarea>
                   </div>
                   <div className="submit-area">
                     <button type="submit" className="theme-btn">Get in Touch</button>

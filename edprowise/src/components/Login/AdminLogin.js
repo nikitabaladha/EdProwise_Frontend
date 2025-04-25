@@ -103,7 +103,7 @@ const AdminLogin = () => {
                   </Link>
                 </div>
                 <h3 className="font-md">Whatever School Need, We Provide</h3>
-                <p>We Listen...We Resolve...We Deliver</p>
+                <p>We Listen... We Resolve... We Deliver</p>
                 <form onSubmit={handleSubmit}>
                   <input
                     className="form-control"
@@ -179,12 +179,7 @@ const AdminLogin = () => {
                       Login
                     </button>
                   </div>
-
-                  <Link to="/" onClick={navigateToHome}>
-                    {" "}
-                    Go to Home{" "}
-                  </Link>
-                  <div className=" mt-3 text-center">
+                  <div className=" mt-2 text-center">
                     <Link onClick={navigateToSignup}>
                       If you are not Register, Sign Up Here
                     </Link>

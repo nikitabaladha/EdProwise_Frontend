@@ -242,7 +242,7 @@ const HomeMainSection = () => {
                     <input
                       className="home-search-input"
                       type="text"
-                      placeholder="Search Our Services..."
+                      placeholder="Whatever School Need, We Provide... Search Now"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onClick={() => setIsExpanded(true)}
@@ -293,15 +293,17 @@ const HomeMainSection = () => {
                   {/* <img src="assets/website-images/event/HomePage.png" alt="Student" /> */}
                   <div className="wpo-about-img" style={{ textAlign: "center" }}>
                   <img
+                   className="home-img-section"
                     src="/assets/images/EdProwiseFavicon.png"
                     alt=""
-                    style={{ width: "29%" }}
+                    // style={{ width: "29%" }}
                   />
                   <div className="back-shapee">
                     <img
+                    className="home-img-back-section"
                       src="/assets/website-images/event/HomePage.png"
                       alt=""
-                      style={{ width: "80%" }}
+                      // style={{ width: "80%" }}
                     />
                   </div>
                 </div> 

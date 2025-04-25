@@ -1,6 +1,7 @@
 import React from "react";
 import Slider from "react-slick";
-
+import { GrPrevious } from "react-icons/gr";
+import { GrNext } from "react-icons/gr";
 const testimonials = [
   {
     text: "EdProWise has completely transformed the way we manage our curriculum and student engagement. The intuitive platform and expert guidance have made a significant impact on our school's success.",
@@ -42,19 +43,22 @@ const CustomPrevArrow = (props) => {
       onClick={onClick}
       style={{
         position: "absolute",
-        left: "-40px",
+        left: "-48px",
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center",
         top: "50%",
         transform: "translateY(-50%)",
         zIndex: "2",
-        background: "rgba(0, 0, 0, 0.5)",
-        border: "none",
-        color: "#fff",
-        padding: "10px 15px",
+        background: "white",
+        border: "1px solid",
+        color: "black",
+        padding: "15px",
         cursor: "pointer",
         borderRadius: "50%",
       }}
     >
-      {"<"}
+      <GrPrevious />
     </button>
   );
 };
@@ -67,19 +71,22 @@ const CustomNextArrow = (props) => {
       onClick={onClick}
       style={{
         position: "absolute",
-        right: "-40px",
+        right: "-48px",
         top: "50%",
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center",
         transform: "translateY(-50%)",
         zIndex: "2",
-        background: "rgba(0, 0, 0, 0.5)",
-        border: "none",
-        color: "#fff",
-        padding: "10px 15px",
+        background: "white",
+        border: "1px solid",
+        color: "black",
+        padding: "15px",
         cursor: "pointer",
         borderRadius: "50%",
       }}
     >
-      {">"}
+    <GrNext />
     </button>
   );
 };

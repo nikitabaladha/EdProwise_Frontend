@@ -163,8 +163,10 @@ body {
 
 .form-content .form-items {
   /* max-width: 340px; */
-  max-width: 400px;
+  max-width: 500px;
+  padding: 10px;
   text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .form-content .form-items.with-bg {

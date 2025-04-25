@@ -73,7 +73,7 @@ const FaqContactUsComponent = () => {
           </div>
 
           <div className="col-12 col-md-12 col-lg-6">     
-            <section className="wpo-contact-pg-section section-padding pt-0" style={{background:"#fafaff",}}>
+            <section className="wpo-contact-pg-section section-padding pt-0">
               <div className="container">
                 <div className="row">
                   <div className="col col-lg-12  ">

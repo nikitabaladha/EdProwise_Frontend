@@ -1,6 +1,6 @@
 import React from "react";
 import { FaCheckCircle, FaArrowRight } from "react-icons/fa";
-
+import { IoCheckmarkCircle } from "react-icons/io5";
 const reportsPlans = [
   {
     title: " Form & Receipts",

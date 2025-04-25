@@ -147,7 +147,7 @@ const ForgotPassword = (e) => {
                   </Link>
                 </div>
                 <h3 className="font-md">Whatever School Need, We Provide</h3>
-                <p>We Listen...We Resolve...We Deliver</p>
+                <p>We Listen... We Resolve... We Deliver</p>
                 {step === 1 && (
                   <form onSubmit={handleSubmitUserId}>
                     <p style={{ fontSize: "1rem" }}> Enter the userId associated with your Edprowise account.</p>
@@ -252,13 +252,7 @@ const ForgotPassword = (e) => {
                     Forgot userId?{"  "}
                   </Link>
                 </div>
-                <div className=" mt-3 text-center">
-                  <Link to="/" onClick={navigateToHome}>
-                    {"  "}
-                    Go to Home{" "}
-                  </Link>
-                </div>
-                <div className=" mt-3 text-center">
+                <div className=" mt-2 text-center bottom-margin-forgot">
                   <Link onClick={navigateToSignup}>
                     If you are not Register, Sign Up Here
                   </Link>
