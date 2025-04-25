@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import AdminDashboardHeader from "./AdminDashboardHeader";
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
+import Page404ForWebsite from "../Pages404/Page404ForDashboard";
 
 // this is my entire application wrapped inside this
 const AdminDashboardMain = () => {

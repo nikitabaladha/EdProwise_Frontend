@@ -245,6 +245,11 @@ import PayToEdprowiseForSeller from "./components/DashboardMainForSeller/Procure
 import ForgotPassword from "./components/ForgotPasswordorUserId/ForgotPassword.js";
 import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
 
+// 404 pages
+
+import Page404ForWebsite from "./components/Pages404/Page404ForWebsite.js";
+import Page404ForDashboard from "./components/Pages404/Page404ForDashboard.js";
+
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -290,7 +295,6 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-
       <Route
         path="/forgot-password"
         element={
@@ -299,7 +303,6 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-
       <Route
         path="/forgot-password/new-password"
         element={
@@ -308,7 +311,6 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-
       <Route
         path="/forgot-userId"
         element={
@@ -317,7 +319,6 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-
       <Route
         path="/forgot-userId/new-userId"
         element={
@@ -326,7 +327,6 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-
       <Route
         path="/complete-admin-profile"
         element={
@@ -351,7 +351,6 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       />
-
       <Route
         path="/complete-seller-profile"
         element={
@@ -361,7 +360,95 @@ const AppRoutes = () => {
         }
       />
 
+      <Route path="/website-page-not-found" element={<Page404ForWebsite />} />
+      {/* =========================Website Routes========================= */}
+
+      <Route path="/" element={<WebsiteMain />}>
+        <Route index element={<HomePage />} />
+
+        <Route path="about-us" element={<AboutPage />} />
+        <Route path="contact-us" element={<ContactUsPage />} />
+        <Route path="order" element={<OrderDetailsWebSitePage />} />
+
+        <Route path="services" element={<ServiceMainPage />}>
+          <Route path="digital-services" element={<DigitalService />} />
+          <Route path="academic-admin-services" element={<BusinessSection />} />
+          <Route path="recruitment-services" element={<RecruitmentSection />} />
+          <Route path="get-goods-services" element={<ProcurementSection />} />
+        </Route>
+
+        <Route path="community-connect" element={<CommunityMainPage />}>
+          <Route path="gallery" element={<GallerySection />} />
+          <Route path="edprowise-talks" element={<EdprowiseTalkSection />} />
+          <Route path="student-zone" element={<StudentZoneSection />} />
+          <Route path="educator-zone" element={<EducatorZoneSection />} />
+        </Route>
+
+        <Route path="become-supplier" element={<SupplierPage />} />
+        <Route path="faq" element={<FaqPage />} />
+        <Route path="privacy-policy" element={<PrivacyPage />} />
+        <Route path="terms" element={<TermsPage />} />
+        <Route path="career" element={<CareerPage />} />
+        <Route path="career/:jobName" element={<CareerForm />} />
+        <Route path="request-demo" element={<RequestDemoForm />} />
+        <Route
+          path="services/digital-services/fees"
+          element={<ServiceFess />}
+        />
+        <Route
+          path="services/digital-services/payroll"
+          element={<PayrollService />}
+        />
+        <Route
+          path="services/digital-services/booksync"
+          element={<FinanceBook />}
+        />
+        <Route
+          path="services/digital-services/schooloperation"
+          element={<SchoolOperation />}
+        />
+        <Route
+          path="services/digital-services/schoolApplication"
+          element={<SchoolApplication />}
+        />
+        <Route
+          path="services/digital-services/school-Website-Design"
+          element={<SchoolWebsiteDesign />}
+        />
+
+        <Route
+          path="community-connect/student-zone/proposed-exam-reforms-by-CBSE"
+          element={<StudentZoneFullBlog />}
+        />
+
+        <Route
+          path="community-connect/student-zone/how-to-be-successful"
+          element={<StudentZoneFullBlog2 />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/how-to-be-successful-teacher"
+          element={<EducatorZoneBlog1 />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/teaching-strategies-pedagogy"
+          element={<EducatorZoneBlog2 />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/teacher-well-being"
+          element={<EducatorZoneBlog3 />}
+        />
+
+        <Route
+          path="*"
+          element={<Navigate to="/website-page-not-found" replace />}
+        />
+      </Route>
+
       {/* ===================================================Admin Routes==================================== */}
+
       <Route
         path="/admin-dashboard"
         element={
@@ -467,26 +554,15 @@ const AppRoutes = () => {
           path="procurement-services/update-bank-detail"
           element={<UpdateBankDetail />}
         />
-        {/* <Route
-          path="procurement-services/quote-proposal"
-          element={<QuoteProposalForAll />}
-        />
-        <Route
-          path="procurement-services/invoice-for-edprowise"
-          element={<InvoiceForEdProwiseForAll />}
-        />
-        <Route
-          path="procurement-services/invoice-for-buyer"
-          element={<InvoiceForBuyerForAll />}
-        /> */}
 
         {/*=============================== Email routes================== */}
 
         <Route path="email/smtp-setting" element={<SMTPHostSettings />} />
         <Route path="email/templates" element={<EmailTemplatesList />} />
         <Route path="email/marketing" element={<MarketingEmail />} />
-      </Route>
 
+        <Route path="*" element={<Page404ForDashboard />} />
+      </Route>
       {/* ==========================================Schhool Routes================================*/}
       <Route
         path="/school-dashboard"
@@ -793,10 +869,10 @@ const AppRoutes = () => {
           path="payroll-module/employee-services/update-details"
           element={<EmployeeDetails />}
         />
+
+        <Route path="*" element={<Page404ForDashboard />} />
       </Route>
-
       {/* =========================================Seller Routes============================================= */}
-
       <Route
         path="/seller-dashboard"
         element={
@@ -865,86 +941,7 @@ const AppRoutes = () => {
         />
       </Route>
 
-      {/* Website Routes */}
-
-      <Route path="/" element={<WebsiteMain />}>
-        <Route index element={<HomePage />} />
-
-        <Route path="about-us" element={<AboutPage />} />
-        <Route path="contact-us" element={<ContactUsPage />} />
-        <Route path="order" element={<OrderDetailsWebSitePage />} />
-
-        <Route path="services" element={<ServiceMainPage />}>
-          <Route path="digital-services" element={<DigitalService />} />
-          <Route path="academic-admin-services" element={<BusinessSection />} />
-          <Route path="recruitment-services" element={<RecruitmentSection />} />
-          <Route path="get-goods-services" element={<ProcurementSection />} />
-        </Route>
-
-        <Route path="community-connect" element={<CommunityMainPage />}>
-          <Route path="gallery" element={<GallerySection />} />
-          <Route path="edprowise-talks" element={<EdprowiseTalkSection />} />
-          <Route path="student-zone" element={<StudentZoneSection />} />
-          <Route path="educator-zone" element={<EducatorZoneSection />} />
-        </Route>
-
-        <Route path="become-supplier" element={<SupplierPage />} />
-        <Route path="faq" element={<FaqPage />} />
-        <Route path="privacy-policy" element={<PrivacyPage />} />
-        <Route path="terms" element={<TermsPage />} />
-        <Route path="career" element={<CareerPage />} />
-        <Route path="career/:jobName" element={<CareerForm />} />
-        <Route path="request-demo" element={<RequestDemoForm />} />
-        <Route
-          path="services/digital-services/fees"
-          element={<ServiceFess />}
-        />
-        <Route
-          path="services/digital-services/payroll"
-          element={<PayrollService />}
-        />
-        <Route
-          path="services/digital-services/booksync"
-          element={<FinanceBook />}
-        />
-        <Route
-          path="services/digital-services/schooloperation"
-          element={<SchoolOperation />}
-        />
-        <Route
-          path="services/digital-services/schoolApplication"
-          element={<SchoolApplication />}
-        />
-        <Route
-          path="services/digital-services/school-Website-Design"
-          element={<SchoolWebsiteDesign />}
-        />
-
-        <Route
-          path="community-connect/student-zone/proposed-exam-reforms-by-CBSE"
-          element={<StudentZoneFullBlog />}
-        />
-
-        <Route
-          path="community-connect/student-zone/how-to-be-successful"
-          element={<StudentZoneFullBlog2 />}
-        />
-
-        <Route
-          path="community-connect/educator-zone/how-to-be-successful-teacher"
-          element={<EducatorZoneBlog1 />}
-        />
-
-        <Route
-          path="community-connect/educator-zone/teaching-strategies-pedagogy"
-          element={<EducatorZoneBlog2 />}
-        />
-
-        <Route
-          path="community-connect/educator-zone/teacher-well-being"
-          element={<EducatorZoneBlog3 />}
-        />
-      </Route>
+      <Route path="*" element={<Page404ForDashboard />} />
     </Routes>
   );
 };
