@@ -4,11 +4,11 @@ import putAPI from "../../../../api/putAPI";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import CityData from "../../../CityData.json";
+import Select from "react-select";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { SpecialZoomLevel } from "@react-pdf-viewer/core";
-import CountryStateCityData from "../../../CountryStateCityData.json";
-import CreatableSelect from "react-select/creatable";
 
 const UpdateSchool = () => {
   const location = useLocation();
@@ -20,17 +20,12 @@ const UpdateSchool = () => {
     schoolMobileNo: "",
     schoolEmail: "",
     schoolAddress: "",
-    country: "",
-    state: "",
-    city: "",
+    schoolLocation: "",
     affiliationUpto: "",
     panNo: "",
     profileImage: null,
     affiliationCertificate: null,
     panFile: null,
-    isCustomCountry: false,
-    isCustomState: false,
-    isCustomCity: false,
   });
 
   const [previewProfileImage, setPreviewProfileImage] = useState(null);
@@ -41,112 +36,41 @@ const UpdateSchool = () => {
     useState(false);
   const [isPanFilePDF, setIsPanFilePDF] = useState(false);
 
+  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
+    cities.map((city) => ({
+      value: `${city}, ${state}, India`,
+      label: `${city}, ${state}, India`,
+    }))
+  );
+
   const profileImageRef = useRef(null);
   const affiliationCertificateRef = useRef(null);
   const panFileRef = useRef(null);
 
-  const countryData = CountryStateCityData;
-
-  // useEffect(() => {
-  //   if (school) {
-  //     const country = school.country;
-  //     const state = school.state;
-  //     const city = school.city;
-
-  //     // Check if values are custom
-  //     const isCustomCountry = !countryData.hasOwnProperty(country);
-  //     const isCustomState =
-  //       !isCustomCountry && !countryData[country]?.hasOwnProperty(state);
-  //     const isCustomCity =
-  //       !isCustomState &&
-  //       !isCustomCountry &&
-  //       !countryData[country]?.[state]?.includes(city);
-
-  //     // Check file types
-  //     const isAffiliationPDF = school.affiliationCertificate?.endsWith(".pdf");
-  //     const isPanPDF = school.panFile?.endsWith(".pdf");
-
-  //     setIsAffiliationCertificatePDF(isAffiliationPDF);
-  //     setIsPanFilePDF(isPanPDF);
-
-  //     setFormData({
-  //       schoolName: school.schoolName || "",
-  //       schoolMobileNo: school.schoolMobileNo || "",
-  //       schoolEmail: school.schoolEmail || "",
-  //       schoolAddress: school.schoolAddress || "",
-  //       country: school.country || "",
-  //       state: school.state || "",
-  //       city: school.city || "",
-  //       affiliationUpto: school.affiliationUpto || "",
-  //       panNo: school.panNo || "",
-  //       profileImage: school.profileImage || null,
-  //       affiliationCertificate: school.affiliationCertificate || null,
-  //       panFile: school.panFile || null,
-  //       isCustomCountry,
-  //       isCustomState,
-  //       isCustomCity,
-  //     });
-
-  //     // Set previews
-  //     if (school.profileImage) {
-  //       setPreviewProfileImage(
-  //         `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`
-  //       );
-  //     }
-  //     if (school.affiliationCertificate) {
-  //       setPreviewAffiliationCertificate(
-  //         `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`
-  //       );
-  //     }
-  //     if (school.panFile) {
-  //       setPreviewPanFile(
-  //         `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`
-  //       );
-  //     }
-  //   }
-  // }, [school]);
-
   useEffect(() => {
     if (school) {
-      const country = school.country || "";
-      const state = school.state || "";
-      const city = school.city || "";
-
-      // Check if values are custom - more defensive checks
-      const isCustomCountry = country && !countryData.hasOwnProperty(country);
-      const isCustomState =
-        state &&
-        (isCustomCountry || !countryData[country]?.hasOwnProperty(state));
-      const isCustomCity =
-        city &&
-        (isCustomState || !countryData[country]?.[state]?.includes(city));
-
-      // Check file types
+      // Check file types for existing files
       const isAffiliationPDF = school.affiliationCertificate?.endsWith(".pdf");
       const isPanPDF = school.panFile?.endsWith(".pdf");
 
       setIsAffiliationCertificatePDF(isAffiliationPDF);
       setIsPanFilePDF(isPanPDF);
 
+      // Set form data
       setFormData({
         schoolName: school.schoolName || "",
         schoolMobileNo: school.schoolMobileNo || "",
         schoolEmail: school.schoolEmail || "",
         schoolAddress: school.schoolAddress || "",
-        country: school.country || "",
-        state: school.state || "",
-        city: school.city || "",
+        schoolLocation: school.schoolLocation || "",
         affiliationUpto: school.affiliationUpto || "",
         panNo: school.panNo || "",
         profileImage: school.profileImage || null,
         affiliationCertificate: school.affiliationCertificate || null,
         panFile: school.panFile || null,
-        isCustomCountry,
-        isCustomState,
-        isCustomCity,
       });
 
-      // Set previews
+      // Set previews for existing files
       if (school.profileImage) {
         setPreviewProfileImage(
           `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`
@@ -167,35 +91,13 @@ const UpdateSchool = () => {
 
   useEffect(() => {
     return () => {
-      [
-        previewProfileImage,
-        previewAffiliationCertificate,
-        previewPanFile,
-      ].forEach((preview) => preview && URL.revokeObjectURL(preview));
+      // Clean up object URLs to avoid memory leaks
+      if (previewProfileImage) URL.revokeObjectURL(previewProfileImage);
+      if (previewAffiliationCertificate)
+        URL.revokeObjectURL(previewAffiliationCertificate);
+      if (previewPanFile) URL.revokeObjectURL(previewPanFile);
     };
   }, [previewProfileImage, previewAffiliationCertificate, previewPanFile]);
-
-  // Get country/state/city options
-  const countryOptions = Object.keys(countryData).map((country) => ({
-    value: country,
-    label: country,
-  }));
-
-  const stateOptions =
-    formData.country && !formData.isCustomCountry
-      ? Object.keys(countryData[formData.country]).map((state) => ({
-          value: state,
-          label: state,
-        }))
-      : [];
-
-  const cityOptions =
-    formData.state && !formData.isCustomState && formData.country
-      ? (countryData[formData.country][formData.state] || []).map((city) => ({
-          value: city,
-          label: city,
-        }))
-      : [];
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -207,9 +109,10 @@ const UpdateSchool = () => {
         [name]: file,
       }));
 
-      // Handle previews
+      // Handle previews based on file type
       if (file) {
         const fileUrl = URL.createObjectURL(file);
+
         if (name === "profileImage") {
           setPreviewProfileImage(fileUrl);
         } else if (name === "affiliationCertificate") {
@@ -232,24 +135,23 @@ const UpdateSchool = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+
+    const formDataToSend = new FormData();
+
+    for (const key in formData) {
+      if (formData[key] instanceof File) {
+        formDataToSend.append(key, formData[key]);
+      } else if (formData[key] !== null) {
+        formDataToSend.append(key, formData[key]);
+      }
+    }
+
     setSending(true);
 
     try {
-      const data = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (
-          !["isCustomCountry", "isCustomState", "isCustomCity"].includes(key)
-        ) {
-          const value = formData[key];
-          if (value !== null && value !== undefined) {
-            data.append(key, value);
-          }
-        }
-      });
-
       const response = await putAPI(
         `/school/${school._id}`,
-        data,
+        formDataToSend,
         {
           "Content-Type": "multipart/form-data",
         },
@@ -260,7 +162,7 @@ const UpdateSchool = () => {
         toast.success("School updated successfully!");
         navigate(-1);
       } else {
-        toast.error("Failed to update school");
+        toast.error("Failed to update School.");
       }
     } catch (error) {
       toast.error(
@@ -269,6 +171,10 @@ const UpdateSchool = () => {
     } finally {
       setSending(false);
     }
+  };
+
+  const getBaseFileName = (url) => {
+    return url ? url.split("/").pop() : "";
   };
 
   const renderFilePreview = (preview, isPDF, defaultPreview, altText) => {
@@ -360,7 +266,10 @@ const UpdateSchool = () => {
                   </h4>
                 </div>
               </div>
-              <form onSubmit={handleUpdate}>
+              <form
+                onSubmit={handleUpdate}
+                className="custom-font-size-for-form"
+              >
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -380,8 +289,9 @@ const UpdateSchool = () => {
                         {renderFilePreview(
                           previewProfileImage,
                           false,
-                          formData.profileImage &&
-                            `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.profileImage}`,
+                          formData.profileImage
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.profileImage}`
+                            : null,
                           "Profile Preview"
                         )}
                       </div>
@@ -404,7 +314,8 @@ const UpdateSchool = () => {
                     </div>
                     <div className="mb-3">
                       <label htmlFor="mobileNo" className="form-label">
-                        Mobile Number <span className="text-danger">*</span>
+                        School Mobile Number{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="tel"
@@ -418,7 +329,7 @@ const UpdateSchool = () => {
                     </div>
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
-                        Email <span className="text-danger">*</span>
+                        School Email <span className="text-danger">*</span>
                       </label>
                       <input
                         type="email"
@@ -436,7 +347,7 @@ const UpdateSchool = () => {
                 <div className="row">
                   <div className="mb-3">
                     <label htmlFor="address" className="form-label">
-                      Address <span className="text-danger">*</span>
+                      School Address <span className="text-danger">*</span>
                     </label>
                     <textarea
                       className="form-control"
@@ -453,184 +364,32 @@ const UpdateSchool = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="country" className="form-label">
-                        Country
+                      <label htmlFor="cityStateCountry" className="form-label">
+                        City-State-Country{" "}
                         <span className="text-danger">*</span>
                       </label>
-                      {/* by default i want to show existing country which is stored in data base but if user want he can chnage */}
-                      <CreatableSelect
-                        id="country"
-                        name="country"
-                        options={countryOptions}
-                        value={
-                          formData.country
-                            ? {
-                                value: formData.country,
-                                label: formData.country,
-                              }
-                            : null
+                      <Select
+                        id="cityStateCountry"
+                        name="schoolLocation"
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === formData.schoolLocation
+                        )}
+                        onChange={(selectedOption) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            schoolLocation: selectedOption
+                              ? selectedOption.value
+                              : "",
+                          }))
                         }
-                        onChange={(selectedOption) => {
-                          const isCustom = !countryOptions.some(
-                            (option) => option.value === selectedOption?.value
-                          );
-                          setFormData((prev) => ({
-                            ...prev,
-                            country: selectedOption?.value || "",
-                            state: "",
-                            city: "",
-                            isCustomCountry: isCustom,
-                            isCustomState: false,
-                            isCustomCity: false,
-                          }));
-                        }}
-                        onCreateOption={(inputValue) => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            country: inputValue,
-                            state: "",
-                            city: "",
-                            isCustomCountry: true,
-                            isCustomState: false,
-                            isCustomCity: false,
-                          }));
-                        }}
-                        placeholder="Select or type country"
+                        placeholder="Select City-State-Country"
                         isSearchable
                         required
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
                       />
                     </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="state" className="form-label">
-                        State <span className="text-danger">*</span>
-                        {/* by default i want to show existing state which is stored in data base but if user want he can chnage */}
-                      </label>
-                      {formData.isCustomCountry ? (
-                        <input
-                          type="text"
-                          id="state"
-                          name="state"
-                          className="form-control"
-                          value={formData.state}
-                          onChange={(e) => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              state: e.target.value,
-                              city: "",
-                              isCustomState: true,
-                              isCustomCity: false,
-                            }));
-                          }}
-                          required
-                        />
-                      ) : (
-                        <CreatableSelect
-                          id="state"
-                          name="state"
-                          options={stateOptions}
-                          value={
-                            formData.state
-                              ? { value: formData.state, label: formData.state }
-                              : null
-                          }
-                          onChange={(selectedOption) => {
-                            const isCustom = !stateOptions.some(
-                              (option) => option.value === selectedOption?.value
-                            );
-                            setFormData((prev) => ({
-                              ...prev,
-                              state: selectedOption?.value || "",
-                              city: "",
-                              isCustomState: isCustom,
-                              isCustomCity: false,
-                            }));
-                          }}
-                          onCreateOption={(inputValue) => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              state: inputValue,
-                              city: "",
-                              isCustomState: true,
-                              isCustomCity: false,
-                            }));
-                          }}
-                          placeholder="Select or type state"
-                          isSearchable
-                          required
-                          isDisabled={!formData.country}
-                        />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="city" className="form-label">
-                        City <span className="text-danger">*</span>
-                        {/* by default i want to show existing city which is stored in data base but if user want he can chnage */}
-                      </label>
-                      {formData.isCustomState || formData.isCustomCountry ? (
-                        <input
-                          type="text"
-                          id="city"
-                          name="city"
-                          className="form-control"
-                          value={formData.city}
-                          onChange={(e) => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              city: e.target.value,
-                              isCustomCity: true,
-                            }));
-                          }}
-                          required
-                        />
-                      ) : (
-                        <CreatableSelect
-                          id="city"
-                          name="city"
-                          options={cityOptions}
-                          value={
-                            formData.city
-                              ? { value: formData.city, label: formData.city }
-                              : null
-                          }
-                          onChange={(selectedOption) => {
-                            const isCustom =
-                              selectedOption &&
-                              !cityOptions.some(
-                                (option) =>
-                                  option.value === selectedOption.value
-                              );
-                            setFormData((prev) => ({
-                              ...prev,
-                              city: selectedOption?.value || "",
-                              isCustomCity: isCustom,
-                            }));
-                          }}
-                          onCreateOption={(inputValue) => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              city: inputValue,
-                              isCustomCity: true,
-                            }));
-                          }}
-                          placeholder="Select or type city"
-                          isSearchable
-                          required
-                          isDisabled={!formData.state}
-                        />
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Rest of the form remains similar */}
-                <div className="row">
-                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="affiliationUpto" className="form-label">
                         Affiliation Upto <span className="text-danger">*</span>
@@ -673,7 +432,6 @@ const UpdateSchool = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label

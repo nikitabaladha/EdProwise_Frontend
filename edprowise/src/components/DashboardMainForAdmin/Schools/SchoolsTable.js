@@ -61,7 +61,11 @@ const SchoolsTable = () => {
       School_Name: school.schoolName,
       PAN_Number: school.panNo,
       School_Address: school.schoolAddress,
-      School_Location: school.schoolLocation,
+      city: school.city,
+      state: school.state,
+
+      country: school.country,
+
       Landmark: school.landMark,
       School_Pincode: school.schoolPincode,
       Delivery_Address: school.deliveryAddress,

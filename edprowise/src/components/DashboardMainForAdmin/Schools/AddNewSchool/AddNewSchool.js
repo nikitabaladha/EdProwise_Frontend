@@ -3,8 +3,11 @@ import postAPI from "../../../../api/postAPI";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import CityData from "../../../CityData.json";
-import Select from "react-select";
+import CountryStateCityData from "../../../CountryStateCityData.json";
+import CreatableSelect from "react-select/creatable";
+
+// Use the consolidated country data
+const countryData = CountryStateCityData;
 
 const AddNewSchool = () => {
   const [formData, setFormData] = useState({
@@ -12,22 +15,44 @@ const AddNewSchool = () => {
     schoolMobileNo: "",
     schoolEmail: "",
     schoolAddress: "",
-    schoolLocation: "",
+    country: "",
+    state: "",
+    city: "",
     affiliationUpto: "",
     panNo: "",
     profileImage: null,
     affiliationCertificate: null,
     panFile: null,
+    isCustomCountry: false,
+    isCustomState: false,
+    isCustomCity: false,
   });
 
   const navigate = useNavigate();
 
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => ({
-      value: `${city}, ${state}, India`,
-      label: `${city}, ${state}, India`,
-    }))
-  );
+  // Get countries from countryData keys
+  const countryOptions = Object.keys(countryData).map((country) => ({
+    value: country,
+    label: country,
+  }));
+
+  // Get states based on selected country
+  const stateOptions =
+    formData.country && !formData.isCustomCountry
+      ? Object.keys(countryData[formData.country]).map((state) => ({
+          value: state,
+          label: state,
+        }))
+      : [];
+
+  // Get cities based on selected state and country
+  const cityOptions =
+    formData.state && !formData.isCustomState && formData.country
+      ? (countryData[formData.country][formData.state] || []).map((city) => ({
+          value: city,
+          label: city,
+        }))
+      : [];
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -49,13 +74,16 @@ const AddNewSchool = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setSending(true);
 
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+        if (
+          !["isCustomCountry", "isCustomState", "isCustomCity"].includes(key)
+        ) {
+          data.append(key, formData[key]);
+        }
       });
 
       const response = await postAPI(
@@ -69,24 +97,29 @@ const AddNewSchool = () => {
 
       if (!response.hasError) {
         toast.success("School added successfully");
-
+        // Reset form
         setFormData({
           schoolName: "",
           schoolMobileNo: "",
           schoolEmail: "",
           schoolAddress: "",
-          schoolLocation: "",
+          country: "",
+          state: "",
+          city: "",
           affiliationUpto: "",
           panNo: "",
           profileImage: null,
           affiliationCertificate: null,
           panFile: null,
+          isCustomCountry: false,
+          isCustomState: false,
+          isCustomCity: false,
         });
-
-        document.getElementById("profileImage").value = "";
-        document.getElementById("affiliationCertificate").value = "";
-        document.getElementById("panFile").value = "";
-
+        // Reset file inputs
+        ["profileImage", "affiliationCertificate", "panFile"].forEach((id) => {
+          document.getElementById(id) &&
+            (document.getElementById(id).value = "");
+        });
         navigate(-1);
       } else {
         toast.error(response.message || "Failed to add school");
@@ -100,24 +133,24 @@ const AddNewSchool = () => {
       setSending(false);
     }
   };
-
   return (
-    <>
-      <div className="container">
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="card m-2">
-              <div className="card-body custom-heading-padding">
-                <div className="container">
-                  <div className="card-header mb-2">
-                    <h4 className="card-title text-center custom-heading-font">
-                      Add New School
-                    </h4>
-                  </div>
+    <div className="container">
+      <div className="row">
+        <div className="col-xl-12">
+          <div className="card m-2">
+            <div className="card-body custom-heading-padding">
+              <div className="container">
+                <div className="card-header mb-2">
+                  <h4 className="card-title text-center custom-heading-font">
+                    Add New School
+                  </h4>
                 </div>
+              </div>
+
+              <div className="card-body custom-heading-padding">
                 <form onSubmit={handleSubmit}>
                   <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-3">
                       {" "}
                       <div className="mb-3">
                         <label htmlFor="schoolName" className="form-label">
@@ -132,6 +165,22 @@ const AddNewSchool = () => {
                           onChange={handleChange}
                           required
                           placeholder="Example : ABC School"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="profileImage" className="form-label">
+                          Profile Image
+                        </label>
+                        <input
+                          type="file"
+                          id="profileImage"
+                          name="profileImage"
+                          className="form-control"
+                          accept="image/*"
+                          onChange={handleChange}
+                          // required
                         />
                       </div>
                     </div>
@@ -192,52 +241,187 @@ const AddNewSchool = () => {
                   </div>
 
                   <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                       <div className="mb-3">
-                        <label
-                          htmlFor="cityStateCountry"
-                          className="form-label"
-                        >
-                          City-State-Country
-                          <span className="text-danger">*</span>
+                        <label htmlFor="country" className="form-label">
+                          Country <span className="text-danger">*</span>
                         </label>
-                        <Select
-                          id="cityStateCountry"
-                          name="schoolLocation"
-                          options={cityOptions}
-                          value={cityOptions.find(
-                            (option) => option.value === formData.schoolLocation
-                          )}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              schoolLocation: selectedOption
-                                ? selectedOption.value
-                                : "",
-                            }))
+                        <CreatableSelect
+                          id="country"
+                          name="country"
+                          options={countryOptions}
+                          value={
+                            formData.country
+                              ? {
+                                  value: formData.country,
+                                  label: formData.country,
+                                }
+                              : null
                           }
-                          placeholder="Select City-State-Country"
+                          onChange={(selectedOption) => {
+                            const isCustom = !countryOptions.some(
+                              (option) => option.value === selectedOption?.value
+                            );
+
+                            setFormData((prev) => ({
+                              ...prev,
+                              country: selectedOption?.value || "",
+                              state: "",
+                              city: "",
+                              isCustomCountry: isCustom,
+                              isCustomState: false,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          onCreateOption={(inputValue) => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              country: inputValue,
+                              state: "",
+                              city: "",
+                              isCustomCountry: true,
+                              isCustomState: false,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          placeholder="Select or type a country"
                           isSearchable
                           required
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
                         />
                       </div>
                     </div>
-                    <div className="col-md-6">
+
+                    <div className="col-md-4">
                       <div className="mb-3">
-                        <label htmlFor="profileImage" className="form-label">
-                          Profile Image
+                        <label htmlFor="state" className="form-label">
+                          State <span className="text-danger">*</span>
                         </label>
-                        <input
-                          type="file"
-                          id="profileImage"
-                          name="profileImage"
-                          className="form-control"
-                          accept="image/*"
-                          onChange={handleChange}
-                          // required
-                        />
+                        {formData.isCustomCountry ? (
+                          <input
+                            type="text"
+                            id="state"
+                            name="state"
+                            className="form-control"
+                            value={formData.state}
+                            onChange={(e) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                state: e.target.value,
+                                city: "",
+                                isCustomState: true,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            placeholder="Enter state name"
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="state"
+                            name="state"
+                            options={stateOptions}
+                            value={
+                              formData.state
+                                ? {
+                                    value: formData.state,
+                                    label: formData.state,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom = !stateOptions.some(
+                                (option) =>
+                                  option.value === selectedOption?.value
+                              );
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                state: selectedOption?.value || "",
+                                city: "",
+                                isCustomState: isCustom,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                state: inputValue,
+                                city: "",
+                                isCustomState: true,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            placeholder="Select or type a state"
+                            isSearchable
+                            required
+                            isDisabled={!formData.country}
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="city" className="form-label">
+                          City <span className="text-danger">*</span>
+                        </label>
+                        {formData.isCustomState || formData.isCustomCountry ? (
+                          <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            className="form-control"
+                            value={formData.city}
+                            onChange={(e) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                city: e.target.value,
+                                isCustomCity: true,
+                              }));
+                            }}
+                            placeholder="Enter city name"
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="city"
+                            name="city"
+                            options={cityOptions}
+                            value={
+                              formData.city
+                                ? {
+                                    value: formData.city,
+                                    label: formData.city,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom =
+                                selectedOption &&
+                                !cityOptions.some(
+                                  (option) =>
+                                    option.value === selectedOption.value
+                                );
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                city: selectedOption?.value || "",
+                                isCustomCity: isCustom,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                city: inputValue,
+                                isCustomCity: true,
+                              }));
+                            }}
+                            placeholder="Select or type a city"
+                            isSearchable
+                            required
+                            isDisabled={!formData.state}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>
@@ -333,15 +517,18 @@ const AddNewSchool = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="text-end">
-                    {" "}
-                    <button
-                      type="submit"
-                      className="btn btn-primary custom-submit-button"
-                      disabled={sending}
-                    >
-                      {sending ? "Adding..." : "Add School"}
-                    </button>
+
+                  {/* Rest of your form fields */}
+                  <div className="row">
+                    <div className="col-md-12 text-end">
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={sending}
+                      >
+                        {sending ? "Submitting..." : "Submit"}
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -349,7 +536,7 @@ const AddNewSchool = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
