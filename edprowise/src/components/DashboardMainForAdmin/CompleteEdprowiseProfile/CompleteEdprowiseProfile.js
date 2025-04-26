@@ -4,9 +4,10 @@ import getAPI from "../../../api/getAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import CityData from "../../CityData.json";
-import Select from "react-select";
-import { Link } from "react-router-dom";
+
+import CountryStateCityData from "../../CountryStateCityData.json";
+import CreatableSelect from "react-select/creatable";
+const countryData = CountryStateCityData;
 
 const CompleteEdprowiseProfile = () => {
   const [formData, setFormData] = useState({
@@ -18,15 +19,44 @@ const CompleteEdprowiseProfile = () => {
     tan: "",
     cin: "",
     address: "",
-    cityStateCountry: "",
+    country: "",
+    state: "",
+    city: "",
     landmark: "",
     pincode: "",
     contactNo: "",
     alternateContactNo: "",
     emailId: "",
+    isCustomCountry: false,
+    isCustomState: false,
+    isCustomCity: false,
   });
 
   const navigate = useNavigate();
+
+  // Get countries from countryData keys
+  const countryOptions = Object.keys(countryData).map((country) => ({
+    value: country,
+    label: country,
+  }));
+
+  // Get states based on selected country
+  const stateOptions =
+    formData.country && !formData.isCustomCountry
+      ? Object.keys(countryData[formData.country]).map((state) => ({
+          value: state,
+          label: state,
+        }))
+      : [];
+
+  // Get cities based on selected state and country
+  const cityOptions =
+    formData.state && !formData.isCustomState && formData.country
+      ? (countryData[formData.country][formData.state] || []).map((city) => ({
+          value: city,
+          label: city,
+        }))
+      : [];
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -51,7 +81,9 @@ const CompleteEdprowiseProfile = () => {
     const data = new FormData();
 
     Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
+      if (!["isCustomCountry", "isCustomState", "isCustomCity"].includes(key)) {
+        data.append(key, formData[key]);
+      }
     });
 
     setSending(true);
@@ -76,12 +108,17 @@ const CompleteEdprowiseProfile = () => {
           tan: "",
           cin: "",
           address: "",
-          cityStateCountry: "",
+          country: "",
+          state: "",
+          city: "",
           landmark: "",
           pincode: "",
           contactNo: "",
           alternateContactNo: "",
           emailId: "",
+          isCustomCountry: false,
+          isCustomState: false,
+          isCustomCity: false,
         });
         document.getElementById("edprowiseProfile").value = "";
 
@@ -107,13 +144,6 @@ const CompleteEdprowiseProfile = () => {
       setSending(false);
     }
   };
-
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => ({
-      value: `${city}, ${state}, India`,
-      label: `${city}, ${state}, India`,
-    }))
-  );
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
@@ -284,8 +314,194 @@ const CompleteEdprowiseProfile = () => {
                       />
                     </div>
                   </div>
+
                   <div className="row">
                     <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="country" className="form-label">
+                          Country <span className="text-danger">*</span>
+                        </label>
+                        <CreatableSelect
+                          id="country"
+                          name="country"
+                          options={countryOptions}
+                          value={
+                            formData.country
+                              ? {
+                                  value: formData.country,
+                                  label: formData.country,
+                                }
+                              : null
+                          }
+                          onChange={(selectedOption) => {
+                            const isCustom = !countryOptions.some(
+                              (option) => option.value === selectedOption?.value
+                            );
+
+                            setFormData((prev) => ({
+                              ...prev,
+                              country: selectedOption?.value || "",
+                              state: "",
+                              city: "",
+                              isCustomCountry: isCustom,
+                              isCustomState: false,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          onCreateOption={(inputValue) => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              country: inputValue,
+                              state: "",
+                              city: "",
+                              isCustomCountry: true,
+                              isCustomState: false,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          placeholder="Select or type a country"
+                          isSearchable
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="state" className="form-label">
+                          State <span className="text-danger">*</span>
+                        </label>
+                        {formData.isCustomCountry ? (
+                          <input
+                            type="text"
+                            id="state"
+                            name="state"
+                            className="form-control"
+                            value={formData.state}
+                            onChange={(e) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                state: e.target.value,
+                                city: "",
+                                isCustomState: true,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            placeholder="Enter state name"
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="state"
+                            name="state"
+                            options={stateOptions}
+                            value={
+                              formData.state
+                                ? {
+                                    value: formData.state,
+                                    label: formData.state,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom = !stateOptions.some(
+                                (option) =>
+                                  option.value === selectedOption?.value
+                              );
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                state: selectedOption?.value || "",
+                                city: "",
+                                isCustomState: isCustom,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                state: inputValue,
+                                city: "",
+                                isCustomState: true,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            placeholder="Select or type a state"
+                            isSearchable
+                            required
+                            isDisabled={!formData.country}
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="city" className="form-label">
+                          City <span className="text-danger">*</span>
+                        </label>
+                        {formData.isCustomState || formData.isCustomCountry ? (
+                          <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            className="form-control"
+                            value={formData.city}
+                            onChange={(e) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                city: e.target.value,
+                                isCustomCity: true,
+                              }));
+                            }}
+                            placeholder="Enter city name"
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="city"
+                            name="city"
+                            options={cityOptions}
+                            value={
+                              formData.city
+                                ? {
+                                    value: formData.city,
+                                    label: formData.city,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom =
+                                selectedOption &&
+                                !cityOptions.some(
+                                  (option) =>
+                                    option.value === selectedOption.value
+                                );
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                city: selectedOption?.value || "",
+                                isCustomCity: isCustom,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                city: inputValue,
+                                isCustomCity: true,
+                              }));
+                            }}
+                            placeholder="Select or type a city"
+                            isSearchable
+                            required
+                            isDisabled={!formData.state}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    {/* <div className="col-md-4">
                       <div className="mb-3">
                         <label
                           htmlFor="cityStateCountry"
@@ -317,7 +533,7 @@ const CompleteEdprowiseProfile = () => {
                           className="custom-react-select"
                         />
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="col-md-4">
                       <div className="mb-3">

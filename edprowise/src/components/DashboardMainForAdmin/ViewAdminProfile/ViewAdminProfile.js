@@ -170,14 +170,30 @@ const ViewAdminProfile = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="cityStateCountry" className="form-label">
-                        City State Country Location
+                      <label htmlFor="country" className="form-label">
+                        Country
                       </label>
-                      <p className="form-control">
-                        {adminProfile?.cityStateCountry}
-                      </p>
+                      <p className="form-control">{adminProfile?.country}</p>
                     </div>
                   </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State
+                      </label>
+                      <p className="form-control">{adminProfile?.state}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City
+                      </label>
+                      <p className="form-control">{adminProfile?.city}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="landmark" className="form-label">

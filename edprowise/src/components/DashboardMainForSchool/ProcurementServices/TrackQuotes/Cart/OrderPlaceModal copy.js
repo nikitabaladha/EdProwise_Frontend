@@ -1,0 +1,748 @@
+// import React, { useState, useEffect } from "react";
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { Modal, Button } from "react-bootstrap";
+// import getAPI from "../../../../../api/getAPI";
+// import postAPI from "../../../../../api/postAPI";
+// import CityData from "../../../../CityData.json";
+// import Select from "react-select";
+// import { useNavigate } from "react-router-dom";
+// const OrderPlaceModal = ({
+//   onClose,
+//   enquiryNumber,
+//   carts,
+//   fetchCartData,
+//   latestDeliveryDate,
+// }) => {
+//   const navigate = useNavigate();
+//   const [quoteRequest, setQuoteRequest] = useState(null);
+//   const [deliveryDate, setDeliveryDate] = useState(
+//     latestDeliveryDate ? latestDeliveryDate.split("T")[0] : ""
+//   );
+
+//   const fetchQuoteRequestData = async () => {
+//     try {
+//       const response = await getAPI(
+//         `/get-quote-request/${enquiryNumber}`,
+//         {},
+//         true
+//       );
+
+//       if (!response.hasError && response.data && response.data.data) {
+//         setQuoteRequest(response.data.data);
+//       } else {
+//         console.error("Invalid response format or error in response");
+//       }
+//     } catch (err) {
+//       console.error("Error fetching Quote Request:", err);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (enquiryNumber) {
+//       fetchQuoteRequestData();
+//     }
+//   }, [enquiryNumber]);
+
+//   const handleInputChange = (e) => {
+//     const { name, value } = e.target;
+//     setQuoteRequest((prevQuoteRequest) => ({
+//       ...prevQuoteRequest,
+//       [name]: value,
+//     }));
+//   };
+
+//   const handleDateChange = (e) => {
+//     setDeliveryDate(e.target.value);
+//   };
+
+//   const [sending, setSending] = useState(false);
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     // Validate required fields
+//     if (
+//       !quoteRequest?.deliveryAddress ||
+//       !quoteRequest?.deliveryLocation ||
+//       !quoteRequest?.deliveryLandMark ||
+//       !quoteRequest?.deliveryPincode ||
+//       !deliveryDate
+//     ) {
+//       toast.error("Please fill all required fields");
+//       return;
+//     }
+
+//     const products = Object.values(carts)
+//       .flat()
+//       .map((cartItem) => ({
+//         cartId: cartItem._id,
+//       }));
+
+//     const formDataToSend = {
+//       enquiryNumber,
+//       products,
+//       deliveryAddress: quoteRequest.deliveryAddress,
+//       deliveryLocation: quoteRequest.deliveryLocation,
+//       deliveryLandMark: quoteRequest.deliveryLandMark,
+//       deliveryPincode: quoteRequest.deliveryPincode,
+//       expectedDeliveryDate: deliveryDate,
+//     };
+
+//     setSending(true);
+
+//     try {
+//       const response = await postAPI("/order-from-buyer", formDataToSend, true);
+
+//       if (!response.hasError) {
+//         toast.success("Order Placed successfully");
+//         onClose();
+//         await fetchCartData();
+//         navigate(-1);
+//       } else {
+//         toast.error(response.message || "Failed to place order");
+//       }
+//     } catch (error) {
+//       toast.error(
+//         error?.response?.data?.message ||
+//           "An unexpected error occurred. Please try again."
+//       );
+//     } finally {
+//       setSending(false);
+//     }
+//   };
+
+//   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
+//     cities.map((city) => ({
+//       value: `${city}, ${state}, India`,
+//       label: `${city}, ${state}, India`,
+//     }))
+//   );
+
+//   if (!carts || Object.keys(carts).length === 0 || !latestDeliveryDate) {
+//     return <></>;
+//   }
+
+//   return (
+//     <Modal show={true} onHide={onClose} centered dialogClassName="custom-modal">
+//       <Modal.Body>
+//         <div className="container">
+//           <div className="row">
+//             <div className="col-xl-12">
+//               <div className="card">
+//                 <div className="card-body custom-heading-padding">
+//                   <div className="container">
+//                     <div className="card-header">
+//                       <h4 className="card-title text-center custom-heading-font">
+//                         Your Current Address Details
+//                       </h4>
+//                     </div>
+//                   </div>
+//                   <div className="row">
+//                     <div className="col-md-12">
+//                       <div className="mb-3">
+//                         <label htmlFor="deliveryAddress" className="form-label">
+//                           Delivery Address{" "}
+//                           <span className="text-danger">*</span>
+//                         </label>
+//                         <input
+//                           type="text"
+//                           name="deliveryAddress"
+//                           value={quoteRequest?.deliveryAddress || ""}
+//                           onChange={handleInputChange}
+//                           className="form-control"
+//                           required
+//                         />
+//                       </div>
+//                     </div>
+//                     <div className="col-md-12">
+//                       <div className="mb-3">
+//                         <label
+//                           htmlFor="deliveryLocation"
+//                           className="form-label"
+//                         >
+//                           Delivery Location{" "}
+//                           <span className="text-danger">*</span>
+//                         </label>
+
+//                         <Select
+//                           id="cityStateCountry"
+//                           name="schoolLocation"
+//                           options={cityOptions}
+//                           value={cityOptions.find(
+//                             (option) =>
+//                               option.value === quoteRequest?.deliveryLocation
+//                           )}
+//                           onChange={(selectedOption) =>
+//                             setQuoteRequest((prevState) => ({
+//                               ...prevState,
+//                               deliveryLocation: selectedOption
+//                                 ? selectedOption.value
+//                                 : "",
+//                             }))
+//                           }
+//                           placeholder="Select City-State-Country"
+//                           isSearchable
+//                           required
+//                           classNamePrefix="react-select"
+//                           className="custom-react-select"
+//                         />
+//                       </div>
+//                     </div>
+//                     <div className="col-md-12">
+//                       <div className="mb-2">
+//                         <label htmlFor="landMark" className="form-label">
+//                           Landmark <span className="text-danger">*</span>
+//                         </label>
+//                         <input
+//                           type="text"
+//                           name="deliveryLandMark"
+//                           value={quoteRequest?.deliveryLandMark || ""}
+//                           onChange={handleInputChange}
+//                           className="form-control"
+//                           required
+//                         />
+//                       </div>
+//                     </div>
+//                     <div className="col-md-12">
+//                       <div className="mb-2">
+//                         <label htmlFor="deliveryPincode" className="form-label">
+//                           Pin Code <span className="text-danger">*</span>
+//                         </label>
+//                         <input
+//                           type="text"
+//                           name="deliveryPincode"
+//                           value={quoteRequest?.deliveryPincode || ""}
+//                           onChange={handleInputChange}
+//                           className="form-control"
+//                           required
+//                         />
+//                       </div>
+//                     </div>
+//                     <div className="col-md-12">
+//                       <div className="mb-2">
+//                         <label
+//                           htmlFor="expectedDeliveryDate"
+//                           className="form-label"
+//                         >
+//                           Expected Delivery Date{" "}
+//                           <span className="text-danger">*</span>
+//                         </label>
+//                         <input
+//                           type="date"
+//                           name="expectedDeliveryDate"
+//                           onChange={handleDateChange}
+//                           className="form-control"
+//                           value={deliveryDate}
+//                           min={new Date().toISOString().split("T")[0]}
+//                           required
+//                         />
+//                       </div>
+//                     </div>
+//                     <div className="text-end">
+//                       <Button
+//                         type="submit"
+//                         variant="success"
+//                         onClick={handleSubmit}
+//                         disabled={sending}
+//                         aria-busy={sending}
+//                       >
+//                         {sending ? "Order placing..." : "Place Order"}
+//                       </Button>
+
+//                       <Button
+//                         variant="secondary"
+//                         onClick={onClose}
+//                         className="ms-2"
+//                       >
+//                         Close
+//                       </Button>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </Modal.Body>
+//     </Modal>
+//   );
+// };
+
+// export default OrderPlaceModal;
+
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Modal, Button } from "react-bootstrap";
+import getAPI from "../../../../../api/getAPI";
+import postAPI from "../../../../../api/postAPI";
+import { useNavigate } from "react-router-dom";
+
+import CountryStateCityData from "../../../../CountryStateCityData.json";
+import CreatableSelect from "react-select/creatable";
+
+const countryData = CountryStateCityData;
+
+const OrderPlaceModal = ({
+  onClose,
+  enquiryNumber,
+  carts,
+  fetchCartData,
+  latestDeliveryDate,
+}) => {
+  const navigate = useNavigate();
+  const [quoteRequest, setQuoteRequest] = useState(null);
+  const [deliveryDate, setDeliveryDate] = useState(
+    latestDeliveryDate ? latestDeliveryDate.split("T")[0] : ""
+  );
+
+  const fetchQuoteRequestData = async () => {
+    try {
+      const response = await getAPI(
+        `/get-quote-request/${enquiryNumber}`,
+        {},
+        true
+      );
+
+      if (!response.hasError && response.data && response.data.data) {
+        const quoteRequestData = response.data.data;
+
+        setQuoteRequest(response.data.data);
+
+        const country = quoteRequestData.deliveryCountry || "";
+        const state = quoteRequestData.deliveryState || "";
+        const city = quoteRequestData.deliveryCity || "";
+
+        // Check if values are custom
+        const isCustomCountry = country && !countryData.hasOwnProperty(country);
+        const isCustomState =
+          state &&
+          (isCustomCountry || !countryData[country]?.hasOwnProperty(state));
+        const isCustomCity =
+          city &&
+          (isCustomState || !countryData[country]?.[state]?.includes(city));
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Quote Request:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (enquiryNumber) {
+      fetchQuoteRequestData();
+    }
+  }, [enquiryNumber]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setQuoteRequest((prevQuoteRequest) => ({
+      ...prevQuoteRequest,
+      [name]: value,
+    }));
+  };
+
+  const handleDateChange = (e) => {
+    setDeliveryDate(e.target.value);
+  };
+
+  const [sending, setSending] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate required fields
+    if (
+      !quoteRequest?.deliveryAddress ||
+      !quoteRequest?.deliveryCountry ||
+      !quoteRequest?.deliveryState ||
+      !quoteRequest?.deliveryCity ||
+      !quoteRequest?.deliveryLandMark ||
+      !quoteRequest?.deliveryPincode ||
+      !deliveryDate
+    ) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    const products = Object.values(carts)
+      .flat()
+      .map((cartItem) => ({
+        cartId: cartItem._id,
+      }));
+
+    const formDataToSend = {
+      enquiryNumber,
+      products,
+      deliveryAddress: quoteRequest.deliveryAddress,
+      deliveryCountry: quoteRequest.deliveryCountry,
+      deliveryState: quoteRequest.deliveryState,
+      deliveryCity: quoteRequest.deliveryCity,
+      deliveryLandMark: quoteRequest.deliveryLandMark,
+      deliveryPincode: quoteRequest.deliveryPincode,
+      expectedDeliveryDate: deliveryDate,
+    };
+
+    setSending(true);
+
+    try {
+      const response = await postAPI("/order-from-buyer", formDataToSend, true);
+
+      if (!response.hasError) {
+        toast.success("Order Placed successfully");
+        onClose();
+        await fetchCartData();
+        navigate(-1);
+      } else {
+        toast.error(response.message || "Failed to place order");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
+    } finally {
+      setSending(false);
+    }
+  };
+
+  // Get countries from countryData keys
+  const countryOptions = Object.keys(countryData).map((country) => ({
+    value: country,
+    label: country,
+  }));
+
+  // Get states based on selected country
+  const stateOptions =
+    formData.deliveryCountry && !formData.isCustomCountry
+      ? Object.keys(countryData[formData.deliveryCountry] || {}).map(
+          (state) => ({
+            value: state,
+            label: state,
+          })
+        )
+      : [];
+
+  // Get cities based on selected state and country
+  const cityOptions =
+    formData.deliveryState &&
+    !formData.isCustomState &&
+    formData.deliveryCountry
+      ? (
+          countryData[formData.deliveryCountry]?.[formData.deliveryState] || []
+        ).map((city) => ({
+          value: city,
+          label: city,
+        }))
+      : [];
+
+  if (!carts || Object.keys(carts).length === 0 || !latestDeliveryDate) {
+    return <></>;
+  }
+
+  return (
+    <Modal show={true} onHide={onClose} centered dialogClassName="custom-modal">
+      <Modal.Body>
+        <div className="container">
+          <div className="row">
+            <div className="col-xl-12">
+              <div className="card">
+                <div className="card-body custom-heading-padding">
+                  <div className="container">
+                    <div className="card-header">
+                      <h4 className="card-title text-center custom-heading-font">
+                        Your Current Address Details
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-12">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryAddress" className="form-label">
+                          Delivery Address{" "}
+                          <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="deliveryAddress"
+                          value={quoteRequest?.deliveryAddress || ""}
+                          onChange={handleInputChange}
+                          className="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-12">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryCountry" className="form-label">
+                          Country <span className="text-danger">*</span>
+                        </label>
+                        <CreatableSelect
+                          id="deliveryCountry"
+                          name="deliveryCountry"
+                          options={countryOptions}
+                          value={
+                            formData.deliveryCountry
+                              ? {
+                                  value: formData.deliveryCountry,
+                                  label: formData.deliveryCountry,
+                                }
+                              : null
+                          }
+                          onChange={(selectedOption) => {
+                            const isCustom = selectedOption
+                              ? !countryData.hasOwnProperty(
+                                  selectedOption.value
+                                )
+                              : false;
+
+                            setFormData((prev) => ({
+                              ...prev,
+                              deliveryCountry: selectedOption?.value || "",
+                              deliveryState: "",
+                              deliveryCity: "",
+                              isCustomCountry: isCustom,
+                              isCustomState: false,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          onCreateOption={(inputValue) => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              deliveryCountry: inputValue,
+                              deliveryState: "",
+                              deliveryCity: "",
+                              isCustomCountry: true,
+                              isCustomState: false,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          placeholder="Select or type a country"
+                          isSearchable
+                          required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-md-12">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryState" className="form-label">
+                          State <span className="text-danger">*</span>
+                        </label>
+                        {formData.isCustomCountry ? (
+                          <input
+                            type="text"
+                            id="deliveryState"
+                            name="deliveryState"
+                            className="form-control"
+                            value={formData.deliveryState}
+                            onChange={(e) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryState: e.target.value,
+                                deliveryCity: "",
+                                isCustomState: true,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            placeholder="Enter state name"
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="deliveryState"
+                            name="deliveryState"
+                            options={stateOptions}
+                            value={
+                              formData.deliveryState
+                                ? {
+                                    value: formData.deliveryState,
+                                    label: formData.deliveryState,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom = selectedOption
+                                ? !stateOptions.some(
+                                    (opt) => opt.value === selectedOption.value
+                                  )
+                                : false;
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryState: selectedOption?.value || "",
+                                deliveryCity: "",
+                                isCustomState: isCustom,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryState: inputValue,
+                                deliveryCity: "",
+                                isCustomState: true,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            placeholder="Select or type a state"
+                            isSearchable
+                            required
+                            isDisabled={!formData.deliveryCountry}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-12">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryCity" className="form-label">
+                          City <span className="text-danger">*</span>
+                        </label>
+                        {formData.isCustomState || formData.isCustomCountry ? (
+                          <input
+                            type="text"
+                            id="deliveryCity"
+                            name="deliveryCity"
+                            className="form-control"
+                            value={formData.deliveryCity}
+                            onChange={(e) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryCity: e.target.value,
+                                isCustomCity: true,
+                              }));
+                            }}
+                            placeholder="Enter city name"
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="deliveryCity"
+                            name="deliveryCity"
+                            options={cityOptions}
+                            value={
+                              formData.deliveryCity
+                                ? {
+                                    value: formData.deliveryCity,
+                                    label: formData.deliveryCity,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom = selectedOption
+                                ? !cityOptions.some(
+                                    (opt) => opt.value === selectedOption.value
+                                  )
+                                : false;
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryCity: selectedOption?.value || "",
+                                isCustomCity: isCustom,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryCity: inputValue,
+                                isCustomCity: true,
+                              }));
+                            }}
+                            placeholder="Select or type a city"
+                            isSearchable
+                            required
+                            isDisabled={!formData.deliveryState}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-12">
+                      <div className="mb-2">
+                        <label htmlFor="landMark" className="form-label">
+                          Landmark <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="deliveryLandMark"
+                          value={quoteRequest?.deliveryLandMark || ""}
+                          onChange={handleInputChange}
+                          className="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-12">
+                      <div className="mb-2">
+                        <label htmlFor="deliveryPincode" className="form-label">
+                          Pin Code <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="deliveryPincode"
+                          value={quoteRequest?.deliveryPincode || ""}
+                          onChange={handleInputChange}
+                          className="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-12">
+                      <div className="mb-2">
+                        <label
+                          htmlFor="expectedDeliveryDate"
+                          className="form-label"
+                        >
+                          Expected Delivery Date{" "}
+                          <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="date"
+                          name="expectedDeliveryDate"
+                          onChange={handleDateChange}
+                          className="form-control"
+                          value={deliveryDate}
+                          min={new Date().toISOString().split("T")[0]}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="text-end">
+                      <Button
+                        type="submit"
+                        variant="success"
+                        onClick={handleSubmit}
+                        disabled={sending}
+                        aria-busy={sending}
+                      >
+                        {sending ? "Order placing..." : "Place Order"}
+                      </Button>
+
+                      <Button
+                        variant="secondary"
+                        onClick={onClose}
+                        className="ms-2"
+                      >
+                        Close
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+export default OrderPlaceModal;

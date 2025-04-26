@@ -311,6 +311,15 @@ const ViewRequestedQuote = () => {
           sellerState: response.data.data.sellerState,
           edprowiseState: response.data.data.edprowiseState,
         });
+
+        console.log(
+          "schoolState",
+          response.data.data.schoolState,
+          "sellerState",
+          response.data.data.sellerState,
+          "edprowiseState",
+          response.data.data.edprowiseState
+        );
       } else {
         console.error("Invalid response format or error in response");
       }

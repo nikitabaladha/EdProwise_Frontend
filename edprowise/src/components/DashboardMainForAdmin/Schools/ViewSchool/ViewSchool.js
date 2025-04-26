@@ -209,18 +209,12 @@ const ViewSchool = () => {
                         {school?.schoolName}
                       </p>
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="address" className="form-label">
-                        School Address
-                      </label>
-                      <p className="form-control">{school?.schoolAddress}</p>
-                    </div>
 
                     <div className="mb-3">
-                      <label htmlFor="cityStateCountry" className="form-label">
-                        City-State-Country
+                      <label htmlFor="mobileNo" className="form-label">
+                        School Mobile Number
                       </label>
-                      <p className="form-control">{school?.schoolLocation}</p>
+                      <p className="form-control">{school?.schoolMobileNo}</p>
                     </div>
                   </div>
                   <div className="col-md-3">
@@ -231,18 +225,48 @@ const ViewSchool = () => {
                       </label>
                       <p className="form-control">{school?.schoolId}</p>
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="mobileNo" className="form-label">
-                        School Mobile Number
-                      </label>
-                      <p className="form-control">{school?.schoolMobileNo}</p>
-                    </div>
 
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
                         School Email
                       </label>
                       <p className="form-control">{school?.schoolEmail}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="mb-3">
+                      <label htmlFor="address" className="form-label">
+                        School Address
+                      </label>
+                      <p className="form-control">{school?.schoolAddress}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="country" className="form-label">
+                        Country
+                      </label>
+                      <p className="form-control">{school?.country}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State
+                      </label>
+                      <p className="form-control">{school?.state}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City
+                      </label>
+                      <p className="form-control">{school?.city}</p>
                     </div>
                   </div>
                 </div>

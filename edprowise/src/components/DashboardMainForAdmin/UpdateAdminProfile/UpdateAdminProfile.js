@@ -4,13 +4,18 @@ import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import CityData from "../../CityData.json";
+
 import getAPI from "../../../api/getAPI";
 import Select from "react-select";
+
+import CountryStateCityData from "../../CountryStateCityData.json";
+import CreatableSelect from "react-select/creatable";
 
 const UpdateAdminProfile = () => {
   const location = useLocation();
   const profileId = location.state?._id;
+
+  const countryData = CountryStateCityData;
 
   const navigate = useNavigate();
 
@@ -23,12 +28,17 @@ const UpdateAdminProfile = () => {
     tan: "",
     cin: "",
     address: "",
-    cityStateCountry: "",
+    country: "",
+    state: "",
+    city: "",
     landmark: "",
     pincode: "",
     contactNo: "",
     alternateContactNo: "",
     emailId: "",
+    isCustomCountry: false,
+    isCustomState: false,
+    isCustomCity: false,
   });
 
   const edprowiseProfileRef = useRef(null);
@@ -48,6 +58,19 @@ const UpdateAdminProfile = () => {
       if (!response.hasError && response.data && response.data.data) {
         const profileData = response.data.data;
 
+        const country = profileData.country || "";
+        const state = profileData.state || "";
+        const city = profileData.city || "";
+
+        // Check if values are custom - more defensive checks
+        const isCustomCountry = country && !countryData.hasOwnProperty(country);
+        const isCustomState =
+          state &&
+          (isCustomCountry || !countryData[country]?.hasOwnProperty(state));
+        const isCustomCity =
+          city &&
+          (isCustomState || !countryData[country]?.[state]?.includes(city));
+
         setFormData({
           companyName: profileData.companyName || "",
           companyType: profileData.companyType || "",
@@ -57,7 +80,12 @@ const UpdateAdminProfile = () => {
           tan: profileData.tan || "",
           cin: profileData.cin || "",
           address: profileData.address || "",
-          cityStateCountry: profileData.cityStateCountry || "",
+          country: country,
+          state: state,
+          city: city,
+          isCustomCountry, // Set these flags
+          isCustomState,
+          isCustomCity,
           landmark: profileData.landmark || "",
           pincode: profileData.pincode || "",
           contactNo: profileData.contactNo || "",
@@ -76,19 +104,38 @@ const UpdateAdminProfile = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-
-    const formDataToSend = new FormData();
-
-    for (const key in formData) {
-      formDataToSend.append(
-        key,
-        formData[key] instanceof File ? formData[key] : formData[key] || ""
-      );
-    }
-
     setSending(true);
 
     try {
+      const formDataToSend = new FormData();
+
+      // Only include fields that should be sent to the API
+      const fieldsToSend = [
+        "companyName",
+        "companyType",
+        "edprowiseProfile",
+        "gstin",
+        "pan",
+        "tan",
+        "cin",
+        "address",
+        "country",
+        "state",
+        "city",
+        "landmark",
+        "pincode",
+        "contactNo",
+        "alternateContactNo",
+        "emailId",
+      ];
+
+      fieldsToSend.forEach((key) => {
+        const value = formData[key];
+        if (value !== null && value !== undefined) {
+          formDataToSend.append(key, value);
+        }
+      });
+
       const response = await putAPI(
         `/edprowise-profile/${profileId}`,
         formDataToSend,
@@ -99,37 +146,13 @@ const UpdateAdminProfile = () => {
       );
 
       if (!response.data.hasError) {
-        // Reset formData state
-        setFormData({
-          companyName: "",
-          companyType: "",
-          edprowiseProfile: null,
-          gstin: "",
-          pan: "",
-          tan: "",
-          cin: "",
-          address: "",
-          cityStateCountry: "",
-          landmark: "",
-          pincode: "",
-          contactNo: "",
-          alternateContactNo: "",
-          emailId: "",
-        });
-
-        edprowiseProfileRef.current.value = "";
-
         toast.success("Admin Profile successfully updated!");
         navigate(-1);
       } else {
         toast.error("Failed to update Admin Profile.");
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
+      if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
         toast.error("An unexpected error occurred. Please try again.");
@@ -139,12 +162,26 @@ const UpdateAdminProfile = () => {
     }
   };
 
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => ({
-      value: `${city}, ${state}, India`,
-      label: `${city}, ${state}, India`,
-    }))
-  );
+  const countryOptions = Object.keys(countryData).map((country) => ({
+    value: country,
+    label: country,
+  }));
+
+  const stateOptions =
+    formData.country && !formData.isCustomCountry
+      ? Object.keys(countryData[formData.country]).map((state) => ({
+          value: state,
+          label: state,
+        }))
+      : [];
+
+  const cityOptions =
+    formData.state && !formData.isCustomState && formData.country
+      ? (countryData[formData.country][formData.state] || []).map((city) => ({
+          value: city,
+          label: city,
+        }))
+      : [];
 
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -352,29 +389,52 @@ const UpdateAdminProfile = () => {
                     />
                   </div>
                 </div>
+
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="cityStateCountry" className="form-label">
-                        City, State, Country{" "}
+                      <label htmlFor="country" className="form-label">
+                        Country
                         <span className="text-danger">*</span>
                       </label>
-                      <Select
-                        id="cityStateCountry"
-                        name="schoolLocation"
-                        options={cityOptions}
-                        value={cityOptions.find(
-                          (option) => option.value === formData.cityStateCountry
-                        )}
-                        onChange={(selectedOption) =>
+                      <CreatableSelect
+                        id="country"
+                        name="country"
+                        options={countryOptions}
+                        value={
+                          formData.country
+                            ? {
+                                value: formData.country,
+                                label: formData.country,
+                              }
+                            : null
+                        }
+                        onChange={(selectedOption) => {
+                          const isCustom = !countryOptions.some(
+                            (option) => option.value === selectedOption?.value
+                          );
                           setFormData((prev) => ({
                             ...prev,
-                            cityStateCountry: selectedOption
-                              ? selectedOption.value
-                              : "",
-                          }))
-                        }
-                        placeholder="Select City-State-Country"
+                            country: selectedOption?.value || "",
+                            state: "",
+                            city: "",
+                            isCustomCountry: isCustom,
+                            isCustomState: false,
+                            isCustomCity: false,
+                          }));
+                        }}
+                        onCreateOption={(inputValue) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            country: inputValue,
+                            state: "",
+                            city: "",
+                            isCustomCountry: true,
+                            isCustomState: false,
+                            isCustomCity: false,
+                          }));
+                        }}
+                        placeholder="Select or type country"
                         isSearchable
                         required
                         classNamePrefix="react-select"
@@ -382,7 +442,136 @@ const UpdateAdminProfile = () => {
                       />
                     </div>
                   </div>
+
                   <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State <span className="text-danger">*</span>
+                      </label>
+                      {formData.isCustomCountry ? (
+                        <input
+                          type="text"
+                          id="state"
+                          name="state"
+                          className="form-control"
+                          value={formData.state}
+                          onChange={(e) => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              state: e.target.value,
+                              city: "",
+                              isCustomState: true,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          required
+                        />
+                      ) : (
+                        <CreatableSelect
+                          id="state"
+                          name="state"
+                          options={stateOptions}
+                          value={
+                            formData.state
+                              ? { value: formData.state, label: formData.state }
+                              : null
+                          }
+                          onChange={(selectedOption) => {
+                            const isCustom = !stateOptions.some(
+                              (option) => option.value === selectedOption?.value
+                            );
+                            setFormData((prev) => ({
+                              ...prev,
+                              state: selectedOption?.value || "",
+                              city: "",
+                              isCustomState: isCustom,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          onCreateOption={(inputValue) => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              state: inputValue,
+                              city: "",
+                              isCustomState: true,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          placeholder="Select or type state"
+                          isSearchable
+                          required
+                          isDisabled={!formData.country}
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City <span className="text-danger">*</span>
+                      </label>
+                      {formData.isCustomState || formData.isCustomCountry ? (
+                        <input
+                          type="text"
+                          id="city"
+                          name="city"
+                          className="form-control"
+                          value={formData.city}
+                          onChange={(e) => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              city: e.target.value,
+                              isCustomCity: true,
+                            }));
+                          }}
+                          required
+                        />
+                      ) : (
+                        <CreatableSelect
+                          id="city"
+                          name="city"
+                          options={cityOptions}
+                          value={
+                            formData.city
+                              ? { value: formData.city, label: formData.city }
+                              : null
+                          }
+                          onChange={(selectedOption) => {
+                            const isCustom =
+                              selectedOption &&
+                              !cityOptions.some(
+                                (option) =>
+                                  option.value === selectedOption.value
+                              );
+                            setFormData((prev) => ({
+                              ...prev,
+                              city: selectedOption?.value || "",
+                              isCustomCity: isCustom,
+                            }));
+                          }}
+                          onCreateOption={(inputValue) => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              city: inputValue,
+                              isCustomCity: true,
+                            }));
+                          }}
+                          placeholder="Select or type city"
+                          isSearchable
+                          required
+                          isDisabled={!formData.state}
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="landmark" className="form-label">
                         Landmark <span className="text-danger">*</span>
@@ -397,7 +586,7 @@ const UpdateAdminProfile = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
                         Pincode <span className="text-danger">*</span>

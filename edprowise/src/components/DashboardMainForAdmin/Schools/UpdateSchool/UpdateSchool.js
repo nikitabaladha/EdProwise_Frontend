@@ -20,14 +20,14 @@ const UpdateSchool = () => {
     schoolMobileNo: "",
     schoolEmail: "",
     schoolAddress: "",
-    country: "",
-    state: "",
-    city: "",
     affiliationUpto: "",
     panNo: "",
     profileImage: null,
     affiliationCertificate: null,
     panFile: null,
+    country: "",
+    state: "",
+    city: "",
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
@@ -46,65 +46,6 @@ const UpdateSchool = () => {
   const panFileRef = useRef(null);
 
   const countryData = CountryStateCityData;
-
-  // useEffect(() => {
-  //   if (school) {
-  //     const country = school.country;
-  //     const state = school.state;
-  //     const city = school.city;
-
-  //     // Check if values are custom
-  //     const isCustomCountry = !countryData.hasOwnProperty(country);
-  //     const isCustomState =
-  //       !isCustomCountry && !countryData[country]?.hasOwnProperty(state);
-  //     const isCustomCity =
-  //       !isCustomState &&
-  //       !isCustomCountry &&
-  //       !countryData[country]?.[state]?.includes(city);
-
-  //     // Check file types
-  //     const isAffiliationPDF = school.affiliationCertificate?.endsWith(".pdf");
-  //     const isPanPDF = school.panFile?.endsWith(".pdf");
-
-  //     setIsAffiliationCertificatePDF(isAffiliationPDF);
-  //     setIsPanFilePDF(isPanPDF);
-
-  //     setFormData({
-  //       schoolName: school.schoolName || "",
-  //       schoolMobileNo: school.schoolMobileNo || "",
-  //       schoolEmail: school.schoolEmail || "",
-  //       schoolAddress: school.schoolAddress || "",
-  //       country: school.country || "",
-  //       state: school.state || "",
-  //       city: school.city || "",
-  //       affiliationUpto: school.affiliationUpto || "",
-  //       panNo: school.panNo || "",
-  //       profileImage: school.profileImage || null,
-  //       affiliationCertificate: school.affiliationCertificate || null,
-  //       panFile: school.panFile || null,
-  //       isCustomCountry,
-  //       isCustomState,
-  //       isCustomCity,
-  //     });
-
-  //     // Set previews
-  //     if (school.profileImage) {
-  //       setPreviewProfileImage(
-  //         `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`
-  //       );
-  //     }
-  //     if (school.affiliationCertificate) {
-  //       setPreviewAffiliationCertificate(
-  //         `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`
-  //       );
-  //     }
-  //     if (school.panFile) {
-  //       setPreviewPanFile(
-  //         `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`
-  //       );
-  //     }
-  //   }
-  // }, [school]);
 
   useEffect(() => {
     if (school) {
@@ -457,7 +398,6 @@ const UpdateSchool = () => {
                         Country
                         <span className="text-danger">*</span>
                       </label>
-                      {/* by default i want to show existing country which is stored in data base but if user want he can chnage */}
                       <CreatableSelect
                         id="country"
                         name="country"
@@ -498,6 +438,8 @@ const UpdateSchool = () => {
                         placeholder="Select or type country"
                         isSearchable
                         required
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
                       />
                     </div>
                   </div>
@@ -506,7 +448,6 @@ const UpdateSchool = () => {
                     <div className="mb-3">
                       <label htmlFor="state" className="form-label">
                         State <span className="text-danger">*</span>
-                        {/* by default i want to show existing state which is stored in data base but if user want he can chnage */}
                       </label>
                       {formData.isCustomCountry ? (
                         <input
@@ -561,6 +502,8 @@ const UpdateSchool = () => {
                           isSearchable
                           required
                           isDisabled={!formData.country}
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
                         />
                       )}
                     </div>
@@ -570,7 +513,6 @@ const UpdateSchool = () => {
                     <div className="mb-3">
                       <label htmlFor="city" className="form-label">
                         City <span className="text-danger">*</span>
-                        {/* by default i want to show existing city which is stored in data base but if user want he can chnage */}
                       </label>
                       {formData.isCustomState || formData.isCustomCountry ? (
                         <input
@@ -622,6 +564,8 @@ const UpdateSchool = () => {
                           isSearchable
                           required
                           isDisabled={!formData.state}
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
                         />
                       )}
                     </div>

@@ -9,6 +9,9 @@ import CityData from "../../CityData.json";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { SpecialZoomLevel } from "@react-pdf-viewer/core";
+import CountryStateCityData from "../../CountryStateCityData.json";
+import CreatableSelect from "react-select/creatable";
+const countryData = CountryStateCityData;
 
 const UpdateSchoolProfile = () => {
   const location = useLocation();
@@ -21,7 +24,6 @@ const UpdateSchoolProfile = () => {
     panFile: null,
     panNo: "",
     schoolAddress: "",
-    schoolLocation: "",
     landMark: "",
     schoolPincode: "",
     schoolMobileNo: "",
@@ -30,18 +32,55 @@ const UpdateSchoolProfile = () => {
     affiliationCertificate: null,
     affiliationUpto: "",
     deliveryAddress: "",
-    deliveryLocation: "",
     deliveryLandMark: "",
     deliveryPincode: "",
     contactPersonName: "",
     numberOfStudents: "",
     principalName: "",
     schoolAlternateContactNo: "",
+
+    country: "",
+    state: "",
+    city: "",
+    isCustomCountry: false,
+    isCustomState: false,
+    isCustomCity: false,
+    deliveryCountry: "",
+    deliveryState: "",
+    deliveryCity: "",
+    isCustomDeliveryCountry: false,
+    isCustomDeliveryState: false,
+    isCustomDeliveryCity: false,
+    sameAsSchoolAddress: false,
   });
 
   const profileImageRef = useRef(null);
   const affiliationCertificateRef = useRef(null);
   const panFileRef = useRef(null);
+
+  // Get countries from countryData keys
+  const countryOptions = Object.keys(countryData).map((country) => ({
+    value: country,
+    label: country,
+  }));
+
+  // Get states based on selected country
+  const stateOptions =
+    formData.country && !formData.isCustomCountry
+      ? Object.keys(countryData[formData.country]).map((state) => ({
+          value: state,
+          label: state,
+        }))
+      : [];
+
+  // Get cities based on selected state and country
+  const cityOptions =
+    formData.state && !formData.isCustomState && formData.country
+      ? (countryData[formData.country][formData.state] || []).map((city) => ({
+          value: city,
+          label: city,
+        }))
+      : [];
 
   // Preview states
   const [previewProfileImage, setPreviewProfileImage] = useState(null);
@@ -91,7 +130,7 @@ const UpdateSchoolProfile = () => {
           schoolMobileNo: schoolData.schoolMobileNo,
           schoolEmail: schoolData.schoolEmail,
           schoolAddress: schoolData.schoolAddress,
-          schoolLocation: schoolData.schoolLocation,
+
           affiliationUpto: schoolData.affiliationUpto,
           panNo: schoolData.panNo,
           profileImage: schoolData.profileImage,
@@ -100,13 +139,21 @@ const UpdateSchoolProfile = () => {
           landMark: schoolData.landMark,
           schoolPincode: schoolData.schoolPincode,
           deliveryAddress: schoolData.deliveryAddress,
-          deliveryLocation: schoolData.deliveryLocation,
+
           deliveryLandMark: schoolData.deliveryLandMark,
           deliveryPincode: schoolData.deliveryPincode,
           contactPersonName: schoolData.contactPersonName,
           numberOfStudents: schoolData.numberOfStudents,
           principalName: schoolData.principalName,
           schoolAlternateContactNo: schoolData.schoolAlternateContactNo,
+
+          country: schoolData.country,
+          state: schoolData.state,
+          city: schoolData.city,
+
+          deliveryCountry: schoolData.deliveryCountry,
+          deliveryState: schoolData.deliveryState,
+          deliveryCity: schoolData.deliveryCity,
         });
 
         // Set previews for existing files
@@ -134,7 +181,7 @@ const UpdateSchoolProfile = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files, type, checked } = e.target;
 
     if (files) {
       const file = files[0];
@@ -157,6 +204,28 @@ const UpdateSchoolProfile = () => {
           setIsPanFilePDF(file.type === "application/pdf");
         }
       }
+    } else if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checked,
+        ...(checked
+          ? {
+              deliveryAddress: prev.schoolAddress,
+              deliveryLandMark: prev.landMark,
+              deliveryPincode: prev.schoolPincode,
+              deliveryCity: prev.city,
+              deliveryState: prev.state,
+              deliveryCountry: prev.country,
+            }
+          : {
+              deliveryAddress: "",
+              deliveryLandMark: "",
+              deliveryPincode: "",
+              deliveryCity: "",
+              deliveryState: "",
+              deliveryCountry: "",
+            }),
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -172,7 +241,35 @@ const UpdateSchoolProfile = () => {
 
     const formDataToSend = new FormData();
 
-    for (const key in formData) {
+    const allowedFields = [
+      "schoolName",
+      "panFile",
+      "panNo",
+      "schoolAddress",
+      "city",
+      "state",
+      "country",
+      "landMark",
+      "schoolPincode",
+      "schoolMobileNo",
+      "schoolEmail",
+      "profileImage",
+      "affiliationCertificate",
+      "affiliationUpto",
+      "deliveryAddress",
+      "deliveryCity",
+      "deliveryState",
+      "deliveryCountry",
+      "deliveryLandMark",
+      "deliveryPincode",
+      "contactPersonName",
+      "numberOfStudents",
+      "principalName",
+      "schoolAlternateContactNo",
+    ];
+
+    // Append only allowed fields to formDataToSend
+    for (const key of allowedFields) {
       if (formData[key] instanceof File) {
         formDataToSend.append(key, formData[key]);
       } else {
@@ -198,7 +295,7 @@ const UpdateSchoolProfile = () => {
           schoolMobileNo: "",
           schoolEmail: "",
           schoolAddress: "",
-          schoolLocation: "",
+
           affiliationUpto: "",
           panNo: "",
           profileImage: null,
@@ -207,13 +304,26 @@ const UpdateSchoolProfile = () => {
           landMark: "",
           schoolPincode: "",
           deliveryAddress: "",
-          deliveryLocation: "",
+
           deliveryLandMark: "",
           deliveryPincode: "",
           contactPersonName: "",
           numberOfStudents: "",
           principalName: "",
           schoolAlternateContactNo: "",
+
+          country: "",
+          state: "",
+          city: "",
+          isCustomCountry: false,
+          isCustomState: false,
+          isCustomCity: false,
+          deliveryCountry: "",
+          deliveryState: "",
+          deliveryCity: "",
+          isCustomDeliveryCountry: false,
+          isCustomDeliveryState: false,
+          isCustomDeliveryCity: false,
         });
 
         profileImageRef.current.value = "";
@@ -235,13 +345,6 @@ const UpdateSchoolProfile = () => {
       setSending(false);
     }
   };
-
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => ({
-      value: `${city}, ${state}, India`,
-      label: `${city}, ${state}, India`,
-    }))
-  );
 
   const renderFilePreview = (preview, isPDF, defaultPreview, altText) => {
     const fileUrl = preview || defaultPreview;
@@ -474,48 +577,69 @@ const UpdateSchoolProfile = () => {
                     </h4>
                     <hr></hr>
                     <div className="row">
-                      <div className="mb-3">
-                        <label htmlFor="address" className="form-label">
-                          School Address <span className="text-danger">*</span>
-                        </label>
-                        <textarea
-                          className="form-control"
-                          id="address"
-                          name="schoolAddress"
-                          rows={3}
-                          value={formData.schoolAddress}
-                          onChange={handleChange}
-                          required
-                        />
+                      <div className="col-md-12">
+                        <div className="mb-3">
+                          <label htmlFor="address" className="form-label">
+                            School Address{" "}
+                            <span className="text-danger">*</span>
+                          </label>
+                          <textarea
+                            className="form-control"
+                            id="address"
+                            name="schoolAddress"
+                            value={formData.schoolAddress}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-md-4">
                         <div className="mb-3">
-                          <label
-                            htmlFor="schoolLocation"
-                            className="form-label"
-                          >
-                            School Location{" "}
-                            <span className="text-danger">*</span>
+                          <label htmlFor="country" className="form-label">
+                            Country <span className="text-danger">*</span>
                           </label>
-                          <Select
-                            id="cityStateCountry"
-                            name="schoolLocation"
-                            options={cityOptions}
-                            value={cityOptions.find(
-                              (option) =>
-                                option.value === formData.schoolLocation
-                            )}
-                            onChange={(selectedOption) =>
-                              setFormData((prevState) => ({
-                                ...prevState,
-                                schoolLocation: selectedOption
-                                  ? selectedOption.value
-                                  : "",
-                              }))
+                          <CreatableSelect
+                            id="country"
+                            name="country"
+                            options={countryOptions}
+                            value={
+                              formData.country
+                                ? {
+                                    value: formData.country,
+                                    label: formData.country,
+                                  }
+                                : null
                             }
-                            placeholder="Select City-State-Country"
+                            onChange={(selectedOption) => {
+                              const isCustom = !countryOptions.some(
+                                (option) =>
+                                  option.value === selectedOption?.value
+                              );
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                country: selectedOption?.value || "",
+                                state: "",
+                                city: "",
+                                isCustomCountry: isCustom,
+                                isCustomState: false,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                country: inputValue,
+                                state: "",
+                                city: "",
+                                isCustomCountry: true,
+                                isCustomState: false,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            placeholder="Select or type a country"
                             isSearchable
                             required
                             classNamePrefix="react-select"
@@ -525,6 +649,146 @@ const UpdateSchoolProfile = () => {
                       </div>
 
                       <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="state" className="form-label">
+                            State <span className="text-danger">*</span>
+                          </label>
+                          {formData.isCustomCountry ? (
+                            <input
+                              type="text"
+                              id="state"
+                              name="state"
+                              className="form-control"
+                              value={formData.state}
+                              onChange={(e) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  state: e.target.value,
+                                  city: "",
+                                  isCustomState: true,
+                                  isCustomCity: false,
+                                }));
+                              }}
+                              placeholder="Enter state name"
+                              required
+                            />
+                          ) : (
+                            <CreatableSelect
+                              id="state"
+                              name="state"
+                              options={stateOptions}
+                              value={
+                                formData.state
+                                  ? {
+                                      value: formData.state,
+                                      label: formData.state,
+                                    }
+                                  : null
+                              }
+                              onChange={(selectedOption) => {
+                                const isCustom = !stateOptions.some(
+                                  (option) =>
+                                    option.value === selectedOption?.value
+                                );
+
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  state: selectedOption?.value || "",
+                                  city: "",
+                                  isCustomState: isCustom,
+                                  isCustomCity: false,
+                                }));
+                              }}
+                              onCreateOption={(inputValue) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  state: inputValue,
+                                  city: "",
+                                  isCustomState: true,
+                                  isCustomCity: false,
+                                }));
+                              }}
+                              placeholder="Select or type a state"
+                              isSearchable
+                              required
+                              isDisabled={!formData.country}
+                              classNamePrefix="react-select"
+                              className="custom-react-select"
+                            />
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="city" className="form-label">
+                            City <span className="text-danger">*</span>
+                          </label>
+                          {formData.isCustomState ||
+                          formData.isCustomCountry ? (
+                            <input
+                              type="text"
+                              id="city"
+                              name="city"
+                              className="form-control"
+                              value={formData.city}
+                              onChange={(e) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  city: e.target.value,
+                                  isCustomCity: true,
+                                }));
+                              }}
+                              placeholder="Enter city name"
+                              required
+                            />
+                          ) : (
+                            <CreatableSelect
+                              id="city"
+                              name="city"
+                              options={cityOptions}
+                              value={
+                                formData.city
+                                  ? {
+                                      value: formData.city,
+                                      label: formData.city,
+                                    }
+                                  : null
+                              }
+                              onChange={(selectedOption) => {
+                                const isCustom =
+                                  selectedOption &&
+                                  !cityOptions.some(
+                                    (option) =>
+                                      option.value === selectedOption.value
+                                  );
+
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  city: selectedOption?.value || "",
+                                  isCustomCity: isCustom,
+                                }));
+                              }}
+                              onCreateOption={(inputValue) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  city: inputValue,
+                                  isCustomCity: true,
+                                }));
+                              }}
+                              placeholder="Select or type a city"
+                              isSearchable
+                              required
+                              isDisabled={!formData.state}
+                              classNamePrefix="react-select"
+                              className="custom-react-select"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="panNo" className="form-label">
                             Land Mark <span className="text-danger">*</span>
@@ -541,7 +805,7 @@ const UpdateSchoolProfile = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-4">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="schoolPinCode" className="form-label">
                             School Pin Code{" "}
@@ -560,64 +824,296 @@ const UpdateSchoolProfile = () => {
                       </div>
                     </div>
 
-                    <h4 className="card-title text-center custom-heading-font">
-                      Delivery Address Details
-                    </h4>
-                    <hr></hr>
+                    <div className="d-flex justify-content-between align-items-center gap-1">
+                      <h4 className="card-title flex-grow-1 custom-heading-font mb-3">
+                        Delivery Address Details
+                      </h4>
+                      <h4 className="mb-3"> Same As Above</h4>
+
+                      <div className="form-check ms-1">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id="sameAsSchoolAddress"
+                          name="sameAsSchoolAddress"
+                          checked={formData.sameAsSchoolAddress}
+                          onChange={handleChange}
+                        />{" "}
+                        <label
+                          className="form-check-label"
+                          htmlFor="sameAsSchoolAddress"
+                        />
+                      </div>
+                    </div>
 
                     <div className="row">
-                      <div className="mb-3">
-                        <label htmlFor="deliveryAddress" className="form-label">
-                          Delivery Address{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="deliveryAddress"
-                          name="deliveryAddress"
-                          className="form-control"
-                          value={formData.deliveryAddress}
-                          onChange={handleChange}
-                          required
-                        />
+                      <div className="col-md-12">
+                        <div className="mb-3">
+                          <label
+                            htmlFor="deliveryAddress"
+                            className="form-label"
+                          >
+                            Delivery Address{" "}
+                            <span className="text-danger">*</span>
+                          </label>
+                          {formData.sameAsSchoolAddress ? (
+                            <input
+                              type="text"
+                              id="deliveryAddress"
+                              name="deliveryAddress"
+                              className="form-control"
+                              rows={3}
+                              value={formData.schoolAddress}
+                              onChange={handleChange}
+                              required
+                              disabled
+                              placeholder="Example : ABC Building , XYZ Street"
+                            />
+                          ) : (
+                            <input
+                              type="text"
+                              id="deliveryAddress"
+                              name="deliveryAddress"
+                              className="form-control"
+                              rows={3}
+                              value={formData.deliveryAddress}
+                              onChange={handleChange}
+                              required
+                              placeholder="Example : ABC Building , XYZ Street"
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label
-                            htmlFor="deliveryLocation"
+                            htmlFor="deliveryCountry"
                             className="form-label"
                           >
-                            Delivery Location{" "}
+                            Delivery Country{" "}
                             <span className="text-danger">*</span>
                           </label>
-
-                          <Select
-                            id="deliveryLocation"
-                            name="deliveryLocation"
-                            options={cityOptions}
-                            value={cityOptions.find(
-                              (option) =>
-                                option.value === formData.deliveryLocation
-                            )}
-                            onChange={(selectedOption) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                deliveryLocation: selectedOption
-                                  ? selectedOption.value
-                                  : "",
-                              }))
-                            }
-                            placeholder="Select City-State-Country"
-                            isSearchable
-                            required
-                            classNamePrefix="react-select"
-                            className="custom-react-select"
-                          />
+                          {formData.sameAsSchoolAddress ? (
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={formData.country}
+                              readOnly
+                              disabled
+                            />
+                          ) : (
+                            <CreatableSelect
+                              id="deliveryCountry"
+                              name="deliveryCountry"
+                              options={countryOptions}
+                              value={
+                                formData.deliveryCountry
+                                  ? {
+                                      value: formData.deliveryCountry,
+                                      label: formData.deliveryCountry,
+                                    }
+                                  : null
+                              }
+                              onChange={(selectedOption) => {
+                                const isCustom = !countryOptions.some(
+                                  (option) =>
+                                    option.value === selectedOption?.value
+                                );
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  deliveryCountry: selectedOption?.value || "",
+                                  deliveryState: "",
+                                  deliveryCity: "",
+                                  isCustomDeliveryCountry: isCustom,
+                                  isCustomDeliveryState: false,
+                                  isCustomDeliveryCity: false,
+                                }));
+                              }}
+                              onCreateOption={(inputValue) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  deliveryCountry: inputValue,
+                                  deliveryState: "",
+                                  deliveryCity: "",
+                                  isCustomDeliveryCountry: true,
+                                  isCustomDeliveryState: false,
+                                  isCustomDeliveryCity: false,
+                                }));
+                              }}
+                              placeholder="Select or type country"
+                              isSearchable
+                              required
+                              classNamePrefix="react-select"
+                              className="custom-react-select"
+                            />
+                          )}
                         </div>
                       </div>
+
+                      {/* Delivery State */}
                       <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="deliveryState" className="form-label">
+                            Delivery State{" "}
+                            <span className="text-danger">*</span>
+                          </label>
+                          {formData.sameAsSchoolAddress ? (
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={formData.state}
+                              readOnly
+                              disabled
+                            />
+                          ) : formData.isCustomDeliveryCountry ? (
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={formData.deliveryState}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  deliveryState: e.target.value,
+                                  deliveryCity: "",
+                                  isCustomDeliveryState: true,
+                                  isCustomDeliveryCity: false,
+                                }))
+                              }
+                              required
+                            />
+                          ) : (
+                            <CreatableSelect
+                              id="deliveryState"
+                              name="deliveryState"
+                              options={Object.keys(
+                                countryData[formData.deliveryCountry] || {}
+                              ).map((state) => ({
+                                value: state,
+                                label: state,
+                              }))}
+                              value={
+                                formData.deliveryState
+                                  ? {
+                                      value: formData.deliveryState,
+                                      label: formData.deliveryState,
+                                    }
+                                  : null
+                              }
+                              onChange={(selectedOption) => {
+                                const isCustom = !Object.keys(
+                                  countryData[formData.deliveryCountry] || {}
+                                ).includes(selectedOption?.value);
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  deliveryState: selectedOption?.value || "",
+                                  deliveryCity: "",
+                                  isCustomDeliveryState: isCustom,
+                                  isCustomDeliveryCity: false,
+                                }));
+                              }}
+                              onCreateOption={(inputValue) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  deliveryState: inputValue,
+                                  deliveryCity: "",
+                                  isCustomDeliveryState: true,
+                                  isCustomDeliveryCity: false,
+                                }));
+                              }}
+                              placeholder="Select or type state"
+                              isSearchable
+                              required
+                              isDisabled={!formData.deliveryCountry}
+                              classNamePrefix="react-select"
+                              className="custom-react-select"
+                            />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Delivery City */}
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="deliveryCity" className="form-label">
+                            Delivery City <span className="text-danger">*</span>
+                          </label>
+                          {formData.sameAsSchoolAddress ? (
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={formData.city}
+                              readOnly
+                              disabled
+                            />
+                          ) : formData.isCustomDeliveryState ||
+                            formData.isCustomDeliveryCountry ? (
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={formData.deliveryCity}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  deliveryCity: e.target.value,
+                                  isCustomDeliveryCity: true,
+                                }))
+                              }
+                              required
+                            />
+                          ) : (
+                            <CreatableSelect
+                              id="deliveryCity"
+                              name="deliveryCity"
+                              options={(
+                                countryData[formData.deliveryCountry]?.[
+                                  formData.deliveryState
+                                ] || []
+                              ).map((city) => ({
+                                value: city,
+                                label: city,
+                              }))}
+                              value={
+                                formData.deliveryCity
+                                  ? {
+                                      value: formData.deliveryCity,
+                                      label: formData.deliveryCity,
+                                    }
+                                  : null
+                              }
+                              onChange={(selectedOption) => {
+                                const isCustom = !(
+                                  countryData[formData.deliveryCountry]?.[
+                                    formData.deliveryState
+                                  ] || []
+                                ).includes(selectedOption?.value);
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  deliveryCity: selectedOption?.value || "",
+                                  isCustomDeliveryCity: isCustom,
+                                }));
+                              }}
+                              onCreateOption={(inputValue) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  deliveryCity: inputValue,
+                                  isCustomDeliveryCity: true,
+                                }));
+                              }}
+                              placeholder="Select or type city"
+                              isSearchable
+                              required
+                              isDisabled={!formData.deliveryState}
+                              classNamePrefix="react-select"
+                              className="custom-react-select"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label
                             htmlFor="deliveryLandMark"
@@ -626,35 +1122,65 @@ const UpdateSchoolProfile = () => {
                             Delivery LandMark{" "}
                             <span className="text-danger">*</span>
                           </label>
-                          <input
-                            type="text"
-                            id="deliveryLandMark"
-                            name="deliveryLandMark"
-                            className="form-control"
-                            value={formData.deliveryLandMark}
-                            onChange={handleChange}
-                            required
-                          />
+                          {formData.sameAsSchoolAddress ? (
+                            <input
+                              type="text"
+                              id="deliveryLandMark"
+                              name="deliveryLandMark"
+                              className="form-control"
+                              value={formData.landMark}
+                              onChange={handleChange}
+                              required
+                              disabled
+                              placeholder="Example : Near Bus Stand"
+                            />
+                          ) : (
+                            <input
+                              type="text"
+                              id="deliveryLandMark"
+                              name="deliveryLandMark"
+                              className="form-control"
+                              value={formData.deliveryLandMark}
+                              onChange={handleChange}
+                              required
+                              placeholder="Example : Near Bus Stand"
+                            />
+                          )}
                         </div>
                       </div>
-                      <div className="col-md-4">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label
                             htmlFor="deliveryPincode"
                             className="form-label"
                           >
-                            Delivery Pin Code{" "}
+                            Delivery Pincode{" "}
                             <span className="text-danger">*</span>
                           </label>
-                          <input
-                            type="text"
-                            id="deliveryPincode"
-                            name="deliveryPincode"
-                            className="form-control"
-                            value={formData.deliveryPincode}
-                            onChange={handleChange}
-                            required
-                          />
+                          {formData.sameAsSchoolAddress ? (
+                            <input
+                              type="text"
+                              id="deliveryPincode"
+                              name="deliveryPincode"
+                              className="form-control"
+                              value={formData.schoolPincode}
+                              onChange={handleChange}
+                              required
+                              disabled
+                              placeholder="Example : 518345"
+                            />
+                          ) : (
+                            <input
+                              type="text"
+                              id="deliveryPincode"
+                              name="deliveryPincode"
+                              className="form-control"
+                              value={formData.deliveryPincode}
+                              onChange={handleChange}
+                              required
+                              placeholder="Example : 518345"
+                            />
+                          )}
                         </div>
                       </div>
                     </div>

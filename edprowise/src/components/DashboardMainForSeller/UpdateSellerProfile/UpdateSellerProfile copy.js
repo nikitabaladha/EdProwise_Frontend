@@ -2,21 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import getAPI from "../../../../api/getAPI";
-import putAPI from "../../../../api/putAPI";
-
+import getAPI from "../../../api/getAPI";
+import CityData from "../../CityData.json";
+import putAPI from "../../../api/putAPI";
+import Select from "react-select";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { SpecialZoomLevel } from "@react-pdf-viewer/core";
 
-import CountryStateCityData from "../../../CountryStateCityData.json";
-import CreatableSelect from "react-select/creatable";
-
 const UpdateSeller = () => {
   const location = useLocation();
-  const seller = location.state?.seller;
-  const profileId = location.state?.seller?.sellerId;
+  const profileId = location.state?.sellerProfile?.sellerId;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -29,9 +25,7 @@ const UpdateSeller = () => {
     tan: "",
     cin: "",
     address: "",
-    isCustomCountry: false,
-    isCustomState: false,
-    isCustomCity: false,
+    cityStateCountry: "",
     landmark: "",
     pincode: "",
     contactNo: "",
@@ -49,13 +43,6 @@ const UpdateSeller = () => {
     tanFile: null,
     cinFile: null,
     gstFile: null,
-
-    country: "",
-    state: "",
-    city: "",
-    isCustomCountry: false,
-    isCustomState: false,
-    isCustomCity: false,
   });
 
   const [categories, setCategories] = useState([]);
@@ -63,7 +50,12 @@ const UpdateSeller = () => {
   const [dealingProducts, setDealingProducts] = useState([]);
   const [sellerProfile, setSellerProfile] = useState(null);
 
-  const countryData = CountryStateCityData || {};
+  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
+    cities.map((city) => ({
+      value: `${city}, ${state}, India`,
+      label: `${city}, ${state}, India`,
+    }))
+  );
 
   const sellerProfileRef = useRef(null);
   const signatureRef = useRef(null);
@@ -118,25 +110,8 @@ const UpdateSeller = () => {
 
   const fetchSellerProfileData = async () => {
     try {
-      const response = await getAPI(
-        `/seller-profile-get-by-id/${profileId}`,
-        {},
-        true
-      );
+      const response = await getAPI(`/seller-profile`, {}, true);
       if (!response.hasError && response.data && response.data.data) {
-        const country = response.data.data.country || "";
-        const state = response.data.data.state || "";
-        const city = response.data.data.city || "";
-
-        // Check if values are custom - more defensive checks
-        const isCustomCountry = country && !countryData.hasOwnProperty(country);
-        const isCustomState =
-          state &&
-          (isCustomCountry || !countryData[country]?.hasOwnProperty(state));
-        const isCustomCity =
-          city &&
-          (isCustomState || !countryData[country]?.[state]?.includes(city));
-
         const isPanPDF = response.data.data.panFile?.endsWith(".pdf");
         setIsPanFilePDF(isPanPDF);
 
@@ -159,6 +134,7 @@ const UpdateSeller = () => {
           tan: response.data.data.tan,
           cin: response.data.data.cin,
           address: response.data.data.address,
+          cityStateCountry: response.data.data.cityStateCountry,
           landmark: response.data.data.landmark,
           pincode: response.data.data.pincode,
           contactNo: response.data.data.contactNo,
@@ -176,13 +152,6 @@ const UpdateSeller = () => {
           tanFile: response.data.data.tanFile,
           cinFile: response.data.data.cinFile,
           gstFile: response.data.data.gstFile,
-
-          country,
-          state,
-          city,
-          isCustomCountry,
-          isCustomState,
-          isCustomCity,
         });
 
         setSellerProfile(response.data.data);
@@ -272,30 +241,6 @@ const UpdateSeller = () => {
     setDealingProducts(updatedProducts);
   };
 
-  // Get country/state/city options
-  const countryOptions = Object.keys(countryData).map((country) => ({
-    value: country,
-    label: country,
-  }));
-
-  // Update state options with null checks
-  const stateOptions =
-    formData.country && !formData.isCustomCountry
-      ? Object.keys(countryData[formData.country] ?? {}).map((state) => ({
-          value: state,
-          label: state,
-        }))
-      : [];
-
-  // Update city options with optional chaining
-  const cityOptions =
-    formData.state && !formData.isCustomState && formData.country
-      ? (countryData[formData.country]?.[formData.state] || []).map((city) => ({
-          value: city,
-          label: city,
-        }))
-      : [];
-
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -349,9 +294,7 @@ const UpdateSeller = () => {
     formDataToSend.append("tan", formData.tan);
     formDataToSend.append("cin", formData.cin);
     formDataToSend.append("address", formData.address);
-    formDataToSend.append("city", formData.city);
-    formDataToSend.append("state", formData.state);
-    formDataToSend.append("country", formData.country);
+    formDataToSend.append("cityStateCountry", formData.cityStateCountry);
     formDataToSend.append("landmark", formData.landmark);
     formDataToSend.append("pincode", formData.pincode);
     formDataToSend.append("contactNo", formData.contactNo);
@@ -410,12 +353,7 @@ const UpdateSeller = () => {
           tan: "",
           cin: "",
           address: "",
-          country: "",
-          state: "",
-          city: "",
-          isCustomCountry: false,
-          isCustomState: false,
-          isCustomCity: false,
+          cityStateCountry: "",
           landmark: "",
           pincode: "",
           contactNo: "",
@@ -885,48 +823,27 @@ const UpdateSeller = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="country" className="form-label">
-                        Country
+                      <label htmlFor="cityStateCountry" className="form-label">
+                        City State Country Location{" "}
                         <span className="text-danger">*</span>
                       </label>
-                      <CreatableSelect
-                        id="country"
-                        name="country"
-                        options={countryOptions}
-                        value={
-                          formData.country
-                            ? {
-                                value: formData.country,
-                                label: formData.country,
-                              }
-                            : null
+
+                      <Select
+                        id="cityStateCountry"
+                        name="cityStateCountry"
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === formData.cityStateCountry
+                        )}
+                        onChange={(selectedOption) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cityStateCountry: selectedOption
+                              ? selectedOption.value
+                              : "",
+                          }))
                         }
-                        onChange={(selectedOption) => {
-                          const isCustom = !countryOptions.some(
-                            (option) => option.value === selectedOption?.value
-                          );
-                          setFormData((prev) => ({
-                            ...prev,
-                            country: selectedOption?.value || "",
-                            state: "",
-                            city: "",
-                            isCustomCountry: isCustom,
-                            isCustomState: false,
-                            isCustomCity: false,
-                          }));
-                        }}
-                        onCreateOption={(inputValue) => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            country: inputValue,
-                            state: "",
-                            city: "",
-                            isCustomCountry: true,
-                            isCustomState: false,
-                            isCustomCity: false,
-                          }));
-                        }}
-                        placeholder="Select or type country"
+                        placeholder="Select City-State-Country"
                         isSearchable
                         required
                         classNamePrefix="react-select"
@@ -934,136 +851,7 @@ const UpdateSeller = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="state" className="form-label">
-                        State <span className="text-danger">*</span>
-                      </label>
-                      {formData.isCustomCountry ? (
-                        <input
-                          type="text"
-                          id="state"
-                          name="state"
-                          className="form-control"
-                          value={formData.state}
-                          onChange={(e) => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              state: e.target.value,
-                              city: "",
-                              isCustomState: true,
-                              isCustomCity: false,
-                            }));
-                          }}
-                          required
-                        />
-                      ) : (
-                        <CreatableSelect
-                          id="state"
-                          name="state"
-                          options={stateOptions}
-                          value={
-                            formData.state
-                              ? { value: formData.state, label: formData.state }
-                              : null
-                          }
-                          onChange={(selectedOption) => {
-                            const isCustom = !stateOptions.some(
-                              (option) => option.value === selectedOption?.value
-                            );
-                            setFormData((prev) => ({
-                              ...prev,
-                              state: selectedOption?.value || "",
-                              city: "",
-                              isCustomState: isCustom,
-                              isCustomCity: false,
-                            }));
-                          }}
-                          onCreateOption={(inputValue) => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              state: inputValue,
-                              city: "",
-                              isCustomState: true,
-                              isCustomCity: false,
-                            }));
-                          }}
-                          placeholder="Select or type state"
-                          isSearchable
-                          required
-                          isDisabled={!formData.country}
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="city" className="form-label">
-                        City <span className="text-danger">*</span>
-                      </label>
-                      {formData.isCustomState || formData.isCustomCountry ? (
-                        <input
-                          type="text"
-                          id="city"
-                          name="city"
-                          className="form-control"
-                          value={formData.city}
-                          onChange={(e) => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              city: e.target.value,
-                              isCustomCity: true,
-                            }));
-                          }}
-                          required
-                        />
-                      ) : (
-                        <CreatableSelect
-                          id="city"
-                          name="city"
-                          options={cityOptions}
-                          value={
-                            formData.city
-                              ? { value: formData.city, label: formData.city }
-                              : null
-                          }
-                          onChange={(selectedOption) => {
-                            const isCustom =
-                              selectedOption &&
-                              !cityOptions.some(
-                                (option) =>
-                                  option.value === selectedOption.value
-                              );
-                            setFormData((prev) => ({
-                              ...prev,
-                              city: selectedOption?.value || "",
-                              isCustomCity: isCustom,
-                            }));
-                          }}
-                          onCreateOption={(inputValue) => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              city: inputValue,
-                              isCustomCity: true,
-                            }));
-                          }}
-                          placeholder="Select or type city"
-                          isSearchable
-                          required
-                          isDisabled={!formData.state}
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="landmark" className="form-label">
                         Land Mark <span className="text-danger">*</span>
@@ -1079,7 +867,7 @@ const UpdateSeller = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
                         Pin Code <span className="text-danger">*</span>

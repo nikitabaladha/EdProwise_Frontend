@@ -246,16 +246,35 @@ const ViewSchoolProfile = () => {
                       </div>
                     </div>
                   </div>
+
                   <div className="row">
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label htmlFor="schoolLocation" className="form-label">
-                          City-State-Country
+                        <label htmlFor="country" className="form-label">
+                          Country
                         </label>
-                        <p className="form-control">{school.schoolLocation}</p>
+                        <p className="form-control">{school.country}</p>
                       </div>
                     </div>
                     <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="state" className="form-label">
+                          State
+                        </label>
+                        <p className="form-control">{school.state}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="city" className="form-label">
+                          City
+                        </label>
+                        <p className="form-control">{school.city}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="landMark" className="form-label">
                           School Land Mark
@@ -263,7 +282,7 @@ const ViewSchoolProfile = () => {
                         <p className="form-control">{school.landMark}</p>
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="schoolPincode" className="form-label">
                           School Pin Code
@@ -286,22 +305,35 @@ const ViewSchoolProfile = () => {
                       <p className="form-control">{school.deliveryAddress}</p>
                     </div>
                   </div>
-
                   <div className="row">
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label
-                          htmlFor="deliveryLocation"
-                          className="form-label"
-                        >
-                          School Delivery Location
+                        <label htmlFor="deliveryCountry" className="form-label">
+                          Delivery Country
                         </label>
-                        <p className="form-control">
-                          {school.deliveryLocation}
-                        </p>
+                        <p className="form-control">{school.deliveryCountry}</p>
                       </div>
                     </div>
                     <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryState" className="form-label">
+                          Delivery State
+                        </label>
+                        <p className="form-control">{school.deliveryState}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryCity" className="form-label">
+                          Delivery City
+                        </label>
+                        <p className="form-control">{school.deliveryCity}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label
                           htmlFor="deliveryLandMark"
@@ -314,7 +346,7 @@ const ViewSchoolProfile = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="deliveryPincode" className="form-label">
                           Delivery Pin Code

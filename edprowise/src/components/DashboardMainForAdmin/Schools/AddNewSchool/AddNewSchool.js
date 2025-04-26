@@ -15,14 +15,14 @@ const AddNewSchool = () => {
     schoolMobileNo: "",
     schoolEmail: "",
     schoolAddress: "",
-    country: "",
-    state: "",
-    city: "",
     affiliationUpto: "",
     panNo: "",
     profileImage: null,
     affiliationCertificate: null,
     panFile: null,
+    country: "",
+    state: "",
+    city: "",
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
@@ -287,6 +287,8 @@ const AddNewSchool = () => {
                           placeholder="Select or type a country"
                           isSearchable
                           required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
                         />
                       </div>
                     </div>
@@ -355,6 +357,8 @@ const AddNewSchool = () => {
                             isSearchable
                             required
                             isDisabled={!formData.country}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
                           />
                         )}
                       </div>
@@ -420,6 +424,8 @@ const AddNewSchool = () => {
                             isSearchable
                             required
                             isDisabled={!formData.state}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
                           />
                         )}
                       </div>
