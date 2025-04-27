@@ -32,8 +32,10 @@ const ViewCart = () => {
 
   const fetchCartData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `cart?enquiryNumber=${enquiryNumber}`,
+        `cart?enquiryNumber=${encodedEnquiryNumber}`,
         {},
         true
       );

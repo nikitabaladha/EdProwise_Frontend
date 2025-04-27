@@ -35,7 +35,12 @@ const ViewRequestedQuote = () => {
 
   const fetchRequestedQuoteData = async () => {
     try {
-      const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+      const response = await getAPI(
+        `/get-quote/${encodedEnquiryNumber}`,
+        {},
+        true
+      );
 
       if (!response.hasError && response.data.data.products) {
         setQuotes(response.data.data.products);
@@ -58,7 +63,12 @@ const ViewRequestedQuote = () => {
 
   const fetchAllQuoteData = async (enquiryNumber) => {
     try {
-      const response = await getAPI(`/submit-quote/${enquiryNumber}`, {}, true);
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+      const response = await getAPI(
+        `/submit-quote/${encodedEnquiryNumber}`,
+        {},
+        true
+      );
 
       if (
         !response.hasError &&

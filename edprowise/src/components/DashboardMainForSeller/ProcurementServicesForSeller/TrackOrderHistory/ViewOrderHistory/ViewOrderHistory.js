@@ -61,8 +61,9 @@ const ViewOrderHistory = () => {
   useEffect(() => {
     const fetchQuoteData = async () => {
       try {
+        const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
         const response = await getAPI(
-          `/get-according-to-category-filter/${enquiryNumber}`,
+          `/get-according-to-category-filter/${encodedEnquiryNumber}`,
           {},
           true
         );
@@ -106,10 +107,6 @@ const ViewOrderHistory = () => {
     setSelectedImage(imageUrl);
     setShowModal(true);
   };
-
-  // if (!order) {
-  //   return <div>No order details available.</div>;
-  // }
 
   return (
     <>

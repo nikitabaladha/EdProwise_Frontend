@@ -31,8 +31,9 @@ const SubmitQuote = () => {
   useEffect(() => {
     const fetchSubmittedQuoteData = async () => {
       try {
+        const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
         const response = await getAPI(
-          `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+          `/submit-quote?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`
         );
         if (!response.hasError && response.data && response.data.data) {
           const {
@@ -104,8 +105,9 @@ const SubmitQuote = () => {
     setSending(true);
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await putAPI(
-        `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        `/submit-quote?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
         dataToSend,
         true
       );

@@ -40,7 +40,13 @@ const ViewAllQuoteTable = () => {
 
   const fetchAllQuoteData = async () => {
     try {
-      const response = await getAPI(`/submit-quote/${enquiryNumber}`, {}, true);
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/submit-quote/${encodedEnquiryNumber}`,
+        {},
+        true
+      );
 
       if (!response.hasError && response.data) {
         setSubmittedQuotes(response.data.data);

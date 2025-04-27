@@ -1275,8 +1275,10 @@ const OrderPlaceModal = ({
 
   const fetchQuoteRequestData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/get-quote-request/${enquiryNumber}`,
+        `/get-quote-request/${encodedEnquiryNumber}`,
         {},
         true
       );

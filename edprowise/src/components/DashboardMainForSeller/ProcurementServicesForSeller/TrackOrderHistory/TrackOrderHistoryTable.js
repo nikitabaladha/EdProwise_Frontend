@@ -132,8 +132,9 @@ const TrackOrderHistoryTable = () => {
     }
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await putAPI(
-        `/order-progress-status?enquiryNumber=${enquiryNumber}&&sellerId=${sellerId}`,
+        `/order-progress-status?enquiryNumber=${encodedEnquiryNumber}&&sellerId=${sellerId}`,
         { supplierStatus: newStatus },
         true
       );
@@ -167,8 +168,9 @@ const TrackOrderHistoryTable = () => {
     }
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await getAPI(
-        `/generate-edprowise-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        `/generate-edprowise-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         { responseType: "blob" },
         true
       );
@@ -205,8 +207,9 @@ const TrackOrderHistoryTable = () => {
     }
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await getAPI(
-        `/generate-buyer-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        `/generate-buyer-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         { responseType: "blob" },
         true
       );

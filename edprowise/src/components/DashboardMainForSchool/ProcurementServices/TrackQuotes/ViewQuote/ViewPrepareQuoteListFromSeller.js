@@ -24,8 +24,10 @@ const ViewPrepareQuoteListFromSeller = () => {
 
   const fetchQuoteData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        `prepare-quote?sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         {},
         true
       );

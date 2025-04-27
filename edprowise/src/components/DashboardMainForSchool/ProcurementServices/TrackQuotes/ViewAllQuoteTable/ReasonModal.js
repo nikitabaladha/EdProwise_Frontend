@@ -29,8 +29,10 @@ const ReasonModal = ({
     setSending(true);
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await putAPI(
-        `/reject-comment-from-buyer?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        `/reject-comment-from-buyer?sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         formDataToSend,
         true
       );

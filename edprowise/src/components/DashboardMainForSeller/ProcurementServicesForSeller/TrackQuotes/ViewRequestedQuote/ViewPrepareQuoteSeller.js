@@ -24,8 +24,9 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
   useEffect(() => {
     const fetchLocationData = async () => {
       try {
+        const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
         const response = await getAPI(
-          `/get-location?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+          `/get-location?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
           {},
           true
         );
@@ -84,8 +85,9 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
 
   const fetchQuoteData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await getAPI(
-        `prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        `prepare-quote?sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         {},
         true
       );
@@ -123,8 +125,9 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     setSending(id);
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await putAPI(
-        `/prepare-quote-by-seller?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}&id=${id}`,
+        `/prepare-quote-by-seller?sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}&id=${id}`,
         formDataToSend,
         {
           "Content-Type": "multipart/form-data",

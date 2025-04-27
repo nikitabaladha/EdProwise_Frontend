@@ -59,11 +59,14 @@ const RequestQuote = () => {
     { value: "YDS - YARDS", label: "YDS - YARDS" },
   ];
 
+  const [selectedUnitOption, setSelectedUnitOption] = useState(null);
   const handleUnitChange = (selectedOption) => {
     setFormData((prev) => ({
       ...prev,
       unit: selectedOption.value,
     }));
+
+    setSelectedUnitOption(selectedOption);
   };
 
   const [formData, setFormData] = useState({
@@ -103,7 +106,6 @@ const RequestQuote = () => {
     if (
       !formData.categoryId ||
       !formData.subCategoryId ||
-      // !formData.description ||
       !formData.unit ||
       !formData.quantity
     ) {
@@ -140,7 +142,10 @@ const RequestQuote = () => {
       unit: "",
       quantity: "",
     });
+
+    setSelectedUnitOption(null); // Reset the selected unit option
     document.getElementById("productImage").value = "";
+    setSubCategories([]); // Also reset subcategories
 
     toast.success("Product added to cart!");
     setIsFormValid(true);
@@ -308,9 +313,10 @@ const RequestQuote = () => {
                         id="unit"
                         name="unit"
                         options={unitOptions}
-                        value={unitOptions.find(
-                          (option) => option.value === formData.unit
-                        )}
+                        // value={unitOptions.find(
+                        //   (option) => option.value === formData.unit
+                        // )}
+                        value={selectedUnitOption}
                         onChange={handleUnitChange}
                         isSearchable
                         placeholder="Select Unit"

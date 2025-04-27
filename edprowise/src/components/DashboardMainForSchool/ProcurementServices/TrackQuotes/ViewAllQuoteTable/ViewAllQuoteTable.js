@@ -40,8 +40,10 @@ const ViewAllQuoteTable = () => {
 
   const fetchAllQuoteData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/submit-quote-by-status/${enquiryNumber}`,
+        `/submit-quote-by-status/${encodedEnquiryNumber}`,
         {},
         true
       );
@@ -60,8 +62,10 @@ const ViewAllQuoteTable = () => {
     e.preventDefault();
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const preparedQuote = await getAPI(
-        `prepare-quote?sellerId=${quote.sellerId}&enquiryNumber=${enquiryNumber}`,
+        `prepare-quote?sellerId=${quote.sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         {},
         true
       );
@@ -98,8 +102,10 @@ const ViewAllQuoteTable = () => {
 
   const fetchCartData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `cart?enquiryNumber=${enquiryNumber}`,
+        `cart?enquiryNumber=${encodedEnquiryNumber}`,
         {},
         true
       );
@@ -168,8 +174,10 @@ const ViewAllQuoteTable = () => {
     }
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         { responseType: "blob" },
         true
       );

@@ -31,8 +31,10 @@ const ViewQuote = () => {
 
   const fetchQuoteData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/submit-quote-by-status?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+        `/submit-quote-by-status?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`
       );
       if (!response.hasError && response.data && response.data.data) {
         setCurrentQuote(response.data.data);
@@ -55,8 +57,10 @@ const ViewQuote = () => {
     }
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         { responseType: "blob" },
         true
       );

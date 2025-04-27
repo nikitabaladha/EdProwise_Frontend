@@ -43,8 +43,9 @@ const ViewRequestedQuote = () => {
     if (!enquiryNumber) return;
     const fetchQuoteData = async () => {
       try {
+        const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
         const response = await getAPI(
-          `/get-according-to-category-filter/${enquiryNumber}`,
+          `/get-according-to-category-filter/${encodedEnquiryNumber}`,
           {},
           true
         );
@@ -66,10 +67,11 @@ const ViewRequestedQuote = () => {
     const fetchPreparedQuotes = async () => {
       const userDetails = JSON.parse(localStorage.getItem("userDetails"));
       const sellerId = userDetails?.id;
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
 
       try {
         const response = await getAPI(
-          `prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+          `prepare-quote?sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
           {},
           true
         );
@@ -274,8 +276,9 @@ const ViewRequestedQuote = () => {
 
   const fetchQuoteProposal = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        `/quote-proposal?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
         {},
         true
       );
@@ -300,8 +303,9 @@ const ViewRequestedQuote = () => {
 
   const fetchLocationData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await getAPI(
-        `/get-location?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        `/get-location?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
         {},
         true
       );

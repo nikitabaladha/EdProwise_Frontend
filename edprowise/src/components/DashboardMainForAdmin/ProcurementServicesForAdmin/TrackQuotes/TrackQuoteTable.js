@@ -45,7 +45,12 @@ const TrackQuoteTable = () => {
 
   const fetchAllQuoteData = async (enquiryNumber) => {
     try {
-      const response = await getAPI(`/submit-quote/${enquiryNumber}`, {}, true);
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+      const response = await getAPI(
+        `/submit-quote/${encodedEnquiryNumber}`,
+        {},
+        true
+      );
 
       if (
         !response.hasError &&

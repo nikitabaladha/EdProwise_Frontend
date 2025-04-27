@@ -50,8 +50,10 @@ const TrackQuoteTable = ({}) => {
 
   const fetchQuoteProposal = async (enquiryNumber) => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        `/quote-proposal?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
         {},
         true
       );
@@ -128,9 +130,11 @@ const TrackQuoteTable = ({}) => {
       return;
     }
 
+    const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
     try {
       const response = await getAPI(
-        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         { responseType: "blob" },
         true
       );

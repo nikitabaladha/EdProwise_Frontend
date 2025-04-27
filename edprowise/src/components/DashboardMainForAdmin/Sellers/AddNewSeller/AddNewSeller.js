@@ -151,10 +151,6 @@ const AddNewSeller = () => {
     e.preventDefault();
     const data = new FormData();
 
-    // Object.keys(formData).forEach((key) => {
-    //   data.append(key, formData[key]);
-    // });
-
     Object.keys(formData).forEach((key) => {
       if (!["isCustomCountry", "isCustomState", "isCustomCity"].includes(key)) {
         data.append(key, formData[key]);
