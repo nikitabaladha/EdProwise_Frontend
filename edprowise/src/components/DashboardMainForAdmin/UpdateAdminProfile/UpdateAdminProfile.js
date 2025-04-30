@@ -195,9 +195,12 @@ const UpdateAdminProfile = () => {
       }));
       setPreviewImage(URL.createObjectURL(file));
     } else {
+      const updatedValue = ["gstin", "pan", "tan", "cin"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: updatedValue,
       }));
     }
   };

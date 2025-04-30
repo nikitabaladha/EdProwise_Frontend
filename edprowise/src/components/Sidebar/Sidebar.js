@@ -33,6 +33,7 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       return newOpenMenus;
     });
   };
+
   const sidebarRef = useRef(null);
 
   useEffect(() => {

@@ -24,6 +24,7 @@ const TrackQuoteTable = ({}) => {
           Array.isArray(response.data.data)
         ) {
           setQuotes(response.data.data);
+          console.log("quote", response.data.data);
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -62,6 +63,7 @@ const TrackQuoteTable = ({}) => {
         setPreparedQuotes((prev) => ({
           ...prev,
           [enquiryNumber]: response.data.data,
+          // in this get api i am getting quoteNumber also that quoteNumber i want to use as name of quoteNumber.pdf
         }));
       } else {
         console.error("Invalid response format or error in response");
@@ -139,12 +141,18 @@ const TrackQuoteTable = ({}) => {
         true
       );
 
+      const quoteData = preparedQuotes[enquiryNumber];
+      const quoteNumber = quoteData?.quoteNumber || "quote";
+
       // write your code here
       const blob = new Blob([response.data], { type: "application/pdf" });
       const fileURL = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "quote.pdf";
+      link.download = `${quoteNumber}.pdf`;
+
+      // whatever i get in quoteNumber  that quoteNumber i want to use as name of quoteNumber.pdf
+
       link.click();
 
       if (!response.hasError && response.data) {

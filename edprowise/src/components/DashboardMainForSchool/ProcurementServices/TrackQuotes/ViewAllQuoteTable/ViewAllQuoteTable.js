@@ -159,7 +159,7 @@ const ViewAllQuoteTable = () => {
     setIsModalOpen(false);
   };
 
-  const generateQuotePDF = async (enquiryNumber, sellerId) => {
+  const generateQuotePDF = async (enquiryNumber, sellerId, quoteNumber) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
@@ -187,7 +187,7 @@ const ViewAllQuoteTable = () => {
       const fileURL = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "quote.pdf";
+      link.download = `${quoteNumber || "quote"}.pdf`;
       link.click();
 
       if (!response.hasError && response.data) {
@@ -287,6 +287,7 @@ const ViewAllQuoteTable = () => {
                           <td>{quote.remarksFromSupplier || "Not Provided"}</td>
 
                           <td>{quote.venderStatusFromBuyer}</td>
+
                           <td>
                             <div className="d-flex gap-2">
                               {(quote.venderStatusFromBuyer ===
@@ -319,7 +320,8 @@ const ViewAllQuoteTable = () => {
                                     onClick={() =>
                                       generateQuotePDF(
                                         quote?.enquiryNumber,
-                                        quote?.sellerId
+                                        quote?.sellerId,
+                                        quote?.quoteNumber
                                       )
                                     }
                                     className="btn btn-soft-info btn-sm"
@@ -354,7 +356,8 @@ const ViewAllQuoteTable = () => {
                                     onClick={() =>
                                       generateQuotePDF(
                                         quote?.enquiryNumber,
-                                        quote?.sellerId
+                                        quote?.sellerId,
+                                        quote?.quoteNumber
                                       )
                                     }
                                     className="btn btn-soft-info btn-sm"

@@ -140,7 +140,10 @@ const CompleteSellerProfile = () => {
     if (files) {
       setFormData((prevState) => ({ ...prevState, [name]: files[0] }));
     } else {
-      setFormData((prevState) => ({ ...prevState, [name]: value }));
+      const updatedValue = ["gstin", "pan", "tan", "cin", "ifsc"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
+      setFormData((prevState) => ({ ...prevState, [name]: updatedValue }));
     }
   };
 
@@ -324,6 +327,7 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.gstin}
                           onChange={handleChange}
+                          // here i want to allow only capital letter if any alfabet
                           // required
                           placeholder="Example : 22AAAAA0000A1Z5"
                         />

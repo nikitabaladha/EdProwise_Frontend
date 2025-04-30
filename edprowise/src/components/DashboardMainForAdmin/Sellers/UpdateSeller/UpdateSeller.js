@@ -49,7 +49,6 @@ const UpdateSeller = () => {
     tanFile: null,
     cinFile: null,
     gstFile: null,
-
     country: "",
     state: "",
     city: "",
@@ -329,9 +328,12 @@ const UpdateSeller = () => {
         }
       }
     } else {
+      const updatedValue = ["gstin", "pan", "tan", "cin"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: updatedValue,
       }));
     }
   };
@@ -574,7 +576,7 @@ const UpdateSeller = () => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="signature" className="form-label">
-                        Signature
+                        Signature <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"

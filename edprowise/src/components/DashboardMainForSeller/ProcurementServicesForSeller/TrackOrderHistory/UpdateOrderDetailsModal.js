@@ -23,8 +23,9 @@ const UpdateOrderDetailsModal = ({
     if (isOpen) {
       const fetchOrderDetailsFromSeller = async () => {
         try {
+          const encodedOrderNumber = encodeURIComponent(orderNumber);
           const response = await getAPI(
-            `/get-by-order-number?orderNumber=${orderNumber}`
+            `/get-by-order-number?orderNumber=${encodedOrderNumber}`
           );
           if (!response.hasError && response.data && response.data.data) {
             const { actualDeliveryDate, otherCharges } = response.data.data;
@@ -73,8 +74,10 @@ const UpdateOrderDetailsModal = ({
     setSending(true);
 
     try {
+      const encodedOrderNumber = encodeURIComponent(orderNumber);
+
       const response = await putAPI(
-        `/order-details?orderNumber=${orderNumber}&sellerId`,
+        `/order-details?orderNumber=${encodedOrderNumber}&sellerId`,
         dataToSend,
         true
       );

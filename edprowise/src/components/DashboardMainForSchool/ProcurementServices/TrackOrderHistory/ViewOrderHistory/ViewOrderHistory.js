@@ -38,8 +38,10 @@ const ViewOrderHistory = () => {
 
   const fetchOrderData = async () => {
     try {
+      const encodedOrderNumber = encodeURIComponent(orderNumber);
+
       const response = await getAPI(
-        `/order-details-by-orderNumber/${orderNumber}`,
+        `/order-details-by-orderNumber/${encodedOrderNumber}`,
         {},
         true
       );
@@ -88,8 +90,10 @@ const ViewOrderHistory = () => {
 
   const fetchOrderDetails = async () => {
     try {
+      const encodedOrderNumber = encodeURIComponent(orderNumber);
+
       const response = await getAPI(
-        `/order-from-buyer/${orderNumber}/${sellerId}`,
+        `/order-from-buyer/${encodedOrderNumber}/${sellerId}`,
         {},
         true
       );
@@ -104,7 +108,11 @@ const ViewOrderHistory = () => {
     }
   };
 
-  const generateInvoicePDFForBuyer = async (enquiryNumber, sellerId) => {
+  const generateInvoicePDFForBuyer = async (
+    enquiryNumber,
+    sellerId,
+    invoiceForSchool
+  ) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
@@ -132,6 +140,8 @@ const ViewOrderHistory = () => {
       const link = document.createElement("a");
       link.href = fileURL;
       link.download = "buyer-invoice.pdf";
+
+      link.download = `${invoiceForSchool || "buyer-invoice"}.pdf`;
       link.click();
 
       if (!response.hasError && response.data) {
@@ -317,7 +327,8 @@ const ViewOrderHistory = () => {
                         onClick={() =>
                           generateInvoicePDFForBuyer(
                             order?.enquiryNumber,
-                            order?.sellerId
+                            order?.sellerId,
+                            order?.invoiceForSchool
                           )
                         }
                         className="btn btn-soft-info btn-sm"

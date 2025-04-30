@@ -63,9 +63,12 @@ const AddNewSchool = () => {
         [name]: files[0],
       }));
     } else {
+      const updatedValue = ["panNo"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
       setFormData((prevState) => ({
         ...prevState,
-        [name]: value,
+        [name]: updatedValue,
       }));
     }
   };

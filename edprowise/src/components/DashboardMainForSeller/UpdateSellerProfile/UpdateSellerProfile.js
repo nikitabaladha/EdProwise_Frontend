@@ -320,9 +320,12 @@ const UpdateSeller = () => {
         }
       }
     } else {
+      const updatedValue = ["gstin", "pan", "tan", "cin", "ifsc"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: updatedValue,
       }));
     }
   };
@@ -575,7 +578,7 @@ const UpdateSeller = () => {
                         accept="image/*"
                         onChange={handleChange}
                         ref={signatureRef}
-                        required
+                        // required
                       />
                       <div className="d-flex justify-content-center mt-2">
                         {renderFilePreview(
@@ -799,7 +802,7 @@ const UpdateSeller = () => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="tanFile" className="form-label">
-                        TAN File <span className="text-danger">*</span>
+                        TAN File
                       </label>
                       <input
                         type="file"
@@ -826,7 +829,7 @@ const UpdateSeller = () => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="cinFile" className="form-label">
-                        CIN File <span className="text-danger">*</span>
+                        CIN File
                       </label>
                       <input
                         type="file"

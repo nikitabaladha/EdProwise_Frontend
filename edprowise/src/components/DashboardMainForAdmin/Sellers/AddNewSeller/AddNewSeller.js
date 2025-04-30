@@ -141,7 +141,10 @@ const AddNewSeller = () => {
     if (files) {
       setFormData((prevState) => ({ ...prevState, [name]: files[0] }));
     } else {
-      setFormData((prevState) => ({ ...prevState, [name]: value }));
+      const updatedValue = ["gstin", "pan", "tan", "cin"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
+      setFormData((prevState) => ({ ...prevState, [name]: updatedValue }));
     }
   };
 
@@ -765,7 +768,7 @@ const AddNewSeller = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="signature" className="form-label">
-                          Signature
+                          Signature <span className="text-danger">*</span>
                         </label>
                         <input
                           type="file"

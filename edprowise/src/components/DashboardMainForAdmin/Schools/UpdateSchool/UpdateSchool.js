@@ -162,9 +162,12 @@ const UpdateSchool = () => {
         }
       }
     } else {
+      const updatedValue = ["panNo"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: updatedValue,
       }));
     }
   };

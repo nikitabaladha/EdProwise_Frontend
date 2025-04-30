@@ -67,9 +67,12 @@ const CompleteEdprowiseProfile = () => {
         [name]: files[0],
       }));
     } else {
+      const updatedValue = ["gstin", "pan", "tan", "cin"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
       setFormData((prevState) => ({
         ...prevState,
-        [name]: value,
+        [name]: updatedValue,
       }));
     }
   };

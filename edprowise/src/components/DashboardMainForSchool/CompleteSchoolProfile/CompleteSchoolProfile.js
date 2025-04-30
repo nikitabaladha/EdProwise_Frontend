@@ -18,7 +18,6 @@ const CompleteSchoolProfile = () => {
   const [formData, setFormData] = useState({
     schoolName: "",
     panFile: null,
-    panNo: "",
     schoolAddress: "",
     landMark: "",
     schoolPincode: "",
@@ -35,7 +34,7 @@ const CompleteSchoolProfile = () => {
     principalName: "",
     schoolAlternateContactNo: "",
     sameAsSchoolAddress: false,
-
+    panNo: "",
     country: "",
     state: "",
     city: "",
@@ -143,9 +142,12 @@ const CompleteSchoolProfile = () => {
         [name]: files[0],
       }));
     } else {
+      const updatedValue = ["panNo"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: updatedValue,
       }));
     }
   };

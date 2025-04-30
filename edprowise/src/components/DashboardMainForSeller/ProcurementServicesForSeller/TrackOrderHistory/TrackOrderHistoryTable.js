@@ -153,7 +153,11 @@ const TrackOrderHistoryTable = () => {
     }
   };
 
-  const generateInvoicePDFForEdprowise = async (enquiryNumber, schoolId) => {
+  const generateInvoicePDFForEdprowise = async (
+    enquiryNumber,
+    schoolId,
+    invoiceForEdprowise
+  ) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const sellerId = userDetails?.id;
 
@@ -179,7 +183,8 @@ const TrackOrderHistoryTable = () => {
       const fileURL = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "edprowise-invoice.pdf";
+
+      link.download = `${invoiceForEdprowise || "edprowise-invoice"}.pdf`;
       link.click();
 
       if (!response.hasError && response.data) {
@@ -192,7 +197,11 @@ const TrackOrderHistoryTable = () => {
     }
   };
 
-  const generateInvoicePDFForBuyer = async (enquiryNumber, schoolId) => {
+  const generateInvoicePDFForBuyer = async (
+    enquiryNumber,
+    schoolId,
+    invoiceForSchool
+  ) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const sellerId = userDetails?.id;
 
@@ -218,7 +227,7 @@ const TrackOrderHistoryTable = () => {
       const fileURL = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "buyer-invoice.pdf";
+      link.download = `${invoiceForSchool || "buyer-invoice"}.pdf`;
       link.click();
 
       if (!response.hasError && response.data) {
@@ -326,7 +335,6 @@ const TrackOrderHistoryTable = () => {
                             </div>
                           </td>
                           <td>{order.orderNumber}</td>
-
                           <td>{order.enquiryNumber}</td>
 
                           <td>{order.supplierStatus}</td>
@@ -410,8 +418,9 @@ const TrackOrderHistoryTable = () => {
                                   <button
                                     onClick={() =>
                                       generateInvoicePDFForEdprowise(
-                                        order.enquiryNumber,
-                                        order.schoolId
+                                        order?.enquiryNumber,
+                                        order?.schoolId,
+                                        order?.invoiceForEdprowise
                                       )
                                     }
                                     className="btn btn-soft-info btn-sm"
@@ -436,8 +445,9 @@ const TrackOrderHistoryTable = () => {
                                   <button
                                     onClick={() =>
                                       generateInvoicePDFForBuyer(
-                                        order.enquiryNumber,
-                                        order.schoolId
+                                        order?.enquiryNumber,
+                                        order?.schoolId,
+                                        order?.invoiceForSchool
                                       )
                                     }
                                     className="btn btn-soft-info btn-sm"

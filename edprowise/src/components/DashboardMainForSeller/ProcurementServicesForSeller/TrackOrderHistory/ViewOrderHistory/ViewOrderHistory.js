@@ -37,8 +37,10 @@ const ViewOrderHistory = () => {
 
   const fetchOrderData = async () => {
     try {
+      const encodedOrderNumber = encodeURIComponent(orderNumber);
+
       const response = await getAPI(
-        `/order-details-by-orderNumber/${orderNumber}`,
+        `/order-details-by-orderNumber/${encodedOrderNumber}`,
         {},
         true
       );
@@ -83,8 +85,10 @@ const ViewOrderHistory = () => {
 
   const fetchOrderDetails = async () => {
     try {
+      const encodedOrderNumber = encodeURIComponent(orderNumber);
+
       const response = await getAPI(
-        `/order-from-buyer/${orderNumber}/${sellerId}`,
+        `/order-from-buyer/${encodedOrderNumber}/${sellerId}`,
         {},
         true
       );

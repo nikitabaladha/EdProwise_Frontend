@@ -162,7 +162,6 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     setShowModal(true);
   };
 
-  // here i want to pass enquiryNumber at time of navigate but its not working
   const navigateToViewSubmitQuote = (event) => {
     event.preventDefault();
     navigate(`/seller-dashboard/procurement-services/submit-quote`, {

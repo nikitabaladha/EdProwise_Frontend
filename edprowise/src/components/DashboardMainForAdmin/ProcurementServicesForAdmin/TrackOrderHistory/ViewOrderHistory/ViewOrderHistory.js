@@ -29,8 +29,10 @@ const ViewOrderHistory = () => {
 
   const fetchOrderData = async () => {
     try {
+      const encodedOrderNumber = encodeURIComponent(orderNumber);
+
       const response = await getAPI(
-        `/order-details-by-orderNumber/${orderNumber}`,
+        `/order-details-by-orderNumber/${encodedOrderNumber}`,
         {},
         true
       );
@@ -85,8 +87,10 @@ const ViewOrderHistory = () => {
 
   const fetchOrderDetails = async () => {
     try {
+      const encodedOrderNumber = encodeURIComponent(orderNumber);
+
       const response = await getAPI(
-        `/order-from-buyer/${orderNumber}/${sellerId}`,
+        `/order-from-buyer/${encodedOrderNumber}/${sellerId}`,
         {},
         true
       );
@@ -129,7 +133,10 @@ const ViewOrderHistory = () => {
       const fileURL = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "edprowise-invoice.pdf";
+
+      const filename = order?.invoiceForEdprowise || "edprowise-invoice";
+      link.download = `${filename}.pdf`;
+
       link.click();
 
       if (!response.hasError && response.data) {
@@ -166,7 +173,10 @@ const ViewOrderHistory = () => {
       const fileURL = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "buyer-invoice.pdf";
+
+      const filename = order?.invoiceForSchool || "buyer-invoice";
+      link.download = `${filename}.pdf`;
+
       link.click();
 
       if (!response.hasError && response.data) {

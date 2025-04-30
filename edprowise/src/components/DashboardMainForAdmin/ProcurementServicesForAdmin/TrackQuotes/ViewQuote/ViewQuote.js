@@ -112,7 +112,7 @@ const ViewQuote = () => {
       const fileURL = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "quote.pdf";
+      link.download = `${currentQuote?.quoteNumber || "quote"}.pdf`;
       link.click();
 
       if (!response.hasError && response.data) {
