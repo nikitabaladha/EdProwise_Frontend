@@ -39,6 +39,7 @@ const ViewQuote = () => {
       );
       if (!response.hasError && response.data && response.data.data) {
         setCurrentQuote(response.data.data);
+        console.log("submit-quote", response.data.data);
       } else {
         console.error("Error fetching quote data");
       }
@@ -157,9 +158,11 @@ const ViewQuote = () => {
                           />
                         </button>
 
-                        {["Quote Requested", "Quote Received"].includes(
-                          currentQuote?.edprowiseStatus
-                        ) && (
+                        {[
+                          "Quote Requested",
+                          "Quote Received",
+                          "Pending",
+                        ].includes(currentQuote?.venderStatusFromBuyer) && (
                           <>
                             <Link
                               onClick={openUpdateSubmittedQuoteModal}

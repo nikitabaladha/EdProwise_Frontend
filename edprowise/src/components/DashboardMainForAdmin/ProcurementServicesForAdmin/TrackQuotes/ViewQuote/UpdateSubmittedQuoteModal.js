@@ -218,11 +218,12 @@ const UpdateSubmittedQuoteModal = ({
                         Payment Terms <span className="text-danger">*</span>
                       </label>
                       <input
-                        type="text"
+                        type="number"
                         name="paymentTerms"
                         value={submittedQuote.paymentTerms}
                         onChange={handleInputChange}
                         className="form-control"
+                        required
                       />
                     </div>
                     <div className="mb-3">

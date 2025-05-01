@@ -6,12 +6,9 @@ import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import autoTable from "jspdf-autotable";
-import jsPDF from "jspdf";
 import { formatCost } from "../../../../CommonFunction";
 
 import ViewPrepareQuoteListFromSeller from "./ViewPrepareQuoteListFromSeller";
-
 import getAPI from "../../../../../api/getAPI";
 
 import { format } from "date-fns";
@@ -60,7 +57,7 @@ const ViewQuote = () => {
       const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
 
       const response = await getAPI(
-        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
+        `/generate-quote-pdf-for-buyer?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         { responseType: "blob" },
         true
       );

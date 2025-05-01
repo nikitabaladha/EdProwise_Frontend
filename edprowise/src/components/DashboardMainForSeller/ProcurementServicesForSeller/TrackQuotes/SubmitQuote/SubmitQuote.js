@@ -43,7 +43,7 @@ const SubmitQuote = () => {
             expectedDeliveryDateBySeller,
             paymentTerms,
             advanceRequiredAmount,
-            venderStatusFromBuyer: statusFromAPI, // Renamed to avoid conflict
+            venderStatusFromBuyer: statusFromAPI,
           } = response.data.data;
 
           const formattedDate = expectedDeliveryDateBySeller
@@ -59,7 +59,7 @@ const SubmitQuote = () => {
             advanceRequiredAmount,
           });
 
-          setVenderStatusFromBuyer(statusFromAPI); // Using the state setter here
+          setVenderStatusFromBuyer(statusFromAPI);
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -257,12 +257,11 @@ const SubmitQuote = () => {
                           Payment Terms <span className="text-danger">*</span>
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           name="paymentTerms"
                           value={submittedQuote.paymentTerms}
                           onChange={handleInputChange}
                           className="form-control"
-                          placeholder="Example : 30 days"
                           required
                           readOnly={
                             !(
