@@ -14,8 +14,6 @@ import UpdateSubmittedQuoteModal from "./UpdateSubmittedQuoteModal";
 import getAPI from "../../../../../api/getAPI";
 import putAPI from "../../../../../api/putAPI";
 
-import UpdateDeliveryChargesModal from "../ViewAllQuoteTable/UpdateDeliveryChargesModal";
-
 import { format } from "date-fns";
 import { formatCost } from "../../../../CommonFunction";
 
@@ -31,8 +29,6 @@ const ViewQuote = () => {
 
   const [currentQuote, setCurrentQuote] = useState(quote);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeliveryChargesModalOpen, setIsDeliveryChargesModalOpen] =
-    useState(false);
 
   const fetchQuoteData = async () => {
     try {
@@ -84,7 +80,7 @@ const ViewQuote = () => {
 
       if (!response.hasError) {
         toast.success(`Quote status updated to "${newStatus}" successfully!`);
-        return fetchQuoteData();
+        fetchQuoteData();
       } else {
         toast.error(response.message || "Failed to update vender status");
       }
@@ -128,19 +124,6 @@ const ViewQuote = () => {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching quote data");
     }
-  };
-
-  const [selectedSellerId, setSelectedSellerId] = useState(null);
-
-  const openUpdateDeliveryChargesModal = (event, sellerId) => {
-    event.preventDefault();
-    setSelectedSellerId(sellerId);
-    setIsDeliveryChargesModalOpen(true);
-  };
-
-  const closeUpdateDeliveryChargesModal = () => {
-    setIsDeliveryChargesModalOpen(false);
-    setSelectedSellerId(null);
   };
 
   return (
@@ -197,11 +180,8 @@ const ViewQuote = () => {
                               <>
                                 <button
                                   className="btn btn-success btn-sm"
-                                  onClick={(e) =>
-                                    openUpdateDeliveryChargesModal(
-                                      e,
-                                      currentQuote?.sellerId
-                                    )
+                                  onClick={() =>
+                                    handleVenderStatusUpdate("Quote Accepted")
                                   }
                                 >
                                   Accept
@@ -233,11 +213,8 @@ const ViewQuote = () => {
                               "Quote Not Accepted" && (
                               <button
                                 className="btn btn-success btn-sm"
-                                onClick={(e) =>
-                                  openUpdateDeliveryChargesModal(
-                                    e,
-                                    currentQuote?.sellerId
-                                  )
+                                onClick={() =>
+                                  handleVenderStatusUpdate("Quote Accepted")
                                 }
                               >
                                 Accept
@@ -356,9 +333,7 @@ const ViewQuote = () => {
                       </p>
                     </div>
                   </div>
-                </div>
 
-                <div className="row">
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="deliveryCharges" className="form-label">
@@ -370,6 +345,8 @@ const ViewQuote = () => {
                     </div>
                   </div>
                 </div>
+
+                <div className="row"></div>
 
                 <div className="text-end">
                   <button
@@ -395,23 +372,6 @@ const ViewQuote = () => {
         enquiryNumber={enquiryNumber}
         sellerId={sellerId}
         onQuoteUpdated={handleQuoteUpdated}
-      />
-
-      <UpdateDeliveryChargesModal
-        isOpen={isDeliveryChargesModalOpen}
-        onClose={closeUpdateDeliveryChargesModal}
-        enquiryNumber={enquiryNumber}
-        sellerId={selectedSellerId}
-        onQuoteUpdated={async () => {
-          try {
-            // First update the status to "Quote Accepted"
-            await handleVenderStatusUpdate("Quote Accepted");
-            // Then refresh the data
-            await fetchQuoteData();
-          } catch (error) {
-            toast.error("Failed to update quote status");
-          }
-        }}
       />
     </>
   );

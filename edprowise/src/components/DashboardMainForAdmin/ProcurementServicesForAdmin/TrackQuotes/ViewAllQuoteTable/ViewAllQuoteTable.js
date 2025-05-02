@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import autoTable from "jspdf-autotable";
 import { useLocation } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import putAPI from "../../../../../api/putAPI";
-import jsPDF from "jspdf";
 import { format } from "date-fns";
 import { formatCost } from "../../../../CommonFunction";
 import { Modal, Button } from "react-bootstrap";
 import { RxCross1 } from "react-icons/rx";
+import UpdateDeliveryChargesModal from "./UpdateDeliveryChargesModal";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -32,6 +30,8 @@ const ViewAllQuoteTable = () => {
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [rejectComment, setRejectComment] = useState("");
+  const [isDeliveryChargesModalOpen, setIsDeliveryChargesModalOpen] =
+    useState(false);
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -68,7 +68,7 @@ const ViewAllQuoteTable = () => {
 
       if (!response.hasError) {
         toast.success(`Quote status updated to "${newStatus}" successfully!`);
-        fetchAllQuoteData();
+        return fetchAllQuoteData();
       } else {
         toast.error(response.message || "Failed to update vender status");
       }
@@ -139,6 +139,19 @@ const ViewAllQuoteTable = () => {
   const closeModal = () => {
     setShowModal(false);
     setRejectComment("");
+  };
+
+  const [selectedSellerId, setSelectedSellerId] = useState(null);
+
+  const openUpdateDeliveryChargesModal = (event, sellerId) => {
+    event.preventDefault();
+    setSelectedSellerId(sellerId);
+    setIsDeliveryChargesModalOpen(true);
+  };
+
+  const closeUpdateDeliveryChargesModal = () => {
+    setIsDeliveryChargesModalOpen(false);
+    setSelectedSellerId(null);
   };
 
   return (
@@ -268,10 +281,10 @@ const ViewAllQuoteTable = () => {
                                     <>
                                       <button
                                         className="btn btn-success btn-sm"
-                                        onClick={() =>
-                                          handleVenderStatusUpdate(
-                                            quote.sellerId,
-                                            "Quote Accepted"
+                                        onClick={(e) =>
+                                          openUpdateDeliveryChargesModal(
+                                            e,
+                                            quote.sellerId
                                           )
                                         }
                                       >
@@ -307,10 +320,10 @@ const ViewAllQuoteTable = () => {
                                     "Quote Not Accepted" && (
                                     <button
                                       className="btn btn-success btn-sm"
-                                      onClick={() =>
-                                        handleVenderStatusUpdate(
-                                          quote.sellerId,
-                                          "Quote Accepted"
+                                      onClick={(e) =>
+                                        openUpdateDeliveryChargesModal(
+                                          e,
+                                          quote.sellerId
                                         )
                                       }
                                     >
@@ -332,6 +345,21 @@ const ViewAllQuoteTable = () => {
           </div>
         </div>
       </div>
+
+      <UpdateDeliveryChargesModal
+        isOpen={isDeliveryChargesModalOpen}
+        onClose={closeUpdateDeliveryChargesModal}
+        enquiryNumber={enquiryNumber}
+        sellerId={selectedSellerId}
+        onQuoteUpdated={async () => {
+          try {
+            await handleVenderStatusUpdate(selectedSellerId, "Quote Accepted");
+            await fetchAllQuoteData();
+          } catch (error) {
+            toast.error("Failed to update quote status");
+          }
+        }}
+      />
 
       {/* Modal for Reject Comment From Buyer */}
       <Modal

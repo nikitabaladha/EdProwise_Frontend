@@ -224,6 +224,18 @@ const ViewQuote = () => {
                 </div>
               </div>
 
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="deliveryCharges" className="form-label">
+                      Delivery Charges
+                    </label>
+                    <p className="form-control">
+                      {currentQuote?.deliveryCharges || "Not Provided"}
+                    </p>
+                  </div>
+                </div>
+              </div>
               <div className="text-end">
                 <button
                   type="button"

@@ -258,9 +258,11 @@ const ViewAllQuoteTable = () => {
                                 />
                               </button>
 
-                              {["Quote Requested", "Quote Received"].includes(
-                                quote?.edprowiseStatus
-                              ) && (
+                              {[
+                                "Quote Requested",
+                                "Quote Received",
+                                "Pending",
+                              ].includes(quote?.venderStatusFromBuyer) && (
                                 <>
                                   {quote.venderStatus === "Pending" && (
                                     <>
