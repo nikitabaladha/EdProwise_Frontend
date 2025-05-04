@@ -39,6 +39,7 @@ const UpdateAdminProfile = () => {
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
+    insuranceCharges: "",
   });
 
   const edprowiseProfileRef = useRef(null);
@@ -91,6 +92,7 @@ const UpdateAdminProfile = () => {
           contactNo: profileData.contactNo || "",
           alternateContactNo: profileData.alternateContactNo || "",
           emailId: profileData.emailId || "",
+          insuranceCharges: profileData.insuranceCharges || "",
         });
       } else {
         console.error("Invalid response format or error in response");
@@ -127,6 +129,7 @@ const UpdateAdminProfile = () => {
         "contactNo",
         "alternateContactNo",
         "emailId",
+        "insuranceCharges",
       ];
 
       fieldsToSend.forEach((key) => {
@@ -289,7 +292,6 @@ const UpdateAdminProfile = () => {
                         required
                       />
                     </div>
-
                     <div className="mb-3">
                       <label htmlFor="gstin" className="form-label">
                         Company GSTIN Number{" "}
@@ -316,6 +318,21 @@ const UpdateAdminProfile = () => {
                         onChange={handleChange}
                         className="form-control"
                         placeholder="Example : AAAAPL1234C"
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="insuranceCharges" className="form-label">
+                        Insurance Charges <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="insuranceCharges"
+                        name="insuranceCharges"
+                        className="form-control"
+                        value={formData.insuranceCharges}
+                        onChange={handleChange}
+                        placeholder="Example : 1%"
                       />
                     </div>
                   </div>
@@ -378,18 +395,20 @@ const UpdateAdminProfile = () => {
                 </h4>
                 <hr></hr>
                 <div className="row">
-                  <div className="mb-3">
-                    <label htmlFor="address" className="form-label">
-                      Address <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleChange}
-                      className="form-control"
-                    />
+                  <div className="col-md-12">
+                    <div className="mb-3">
+                      <label htmlFor="address" className="form-label">
+                        Address <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="address"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleChange}
+                        className="form-control"
+                      />
+                    </div>
                   </div>
                 </div>
 

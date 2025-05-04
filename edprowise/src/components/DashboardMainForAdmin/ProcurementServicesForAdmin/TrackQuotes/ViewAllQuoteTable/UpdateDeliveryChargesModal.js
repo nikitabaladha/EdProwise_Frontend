@@ -109,7 +109,7 @@ const UpdateDeliveryChargesModal = ({
                   <div className="container">
                     <div className="card-header mb-2">
                       <h4 className="card-title text-center custom-heading-font">
-                        Update Submitted Quote
+                        Update Delivery Charges
                       </h4>
                     </div>
                   </div>

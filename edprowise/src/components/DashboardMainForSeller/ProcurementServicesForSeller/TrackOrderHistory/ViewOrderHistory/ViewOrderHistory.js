@@ -244,11 +244,11 @@ const ViewOrderHistory = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
+                      <label htmlFor="deliveryCharges" className="form-label">
+                        Delivery Charges
                       </label>
                       <p className="form-control">
-                        {formatCost(order?.otherCharges)}
+                        {formatCost(order?.deliveryCharges)}
                       </p>
                     </div>
                   </div>
@@ -337,11 +337,11 @@ const ViewOrderHistory = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
+                      <label htmlFor="deliveryCharges" className="form-label">
+                        Delivery Charges
                       </label>
                       <p className="form-control">
-                        {formatCost(order?.otherCharges)}
+                        {formatCost(order?.deliveryCharges)}
                       </p>
                     </div>
                   </div>

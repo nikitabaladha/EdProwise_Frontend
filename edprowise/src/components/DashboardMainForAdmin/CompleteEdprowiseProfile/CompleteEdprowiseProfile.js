@@ -27,6 +27,7 @@ const CompleteEdprowiseProfile = () => {
     contactNo: "",
     alternateContactNo: "",
     emailId: "",
+    insuranceCharges: "",
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
@@ -119,6 +120,7 @@ const CompleteEdprowiseProfile = () => {
           contactNo: "",
           alternateContactNo: "",
           emailId: "",
+          insuranceCharges: "",
           isCustomCountry: false,
           isCustomState: false,
           isCustomCity: false,
@@ -296,6 +298,29 @@ const CompleteEdprowiseProfile = () => {
                       </div>
                     </div>
                   </div>
+                  <div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="insuranceCharges"
+                          className="form-label"
+                        >
+                          Insurance Charges{" "}
+                          <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="insuranceCharges"
+                          name="insuranceCharges"
+                          className="form-control"
+                          value={formData.insuranceCharges}
+                          onChange={handleChange}
+                          placeholder="Example : 1%"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <h4 className="card-title text-center custo m-heading-font">
                     Address Details
                   </h4>
@@ -365,6 +390,8 @@ const CompleteEdprowiseProfile = () => {
                           placeholder="Select or type a country"
                           isSearchable
                           required
+                          classNamePrefix="react-select"
+                          className="custom-react-select"
                         />
                       </div>
                     </div>
@@ -433,6 +460,8 @@ const CompleteEdprowiseProfile = () => {
                             isSearchable
                             required
                             isDisabled={!formData.country}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
                           />
                         )}
                       </div>
@@ -498,47 +527,15 @@ const CompleteEdprowiseProfile = () => {
                             isSearchable
                             required
                             isDisabled={!formData.state}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
                           />
                         )}
                       </div>
                     </div>
                   </div>
                   <div className="row">
-                    {/* <div className="col-md-4">
-                      <div className="mb-3">
-                        <label
-                          htmlFor="cityStateCountry"
-                          className="form-label"
-                        >
-                          City State Country Location
-                        </label>
-
-                        <Select
-                          id="cityStateCountry"
-                          name="cityStateCountry"
-                          options={cityOptions}
-                          value={cityOptions.find(
-                            (option) =>
-                              option.value === formData.cityStateCountry
-                          )}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              cityStateCountry: selectedOption
-                                ? selectedOption.value
-                                : "",
-                            }))
-                          }
-                          placeholder="Select City-State-Country"
-                          isSearchable
-                          required
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
-                      </div>
-                    </div> */}
-
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="landmark" className="form-label">
                           Land Mark <span className="text-danger">*</span>
@@ -555,7 +552,7 @@ const CompleteEdprowiseProfile = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="pincode" className="form-label">
                           Pin Code <span className="text-danger">*</span>

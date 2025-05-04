@@ -126,6 +126,14 @@ const ViewAdminProfile = () => {
                         {adminProfile?.tan || "Not Provided"}
                       </p>
                     </div>
+                    <div className="mb-3">
+                      <label htmlFor="tan" className="form-label">
+                        Insurance Charges
+                      </label>
+                      <p className="form-control">
+                        {adminProfile?.insuranceCharges || "Not Provided"}
+                      </p>
+                    </div>
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -194,7 +202,7 @@ const ViewAdminProfile = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="landmark" className="form-label">
                         Land Mark
@@ -202,7 +210,7 @@ const ViewAdminProfile = () => {
                       <p className="form-control">{adminProfile?.landmark}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
                         Pin Code

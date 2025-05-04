@@ -16,7 +16,6 @@ const UpdateOrderDetailsModal = ({
 }) => {
   const [orderDetailsFromSeller, setOrderDetailsFromSeller] = useState({
     actualDeliveryDate: "",
-    otherCharges: "",
   });
 
   useEffect(() => {
@@ -28,7 +27,7 @@ const UpdateOrderDetailsModal = ({
             `/get-by-order-number?orderNumber=${encodedOrderNumber}`
           );
           if (!response.hasError && response.data && response.data.data) {
-            const { actualDeliveryDate, otherCharges } = response.data.data;
+            const { actualDeliveryDate } = response.data.data;
 
             const formattedDate = format(
               parseISO(actualDeliveryDate),
@@ -36,7 +35,6 @@ const UpdateOrderDetailsModal = ({
             );
 
             setOrderDetailsFromSeller({
-              otherCharges,
               actualDeliveryDate: formattedDate,
             });
           } else {
@@ -68,7 +66,6 @@ const UpdateOrderDetailsModal = ({
 
     const dataToSend = {
       actualDeliveryDate,
-      otherCharges,
     };
 
     setSending(true);
@@ -86,7 +83,6 @@ const UpdateOrderDetailsModal = ({
         toast.success("Quote Updated successfully");
         setOrderDetailsFromSeller({
           actualDeliveryDate,
-          otherCharges,
         });
         onOrderDetailsUpdated();
         onClose();
@@ -124,7 +120,6 @@ const UpdateOrderDetailsModal = ({
                     </div>
                   </div>
                   <form onSubmit={handleSubmit}>
-                    {/* this works perfectly fine but by default i want to show current date or todays date */}
                     <div className="mb-2">
                       <label
                         htmlFor="actualDeliveryDate"
@@ -138,19 +133,6 @@ const UpdateOrderDetailsModal = ({
                         value={orderDetailsFromSeller.actualDeliveryDate}
                         onChange={handleInputChange}
                         className="form-control"
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
-                      </label>
-                      <input
-                        type="number"
-                        name="otherCharges"
-                        value={orderDetailsFromSeller.otherCharges}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        placeholder="Example : 200"
                       />
                     </div>
 

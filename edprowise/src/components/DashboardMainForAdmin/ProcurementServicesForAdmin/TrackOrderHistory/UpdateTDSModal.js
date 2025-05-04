@@ -119,7 +119,7 @@ const UpdateTDSModal = ({
                         value={tdsDetails.tDSAmount}
                         onChange={handleInputChange}
                         className="form-control"
-                        placeholder="2"
+                        placeholder="Example : 2"
                       />
                     </div>
 
