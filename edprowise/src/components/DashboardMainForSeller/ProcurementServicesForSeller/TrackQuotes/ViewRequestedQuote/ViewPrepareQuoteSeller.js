@@ -8,6 +8,9 @@ import { Modal } from "react-bootstrap";
 import { formatCost } from "../../../../CommonFunction";
 import { useNavigate } from "react-router-dom";
 
+import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
+
 const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
   const navigate = useNavigate();
 
@@ -102,6 +105,65 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     }
   };
 
+  // const ImageSlider = ({ images, onImageClick }) => {
+  //   const [currentIndex, setCurrentIndex] = useState(0);
+
+  //   const goToPrev = () => {
+  //     setCurrentIndex((prevIndex) =>
+  //       prevIndex === 0 ? images.length - 1 : prevIndex - 1
+  //     );
+  //   };
+
+  //   const goToNext = () => {
+  //     setCurrentIndex((prevIndex) =>
+  //       prevIndex === images.length - 1 ? 0 : prevIndex + 1
+  //     );
+  //   };
+
+  //   if (images.length === 0) {
+  //     return <div className="text-muted">No images</div>;
+  //   }
+
+  //   const currentImage = images[currentIndex];
+  //   const imageUrl = currentImage
+  //     ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${currentImage}`
+  //     : null;
+
+  //   return (
+  //     <div className="d-flex align-items-center justify-content-center">
+  //       {images.length > 1 && (
+  //         <button
+  //           className="btn btn-sm btn-outline-secondary me-1"
+  //           onClick={goToPrev}
+  //         >
+  //           &lt;
+  //         </button>
+  //       )}
+  //       <div
+  //         className="rounded bg-light"
+  //         style={{ width: "80px", height: "80px" }}
+  //         onClick={() => onImageClick(imageUrl)}
+  //       >
+  //         {imageUrl && (
+  //           <img
+  //             src={imageUrl}
+  //             alt={`Product ${currentIndex + 1}`}
+  //             className="img-fluid h-100"
+  //           />
+  //         )}
+  //       </div>
+  //       {images.length > 1 && (
+  //         <button
+  //           className="btn btn-sm btn-outline-secondary ms-1"
+  //           onClick={goToNext}
+  //         >
+  //           &gt;
+  //         </button>
+  //       )}
+  //     </div>
+  //   );
+  // };
+
   const handleInputChange = (id, e) => {
     const { name, value } = e.target;
     setEditedQuote((prev) => ({
@@ -157,16 +219,37 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     }
   };
 
-  const handleImageClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
-    setShowModal(true);
-  };
+  // const handleImageClick = (imageUrl) => {
+  //   setSelectedImage(imageUrl);
+  //   setShowModal(true);
+  // };
 
   const navigateToViewSubmitQuote = (event) => {
     event.preventDefault();
     navigate(`/seller-dashboard/procurement-services/submit-quote`, {
       state: { enquiryNumber: enquiryNumber },
     });
+  };
+
+  const [selectedQuoteImages, setSelectedQuoteImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handleImageClick = (images, index = 0) => {
+    setSelectedQuoteImages(images);
+    setCurrentImageIndex(index);
+    setShowModal(true);
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === selectedQuoteImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? selectedQuoteImages.length - 1 : prevIndex - 1
+    );
   };
 
   return (
@@ -281,139 +364,76 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                     </thead>
                     <tbody>
                       {preparedQuotes.length > 0 ? (
-                        preparedQuotes.map((quote) => (
-                          <tr key={quote._id}>
-                            <td>
-                              <div className="form-check ms-1">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`customCheck${quote._id}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`customCheck${quote._id}`}
-                                >
-                                  &nbsp;
-                                </label>
-                              </div>
-                            </td>
+                        preparedQuotes.map((quote) => {
+                          const availableImages =
+                            quote?.prepareQuoteImages?.filter((img) => img) ||
+                            [];
+                          const firstImage = availableImages[0];
+                          const imageUrl = firstImage
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${firstImage}`
+                            : null;
 
-                            <td>
-                              <div className="d-flex align-items-center gap-2">
+                          return (
+                            <tr key={quote._id}>
+                              <td>
+                                <div className="form-check ms-1">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    id={`customCheck${quote._id}`}
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor={`customCheck${quote._id}`}
+                                  >
+                                    &nbsp;
+                                  </label>
+                                </div>
+                              </td>
+
+                              <td>
+                                <div className="d-flex align-items-center gap-2">
+                                  {editedQuote[quote._id] ? (
+                                    <input
+                                      type="text"
+                                      name="subcategoryName"
+                                      value={
+                                        editedQuote[quote._id].subcategoryName
+                                      }
+                                      onChange={(e) =>
+                                        handleInputChange(quote._id, e)
+                                      }
+                                      className="form-control"
+                                    />
+                                  ) : (
+                                    <>
+                                      {imageUrl && (
+                                        <div
+                                          className="rounded bg-light avatar-md d-flex align-items-center justify-content-center"
+                                          style={{ cursor: "pointer" }}
+                                          onClick={() =>
+                                            handleImageClick(availableImages)
+                                          }
+                                        >
+                                          <img
+                                            className="avatar-md"
+                                            alt={quote.subcategoryName}
+                                            src={imageUrl}
+                                          />
+                                        </div>
+                                      )}
+
+                                      <span>{quote.subcategoryName}</span>
+                                    </>
+                                  )}
+                                </div>
+                              </td>
+                              <td>
                                 {editedQuote[quote._id] ? (
                                   <input
                                     type="text"
-                                    name="subcategoryName"
-                                    value={
-                                      editedQuote[quote._id].subcategoryName
-                                    }
-                                    onChange={(e) =>
-                                      handleInputChange(quote._id, e)
-                                    }
-                                    className="form-control"
-                                  />
-                                ) : (
-                                  <>
-                                    {quote.prepareQuoteImage && (
-                                      <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                        <img
-                                          className="avatar-md"
-                                          alt={quote.subcategoryName}
-                                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.prepareQuoteImage}`}
-                                          style={{ cursor: "pointer" }}
-                                          onClick={() =>
-                                            handleImageClick(
-                                              `${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.prepareQuoteImage}`
-                                            )
-                                          }
-                                        />
-                                      </div>
-                                    )}
-                                    <span>{quote.subcategoryName}</span>
-                                  </>
-                                )}
-                              </div>
-                            </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="text"
-                                  name="hsnSacc"
-                                  value={editedQuote[quote._id].hsnSacc}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                  required
-                                />
-                              ) : (
-                                quote.hsnSacc
-                              )}
-                            </td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="listingRate"
-                                  value={editedQuote[quote._id].listingRate}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                  required
-                                />
-                              ) : (
-                                formatCost(quote.listingRate)
-                              )}
-                            </td>
-                            <td>{quote?.edprowiseMargin}</td>
-
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="quantity"
-                                  value={editedQuote[quote._id].quantity}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                  required
-                                />
-                              ) : (
-                                quote.quantity
-                              )}
-                            </td>
-                            <td>{formatCost(quote.finalRateBeforeDiscount)}</td>
-                            <td>
-                              {editedQuote[quote._id] ? (
-                                <input
-                                  type="number"
-                                  name="discount"
-                                  value={editedQuote[quote._id].discount}
-                                  onChange={(e) =>
-                                    handleInputChange(quote._id, e)
-                                  }
-                                  className="form-control"
-                                  required
-                                />
-                              ) : (
-                                quote.discount
-                              )}
-                            </td>
-                            <td>{formatCost(quote.finalRate)}</td>
-                            <td>{formatCost(quote.taxableValue)}</td>
-
-                            {shouldShowCGST_SGST() && quote?.cgstRate !== 0 ? (
-                              <td>
-                                {editedQuote[quote._id] ? (
-                                  <input
-                                    type="number"
-                                    name="cgstRate"
-                                    value={
-                                      editedQuote[quote._id].cgstRate || ""
-                                    }
+                                    name="hsnSacc"
+                                    value={editedQuote[quote._id].hsnSacc}
                                     onChange={(e) =>
                                       handleInputChange(quote._id, e)
                                     }
@@ -421,26 +441,15 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                     required
                                   />
                                 ) : (
-                                  quote?.cgstRate
+                                  quote.hsnSacc
                                 )}
                               </td>
-                            ) : null}
-
-                            {quote.cgstAmount !== 0 ? (
-                              <td>{formatCost(quote.cgstAmount)}</td>
-                            ) : (
-                              <></>
-                            )}
-
-                            {shouldShowCGST_SGST() && quote?.sgstRate !== 0 ? (
                               <td>
                                 {editedQuote[quote._id] ? (
                                   <input
                                     type="number"
-                                    name="sgstRate"
-                                    value={
-                                      editedQuote[quote._id].sgstRate || ""
-                                    }
+                                    name="listingRate"
+                                    value={editedQuote[quote._id].listingRate}
                                     onChange={(e) =>
                                       handleInputChange(quote._id, e)
                                     }
@@ -448,26 +457,17 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                     required
                                   />
                                 ) : (
-                                  quote?.sgstRate
+                                  formatCost(quote.listingRate)
                                 )}
                               </td>
-                            ) : null}
+                              <td>{quote?.edprowiseMargin}</td>
 
-                            {quote.sgstAmount !== 0 ? (
-                              <td>{formatCost(quote.sgstAmount)}</td>
-                            ) : (
-                              <></>
-                            )}
-
-                            {shouldShowIGST() && quote?.igstRate !== 0 ? (
                               <td>
                                 {editedQuote[quote._id] ? (
                                   <input
                                     type="number"
-                                    name="igstRate"
-                                    value={
-                                      editedQuote[quote._id].igstRate || ""
-                                    }
+                                    name="quantity"
+                                    value={editedQuote[quote._id].quantity}
                                     onChange={(e) =>
                                       handleInputChange(quote._id, e)
                                     }
@@ -475,68 +475,165 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                     required
                                   />
                                 ) : (
-                                  quote?.igstRate
+                                  quote.quantity
                                 )}
                               </td>
-                            ) : null}
-
-                            {quote.igstAmount !== 0 ? (
-                              <td>{formatCost(quote.igstAmount)}</td>
-                            ) : (
-                              <></>
-                            )}
-
-                            <td>
-                              {formatCost(quote.amountBeforeGstAndDiscount)}
-                            </td>
-                            <td>{formatCost(quote.discountAmount)}</td>
-                            <td>{formatCost(quote.gstAmount)}</td>
-                            <td>{formatCost(quote.totalAmount)}</td>
-
-                            <td>
-                              {quote.updateCountBySeller === 0 &&
-                              (quote.supplierStatus === "Quote Requested" ||
-                                quote.supplierStatus === "Quote Submitted") ? (
-                                <button
-                                  className="btn btn-primary"
-                                  disabled={sending === quote._id}
-                                  onClick={() => {
-                                    if (editedQuote[quote._id]) {
-                                      handleUpdate(quote._id);
-                                    } else {
-                                      setEditedQuote((prev) => ({
-                                        ...prev,
-                                        [quote._id]: {
-                                          subcategoryName:
-                                            quote.subcategoryName,
-                                          hsnSacc: quote.hsnSacc,
-                                          listingRate: quote.listingRate,
-                                          edprowiseMargin:
-                                            quote.edprowiseMargin,
-                                          quantity: quote.quantity,
-                                          discount: quote.discount,
-                                          cgstRate: quote.cgstRate,
-                                          sgstRate: quote.sgstRate,
-                                          igstRate: quote.igstRate,
-                                        },
-                                      }));
+                              <td>
+                                {formatCost(quote.finalRateBeforeDiscount)}
+                              </td>
+                              <td>
+                                {editedQuote[quote._id] ? (
+                                  <input
+                                    type="number"
+                                    name="discount"
+                                    value={editedQuote[quote._id].discount}
+                                    onChange={(e) =>
+                                      handleInputChange(quote._id, e)
                                     }
-                                  }}
-                                >
-                                  {sending === quote._id
-                                    ? "Saving..."
-                                    : editedQuote[quote._id]
-                                    ? "Save"
-                                    : "Edit"}
-                                </button>
+                                    className="form-control"
+                                    required
+                                  />
+                                ) : (
+                                  quote.discount
+                                )}
+                              </td>
+                              <td>{formatCost(quote.finalRate)}</td>
+                              <td>{formatCost(quote.taxableValue)}</td>
+
+                              {shouldShowCGST_SGST() &&
+                              quote?.cgstRate !== 0 ? (
+                                <td>
+                                  {editedQuote[quote._id] ? (
+                                    <input
+                                      type="number"
+                                      name="cgstRate"
+                                      value={
+                                        editedQuote[quote._id].cgstRate || ""
+                                      }
+                                      onChange={(e) =>
+                                        handleInputChange(quote._id, e)
+                                      }
+                                      className="form-control"
+                                      required
+                                    />
+                                  ) : (
+                                    quote?.cgstRate
+                                  )}
+                                </td>
                               ) : null}
-                            </td>
-                          </tr>
-                        ))
+
+                              {quote.cgstAmount !== 0 ? (
+                                <td>{formatCost(quote.cgstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
+
+                              {shouldShowCGST_SGST() &&
+                              quote?.sgstRate !== 0 ? (
+                                <td>
+                                  {editedQuote[quote._id] ? (
+                                    <input
+                                      type="number"
+                                      name="sgstRate"
+                                      value={
+                                        editedQuote[quote._id].sgstRate || ""
+                                      }
+                                      onChange={(e) =>
+                                        handleInputChange(quote._id, e)
+                                      }
+                                      className="form-control"
+                                      required
+                                    />
+                                  ) : (
+                                    quote?.sgstRate
+                                  )}
+                                </td>
+                              ) : null}
+
+                              {quote.sgstAmount !== 0 ? (
+                                <td>{formatCost(quote.sgstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
+
+                              {shouldShowIGST() && quote?.igstRate !== 0 ? (
+                                <td>
+                                  {editedQuote[quote._id] ? (
+                                    <input
+                                      type="number"
+                                      name="igstRate"
+                                      value={
+                                        editedQuote[quote._id].igstRate || ""
+                                      }
+                                      onChange={(e) =>
+                                        handleInputChange(quote._id, e)
+                                      }
+                                      className="form-control"
+                                      required
+                                    />
+                                  ) : (
+                                    quote?.igstRate
+                                  )}
+                                </td>
+                              ) : null}
+
+                              {quote.igstAmount !== 0 ? (
+                                <td>{formatCost(quote.igstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
+
+                              <td>
+                                {formatCost(quote.amountBeforeGstAndDiscount)}
+                              </td>
+                              <td>{formatCost(quote.discountAmount)}</td>
+                              <td>{formatCost(quote.gstAmount)}</td>
+                              <td>{formatCost(quote.totalAmount)}</td>
+
+                              <td>
+                                {quote.updateCountBySeller === 0 &&
+                                (quote.supplierStatus === "Quote Requested" ||
+                                  quote.supplierStatus ===
+                                    "Quote Submitted") ? (
+                                  <button
+                                    className="btn btn-primary"
+                                    disabled={sending === quote._id}
+                                    onClick={() => {
+                                      if (editedQuote[quote._id]) {
+                                        handleUpdate(quote._id);
+                                      } else {
+                                        setEditedQuote((prev) => ({
+                                          ...prev,
+                                          [quote._id]: {
+                                            subcategoryName:
+                                              quote.subcategoryName,
+                                            hsnSacc: quote.hsnSacc,
+                                            listingRate: quote.listingRate,
+                                            edprowiseMargin:
+                                              quote.edprowiseMargin,
+                                            quantity: quote.quantity,
+                                            discount: quote.discount,
+                                            cgstRate: quote.cgstRate,
+                                            sgstRate: quote.sgstRate,
+                                            igstRate: quote.igstRate,
+                                          },
+                                        }));
+                                      }
+                                    }}
+                                  >
+                                    {sending === quote._id
+                                      ? "Saving..."
+                                      : editedQuote[quote._id]
+                                      ? "Save"
+                                      : "Edit"}
+                                  </button>
+                                ) : null}
+                              </td>
+                            </tr>
+                          );
+                        })
                       ) : (
-                        <tr>
-                          <td colSpan="6">No quotes available.</td>
-                        </tr>
+                        <tr></tr>
                       )}
                     </tbody>
                   </table>
@@ -548,13 +645,65 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
       </div>
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Body className="text-center">
-          <img
-            src={selectedImage}
-            alt="Preview"
-            style={{ maxWidth: "100%", maxHeight: "80vh" }}
-          />
+        <Modal.Body
+          className="text-center p-0 position-relative"
+          style={{ minHeight: "250px" }}
+        >
+          {selectedQuoteImages.length > 0 && (
+            <>
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ height: "300px", overflow: "hidden" }}
+              >
+                <img
+                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${selectedQuoteImages[currentImageIndex]}`}
+                  alt={`Product ${currentImageIndex + 1}`}
+                  style={{
+                    maxWidth: "95%",
+                    maxHeight: "100%",
+                    objectFit: "contain",
+                  }}
+                  className="img-fluid"
+                />
+              </div>
+
+              {selectedQuoteImages.length > 1 && (
+                <div className="mt-2">
+                  {currentImageIndex + 1} / {selectedQuoteImages.length}
+                </div>
+              )}
+            </>
+          )}
         </Modal.Body>
+
+        {selectedQuoteImages.length > 1 && (
+          <>
+            <button
+              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
+              onClick={handlePrevImage}
+              style={{
+                left: "20px",
+                width: "40px",
+                height: "40px",
+                padding: 0,
+              }}
+            >
+              <FaArrowLeft />
+            </button>
+            <button
+              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
+              onClick={handleNextImage}
+              style={{
+                right: "20px",
+                width: "40px",
+                height: "40px",
+                padding: 0,
+              }}
+            >
+              <FaArrowRight />
+            </button>
+          </>
+        )}
       </Modal>
     </>
   );

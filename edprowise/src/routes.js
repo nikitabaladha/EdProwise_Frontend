@@ -883,6 +883,7 @@ const AppRoutes = () => {
       >
         {/*Seller Dashboard Route */}
 
+        <Route path="*" element={<Page404ForDashboard />} />
         <Route index element={<SellerProcurementDashboard />} />
 
         <Route path="view-seller-profile" element={<ViewSellerProfile />} />
@@ -940,8 +941,6 @@ const AppRoutes = () => {
           element={<QuoteProposalForAll />}
         />
       </Route>
-
-      <Route path="*" element={<Page404ForDashboard />} />
     </Routes>
   );
 };

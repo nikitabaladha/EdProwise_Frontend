@@ -6,13 +6,12 @@ import getAPI from "../../../../api/getAPI";
 import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 
-import { FaArrowLeft } from "react-icons/fa";
-import { FaArrowRight } from "react-icons/fa";
-
 const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
   const [preparedQuotes, setPreparedQuotes] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,6 +63,7 @@ const TrackQuoteTable = ({}) => {
         setPreparedQuotes((prev) => ({
           ...prev,
           [enquiryNumber]: response.data.data,
+          // in this get api i am getting quoteNumber also that quoteNumber i want to use as name of quoteNumber.pdf
         }));
       } else {
         console.error("Invalid response format or error in response");
@@ -151,6 +151,8 @@ const TrackQuoteTable = ({}) => {
       link.href = fileURL;
       link.download = `${quoteNumber}.pdf`;
 
+      // whatever i get in quoteNumber  that quoteNumber i want to use as name of quoteNumber.pdf
+
       link.click();
 
       if (!response.hasError && response.data) {
@@ -163,34 +165,9 @@ const TrackQuoteTable = ({}) => {
     }
   };
 
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const handleImageClick = (images, index = 0) => {
-    if (!images || !images.length) return;
-
-    // Ensure we have proper image URLs
-    const formattedImages = images.map((img) =>
-      img instanceof Blob
-        ? URL.createObjectURL(img)
-        : `${process.env.REACT_APP_API_URL_FOR_IMAGE}${img}`
-    );
-
-    setSelectedImages(formattedImages);
-    setCurrentImageIndex(index);
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
     setShowModal(true);
-  };
-
-  const handleNextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === selectedImages.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? selectedImages.length - 1 : prevIndex - 1
-    );
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -273,124 +250,124 @@ const TrackQuoteTable = ({}) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {currentQuotes.length > 0 ? (
-                          currentQuotes.map((quote) => {
-                            const availableImages =
-                              quote?.productImages?.filter((img) => img) || [];
-                            return (
-                              <tr key={quote.id}>
-                                <td>
-                                  <div className="form-check ms-1">
-                                    <input
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      id={`customCheck${quote.id}`}
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor={`customCheck${quote.id}`}
-                                    >
-                                      &nbsp;
-                                    </label>
-                                  </div>
-                                </td>
-                                <td>{quote.enquiryNumber}</td>
-                                <td>
-                                  <div className="d-flex align-items-center gap-2">
-                                    {availableImages.length > 0 && (
-                                      <div
-                                        className="rounded bg-light avatar-md d-flex align-items-center justify-content-center"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() =>
-                                          handleImageClick(availableImages)
-                                        }
-                                      >
-                                        <img
-                                          className="avatar-md"
-                                          alt={quote?.subCategoryName}
-                                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${availableImages[0]}`}
-                                        />
-                                      </div>
-                                    )}
-                                    <div>{quote.subCategoryName}</div>
-                                  </div>
-                                </td>
-                                <td>{quote.categoryName}</td>
-                                <td>{quote.quantity}</td>
-                                <td>{quote.unit}</td>
-                                <td>
-                                  {preparedQuotes[quote.enquiryNumber]
-                                    ? preparedQuotes[quote.enquiryNumber]
-                                        .supplierStatus
-                                    : "Quote Requested"}
-                                </td>
+                        {currentQuotes.map((quote) => (
+                          // // Find the first available image for this quote
+                          // const firstAvailableImage =
+                          //   quote?.productImages?.find((img) => img);
+                          // const imageUrl = firstAvailableImage
+                          //   ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${firstAvailableImage}`
+                          //   : null;
 
-                                <td>
-                                  <div className="d-flex gap-2">
-                                    <Link
-                                      className="btn btn-light btn-sm"
-                                      title="View Requested Quote"
-                                      data-bs-toggle="popover"
-                                      data-bs-trigger="hover"
-                                      onClick={(event) =>
-                                        navigateToViewRequestedQuote(
-                                          event,
-                                          quote?.enquiryNumber,
-                                          quote?.supplierStatus
+                          <tr key={quote.id}>
+                            <td>
+                              <div className="form-check ms-1">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id={`customCheck${quote.id}`}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`customCheck${quote.id}`}
+                                >
+                                  &nbsp;
+                                </label>
+                              </div>
+                            </td>
+                            <td>{quote.enquiryNumber}</td>
+                            <td>
+                              <div className="d-flex align-items-center gap-2">
+                                {quote.productImage && (
+                                  <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                    <img
+                                      className="avatar-md"
+                                      alt={quote.subCategoryName}
+                                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote?.productImage}`}
+                                      onClick={() =>
+                                        handleImageClick(
+                                          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.productImage}`
                                         )
                                       }
-                                    >
-                                      <iconify-icon
-                                        icon="solar:eye-broken"
-                                        className="align-middle fs-18"
-                                      />
-                                    </Link>
-
-                                    {preparedQuotes[quote.enquiryNumber] ? (
-                                      <button
-                                        onClick={() =>
-                                          generateQuotePDF(
-                                            quote.enquiryNumber,
-                                            quote.schoolId
-                                          )
-                                        }
-                                        className="btn btn-soft-info btn-sm"
-                                        title="Download PDF"
-                                        data-bs-toggle="popover"
-                                        data-bs-trigger="hover"
-                                      >
-                                        <iconify-icon
-                                          icon="solar:download-broken"
-                                          className="align-middle fs-18"
-                                        />
-                                      </button>
-                                    ) : null}
-
-                                    {preparedQuotes[
-                                      quote.enquiryNumber
-                                    ] ? null : (
-                                      <button
-                                        type="button"
-                                        className="btn btn-primary custom-submit-button"
-                                        onClick={(event) =>
-                                          navigateToViewRequestedQuote(
-                                            event,
-                                            quote?.enquiryNumber,
-                                            quote?.supplierStatus
-                                          )
-                                        }
-                                      >
-                                        Prepare Quote
-                                      </button>
-                                    )}
+                                    />
                                   </div>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        ) : (
-                          <tr></tr>
-                        )}
+                                )}
+                                <div>
+                                  <Link className="text-dark fw-medium">
+                                    {quote.subCategoryName}
+                                  </Link>
+                                </div>
+                              </div>
+                            </td>
+                            <td>{quote.categoryName}</td>
+                            <td>{quote.quantity}</td>
+                            <td>{quote.unit}</td>
+                            <td>
+                              {preparedQuotes[quote.enquiryNumber]
+                                ? preparedQuotes[quote.enquiryNumber]
+                                    .supplierStatus
+                                : "Quote Requested"}
+                            </td>
+
+                            <td>
+                              <div className="d-flex gap-2">
+                                <Link
+                                  className="btn btn-light btn-sm"
+                                  title="View Requested Quote"
+                                  data-bs-toggle="popover"
+                                  data-bs-trigger="hover"
+                                  onClick={(event) =>
+                                    navigateToViewRequestedQuote(
+                                      event,
+                                      quote?.enquiryNumber,
+                                      quote?.supplierStatus
+                                    )
+                                  }
+                                >
+                                  <iconify-icon
+                                    icon="solar:eye-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+
+                                {preparedQuotes[quote.enquiryNumber] ? (
+                                  <button
+                                    onClick={() =>
+                                      generateQuotePDF(
+                                        quote.enquiryNumber,
+                                        quote.schoolId
+                                      )
+                                    }
+                                    className="btn btn-soft-info btn-sm"
+                                    title="Download PDF"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:download-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </button>
+                                ) : null}
+
+                                {preparedQuotes[quote.enquiryNumber] ? null : (
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary custom-submit-button"
+                                    onClick={(event) =>
+                                      navigateToViewRequestedQuote(
+                                        event,
+                                        quote?.enquiryNumber,
+                                        quote?.supplierStatus
+                                      )
+                                    }
+                                  >
+                                    Prepare Quote
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
@@ -444,7 +421,7 @@ const TrackQuoteTable = ({}) => {
         </div>
       </div>
 
-      {/* <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Body className="text-center">
           <img
             src={selectedImage}
@@ -452,66 +429,6 @@ const TrackQuoteTable = ({}) => {
             style={{ maxWidth: "100%", maxHeight: "80vh" }}
           />
         </Modal.Body>
-      </Modal> */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Body
-          className="text-center p-0 position-relative"
-          style={{ minHeight: "250px" }}
-        >
-          {selectedImages.length > 0 && (
-            <>
-              <div
-                className="d-flex justify-content-center align-items-center"
-                style={{ height: "300px", overflow: "hidden" }}
-              >
-                <img
-                  src={selectedImages[currentImageIndex]}
-                  alt={`Product ${currentImageIndex + 1}`}
-                  style={{
-                    maxWidth: "95%",
-                    maxHeight: "100%",
-                    objectFit: "contain",
-                  }}
-                  className="img-fluid"
-                />
-              </div>
-              {selectedImages.length > 1 && (
-                <div className="mt-2">
-                  {currentImageIndex + 1} / {selectedImages.length}
-                </div>
-              )}
-            </>
-          )}
-        </Modal.Body>
-
-        {selectedImages.length > 1 && (
-          <>
-            <button
-              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
-              onClick={handlePrevImage}
-              style={{
-                left: "20px",
-                width: "40px",
-                height: "40px",
-                padding: 0,
-              }}
-            >
-              <FaArrowLeft />
-            </button>
-            <button
-              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
-              onClick={handleNextImage}
-              style={{
-                right: "20px",
-                width: "40px",
-                height: "40px",
-                padding: 0,
-              }}
-            >
-              <FaArrowRight />
-            </button>
-          </>
-        )}
       </Modal>
     </>
   );

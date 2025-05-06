@@ -13,9 +13,6 @@ import ViewPrepareQuoteSeller from "./ViewPrepareQuoteSeller";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 
-import { FaArrowLeft } from "react-icons/fa";
-import { FaArrowRight } from "react-icons/fa";
-
 import { format } from "date-fns";
 
 const formatDate = (dateString) => {
@@ -36,7 +33,7 @@ const ViewRequestedQuote = () => {
 
   const [quote, setQuote] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
+  const [selectedImage, setSelectedImage] = useState("");
   const [preparedQuotes, setPreparedQuotes] = useState([]);
   const [isPrepareQuoteTableVisible, setIsPrepareQuoteTableVisible] =
     useState(false);
@@ -95,7 +92,7 @@ const ViewRequestedQuote = () => {
       srNo: "",
       subCategoryName: "",
       subCategoryId: "",
-      prepareQuoteImages: [],
+      prepareQuoteImage: null,
       hsnSacc: "",
       listingRate: "",
       edprowiseMargin: "",
@@ -119,27 +116,11 @@ const ViewRequestedQuote = () => {
     setPrepareProducts(updatedProducts);
   };
 
-  const handleImageChange = (index, e) => {
-    const files = Array.from(e.target.files).slice(
-      0,
-      4 - (prepareProducts[index]?.prepareQuoteImages?.length || 0)
-    );
-
+  const handleImageChange = (index, event) => {
+    const file = event.target.files[0];
     const updatedProducts = [...prepareProducts];
-    updatedProducts[index].prepareQuoteImages = [
-      ...(updatedProducts[index].prepareQuoteImages || []),
-      ...files,
-    ].slice(0, 4);
 
-    setPrepareProducts(updatedProducts);
-  };
-
-  const removeImage = (productIndex, imageIndex) => {
-    const updatedProducts = [...prepareProducts];
-    updatedProducts[productIndex].prepareQuoteImages = updatedProducts[
-      productIndex
-    ].prepareQuoteImages.filter((_, idx) => idx !== imageIndex);
-
+    updatedProducts[index].prepareQuoteImage = file;
     setPrepareProducts(updatedProducts);
   };
 
@@ -150,7 +131,7 @@ const ViewRequestedQuote = () => {
           srNo: index + 1,
           subCategoryName: product.subCategoryName || "",
           subCategoryId: product.subCategoryId || "",
-          prepareQuoteImages: [],
+          prepareQuoteImage: null,
           hsnSacc: "",
           listingRate: "",
           edprowiseMargin: product.edprowiseMargin || "",
@@ -198,7 +179,7 @@ const ViewRequestedQuote = () => {
         srNo: prev.length + 1,
         subCategoryName: availableSubCategory || "",
         subCategoryId: availableSubCategoryId || "",
-        prepareQuoteImages: [],
+        prepareQuoteImage: null,
         hsnSacc: "",
         listingRate: "",
         edprowiseMargin: availableMargin || "",
@@ -248,13 +229,11 @@ const ViewRequestedQuote = () => {
 
       products.push(productData);
 
-      if (product.prepareQuoteImages && product.prepareQuoteImages.length > 0) {
-        product.prepareQuoteImages.forEach((image, imgIndex) => {
-          formData.append(
-            `products[${index}][prepareQuoteImages][${imgIndex}]`,
-            image
-          );
-        });
+      if (product.prepareQuoteImage) {
+        formData.append(
+          `products[${index}][prepareQuoteImage]`,
+          product.prepareQuoteImage
+        );
       }
     });
 
@@ -353,25 +332,9 @@ const ViewRequestedQuote = () => {
     }
   };
 
-  const [selectedQuoteImages, setSelectedQuoteImages] = useState([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const handleImageClick = (images, index = 0) => {
-    setSelectedQuoteImages(images);
-    setCurrentImageIndex(index);
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
     setShowModal(true);
-  };
-
-  const handleNextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === selectedQuoteImages.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? selectedQuoteImages.length - 1 : prevIndex - 1
-    );
   };
 
   return (
@@ -416,61 +379,55 @@ const ViewRequestedQuote = () => {
                   </thead>
                   <tbody>
                     {quote.length > 0 ? (
-                      quote.map((product) => {
-                        const firstAvailableImage =
-                          product?.productImages?.find((img) => img);
-                        const imageUrl = firstAvailableImage
-                          ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${firstAvailableImage}`
-                          : null;
-
-                        return (
-                          <tr key={product.id}>
-                            <td>
-                              <div className="form-check ms-1">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`customCheck${product.id}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`customCheck${product.id}`}
-                                >
-                                  &nbsp;
-                                </label>
-                              </div>
-                            </td>
-                            <td>{product.enquiryNumber}</td>
-                            <td>
-                              <div className="d-flex align-items-center gap-2">
-                                {imageUrl && (
-                                  <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                    <img
-                                      className="avatar-md"
-                                      alt={product.subCategoryName}
-                                      src={imageUrl}
-                                      onClick={() =>
-                                        handleImageClick(product.productImages)
-                                      }
-                                    />
-                                  </div>
-                                )}
-                                <div>
-                                  <Link className="text-dark fw-medium">
-                                    {product.subCategoryName}
-                                  </Link>
+                      quote.map((product) => (
+                        <tr key={product.id}>
+                          <td>
+                            <div className="form-check ms-1">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id={`customCheck${product.id}`}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor={`customCheck${product.id}`}
+                              >
+                                &nbsp;
+                              </label>
+                            </div>
+                          </td>
+                          <td>{product.enquiryNumber}</td>
+                          <td>
+                            <div className="d-flex align-items-center gap-2">
+                              {product.productImage && (
+                                <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                  <img
+                                    className="avatar-md"
+                                    alt={product.subCategoryName}
+                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
+                                    onClick={() =>
+                                      handleImageClick(
+                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
+                                      )
+                                    }
+                                  />
                                 </div>
+                              )}
+                              <div>
+                                <Link className="text-dark fw-medium">
+                                  {product.subCategoryName}
+                                </Link>
                               </div>
-                            </td>
-                            <td>{product.categoryName}</td>
-                            <td>{product.quantity}</td>
-                            <td>{product.unit}</td>
-                            <td>{product.description}</td>
-                            <td>{formatDate(product.createdAt)}</td>
-                            <td>{formatDate(product.expectedDeliveryDate)}</td>
-                          </tr>
-                        );
-                      })
+                            </div>
+                          </td>
+                          <td>{product.categoryName}</td>
+                          <td>{product.quantity}</td>
+                          <td>{product.unit}</td>
+                          <td>{product.description}</td>
+                          <td>{formatDate(product.createdAt)}</td>
+                          <td>{formatDate(product.expectedDeliveryDate)}</td>
+                        </tr>
+                      ))
                     ) : (
                       <tr></tr>
                     )}
@@ -518,7 +475,6 @@ const ViewRequestedQuote = () => {
         />
       )}
 
-      {/* here in preparequote table */}
       {isPrepareQuoteTableVisible && (
         <PrepareQuoteTable
           products={prepareProducts}
@@ -526,7 +482,6 @@ const ViewRequestedQuote = () => {
           handleAddProduct={handleAddProduct}
           handleChange={handleChange}
           handleImageChange={handleImageChange}
-          handleRemoveImage={removeImage}
           handleSubmit={handleSubmit}
           locationData={locationData}
           sending={sending}
@@ -534,65 +489,13 @@ const ViewRequestedQuote = () => {
       )}
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Body
-          className="text-center p-0 position-relative"
-          style={{ minHeight: "250px" }}
-        >
-          {selectedQuoteImages.length > 0 && (
-            <>
-              <div
-                className="d-flex justify-content-center align-items-center"
-                style={{ height: "300px", overflow: "hidden" }}
-              >
-                <img
-                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${selectedQuoteImages[currentImageIndex]}`}
-                  alt={`Product ${currentImageIndex + 1}`}
-                  style={{
-                    maxWidth: "95%",
-                    maxHeight: "100%",
-                    objectFit: "contain",
-                  }}
-                  className="img-fluid"
-                />
-              </div>
-
-              {selectedQuoteImages.length > 1 && (
-                <div className="mt-2">
-                  {currentImageIndex + 1} / {selectedQuoteImages.length}
-                </div>
-              )}
-            </>
-          )}
+        <Modal.Body className="text-center">
+          <img
+            src={selectedImage}
+            alt="Preview"
+            style={{ maxWidth: "100%", maxHeight: "80vh" }}
+          />
         </Modal.Body>
-
-        {selectedQuoteImages.length > 1 && (
-          <>
-            <button
-              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
-              onClick={handlePrevImage}
-              style={{
-                left: "20px",
-                width: "40px",
-                height: "40px",
-                padding: 0,
-              }}
-            >
-              <FaArrowLeft />
-            </button>
-            <button
-              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
-              onClick={handleNextImage}
-              style={{
-                right: "20px",
-                width: "40px",
-                height: "40px",
-                padding: 0,
-              }}
-            >
-              <FaArrowRight />
-            </button>
-          </>
-        )}
       </Modal>
     </div>
   );

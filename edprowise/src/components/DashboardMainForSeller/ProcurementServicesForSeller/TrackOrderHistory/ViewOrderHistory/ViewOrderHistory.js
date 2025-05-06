@@ -8,6 +8,8 @@ import { Modal } from "react-bootstrap";
 import { formatCost } from "../../../../CommonFunction";
 
 import { format } from "date-fns";
+import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -29,7 +31,7 @@ const ViewOrderHistory = () => {
   const [quote, setQuote] = useState([]);
   const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState("");
+  const [showOrderModal, setShowOrderModal] = useState(false);
 
   const [order, setOrderDetails] = useState([]);
   const [sellerId, setSellerId] = useState("");
@@ -107,9 +109,46 @@ const ViewOrderHistory = () => {
     fetchOrderDetails();
   }, [enquiryNumber]);
 
-  const handleImageClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handleImageClick = (images, index = 0) => {
+    setSelectedImages(images);
+    setCurrentImageIndex(index);
     setShowModal(true);
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === selectedImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? selectedImages.length - 1 : prevIndex - 1
+    );
+  };
+
+  const [selectedOrderImages, setSelectedOrderImages] = useState([]);
+  const [currentOrderImageIndex, setCurrentOrderImageIndex] = useState(0);
+
+  const handleOrderImageClick = (images, index = 0) => {
+    setSelectedOrderImages(images);
+    setCurrentOrderImageIndex(index);
+    setShowOrderModal(true);
+  };
+
+  const handleNextOrderImage = () => {
+    setCurrentOrderImageIndex((prevIndex) =>
+      prevIndex === selectedOrderImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const handlePrevOrderImage = () => {
+    setCurrentOrderImageIndex((prevIndex) =>
+      prevIndex === 0 ? selectedOrderImages.length - 1 : prevIndex - 1
+    );
   };
 
   return (
@@ -420,55 +459,65 @@ const ViewOrderHistory = () => {
                     </thead>
                     <tbody>
                       {quote.length > 0 ? (
-                        quote.map((product) => (
-                          <tr key={product.id}>
-                            <td>
-                              <div className="form-check ms-1">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`customCheck${product.id}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`customCheck${product.id}`}
-                                >
-                                  &nbsp;
-                                </label>
-                              </div>
-                            </td>
-                            <td>{product.enquiryNumber}</td>
-                            <td>
-                              <div className="d-flex align-items-center gap-2">
-                                {product.productImage && (
-                                  <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                    <img
-                                      className="avatar-md"
-                                      alt={product.subCategoryName}
-                                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${product?.productImage}`}
-                                      onClick={() =>
-                                        handleImageClick(
-                                          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${product.productImage}`
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                )}
-                                <div>
-                                  <Link className="text-dark fw-medium">
-                                    {product.subCategoryName}
-                                  </Link>
+                        quote.map((product) => {
+                          const firstAvailableImage =
+                            product?.productImages?.find((img) => img);
+                          const imageUrl = firstAvailableImage
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${firstAvailableImage}`
+                            : null;
+
+                          return (
+                            <tr key={product.id}>
+                              <td>
+                                <div className="form-check ms-1">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    id={`customCheck${product.id}`}
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor={`customCheck${product.id}`}
+                                  >
+                                    &nbsp;
+                                  </label>
                                 </div>
-                              </div>
-                            </td>
-                            <td>{product.categoryName}</td>
-                            <td>{product.quantity}</td>
-                            <td>{product.unit}</td>
-                            <td>{product.description}</td>
-                            <td>{formatDate(product.createdAt)}</td>
-                            <td>{formatDate(product.expectedDeliveryDate)}</td>
-                          </tr>
-                        ))
+                              </td>
+                              <td>{product.enquiryNumber}</td>
+                              <td>
+                                <div className="d-flex align-items-center gap-2">
+                                  {imageUrl && (
+                                    <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                      <img
+                                        className="avatar-md"
+                                        alt={product.subCategoryName}
+                                        src={imageUrl}
+                                        onClick={() =>
+                                          handleImageClick(
+                                            product.productImages
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  )}
+                                  <div>
+                                    <Link className="text-dark fw-medium">
+                                      {product.subCategoryName}
+                                    </Link>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>{product.categoryName}</td>
+                              <td>{product.quantity}</td>
+                              <td>{product.unit}</td>
+                              <td>{product.description}</td>
+                              <td>{formatDate(product.createdAt)}</td>
+                              <td>
+                                {formatDate(product.expectedDeliveryDate)}
+                              </td>
+                            </tr>
+                          );
+                        })
                       ) : (
                         <tr></tr>
                       )}
@@ -520,54 +569,59 @@ const ViewOrderHistory = () => {
                     </thead>
                     <tbody>
                       {orders.length > 0 ? (
-                        orders.map((order) => (
-                          <tr key={order._id}>
-                            <td>
-                              <div className="form-check ms-1">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`customCheck${order._id}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`customCheck${order._id}`}
-                                >
-                                  &nbsp;
-                                </label>
-                              </div>
-                            </td>
-                            <td>{order.orderNumber}</td>
-                            <td>
-                              <div className="d-flex align-items-center gap-2">
-                                {order.cartImage && (
-                                  <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                    <img
-                                      className="avatar-md"
-                                      alt={order.subCategoryName}
-                                      src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${order.cartImage}`}
-                                      onClick={() =>
-                                        handleImageClick(
-                                          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${order.cartImage}`
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                )}
-                                <div>
-                                  <Link className="text-dark fw-medium">
-                                    {order.subcategoryName}
-                                  </Link>
-                                </div>
-                              </div>
-                            </td>
+                        orders.map((order) => {
+                          const firstAvailableOrderImage =
+                            order?.cartImages?.find((img) => img);
+                          const orderImageUrl = firstAvailableOrderImage
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${firstAvailableOrderImage}`
+                            : null;
 
-                            <td>{order.quantity}</td>
-                            <td>{formatCost(order.listingRate)}</td>
-                            <td>{order.discount}</td>
-                            <td>{formatCost(order.finalRate)}</td>
-                          </tr>
-                        ))
+                          return (
+                            <tr key={order._id}>
+                              <td>
+                                <div className="form-check ms-1">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    id={`customCheck${order._id}`}
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor={`customCheck${order._id}`}
+                                  >
+                                    &nbsp;
+                                  </label>
+                                </div>
+                              </td>
+                              <td>{order.orderNumber}</td>
+                              <td>
+                                <div className="d-flex align-items-center gap-2">
+                                  {/* why i am not able to see any image */}
+                                  {orderImageUrl && (
+                                    <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                      <img
+                                        className="avatar-md"
+                                        alt={order.subCategoryName}
+                                        src={orderImageUrl}
+                                        onClick={() =>
+                                          handleOrderImageClick(
+                                            order.cartImages
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  )}
+                                  <div>{order.subcategoryName}</div>
+                                </div>
+                              </td>
+
+                              <td>{order.quantity}</td>
+                              <td>{formatCost(order.listingRate)}</td>
+                              <td>{order.discount}</td>
+                              <td>{formatCost(order.finalRate)}</td>
+                            </tr>
+                          );
+                        })
                       ) : (
                         <tr></tr>
                       )}
@@ -583,13 +637,130 @@ const ViewOrderHistory = () => {
       </div>
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Body className="text-center">
-          <img
-            src={selectedImage}
-            alt="Preview"
-            style={{ maxWidth: "100%", maxHeight: "80vh" }}
-          />
+        <Modal.Body
+          className="text-center p-0 position-relative"
+          style={{ minHeight: "250px" }}
+        >
+          {selectedImages.length > 0 && (
+            <>
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ height: "300px", overflow: "hidden" }}
+              >
+                <img
+                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${selectedImages[currentImageIndex]}`}
+                  alt={`Product ${currentImageIndex + 1}`}
+                  style={{
+                    maxWidth: "95%",
+                    maxHeight: "100%",
+                    objectFit: "contain",
+                  }}
+                  className="img-fluid"
+                />
+              </div>
+
+              {selectedImages.length > 1 && (
+                <div className="mt-2">
+                  {currentImageIndex + 1} / {selectedImages.length}
+                </div>
+              )}
+            </>
+          )}
         </Modal.Body>
+
+        {selectedImages.length > 1 && (
+          <>
+            <button
+              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
+              onClick={handlePrevImage}
+              style={{
+                left: "20px",
+                width: "40px",
+                height: "40px",
+                padding: 0,
+              }}
+            >
+              <FaArrowLeft />
+            </button>
+            <button
+              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
+              onClick={handleNextImage}
+              style={{
+                right: "20px",
+                width: "40px",
+                height: "40px",
+                padding: 0,
+              }}
+            >
+              <FaArrowRight />
+            </button>
+          </>
+        )}
+      </Modal>
+      <Modal
+        show={showOrderModal}
+        onHide={() => setShowOrderModal(false)}
+        centered
+      >
+        <Modal.Body
+          className="text-center p-0 position-relative"
+          style={{ minHeight: "250px" }}
+        >
+          {selectedOrderImages.length > 0 && (
+            <>
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ height: "300px", overflow: "hidden" }}
+              >
+                <img
+                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${selectedOrderImages[currentOrderImageIndex]}`}
+                  alt={`Product ${currentOrderImageIndex + 1}`}
+                  style={{
+                    maxWidth: "95%",
+                    maxHeight: "100%",
+                    objectFit: "contain",
+                  }}
+                  className="img-fluid"
+                />
+              </div>
+
+              {selectedOrderImages.length > 1 && (
+                <div className="mt-2">
+                  {currentOrderImageIndex + 1} / {selectedOrderImages.length}
+                </div>
+              )}
+            </>
+          )}
+        </Modal.Body>
+
+        {selectedOrderImages.length > 1 && (
+          <>
+            <button
+              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
+              onClick={handlePrevOrderImage}
+              style={{
+                left: "20px",
+                width: "40px",
+                height: "40px",
+                padding: 0,
+              }}
+            >
+              <FaArrowLeft />
+            </button>
+            <button
+              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
+              onClick={handleNextOrderImage}
+              style={{
+                right: "20px",
+                width: "40px",
+                height: "40px",
+                padding: 0,
+              }}
+            >
+              <FaArrowRight />
+            </button>
+          </>
+        )}
       </Modal>
     </>
   );

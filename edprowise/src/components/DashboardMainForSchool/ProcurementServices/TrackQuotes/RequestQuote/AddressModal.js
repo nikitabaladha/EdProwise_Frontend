@@ -21,11 +21,9 @@ const AddressModal = ({ onClose, cart }) => {
     deliveryAddress: "",
     deliveryLandMark: "",
     deliveryPincode: "",
-
     deliveryCountry: "",
     deliveryState: "",
     deliveryCity: "",
-
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
@@ -153,15 +151,21 @@ const AddressModal = ({ onClose, cart }) => {
     formDataToSend.append("data", JSON.stringify(data));
 
     cart.forEach((item, index) => {
-      if (item.productImage) {
-        formDataToSend.append(
-          `products[${index}][productImage]`,
-          item.productImage
-        );
+      if (item.productImages && item.productImages.length > 0) {
+        item.productImages.forEach((image, imgIndex) => {
+          formDataToSend.append(
+            `products[${index}][productImages][${imgIndex}]`,
+            image
+          );
+        });
       }
     });
 
     setSending(true);
+
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(key, value);
+    }
 
     try {
       const response = await postAPI(

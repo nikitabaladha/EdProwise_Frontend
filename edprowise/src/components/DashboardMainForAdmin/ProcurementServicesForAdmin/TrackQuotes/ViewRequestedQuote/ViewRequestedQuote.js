@@ -8,6 +8,8 @@ import { Modal } from "react-bootstrap";
 
 import getAPI from "../../../../../api/getAPI";
 import ViewAllQuoteTable from "../ViewAllQuoteTable/ViewAllQuoteTable";
+import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -87,9 +89,25 @@ const ViewRequestedQuote = () => {
     }
   };
 
-  const handleImageClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handleImageClick = (images, index = 0) => {
+    setSelectedImages(images);
+    setCurrentImageIndex(index);
     setShowModal(true);
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === selectedImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? selectedImages.length - 1 : prevIndex - 1
+    );
   };
 
   return (
@@ -136,51 +154,61 @@ const ViewRequestedQuote = () => {
                     </thead>
                     <tbody>
                       {quotes.length > 0 ? (
-                        quotes.map((quote) => (
-                          <tr key={quote.id}>
-                            <td>
-                              <div className="form-check ms-1">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`customCheck${quote.id}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`customCheck${quote.id}`}
-                                >
-                                  &nbsp;
-                                </label>
-                              </div>
-                            </td>
-                            <td>{quote.enquiryNumber}</td>
-                            <td>
-                              <div className="d-flex align-items-center gap-2">
-                                {quote.productImage && (
-                                  <img
-                                    className="avatar-md"
-                                    alt={quote.subCategoryName}
-                                    src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote?.productImage}`}
-                                    onClick={() =>
-                                      handleImageClick(
-                                        `${process.env.REACT_APP_API_URL_FOR_IMAGE}${quote.productImage}`
-                                      )
-                                    }
+                        quotes.map((quote) => {
+                          const firstAvailableImage =
+                            quote?.productImages?.find((img) => img);
+                          const imageUrl = firstAvailableImage
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${firstAvailableImage}`
+                            : null;
+
+                          return (
+                            <tr key={quote.id}>
+                              <td>
+                                <div className="form-check ms-1">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    id={`customCheck${quote.id}`}
                                   />
-                                )}
-                                <Link className="text-dark fw-medium">
-                                  {quote.subCategoryName}
-                                </Link>
-                              </div>
-                            </td>
-                            <td>{quote.categoryName}</td>
-                            <td>{quote.quantity}</td>
-                            <td>{quote.unit}</td>
-                            <td>{quote.description}</td>
-                            <td>{formatDate(quote.createdAt)}</td>
-                            <td>{formatDate(quote.expectedDeliveryDate)}</td>
-                          </tr>
-                        ))
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor={`customCheck${quote.id}`}
+                                  >
+                                    &nbsp;
+                                  </label>
+                                </div>
+                              </td>
+                              <td>{quote.enquiryNumber}</td>
+                              <td>
+                                <div className="d-flex align-items-center gap-2">
+                                  {imageUrl && (
+                                    <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                      <img
+                                        className="avatar-md"
+                                        alt={quote.subCategoryName}
+                                        src={imageUrl}
+                                        onClick={() =>
+                                          handleImageClick(quote.productImages)
+                                        }
+                                      />
+                                    </div>
+                                  )}
+                                  <div>
+                                    <Link className="text-dark fw-medium">
+                                      {quote.subCategoryName}
+                                    </Link>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>{quote.categoryName}</td>
+                              <td>{quote.quantity}</td>
+                              <td>{quote.unit}</td>
+                              <td>{quote.description}</td>
+                              <td>{formatDate(quote.createdAt)}</td>
+                              <td>{formatDate(quote.expectedDeliveryDate)}</td>
+                            </tr>
+                          );
+                        })
                       ) : (
                         <tr></tr>
                       )}
@@ -222,13 +250,65 @@ const ViewRequestedQuote = () => {
         )}
       </div>
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Body className="text-center">
-          <img
-            src={selectedImage}
-            alt="Preview"
-            style={{ maxWidth: "100%", maxHeight: "80vh" }}
-          />
+        <Modal.Body
+          className="text-center p-0 position-relative"
+          style={{ minHeight: "250px" }}
+        >
+          {selectedImages.length > 0 && (
+            <>
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ height: "300px", overflow: "hidden" }}
+              >
+                <img
+                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${selectedImages[currentImageIndex]}`}
+                  alt={`Product ${currentImageIndex + 1}`}
+                  style={{
+                    maxWidth: "95%",
+                    maxHeight: "100%",
+                    objectFit: "contain",
+                  }}
+                  className="img-fluid"
+                />
+              </div>
+
+              {selectedImages.length > 1 && (
+                <div className="mt-2">
+                  {currentImageIndex + 1} / {selectedImages.length}
+                </div>
+              )}
+            </>
+          )}
         </Modal.Body>
+
+        {selectedImages.length > 1 && (
+          <>
+            <button
+              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
+              onClick={handlePrevImage}
+              style={{
+                left: "20px",
+                width: "40px",
+                height: "40px",
+                padding: 0,
+              }}
+            >
+              <FaArrowLeft />
+            </button>
+            <button
+              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
+              onClick={handleNextImage}
+              style={{
+                right: "20px",
+                width: "40px",
+                height: "40px",
+                padding: 0,
+              }}
+            >
+              <FaArrowRight />
+            </button>
+          </>
+        )}
       </Modal>
     </>
   );

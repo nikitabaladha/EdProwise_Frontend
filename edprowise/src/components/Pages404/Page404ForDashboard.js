@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Page404ForDashboard = () => {
   return (
@@ -27,9 +28,7 @@ const Page404ForDashboard = () => {
                       suggest that you return to main sections
                     </p>
                     <div className="text-center">
-                      <a href="index.html" className="btn btn-primary">
-                        Back To Home
-                      </a>
+                      <Link className="btn btn-primary">Back To Home</Link>
                     </div>
                   </div>
                 </div>

@@ -44,7 +44,6 @@ const ViewCart = () => {
 
       if (!response.hasError && response.data.data) {
         setCarts(response.data.data.groupedData || {});
-        console.log("cart data", response.data.data.groupedData);
         setLatestDeliveryDate(response.data.data.latestDeliveryDate);
       } else {
         console.error("Invalid response format or error in response");
@@ -270,132 +269,99 @@ const ViewCart = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {items.length > 0 ? (
-                            items.map((item, index) => {
-                              const availableImages =
-                                item?.cartImages?.filter((img) => img) || [];
-                              const firstImage = availableImages[0];
-                              const imageUrl = firstImage
-                                ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${firstImage}`
-                                : null;
-
-                              return (
-                                <tr key={item._id}>
-                                  <td style={{ width: 20 }}>
-                                    <div className="form-check ms-1">
-                                      <input
-                                        type="checkbox"
-                                        className="form-check-input"
-                                        id="customCheck1"
+                          {items.map((item, index) => (
+                            <tr key={item._id}>
+                              <td style={{ width: 20 }}>
+                                <div className="form-check ms-1">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    id="customCheck1"
+                                  />
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="customCheck1"
+                                  />
+                                </div>
+                              </td>
+                              <td>{index + 1}</td>
+                              <td>
+                                <div className="d-flex align-items-center gap-2">
+                                  {item.cartImage && (
+                                    <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                                      <img
+                                        className="avatar-md"
+                                        alt={item.subcategoryName}
+                                        src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${item.cartImage}`}
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() =>
+                                          handleImageClick(
+                                            `${process.env.REACT_APP_API_URL_FOR_IMAGE}${item.cartImage}`
+                                          )
+                                        }
                                       />
-                                      <label
-                                        className="form-check-label"
-                                        htmlFor="customCheck1"
-                                      />
                                     </div>
-                                  </td>
-                                  <td>{index + 1}</td>
-                                  {/* <td>
-                                    <div className="d-flex align-items-center gap-2">
-                                      {item.cartImage && (
-                                        <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                          <img
-                                            className="avatar-md"
-                                            alt={item.subcategoryName}
-                                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${item.cartImage}`}
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() =>
-                                              handleImageClick(
-                                                `${process.env.REACT_APP_API_URL_FOR_IMAGE}${item.cartImage}`
-                                              )
-                                            }
-                                          />
-                                        </div>
-                                      )}
-                                      <span>{item.subcategoryName}</span>
-                                    </div>
-                                  </td> */}
-                                  <td>
-                                    <div className="d-flex align-items-center gap-2">
-                                      {imageUrl && (
-                                        <div
-                                          className="rounded bg-light avatar-md d-flex align-items-center justify-content-center"
-                                          style={{ cursor: "pointer" }}
-                                          onClick={() =>
-                                            handleImageClick(availableImages)
-                                          }
-                                        >
-                                          <img
-                                            className="avatar-md"
-                                            alt={item.subcategoryName}
-                                            src={imageUrl}
-                                          />
-                                        </div>
-                                      )}
-                                      <span>{item.subcategoryName}</span>
-                                    </div>
-                                  </td>
-                                  <td>{item.hsnSacc}</td>
-                                  {/* <td>{item.listingRate}</td> */}
-                                  <td>{item.quantity}</td>
-                                  <td>{item.finalRateBeforeDiscount}</td>
-                                  <td>{item.discount}</td>
-                                  <td>{item.finalRate}</td>
-                                  <td>{item.taxableValue}</td>
-                                  {item?.cgstRate !== 0 ? (
-                                    <td>{item?.cgstRate}</td>
-                                  ) : null}
-
-                                  {item.cgstAmount !== 0 ? (
-                                    <td>{formatCost(item.cgstAmount)}</td>
-                                  ) : (
-                                    <></>
                                   )}
+                                  <span>{item.subcategoryName}</span>
+                                </div>
+                              </td>
+                              <td>{item.hsnSacc}</td>
+                              {/* <td>{item.listingRate}</td> */}
+                              <td>{item.quantity}</td>
+                              <td>{item.finalRateBeforeDiscount}</td>
+                              <td>{item.discount}</td>
+                              <td>{item.finalRate}</td>
+                              <td>{item.taxableValue}</td>
+                              {item?.cgstRate !== 0 ? (
+                                <td>{item?.cgstRate}</td>
+                              ) : null}
 
-                                  {item?.sgstRate !== 0 ? (
-                                    <td>{item?.sgstRate}</td>
-                                  ) : null}
+                              {item.cgstAmount !== 0 ? (
+                                <td>{formatCost(item.cgstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
 
-                                  {item.sgstAmount !== 0 ? (
-                                    <td>{formatCost(item.sgstAmount)}</td>
-                                  ) : (
-                                    <></>
-                                  )}
+                              {item?.sgstRate !== 0 ? (
+                                <td>{item?.sgstRate}</td>
+                              ) : null}
 
-                                  {item?.igstRate !== 0 ? (
-                                    <td>{item?.igstRate}</td>
-                                  ) : null}
+                              {item.sgstAmount !== 0 ? (
+                                <td>{formatCost(item.sgstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
 
-                                  {item.igstAmount !== 0 ? (
-                                    <td>{formatCost(item.igstAmount)}</td>
-                                  ) : (
-                                    <></>
-                                  )}
-                                  <td>{item.amountBeforeGstAndDiscount}</td>
-                                  <td>{item.discountAmount}</td>
-                                  <td>{item.gstAmount}</td>
-                                  <td>{item.totalAmount}</td>
+                              {item?.igstRate !== 0 ? (
+                                <td>{item?.igstRate}</td>
+                              ) : null}
 
-                                  {/* <td>
-                                                                <Link
-                                                                  className="btn btn-soft-danger btn-sm"
-                                                                  onClick={(e) => {
-                                                                    e.preventDefault();
-                                                                    openDeleteDialog(item);
-                                                                  }}
-                                                                >
-                                                                  <iconify-icon
-                                                                    icon="solar:trash-bin-minimalistic-2-broken"
-                                                                    className="align-middle fs-18"
-                                                                  />
-                                                                </Link>
-                                                              </td> */}
-                                </tr>
-                              );
-                            })
-                          ) : (
-                            <tr></tr>
-                          )}
+                              {item.igstAmount !== 0 ? (
+                                <td>{formatCost(item.igstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
+                              <td>{item.amountBeforeGstAndDiscount}</td>
+                              <td>{item.discountAmount}</td>
+                              <td>{item.gstAmount}</td>
+                              <td>{item.totalAmount}</td>
+
+                              {/* <td>
+                                <Link
+                                  className="btn btn-soft-danger btn-sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    openDeleteDialog(item);
+                                  }}
+                                >
+                                  <iconify-icon
+                                    icon="solar:trash-bin-minimalistic-2-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                              </td> */}
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </div>
@@ -409,66 +375,15 @@ const ViewCart = () => {
         {/* Image Modal */}
       </div>
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Body
-          className="text-center p-0 position-relative"
-          style={{ minHeight: "250px" }}
-        >
-          {selectedQuoteImages.length > 0 && (
-            <>
-              <div
-                className="d-flex justify-content-center align-items-center"
-                style={{ height: "300px", overflow: "hidden" }}
-              >
-                <img
-                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${selectedQuoteImages[currentImageIndex]}`}
-                  alt={`Product ${currentImageIndex + 1}`}
-                  style={{
-                    maxWidth: "95%",
-                    maxHeight: "100%",
-                    objectFit: "contain",
-                  }}
-                  className="img-fluid"
-                />
-              </div>
-
-              {selectedQuoteImages.length > 1 && (
-                <div className="mt-2">
-                  {currentImageIndex + 1} / {selectedQuoteImages.length}
-                </div>
-              )}
-            </>
-          )}
+        <Modal.Body className="text-center">
+          <img
+            src={selectedImage}
+            alt="Preview"
+            style={{ maxWidth: "100%", maxHeight: "80vh" }}
+          />
         </Modal.Body>
-
-        {selectedQuoteImages.length > 1 && (
-          <>
-            <button
-              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
-              onClick={handlePrevImage}
-              style={{
-                left: "20px",
-                width: "40px",
-                height: "40px",
-                padding: 0,
-              }}
-            >
-              <FaArrowLeft />
-            </button>
-            <button
-              className="position-absolute top-50 translate-middle-y btn btn-primary rounded-circle"
-              onClick={handleNextImage}
-              style={{
-                right: "20px",
-                width: "40px",
-                height: "40px",
-                padding: 0,
-              }}
-            >
-              <FaArrowRight />
-            </button>
-          </>
-        )}
       </Modal>
+
       {/* it will open delete dialoge  */}
       {isBulkDeleteDialogOpen && (
         <ConfirmationDialog

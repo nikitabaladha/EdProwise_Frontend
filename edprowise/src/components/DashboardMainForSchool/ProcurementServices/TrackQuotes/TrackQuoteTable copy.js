@@ -389,9 +389,8 @@ import { FaArrowRight } from "react-icons/fa";
 const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
   const [submittedQuotes, setSubmittedQuotes] = useState([]);
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchQuoteData = async () => {
@@ -472,17 +471,11 @@ const TrackQuoteTable = ({}) => {
     });
   };
 
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const handleImageClick = (images, index = 0) => {
-    if (!images || !images.length) return;
-
-    // Ensure we have proper image URLs
-    const formattedImages = images.map((img) =>
-      img instanceof Blob
-        ? URL.createObjectURL(img)
-        : `${process.env.REACT_APP_API_URL_FOR_IMAGE}${img}`
-    );
-
-    setSelectedImages(formattedImages);
+    setSelectedImages(images);
     setCurrentImageIndex(index);
     setShowModal(true);
   };
@@ -618,8 +611,12 @@ const TrackQuoteTable = ({}) => {
                       <tbody>
                         {currentQuotes.length > 0 ? (
                           currentQuotes.map((quote) => {
-                            const availableImages =
-                              quote?.productImages?.filter((img) => img) || [];
+                            const firstAvailableImage =
+                              quote?.productImages?.find((img) => img);
+                            const imageUrl = firstAvailableImage
+                              ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${firstAvailableImage}`
+                              : null;
+
                             return (
                               <tr key={quote.id}>
                                 <td>
@@ -640,24 +637,16 @@ const TrackQuoteTable = ({}) => {
                                 <td>{quote.enquiryNumber}</td>
                                 <td>
                                   <div className="d-flex align-items-center gap-2">
-                                    {availableImages.length > 0 && (
-                                      <div
-                                        className="rounded bg-light avatar-md d-flex align-items-center justify-content-center"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() =>
-                                          handleImageClick(availableImages)
-                                        }
-                                      >
+                                    {imageUrl && (
+                                      <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
                                         <img
                                           className="avatar-md"
                                           alt={quote?.subCategoryName}
-                                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${availableImages[0]}`}
+                                          src={imageUrl}
+                                          onClick={() =>
+                                            handleImageClick(imageUrl)
+                                          }
                                         />
-                                        {availableImages.length > 1 && (
-                                          <span className="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle px-1">
-                                            +{availableImages.length - 1}
-                                          </span>
-                                        )}
                                       </div>
                                     )}
                                     <div>{quote.subCategoryName}</div>
@@ -775,16 +764,17 @@ const TrackQuoteTable = ({}) => {
                 style={{ height: "300px", overflow: "hidden" }}
               >
                 <img
-                  src={selectedImages[currentImageIndex]}
+                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${selectedImages[currentImageIndex]}`}
                   alt={`Product ${currentImageIndex + 1}`}
                   style={{
-                    maxWidth: "95%",
+                    maxWidth: "100%",
                     maxHeight: "100%",
                     objectFit: "contain",
                   }}
                   className="img-fluid"
                 />
               </div>
+
               {selectedImages.length > 1 && (
                 <div className="mt-2">
                   {currentImageIndex + 1} / {selectedImages.length}

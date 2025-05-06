@@ -7,6 +7,7 @@ const PrepareQuoteTable = ({
   handleAddProduct,
   handleChange,
   handleImageChange,
+  handleRemoveImage,
   handleSubmit,
   locationData,
   sending,
@@ -208,14 +209,58 @@ const PrepareQuoteTable = ({
                           />
                         </td>
                       )}
+
                       <td>
-                        <input
-                          type="file"
-                          name="prepareQuoteImage"
-                          className="form-control"
-                          onChange={(e) => handleImageChange(index, e)}
-                          accept="image/*"
-                        />
+                        <div className="d-flex align-items-start gap-3">
+                          <div style={{ flex: "1" }}>
+                            <input
+                              type="file"
+                              id={`prepareQuoteImages-${index}`}
+                              name="prepareQuoteImages"
+                              className="form-control"
+                              accept="image/*"
+                              onChange={(e) => handleImageChange(index, e)}
+                              multiple
+                              disabled={
+                                (products[index]?.prepareQuoteImages?.length ||
+                                  0) >= 4
+                              }
+                            />
+                            {(products[index]?.prepareQuoteImages?.length ||
+                              0) >= 4 && (
+                              <small className="text-muted">
+                                Maximum 4 images reached
+                              </small>
+                            )}
+                          </div>
+                          <div className="d-flex flex-wrap gap-2">
+                            {products[index]?.prepareQuoteImages?.map(
+                              (image, imgIndex) => (
+                                <div
+                                  key={imgIndex}
+                                  className="position-relative"
+                                  style={{ width: "40px", height: "40px" }}
+                                >
+                                  <img
+                                    src={URL.createObjectURL(image)}
+                                    alt={`Preview ${imgIndex + 1}`}
+                                    className="img-fluid h-100 rounded"
+                                  />
+                                  <button
+                                    type="button"
+                                    className="position-absolute top-0 end-0 btn btn-sm btn-danger p-0"
+                                    style={{ width: "20px", height: "20px" }}
+                                    onClick={() =>
+                                      handleRemoveImage(index, imgIndex)
+                                    }
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ))}
