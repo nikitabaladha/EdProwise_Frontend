@@ -9,6 +9,7 @@ import getAPI from "../../../../api/getAPI";
 const UpdateSubscription = ({ schools, updatedSubscription }) => {
   const location = useLocation();
   const subscription = location.state?.subscriptions;
+  console.log("subscription", subscription);
 
   const navigate = useNavigate();
 
@@ -135,6 +136,7 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
                       <label htmlFor="schoolId" className="form-label">
                         School List <span className="text-danger">*</span>
                       </label>
+
                       <select
                         id="schoolId"
                         name="schoolId"
@@ -144,7 +146,7 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
                         required
                       >
                         {schools.map((school) => (
-                          <option key={school._id} value={school._id}>
+                          <option key={school._id} value={school.schoolId}>
                             {school.schoolName}
                           </option>
                         ))}
