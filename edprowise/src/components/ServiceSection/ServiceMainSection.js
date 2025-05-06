@@ -18,10 +18,10 @@ const ServiceMainSection = () => {
       case "/services/academic-admin-services":
         setActiveTab("businessSection");
         break;
-      case "/services/recruitment-services":
+      case "/services/hire-teacher":
         setActiveTab("recruitmentSection");
         break;
-      case "/services/get-goods-services":
+      case "/services/get-goods-for-school":
         setActiveTab("procurementSection");
         break;
       default:
@@ -40,10 +40,10 @@ const ServiceMainSection = () => {
         navigate("/services/academic-admin-services");
         break;
       case "recruitmentSection":
-        navigate("/services/recruitment-services");
+        navigate("/services/hire-teacher");
         break;
       case "procurementSection":
-        navigate("/services/get-goods-services");
+        navigate("/services/get-goods-for-school");
         break;
       default:
         navigate("/services");

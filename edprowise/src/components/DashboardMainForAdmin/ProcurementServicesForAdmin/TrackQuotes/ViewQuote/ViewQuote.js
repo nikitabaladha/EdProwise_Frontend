@@ -31,16 +31,14 @@ const ViewQuote = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchQuoteData = async () => {
-    console.log("Enquiry Number", enquiryNumber);
-    console.log("Seller ID", sellerId);
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+        `/submit-quote?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`
       );
       if (!response.hasError && response.data && response.data.data) {
         setCurrentQuote(response.data.data);
-
-        console.log("Quote data fetched successfully:", response.data.data);
       } else {
         console.error("Error fetching quote data");
       }
@@ -71,8 +69,10 @@ const ViewQuote = () => {
 
   const handleVenderStatusUpdate = async (newStatus) => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await putAPI(
-        `/update-vender-status?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        `/update-vender-status?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
         { venderStatus: newStatus },
         true
       );
@@ -91,50 +91,37 @@ const ViewQuote = () => {
     }
   };
 
-  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+  const generateQuotePDF = async (enquiryNumber, sellerId) => {
     if (!sellerId || !enquiryNumber || !schoolId) {
       console.error("Seller ID, Enquiry Number, or School ID is missing");
+      toast.error("Required information is missing");
       return;
     }
 
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      // write your code here
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "quote.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/admin-dashboard/procurement-services/quote-proposal`, {
-          state: { prepareQuoteData, quoteProposalData, profileData },
-        });
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch quote data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching quote data");
     }
   };
 
@@ -152,9 +139,9 @@ const ViewQuote = () => {
                         Submitted Quote Details
                       </h4>
                       <div className="">
-                        <Link
+                        <button
                           onClick={() =>
-                            fetchPrepareQuoteAndProposalData(
+                            generateQuotePDF(
                               quote?.enquiryNumber,
                               quote?.sellerId
                             )
@@ -168,7 +155,7 @@ const ViewQuote = () => {
                             icon="solar:download-broken"
                             className="align-middle fs-18"
                           />
-                        </Link>
+                        </button>
 
                         {["Quote Requested", "Quote Received"].includes(
                           currentQuote?.edprowiseStatus

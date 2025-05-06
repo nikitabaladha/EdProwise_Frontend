@@ -4,20 +4,28 @@ import postAPI from "../../../../api/postAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import CityData from "../../../CityData.json";
+
 import Select from "react-select";
 
+import CountryStateCityData from "../../../CountryStateCityData.json";
+import CreatableSelect from "react-select/creatable";
+
 const AddNewSeller = () => {
+  const countryData = CountryStateCityData;
+
   const [formData, setFormData] = useState({
     companyName: "",
     companyType: "",
     sellerProfile: null,
+    signature: null,
     gstin: "",
     pan: "",
     tan: "",
     cin: "",
     address: "",
-    cityStateCountry: "",
+    country: "",
+    state: "",
+    city: "",
     landmark: "",
     pincode: "",
     contactNo: "",
@@ -35,6 +43,9 @@ const AddNewSeller = () => {
     tanFile: null,
     cinFile: null,
     gstFile: null,
+    isCustomCountry: false,
+    isCustomState: false,
+    isCustomCity: false,
   });
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState({});
@@ -42,6 +53,30 @@ const AddNewSeller = () => {
     { categoryId: "", subCategoryIds: [] },
   ]);
   const navigate = useNavigate();
+
+  // Get countries from countryData keys
+  const countryOptions = Object.keys(countryData).map((country) => ({
+    value: country,
+    label: country,
+  }));
+
+  // Get states based on selected country
+  const stateOptions =
+    formData.country && !formData.isCustomCountry
+      ? Object.keys(countryData[formData.country]).map((state) => ({
+          value: state,
+          label: state,
+        }))
+      : [];
+
+  // Get cities based on selected state and country
+  const cityOptions =
+    formData.state && !formData.isCustomState && formData.country
+      ? (countryData[formData.country][formData.state] || []).map((city) => ({
+          value: city,
+          label: city,
+        }))
+      : [];
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -110,12 +145,16 @@ const AddNewSeller = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
 
     Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
+      if (!["isCustomCountry", "isCustomState", "isCustomCity"].includes(key)) {
+        data.append(key, formData[key]);
+      }
     });
 
     dealingProducts.forEach((product, index) => {
@@ -128,6 +167,8 @@ const AddNewSeller = () => {
       });
     });
 
+    setSending(true);
+
     try {
       const response = await postAPI(
         "/seller-profile-by-admin",
@@ -136,19 +177,19 @@ const AddNewSeller = () => {
         true
       );
       if (!response.hasError) {
-        console.log("profile storage data", response.data.data);
-
-       
         setFormData({
           companyName: "",
           companyType: "",
           sellerProfile: null,
+          signature: null,
           gstin: "",
           pan: "",
           tan: "",
           cin: "",
           address: "",
-          cityStateCountry: "",
+          country: "",
+          state: "",
+          city: "",
           landmark: "",
           pincode: "",
           contactNo: "",
@@ -166,6 +207,9 @@ const AddNewSeller = () => {
           tanFile: null,
           cinFile: null,
           gstFile: null,
+          isCustomCountry: false,
+          isCustomState: false,
+          isCustomCity: false,
         });
         setDealingProducts([]);
         toast.success("Seller added successfully");
@@ -177,15 +221,10 @@ const AddNewSeller = () => {
       toast.error(
         error?.response?.data?.message || "An unexpected error occurred."
       );
+    } finally {
+      setSending(false);
     }
   };
-
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => ({
-      value: `${city}, ${state}, India`,
-      label: `${city}, ${state}, India`,
-    }))
-  );
 
   return (
     <>
@@ -419,27 +458,52 @@ const AddNewSeller = () => {
                       />
                     </div>
                   </div>
+
                   <div className="row">
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label
-                          htmlFor="cityStateCountry"
-                          className="form-label"
-                        >
-                          City State Country Location <span className="text-danger">*</span>
+                        <label htmlFor="country" className="form-label">
+                          Country <span className="text-danger">*</span>
                         </label>
-                                                <Select
-                          id="cityStateCountry"
-                          name="cityStateCountry"
-                          options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.cityStateCountry)}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              cityStateCountry: selectedOption ? selectedOption.value : "",
-                            }))
+                        <CreatableSelect
+                          id="country"
+                          name="country"
+                          options={countryOptions}
+                          value={
+                            formData.country
+                              ? {
+                                  value: formData.country,
+                                  label: formData.country,
+                                }
+                              : null
                           }
-                          placeholder="Select City-State-Country"
+                          onChange={(selectedOption) => {
+                            const isCustom = !countryOptions.some(
+                              (option) => option.value === selectedOption?.value
+                            );
+
+                            setFormData((prev) => ({
+                              ...prev,
+                              country: selectedOption?.value || "",
+                              state: "",
+                              city: "",
+                              isCustomCountry: isCustom,
+                              isCustomState: false,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          onCreateOption={(inputValue) => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              country: inputValue,
+                              state: "",
+                              city: "",
+                              isCustomCountry: true,
+                              isCustomState: false,
+                              isCustomCity: false,
+                            }));
+                          }}
+                          placeholder="Select or type a country"
                           isSearchable
                           required
                           classNamePrefix="react-select"
@@ -447,7 +511,148 @@ const AddNewSeller = () => {
                         />
                       </div>
                     </div>
+
                     <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="state" className="form-label">
+                          State <span className="text-danger">*</span>
+                        </label>
+                        {formData.isCustomCountry ? (
+                          <input
+                            type="text"
+                            id="state"
+                            name="state"
+                            className="form-control"
+                            value={formData.state}
+                            onChange={(e) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                state: e.target.value,
+                                city: "",
+                                isCustomState: true,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            placeholder="Enter state name"
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="state"
+                            name="state"
+                            options={stateOptions}
+                            value={
+                              formData.state
+                                ? {
+                                    value: formData.state,
+                                    label: formData.state,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom = !stateOptions.some(
+                                (option) =>
+                                  option.value === selectedOption?.value
+                              );
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                state: selectedOption?.value || "",
+                                city: "",
+                                isCustomState: isCustom,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                state: inputValue,
+                                city: "",
+                                isCustomState: true,
+                                isCustomCity: false,
+                              }));
+                            }}
+                            placeholder="Select or type a state"
+                            isSearchable
+                            required
+                            isDisabled={!formData.country}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="city" className="form-label">
+                          City <span className="text-danger">*</span>
+                        </label>
+                        {formData.isCustomState || formData.isCustomCountry ? (
+                          <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            className="form-control"
+                            value={formData.city}
+                            onChange={(e) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                city: e.target.value,
+                                isCustomCity: true,
+                              }));
+                            }}
+                            placeholder="Enter city name"
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="city"
+                            name="city"
+                            options={cityOptions}
+                            value={
+                              formData.city
+                                ? {
+                                    value: formData.city,
+                                    label: formData.city,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom =
+                                selectedOption &&
+                                !cityOptions.some(
+                                  (option) =>
+                                    option.value === selectedOption.value
+                                );
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                city: selectedOption?.value || "",
+                                isCustomCity: isCustom,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                city: inputValue,
+                                isCustomCity: true,
+                              }));
+                            }}
+                            placeholder="Select or type a city"
+                            isSearchable
+                            required
+                            isDisabled={!formData.state}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="landmark" className="form-label">
                           Land Mark <span className="text-danger">*</span>
@@ -464,7 +669,7 @@ const AddNewSeller = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="pincode" className="form-label">
                           Pin Code <span className="text-danger">*</span>
@@ -525,7 +730,7 @@ const AddNewSeller = () => {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="emailId" className="form-label">
                           Email ID <span className="text-danger">*</span>
@@ -542,7 +747,7 @@ const AddNewSeller = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="sellerProfile" className="form-label">
                           Profile Image
@@ -554,7 +759,21 @@ const AddNewSeller = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-                          
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="signature" className="form-label">
+                          Signature
+                        </label>
+                        <input
+                          type="file"
+                          id="signature"
+                          name="signature"
+                          className="form-control"
+                          accept="image/*"
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -568,7 +787,8 @@ const AddNewSeller = () => {
                     <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="accountNo" className="form-label">
-                          Bank Account Number <span className="text-danger">*</span>
+                          Bank Account Number{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -624,7 +844,8 @@ const AddNewSeller = () => {
                           htmlFor="accountHolderName"
                           className="form-label"
                         >
-                          Account Holder Name <span className="text-danger">*</span>
+                          Account Holder Name{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -664,7 +885,8 @@ const AddNewSeller = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="noOfEmployees" className="form-label">
-                          Number Of Employees <span className="text-danger">*</span>
+                          Number Of Employees{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
                           id="noOfEmployees"
@@ -688,7 +910,7 @@ const AddNewSeller = () => {
                             50 to 100 Employees
                           </option>
                           <option value="More than 100 Employees">
-                          More than 100 Employees
+                            More than 100 Employees
                           </option>
                         </select>
                       </div>
@@ -715,7 +937,7 @@ const AddNewSeller = () => {
                         <label htmlFor="turnover" className="form-label">
                           Company Turnover
                         </label>
-                        
+
                         <select
                           id="turnover"
                           name="turnover"
@@ -724,18 +946,14 @@ const AddNewSeller = () => {
                           onChange={handleChange}
                           // required
                         >
-                          <option value="">Select Company Ternover</option>
-                          <option value="1 to 10 Lakh">
-                          1 to 10 Lakh
-                          </option>
-                          <option value="10 to 50 Lakh">
-                          10 to 50 Lakh
-                          </option>
+                          <option value="">Select Company Turnover</option>
+                          <option value="1 to 10 Lakh">1 to 10 Lakh</option>
+                          <option value="10 to 50 Lakh">10 to 50 Lakh</option>
                           <option value="50 Lakh to 1 Crore">
-                          50 Lakh to 1 Crore
+                            50 Lakh to 1 Crore
                           </option>
                           <option value="More than 1 Crore">
-                          More than 1 Crore
+                            More than 1 Crore
                           </option>
                         </select>
                       </div>
@@ -777,7 +995,8 @@ const AddNewSeller = () => {
                               htmlFor="subCategories"
                               className="form-label"
                             >
-                              Subcategories <span className="text-danger">*</span>
+                              Subcategories{" "}
+                              <span className="text-danger">*</span>
                             </label>
                             <div>
                               {(subCategories[product.categoryId] || []).map(
@@ -846,8 +1065,9 @@ const AddNewSeller = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={sending}
                     >
-                      Submit
+                      {sending ? "Submitting..." : "Submit"}
                     </button>
                   </div>
                 </form>

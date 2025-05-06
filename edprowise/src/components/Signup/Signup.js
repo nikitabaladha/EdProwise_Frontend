@@ -166,7 +166,7 @@ const Signup = () => {
                         onClick={togglePasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(-80%)",
                           cursor: "pointer",
@@ -177,7 +177,7 @@ const Signup = () => {
                         onClick={togglePasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(-80%)",
                           cursor: "pointer",
@@ -207,7 +207,7 @@ const Signup = () => {
                         onClick={toggleConformPasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(-80%)",
                           cursor: "pointer",
@@ -218,7 +218,7 @@ const Signup = () => {
                         onClick={toggleConformPasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(-80%)",
                           cursor: "pointer",
@@ -231,7 +231,7 @@ const Signup = () => {
                     style={{
                       position: "relative",
                       display: "inline-block",
-                      width: "100%",
+                      width: "80%",
                     }}
                   >
                     <select
@@ -256,7 +256,10 @@ const Signup = () => {
                       {generalError}
                     </div>
                   )}
-                  <div className="form-button d-flex">
+                  <div className="form-button d-flex" style={{
+                      width:"80%",
+                      justifySelf:"center",
+                    }}>
                     <button
                       id="submit"
                       type="submit"

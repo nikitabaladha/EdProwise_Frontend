@@ -26,8 +26,9 @@ const UpdateSubmittedQuoteModal = ({
     if (isOpen) {
       const fetchSubmittedQuoteData = async () => {
         try {
+          const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
           const response = await getAPI(
-            `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+            `/submit-quote?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`
           );
           if (!response.hasError && response.data && response.data.data) {
             const {
@@ -72,6 +73,8 @@ const UpdateSubmittedQuoteModal = ({
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -93,9 +96,13 @@ const UpdateSubmittedQuoteModal = ({
       advanceRequiredAmount,
     };
 
+    setSending(true);
+
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await putAPI(
-        `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        `/submit-quote?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
         dataToSend,
         true
       );
@@ -120,6 +127,8 @@ const UpdateSubmittedQuoteModal = ({
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -155,6 +164,7 @@ const UpdateSubmittedQuoteModal = ({
                         onChange={handleInputChange}
                         className="form-control"
                         required
+                        readOnly
                       />
                     </div>
                     <div className="mb-3">
@@ -192,7 +202,8 @@ const UpdateSubmittedQuoteModal = ({
                         htmlFor="expectedDeliveryDateBySeller"
                         className="form-label"
                       >
-                        Expected Delivery Date <span className="text-danger">*</span>
+                        Expected Delivery Date{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"
@@ -230,8 +241,12 @@ const UpdateSubmittedQuoteModal = ({
                       />
                     </div>
                     <div className="text-end">
-                      <Button variant="success" type="submit">
-                        Update
+                      <Button
+                        variant="success"
+                        type="submit"
+                        disabled={sending}
+                      >
+                        {sending ? "Updating..." : "Update"}
                       </Button>
                       <Button
                         variant="secondary"

@@ -47,6 +47,9 @@ import EducatorZoneBlog1 from "./components/CommunitySection/SubSection/Educator
 import EducatorZoneBlog2 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog2.js";
 import EducatorZoneBlog3 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog3.js";
 
+import ForgotUserId from "./components/ForgotPasswordorUserId/ForgotUserId.js";
+import NewUserId from "./components/ForgotPasswordorUserId/NewUserId.js";
+
 // =================================Signup Login Routes================================================
 
 import AdminLogin from "./components/Login/AdminLogin";
@@ -54,10 +57,6 @@ import UserLogin from "./components/Login/UserLogin";
 
 import Signup from "./components/Signup/Signup";
 import AdminSignup from "./components/Signup/AdminSignup";
-
-// umesh new Added routes
-import ForgotPassword from "./components/ForgotPasswordorUserId/ForgotPassword.js";
-import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
 
 // ==============Admin Routes ====================Admin Routes ========================Admin Routes=========
 
@@ -93,6 +92,13 @@ import AddNewSubscription from "./components/DashboardMainForAdmin/Subscription/
 import ViewSubscriptions from "./components/DashboardMainForAdmin/Subscription/ViewSubscription/ViewSubscription";
 import UpdateSubscription from "./components/DashboardMainForAdmin/Subscription/UpdateSubscription/UpdateSubscription";
 
+// =====================================EmailSettings====================================
+// import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettings/SMTPHostSettings/SMTPHostSettings.js";
+// import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
+// import SchoolRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRegistrationEmailTamplate.js";
+// import SellerRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SellerRegistrationEmailTamplate.js";
+// import PasswordUpdateEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/PasswordUpdate.js";
+
 // ========================================Fees module===========================================
 
 import ViewRequestsForDemo from "./components/DashboardMainForAdmin/ViewRequestsForDemo/ViewRequestsForDemo.js";
@@ -115,30 +121,15 @@ import UpdateBankDetail from "./components/DashboardMainForAdmin/ProcurementServ
 import TrackOrderHistoryTableForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForAdmin from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
-import GoodsAndServicesTable from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/GoodsAndServicesTable";
-import AddGoodsAndServices from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/AddGoodsAndServices/AddGoodsAndServices";
-import UpdateGoodAndService from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/UpdateGoodAndService/UpdateGoodAndService";
-
-import MainCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/MainCategory/MainCategory.js";
-import AddMainCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/MainCategory/AddMainCategory.js";
-
-import Category from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/Category/Category.js";
-import AddCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/Category/AddCategory.js";
-
-// import SubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/SubCategory.js";
-
 import SubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/SubCategory.js";
 import AddSubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/AddSubCategory.js";
 import UpdateSubCategory from "./components/DashboardMainForAdmin/ProcurementServicesForAdmin/DefineGoodsAndServices/SubCategory/UpdateSubCategory.js";
 
 // ====================EmailSettings====================================
-// add on admin umesh new routes 
+// add on admin umesh new routes
 import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettings/SMTPHostSettings/SMTPHostSettings.js";
 import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
-import SchoolRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRegistrationEmailTamplate.js";
-import SellerRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SellerRegistrationEmailTamplate.js";
-import PasswordUpdateEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/PasswordUpdate.js";
-
+import MarketingEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/Marketing/MarketingEmail.js";
 
 // ================School Routes=============School Routes============School Routes===========================
 
@@ -167,7 +158,9 @@ import ViewCart from "./components/DashboardMainForSchool/ProcurementServices/Tr
 import TrackOrderHistoryTable from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistory from "./components/DashboardMainForSchool/ProcurementServices/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
-import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise";
+import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/ProcurementServices/PayToEdProwise/PayToEdProwise.js";
+
+// =====================================School Fees Module==============================================
 
 // =====================================School Fees Module==============================================
 
@@ -190,31 +183,47 @@ import UpdateConcessionForm from "./components/DashboardMainForSchool/FeesModule
 
 import ClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/ClassAndSection.js";
 import FeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructure.js";
+import UpdateFeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/UpdateFeesStructure.js";
+import ViewFeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/ViewFeesStructure.js";
 import SchoolShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/SchoolShifts.js";
 import CreateClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/CreateClassAndSection.js";
+import UpdateClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/UpdateClassAndSection.js";
+import ViewClassAndSection from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/ClassAndSection/ViewClassAndSection.js";
 import TypeOfFeesList from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/DefineTypesOfFees/TypeOfFeesList.js";
 import AddFeesType from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/DefineTypesOfFees/AddFeesType.js";
+import UpdateFeesType from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/DefineTypesOfFees/UpdateFeesType.js";
 import AddShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/AddShifts.js";
+import UpdateShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/UpdateShifts.js";
 import FeesStructureListTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructureListTable.js";
 import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
+import StudentReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/Recipt.js";
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
+import PrefixSetting from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/RegistartionPrefix/PrefixTable.js";
+import AddPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/RegistartionPrefix/AddPrefix.js";
+import AdmissionPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/AdmissionPrefix/PrefixTable.js";
+import AddAdmissionPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/AdmissionPrefix/AddPrefix.js";
+import Fine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/FineTable.js";
+import AddFine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/Addfine.js";
 
-// ******Payroll add umesh *****//
-import EmployeeRegistrationList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/EmployeeRegistrationList.js";
-import AddEmployeeRegistration from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/AddEmployeeRegistration.js";
-import UpdateEmployeeRegistrationForm from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/UpdateEmployeeRegistrationForm.js";
-import ViewEmployeeRegisterDetails from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/ViewEmployeeRegisterDetails.js";
-import UpdateEmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/UpdateDetails/UpdateEmployeeDetails.js";
-import CTCUpdate from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCUpdate/CTCUpdate.js";
-import DefineCtcComponentsList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCDefineComponents/DefineCtcComponentsList.js";
-import DefineCtcCOmponents from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCDefineComponents/DefineCtcCOmponents.js";
-import EmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/EmployeeSelfService/EmployeeDetails/EmployeeDetails.js";
-import AddProcessPayroll from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/ProcessPayroll/AddProcessPayroll.js";
-import AddSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/SalaryIncrement/AddSalaryIncrement.js";
-import Form16 from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/Form16/Form16.js";
+// ===================================PayRoll===========================
+import EmployeeRegistrationList from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/EmployeeRegistration/EmployeeRegistrationList.js";
+import AddEmployeeRegistration from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/EmployeeRegistration/AddEmployeeRegistration.js";
+import UpdateEmployeeRegistrationForm from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/EmployeeRegistration/UpdateEmployeeRegistrationForm.js";
+import ViewEmployeeRegisterDetails from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/EmployeeRegistration/ViewEmployeeRegisterDetails.js";
+import UpdateEmployeeDetails from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/UpdateDetails/UpdateEmployeeDetails.js";
+import CTCUpdate from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/CTCUpdate/CTCUpdate.js";
+import DefineCtcComponentsList from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/CTCDefineComponents/DefineCtcComponentsList.js";
+import DefineCtcCOmponents from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/CTCDefineComponents/DefineCtcCOmponents.js";
+import EmployeeDetails from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/EmployeeDetails/EmployeeDetails.js";
+import AddProcessPayroll from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/ProcessPayroll/AddProcessPayroll.js";
+import AddSalaryIncrement from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/SalaryIncrement/AddSalaryIncrement.js";
+import Form16 from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/Form16/Form16.js";
+import ItDeclaration from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/ITDeclaration/ItDeclaration.js";
 
-// ================================================Seller Routes============================================
+// new from 5-5-25
+import SalarySlip from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/Salary Slip/SalarySlip.js";
+// ======================Seller Routes==========================Seller Routes=====================Seller Routes=======================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 
 import ViewSellerProfile from "./components/DashboardMainForSeller/ViewSellerProfile/ViewSellerProfile";
@@ -229,25 +238,21 @@ import TrackQuoteTableForSeller from "./components/DashboardMainForSeller/Procur
 import ViewRequestedQuoteForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/ViewRequestedQuote/ViewRequestedQuote";
 
 import SubmitQuote from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackQuotes/SubmitQuote/SubmitQuote";
+
 import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/TrackOrderHistoryTable";
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
-import PayToEdProwiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise";
 
-// new Routes umesh from 7-4-25 
-// add on public 
-import ForgotUserId from "./components/ForgotPasswordorUserId/ForgotUserId.js";
-import NewUserId from "./components/ForgotPasswordorUserId/NewUserId.js";
+import PayToEdprowiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise.js";
 
-// add in admin
-import AdminRegistrationEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/AdminRegistrationEmailTamplate.js";
-import UserIdUpdateEmailTamplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/UserIdUpdate.js";
-import SchoolRequestForQuoteEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/SchoolRequestForQuoteEmail.js";
-import QuoteProposalSentToSchoolEmailTemplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/QuoteProposalSentToSchoolEmailTemplate.js";
-import NewQuoteReceiveSellerEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/NewQuoteReceiveSellerEmail.js";
-import OrderPlaceSchoolTemplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/OrderPlaceSchoolTemplate.js";
-import OrderReceiveSellerTemplate from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplate/Tamplates/OrderReceiveSellerTemplate.js";
-import MarketingEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/Marketing/MarketingEmail.js";
+// umesh Added
+import ForgotPassword from "./components/ForgotPasswordorUserId/ForgotPassword.js";
+import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
 
+// 404 pages
+
+import Page404ForWebsite from "./components/Pages404/Page404ForWebsite.js";
+import Page404ForDashboard from "./components/Pages404/Page404ForDashboard.js";
+import RentDetails from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/ITDeclaration/RentDetails.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -294,44 +299,38 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-     
-      <Route 
+      <Route
         path="/forgot-password"
         element={
           <PublicRoute>
-            <ForgotPassword/>
+            <ForgotPassword />
           </PublicRoute>
         }
       />
-
-        <Route 
+      <Route
         path="/forgot-password/new-password"
         element={
           <PublicRoute>
-            <NewPassword/>
+            <NewPassword />
           </PublicRoute>
         }
       />
-       {/* umesh added */}
-       <Route 
+      <Route
         path="/forgot-userId"
         element={
           <PublicRoute>
-            <ForgotUserId/>
+            <ForgotUserId />
           </PublicRoute>
         }
       />
-
-      <Route 
+      <Route
         path="/forgot-userId/new-userId"
         element={
           <PublicRoute>
-            <NewUserId/>
+            <NewUserId />
           </PublicRoute>
         }
       />
-      {/* end umesh */}
-
       <Route
         path="/complete-admin-profile"
         element={
@@ -356,7 +355,6 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       />
-
       <Route
         path="/complete-seller-profile"
         element={
@@ -366,8 +364,95 @@ const AppRoutes = () => {
         }
       />
 
+      <Route path="/website-page-not-found" element={<Page404ForWebsite />} />
+      {/* =========================Website Routes========================= */}
+
+      <Route path="/" element={<WebsiteMain />}>
+        <Route index element={<HomePage />} />
+
+        <Route path="about-us" element={<AboutPage />} />
+        <Route path="contact-us" element={<ContactUsPage />} />
+        <Route path="order" element={<OrderDetailsWebSitePage />} />
+
+        <Route path="services" element={<ServiceMainPage />}>
+          <Route path="digital-services" element={<DigitalService />} />
+          <Route path="academic-admin-services" element={<BusinessSection />} />
+          <Route path="hire-teacher" element={<RecruitmentSection />} />
+          <Route path="get-goods-for-school" element={<ProcurementSection />} />
+        </Route>
+        
+        <Route path="community-connect" element={<CommunityMainPage />}>
+          <Route path="gallery" element={<GallerySection />} />
+          <Route path="edprowise-talks" element={<EdprowiseTalkSection />} />
+          <Route path="student-zone" element={<StudentZoneSection />} />
+          <Route path="educator-zone" element={<EducatorZoneSection />} />
+        </Route>
+
+        <Route path="become-supplier" element={<SupplierPage />} />
+        <Route path="faq" element={<FaqPage />} />
+        <Route path="privacy-policy" element={<PrivacyPage />} />
+        <Route path="terms" element={<TermsPage />} />
+        <Route path="career" element={<CareerPage />} />
+        <Route path="career/:jobName" element={<CareerForm />} />
+        <Route path="request-demo" element={<RequestDemoForm />} />
+        <Route
+          path="services/digital-services/school-fees-management"
+          element={<ServiceFess />}
+        />
+        <Route
+          path="services/digital-services/school-payroll"
+          element={<PayrollService />}
+        />
+        <Route
+          path="services/digital-services/school-financial-management"
+          element={<FinanceBook />}
+        />
+        <Route
+          path="services/digital-services/school-operation-management"
+          element={<SchoolOperation />}
+        />
+        <Route
+          path="services/digital-services/school-mobile-application"
+          element={<SchoolApplication />}
+        />
+        <Route
+          path="services/digital-services/school-website-design"
+          element={<SchoolWebsiteDesign />}
+        />
+
+        <Route
+          path="community-connect/student-zone/proposed-exam-reforms-by-cbse"
+          element={<StudentZoneFullBlog />}
+        />
+
+        <Route
+          path="community-connect/student-zone/how-to-be-successful-in-the-cbse-board-exam"
+          element={<StudentZoneFullBlog2 />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/how-to-be-successful-teacher"
+          element={<EducatorZoneBlog1 />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/teaching-strategies-and-pedagogy"
+          element={<EducatorZoneBlog2 />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/teacher-well-being-and-work-life-balance"
+          element={<EducatorZoneBlog3 />}
+        />
+
+        <Route
+          path="*"
+          element={<Navigate to="/website-page-not-found" replace />}
+        />
+      </Route>
+
       {/* ===================================================Admin Routes==================================== */}
-      {/* <Route path="/search-results" element={<SearchResults />} /> */}
+
       <Route
         path="/admin-dashboard"
         element={
@@ -382,8 +467,8 @@ const AppRoutes = () => {
         <Route path="view-admin-profile" element={<ViewAdminProfile />} />
         <Route path="update-admin-profile" element={<UpdateAdminProfile />} />
         <Route
-            path="change-edprowise-admin-password"
-            element={<ChangePasswordForAdmin />}
+          path="change-edprowise-admin-password"
+          element={<ChangePasswordForAdmin />}
         />
 
         {/* School Table page and it's Add, View, Update Routes */}
@@ -473,27 +558,94 @@ const AppRoutes = () => {
           path="procurement-services/update-bank-detail"
           element={<UpdateBankDetail />}
         />
-        <Route
-          path="procurement-services/quote-proposal"
-          element={<QuoteProposalForAll />}
-        />
-        <Route
-          path="procurement-services/invoice-for-edprowise"
-          element={<InvoiceForEdProwiseForAll />}
-        />
-        <Route
-          path="procurement-services/invoice-for-buyer"
-          element={<InvoiceForBuyerForAll />}
+
+        {/*=============================== Email routes================== */}
+
+        <Route path="email/smtp-setting" element={<SMTPHostSettings />} />
+        <Route path="email/templates" element={<EmailTemplatesList />} />
+        <Route path="email/marketing" element={<MarketingEmail />} />
+
+         {/* *****************************Payroll Module ***************************************** */}
+         <Route
+          path="payroll-module/admin-setting/register-employee-list"
+          element={<EmployeeRegistrationList />}
         />
 
-        {/* *********************New Routes************* */}
-        <Route path="email/smtp-setting" element={<SMTPHostSettings/>} />
-        <Route path="email/templates" element={<EmailTemplatesList/>}/>
-        <Route path="email/marketing" element={<MarketingEmail/>}/>
+        <Route
+          path="payroll-module/admin-setting/registration-form"
+          element={<AddEmployeeRegistration />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/update-registration-form"
+          element={<UpdateEmployeeRegistrationForm />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/view-registration-form"
+          element={<ViewEmployeeRegisterDetails />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/lwd-details"
+          element={<UpdateEmployeeDetails />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/CTC-Update"
+          element={<CTCUpdate />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-ctc-components-list"
+          element={<DefineCtcComponentsList />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-ctc-components"
+          element={<DefineCtcCOmponents />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/payroll-process"
+          element={<AddProcessPayroll />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/salary-increment"
+          element={<AddSalaryIncrement />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/form-16-list"
+          element={<Form16 />}
+        />
+
+        {/* ************Employee Self Services */}
+        <Route
+          path="payroll-module/employee-services/update-details"
+          element={<EmployeeDetails />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/salary-slip"
+          element={<SalarySlip/>}
+        />
+
+      <Route
+          path="payroll-module/employee-services/it-declaration"
+          element={<ItDeclaration/>}
+        />
+
+        <Route
+          path="payroll-module/employee-services/rent-details"
+          element={<RentDetails/>}
+        />
+
+
+        <Route path="*" element={<Page404ForDashboard />} />
       </Route>
-
-      {/* ===================================================School Routes==================================== */}
-
+      {/* ==========================================Schhool Routes================================*/}
       <Route
         path="/school-dashboard"
         element={
@@ -502,7 +654,7 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       >
-        <Route index element={<SchoolDashboard />} />
+        <Route index element={<SchoolProcurementDashboard />} />
         {/*School Dashboard Route */}
         <Route path="view-school-profile" element={<ViewSchoolProfile />} />
         <Route path="update-school-profile" element={<UpdateSchoolProfile />} />
@@ -648,12 +800,27 @@ const AppRoutes = () => {
         />
 
         <Route
+          path="fees-module/admin-setting/class-section/update-class-section"
+          element={<UpdateClassAndSection />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/class-section/view-class-section"
+          element={<ViewClassAndSection />}
+        />
+
+        <Route
           path="fees-module/admin-setting/fees-type-list"
           element={<TypeOfFeesList />}
         />
         <Route
           path="fees-module/admin-setting/fees-type-list/add-fees-type"
           element={<AddFeesType />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-type-list/update-fees-type"
+          element={<UpdateFeesType />}
         />
 
         <Route
@@ -666,6 +833,16 @@ const AppRoutes = () => {
         />
 
         <Route
+          path="fees-module/admin-setting/fees-structure/update-fees-structure"
+          element={<UpdateFeesStructure />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/view-fees-structure"
+          element={<ViewFeesStructure />}
+        />
+
+        <Route
           path="fees-module/admin-setting/shifts"
           element={<SchoolShifts />}
         />
@@ -675,62 +852,47 @@ const AppRoutes = () => {
         />
 
         <Route
+          path="fees-module/admin-setting/shifts/update-shift"
+          element={<UpdateShifts />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/prefix-setting/registartion-prefix"
+          element={<PrefixSetting />}
+        />
+        <Route
+          path="fees-module/admin-setting/prefix-setting/registartion-prefix/add-prefix"
+          element={<AddPrefix />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/prefix-setting/admission-prefix"
+          element={<AdmissionPrefix />}
+        />
+        <Route
+          path="fees-module/admin-setting/prefix-setting/admission-prefix/add-prefix"
+          element={<AddAdmissionPrefix />}
+        />
+
+        <Route path="fees-module/admin-setting/fine" element={<Fine />} />
+        <Route
+          path="fees-module/admin-setting/fine/add-fine"
+          element={<AddFine />}
+        />
+
+        <Route
           path="fees-module/fees-receipts/school-fees"
           element={<SchoolFeesReceipts />}
         />
 
-         {/* *****************************Payroll Module ***************************************** */}
-         <Route path="payroll-module/admin-setting/register-employee-list" 
-          element={<EmployeeRegistrationList/>}
+        <Route
+          path="fees-module/fees-receipts/school-fees/student-receipts"
+          element={<StudentReceipts />}
         />
 
-        <Route path="payroll-module/admin-setting/registration-form"
-        element={<AddEmployeeRegistration/>}
-        />
-
-        <Route path="payroll-module/admin-setting/update-registration-form"
-        element={<UpdateEmployeeRegistrationForm/>}/>
-
-        <Route path="payroll-module/admin-setting/view-registration-form"
-        element={<ViewEmployeeRegisterDetails/>}
-        />
-
-        <Route path="payroll-module/admin-setting/lwd-details"
-        element={<UpdateEmployeeDetails/>}
-        />
-
-        <Route path="payroll-module/admin-setting/CTC-Update"
-        element={<CTCUpdate/>}
-        />
-
-        <Route path="payroll-module/admin-setting/define-ctc-components-list"
-        element={<DefineCtcComponentsList/>}
-        />
-
-        <Route path="payroll-module/admin-setting/define-ctc-components"
-        element={<DefineCtcCOmponents/>}
-        />
-
-        <Route path="payroll-module/admin-setting/payroll-process"
-        element={<AddProcessPayroll/>}
-        />
-
-        <Route path="payroll-module/admin-setting/salary-increment"
-        element={<AddSalaryIncrement/>}
-        />
-
-        <Route path="payroll-module/admin-setting/form-16-list"
-        element={<Form16/>}
-        />
-
-                {/* ************Employee Self Services */}
-        <Route path="payroll-module/employee-services/update-details"
-        element={<EmployeeDetails/>}
-        />
-
+        <Route path="*" element={<Page404ForDashboard />} />
       </Route>
       {/* =========================================Seller Routes============================================= */}
-
       <Route
         path="/seller-dashboard"
         element={
@@ -741,7 +903,7 @@ const AppRoutes = () => {
       >
         {/*Seller Dashboard Route */}
 
-        <Route index element={<SellerDashboard />} />
+        <Route index element={<SellerProcurementDashboard />} />
 
         <Route path="view-seller-profile" element={<ViewSellerProfile />} />
         <Route path="update-seller-profile" element={<UpdateSellerProfile />} />
@@ -781,7 +943,7 @@ const AppRoutes = () => {
         />
         <Route
           path="procurement-services/Pay-to-edprowise"
-          element={<PayToEdProwiseForSeller />}
+          element={<PayToEdprowiseForSeller />}
         />
 
         <Route
@@ -799,86 +961,7 @@ const AppRoutes = () => {
         />
       </Route>
 
-      {/* Website Routes */}
-
-      <Route path="/" element={<WebsiteMain />}>
-        <Route index element={<HomePage />} />
-
-        <Route path="about-us" element={<AboutPage />} />
-        <Route path="contact-us" element={<ContactUsPage />} />
-        <Route path="order" element={<OrderDetailsWebSitePage />} />
-
-        <Route path="services" element={<ServiceMainPage />}>
-          <Route path="digital-services" element={<DigitalService />} />
-          <Route path="academic-admin-services" element={<BusinessSection />} />
-          <Route path="recruitment-services" element={<RecruitmentSection />} />
-          <Route path="get-goods-services" element={<ProcurementSection />} />
-        </Route>
-
-        <Route path="community-connect" element={<CommunityMainPage />}>
-          <Route path="gallery" element={<GallerySection />} />
-          <Route path="edprowise-talks" element={<EdprowiseTalkSection />} />
-          <Route path="student-zone" element={<StudentZoneSection />} />
-          <Route path="educator-zone" element={<EducatorZoneSection />} />
-        </Route>
-
-        <Route path="become-supplier" element={<SupplierPage />} />
-        <Route path="faq" element={<FaqPage />} />
-        <Route path="privacy-policy" element={<PrivacyPage />} />
-        <Route path="terms" element={<TermsPage />} />
-        <Route path="career" element={<CareerPage />} />
-        <Route path="career/:jobName" element={<CareerForm />} />
-        <Route path="request-demo" element={<RequestDemoForm />} />
-        <Route
-          path="services/digital-services/fees"
-          element={<ServiceFess />}
-        />
-        <Route
-          path="services/digital-services/payroll"
-          element={<PayrollService />}
-        />
-        <Route
-          path="services/digital-services/booksync"
-          element={<FinanceBook />}
-        />
-        <Route
-          path="services/digital-services/schooloperation"
-          element={<SchoolOperation />}
-        />
-        <Route
-          path="services/digital-services/schoolApplication"
-          element={<SchoolApplication />}
-        />
-        <Route
-          path="services/digital-services/school-Website-Design"
-          element={<SchoolWebsiteDesign />}
-        />
-
-        <Route
-          path="community-connect/student-zone/proposed-exam-reforms-by-CBSE"
-          element={<StudentZoneFullBlog />}
-        />
-
-        <Route
-          path="community-connect/student-zone/how-to-be-successful"
-          element={<StudentZoneFullBlog2 />}
-        />
-
-        <Route
-          path="community-connect/educator-zone/how-to-be-successful-teacher"
-          element={<EducatorZoneBlog1 />}
-        />
-
-        <Route
-          path="community-connect/educator-zone/teaching-strategies-pedagogy"
-          element={<EducatorZoneBlog2 />}
-        />
-
-        <Route
-          path="community-connect/educator-zone/teacher-well-being"
-          element={<EducatorZoneBlog3 />}
-        />
-      </Route>
+      <Route path="*" element={<Page404ForDashboard />} />
     </Routes>
   );
 };

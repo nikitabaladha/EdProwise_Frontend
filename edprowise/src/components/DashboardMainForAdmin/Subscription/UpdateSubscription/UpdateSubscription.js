@@ -44,6 +44,8 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -55,6 +57,8 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
         formDataToSend.append(key, formData[key] || "");
       }
     }
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -107,6 +111,8 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
   return (
@@ -238,8 +244,9 @@ const UpdateSubscription = ({ schools, updatedSubscription }) => {
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={sending}
                   >
-                    Update Subscription
+                    {sending ? "Updating..." : "Update Subscription"}
                   </button>
                 </div>
               </form>

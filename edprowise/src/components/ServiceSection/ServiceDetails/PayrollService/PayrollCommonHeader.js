@@ -6,7 +6,7 @@ const PayrollCommonHeader = () => {
             <div className="row">
               <div className="col col-xs-12">
                 <div className="wpo-breadcumb-wrap">
-                  <h2 className="service-text-header">Payroll Management Software – Ease Payroll</h2>
+                  <h2 className="service-text-header">School Payroll Management Software – Ease Payroll</h2>
                 </div>
               </div>
             </div>

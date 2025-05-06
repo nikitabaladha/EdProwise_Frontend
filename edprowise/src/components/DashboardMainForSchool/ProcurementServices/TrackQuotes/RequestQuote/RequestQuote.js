@@ -4,8 +4,71 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import AddressModal from "./AddressModal";
+import Select from "react-select";
 
 const RequestQuote = () => {
+  const unitOptions = [
+    { value: "Monthly", label: "Monthly" },
+    { value: "Yearly", label: "Yearly" },
+    { value: "Quarterly", label: "Quarterly" },
+    { value: "Project", label: "Project" },
+    { value: "BAG - BAGS", label: "BAG - BAGS" },
+    { value: "BAL - BALE", label: "BAL - BALE" },
+    { value: "BDL - BUNDLES", label: "BDL - BUNDLES" },
+    { value: "BKL - BUCKLES", label: "BKL - BUCKLES" },
+    { value: "BOU - BILLION OF UNITS", label: "BOU - BILLION OF UNITS" },
+    { value: "BOX - BOX", label: "BOX - BOX" },
+    { value: "BTL - BOTTLES", label: "BTL - BOTTLES" },
+    { value: "BUN - BUNCHES", label: "BUN - BUNCHES" },
+    { value: "CAN - CANS", label: "CAN - CANS" },
+    { value: "CBM - CUBIC METERS", label: "CBM - CUBIC METERS" },
+    { value: "CCM - CUBIC CENTIMETERS", label: "CCM - CUBIC CENTIMETERS" },
+    { value: "CMS - CENTIMETERS", label: "CMS - CENTIMETERS" },
+    { value: "CTN - CARTONS", label: "CTN - CARTONS" },
+    { value: "DOZ - DOZENS", label: "DOZ - DOZENS" },
+    { value: "DRM - DRUMS", label: "DRM - DRUMS" },
+    { value: "GGK - GREAT GROSS", label: "GGK - GREAT GROSS" },
+    { value: "GMS - GRAMMES", label: "GMS - GRAMMES" },
+    { value: "GRS - GROSS", label: "GRS - GROSS" },
+    { value: "GYD - GROSS YARDS", label: "GYD - GROSS YARDS" },
+    { value: "KGS - KILOGRAMS", label: "KGS - KILOGRAMS" },
+    { value: "KLR - KILOLITRE", label: "KLR - KILOLITRE" },
+    { value: "KME - KILOMETRE", label: "KME - KILOMETRE" },
+    { value: "LTR - LITRES", label: "LTR - LITRES" },
+    { value: "MLT - MILILITRE", label: "MLT - MILILITRE" },
+    { value: "MTR - METERS", label: "MTR - METERS" },
+    { value: "MTS - METRIC TON", label: "MTS - METRIC TON" },
+    { value: "NOS - NUMBERS", label: "NOS - NUMBERS" },
+    { value: "OTH - OTHERS", label: "OTH - OTHERS" },
+    { value: "PAC - PACKS", label: "PAC - PACKS" },
+    { value: "PCS - PIECES", label: "PCS - PIECES" },
+    { value: "PRS - PAIRS", label: "PRS - PAIRS" },
+    { value: "QTL - QUINTAL", label: "QTL - QUINTAL" },
+    { value: "ROL - ROLLS", label: "ROL - ROLLS" },
+    { value: "SET - SETS", label: "SET - SETS" },
+    { value: "SQF - SQUARE FEET", label: "SQF - SQUARE FEET" },
+    { value: "SQM - SQUARE METERS", label: "SQM - SQUARE METERS" },
+    { value: "SQY - SQUARE YARDS", label: "SQY - SQUARE YARDS" },
+    { value: "TBS - TABLETS", label: "TBS - TABLETS" },
+    { value: "TGM - TEN GROSS", label: "TGM - TEN GROSS" },
+    { value: "THD - THOUSANDS", label: "THD - THOUSANDS" },
+    { value: "TON - TONNES", label: "TON - TONNES" },
+    { value: "TUB - TUBES", label: "TUB - TUBES" },
+    { value: "UGS - US GALLONS", label: "UGS - US GALLONS" },
+    { value: "UNT - UNITS", label: "UNT - UNITS" },
+    { value: "YDS - YARDS", label: "YDS - YARDS" },
+  ];
+
+  const [selectedUnitOption, setSelectedUnitOption] = useState(null);
+  const handleUnitChange = (selectedOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      unit: selectedOption.value,
+    }));
+
+    setSelectedUnitOption(selectedOption);
+  };
+
   const [formData, setFormData] = useState({
     categoryId: "",
     subCategoryId: "",
@@ -27,7 +90,6 @@ const RequestQuote = () => {
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-    console.log(formData);
   };
 
   const handleOpenModal = () => {
@@ -44,7 +106,6 @@ const RequestQuote = () => {
     if (
       !formData.categoryId ||
       !formData.subCategoryId ||
-      // !formData.description ||
       !formData.unit ||
       !formData.quantity
     ) {
@@ -81,7 +142,10 @@ const RequestQuote = () => {
       unit: "",
       quantity: "",
     });
+
+    setSelectedUnitOption(null); // Reset the selected unit option
     document.getElementById("productImage").value = "";
+    setSubCategories([]); // Also reset subcategories
 
     toast.success("Product added to cart!");
     setIsFormValid(true);
@@ -147,7 +211,7 @@ const RequestQuote = () => {
               <div className="container">
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
-                    Request New Quote
+                    Request For Quote
                   </h4>
                 </div>
               </div>
@@ -156,7 +220,8 @@ const RequestQuote = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="category" className="form-label">
-                        Product Required – Select category <span className="text-danger">*</span>
+                        Product Required – Select category{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <select
                         id="category"
@@ -178,7 +243,8 @@ const RequestQuote = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="subCategory" className="form-label">
-                        Product Required – Select sub category <span className="text-danger">*</span>
+                        Product Required – Select sub category{" "}
+                        <span className="text-danger">*</span>
                       </label>
 
                       <select
@@ -230,7 +296,7 @@ const RequestQuote = () => {
                         id="productImage"
                         name="productImage"
                         className="form-control"
-                        accept="image/*,application/pdf"
+                        accept="image/*"
                         onChange={handleChange}
                       />
                     </div>
@@ -242,23 +308,22 @@ const RequestQuote = () => {
                       <label htmlFor="unit" className="form-label">
                         Unit <span className="text-danger">*</span>
                       </label>
-                      <select
+
+                      <Select
                         id="unit"
                         name="unit"
-                        className="form-control"
-                        value={formData.unit}
-                        onChange={handleChange}
+                        options={unitOptions}
+                        // value={unitOptions.find(
+                        //   (option) => option.value === formData.unit
+                        // )}
+                        value={selectedUnitOption}
+                        onChange={handleUnitChange}
+                        isSearchable
+                        placeholder="Select Unit"
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
                         required
-                      >
-                        <option value="">Select Unit</option>
-                        <option value="Piece">Piece</option>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Yearly">Yearly</option>
-                        <option value="Quarterly">Quarterly</option>
-                        <option value="Kg">Kg</option>
-                        <option value="Project">Project</option>
-                        <option value="Sq. feet">Sq. feet</option>
-                      </select>
+                      />
                     </div>
                   </div>
                   <div className="col-md-6">

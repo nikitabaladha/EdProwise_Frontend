@@ -1,40 +1,54 @@
 import React, { useState, useEffect } from "react";
-
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../export-excel";
 import { toast } from "react-toastify";
 import getAPI from "../../../api/getAPI";
+import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
 
-import ConfirmationDialog from "../../ConfirmationDialog";
 const SchoolsTable = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-
+  const [filterSchoolName, setFilterSchoolName] = useState("");
   const [schools, setSchools] = useState([]);
-
   const [selectedSchool, setSelectedSchool] = useState(null);
+
+  useEffect(() => {
+    if (location.state?.filterSchoolName) {
+      setFilterSchoolName(location.state.filterSchoolName);
+    }
+  }, [location]);
 
   const fetchSchoolData = async () => {
     try {
-      const response = await getAPI(`/school`, {}, true);
+      let url = "/school";
+      if (filterSchoolName) {
+        url += `?schoolName=${encodeURIComponent(filterSchoolName)}`;
+      }
+
+      const response = await getAPI(url, {}, true);
+
       if (
         !response.hasError &&
         response.data &&
         Array.isArray(response.data.data)
       ) {
         setSchools(response.data.data);
-        console.log("school data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
+        toast.error("Failed to fetch schools");
       }
     } catch (err) {
       console.error("Error fetching School List:", err);
+      toast.error("Error fetching school data");
     }
   };
 
   useEffect(() => {
     fetchSchoolData();
-  }, []);
+    setCurrentPage(1);
+  }, [filterSchoolName]);
 
   const handleExport = () => {
     if (!schools.length) {
@@ -47,7 +61,11 @@ const SchoolsTable = () => {
       School_Name: school.schoolName,
       PAN_Number: school.panNo,
       School_Address: school.schoolAddress,
-      School_Location: school.schoolLocation,
+      city: school.city,
+      state: school.state,
+
+      country: school.country,
+
       Landmark: school.landMark,
       School_Pincode: school.schoolPincode,
       Delivery_Address: school.deliveryAddress,
@@ -85,10 +103,17 @@ const SchoolsTable = () => {
     setSelectedSchool(null);
   };
 
-  const handleDeleteConfirmed = (_id) => {
-    setSchools((prevSchools) =>
-      prevSchools.filter((school) => school._id !== _id)
-    );
+  const handleDeleteConfirmed = async (schoolId) => {
+    try {
+      setSchools((prevSchools) =>
+        prevSchools.filter((school) => school.schoolId !== schoolId)
+      );
+
+      fetchSchoolData();
+    } catch (error) {
+      console.error("Error deleting school:", error);
+      toast.error("Failed to delete school. Please try again.");
+    }
   };
 
   const navigateToAddNewSchool = (event) => {
@@ -98,7 +123,6 @@ const SchoolsTable = () => {
 
   const navigateToViewSchool = (event, schoolId) => {
     event.preventDefault();
-    console.log("schoolId from navigate function", schoolId);
     navigate(`/admin-dashboard/schools/view-school`, {
       state: { schoolId },
     });
@@ -142,7 +166,6 @@ const SchoolsTable = () => {
 
   return (
     <>
-      {" "}
       <div className="container-fluid">
         <div className="row">
           <div className="col-xl-12">
@@ -320,10 +343,10 @@ const SchoolsTable = () => {
         </div>
       </div>
       {isDeleteDialogOpen && (
-        <ConfirmationDialog
+        <StatusDeleteConfirmDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
-          id={selectedSchool._id}
+          id={selectedSchool.schoolId}
           onDeleted={handleDeleteConfirmed}
         />
       )}

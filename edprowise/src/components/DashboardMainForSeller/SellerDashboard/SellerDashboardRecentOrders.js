@@ -35,7 +35,6 @@ const SellerDashboardRecentOrders = () => {
         Array.isArray(response.data.data)
       ) {
         setOrderDetails(response.data.data);
-        console.log("Order Details", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -138,7 +137,9 @@ const SellerDashboardRecentOrders = () => {
                           <td>{order.supplierStatus}</td>
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>{formatCost(order.totalAmount)}</td>
-                          <td>{formatCost(order.finalReceivableFromEdprowise)}</td>
+                          <td>
+                            {formatCost(order.finalReceivableFromEdprowise)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

@@ -9,32 +9,22 @@ import { Link } from "react-router-dom";
 const ViewSeller = () => {
   const location = useLocation();
 
-  const profileId = location.state?.seller.sellerId;
-  console.log("profileId");
-  const navigate = useNavigate();
+  const sellerId = location.state?.sellerId;
 
-  useEffect(() => {
-    if (profileId) {
-      fetchSellerProfileData();
-    } else {
-      console.error("No profile ID provided");
-    }
-  }, [profileId]);
+  const navigate = useNavigate();
 
   const [sellerProfile, setSellerProfile] = useState(null);
 
   const fetchSellerProfileData = async () => {
     try {
       const response = await getAPI(
-        `/seller-profile-get-by-id/${profileId}`,
+        `/seller-profile-get-by-id/${sellerId}`,
         {},
         true
       );
 
       if (!response.hasError && response.data && response.data.data) {
         setSellerProfile(response.data.data);
-
-        console.log("seller data from view", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -44,8 +34,12 @@ const ViewSeller = () => {
   };
 
   useEffect(() => {
-    fetchSellerProfileData();
-  }, []);
+    if (sellerId) {
+      fetchSellerProfileData();
+    } else {
+      console.error("No seller ID provided");
+    }
+  }, [sellerId]);
 
   return (
     <>
@@ -66,47 +60,61 @@ const ViewSeller = () => {
                 </h4>
 
                 <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <div className="d-flex align-items-center">
-                        <div className="rounded bg-light d-flex align-items-center justify-content-center">
-                          <img
-                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.sellerProfile}`}
-                            alt={`${sellerProfile?.companyName} Profile`}
-                            className="avatar-md"
-                            style={{
-                              objectFit: "cover",
-                              width: "200px",
-                              height: "200px",
-                              borderRadius: "10px",
-                            }}
-                          />
-                        </div>
+                  <div className="col-md-3">
+                    <label htmlFor="sellerProfile" className="form-label">
+                      Seller Profile
+                    </label>
+                    <div className="mb-3 d-flex justify-content-center">
+                      <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                        <img
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.sellerProfile}`}
+                          alt={`${sellerProfile?.companyName} Profile`}
+                          className="avatar-md"
+                          style={{
+                            objectFit: "cover",
+                            width: "200px",
+                            height: "200px",
+                            borderRadius: "10px",
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="companyName" className="form-label">
-                            Company Name
-                          </label>
-                          <p className="form-control">
-                            {sellerProfile?.companyName}
-                          </p>
-                        </div>
+                  <div className="col-md-3">
+                    <label htmlFor="signature" className="form-label">
+                      Signature
+                    </label>
+                    <div className="mb-3 d-flex justify-content-center">
+                      <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                        <img
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.signature}`}
+                          alt="Seller Signature"
+                          className="avatar-md"
+                          style={{
+                            objectFit: "cover",
+                            width: "200px",
+                            height: "200px",
+                            borderRadius: "10px",
+                          }}
+                        />
                       </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="randomId" className="form-label">
-                            SellerId
-                          </label>
-                          <p className="form-control">
-                            {sellerProfile?.randomId}
-                          </p>
-                        </div>
-                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="companyName" className="form-label">
+                        Company Name
+                      </label>
+                      <p className="form-control">
+                        {sellerProfile?.companyName}
+                      </p>
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="randomId" className="form-label">
+                        SellerId
+                      </label>
+                      <p className="form-control">{sellerProfile?.randomId}</p>
                     </div>
 
                     <div className="mb-3">
@@ -115,6 +123,7 @@ const ViewSeller = () => {
                       </label>
                       <p className="form-control">{sellerProfile?.gstin}</p>
                     </div>
+
                     <div className="mb-3">
                       <label htmlFor="tan" className="form-label">
                         TAN Number
@@ -124,7 +133,7 @@ const ViewSeller = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="companyType" className="form-label">
                         Company Type

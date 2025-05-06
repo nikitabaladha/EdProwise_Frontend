@@ -6,6 +6,7 @@ import TestimonialSection from "../HomeSection/Testimonial";
 import AwardSection from "./SubSections/AwardSection";
 import VisionMissionSection from "../HomeSection/MissionVision";
 import TabsWithContent from "./TabsWithContent";
+import ArtCollection from "./Artcollection";
 const BlogSection = () => {
   const [activeTab, setActiveTab] = useState("AboutUsSection");
 
@@ -96,9 +97,9 @@ const BlogSection = () => {
         <div className="wpo-blog-items">
           <div className={`show-tab ${activeTab === "AboutUsSection" ? "active" : ""}`} id="AboutUsSection">
           <AboutusSection/>
-          <TabsWithContent/>
-        <VisionMissionSection />
-         <TestimonialSection/>
+          {/* <ArtCollection/> */}
+          <VisionMissionSection />
+          <TestimonialSection/>
           </div>
 
           <div className={`show-tab ${activeTab === "teamSection" ? "active" : ""}`} id="teamSection">

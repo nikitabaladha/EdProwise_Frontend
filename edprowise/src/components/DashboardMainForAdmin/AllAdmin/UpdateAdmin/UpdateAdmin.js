@@ -39,6 +39,8 @@ const UpdateAdmin = () => {
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -57,6 +59,8 @@ const UpdateAdmin = () => {
         formDataToSend.append(key, formData[key] || "");
       }
     }
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -82,9 +86,10 @@ const UpdateAdmin = () => {
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
-
 
   const [showNewPassword, setShowNewPassword] = useState(false);
   const toggleNewPasswordVisibility = () => {
@@ -208,7 +213,8 @@ const UpdateAdmin = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="password" className="form-label">
-                        Retype New Password <span className="text-danger">*</span>
+                        Retype New Password{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <div style={{ position: "relative" }}>
                         <input
@@ -247,56 +253,15 @@ const UpdateAdmin = () => {
                       </div>
                     </div>
                   </div>
-
-                  {/* <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="password" className="form-label">
-                        Password
-                      </label>
-                      <div style={{ position: "relative" }}>
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          id="password"
-                          name="password"
-                          className="form-control"
-                          placeholder="********"
-                          onChange={handleChange}
-                          style={{ paddingRight: "40px" }}
-                        />
-                        {showPassword ? (
-                          <FaEye
-                            onClick={togglePasswordVisibility}
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                              cursor: "pointer",
-                            }}
-                          />
-                        ) : (
-                          <FaEyeSlash
-                            onClick={togglePasswordVisibility}
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                              cursor: "pointer",
-                            }}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
 
                 <div className="text-end">
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={sending}
                   >
-                    Update
+                    {sending ? "Updating..." : "Update"}
                   </button>
                 </div>
               </form>

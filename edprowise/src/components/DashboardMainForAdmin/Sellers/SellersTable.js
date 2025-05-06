@@ -1,27 +1,35 @@
 import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../export-excel";
 import { toast } from "react-toastify";
 import getAPI from "../../../api/getAPI";
+import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
 
-import ConfirmationDialog from "../../ConfirmationDialog";
 const SellersTable = () => {
   const [sellers, setSellers] = useState([]);
-
   const [selectedSeller, setSelectedSeller] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [filterCompanyName, setFilterCompanyName] = useState("");
 
   const fetchSellersData = async () => {
     try {
-      const response = await getAPI(`/seller-profile-get-all`, {}, true);
+      let url = "/seller-profile-get-all";
+      if (filterCompanyName) {
+        url += `?companyName=${encodeURIComponent(filterCompanyName)}`;
+      }
+
+      const response = await getAPI(url, {}, true);
+
       if (
         !response.hasError &&
         response.data &&
         Array.isArray(response.data.data)
       ) {
         setSellers(response.data.data);
-        console.log("seller data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -31,10 +39,15 @@ const SellersTable = () => {
   };
 
   useEffect(() => {
-    fetchSellersData();
-  }, []);
+    if (location.state?.filterCompanyName) {
+      setFilterCompanyName(location.state.filterCompanyName);
+    }
+  }, [location]);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    fetchSellersData();
+    setCurrentPage(1);
+  }, [filterCompanyName]);
 
   const handleExport = () => {
     if (!sellers.length) {
@@ -78,7 +91,6 @@ const SellersTable = () => {
   const [deleteType, setDeleteType] = useState("");
 
   const openDeleteDialog = (seller) => {
-    console.log("open delete dialog", seller);
     setSelectedSeller(seller);
     setIsDeleteDialogOpen(true);
     setDeleteType("seller");
@@ -89,10 +101,17 @@ const SellersTable = () => {
     setSelectedSeller(null);
   };
 
-  const handleDeleteConfirmed = (sellerId) => {
-    setSellers((prevSellers) =>
-      prevSellers.filter((seller) => seller.sellerId !== sellerId)
-    );
+  const handleDeleteConfirmed = async (sellerId) => {
+    try {
+      setSellers((prevSellers) =>
+        prevSellers.filter((seller) => seller.sellerId !== sellerId)
+      );
+    } catch (error) {
+      console.error("Error deleting seller:", error);
+      toast.error("Failed to delete seller. Please try again.");
+
+      fetchSellersData();
+    }
   };
 
   const navigateToAddNewSeller = (event) => {
@@ -100,9 +119,9 @@ const SellersTable = () => {
     navigate(`/admin-dashboard/sellers/add-new-seller`);
   };
 
-  const navigateToViewSeller = (event, seller) => {
+  const navigateToViewSeller = (event, sellerId) => {
     event.preventDefault();
-    navigate(`/admin-dashboard/sellers/view-seller`, { state: { seller } });
+    navigate(`/admin-dashboard/sellers/view-seller`, { state: { sellerId } });
   };
 
   const navigateToUpdateSeller = (event, seller) => {
@@ -149,7 +168,7 @@ const SellersTable = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All School List</h4>
+                <h4 className="card-title flex-grow-1">All Seller List</h4>
                 <Link
                   onClick={(event) => navigateToAddNewSeller(event)}
                   className="btn btn-sm btn-primary"
@@ -210,6 +229,7 @@ const SellersTable = () => {
                           </td>
 
                           <td>{seller.randomId}</td>
+
                           <td>
                             <div className="d-flex align-items-center gap-2">
                               <div className="rounded bg-light d-flex align-items-center justify-content-center">
@@ -235,7 +255,7 @@ const SellersTable = () => {
                             <div className="d-flex gap-2">
                               <Link
                                 onClick={(event) =>
-                                  navigateToViewSeller(event, seller)
+                                  navigateToViewSeller(event, seller.sellerId)
                                 }
                                 className="btn btn-light btn-sm"
                               >
@@ -321,7 +341,7 @@ const SellersTable = () => {
         </div>
       </div>
       {isDeleteDialogOpen && (
-        <ConfirmationDialog
+        <StatusDeleteConfirmDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
           id={selectedSeller.sellerId}

@@ -31,7 +31,6 @@ const TrackOrderHistoryTable = () => {
         Array.isArray(response.data.data)
       ) {
         setOrderDetails(response.data.data);
-        console.log("Order Details in Admin", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -50,10 +49,6 @@ const TrackOrderHistoryTable = () => {
   };
 
   const openUpdateTDSModal = (event, enquiryNumber, quoteNumber, sellerId) => {
-    console.log("enquiryNumber", enquiryNumber);
-    console.log("quoteNumber", quoteNumber);
-    console.log("sellerId", sellerId);
-
     event.preventDefault();
     setSelectedTds({ enquiryNumber, quoteNumber, sellerId });
     setIsModalOpen(true);
@@ -62,16 +57,18 @@ const TrackOrderHistoryTable = () => {
   const closeUpdateTDSModal = () => {
     setIsModalOpen(false);
   };
+
   const navigateToViewOrder = (
     event,
     order,
+    orderNumber,
     enquiryNumber,
     schoolId,
     sellerId
   ) => {
     event.preventDefault();
     navigate(`/admin-dashboard/procurement-services/view-order-history`, {
-      state: { order, enquiryNumber, schoolId, sellerId },
+      state: { order, orderNumber, enquiryNumber, schoolId, sellerId },
     });
   };
 
@@ -209,6 +206,7 @@ const TrackOrderHistoryTable = () => {
                           </div>
                         </th>
                         <th>Order Number</th>
+                        <th>Enquiry Number</th>
                         <th>Name of Supplier</th>
                         <th>Expected Delivery Date</th>
                         <th>Actual Delivery Date</th>
@@ -237,6 +235,7 @@ const TrackOrderHistoryTable = () => {
                             </div>
                           </td>
                           <td>{order.orderNumber}</td>
+                          <td>{order.enquiryNumber}</td>
                           <td>{order.companyName}</td>
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>
@@ -244,9 +243,7 @@ const TrackOrderHistoryTable = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>
-                            {formatCost(order.totalAmountBeforeGstAndDiscount)}
-                          </td>
+                          <td>{formatCost(order.totalAmount)}</td>
                           <td>{order.edprowiseStatus}</td>
                           <td>{order.tDSAmount}</td>
                           <td>
@@ -275,6 +272,7 @@ const TrackOrderHistoryTable = () => {
                                   navigateToViewOrder(
                                     event,
                                     order,
+                                    order.orderNumber,
                                     order.enquiryNumber,
                                     order.schoolId,
                                     order.sellerId

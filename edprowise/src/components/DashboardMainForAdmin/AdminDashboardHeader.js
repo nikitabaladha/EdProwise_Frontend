@@ -64,8 +64,6 @@ const AdminDashboardHeader = () => {
 
       if (!response.hasError && response.data && response.data.data) {
         setAdminProfile(response.data.data);
-
-        console.log("Admin data from heder", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -123,20 +121,49 @@ const AdminDashboardHeader = () => {
                   state: { searchEnquiryNumber: result.text },
                 }
               );
+            } else if (result.type === "orderFromBuyer") {
+              navigate(
+                `/admin-dashboard/procurement-services/view-order-history`,
+                {
+                  state: { searchOrderNumber: result.text },
+                }
+              );
             } else if (result.type === "school") {
-              navigate(`/admin-dashboard/schools/view-school`, {
-                state: {
-                  schoolId: result.schoolId || result.text,
-                  searchQuery: searchQuery,
-                },
-              });
+              if (result.exactMatchForSchoolName) {
+                if (result.isSingleMatch) {
+                  navigate(`/admin-dashboard/schools/view-school`, {
+                    state: { schoolId: result.schoolId || result.text },
+                  });
+                } else {
+                  navigate(`/admin-dashboard/schools`, {
+                    state: { filterSchoolName: result.text },
+                  });
+                }
+              } else {
+                navigate(`/admin-dashboard/schools/view-school`, {
+                  state: { schoolId: result.schoolId || result.text },
+                });
+              }
+            } else if (result.type === "seller") {
+              if (result.exactMatchForCompanyName) {
+                if (result.isSingleMatch) {
+                  navigate(`/admin-dashboard/sellers/view-seller`, {
+                    state: { sellerId: result.sellerId || result.id },
+                  });
+                } else {
+                  navigate(`/admin-dashboard/sellers`, {
+                    state: { filterCompanyName: result.text },
+                  });
+                }
+              } else {
+                navigate(`/admin-dashboard/sellers/view-seller`, {
+                  state: { sellerId: result.sellerId || result.id },
+                });
+              }
             }
           } else {
             setSearchResults([
-              {
-                type: "noResults",
-                text: "No matching records found",
-              },
+              { type: "noResults", text: "No matching records found" },
             ]);
             setShowResults(true);
           }
@@ -144,10 +171,7 @@ const AdminDashboardHeader = () => {
       } catch (err) {
         console.error("Search error:", err);
         setSearchResults([
-          {
-            type: "error",
-            text: "Search failed. Please try again.",
-          },
+          { type: "error", text: "Search failed. Please try again." },
         ]);
         setShowResults(true);
       }
@@ -159,13 +183,30 @@ const AdminDashboardHeader = () => {
       navigate(`/admin-dashboard/procurement-services/view-requested-quote`, {
         state: { searchEnquiryNumber: result.text },
       });
-    } else if (result.type === "school") {
-      navigate(`/admin-dashboard/schools/view-school`, {
-        state: {
-          schoolId: result.schoolId || result.text,
-          searchQuery: searchQuery,
-        },
+    } else if (result.type === "orderFromBuyer") {
+      navigate(`/admin-dashboard/procurement-services/view-order-history`, {
+        state: { searchOrderNumber: result.text },
       });
+    } else if (result.type === "school") {
+      if (result.exactMatchForSchoolName && !result.isSingleMatch) {
+        navigate(`/admin-dashboard/schools`, {
+          state: { filterSchoolName: result.text },
+        });
+      } else {
+        navigate(`/admin-dashboard/schools/view-school`, {
+          state: { schoolId: result.schoolId || result.text },
+        });
+      }
+    } else if (result.type === "seller") {
+      if (result.exactMatchForCompanyName && !result.isSingleMatch) {
+        navigate(`/admin-dashboard/sellers`, {
+          state: { filterCompanyName: result.text },
+        });
+      } else {
+        navigate(`/admin-dashboard/sellers/view-seller`, {
+          state: { sellerId: result.sellerId || result.id },
+        });
+      }
     }
     setShowResults(false);
     setSearchQuery("");
@@ -443,7 +484,7 @@ const AdminDashboardHeader = () => {
                           className="search-result-item"
                           onClick={() => handleResultClick(result)}
                         >
-                          {/* i want to allow schoolName also */}
+                          {/* School*/}
                           {result.type === "school" && (
                             <>
                               <iconify-icon
@@ -452,10 +493,32 @@ const AdminDashboardHeader = () => {
                               />
                               {result.exactMatchForSchoolEmail ? (
                                 <>Email: {result.text}</>
+                              ) : result.exactMatchForSchoolMobileNumber ? (
+                                <>Mobile Number: {result.text}</>
                               ) : result.exactMatchForSchoolId ? (
                                 <>School ID: {result.text}</>
                               ) : result.exactMatchForSchoolName ? (
                                 <>School Name: {result.text}</>
+                              ) : (
+                                <>{result.text}</>
+                              )}
+                            </>
+                          )}
+                          {/* Seller */}
+                          {result.type === "seller" && (
+                            <>
+                              <iconify-icon
+                                icon="solar:school-outline"
+                                className="me-2"
+                              />
+                              {result.exactMatchForSellerEmail ? (
+                                <>Email: {result.text}</>
+                              ) : result.exactMatchForSellerMobileNumber ? (
+                                <>Mobile Number: {result.text}</>
+                              ) : result.exactMatchForCompanyName ? (
+                                <>Comapny Name: {result.text}</>
+                              ) : result.exactMatchForSellerRandomId ? (
+                                <>Random Id: {result.text}</>
                               ) : (
                                 <>{result.text}</>
                               )}

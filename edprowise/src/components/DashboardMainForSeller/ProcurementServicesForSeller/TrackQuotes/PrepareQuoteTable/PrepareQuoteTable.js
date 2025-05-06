@@ -8,7 +8,37 @@ const PrepareQuoteTable = ({
   handleChange,
   handleImageChange,
   handleSubmit,
+  locationData,
+  sending,
 }) => {
+  const shouldShowCGST_SGST = () => {
+    const { schoolState, sellerState, edprowiseState } = locationData;
+
+    if (schoolState === edprowiseState && edprowiseState === sellerState) {
+      return true;
+    } else if (
+      schoolState === edprowiseState &&
+      edprowiseState !== sellerState
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const shouldShowIGST = () => {
+    const { schoolState, sellerState, edprowiseState } = locationData;
+
+    if (schoolState !== edprowiseState && edprowiseState === sellerState) {
+      return true;
+    } else if (
+      schoolState !== edprowiseState &&
+      edprowiseState !== sellerState
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <div className="row p-2">
       <div className="col-md-12">
@@ -33,17 +63,41 @@ const PrepareQuoteTable = ({
               <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
                 <thead className="bg-light-subtle">
                   <tr>
-                    <th>Action</th> 
-                    <th>Sr No. </th> 
-                    <th>Subcategory Name <span className="text-danger">*</span></th>
-                    <th>HSN/SAAC <span className="text-danger">*</span></th>
-                    <th>Listing Rate <span className="text-danger">*</span></th>
-                    <th>EdProwise Margin % <span className="text-danger">*</span></th>
-                    <th>Quantity <span className="text-danger">*</span></th>
-                    <th>Discount % <span className="text-danger">*</span></th>
-                    <th>CGST Rate <span className="text-danger">*</span></th>
-                    <th>SGST Rate <span className="text-danger">*</span></th>
-                    <th>IGST Rate</th>
+                    <th>Action</th>
+                    <th>Sr No. </th>
+                    <th>
+                      Subcategory Name <span className="text-danger">*</span>
+                    </th>
+                    <th>
+                      HSN/SAC <span className="text-danger">*</span>
+                    </th>
+                    <th>
+                      Listing Rate <span className="text-danger">*</span>
+                    </th>
+                    <th>
+                      Edprowise Margin <span className="text-danger">*</span>
+                    </th>
+                    <th>
+                      Quantity <span className="text-danger">*</span>
+                    </th>
+                    <th>
+                      Discount % <span className="text-danger">*</span>
+                    </th>
+                    {shouldShowCGST_SGST() && (
+                      <th>
+                        CGST Rate <span className="text-danger">*</span>
+                      </th>
+                    )}
+                    {shouldShowCGST_SGST() && (
+                      <th>
+                        SGST Rate <span className="text-danger">*</span>
+                      </th>
+                    )}
+                    {shouldShowIGST() && (
+                      <th>
+                        IGST Rate <span className="text-danger">*</span>
+                      </th>
+                    )}
                     <th>Upload Sample Images of Products</th>
                   </tr>
                 </thead>
@@ -69,6 +123,7 @@ const PrepareQuoteTable = ({
                           className="form-control"
                           value={product.subCategoryName || ""}
                           onChange={(e) => handleChange(index, e)}
+                          readOnly
                         />
                       </td>
                       <td>
@@ -95,9 +150,10 @@ const PrepareQuoteTable = ({
                           name="edprowiseMargin"
                           className="form-control"
                           value={product.edprowiseMargin || ""}
-                          onChange={(e) => handleChange(index, e)}
+                          readOnly
                         />
                       </td>
+
                       <td>
                         <input
                           type="number"
@@ -107,7 +163,6 @@ const PrepareQuoteTable = ({
                           onChange={(e) => handleChange(index, e)}
                         />
                       </td>
-
                       <td>
                         <input
                           type="number"
@@ -117,37 +172,42 @@ const PrepareQuoteTable = ({
                           onChange={(e) => handleChange(index, e)}
                         />
                       </td>
-
-                      <td>
-                        <input
-                          type="number"
-                          name="cgstRate"
-                          className="form-control"
-                          value={product.cgstRate || ""}
-                          onChange={(e) => handleChange(index, e)}
-                        />
-                      </td>
-
-                      <td>
-                        <input
-                          type="number"
-                          name="sgstRate"
-                          className="form-control"
-                          value={product.sgstRate || ""}
-                          onChange={(e) => handleChange(index, e)}
-                        />
-                      </td>
-
-                      <td>
-                        <input
-                          type="number"
-                          name="igstRate"
-                          className="form-control"
-                          value={product.igstRate || ""}
-                          onChange={(e) => handleChange(index, e)}
-                        />
-                      </td>
-
+                      {shouldShowCGST_SGST() && (
+                        <td>
+                          <input
+                            type="number"
+                            name="cgstRate"
+                            className="form-control"
+                            value={product.cgstRate || ""}
+                            onChange={(e) => handleChange(index, e)}
+                            required
+                          />
+                        </td>
+                      )}
+                      {shouldShowCGST_SGST() && (
+                        <td>
+                          <input
+                            type="number"
+                            name="sgstRate"
+                            className="form-control"
+                            value={product.sgstRate || ""}
+                            onChange={(e) => handleChange(index, e)}
+                            required
+                          />
+                        </td>
+                      )}
+                      {shouldShowIGST() && (
+                        <td>
+                          <input
+                            type="number"
+                            name="igstRate"
+                            className="form-control"
+                            value={product.igstRate || ""}
+                            onChange={(e) => handleChange(index, e)}
+                            required
+                          />
+                        </td>
+                      )}
                       <td>
                         <input
                           type="file"
@@ -163,9 +223,14 @@ const PrepareQuoteTable = ({
               </table>
             </div>
             <div className="text-end m-2">
-              <button type="submit" className="btn btn-success me-2">
-                Submit
+              <button
+                type="submit"
+                className="btn btn-primary custom-submit-button"
+                disabled={sending}
+              >
+                {sending ? "Submitting..." : "Submit"}
               </button>
+
               <button type="button" className="btn btn-secondary">
                 Cancel
               </button>

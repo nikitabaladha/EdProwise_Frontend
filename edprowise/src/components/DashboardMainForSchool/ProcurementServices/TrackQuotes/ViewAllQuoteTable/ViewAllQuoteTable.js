@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import autoTable from "jspdf-autotable";
+
 import { useLocation } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import ReasonModal from "./ReasonModal";
 import { formatCost } from "../../../../CommonFunction";
+import { RxCross1 } from "react-icons/rx";
 
-import jsPDF from "jspdf";
 import { format } from "date-fns";
 
 const formatDate = (dateString) => {
@@ -21,7 +20,9 @@ const formatDate = (dateString) => {
 
 const ViewAllQuoteTable = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
+  const [searchParams] = useSearchParams();
+  const enquiryNumber =
+    location.state?.enquiryNumber || location.state?.searchEnquiryNumber || searchParams.get('enquiryNumber')
 
   const navigate = useNavigate();
 
@@ -30,7 +31,16 @@ const ViewAllQuoteTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSellerId, setSelectedSellerId] = useState(null);
   const [selectedEnquiryNumber, setSelectedEnquiryNumber] = useState(null);
-
+useEffect(() => {
+    if (searchParams.has('enquiryNumber')) {
+      navigate(location.pathname, { 
+        state: { 
+          enquiryNumber,
+        },
+        replace: true 
+      });
+    }
+  }, []);
   useEffect(() => {
     if (!enquiryNumber) return;
     fetchAllQuoteData();
@@ -39,15 +49,16 @@ const ViewAllQuoteTable = () => {
 
   const fetchAllQuoteData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/submit-quote-by-status/${enquiryNumber}`,
+        `/submit-quote-by-status/${encodedEnquiryNumber}`,
         {},
         true
       );
 
       if (!response.hasError && response.data) {
         setSubmittedQuotes(response.data.data);
-        console.log("Submitted quotes", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -60,8 +71,10 @@ const ViewAllQuoteTable = () => {
     e.preventDefault();
 
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const preparedQuote = await getAPI(
-        `prepare-quote?sellerId=${quote.sellerId}&enquiryNumber=${enquiryNumber}`,
+        `prepare-quote?sellerId=${quote.sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
         {},
         true
       );
@@ -98,18 +111,21 @@ const ViewAllQuoteTable = () => {
 
   const fetchCartData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `cart?enquiryNumber=${enquiryNumber}`,
+        `cart?enquiryNumber=${encodedEnquiryNumber}`,
         {},
         true
       );
 
       if (!response.hasError && response.data.data) {
-        const cartData = response.data.data;
+        const groupedData = response.data.data.groupedData || {};
 
-        const totalCount = Object.keys(cartData).length;
+        // Count the number of company keys in groupedData
+        const companyCount = Object.keys(groupedData).length;
 
-        setCartCount(totalCount);
+        setCartCount(companyCount);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -152,55 +168,44 @@ const ViewAllQuoteTable = () => {
     setIsModalOpen(false);
   };
 
-  const handleExport = () => {};
-
-  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+  const generateQuotePDF = async (enquiryNumber, sellerId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
+    const missingFields = [];
+    if (!sellerId) missingFields.push("Seller ID");
+    if (!enquiryNumber) missingFields.push("Enquiry Number");
+    if (!schoolId) missingFields.push("School ID");
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
 
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      // write your code here
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "quote.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/school-dashboard/procurement-services/quote-proposal`, {
-          state: { prepareQuoteData, quoteProposalData, profileData },
-        });
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch quote data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching quote data");
     }
   };
 
@@ -214,13 +219,6 @@ const ViewAllQuoteTable = () => {
                 <h4 className="card-title flex-grow-1">View All Quote List</h4>
                 <div className="text-end">
                   <Link
-                    onClick={handleExport}
-                    className="btn btn-sm btn-outline-light"
-                  >
-                    Export
-                  </Link>
-
-                  <Link
                     className="btn btn-light btn-sm"
                     onClick={(event) => {
                       if (submittedQuotes.length > 0) {
@@ -229,6 +227,9 @@ const ViewAllQuoteTable = () => {
                         toast.error("No quotes available to view cart.");
                       }
                     }}
+                    title="View Cart"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
                   >
                     <iconify-icon
                       icon="solar:cart-large-minimalistic-broken"
@@ -267,13 +268,12 @@ const ViewAllQuoteTable = () => {
                         <th>Quoted Amount</th>
                         <th>Remarks from Supplier</th>
 
-                        {(submittedQuotes.some(
-                          (quote) => quote.venderStatusFromBuyer === "Pending"
-                        ) ||
-                          submittedQuotes.some(
-                            (quote) =>
-                              quote.venderStatusFromBuyer === "Quote Accepted"
-                          )) && <th>Action</th>}
+                        <th>Status</th>
+
+                        {submittedQuotes.some(
+                          (quote) =>
+                            quote.venderStatusFromBuyer !== "Quote Not Accepted"
+                        ) && <th>Action</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -295,8 +295,54 @@ const ViewAllQuoteTable = () => {
                           <td>{formatCost(quote.quotedAmount)}</td>
                           <td>{quote.remarksFromSupplier || "Not Provided"}</td>
 
+                          <td>{quote.venderStatusFromBuyer}</td>
                           <td>
                             <div className="d-flex gap-2">
+                              {(quote.venderStatusFromBuyer ===
+                                "Order Placed" ||
+                                quote.venderStatusFromBuyer ===
+                                  "Quote Accepted" ||
+                                quote.venderStatusFromBuyer ===
+                                  "Work In Progress" ||
+                                quote.venderStatusFromBuyer ===
+                                  "Ready For Transit" ||
+                                quote.venderStatusFromBuyer === "In-Transit" ||
+                                quote.venderStatusFromBuyer ===
+                                  "Delivered") && (
+                                <>
+                                  <Link
+                                    onClick={(event) =>
+                                      navigateToViewQuote(event, quote)
+                                    }
+                                    title="View Quote"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                    className="btn btn-light btn-sm"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:eye-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </Link>
+                                  <button
+                                    onClick={() =>
+                                      generateQuotePDF(
+                                        quote?.enquiryNumber,
+                                        quote?.sellerId
+                                      )
+                                    }
+                                    className="btn btn-soft-info btn-sm"
+                                    title="Download PDF"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                  >
+                                    <iconify-icon
+                                      icon="solar:download-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </button>
+                                </>
+                              )}
                               {quote.venderStatusFromBuyer === "Pending" && (
                                 <>
                                   <Link
@@ -304,15 +350,18 @@ const ViewAllQuoteTable = () => {
                                       navigateToViewQuote(event, quote)
                                     }
                                     className="btn btn-light btn-sm"
+                                    title="View Quote"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
                                   >
                                     <iconify-icon
                                       icon="solar:eye-broken"
                                       className="align-middle fs-18"
                                     />
                                   </Link>
-                                  <Link
+                                  <button
                                     onClick={() =>
-                                      fetchPrepareQuoteAndProposalData(
+                                      generateQuotePDF(
                                         quote?.enquiryNumber,
                                         quote?.sellerId
                                       )
@@ -326,22 +375,24 @@ const ViewAllQuoteTable = () => {
                                       icon="solar:download-broken"
                                       className="align-middle fs-18"
                                     />
-                                  </Link>
-                                  <Link
-                                    className="btn btn-light btn-sm"
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary custom-submit-button"
                                     onClick={(event) => {
                                       event.preventDefault();
                                       handleSubmit(event, quote);
                                     }}
+                                    title="Add to cart"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
                                   >
-                                    <iconify-icon
-                                      icon="solar:cart-plus-outline"
-                                      className="align-middle fs-18"
-                                    />
-                                  </Link>
-                                  <button
-                                    type="button"
-                                    className="btn btn-primary custom-submit-button"
+                                    Add to cart
+                                  </button>
+
+                                  <Link
+                                    className="btn btn-light btn-sm"
                                     onClick={(event) =>
                                       handleOpenModal(
                                         event,
@@ -349,41 +400,11 @@ const ViewAllQuoteTable = () => {
                                         quote?.sellerId
                                       )
                                     }
-                                  >
-                                    Reject Quote
-                                  </button>
-                                </>
-                              )}
-                              {quote.venderStatusFromBuyer ===
-                                "Quote Accepted" && (
-                                <>
-                                  <Link
-                                    onClick={(event) =>
-                                      navigateToViewQuote(event, quote)
-                                    }
-                                    className="btn btn-light btn-sm"
-                                  >
-                                    <iconify-icon
-                                      icon="solar:eye-broken"
-                                      className="align-middle fs-18"
-                                    />
-                                  </Link>
-                                  <Link
-                                    onClick={() =>
-                                      fetchPrepareQuoteAndProposalData(
-                                        quote?.enquiryNumber,
-                                        quote?.sellerId
-                                      )
-                                    }
-                                    className="btn btn-soft-info btn-sm"
-                                    title="Download PDF"
+                                    title="Reject Quote"
                                     data-bs-toggle="popover"
                                     data-bs-trigger="hover"
                                   >
-                                    <iconify-icon
-                                      icon="solar:download-broken"
-                                      className="align-middle fs-18"
-                                    />
+                                    <RxCross1 className="align-middle fs-18" />
                                   </Link>
                                 </>
                               )}

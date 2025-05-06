@@ -3,6 +3,7 @@ import { RiEmotionHappyLine } from "react-icons/ri";
 import { FaHandsHelping } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa6";
 import { TbReportSearch } from "react-icons/tb";
+import TabsWithContent from "../TabsWithContent";
 const AboutusSection = () => {
   return (
     <>
@@ -11,8 +12,8 @@ const AboutusSection = () => {
         
       >
         <div className="container container-big">
-          <div className="wpo-about-wrap" style={{padding:"0 1.5rem"}}>
-            <div className="row-web align-items-center">
+          <div className="wpo-about-wrap" >
+            <div className="row-web align-items-center" style={{padding:"0 1rem"}}>
               <div className="col-lg-4 col-md-12 col-12" style={{ order: 2 }}>
                 {/* <div className="wpo-about-img" style={{ textAlign: "center" }}>
                   <img
@@ -59,7 +60,7 @@ const AboutusSection = () => {
                 </div>
               </div>
             </div>
-            <div className="wpo-about-text">
+            {/* <div className="wpo-about-text">
               <h3>Digital Services - Advance ERP</h3>
               <p className="about-para-text">
                 Our robust suite of digital services is designed to bring schools into the modern era of education management. We provide custom school applications for principals, teachers, students, and parents, along with professionally designed websites that enhance a school’s digital presence.
@@ -96,7 +97,8 @@ const AboutusSection = () => {
                 At EdProwise, we don’t just offer services—we build long-term partnerships. Our dedicated relationship managers work closely with each school to understand their needs, provide tailored solutions, and ensure a smooth, responsive service experience. Your success is our priority.
               </p>
 
-            </div>        
+            </div>         */}
+            <TabsWithContent/>
           </div>
         </div>
       </section>

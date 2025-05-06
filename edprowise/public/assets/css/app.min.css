@@ -2915,6 +2915,7 @@ progress {
     --bs-table-color-state,
     var(--bs-table-color-type, var(--bs-table-color))
   );
+
   background-color: var(--bs-table-bg);
   border-bottom-width: var(--bs-border-width);
   -webkit-box-shadow: inset 0 0 0 9999px
@@ -16886,6 +16887,7 @@ fieldset:disabled .btn {
   -webkit-box-shadow: none;
   box-shadow: none;
   height: 42px;
+  width: 370px;
 }
 
 .topbar .app-search .search-widget-icon {

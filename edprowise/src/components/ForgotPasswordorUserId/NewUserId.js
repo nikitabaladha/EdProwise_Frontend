@@ -12,13 +12,13 @@ const NewUserId = (e) => {
     const navigate = useNavigate();
 
     const [generalError, setGeneralError] = useState("");
-    
-    const passedUserId = location?.state?.userId || ""; 
 
-    
+    const passedUserId = location?.state?.userId || "";
+
+
     const [formData, setFormData] = useState({ userId: "", confirmUserId: "" });
 
-    
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -37,46 +37,46 @@ const NewUserId = (e) => {
         navigate("/signup");
     };
 
-    
+
     const handleUserIdSubmit = async (e) => {
         e.preventDefault();
         setGeneralError("");
-    
-        if (formData.userId !== formData.confirmUserId) {
-          setGeneralError("UserId do not match.");
-          return;
-        }
-    
-        if (!passedUserId) {
-          setGeneralError("Missing user ID. Please restart the process.");
-          return;
-        }
-    
-        try {
-          const response = await putAPI(
-            "/reset-userid",
-            {
-              userId: passedUserId,
-              NewUserId: formData.userId,
-            },
-            false
-          );
-    
-          if (!response.hasError) {
-            toast.success("UserId updated successfully.");
-            navigate("/login");
-          } else {
-            setGeneralError(response.data.message);
-          }
-        } catch (error) {
-          const errorMsg =
-            error?.response?.data?.message || "Something went wrong.";
-          setGeneralError(errorMsg);
-        }
-      };
-    
 
-    
+        if (formData.userId !== formData.confirmUserId) {
+            setGeneralError("UserId do not match.");
+            return;
+        }
+
+        if (!passedUserId) {
+            setGeneralError("Missing user ID. Please restart the process.");
+            return;
+        }
+
+        try {
+            const response = await putAPI(
+                "/reset-userid",
+                {
+                    userId: passedUserId,
+                    NewUserId: formData.userId,
+                },
+                false
+            );
+
+            if (!response.hasError) {
+                toast.success("UserId updated successfully.");
+                navigate("/login");
+            } else {
+                setGeneralError(response.data.message);
+            }
+        } catch (error) {
+            const errorMsg =
+                error?.response?.data?.message || "Something went wrong.";
+            setGeneralError(errorMsg);
+        }
+    };
+
+
+
     return (
         <>
             <div className="form-body form-left">
@@ -156,7 +156,10 @@ const NewUserId = (e) => {
                                             {generalError}
                                         </div>
                                     )}
-                                    <div className="form-button d-flex">
+                                    <div className="form-button d-flex" style={{
+                                        width: "80%",
+                                        justifySelf: "center",
+                                    }}>
                                         <button
                                             id="submit"
                                             type="submit"

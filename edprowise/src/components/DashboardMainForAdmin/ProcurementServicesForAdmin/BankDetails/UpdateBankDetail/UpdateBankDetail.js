@@ -36,6 +36,8 @@ const UpdateBankDetail = () => {
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -47,6 +49,8 @@ const UpdateBankDetail = () => {
         formDataToSend.append(key, formData[key] || "");
       }
     }
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -72,6 +76,8 @@ const UpdateBankDetail = () => {
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
 
@@ -165,8 +171,9 @@ const UpdateBankDetail = () => {
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={sending}
                   >
-                    Update Bank Detail
+                    {sending ? "Updating..." : "Update Bank Detail"}
                   </button>
                 </div>
               </form>

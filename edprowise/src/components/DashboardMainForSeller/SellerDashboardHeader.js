@@ -23,8 +23,6 @@ const SellerDashboardHeader = () => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSellerProfile(response.data.data);
-
-        console.log("seller data from heder", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -85,6 +83,84 @@ const SellerDashboardHeader = () => {
     navigate("/seller-dashboard/change-seller-password", {
       state: { sellerProfile },
     });
+  };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+
+  const handleSearch = async (event) => {
+    if (event.key === "Enter" || event.type === "click") {
+      event.preventDefault();
+
+      if (!searchQuery.trim()) {
+        setShowResults(false);
+        return;
+      }
+
+      try {
+        const response = await getAPI(
+          `/global-search?query=${encodeURIComponent(searchQuery)}`,
+          {},
+          true
+        );
+
+        if (response.data?.success) {
+          if (response.data.data.length > 0) {
+            const result = response.data.data[0];
+
+            if (result.type === "quoteRequest") {
+              navigate(
+                `/seller-dashboard/procurement-services/view-requested-quote`,
+                {
+                  state: { searchEnquiryNumber: result.text },
+                }
+              );
+            }
+            if (result.type === "orderFromBuyer") {
+              navigate(
+                `/seller-dashboard/procurement-services/view-order-history`,
+                {
+                  state: { searchOrderNumber: result.text },
+                }
+              );
+            }
+          } else {
+            setSearchResults([
+              {
+                type: "noResults",
+                text: "No matching records found",
+              },
+            ]);
+            setShowResults(true);
+          }
+        }
+      } catch (err) {
+        console.error("Search error:", err);
+        setSearchResults([
+          {
+            type: "error",
+            text: "Search failed. Please try again.",
+          },
+        ]);
+        setShowResults(true);
+      }
+    }
+  };
+
+  const handleResultClick = (result) => {
+    if (result.type === "quoteRequest") {
+      navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
+        state: { searchEnquiryNumber: result.text },
+      });
+    }
+    if (result.type === "orderFromBuyer") {
+      navigate(`/seller-dashboard/procurement-services/view-order-history`, {
+        state: { searchOrderNumber: result.text },
+      });
+    }
+    setShowResults(false);
+    setSearchQuery("");
   };
 
   return (
@@ -277,7 +353,7 @@ const SellerDashboardHeader = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* User */}
               <div className="dropdown topbar-item">
                 <Link
@@ -330,7 +406,10 @@ const SellerDashboardHeader = () => {
                 </div>
               </div>
               {/* App Search*/}
-              <form className="app-search d-none d-md-block ms-2">
+              <form
+                className="app-search d-none d-md-block ms-2"
+                onSubmit={(e) => e.preventDefault()}
+              >
                 <div className="position-relative">
                   <input
                     type="search"
@@ -338,11 +417,35 @@ const SellerDashboardHeader = () => {
                     placeholder="Search..."
                     autoComplete="off"
                     defaultValue=""
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearch}
                   />
                   <iconify-icon
                     icon="solar:magnifer-linear"
                     className="search-widget-icon"
+                    onClick={handleSearch}
+                    style={{ cursor: "pointer" }}
                   />
+
+                  {showResults && (
+                    <div className="search-results-dropdown">
+                      {searchResults.map((result) => (
+                        <div
+                          key={`${result.type}-${result.id}`}
+                          className="search-result-item"
+                          onClick={() => handleResultClick(result)}
+                        >
+                          {result.type === "noResults" && (
+                            <span className="text-muted">{result.text}</span>
+                          )}
+                          {result.type === "error" && (
+                            <span className="text-danger">{result.text}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </form>
             </div>

@@ -4,13 +4,14 @@ import getAPI from "../../../../../api/getAPI";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-import QuoteRequestModal from "./QuoteRequestModal";
+import OrderPlaceModal from "./OrderPlaceModal";
+
+import { formatCost } from "../../../../CommonFunction";
+
 const ViewCart = () => {
   const location = useLocation();
   const { enquiryNumber } = location.state || {};
-  const buyerStaus = location?.state?.buyerStatus
-
-  console.log("Buyer status",buyerStaus)
+  const buyerStaus = location?.state?.buyerStatus;
 
   const [carts, setCarts] = useState({});
   const [items, setItems] = useState({});
@@ -22,6 +23,8 @@ const ViewCart = () => {
 
   const [modalEnquiryNumber, setModalEnquiryNumber] = useState(null);
 
+  const [latestDeliveryDate, setLatestDeliveryDate] = useState("");
+
   useEffect(() => {
     if (!enquiryNumber) return;
     fetchCartData();
@@ -29,20 +32,24 @@ const ViewCart = () => {
 
   const fetchCartData = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `cart?enquiryNumber=${enquiryNumber}`,
+        `cart?enquiryNumber=${encodedEnquiryNumber}`,
         {},
         true
       );
 
       if (!response.hasError && response.data.data) {
-        setCarts(response.data.data);
-        console.log("carts", response.data.data);
+        setCarts(response.data.data.groupedData || {});
+        setLatestDeliveryDate(response.data.data.latestDeliveryDate);
       } else {
         console.error("Invalid response format or error in response");
+        setCarts({});
       }
     } catch (err) {
       console.error("Error fetching cart data:", err);
+      setCarts({});
     }
   };
 
@@ -89,8 +96,6 @@ const ViewCart = () => {
   };
 
   const openDeleteDialog = (cart) => {
-    console.log("cartid: ", cart._id);
-
     setSelectedCart({ cart });
     setIsDeleteDialogOpen(true);
     setDeleteType("singleCart");
@@ -102,7 +107,6 @@ const ViewCart = () => {
   };
 
   const handleSingleDeleteConfirmed = (_id) => {
-    console.log("cartid from delete confirmed: " + _id);
     setCarts((prevCarts) => {
       const updatedCarts = { ...prevCarts };
       Object.keys(updatedCarts).forEach((companyName) => {
@@ -117,7 +121,7 @@ const ViewCart = () => {
     });
   };
 
-  const handleOpenQuoteModal = () => {
+  const handleOpenOrderPlaceModal = () => {
     if (!enquiryNumber) {
       console.error("Enquiry number is missing!");
       return;
@@ -126,7 +130,7 @@ const ViewCart = () => {
 
     setIsModalOpen(true);
   };
-  
+
   return (
     <>
       <div className="container">
@@ -134,7 +138,7 @@ const ViewCart = () => {
           <h3 className="card-title flex-grow-1">Cart List</h3>
           <button
             className="btn btn-soft-danger btn-sm d-flex align-items-center gap-2"
-            onClick={handleOpenQuoteModal}
+            onClick={handleOpenOrderPlaceModal}
           >
             <iconify-icon
               icon="solar:cart-check-broken"
@@ -144,7 +148,7 @@ const ViewCart = () => {
           </button>
         </div>
 
-        {Object.keys(carts).length === 0 ? (
+        {carts && Object.keys(carts).length === 0 ? (
           <p>No cart data available.</p>
         ) : (
           Object.entries(carts).map(([companyName, items]) => (
@@ -153,21 +157,24 @@ const ViewCart = () => {
                 <div key={companyName} className="card">
                   <div className="card-header d-flex justify-content-between align-items-center gap-1">
                     <h4 className="card-title flex-grow-1">{companyName}</h4>
-
-                    {(buyerStaus === "Quote Requested" || buyerStaus === "Quote Received") && (
-                    <Link
-                      onClick={(e) => {
-                        e.preventDefault();
-                        openBulkDeleteDialog(enquiryNumber, items[0]?.sellerId);
-                      }}
-                      className="btn btn-soft-danger btn-sm"
-                    >
-                      <iconify-icon
-                        icon="solar:trash-bin-minimalistic-2-broken"
-                        className="align-middle fs-18"
-                      />
-                    </Link>
-                  )}
+                    {(buyerStaus === "Quote Requested" ||
+                      buyerStaus === "Quote Received") && (
+                      <Link
+                        onClick={(e) => {
+                          e.preventDefault();
+                          openBulkDeleteDialog(
+                            enquiryNumber,
+                            items[0]?.sellerId
+                          );
+                        }}
+                        className="btn btn-soft-danger btn-sm"
+                      >
+                        <iconify-icon
+                          icon="solar:trash-bin-minimalistic-2-broken"
+                          className="align-middle fs-18"
+                        />
+                      </Link>
+                    )}
                   </div>
 
                   <div>
@@ -191,18 +198,47 @@ const ViewCart = () => {
                             <th>Sr</th>
                             <th>Product Subcategory</th>
                             <th>HSN/SACC</th>
-                            <th>Listing Rate</th>
+                            {/* <th>Listing Rate</th> */}
                             <th>Quantity</th>
                             <th>Final Rate Before Discount</th>
                             <th>Discount %</th>
                             <th>Final Rate</th>
                             <th>Taxable Value</th>
-                            <th>CGST Rate</th>
-                            <th>CGST Amount</th>
-                            <th>SGST Rate</th>
-                            <th>SGST Amount</th>
-                            <th>IGST Rate</th>
-                            <th>IGST Amount</th>
+                            {items.some((item) => item?.cgstRate !== 0) ? (
+                              <th>CGST Rate</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item?.cgstAmount !== 0) ? (
+                              <th>CGST Amount</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item?.sgstRate !== 0) ? (
+                              <th>SGST Rate</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item?.sgstAmount !== 0) ? (
+                              <th>SGST Amount</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item.igstRate !== 0) ? (
+                              <th>IGST Rate</th>
+                            ) : (
+                              <></>
+                            )}
+
+                            {items.some((item) => item?.igstAmount !== 0) ? (
+                              <th>IGST Amount</th>
+                            ) : (
+                              <></>
+                            )}
                             <th>Amount Before GST & Discount</th>
                             <th>Discount Amount</th>
                             <th>GST Amount</th>
@@ -248,18 +284,41 @@ const ViewCart = () => {
                                 </div>
                               </td>
                               <td>{item.hsnSacc}</td>
-                              <td>{item.listingRate}</td>
+                              {/* <td>{item.listingRate}</td> */}
                               <td>{item.quantity}</td>
                               <td>{item.finalRateBeforeDiscount}</td>
                               <td>{item.discount}</td>
                               <td>{item.finalRate}</td>
                               <td>{item.taxableValue}</td>
-                              <td>{item.cgstRate}</td>
-                              <td>{item.cgstAmount}</td>
-                              <td>{item.sgstRate}</td>
-                              <td>{item.sgstAmount}</td>
-                              <td>{item.igstRate}</td>
-                              <td>{item.igstAmount}</td>
+                              {item?.cgstRate !== 0 ? (
+                                <td>{item?.cgstRate}</td>
+                              ) : null}
+
+                              {item.cgstAmount !== 0 ? (
+                                <td>{formatCost(item.cgstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
+
+                              {item?.sgstRate !== 0 ? (
+                                <td>{item?.sgstRate}</td>
+                              ) : null}
+
+                              {item.sgstAmount !== 0 ? (
+                                <td>{formatCost(item.sgstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
+
+                              {item?.igstRate !== 0 ? (
+                                <td>{item?.igstRate}</td>
+                              ) : null}
+
+                              {item.igstAmount !== 0 ? (
+                                <td>{formatCost(item.igstAmount)}</td>
+                              ) : (
+                                <></>
+                              )}
                               <td>{item.amountBeforeGstAndDiscount}</td>
                               <td>{item.discountAmount}</td>
                               <td>{item.gstAmount}</td>
@@ -313,20 +372,22 @@ const ViewCart = () => {
         />
       )}
 
-      {isDeleteDialogOpen && (
+      {/* {isDeleteDialogOpen && (
         <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType={deleteType}
           id={selectedCart.cart._id}
           onDeleted={handleSingleDeleteConfirmed}
         />
-      )}
+      )} */}
 
       {isModalOpen && (
-        <QuoteRequestModal
+        <OrderPlaceModal
           onClose={handleCloseModal}
           enquiryNumber={modalEnquiryNumber}
           carts={carts}
+          fetchCartData={fetchCartData}
+          latestDeliveryDate={latestDeliveryDate}
         />
       )}
     </>

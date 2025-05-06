@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,7 +22,13 @@ const formatDate = (dateString) => {
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
+const [searchParams] = useSearchParams();
+
+  const enquiryNumber =
+    location.state?.searchEnquiryNumber || location.state?.enquiryNumber || searchParams.get('enquiryNumber')
+
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const sellerId = userDetails?.id;
 
   const navigate = useNavigate();
 
@@ -34,22 +40,33 @@ const ViewRequestedQuote = () => {
     useState(false);
   const [supplierStatus, setSupplierStatus] = useState(null);
 
+   useEffect(() => {
+        if (searchParams.has('enquiryNumber')) {
+          navigate(
+            '/seller-dashboard/procurement-services/view-requested-quote', 
+            { 
+              state: { enquiryNumber },
+              replace: true 
+            }
+          );
+        }
+      }, []);
+
   useEffect(() => {
     if (!enquiryNumber) return;
     const fetchQuoteData = async () => {
       try {
+        const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
         const response = await getAPI(
-          `/get-according-to-category-filter/${enquiryNumber}`,
+          `/get-according-to-category-filter/${encodedEnquiryNumber}`,
           {},
           true
         );
 
         if (!response.hasError && response.data.data.products) {
+          console.log(response.data.data.products);
+          
           setQuote(response.data.data.products);
-          console.log(
-            "product data from function",
-            response.data.data.products
-          );
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -65,10 +82,11 @@ const ViewRequestedQuote = () => {
     const fetchPreparedQuotes = async () => {
       const userDetails = JSON.parse(localStorage.getItem("userDetails"));
       const sellerId = userDetails?.id;
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
 
       try {
         const response = await getAPI(
-          `prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`,
+          `prepare-quote?sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
           {},
           true
         );
@@ -88,6 +106,7 @@ const ViewRequestedQuote = () => {
     quote.map((product) => ({
       srNo: "",
       subCategoryName: "",
+      subCategoryId: "",
       prepareQuoteImage: null,
       hsnSacc: "",
       listingRate: "",
@@ -99,14 +118,6 @@ const ViewRequestedQuote = () => {
       igstRate: "",
     }))
   );
-
-  const handleExport = (event) => {
-    event.preventDefault();
-  };
-
-  const handleDownloadPDF = (event, quote) => {
-    event.preventDefault();
-  };
 
   const handleChange = (index, e) => {
     const { name, value, files, type } = e.target;
@@ -129,34 +140,65 @@ const ViewRequestedQuote = () => {
   };
 
   useEffect(() => {
-    setPrepareProducts(
-      quote.map((_, index) => ({
-        srNo: index + 1,
-        subCategoryName: "",
-        prepareQuoteImage: null,
-        hsnSacc: "",
-        listingRate: "",
-        edprowiseMargin: "",
-        quantity: "",
-        discount: "",
-        cgstRate: "",
-        sgstRate: "",
-        igstRate: "",
-      }))
-    );
+    if (quote.length > 0) {
+      setPrepareProducts(
+        quote.map((product, index) => ({
+          srNo: index + 1,
+          subCategoryName: product.subCategoryName || "",
+          subCategoryId: product.subCategoryId || "",
+          prepareQuoteImage: null,
+          hsnSacc: "",
+          listingRate: "",
+          edprowiseMargin: product.edprowiseMargin || "",
+          quantity: product.quantity || "",
+          discount: "",
+          cgstRate: "",
+          sgstRate: "",
+          igstRate: "",
+        }))
+      );
+    }
   }, [quote]);
 
   const handleAddProduct = () => {
+    const allSubCategories = quote.map((product) => product.subCategoryName);
+    const allMargins = quote.map((product) => product.edprowiseMargin);
+    const allSubCategoryIds = quote.map((product) => product.subCategoryId);
+    const allQuantities = quote.map((product) => product.quantity);
+
+    const usedSubCategories = prepareProducts.map(
+      (product) => product.subCategoryName
+    );
+
+    const availableSubCategory = allSubCategories.find(
+      (name) => !usedSubCategories.includes(name)
+    );
+
+    const availableMargin =
+      allMargins[allSubCategories.indexOf(availableSubCategory)];
+
+    const availableQuantity =
+      allQuantities[allSubCategories.indexOf(availableSubCategory)];
+
+    const availableSubCategoryId =
+      allSubCategoryIds[allSubCategories.indexOf(availableSubCategory)];
+
+    if (!availableSubCategory) {
+      toast.warning("All available products have been added");
+      return;
+    }
+
     setPrepareProducts((prev) => [
       ...prev,
       {
         srNo: prev.length + 1,
-        subCategoryName: "",
+        subCategoryName: availableSubCategory || "",
+        subCategoryId: availableSubCategoryId || "",
         prepareQuoteImage: null,
         hsnSacc: "",
         listingRate: "",
-        edprowiseMargin: "",
-        quantity: "",
+        edprowiseMargin: availableMargin || "",
+        quantity: availableQuantity || "",
         discount: "",
         cgstRate: "",
         sgstRate: "",
@@ -167,14 +209,19 @@ const ViewRequestedQuote = () => {
 
   const handleRemoveProduct = (index) => {
     const updatedProducts = prepareProducts.filter((_, i) => i !== index);
-    setPrepareProducts(updatedProducts);
+    // Update serial numbers after removal
+    const productsWithUpdatedSrNo = updatedProducts.map((product, idx) => ({
+      ...product,
+      srNo: idx + 1,
+    }));
+    setPrepareProducts(productsWithUpdatedSrNo);
   };
 
-  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-  const sellerId = userDetails?.id;
+  const [sending, setSending] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSending(true);
 
     const formData = new FormData();
     formData.append("enquiryNumber", enquiryNumber);
@@ -184,6 +231,7 @@ const ViewRequestedQuote = () => {
     prepareProducts.forEach((product, index) => {
       const productData = {
         subcategoryName: product.subCategoryName,
+        subCategoryId: product.subCategoryId,
         hsnSacc: product.hsnSacc,
         listingRate: product.listingRate,
         edprowiseMargin: product.edprowiseMargin,
@@ -205,10 +253,6 @@ const ViewRequestedQuote = () => {
     });
 
     formData.append("products", JSON.stringify(products));
-
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
 
     try {
       const response = await postAPI(
@@ -235,6 +279,8 @@ const ViewRequestedQuote = () => {
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -245,8 +291,9 @@ const ViewRequestedQuote = () => {
 
   const fetchQuoteProposal = async () => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        `/quote-proposal?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
         {},
         true
       );
@@ -260,6 +307,43 @@ const ViewRequestedQuote = () => {
       }
     } catch (err) {
       console.error("Error fetching quote proposal:", err);
+    }
+  };
+
+  const [locationData, setLocationData] = useState({
+    schoolState: null,
+    sellerState: null,
+    edprowiseState: null,
+  });
+
+  const fetchLocationData = async () => {
+    try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+      const response = await getAPI(
+        `/get-location?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
+        {},
+        true
+      );
+      if (!response.hasError && response.data) {
+        setLocationData({
+          schoolState: response.data.data.schoolState,
+          sellerState: response.data.data.sellerState,
+          edprowiseState: response.data.data.edprowiseState,
+        });
+
+        console.log(
+          "schoolState",
+          response.data.data.schoolState,
+          "sellerState",
+          response.data.data.sellerState,
+          "edprowiseState",
+          response.data.data.edprowiseState
+        );
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Location:", err);
     }
   };
 
@@ -372,11 +456,13 @@ const ViewRequestedQuote = () => {
                     <button
                       type="button"
                       className="btn btn-primary custom-submit-button"
-                      onClick={() =>
-                        setIsPrepareQuoteTableVisible(
-                          !isPrepareQuoteTableVisible
-                        )
-                      }
+                      onClick={() => {
+                        fetchLocationData().then(() => {
+                          setIsPrepareQuoteTableVisible(
+                            !isPrepareQuoteTableVisible
+                          );
+                        });
+                      }}
                     >
                       {isPrepareQuoteTableVisible
                         ? "Hide Quote"
@@ -412,6 +498,8 @@ const ViewRequestedQuote = () => {
           handleChange={handleChange}
           handleImageChange={handleImageChange}
           handleSubmit={handleSubmit}
+          locationData={locationData}
+          sending={sending}
         />
       )}
 

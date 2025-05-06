@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import getAPI from "../../../../api/getAPI";
 
 import { format } from "date-fns";
 import { formatCost } from "../../../CommonFunction";
-
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -13,6 +14,8 @@ const formatDate = (dateString) => {
 
 const SchoolDashboardRecentOrders = () => {
   const [orderDetails, setOrderDetails] = useState([]);
+
+  const navigate = useNavigate();
 
   const fetchOrderData = async () => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -35,8 +38,6 @@ const SchoolDashboardRecentOrders = () => {
         Array.isArray(response.data.data)
       ) {
         setOrderDetails(response.data.data);
-
-        console.log("Order Details", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -48,6 +49,11 @@ const SchoolDashboardRecentOrders = () => {
   useEffect(() => {
     fetchOrderData();
   }, []);
+
+  const navigateToRequestQuote = (event) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/procurement-services/request-quote`);
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolsPerPage] = useState(10);
@@ -91,6 +97,12 @@ const SchoolDashboardRecentOrders = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">View All Orders List</h4>
+                <Link
+                  onClick={(event) => navigateToRequestQuote(event)}
+                  className="btn btn-sm btn-primary"
+                >
+                  Request Quote
+                </Link>
               </div>
               <div>
                 <div className="table-responsive">
@@ -111,6 +123,7 @@ const SchoolDashboardRecentOrders = () => {
                           </div>
                         </th>
                         <th>Order Number</th>
+                        <th>Enquiry Number</th>
                         <th>Name of Supplier</th>
                         <th>Expected Delivery Date</th>
                         <th>Actual Delivery Date</th>
@@ -138,6 +151,7 @@ const SchoolDashboardRecentOrders = () => {
                             </div>
                           </td>
                           <td>{order.orderNumber}</td>
+                          <td>{order.enquiryNumber}</td>
                           <td>{order.companyName}</td>
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>
@@ -145,7 +159,9 @@ const SchoolDashboardRecentOrders = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>{formatCost(order.totalAmountBeforeGstAndDiscount)}</td>
+                          <td>
+                            {formatCost(order.totalAmountBeforeGstAndDiscount)}
+                          </td>
                           <td>{formatCost(order.advanceAdjustment)}</td>
                           <td>{order.buyerStatus}</td>
                         </tr>

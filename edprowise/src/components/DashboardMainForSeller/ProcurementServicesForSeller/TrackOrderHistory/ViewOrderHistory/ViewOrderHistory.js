@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
@@ -16,11 +16,9 @@ const formatDate = (dateString) => {
 
 const ViewOrderHistory = () => {
   const location = useLocation();
-  const order = location.state?.order;
-  const orderNumber = order.orderNumber;
-  const sellerId = order.sellerId;
-
-  const enquiryNumber = location.state?.enquiryNumber;
+  const [searchParams] = useSearchParams();
+  const orderNumber =
+    location.state?.orderNumber || location.state?.searchOrderNumber || searchParams.get('orderNumber');
 
   const navigate = useNavigate();
 
@@ -28,27 +26,60 @@ const ViewOrderHistory = () => {
     navigate("/seller-dashboard/procurement-services/pay-to-edprowise");
   };
 
+  useEffect(() => {
+        if (searchParams.has('orderNumber')) {
+          navigate(location.pathname, { 
+            state: { 
+              orderNumber,
+            },
+            replace: true 
+          });
+        }
+      }, []);
   const [quote, setQuote] = useState([]);
   const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
+  const [order, setOrderDetails] = useState([]);
+  const [sellerId, setSellerId] = useState("");
+  const [enquiryNumber, setEnquiryNumber] = useState("");
+
+  const fetchOrderData = async () => {
+    try {
+      const response = await getAPI(
+        `/order-details-by-orderNumber/${orderNumber}`,
+        {},
+        true
+      );
+      if (!response.hasError && response.data.data) {
+        setOrderDetails(response.data.data);
+        setSellerId(response.data.data.sellerId);
+        setEnquiryNumber(response.data.data.enquiryNumber);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Order details:", err);
+    }
+  };
+
   useEffect(() => {
-    if (!enquiryNumber) return;
+    fetchOrderData();
+  }, []);
+
+  useEffect(() => {
     const fetchQuoteData = async () => {
       try {
+        const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
         const response = await getAPI(
-          `/get-according-to-category-filter/${enquiryNumber}`,
+          `/get-according-to-category-filter/${encodedEnquiryNumber}`,
           {},
           true
         );
 
         if (!response.hasError && response.data.data.products) {
           setQuote(response.data.data.products);
-          console.log(
-            "product data from function",
-            response.data.data.products
-          );
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -70,10 +101,6 @@ const ViewOrderHistory = () => {
 
       if (!response.hasError && response.data.data) {
         setOrders(response.data.data);
-        console.log(
-          "order data from function from school order history",
-          response.data.data
-        );
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -90,10 +117,6 @@ const ViewOrderHistory = () => {
     setSelectedImage(imageUrl);
     setShowModal(true);
   };
-
-  if (!order) {
-    return <div>No order details available.</div>;
-  }
 
   return (
     <>
@@ -160,26 +183,6 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="advanceAdjustment" className="form-label">
-                        Advance Adjustment
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order.advanceAdjustment)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order.otherCharges)}
-                      </p>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="container">
@@ -196,7 +199,7 @@ const ViewOrderHistory = () => {
                         Taxable Value
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalTaxableValue)}
+                        {formatCost(order?.totalTaxableValue)}
                       </p>
                     </div>
                   </div>
@@ -206,7 +209,7 @@ const ViewOrderHistory = () => {
                         GST Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalGstAmount)}
+                        {formatCost(order?.totalGstAmount)}
                       </p>
                     </div>
                   </div>
@@ -219,23 +222,44 @@ const ViewOrderHistory = () => {
                         Total Invoice Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalAmount)}
+                        {formatCost(order?.totalAmount)}
                       </p>
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="tdsValue" className="form-label">
-                        TDS Value
+                        TDS Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.tdsValue)}
+                        {formatCost(order?.tdsValue)}
                       </p>
                     </div>
                   </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="advanceAdjustment" className="form-label">
+                        Advance Adjustment
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.advanceAdjustment)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="otherCharges" className="form-label">
+                        Other Charges
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.otherCharges)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
@@ -245,11 +269,12 @@ const ViewOrderHistory = () => {
                         Balance Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.finalPayableAmountWithTDS)}
+                        {formatCost(order?.finalPayableAmountWithTDS)}
                       </p>
                     </div>
                   </div>
                 </div>
+
                 <div className="container">
                   <div className="card-header mb-2">
                     <h4 className="card-title text-center custom-heading-font">
@@ -261,20 +286,20 @@ const ViewOrderHistory = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="taxableValue" className="form-label">
-                        Taxable Value For EdProwise
+                        Taxable Value
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalTaxableValueForEdprowise)}
+                        {formatCost(order?.totalTaxableValueForEdprowise)}
                       </p>
                     </div>
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="gstAmount" className="form-label">
-                        GST Amount For EdProwise
+                        GST Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalGstAmountForEdprowise)}
+                        {formatCost(order?.totalGstAmountForEdprowise)}
                       </p>
                     </div>
                   </div>
@@ -284,10 +309,10 @@ const ViewOrderHistory = () => {
                         htmlFor="totalInvoiceAmount"
                         className="form-label"
                       >
-                        Total Invoice Amount For EdProwise
+                        Total Invoice Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.totalAmountForEdprowise)}
+                        {formatCost(order?.totalAmountForEdprowise)}
                       </p>
                     </div>
                   </div>
@@ -299,24 +324,46 @@ const ViewOrderHistory = () => {
                         htmlFor="tdsValueForEdprowise"
                         className="form-label"
                       >
-                        TDS Value For EdProwise
+                        TDS Amount
                       </label>
                       <p className="form-control">
-                        {formatCost(order.tdsValueForEdprowise)}
+                        {formatCost(order?.tdsValueForEdprowise)}
                       </p>
                     </div>
                   </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="advanceAdjustment" className="form-label">
+                        Advance Adjustment
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.advanceAdjustment)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="otherCharges" className="form-label">
+                        Other Charges
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.otherCharges)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
                         htmlFor="finalPayableAmountWithTDS"
                         className="form-label"
                       >
-                        Final Payable Amount For EdProwise
+                        Balance Amount
                       </label>
                       <p className="form-control">
                         {formatCost(
-                          order.finalPayableAmountWithTDSForEdprowise
+                          order?.finalPayableAmountWithTDSForEdprowise
                         )}
                       </p>
                     </div>

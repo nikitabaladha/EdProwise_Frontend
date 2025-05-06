@@ -100,6 +100,26 @@ Version:        1.0.0
 
 /* Nikita Css Starts */
 /* Tabs.css */
+/* Target the placeholder */
+.custom-react-select .react-select__placeholder {
+  font-size: 0.875rem !important;
+}
+
+/* Target the control (main container) */
+.custom-react-select .react-select__control {
+  font-size: 0.875rem !important;
+  min-height: 38px !important;
+}
+
+/* Target the dropdown menu */
+.custom-react-select .react-select__menu {
+  font-size: 0.875rem !important;
+}
+
+/* Target the dropdown options */
+.custom-react-select .react-select__option {
+  font-size: 0.875rem !important;
+}
 
 .tabs-container {
   padding: 20px;
@@ -110,41 +130,72 @@ Version:        1.0.0
 .tab-buttons-scroll {
   display: flex;
   gap: 10px;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow-x: auto;
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   position: relative;
   z-index: 2;
 }
 
+.tab-buttons-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 .tab-button {
   flex: 0 0 auto;
-  padding: 12px 24px;
-  background-color: #cddbf6;
+  padding: 10px 15px;
   border: 1px solid #cddbf6;
-  border-bottom: none;
   color: #000;
-  font-weight: 500;
-  border-radius: 6px 6px 0 0;
+  font-weight: bold;
+  border-radius: 6px;
   cursor: pointer;
+  white-space: nowrap; 
+  font-size: 14px; 
   transition: background-color 0.3s ease;
 }
 
+@media (min-width: 768px) {
+  .tab-button {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+  .tab-buttons-scroll {
+    justify-content: center; 
+    flex-wrap: wrap; 
+    overflow-x: visible;
+  }
+}
 .tab-button.active {
   background-color: #f7f7fc;
-  font-weight: 600;
   z-index: 4;
+  border-radius: 6px 6px 0 0;
+  border-bottom: none;
   margin-bottom: -1px;
 }
 
 .tab-content-box {
-  background-color: #f7f7fc;
-  border: 1px solid #cddbf6;
-  padding: 20px;
-  border-radius: 0 0 6px 6px;
+  /* background-color: #f7f7fc; */
+  border: 1px solid white;
+  padding: 20px 20px 0 20px;
+  border-radius: 6px;
   margin-top: 0;
   position: relative;
   z-index: 1;
-  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.5s ease-in-out, opacity 0.4s ease-in-out, transform 0.5s ease;
+}
+
+.tab-content-box > * {
+  transition: transform 0.3s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .tab-content-box {
+    padding: 20px 20px 0 20px;
+  }
 }
 
 .tab-content-inner {

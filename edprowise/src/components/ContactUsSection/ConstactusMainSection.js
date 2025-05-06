@@ -2,11 +2,13 @@ import React, { useState } from "react";
 // import { toast } from "react-toastify"; // Import toastify
 import { toast } from "react-toastify";
 import postAPI from "../../api/postAPI";
+import Select from "react-select";
+
 const ConstactusMainSection = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    query:"",
+    query: "",
     phone: "",
     service: "",
     note: "",
@@ -31,20 +33,20 @@ const ConstactusMainSection = () => {
       toast.error("Phone number must be exactly 10 digits.");
       return;
     }
-    
+
     // Send the form data to the backend API
     try {
-      const response = await postAPI("/contactus", 
-        formData,{
-          "Content-Type": "application/json",
-          },
-    true);
+      const response = await postAPI("/contactus",
+        formData, {
+        "Content-Type": "application/json",
+      },
+        true);
 
 
       if (!response.hasError) {
         toast.success("Thank you! Your message has been sent.");
-        setFormData({ name: "", email: "",query:"", phone: "", service: "", note: "" }); 
-        
+        setFormData({ name: "", email: "", query: "", phone: "", service: "", note: "" });
+
       } else {
         toast.error(response.message || "Error occurred while sending message. Please try again later.");
       }
@@ -54,6 +56,34 @@ const ConstactusMainSection = () => {
     }
   };
 
+  const serviceOptions = [
+  "General Inquiry",
+  "Pricing Information",
+  "Complaint or Service Issue",
+  "Feedback or Suggestions",
+  "Billing & Payment Query",
+  "Investor Relations",
+  "Vendor Registration / Partnership",
+  "Customized Services Request",
+  "Fees Management Software",
+  "Payroll Management Assistance",
+  "Financial Management Software Support",
+  "School Operational Management Software",
+  "School Admission Management Solutions",
+  "Digital Exam Result System",
+  "Library Management System Inquiry",
+  "Entrance Exam Management Inquiry",
+  "SMS/WhatsApp Communication Services",
+  "Online Payment Integration Support",
+  "School App Services",
+  "Website Design Services",
+  "PF & ESI Consultancy Services",
+  "Tour Management Services",
+  "Affiliation Support",
+  "Procurement Services Inquiry",
+  "Recruitment Services for Schools",
+  "Technical Support / Issue"
+];
   return (
     <>
       <section className="wpo-contact-pg-section section-padding">
@@ -170,15 +200,18 @@ const ConstactusMainSection = () => {
                       <option value=""> 
                         Subject*
                       </option>
-                      <option value="Web Development">Web Development</option>
-                      <option value="Web Design">Web Design</option>
-                      <option value="Marketing">Marketing</option>
+                      {serviceOptions.map((option, index) => (
+                      <option key={index} value={option.replace(/\s+/g, '-').toLowerCase()}>
+                        {option}
+                      </option>
+                    ))}
                     </select>
+
                   </div>
                   <div className="fullwidth">
                     <textarea
                       className="form-control"
-                      style={{border:"1px soild black !important"}}
+                      style={{ border: "1px soild black !important" }}
                       name="note"
                       value={formData.note}
                       onChange={handleChange}

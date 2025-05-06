@@ -12,7 +12,7 @@ async function getAPI(
       accessToken = JSON.parse(localStorage.getItem("accessToken"));
     }
 
-    const requestConfig = {
+    let requestConfig = {
       headers: {
         access_token: accessToken,
       },
@@ -22,6 +22,8 @@ async function getAPI(
     if (includeParams && config.params) {
       requestConfig.params = config.params; // Only add params if includeParams is true and params are provided
     }
+
+    if (config.responseType) requestConfig.responseType = config.responseType;
 
     const response = await axiosInstance.get(url, requestConfig);
 

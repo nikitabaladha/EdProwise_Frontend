@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../export-excel";
 import getAPI from "../../../../api/getAPI";
 import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 const TrackQuoteTable = ({}) => {
   const [quotes, setQuotes] = useState([]);
@@ -23,8 +24,6 @@ const TrackQuoteTable = ({}) => {
           Array.isArray(response.data.data)
         ) {
           setQuotes(response.data.data);
-
-          console.log("setQuotes", response.data.data);
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -51,8 +50,10 @@ const TrackQuoteTable = ({}) => {
 
   const fetchQuoteProposal = async (enquiryNumber) => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        `/quote-proposal?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
         {},
         true
       );
@@ -62,8 +63,6 @@ const TrackQuoteTable = ({}) => {
           ...prev,
           [enquiryNumber]: response.data.data,
         }));
-
-        console.log("setPreparedQuotes", setPreparedQuotes);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -117,53 +116,44 @@ const TrackQuoteTable = ({}) => {
     exportToExcel(filteredData, "Requested Quotes", "Requested_Quotes");
   };
 
-  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, schoolId) => {
+  const generateQuotePDF = async (enquiryNumber, schoolId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const sellerId = userDetails?.id;
 
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
+    const missingFields = [];
+    if (!sellerId) missingFields.push("Seller ID");
+    if (!enquiryNumber) missingFields.push("Enquiry Number");
+    if (!schoolId) missingFields.push("School ID");
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
 
+    const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const response = await getAPI(
+        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      // write your code here
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "quote.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/seller-dashboard/procurement-services/quote-proposal`, {
-          state: { prepareQuoteData, quoteProposalData, profileData },
-        });
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch quote data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching quote data");
     }
   };
 
@@ -302,6 +292,7 @@ const TrackQuoteTable = ({}) => {
                                     .supplierStatus
                                 : "Quote Requested"}
                             </td>
+
                             <td>
                               <div className="d-flex gap-2">
                                 <Link
@@ -324,9 +315,9 @@ const TrackQuoteTable = ({}) => {
                                 </Link>
 
                                 {preparedQuotes[quote.enquiryNumber] ? (
-                                  <Link
+                                  <button
                                     onClick={() =>
-                                      fetchPrepareQuoteAndProposalData(
+                                      generateQuotePDF(
                                         quote.enquiryNumber,
                                         quote.schoolId
                                       )
@@ -340,7 +331,7 @@ const TrackQuoteTable = ({}) => {
                                       icon="solar:download-broken"
                                       className="align-middle fs-18"
                                     />
-                                  </Link>
+                                  </button>
                                 ) : null}
 
                                 {preparedQuotes[quote.enquiryNumber] ? null : (

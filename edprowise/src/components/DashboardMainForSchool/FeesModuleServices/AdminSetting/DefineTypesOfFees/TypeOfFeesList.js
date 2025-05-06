@@ -1,225 +1,221 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
+import getAPI from "../../../../../api/getAPI";
+import { toast } from "react-toastify";
 
 const TypeOfFeesList = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [requests, setRequests] = useState([]);  // State to hold the fetched data
-    const [currentPage, setCurrentPage] = useState(1);
-    const [requestPerPage] = useState(5);
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [deleteType, setDeleteType] = useState("");
-    const [selectedRequest, setSelectedRequest] = useState(null);
+  const [feesTypes, setFeesTypes] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [requestPerPage] = useState(5);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [deleteType, setDeleteType] = useState("feesType");
 
-    // Fetch the requests for demo on component mount
-    useEffect(() => {
-        const fetchRequests = async () => {
-            try {
-                const response = await fetch("http://localhost:3001/api/get-contactus");
-                const data = await response.json();
+  useEffect(() => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const schoolId = userDetails?.schoolId;
 
-                // Check if the data has the expected format
-                if (!data.hasError && Array.isArray(data.data)) {
-                    setRequests(data.data);  // Store the fetched demo requests in the state
-                } else {
-                    console.error("Error in fetching data:", data.message);
-                }
-            } catch (error) {
-                console.error("Error fetching requests:", error);
-            }
-        };
-        fetchRequests();
-    }, []);
-
-    // Pagination logic
-    const indexOfLastRequest = currentPage * requestPerPage;
-    const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
-    const currentRequests = requests.slice(indexOfFirstRequest, indexOfLastRequest);
-
-    const totalPages = Math.ceil(requests.length / requestPerPage);
-
-    const handleNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-    };
-
-    const handlePreviousPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
-    };
-
-    const handlePageClick = (page) => {
-        setCurrentPage(page);
-    };
-
-    const pageRange = 1;
-    const startPage = Math.max(1, currentPage - pageRange);
-    const endPage = Math.min(totalPages, currentPage + pageRange);
-
-    const pagesToShow = Array.from(
-        { length: endPage - startPage + 1 },
-        (_, index) => startPage + index
-    );
-
-    const openDeleteDialog = (request) => {
-        setSelectedRequest(request);
-        setIsDeleteDialogOpen(true);
-        setDeleteType("enquiry");
-    };
-
-    const handleDeleteCancel = () => {
-        setIsDeleteDialogOpen(false);
-    };
-    const handleDeleteConfirmed = (_id) => {
-        setRequests((prevRequests) =>
-            prevRequests.filter((request) => request._id !== _id)
-        );
-    };
-    const navigateToViewRequestInfo = (event, request) => {
-        event.preventDefault();
-        navigate(`/school-dashboard/enquiry/enquity-details`, {
-            state: { request }, // Pass student data through state
-        });
-    };
-    // fees-module/admin-setting/class-section/create-class-section
-
-    const navigateToAddNewTypeOfFees = (event) => {
-        event.preventDefault();
-        navigate(`/school-dashboard/fees-module/admin-setting/fees-type-list/add-fees-type`);
+    if (!schoolId) {
+      toast.error("School ID not found. Please log in again.");
+      return;
     }
 
-    return (
-        <>
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-xl-12">
-                        <div className="card">
-                            <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                                <h4 className="card-title flex-grow-1">List Of Fees</h4>
-                                <Link
-                                    onClick={(event) => navigateToAddNewTypeOfFees(event)}
-                                    className="btn btn-sm btn-primary"
-                                >
-                                    Add Type Of Fees
-                                </Link>
+    const fetchFeesTypes = async () => {
+      try {
+        const data = await getAPI(`/getall-fess-type/${schoolId}`);
 
-                                <div className="text-end">
-                                    <Link className="btn btn-sm btn-outline-light">
-                                        Export
-                                    </Link>
-                                </div>
-                            </div>
+        if (!data.hasError && Array.isArray(data.data.data)) {
+          setFeesTypes(data.data.data);
+        } else {
+          console.error("Error fetching data:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching fees types:", error);
+      }
+    };
 
-                            <div className="table-responsive">
-                                <table className="table align-middle mb-0 table-hover table-centered text-center">
-                                    <thead className="bg-light-subtle">
-                                        <tr>
-                                            <th style={{ width: 20 }}>
-                                                <div className="form-check ms-1">
-                                                    <input type="checkbox" className="form-check-input" id="customCheck1" />
-                                                    <label className="form-check-label" htmlFor="customCheck1" />
-                                                </div>
-                                            </th>
-                                            <th>Type Of Fees</th>
-                                            {/* <th>Section</th> */}
+    fetchFeesTypes();
+  }, []);
 
-                                            <th className="text-start">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentRequests.map((request, index) => (
-                                            <tr key={index}>
-                                                <td>
-                                                    <div className="form-check ms-1">
-                                                        <input type="checkbox" className="form-check-input" id="customCheck2" />
-                                                        <label className="form-check-label" htmlFor="customCheck2">&nbsp;</label>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <ul className="list-unstyled" >
-                                                        {/* {request.selectedServices.map((service, index) => (
-                                                            <li key={index}>{service}</li>
-                                                        ))} */}
-                                                        <li>Tusion Fees</li>
-                                                        <li>Composite Fee</li>
-                                                    </ul>
-                                                </td>
+  const indexOfLast = currentPage * requestPerPage;
+  const indexOfFirst = indexOfLast - requestPerPage;
+  const currentFees = feesTypes.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(feesTypes.length / requestPerPage);
 
-                                                {/* <td>
-                                                    Section A
-                                                    {request.note.length > 20 ? `${request.note.slice(0, 20)}...` : request.note}
-                                                </td> */}
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
 
-                                                <td>
-                                                    <div className="d-flex gap-2">
-                                                        <Link
-                                                            onClick={(event) => navigateToViewRequestInfo(event, request)}
-                                                            className="btn btn-light btn-sm"
-                                                        >
-                                                            <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
-                                                        </Link>
-                                                        <Link
-                                                            className="btn btn-soft-primary btn-sm"
-                                                        >
-                                                            <iconify-icon
-                                                                icon="solar:pen-2-broken"
-                                                                className="align-middle fs-18"
-                                                            />
-                                                        </Link>
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
 
-                                                        <Link
-                                                            onClick={(e) => { e.preventDefault(); openDeleteDialog(request); }}
-                                                            className="btn btn-soft-danger btn-sm"
-                                                        >
-                                                            <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
-                                                        </Link>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
 
-                            <div className="card-footer border-top">
-                                <nav aria-label="Page navigation example">
-                                    <ul className="pagination justify-content-end mb-0">
-                                        <li className="page-item">
-                                            <button className="page-link" onClick={handlePreviousPage} disabled={currentPage === 1}>
-                                                Previous
-                                            </button>
-                                        </li>
-                                        {pagesToShow.map((page) => (
-                                            <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
-                                                <button
-                                                    className={`page-link pagination-button ${currentPage === page ? "active" : ""}`}
-                                                    onClick={() => handlePageClick(page)}
-                                                >
-                                                    {page}
-                                                </button>
-                                            </li>
-                                        ))}
-                                        <li className="page-item">
-                                            <button className="page-link" onClick={handleNextPage} disabled={currentPage === totalPages}>
-                                                Next
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
+  const openDeleteDialog = (request) => {
+    setSelectedRequest(request);
+    setIsDeleteDialogOpen(true);
+    setDeleteType("feesType");
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+  };
+  const handleDeleteConfirmed = (_id) => {
+    setFeesTypes((prevRequests) =>
+      prevRequests.filter((request) => request._id !== _id)
+    );
+  };
+
+  const navigateToAddNewTypeOfFees = () => {
+    navigate(
+      "/school-dashboard/fees-module/admin-setting/fees-type-list/add-fees-type"
+    );
+  };
+
+  const pageRange = 1;
+  const startPage = Math.max(1, currentPage - pageRange);
+  const endPage = Math.min(totalPages, currentPage + pageRange);
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
+
+  return (
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-xl-12">
+            <div className="card">
+              <div className="card-header d-flex justify-content-between align-items-center gap-1">
+                <h4 className="card-title flex-grow-1">List Of Fees</h4>
+                <button
+                  onClick={navigateToAddNewTypeOfFees}
+                  className="btn btn-sm btn-primary"
+                >
+                  Add Type Of Fees
+                </button>
+                <div className="text-end">
+                  <button className="btn btn-sm btn-outline-light">
+                    Export
+                  </button>
                 </div>
+              </div>
+
+              <div className="table-responsive">
+                <table className="table align-middle mb-0 table-hover table-centered text-center">
+                  <thead className="bg-light-subtle">
+                    <tr>
+                      <th>#</th>
+                      <th>Type Of Fees</th>
+                      <th className="text-start">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentFees.length === 0 ? (
+                      <tr>
+                        <td colSpan="3">No fees types found.</td>
+                      </tr>
+                    ) : (
+                      currentFees.map((feetype, index) => (
+                        <tr key={index}>
+                          <td>{indexOfFirst + index + 1}</td>
+                          <td>{feetype.feesTypeName}</td>
+                          <td>
+                            <div className="d-flex gap-2">
+                              <button
+                                className="btn btn-soft-primary btn-sm"
+                                onClick={() =>
+                                  navigate(
+                                    "/school-dashboard/fees-module/admin-setting/fees-type-list/update-fees-type",
+                                    {
+                                      state: { feetype },
+                                    }
+                                  )
+                                }
+                              >
+                                <iconify-icon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </button>
+                              <button
+                                onClick={() => openDeleteDialog(feetype)}
+                                className="btn btn-soft-danger btn-sm"
+                              >
+                                <iconify-icon
+                                  icon="solar:trash-bin-minimalistic-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="card-footer border-top">
+                <nav aria-label="Page navigation">
+                  <ul className="pagination justify-content-end mb-0">
+                    <li className="page-item">
+                      <button
+                        className="page-link"
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
+                      >
+                        Previous
+                      </button>
+                    </li>
+                    {pagesToShow.map((page) => (
+                      <li
+                        key={page}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
+                      >
+                        <button
+                          className="page-link"
+                          onClick={() => handlePageClick(page)}
+                        >
+                          {page}
+                        </button>
+                      </li>
+                    ))}
+                    <li className="page-item">
+                      <button
+                        className="page-link"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
             </div>
-            {isDeleteDialogOpen && (
-                <ConfirmationDialog
-                    onClose={handleDeleteCancel}
-                    deleteType={deleteType}
-                    id={selectedRequest._id}
-                    onDeleted={() => handleDeleteConfirmed(selectedRequest._id)}
-                />
-            )}
-        </>
-    )
-}
+          </div>
+        </div>
+      </div>
+
+      {isDeleteDialogOpen && (
+        <ConfirmationDialog
+          onClose={handleDeleteCancel}
+          deleteType={deleteType}
+          id={selectedRequest._id}
+          onDeleted={() => handleDeleteConfirmed(selectedRequest._id)}
+        />
+      )}
+    </>
+  );
+};
 
 export default TypeOfFeesList;

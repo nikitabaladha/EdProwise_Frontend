@@ -41,8 +41,6 @@ const TrackOrderHistoryTable = () => {
         Array.isArray(response.data.data)
       ) {
         setOrderDetails(response.data.data);
-
-        console.log("Order Details", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -55,11 +53,10 @@ const TrackOrderHistoryTable = () => {
     fetchOrderData();
   }, []);
 
-  const navigateToViewOrder = (event, order, enquiryNumber) => {
-    console.log("Navigating to view order", event, order, enquiryNumber);
+  const navigateToViewOrder = (event, order, orderNumber, enquiryNumber) => {
     event.preventDefault();
     navigate(`/school-dashboard/procurement-services/view-order-history`, {
-      state: { order, enquiryNumber },
+      state: { order, orderNumber, enquiryNumber },
     });
   };
 
@@ -167,6 +164,7 @@ const TrackOrderHistoryTable = () => {
                           </div>
                         </th>
                         <th>Order Number</th>
+                        <th>Enquiry Number</th>
                         <th>Name of Supplier</th>
                         <th>Expected Delivery Date</th>
                         <th>Actual Delivery Date</th>
@@ -194,6 +192,7 @@ const TrackOrderHistoryTable = () => {
                             </div>
                           </td>
                           <td>{order.orderNumber}</td>
+                          <td>{order.enquiryNumber}</td>
                           <td>{order.companyName}</td>
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>
@@ -201,9 +200,8 @@ const TrackOrderHistoryTable = () => {
                               ? formatDate(order.actualDeliveryDate)
                               : "Null"}
                           </td>
-                          <td>
-                            {formatCost(order.totalAmountBeforeGstAndDiscount)}
-                          </td>
+                          <td>{formatCost(order?.totalAmount)}</td>
+
                           <td>{order.buyerStatus}</td>
 
                           <td>
@@ -213,6 +211,7 @@ const TrackOrderHistoryTable = () => {
                                   navigateToViewOrder(
                                     event,
                                     order,
+                                    order.orderNumber,
                                     order.enquiryNumber
                                   )
                                 }

@@ -29,6 +29,8 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -38,6 +40,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
       );
       return;
     }
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -54,8 +57,6 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
 
       if (!response.hasError) {
         toast.success("Subscription added successfully");
-
-        console.log("response.data.data", response.data.data);
 
         const schoolId = response.data.data.schoolId;
 
@@ -99,6 +100,8 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -235,8 +238,9 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={sending}
                   >
-                    Add Subscription
+                    {sending ? "Adding Subscription..." : "Add Subscription"}
                   </button>
                 </div>
               </form>

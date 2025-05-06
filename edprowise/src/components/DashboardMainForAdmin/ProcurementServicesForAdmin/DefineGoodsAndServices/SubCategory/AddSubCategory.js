@@ -6,13 +6,16 @@ import postAPI from "../../../../../api/postAPI";
 import getAPI from "../../../../../api/getAPI";
 
 const AddCategory = () => {
-  const [mainCategoryId, setMainCategoryId] = useState("");
-  const [categoryId, setCategoryId] = useState("");
   const [mainCategories, setMainCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
 
   const [categoryRows, setCategoryRows] = useState([
-    { mainCategoryName: "", categoryName: "", subCategoryName: "" },
+    {
+      mainCategoryName: "",
+      categoryName: "",
+      subCategoryName: "",
+      edprowiseMargin: "",
+      selectedEdprowiseMargin: "",
+    },
   ]);
 
   const [showOtherFields, setShowOtherFields] = useState(false);
@@ -62,7 +65,27 @@ const AddCategory = () => {
 
   const handleRowChange = (index, field, value) => {
     const updatedRows = [...categoryRows];
-    updatedRows[index][field] = value;
+
+    if (field === "categoryId") {
+      const selectedCategory = updatedRows[index].categories.find(
+        (category) => category.id === value
+      );
+      const selectedEdprowiseMargin = selectedCategory
+        ? selectedCategory.edprowiseMargin
+        : "";
+
+      updatedRows[index] = {
+        ...updatedRows[index],
+        categoryId: value,
+        selectedEdprowiseMargin,
+      };
+    } else {
+      updatedRows[index] = {
+        ...updatedRows[index],
+        [field]: value,
+      };
+    }
+
     setCategoryRows(updatedRows);
   };
 
@@ -79,8 +102,13 @@ const AddCategory = () => {
     setCategoryRows(updatedRows);
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setSending(true);
+
     try {
       for (const row of categoryRows) {
         let subCategoryData = {};
@@ -107,6 +135,7 @@ const AddCategory = () => {
             subCategoryName: row.subCategoryName,
             categoryName: row.categoryName,
             mainCategoryId: row.mainCategoryId,
+            edprowiseMargin: row.edprowiseMargin,
           };
           const response = await postAPI(
             "/sub-category-without-category-id",
@@ -124,6 +153,7 @@ const AddCategory = () => {
             subCategoryName: row.subCategoryName,
             categoryName: row.categoryName,
             mainCategoryName: row.mainCategoryName,
+            edprowiseMargin: row.edprowiseMargin,
           };
           const response = await postAPI(
             "/sub-category-without-ids",
@@ -140,7 +170,18 @@ const AddCategory = () => {
       }
       navigate(-1);
     } catch (error) {
-      toast.error("An error occurred while processing the request.");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        console.log(error);
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      setSending(false);
     }
   };
 
@@ -159,10 +200,9 @@ const AddCategory = () => {
                   </h4>
                 </div>
               </div>
-
               <form onSubmit={handleSubmit}>
                 {categoryRows.map((row, index) => (
-                  <div className="row mb-2" key={index}>
+                  <div className="row" key={index}>
                     <div className="col-md-3">
                       {!showOtherFields && mainCategories.length > 0 ? (
                         <>
@@ -217,64 +257,107 @@ const AddCategory = () => {
                       )}
                     </div>
 
-                    <div className="col-md-3">
+                    <>
                       {!showOtherFields &&
                       row.mainCategoryId &&
                       row.categories.length > 0 ? (
                         <>
-                          <label
-                            htmlFor={`categoryId-${index}`}
-                            className="form-label"
-                          >
-                            Category List
-                          </label>
-                          <select
-                            required
-                            className="form-control"
-                            id={`categoryId-${index}`}
-                            value={row.categoryId}
-                            onChange={(e) =>
-                              handleRowChange(
-                                index,
-                                "categoryId",
-                                e.target.value
-                              )
-                            }
-                          >
-                            <option value="">Select Category</option>
-                            {row.categories.map((category) => (
-                              <option key={category.id} value={category.id}>
-                                {category.categoryName}
-                              </option>
-                            ))}
-                          </select>
+                          <div className="col-md-3">
+                            <label
+                              htmlFor={`categoryId-${index}`}
+                              className="form-label"
+                            >
+                              Category List
+                            </label>
+                            <select
+                              required
+                              className="form-control"
+                              id={`categoryId-${index}`}
+                              value={row.categoryId}
+                              onChange={(e) =>
+                                handleRowChange(
+                                  index,
+                                  "categoryId",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              <option value="">Select Category</option>
+                              {row.categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                  {category.categoryName}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="col-md-2">
+                            <label
+                              htmlFor={`edprowiseMargin-${index}`}
+                              className="form-label"
+                            >
+                              EdProwise Margin %
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={row.selectedEdprowiseMargin}
+                              readOnly
+                            />
+                          </div>
                         </>
                       ) : (
                         <>
-                          <label
-                            htmlFor={`categoryName-${index}`}
-                            className="form-label"
-                          >
-                            Category Name
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={row.categoryName}
-                            onChange={(e) =>
-                              handleRowChange(
-                                index,
-                                "categoryName",
-                                e.target.value
-                              )
-                            }
-                            required
-                          />
+                          <div className="col-md-3">
+                            <label
+                              htmlFor={`categoryName-${index}`}
+                              className="form-label"
+                            >
+                              Category Name
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={row.categoryName}
+                              onChange={(e) =>
+                                handleRowChange(
+                                  index,
+                                  "categoryName",
+                                  e.target.value
+                                )
+                              }
+                              required
+                            />
+                          </div>
+
+                          <div className="col-md-2">
+                            <label
+                              htmlFor={`edprowiseMargin-${index}`}
+                              className="form-label"
+                            >
+                              EdProwise Margin %
+                              <span className="text-danger">*</span>
+                            </label>
+
+                            <input
+                              type="number"
+                              name="edprowiseMargin"
+                              className="form-control"
+                              value={row.edprowiseMargin || ""}
+                              onChange={(e) =>
+                                handleRowChange(
+                                  index,
+                                  "edprowiseMargin",
+                                  e.target.value
+                                )
+                              }
+                              required
+                            />
+                          </div>
                         </>
                       )}
-                    </div>
-
-                    <div className="col-md-4">
+                    </>
+                    <div className="col-md-2">
                       <label htmlFor="subCategoryName" className="form-label">
                         Sub Category Name
                       </label>
@@ -324,8 +407,12 @@ const AddCategory = () => {
                       ? "Add Goods And Services"
                       : "Add Custom Goods And Services"}
                   </button>
-                  <button type="submit" className="btn btn-primary">
-                    Submit
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={sending}
+                  >
+                    {sending ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </form>

@@ -69,6 +69,73 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete enquiry request.",
     idKey: "_id",
   },
+  // =======Shantanu=====
+  feesType: {
+    getEndpoint: (id) => `/delete-fees-type/${id}`,
+    successMessage: "Fees type successfully deleted!",
+    errorMessage: "Failed to delete fees type.",
+    idKey: "_id",
+  },
+  shifts: {
+    getEndpoint: (id) => `/master-define-shift/${id}`,
+    successMessage: "Shift successfully deleted!",
+    errorMessage: "Failed to delete shift.",
+    idKey: "_id",
+  },
+  classandsection: {
+    getEndpoint: (id) => `/delete-class-and-section/${id}`,
+    successMessage: "Class and Section successfully deleted!",
+    errorMessage: "Failed to delete class and section.",
+    idKey: "_id",
+  },
+  feesstructure: {
+    getEndpoint: (id) => `/delete-fees-structure/${id}`,
+    successMessage: "Fess structure successfully deleted!",
+    errorMessage: "Failed to delete fees structure.",
+    idKey: "_id",
+  },
+  prefix: {
+    getEndpoint: (id) => `/delete-prefix/${id}`,
+    successMessage: "Prefix successfully deleted!",
+    errorMessage: "Failed to delete prefix.",
+    idKey: "_id",
+  },
+  admissionprefix: {
+    getEndpoint: (id) => `/delete-admission-prefix/${id}`,
+    successMessage: "Prefix successfully deleted!",
+    errorMessage: "Failed to delete prefix.",
+    idKey: "_id",
+  },
+  fine: {
+    getEndpoint: (id) => `/delete-fine/${id}`,
+    successMessage: "Fine successfully deleted!",
+    errorMessage: "Failed to delete fine.",
+    idKey: "_id",
+  },
+  registrationform: {
+    getEndpoint: (id) => `/delete-registartion-form/${id}`,
+    successMessage: "Registartion form successfully deleted!",
+    errorMessage: "Failed to delete registartion form .",
+    idKey: "_id",
+  },
+  admissionform: {
+    getEndpoint: (id) => `/delete-admission-form/${id}`,
+    successMessage: "Admission form successfully deleted!",
+    errorMessage: "Failed to delete admission form .",
+    idKey: "_id",
+  },
+  TCform: {
+    getEndpoint: (id) => `/delete-TC-form/${id}`,
+    successMessage: "TC form successfully deleted!",
+    errorMessage: "Failed to delete TC form .",
+    idKey: "_id",
+  },
+  concessionform: {
+    getEndpoint: (id) => `/delete-concession-form/${id}`,
+    successMessage: "Concession form successfully deleted!",
+    errorMessage: "Failed to delete Concession form .",
+    idKey: "_id",
+  },
 };
 
 const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {

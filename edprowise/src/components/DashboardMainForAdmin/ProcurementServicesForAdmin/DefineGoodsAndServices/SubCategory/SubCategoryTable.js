@@ -18,7 +18,6 @@ const MainCategoryTable = () => {
         Array.isArray(response.data.data)
       ) {
         setSubCategories(response.data.data);
-        console.log("Sub Category data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -41,8 +40,6 @@ const MainCategoryTable = () => {
   };
 
   const navigateToUpdateSubCategory = (event, subCategory) => {
-    console.log("navigateToUpdateSubCategory", subCategory);
-
     event.preventDefault();
     navigate(
       `/admin-dashboard/procurement-services/good-services/update-goods-services`,
@@ -66,6 +63,7 @@ const MainCategoryTable = () => {
       Category_Name: subCategory.categoryName,
       MainCategory_Id: subCategory.mainCategoryId,
       MainCategory_Name: subCategory.mainCategoryName,
+      Edprowise_Margin: subCategory.edprowiseMargin,
     }));
 
     exportToExcel(formattedData, "SubCategory", "SubCategory");
@@ -75,7 +73,6 @@ const MainCategoryTable = () => {
   const [deleteType, setDeleteType] = useState("");
 
   const openDeleteDialog = (subCategory) => {
-    console.log("openDeleteDialog", subCategory);
     setSelectedSubCategory(subCategory);
     setIsDeleteDialogOpen(true);
     setDeleteType("subCategory");
@@ -87,7 +84,6 @@ const MainCategoryTable = () => {
   };
 
   const handleDeleteConfirmed = (id) => {
-    console.log("Id", id);
     setSubCategories((prevSubCategories) =>
       prevSubCategories.filter((subCategory) => subCategory.id !== id)
     );
@@ -171,6 +167,7 @@ const MainCategoryTable = () => {
                         </th>
                         <th>Main Category </th>
                         <th>Category </th>
+                        <th>Edprowise Margin</th>
                         <th>Sub Category</th>
                         <th>Action</th>
                       </tr>
@@ -195,6 +192,7 @@ const MainCategoryTable = () => {
                           </td>
                           <td>{subCategory.mainCategoryName}</td>
                           <td>{subCategory.categoryName}</td>
+                          <td>{subCategory.edprowiseMargin}</td>
                           <td>{subCategory.subCategoryName}</td>
 
                           <td>

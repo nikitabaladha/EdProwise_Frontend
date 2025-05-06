@@ -27,6 +27,8 @@ const ChangePassword = () => {
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -34,6 +36,8 @@ const ChangePassword = () => {
       toast.error("New Password and Confirm Password do not match.");
       return;
     }
+
+    setSending(true);
 
     try {
       const payload = {
@@ -64,6 +68,8 @@ const ChangePassword = () => {
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
 
@@ -272,8 +278,9 @@ const ChangePassword = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={sending}
                     >
-                      Submit New Password
+                      {sending ? "Submitting..." : "Submit New Password"}
                     </button>
                   </div>
                 </form>

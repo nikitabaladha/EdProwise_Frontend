@@ -1,117 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-const studentData = [
-  {
-    firstName: "John",
-    middleName: "Doe",
-    lastName: "Smith",
-    dateOfBirth: "2005-05-15",
-    nationality: "India",
-    gender: "Male",
-    masterDefineClass: "1st",
-    masterDefineShift: "Morning",
-    fatherName: "John Doe Sr.",
-    fatherContactNo: "1234567890",
-    motherName: "Jane Doe",
-    motherContactNo: "0987654321",
-    currentAddress: "123 Main St, City, Country",
-    cityStateCountry: "City, State, Country",
-    pincode: "123456",
-    previousSchoolName: "ABC School",
-    previousSchoolBoard: "CBSE",
-    addressOfpreviousSchool: "456 School St, City, Country",
-    previousSchoolResult: "Result.pdf",
-    tcCertificate: "TC.pdf",
-    studentCategory: "General",
-    howReachUs: "Friend",
-    aadharPassportFile: "Aadhar.pdf",
-    aadharPassportNumber: "1234 5678 9012",
-    castCertificate: "Caste.pdf",
-    agreement: true,
-    name: "John Doe",
-    paymentMode: "UPI",
-    dateOfApplicatopnReceive: "2023-10-01",
-    registrationFeesReceivedBy: "Admin",
-    transationOrChequetNumber: "123456789",
-    receiptNumber: "987654321",
-    registrationNumber: "REG123456"
-  },
-  {
-    firstName: "Emily",
-    middleName: "Rose",
-    lastName: "Williams",
-    dateOfBirth: "2006-07-20",
-    nationality: "India",
-    gender: "Female",
-    masterDefineClass: "2nd",
-    masterDefineShift: "Afternoon",
-    fatherName: "Michael Williams",
-    fatherContactNo: "2345678901",
-    motherName: "Sophia Williams",
-    motherContactNo: "8765432109",
-    currentAddress: "789 Park Ave, City, Country",
-    cityStateCountry: "City, State, Country",
-    pincode: "654321",
-    previousSchoolName: "XYZ School",
-    previousSchoolBoard: "ICSE",
-    addressOfpreviousSchool: "123 School Rd, City, Country",
-    previousSchoolResult: "Result_Emily.pdf",
-    tcCertificate: "TC_Emily.pdf",
-    studentCategory: "OBC",
-    howReachUs: "Online",
-    aadharPassportFile: "Aadhar_Emily.pdf",
-    aadharPassportNumber: "5678 9012 3456",
-    castCertificate: "Caste_Emily.pdf",
-    agreement: true,
-    name: "Emily Williams",
-    paymentMode: "Bank Transfer",
-    dateOfApplicatopnReceive: "2023-11-15",
-    registrationFeesReceivedBy: "Admin",
-    transationOrChequetNumber: "234567890",
-    receiptNumber: "876543210",
-    registrationNumber: "REG234567"
-  },
-  {
-    firstName: "Rahul",
-    middleName: "Kumar",
-    lastName: "Sharma",
-    dateOfBirth: "2007-02-10",
-    nationality: "India",
-    gender: "Male",
-    masterDefineClass: "3rd",
-    masterDefineShift: "Morning",
-    fatherName: "Amit Sharma",
-    fatherContactNo: "3456789012",
-    motherName: "Priya Sharma",
-    motherContactNo: "7654321098",
-    currentAddress: "456 Elm St, City, Country",
-    cityStateCountry: "City, State, Country",
-    pincode: "789012",
-    previousSchoolName: "PQR School",
-    previousSchoolBoard: "State Board",
-    addressOfpreviousSchool: "789 School Ln, City, Country",
-    previousSchoolResult: "Result_Rahul.pdf",
-    tcCertificate: "TC_Rahul.pdf",
-    studentCategory: "SC",
-    howReachUs: "Advertisement",
-    aadharPassportFile: "Aadhar_Rahul.pdf",
-    aadharPassportNumber: "9012 3456 7890",
-    castCertificate: "Caste_Rahul.pdf",
-    agreement: true,
-    name: "Rahul Sharma",
-    paymentMode: "Cash",
-    dateOfApplicatopnReceive: "2023-12-05",
-    registrationFeesReceivedBy: "Admin",
-    transationOrChequetNumber: "345678901",
-    receiptNumber: "765432109",
-    registrationNumber: "REG345678"
-  }
-];
-
+import getAPI from "../../../../../api/getAPI";
+import { toast } from "react-toastify";
+import ConfirmationDialog from "../../../../ConfirmationDialog";
 
 const StudentRegisterListTable = () => {
   const navigate = useNavigate();
+  const [schoolId, setSchoolId] = useState(null);
+  const [studentData, setStudentData] = useState([]);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteType, setDeleteType] = useState("");
+  const [selectedRequest, setSelectedRequest] = useState(null);
+
+  const openDeleteDialog = (request) => {
+    setSelectedRequest(request);
+    setIsDeleteDialogOpen(true);
+    setDeleteType("registrationform");
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+  };
+  const handleDeleteConfirmed = (_id) => {
+    setStudentData((prevRequests) =>
+      prevRequests.filter((request) => request._id !== _id)
+    );
+  };
+
+  useEffect(() => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const id = userDetails?.schoolId;
+
+    if (!id) {
+      toast.error("School ID not found. Please log in again.");
+      return;
+    }
+
+    setSchoolId(id);
+  }, []);
+
+  useEffect(() => {
+    if (!schoolId) return;
+
+    const fetchStudents = async () => {
+      try {
+        const response = await getAPI(`/get-registartion-form/${schoolId}`);
+
+        if (!response.hasError) {
+          const studentArray = Array.isArray(response.data.students)
+            ? response.data.students
+            : [];
+          setStudentData(studentArray);
+        } else {
+          toast.error(response.message || "Failed to fetch student list.");
+        }
+      } catch (err) {
+        toast.error("Error fetching student data.");
+        console.error("Student Fetch Error:", err);
+      }
+    };
+
+    fetchStudents();
+  }, [schoolId]);
 
   const navigateToRegisterStudent = (event) => {
     event.preventDefault();
@@ -121,15 +72,20 @@ const StudentRegisterListTable = () => {
   const navigateToRegisterStudentInfo = (event, student) => {
     event.preventDefault();
     navigate(`/school-dashboard/fees-module/form/registed-student-info`, {
-      state: { student }, // Pass student data through state
+      state: { student },
     });
   };
 
-  const navigateToUpdateRegisterStudentInfo=(event)=>{
+  const navigateToUpdateRegisterStudentInfo = (event, student) => {
     event.preventDefault();
-    navigate(`/school-dashboard/fees-module/form/update-registed-student-info`)
-  }
-  
+    navigate(
+      `/school-dashboard/fees-module/form/update-registed-student-info`,
+      {
+        state: { student },
+      }
+    );
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
 
@@ -155,10 +111,8 @@ const StudentRegisterListTable = () => {
   };
 
   const pageRange = 1;
-
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-
   const pagesToShow = Array.from(
     { length: endPage - startPage + 1 },
     (_, index) => startPage + index
@@ -176,8 +130,6 @@ const StudentRegisterListTable = () => {
                   Registered Student List
                 </h4>
                 <Link
-                  //   onClick={() => navigateToRegisterStudent()}
-                  // onClick={navigateToRegisterStudent}
                   onClick={(event) => navigateToRegisterStudent(event)}
                   className="btn btn-sm btn-primary"
                 >
@@ -215,7 +167,7 @@ const StudentRegisterListTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {studentData.map((student, index) => (
+                      {currentStudent.map((student, index) => (
                         <tr key={index}>
                           <td>
                             <div className="form-check ms-1">
@@ -233,31 +185,48 @@ const StudentRegisterListTable = () => {
                             </div>
                           </td>
                           <td>{student.registrationNumber}</td>
-
                           <td>{student.firstName}</td>
-
                           <td>{student.lastName}</td>
-                          <td>{student.transationOrChequetNumber}</td>
-                          <td>{student.dateOfApplicatopnReceive}</td>
+                          <td>{student.transactionNumber}</td>
+                          <td>
+                            {new Date(
+                              student.registrationDate
+                            ).toLocaleDateString()}
+                          </td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link className="btn btn-light btn-sm"
-                              onClick={(event) => navigateToRegisterStudentInfo(event, student)}
+                              <Link
+                                className="btn btn-light btn-sm"
+                                onClick={(event) =>
+                                  navigateToRegisterStudentInfo(event, student)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link> 
-                              <Link className="btn btn-soft-primary btn-sm"
-                              onClick={(event) => navigateToUpdateRegisterStudentInfo(event)}
+                              </Link>
+                              <Link
+                                className="btn btn-soft-primary btn-sm"
+                                onClick={(event) =>
+                                  navigateToUpdateRegisterStudentInfo(
+                                    event,
+                                    student
+                                  )
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-danger btn-sm">
+                              <Link
+                                className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openDeleteDialog(student);
+                                }}
+                              >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -316,6 +285,14 @@ const StudentRegisterListTable = () => {
           </div>
         </div>
       </div>
+      {isDeleteDialogOpen && (
+        <ConfirmationDialog
+          onClose={handleDeleteCancel}
+          deleteType={deleteType}
+          id={selectedRequest._id}
+          onDeleted={() => handleDeleteConfirmed(selectedRequest._id)}
+        />
+      )}
     </>
   );
 };

@@ -3,45 +3,45 @@ import Slider from "react-slick";
 import { Link } from "react-router-dom";
 
 const blogPosts = [
+  // {
+  //   id: 1,
+  //   date: "25 Sep 2023",
+  //   author: "Anne William",
+  //   title: "The Surprising Reason College Tuition Is Crazy Expensive",
+  //   image: "assets/website-images/blog/img-1.webp",
+  //   link: "/blog/1",
+  // },
   {
-    id: 1,
     date: "25 Sep 2023",
     author: "Anne William",
-    title: "The Surprising Reason College Tuition Is Crazy Expensive",
-    image: "assets/website-images/blog/img-1.webp",
-    link: "/blog/1",
+    title: "How to Be a Successful School Teacher",
+    image: "/assets/website-images/blog-details/EducatorZone1.jpg",
+    link:"/community-connect/educator-zone/how-to-be-successful-teacher",
   },
   {
-    id: 2,
     date: "26 Sep 2023",
     author: "Robert Fox",
-    title: "Become a great WordPress & PHP developer.",
-    image: "assets/website-images/blog/img-2.webp",
-    link: "/blog/2",
+    title: "How to Be Successful in the CBSE Board Exam: Tips and Strategies for Students",
+    image: "/assets/website-images/blog-details/howtosuccessfulstudent.jpg",
+    link:"/community-connect/student-zone/how-to-be-successful-in-the-cbse-board-exam"
   },
   {
-    id: 3,
-    date: "28 Sep 2023",
-    author: "Devon Lane",
-    title: "A critical review of mobile learning integration",
-    image: "assets/website-images/blog/img-3.webp",
-    link: "/blog/3",
+    date: "26 Sep 2023",
+    author: "Robert Fox",
+    title: "Teaching Strategies & Pedagogy: A Guide for Educators",
+    image: "/assets/website-images/blog-details/EducatorZone2.jpg",
+    link:"/community-connect/educator-zone/teaching-strategies-and-pedagogy",
   },
 ];
 
 const BlogItem = ({ date, author, title, image, link }) => (
   <div className="carousel-item-blog">
+    <Link to={link}>
     <div className="wpo-blog-item">
       <div className="wpo-blog-img">
         <img src={image} alt={title} />
       </div>
       <div className="wpo-blog-content">
-        <ul>
-          <li>{date}</li>
-          <li>
-            By <Link to={link}>{author}</Link>
-          </li>
-        </ul>
         <h2 className="font-weight-web-h2">
           <Link to={link}>{title}</Link>
         </h2>
@@ -50,6 +50,7 @@ const BlogItem = ({ date, author, title, image, link }) => (
         </Link>
       </div>
     </div>
+    </Link>
   </div>
 );
 

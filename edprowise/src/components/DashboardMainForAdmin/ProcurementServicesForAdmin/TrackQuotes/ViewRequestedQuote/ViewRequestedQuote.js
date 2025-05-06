@@ -19,7 +19,7 @@ const ViewRequestedQuote = () => {
   const navigate = useNavigate();
 
   const enquiryNumber =
-    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
+    location.state?.enquiryNumber || location.state?.searchEnquiryNumber;
   const schoolId = location.state?.schoolId;
 
   const [quotes, setQuotes] = useState([]);
@@ -35,11 +35,15 @@ const ViewRequestedQuote = () => {
 
   const fetchRequestedQuoteData = async () => {
     try {
-      const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+      const response = await getAPI(
+        `/get-quote/${encodedEnquiryNumber}`,
+        {},
+        true
+      );
 
       if (!response.hasError && response.data.data.products) {
         setQuotes(response.data.data.products);
-        console.log("product data from function", response.data.data.products);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -59,7 +63,12 @@ const ViewRequestedQuote = () => {
 
   const fetchAllQuoteData = async (enquiryNumber) => {
     try {
-      const response = await getAPI(`/submit-quote/${enquiryNumber}`, {}, true);
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+      const response = await getAPI(
+        `/submit-quote/${encodedEnquiryNumber}`,
+        {},
+        true
+      );
 
       if (
         !response.hasError &&
@@ -207,10 +216,7 @@ const ViewRequestedQuote = () => {
         </div>
 
         {isQuoteTableVisible && quotes.length > 0 ? (
-          <ViewAllQuoteTable
-            enquiryNumber={enquiryNumber}
-            schoolId={schoolId}
-          />
+          <ViewAllQuoteTable />
         ) : (
           <div className="row"></div>
         )}

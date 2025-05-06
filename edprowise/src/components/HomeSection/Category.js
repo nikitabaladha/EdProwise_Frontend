@@ -58,7 +58,7 @@ const Category = () => {
               key={course.id}
               className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.id}`}
             >
-              
+            
               <div className="wpo-courses-item category-itemm">
                 <Link to={course.link}>
                 <div className="wpo-courses-text">

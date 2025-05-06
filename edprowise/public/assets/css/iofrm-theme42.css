@@ -163,10 +163,11 @@ body {
 
 .form-content .form-items {
   /* max-width: 340px; */
-  max-width: 500px;
-  padding: 10px;
+  max-width: 480px;
+  padding: 60px 20px;
+  border-radius: 20px;
   text-align: center;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
 
 .form-content .form-items.with-bg {

@@ -166,7 +166,10 @@ const ForgotUserId = (e) => {
                         {generalError}
                       </div>
                     )}
-                    <div className="form-button d-flex">
+                    <div className="form-button d-flex" style={{
+                      width:"80%",
+                      justifySelf:"center",
+                    }}>
                       <button
                         id="submit"
                         type="submit"
@@ -191,7 +194,7 @@ const ForgotUserId = (e) => {
                       name="verificationCode"
                       value={formData.verificationCode}
                       onChange={handleChange}
-                      placeholder="verification code"
+                      placeholder="Verification code"
                       required=""
                       onKeyDown={(e) => {
                         if (e.key === " ") {
@@ -227,7 +230,10 @@ const ForgotUserId = (e) => {
                         </button>
                       </p>
                     )}
-                    <div className="form-button d-flex">
+                    <div className="form-button d-flex" style={{
+                      width:"80%",
+                      justifySelf:"center",
+                    }}>
                       <button
                         id="submit"
                         type="submit"

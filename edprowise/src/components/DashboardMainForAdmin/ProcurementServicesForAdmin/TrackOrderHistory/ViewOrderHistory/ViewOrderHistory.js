@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import getAPI from "../../../../../api/getAPI";
 import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 import { formatCost } from "../../../../CommonFunction";
 
@@ -17,13 +18,38 @@ const formatDate = (dateString) => {
 
 const ViewOrderHistory = () => {
   const location = useLocation();
-  const order = location?.state?.order;
-  const orderNumber = order?.orderNumber;
 
-  const enquiryNumber = location.state?.enquiryNumber;
+  const orderNumber =
+    location.state?.orderNumber || location.state?.searchOrderNumber;
 
-  const schoolId = location.state?.schoolId;
-  const sellerId = location.state?.sellerId;
+  const [order, setOrderDetails] = useState([]);
+  const [schoolId, setSchoolId] = useState("");
+  const [sellerId, setSellerId] = useState("");
+  const [enquiryNumber, setEnquiryNumber] = useState("");
+
+  const fetchOrderData = async () => {
+    try {
+      const response = await getAPI(
+        `/order-details-by-orderNumber/${orderNumber}`,
+        {},
+        true
+      );
+      if (!response.hasError && response.data.data) {
+        setOrderDetails(response.data.data);
+        setSchoolId(response.data.data.schoolId);
+        setSellerId(response.data.data.sellerId);
+        setEnquiryNumber(response.data.data.enquiryNumber);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Order details:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrderData();
+  }, []);
 
   const navigate = useNavigate();
 
@@ -39,11 +65,16 @@ const ViewOrderHistory = () => {
 
   const fetchRequestedQuoteData = async () => {
     try {
-      const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/get-quote/${encodedEnquiryNumber}`,
+        {},
+        true
+      );
 
       if (!response.hasError && response.data.data.products) {
         setQuote(response.data.data.products);
-        console.log("product data from function", response.data.data.products);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -62,10 +93,6 @@ const ViewOrderHistory = () => {
 
       if (!response.hasError && response.data.data) {
         setOrders(response.data.data);
-        console.log(
-          "order data from function from school order history",
-          response.data.data
-        );
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -78,104 +105,77 @@ const ViewOrderHistory = () => {
     fetchOrderDetails();
   }, [enquiryNumber]);
 
-  // if (!order) {
-  //   return <div>No order details available.</div>;
-  // }
+  const generateInvoicePDFForEdprowise = async () => {
+    const missingFields = [];
+    if (!sellerId) missingFields.push("Seller ID");
+    if (!enquiryNumber) missingFields.push("Enquiry Number");
+    if (!schoolId) missingFields.push("School ID");
 
-  const fetchInvoiceDataForEdprowise = async () => {
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
+    if (missingFields.length > 0) {
+      toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
 
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/generate-edprowise-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "edprowise-invoice.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(
-          `/admin-dashboard/procurement-services/invoice-for-edprowise`,
-          {
-            state: { prepareQuoteData, quoteProposalData, profileData },
-          }
-        );
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch invoice data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching invoice data");
     }
   };
 
-  const fetchInvoiceDataForBuyer = async () => {
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
+  const generateInvoicePDFForBuyer = async () => {
+    const missingFields = [];
+    if (!sellerId) missingFields.push("Seller ID");
+    if (!enquiryNumber) missingFields.push("Enquiry Number");
+    if (!schoolId) missingFields.push("School ID");
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
 
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/generate-buyer-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "buyer-invoice.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/admin-dashboard/procurement-services/invoice-for-buyer`, {
-          state: { prepareQuoteData, quoteProposalData, profileData },
-        });
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch invoice data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching invoice data");
     }
   };
 
@@ -258,99 +258,7 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="advanceAdjustment" className="form-label">
-                        Advance Adjustment
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order?.advanceAdjustment)}
-                      </p>
-                    </div>
-                  </div>
                 </div>
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order?.otherCharges)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* <div className="container">
-                  <div className="card-header mb-2">
-                    <h4 className="card-title text-center custom-heading-font">
-                      Invoice To Buyer
-                    </h4>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="taxableValue" className="form-label">
-                          Taxable Value
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.totalTaxableValue)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="gstAmount" className="form-label">
-                          GST Amount
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.totalGstAmount)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label
-                          htmlFor="totalInvoiceAmount"
-                          className="form-label"
-                        >
-                          Total Invoice Amount
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.totalAmount)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="tdsValue" className="form-label">
-                          TDS Value
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.tdsValue)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label
-                          htmlFor="finalPayableAmountWithTDS"
-                          className="form-label"
-                        >
-                          Balance Amount
-                        </label>
-                        <p className="form-control">
-                          {formatCost(order?.finalPayableAmountWithTDS)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
 
                 <div className="container">
                   <div className="card-header mb-2">
@@ -394,18 +302,39 @@ const ViewOrderHistory = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="tdsValue" className="form-label">
-                        TDS Value
+                        TDS Amount
                       </label>
                       <p className="form-control">
                         {formatCost(order?.tdsValue)}
                       </p>
                     </div>
                   </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="advanceAdjustment" className="form-label">
+                        Advance Adjustment
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.advanceAdjustment)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="otherCharges" className="form-label">
+                        Other Charges
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.otherCharges)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
@@ -420,6 +349,29 @@ const ViewOrderHistory = () => {
                     </div>
                   </div>
                 </div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <div>
+                    {["Ready For Transit", "In-Transit", "Delivered"].includes(
+                      order?.supplierStatus
+                    ) && (
+                      <>
+                        <Link
+                          onClick={() => generateInvoicePDFForBuyer()}
+                          className="btn btn-soft-info btn-sm"
+                          title="Download PDF Invoice For Buyer"
+                          data-bs-toggle="popover"
+                          data-bs-trigger="hover"
+                        >
+                          Download Invoice For Buyer
+                          <iconify-icon
+                            icon="solar:download-broken"
+                            className="align-middle fs-18"
+                          />
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </div>
 
                 <div className="container">
                   <div className="card-header mb-2">
@@ -432,7 +384,7 @@ const ViewOrderHistory = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="taxableValue" className="form-label">
-                        Taxable Value For EdProwise
+                        Taxable Value
                       </label>
                       <p className="form-control">
                         {formatCost(order?.totalTaxableValueForEdprowise)}
@@ -442,7 +394,7 @@ const ViewOrderHistory = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="gstAmount" className="form-label">
-                        GST Amount For EdProwise
+                        GST Amount
                       </label>
                       <p className="form-control">
                         {formatCost(order?.totalGstAmountForEdprowise)}
@@ -455,7 +407,7 @@ const ViewOrderHistory = () => {
                         htmlFor="totalInvoiceAmount"
                         className="form-label"
                       >
-                        Total Invoice Amount For EdProwise
+                        Total Invoice Amount
                       </label>
                       <p className="form-control">
                         {formatCost(order?.totalAmountForEdprowise)}
@@ -470,7 +422,7 @@ const ViewOrderHistory = () => {
                         htmlFor="tdsValueForEdprowise"
                         className="form-label"
                       >
-                        TDS Value For EdProwise
+                        TDS Amount
                       </label>
                       <p className="form-control">
                         {formatCost(order?.tdsValueForEdprowise)}
@@ -479,11 +431,33 @@ const ViewOrderHistory = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
+                      <label htmlFor="advanceAdjustment" className="form-label">
+                        Advance Adjustment
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.advanceAdjustment)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="otherCharges" className="form-label">
+                        Other Charges
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.otherCharges)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
                       <label
                         htmlFor="finalPayableAmountWithTDS"
                         className="form-label"
                       >
-                        Balance Amount For EdProwise
+                        Balance Amount
                       </label>
                       <p className="form-control">
                         {formatCost(
@@ -500,8 +474,8 @@ const ViewOrderHistory = () => {
                       order?.supplierStatus
                     ) && (
                       <>
-                        <Link
-                          onClick={() => fetchInvoiceDataForEdprowise()}
+                        <button
+                          onClick={() => generateInvoicePDFForEdprowise()}
                           className="btn btn-soft-info btn-sm me-2"
                           title="Download PDF Invoice For Edprowise"
                           data-bs-toggle="popover"
@@ -512,21 +486,7 @@ const ViewOrderHistory = () => {
                             icon="solar:download-broken"
                             className="align-middle fs-18"
                           />
-                        </Link>
-
-                        <Link
-                          onClick={() => fetchInvoiceDataForBuyer()}
-                          className="btn btn-soft-info btn-sm"
-                          title="Download PDF Invoice For Buyer"
-                          data-bs-toggle="popover"
-                          data-bs-trigger="hover"
-                        >
-                          Download Invoice For Buyer
-                          <iconify-icon
-                            icon="solar:download-broken"
-                            className="align-middle fs-18"
-                          />
-                        </Link>
+                        </button>
                       </>
                     )}
                   </div>

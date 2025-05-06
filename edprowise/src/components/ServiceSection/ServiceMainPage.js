@@ -11,10 +11,10 @@ const ServiceMainPage = () => {
     location.pathname === "/services/academic-admin-services";
 
   const isRecruitmentSectionRoute =
-    location.pathname === "/services/recruitment-services";
+    location.pathname === "/services/hire-teacher";
 
   const isProcurementSectionRoute =
-    location.pathname === "/services/get-goods-services";
+    location.pathname === "/services/get-goods-for-school";
 
   return (
     <>

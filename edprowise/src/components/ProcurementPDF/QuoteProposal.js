@@ -3,12 +3,13 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-// import convertToWOrds from "../../../CommonFunction.js";
 
+import { formatCost } from "../CommonFunction";
 import convertToWords from "../CommonFunction.js";
 
 import { format } from "date-fns";
 
+// i want to pass that data here but here i am not able to get it
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   return format(new Date(dateString), "dd/MM/yyyy");
@@ -16,10 +17,18 @@ const formatDate = (dateString) => {
 
 const QuoteProposal = () => {
   const location = useLocation();
-  const { prepareQuoteData, quoteProposalData, profileData } =
-    location.state || {};
 
-  // Extract total values from profileData
+  const {
+    prepareQuoteData = [],
+    quoteProposalData = {},
+    profileData = {},
+  } = location.state || {};
+
+  // const { prepareQuoteData, quoteProposalData, profileData } =
+  //   location.state || {};
+
+  // prepareQuoteData from quote proposal of school undefined
+
   const {
     buyerName,
     schoolContactNumber,
@@ -258,7 +267,7 @@ const QuoteProposal = () => {
                   }}
                   colSpan="2"
                 >
-                  {sellerCityStateCountry}, {edprowisePincode}
+                  {edprowiseCityStateCountry}, {edprowisePincode}
                 </td>
 
                 <td
@@ -479,7 +488,7 @@ const QuoteProposal = () => {
                     borderBottom: "none",
                   }}
                 >
-                  All Amount are in INR
+                  All Amounts are in INR
                 </td>
               </tr>
             </tbody>
@@ -537,7 +546,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt before GST & Disc
+                  Amount before GST & Disc
                 </th>
                 <th
                   style={{
@@ -555,7 +564,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  GST Amt
+                  GST Amount
                 </th>
                 <th
                   style={{
@@ -605,7 +614,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.finalRate}
+                    {item.finalRateBeforeDiscount}
                   </td>
                   <td
                     style={{
@@ -614,7 +623,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.amountBeforeGstAndDiscount}
+                    {formatCost(item.amountBeforeGstAndDiscount)}
                   </td>
                   <td
                     style={{
@@ -623,7 +632,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.discountAmount}
+                    {formatCost(item.discountAmount)}
                   </td>
                   <td
                     style={{
@@ -632,7 +641,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.gstAmount}
+                    {formatCost(item.gstAmount)}
                   </td>
                   <td
                     style={{
@@ -641,7 +650,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.totalAmount}
+                    {formatCost(item.totalAmount)}
                   </td>
                 </tr>
               ))}
@@ -685,7 +694,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalAmountBeforeGstAndDiscount}
+                  {formatCost(totalAmountBeforeGstAndDiscount)}
                 </td>
                 <td
                   style={{
@@ -693,7 +702,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalDiscountAmount}
+                  {formatCost(totalDiscountAmount)}
                 </td>
                 <td
                   style={{
@@ -701,7 +710,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalGstAmount}
+                  {formatCost(totalTaxAmount)}
                 </td>
                 <td
                   style={{
@@ -710,7 +719,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalAmount}
+                  {formatCost(totalAmount)}
                 </td>
               </tr>
             </tbody>
@@ -793,7 +802,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  HSN/SAAC
+                  HSN/SAC
                 </th>
                 <th
                   style={{
@@ -817,7 +826,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt
+                  Amount
                 </th>
                 <th
                   style={{
@@ -833,7 +842,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt
+                  Amount
                 </th>
                 <th
                   style={{
@@ -849,7 +858,7 @@ const QuoteProposal = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt
+                  Amount
                 </th>
                 <th
                   style={{
@@ -881,7 +890,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.taxableValue}
+                    {formatCost(item.taxableValue)}
                   </td>
                   <td
                     style={{
@@ -899,7 +908,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.cgstAmount}
+                    {formatCost(item.cgstAmount)}
                   </td>
                   <td
                     style={{
@@ -917,7 +926,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.sgstAmount}
+                    {formatCost(item.sgstAmount)}
                   </td>
                   <td
                     style={{
@@ -935,7 +944,7 @@ const QuoteProposal = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.igstAmount}
+                    {formatCost(item.igstAmount)}
                   </td>
                 </tr>
               ))}
@@ -958,7 +967,7 @@ const QuoteProposal = () => {
                     width: "10%",
                   }}
                 >
-                  {totalTaxableValue}
+                  {formatCost(totalTaxableValue)}
                 </td>
                 <td
                   style={{
@@ -974,7 +983,7 @@ const QuoteProposal = () => {
                     width: "10%",
                   }}
                 >
-                  {totalCgstAmount}
+                  {formatCost(totalCgstAmount)}
                 </td>
                 <td
                   style={{
@@ -990,7 +999,7 @@ const QuoteProposal = () => {
                     width: "10%",
                   }}
                 >
-                  {totalSgstAmount}
+                  {formatCost(totalSgstAmount)}
                 </td>
                 <td
                   style={{
@@ -1006,7 +1015,7 @@ const QuoteProposal = () => {
                     width: "10%",
                   }}
                 >
-                  {totalIgstAmount}
+                  {formatCost(totalIgstAmount)}
                 </td>
                 <td
                   style={{
@@ -1016,7 +1025,7 @@ const QuoteProposal = () => {
                     width: "5%",
                   }}
                 >
-                  {totalTaxAmount}
+                  {formatCost(totalTaxAmount)}
                 </td>
               </tr>
             </tbody>

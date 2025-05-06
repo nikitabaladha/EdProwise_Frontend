@@ -80,7 +80,7 @@ const convertToWords = (n) => {
     group++;
   }
 
-  return words.trim() + " Rs only";
+  return words.trim();
 };
 
 export default convertToWords;

@@ -33,8 +33,7 @@ const ViewSellerProfile = () => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSellerProfile(response.data.data);
-
-        console.log("seller data from heder", response.data.data);
+        console.log("Seller Profile", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -84,26 +83,53 @@ const ViewSellerProfile = () => {
                 </h4>
 
                 <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <div className="d-flex align-items-center">
-                        <div className="rounded bg-light d-flex align-items-center justify-content-center">
-                          <img
-                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.sellerProfile}`}
-                            alt={`${sellerProfile?.companyName} Profile`}
-                            className="avatar-md"
-                            style={{
-                              objectFit: "cover",
-                              width: "200px",
-                              height: "200px",
-                              borderRadius: "10px",
-                            }}
-                          />
-                        </div>
+                  <div className="col-md-3">
+                    <label htmlFor="sellerProfile" className="form-label">
+                      Seller Profile
+                    </label>
+                    <div className="mb-3 d-flex justify-content-center">
+                      <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                        <img
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.sellerProfile}`}
+                          alt={`${sellerProfile?.companyName} Profile`}
+                          className="avatar-md"
+                          style={{
+                            objectFit: "cover",
+                            width: "200px",
+                            height: "200px",
+                            borderRadius: "10px",
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
+                    <label htmlFor="signature" className="form-label">
+                      Seller Signature
+                    </label>
+                    <div className="mb-3 d-flex justify-content-center">
+                      <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                        <img
+                          src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${sellerProfile?.signature}`}
+                          alt="Seller Signature"
+                          className="avatar-md"
+                          style={{
+                            objectFit: "cover",
+                            width: "200px",
+                            height: "200px",
+                            borderRadius: "10px",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="randomId" className="form-label">
+                        Seller Id
+                      </label>
+                      <p className="form-control">{sellerProfile?.randomId}</p>
+                    </div>
                     <div className="mb-3">
                       <label htmlFor="companyName" className="form-label">
                         Company Name
@@ -122,10 +148,19 @@ const ViewSellerProfile = () => {
                       <label htmlFor="tan" className="form-label">
                         TAN Number
                       </label>
-                      <p className="form-control">{sellerProfile?.tan || "Not Provided"}</p>
+                      <p className="form-control">
+                        {sellerProfile?.tan || "Not Provided"}
+                      </p>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="userId" className="form-label">
+                        User Id
+                      </label>
+                      <p className="form-control">{sellerProfile?.userId}</p>
+                    </div>
+
                     <div className="mb-3">
                       <label htmlFor="companyType" className="form-label">
                         Company Type
@@ -144,12 +179,14 @@ const ViewSellerProfile = () => {
                       <label htmlFor="cin" className="form-label">
                         CIN Number
                       </label>
-                      <p className="form-control">{sellerProfile?.cin || "Not Provided"}</p>
+                      <p className="form-control">
+                        {sellerProfile?.cin || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                 </div>
                 <div className="row">
-                <div className="col-md-3">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="panFile" className="form-label">
                         PAN File
@@ -312,25 +349,43 @@ const ViewSellerProfile = () => {
                 </h4>
                 <hr></hr>
                 <div className="row">
-                  <div className="mb-3">
-                    <label htmlFor="address" className="form-label">
-                      Address
-                    </label>
-                    <p className="form-control">{sellerProfile?.address}</p>
+                  <div className="col-md-12">
+                    <div className="mb-3">
+                      <label htmlFor="address" className="form-label">
+                        Address
+                      </label>
+                      <p className="form-control">{sellerProfile?.address}</p>
+                    </div>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="cityStateCountry" className="form-label">
-                        City State Country Location
+                      <label htmlFor="country" className="form-label">
+                        Country
                       </label>
-                      <p className="form-control">
-                        {sellerProfile?.cityStateCountry}
-                      </p>
+                      <p className="form-control">{sellerProfile?.country}</p>
                     </div>
                   </div>
                   <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State
+                      </label>
+                      <p className="form-control">{sellerProfile?.state}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City
+                      </label>
+                      <p className="form-control">{sellerProfile?.city}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="landmark" className="form-label">
                         Land Mark
@@ -338,7 +393,7 @@ const ViewSellerProfile = () => {
                       <p className="form-control">{sellerProfile?.landmark}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
                         Pin Code
@@ -454,7 +509,9 @@ const ViewSellerProfile = () => {
                       <label htmlFor="ceoName" className="form-label">
                         CEO Name
                       </label>
-                      <p className="form-control">{sellerProfile?.ceoName || "Not Provided"}</p>
+                      <p className="form-control">
+                        {sellerProfile?.ceoName || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-4">
@@ -462,7 +519,9 @@ const ViewSellerProfile = () => {
                       <label htmlFor="turnover" className="form-label">
                         Company Turnover
                       </label>
-                      <p className="form-control">{sellerProfile?.turnover || "Not Provided"}</p>
+                      <p className="form-control">
+                        {sellerProfile?.turnover || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                 </div>

@@ -58,6 +58,8 @@ const UpdateOrderDetailsModal = ({
     }));
   };
 
+  const [sending, setSending] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -67,6 +69,8 @@ const UpdateOrderDetailsModal = ({
       actualDeliveryDate,
       otherCharges,
     };
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -91,6 +95,8 @@ const UpdateOrderDetailsModal = ({
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -115,6 +121,7 @@ const UpdateOrderDetailsModal = ({
                     </div>
                   </div>
                   <form onSubmit={handleSubmit}>
+                    {/* this works perfectly fine but by default i want to show current date or todays date */}
                     <div className="mb-2">
                       <label
                         htmlFor="actualDeliveryDate"
@@ -140,14 +147,19 @@ const UpdateOrderDetailsModal = ({
                         value={orderDetailsFromSeller.otherCharges}
                         onChange={handleInputChange}
                         className="form-control"
-                        placeholder="200"
+                        placeholder="Example : 200"
                       />
                     </div>
 
                     <div className="text-end">
-                      <Button variant="success" type="submit">
-                        Update
+                      <Button
+                        variant="success"
+                        type="submit"
+                        disabled={sending}
+                      >
+                        {sending ? "Updating..." : "Update"}
                       </Button>
+
                       <Button
                         variant="secondary"
                         onClick={onClose}

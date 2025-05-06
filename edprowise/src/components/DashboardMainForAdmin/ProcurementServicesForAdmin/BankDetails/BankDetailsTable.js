@@ -21,7 +21,6 @@ const BankDetailsTable = () => {
         Array.isArray(response.data.data)
       ) {
         setBankDetails(response.data.data);
-        console.log("Bank Detail data", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }

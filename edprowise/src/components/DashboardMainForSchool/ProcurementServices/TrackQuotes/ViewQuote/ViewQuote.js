@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
@@ -23,24 +23,37 @@ const formatDate = (dateString) => {
 
 const ViewQuote = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  // const { quote, sellerId, enquiryNumber } = location.state || {};
+  const enquiryNumber = searchParams.get('enquiryNumber') || location.state?.enquiryNumber;
+  const sellerId = searchParams.get('sellerId') || location.state?.sellerId;
+  const quote = location.state?.quote;
 
-  const { quote, sellerId, enquiryNumber } = location.state || {};
-
+  useEffect(() => {
+    if (searchParams.has('enquiryNumber') || searchParams.has('sellerId')) {
+      navigate(location.pathname, { 
+        state: { 
+          enquiryNumber,
+          sellerId,
+          quote 
+        },
+        replace: true 
+      });
+    }
+  }, []);
+  
   const [currentQuote, setCurrentQuote] = useState(quote);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchQuoteData = async () => {
-    console.log("Enquiry Number", enquiryNumber);
-    console.log("Seller ID", sellerId);
-
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/submit-quote-by-status?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+        `/submit-quote-by-status?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`
       );
       if (!response.hasError && response.data && response.data.data) {
         setCurrentQuote(response.data.data);
-
-        console.log("Quote data fetched successfully:", response.data.data);
       } else {
         console.error("Error fetching quote data");
       }
@@ -49,53 +62,40 @@ const ViewQuote = () => {
     }
   };
 
-  const fetchPrepareQuoteAndProposalData = async (enquiryNumber, sellerId) => {
+  const generateQuotePDF = async (enquiryNumber, sellerId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
     if (!sellerId || !enquiryNumber || !schoolId) {
       console.error("Seller ID, Enquiry Number, or School ID is missing");
+      toast.error("Required information is missing");
       return;
     }
 
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/generate-quote-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      // write your code here
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "quote.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/school-dashboard/procurement-services/quote-proposal`, {
-          state: { prepareQuoteData, quoteProposalData, profileData },
-        });
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch quote data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching quote data");
     }
   };
 
@@ -120,10 +120,10 @@ const ViewQuote = () => {
                       Submitted Quote Details
                     </h4>
                     <div className="">
-                      <Link
+                      <button
                         onClick={(e) => {
                           e.preventDefault();
-                          fetchPrepareQuoteAndProposalData(
+                          generateQuotePDF(
                             quote?.enquiryNumber,
                             quote?.sellerId
                           );
@@ -137,7 +137,7 @@ const ViewQuote = () => {
                           icon="solar:download-broken"
                           className="align-middle fs-18"
                         />
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -198,7 +198,9 @@ const ViewQuote = () => {
                     <label htmlFor="quotedAmount" className="form-label">
                       Quoted Amount
                     </label>
-                    <p className="form-control">{formatCost(currentQuote?.quotedAmount)}</p>
+                    <p className="form-control">
+                      {formatCost(currentQuote?.quotedAmount)}
+                    </p>
                   </div>
                 </div>
                 <div className="col-md-6">
@@ -234,7 +236,9 @@ const ViewQuote = () => {
                     <label htmlFor="description" className="form-label">
                       Description
                     </label>
-                    <p className="form-control">{currentQuote?.description || "Not Provided"}</p>
+                    <p className="form-control">
+                      {currentQuote?.description || "Not Provided"}
+                    </p>
                   </div>
                 </div>
               </div>

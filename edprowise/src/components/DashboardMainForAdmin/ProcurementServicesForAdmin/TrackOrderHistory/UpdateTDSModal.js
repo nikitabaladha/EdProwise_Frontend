@@ -14,11 +14,6 @@ const UpdateTDSModal = ({
   sellerId,
   onTDSUpdated,
 }) => {
-  console.log("enquiryNumber", enquiryNumber);
-  console.log("quoteNumber", quoteNumber);
-
-  console.log("sellerId", sellerId);
-
   const [tdsDetails, setTdsDetails] = useState({
     tDSAmount: "",
   });
@@ -31,8 +26,6 @@ const UpdateTDSModal = ({
             `/tds-amount?enquiryNumber=${enquiryNumber}&quoteNumber=${quoteNumber}&sellerId=${sellerId}`
           );
           if (!response.hasError && response.data && response.data.data) {
-            console.log("response", response);
-
             const tDSAmount = response.data.data;
 
             setTdsDetails({
@@ -57,6 +50,7 @@ const UpdateTDSModal = ({
       [name]: value,
     }));
   };
+  const [sending, setSending] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +60,8 @@ const UpdateTDSModal = ({
     const dataToSend = {
       tDSAmount,
     };
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -87,6 +83,8 @@ const UpdateTDSModal = ({
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -126,9 +124,14 @@ const UpdateTDSModal = ({
                     </div>
 
                     <div className="text-end">
-                      <Button variant="success" type="submit">
-                        Update
+                      <Button
+                        variant="success"
+                        type="submit"
+                        disabled={sending}
+                      >
+                        {sending ? "Updating..." : "Update"}
                       </Button>
+
                       <Button
                         variant="secondary"
                         onClick={onClose}

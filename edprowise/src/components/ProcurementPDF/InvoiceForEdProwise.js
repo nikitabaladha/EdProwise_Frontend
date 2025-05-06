@@ -5,8 +5,8 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { format } from "date-fns";
-// import convertToWOrds from "../../../CommonFunction.js";
-// import convertToWords from "../../CommonFunction.js";
+import { formatCost } from "../CommonFunction";
+
 import convertToWords from "../CommonFunction";
 
 const formatDate = (dateString) => {
@@ -168,7 +168,6 @@ const InvoiceForEdProwise = () => {
                   Tax Invoice
                 </td>
 
-                {/* (Original for Recipient) Column */}
                 <td
                   style={{
                     width: "33%",
@@ -436,7 +435,7 @@ const InvoiceForEdProwise = () => {
                     border: "none",
                   }}
                 >
-                  Contact No : {edprowiseAlternateContactNo}
+                  Contact No : {edprowiseContactNo}
                 </td>
                 <td
                   style={{
@@ -526,7 +525,7 @@ const InvoiceForEdProwise = () => {
                     borderBottom: "none",
                   }}
                 >
-                  All Amount are in INR
+                  All Amounts are in INR
                 </td>
               </tr>
               <tr>
@@ -627,7 +626,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  GST Amt
+                  GST Amount
                 </th>
                 <th
                   style={{
@@ -686,7 +685,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.taxableValueForEdprowise}
+                    {formatCost(item.taxableValueForEdprowise)}
                   </td>
 
                   <td
@@ -696,7 +695,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.gstAmountForEdprowise}
+                    {formatCost(item.gstAmountForEdprowise)}
                   </td>
                   <td
                     style={{
@@ -705,7 +704,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.totalAmountForEdprowise}
+                    {formatCost(item.totalAmountForEdprowise)}
                   </td>
                 </tr>
               ))}
@@ -749,7 +748,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalTaxableValueForEdprowise}
+                  {formatCost(totalTaxableValueForEdprowise)}
                 </td>
                 <td
                   style={{
@@ -757,7 +756,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalTaxAmountForEdprowise}
+                  {formatCost(totalTaxAmountForEdprowise)}
                 </td>
                 <td
                   style={{
@@ -766,7 +765,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  {totalAmountForEdprowise}
+                  {formatCost(totalAmountForEdprowise)}
                 </td>
               </tr>
             </tbody>
@@ -851,7 +850,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  HSN/SAAC
+                  HSN/SAC
                 </th>
                 <th
                   style={{
@@ -875,7 +874,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt
+                  Amount
                 </th>
                 <th
                   style={{
@@ -891,7 +890,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt
+                  Amount
                 </th>
                 <th
                   style={{
@@ -907,7 +906,7 @@ const InvoiceForEdProwise = () => {
                     padding: "8px",
                   }}
                 >
-                  Amt
+                  Amount
                 </th>
                 <th
                   style={{
@@ -939,7 +938,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.taxableValueForEdprowise}
+                    {formatCost(item.taxableValueForEdprowise)}
                   </td>
                   <td
                     style={{
@@ -948,7 +947,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.cgstRate}
+                    {item.cgstRateForEdprowise}
                   </td>
                   <td
                     style={{
@@ -957,7 +956,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.cgstAmountForEdprowise}
+                    {formatCost(item.cgstAmountForEdprowise)}
                   </td>
                   <td
                     style={{
@@ -966,7 +965,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.sgstRate}
+                    {item.sgstRateForEdprowise}
                   </td>
                   <td
                     style={{
@@ -975,7 +974,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.sgstAmountForEdprowise}
+                    {formatCost(item.sgstAmountForEdprowise)}
                   </td>
                   <td
                     style={{
@@ -984,7 +983,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.igstRate}
+                    {item.igstRateForEdprowise}
                   </td>
                   <td
                     style={{
@@ -993,7 +992,7 @@ const InvoiceForEdProwise = () => {
                       padding: "8px",
                     }}
                   >
-                    {item.igstAmountForEdprowise}
+                    {formatCost(item.igstAmountForEdprowise)}
                   </td>
                 </tr>
               ))}
@@ -1017,7 +1016,7 @@ const InvoiceForEdProwise = () => {
                     width: "10%",
                   }}
                 >
-                  {totalTaxableValueForEdprowise}
+                  {formatCost(totalTaxableValueForEdprowise)}
                 </td>
                 <td
                   style={{
@@ -1033,7 +1032,7 @@ const InvoiceForEdProwise = () => {
                     width: "10%",
                   }}
                 >
-                  {totalCgstAmountForEdprowise}
+                  {formatCost(totalCgstAmountForEdprowise)}
                 </td>
                 <td
                   style={{
@@ -1049,7 +1048,7 @@ const InvoiceForEdProwise = () => {
                     width: "10%",
                   }}
                 >
-                  {totalSgstAmountForEdprowise}
+                  {formatCost(totalSgstAmountForEdprowise)}
                 </td>
                 <td
                   style={{
@@ -1065,7 +1064,7 @@ const InvoiceForEdProwise = () => {
                     width: "10%",
                   }}
                 >
-                  {totalIgstAmountForEdprowise}
+                  {formatCost(totalIgstAmountForEdprowise)}
                 </td>
                 <td
                   style={{
@@ -1075,7 +1074,7 @@ const InvoiceForEdProwise = () => {
                     width: "5%",
                   }}
                 >
-                  {totalTaxAmountForEdprowise}
+                  {formatCost(totalTaxAmountForEdprowise)}
                 </td>
               </tr>
             </tbody>

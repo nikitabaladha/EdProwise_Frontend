@@ -18,24 +18,63 @@ const UpdateSubCategory = () => {
     subCategoryName: "",
     categoryId: "",
     mainCategoryId: "",
+    edprowiseMargin: "",
   });
 
-  // Fetch main categories on mount
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchMainCategories = async () => {
       try {
         const response = await getAPI("/main-category", true);
         if (!response.hasError) {
           setMainCategories(response.data.data);
+
+          // If we have a subCategory with mainCategoryId, set it immediately
+          if (subCategory?.mainCategoryId) {
+            setMainCategoryId(subCategory.mainCategoryId);
+            await fetchCategoriesForMainCategory(subCategory.mainCategoryId);
+          }
         } else {
           toast.error(`Failed to fetch Main Categories: ${response.message}`);
         }
       } catch (error) {
         toast.error("An error occurred while fetching main categories.");
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchMainCategories();
   }, []);
+
+  const fetchCategoriesForMainCategory = async (mainCatId) => {
+    try {
+      const response = await getAPI(`/category/${mainCatId}`, {}, true);
+      if (!response.hasError && Array.isArray(response.data.data)) {
+        setCategories(response.data.data);
+
+        // If we have a subCategory with categoryId, set it immediately
+        if (subCategory?.categoryId) {
+          setCategoryId(subCategory.categoryId);
+          const selectedCategory = response.data.data.find(
+            (cat) => cat.id === subCategory.categoryId
+          );
+          if (selectedCategory) {
+            setFormData((prev) => ({
+              ...prev,
+              edprowiseMargin: selectedCategory.edprowiseMargin || "",
+              subCategoryName: subCategory.subCategoryName || "",
+            }));
+          }
+        }
+      } else {
+        toast.error("Failed to load categories.");
+      }
+    } catch (err) {
+      toast.error("Error fetching categories.");
+    }
+  };
 
   // Fetch categories when main category is selected
   const handleMainCategoryChange = async (e) => {
@@ -43,60 +82,33 @@ const UpdateSubCategory = () => {
     setMainCategoryId(selectedMainCategoryId);
     setCategoryId("");
     setCategories([]);
+    setFormData((prev) => ({
+      ...prev,
+      edprowiseMargin: "",
+      categoryId: "",
+    }));
 
     if (selectedMainCategoryId) {
-      try {
-        const response = await getAPI(
-          `/category/${selectedMainCategoryId}`,
-          {},
-          true
-        );
-        if (!response.hasError && Array.isArray(response.data.data)) {
-          setCategories(response.data.data);
-        } else {
-          toast.error("Failed to load categories.");
-        }
-      } catch (err) {
-        toast.error("Error fetching categories.");
-      }
+      await fetchCategoriesForMainCategory(selectedMainCategoryId);
     }
   };
 
   // Handle category selection
   const handleCategoryChange = (e) => {
-    setCategoryId(e.target.value);
-  };
+    const selectedCategoryId = e.target.value;
+    setCategoryId(selectedCategoryId);
 
-  // Populate form with existing data
-  useEffect(() => {
-    if (subCategory) {
-      setFormData({
-        subCategoryName: subCategory.subCategoryName || "",
-      });
-      setMainCategoryId(subCategory.mainCategoryId || "");
-      setCategoryId(subCategory.categoryId || "");
-
-      // Fetch categories for the selected main category
-      const fetchCategoriesForMainCategory = async () => {
-        try {
-          const response = await getAPI(
-            `/category/${subCategory.mainCategoryId}`,
-            {},
-            true
-          );
-          if (!response.hasError && Array.isArray(response.data.data)) {
-            setCategories(response.data.data);
-          } else {
-            toast.error("Failed to load categories.");
-          }
-        } catch (err) {
-          toast.error("Error fetching categories.");
-        }
-      };
-
-      fetchCategoriesForMainCategory();
+    // Find the selected category and set its edprowiseMargin
+    const selectedCategory = categories.find(
+      (cat) => cat.id === selectedCategoryId
+    );
+    if (selectedCategory) {
+      setFormData((prev) => ({
+        ...prev,
+        edprowiseMargin: selectedCategory.edprowiseMargin || "",
+      }));
     }
-  }, [subCategory]);
+  };
 
   // Handle input change
   const handleChange = (e) => {
@@ -104,8 +116,13 @@ const UpdateSubCategory = () => {
   };
 
   // Handle update
+
+  const [sending, setSending] = useState(false);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -114,6 +131,7 @@ const UpdateSubCategory = () => {
           subCategoryName: formData.subCategoryName,
           categoryId,
           mainCategoryId,
+          edprowiseMargin: formData.edprowiseMargin,
         },
         {},
         true
@@ -129,8 +147,14 @@ const UpdateSubCategory = () => {
       toast.error(
         error.response?.data?.message || "An unexpected error occurred."
       );
+    } finally {
+      setSending(false);
     }
   };
+
+  if (isLoading) {
+    return <div className="text-center">Loading...</div>;
+  }
 
   return (
     <div className="container">
@@ -190,6 +214,25 @@ const UpdateSubCategory = () => {
                     </div>
                   </div>
 
+                  {/* Edprowise Margin */}
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="edprowiseMargin" className="form-label">
+                        Edprowise Margin (%)
+                      </label>
+                      <input
+                        type="number"
+                        name="edprowiseMargin"
+                        value={formData.edprowiseMargin}
+                        onChange={handleChange}
+                        className="form-control"
+                        min="0"
+                        max="100"
+                        step="0.01"
+                      />
+                    </div>
+                  </div>
+
                   {/* Sub Category */}
                   <div className="col-md-3">
                     <div className="mb-3">
@@ -207,8 +250,12 @@ const UpdateSubCategory = () => {
                 </div>
 
                 <div className="text-end">
-                  <button type="submit" className="btn btn-primary">
-                    Update
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={sending}
+                  >
+                    {sending ? "Updating..." : "update"}
                   </button>
                 </div>
               </form>

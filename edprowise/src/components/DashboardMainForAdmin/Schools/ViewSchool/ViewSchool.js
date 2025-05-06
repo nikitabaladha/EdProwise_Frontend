@@ -9,13 +9,12 @@ import { Link } from "react-router-dom";
 import AddConfirmationDialog from "../AddConfirmationDialog";
 import ConfirmationDialog from "../../../ConfirmationDialog";
 
-const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
+const ViewSchool = () => {
   const location = useLocation();
-
   const navigate = useNavigate();
-
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedSubscription, setSelectedsubscription] = useState(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -25,8 +24,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   const [subscription, setSubscription] = useState([]);
 
   const schoolId = location.state?.schoolId;
-  const searchQuery = location.state?.searchQuery;
-
   const [school, setSchool] = useState(null);
 
   const fetchSchoolData = async () => {
@@ -35,8 +32,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSchool(response.data.data);
-
-        console.log("school data from view school", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -58,7 +53,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
         Array.isArray(response.data.data)
       ) {
         setUsers(response.data.data);
-        console.log("all users", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -76,7 +70,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
         Array.isArray(response.data.data)
       ) {
         setSubscription(response.data.data);
-        console.log("All setSubscriptions", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -130,8 +123,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
   };
 
   const navigateToViewSubscription = async (event, subscriptions) => {
-    console.log("navigateToViewSubscription", subscriptions);
-
     event.preventDefault();
 
     try {
@@ -141,7 +132,6 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
         true
       );
       if (!response.hasError && response.data) {
-        console.log("navigateToViewSubscription", response.data);
         navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
           state: { subscriptions: response.data.data },
         });
@@ -194,7 +184,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
 
                 <div className="row">
                   <div className="col-md-3">
-                    <div className="d-flex align-items-center">
+                    <div className="mb-3 d-flex justify-content-center">
                       <div className="rounded bg-light d-flex align-items-center justify-content-center">
                         <img
                           src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
@@ -219,18 +209,12 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                         {school?.schoolName}
                       </p>
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="address" className="form-label">
-                        School Address
-                      </label>
-                      <p className="form-control">{school?.schoolAddress}</p>
-                    </div>
 
                     <div className="mb-3">
-                      <label htmlFor="cityStateCountry" className="form-label">
-                        City-State-Country
+                      <label htmlFor="mobileNo" className="form-label">
+                        School Mobile Number
                       </label>
-                      <p className="form-control">{school?.schoolLocation}</p>
+                      <p className="form-control">{school?.schoolMobileNo}</p>
                     </div>
                   </div>
                   <div className="col-md-3">
@@ -241,18 +225,48 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                       </label>
                       <p className="form-control">{school?.schoolId}</p>
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="mobileNo" className="form-label">
-                        School Mobile Number
-                      </label>
-                      <p className="form-control">{school?.schoolMobileNo}</p>
-                    </div>
 
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
                         School Email
                       </label>
                       <p className="form-control">{school?.schoolEmail}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="mb-3">
+                      <label htmlFor="address" className="form-label">
+                        School Address
+                      </label>
+                      <p className="form-control">{school?.schoolAddress}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="country" className="form-label">
+                        Country
+                      </label>
+                      <p className="form-control">{school?.country}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State
+                      </label>
+                      <p className="form-control">{school?.state}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City
+                      </label>
+                      <p className="form-control">{school?.city}</p>
                     </div>
                   </div>
                 </div>
@@ -434,7 +448,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                           <td>******</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link
+                              {/* <Link
                                 className="btn btn-light btn-sm"
                                 onClick={(e) => {
                                   e.preventDefault();
@@ -444,7 +458,7 @@ const ViewSchool = ({ selectedSchool, setSelectedSchool }) => {
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link>
+                              </Link> */}
 
                               <Link className="btn btn-soft-danger btn-sm">
                                 <iconify-icon

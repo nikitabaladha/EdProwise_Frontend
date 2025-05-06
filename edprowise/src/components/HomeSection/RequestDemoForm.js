@@ -55,12 +55,14 @@ const RequestDemoForm = () => {
     };
 
     try {
-      const response = await postAPI("/request-demo", data,
+      const response = await postAPI(
+        "/request-demo",
+        data,
         {
-         "Content-Type": "application/json",
-      }
-    ,
-  true);
+          "Content-Type": "application/json",
+        },
+        true
+      );
 
       if (!response.hasError) {
         toast.success("Thank you! We will touch with you shortly.");
@@ -69,13 +71,14 @@ const RequestDemoForm = () => {
         toast.error("A demo request with this email already exists.");
       }
     } catch (error) {
-      toast.error("Error occurred while sending request. Please try again later.");
+      toast.error(
+        "Error occurred while sending request. Please try again later."
+      );
     }
   };
 
   return (
     <>
-      
       <section className="wpo-page-title">
         <div className="container">
           <div className="row">
@@ -87,28 +90,55 @@ const RequestDemoForm = () => {
           </div>
         </div>
       </section>
-      <RequestDemoSteps/>
+      <RequestDemoSteps />
       <section className="wpo-contact-pg-section section-padding">
         <div className="container">
           <div className="row">
             <div className="col col-lg-10 offset-lg-1">
               <div className="wpo-contact-title">
-                <h2>Experience the future of school solutions - Request a Demo Today!</h2>
+                <h2>
+                  Experience the future of school solutions - Request a Demo
+                  Today!
+                </h2>
                 <p className="text-black">
-                  Fill out the form below, and our team will get in touch with you shortly!
+                  Fill out the form below, and our team will get in touch with
+                  you shortly!
                 </p>
               </div>
               <div className="wpo-contact-form-area">
-                <form method="post" className="contact-validation-active" id="contact-form-main" onSubmit={handleSubmit}>
+                <form
+                  method="post"
+                  className="contact-validation-active"
+                  id="contact-form-main"
+                  onSubmit={handleSubmit}
+                >
                   <div>
-                    <input type="text" className="form-control" name="name" placeholder="Enter Your Full Name*" required />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="name"
+                      placeholder="Enter Your Full Name*"
+                      required
+                    />
                   </div>
                   <div>
-                    <input type="text" className="form-control" name="schoolname" placeholder="Enter School Name*" required />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="schoolname"
+                      placeholder="Enter School Name*"
+                      required
+                    />
                   </div>
                   <div>
-                    <select name="designation" className="form-control" required>
-                      <option disabled selected>Choose Designation</option>
+                    <select
+                      name="designation"
+                      className="form-control"
+                      required
+                    >
+                      <option disabled selected>
+                        Choose Designation*
+                      </option>
                       <option>Principal</option>
                       <option>Administrator</option>
                       <option>HR</option>
@@ -117,33 +147,65 @@ const RequestDemoForm = () => {
                     </select>
                   </div>
                   <div>
-                    <input type="email" className="form-control" name="email" placeholder="Email id*" required />
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="email"
+                      placeholder="Email id*"
+                      required
+                    />
                   </div>
                   <div>
-                    <input type="text" className="form-control" name="phone" placeholder="Contact No*" required />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="phone"
+                      placeholder="Contact No*"
+                      required
+                    />
                   </div>
                   <div className="fullwidth">
-                    <label className="text-black">Preferred Demo Date & Time*</label>
-                    <input type="datetime-local" className="form-control" name="demoDateTime" required />
+                    <label className="text-black">
+                      Preferred Demo Date & Time*
+                    </label>
+                    <input
+                      type="datetime-local"
+                      className="form-control"
+                      name="demoDateTime"
+                      required
+                    />
                   </div>
+
                   <div className="fullwidth">
                     <label className="text-black">Select Services*</label>
-                    <div className="custom-multi-select">
-                      <div className="dropdown-header-web" onClick={toggleDropdown}>
+                    <div
+                      className="custom-multi-select"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      onMouseLeave={() => setIsDropdownOpen(false)}
+                  
+                    >
+                      <div className="dropdown-header-web">
                         {selectedServices.length > 0
                           ? `${selectedServices.length} services selected`
                           : "Select services"}
-                        <span className="arrow">{isDropdownOpen ? "▲" : "▼"}</span>
+                        <span className="arrow">
+                          {isDropdownOpen ? "▲" : "▼"}
+                        </span>
                       </div>
                       {isDropdownOpen && (
                         <div className="dropdown-options">
                           {coursesData.map((service) => (
-                            <label key={service.id} className="dropdown-option text-black">
+                            <label
+                              key={service.id}
+                              className="dropdown-option text-black"
+                            >
                               <input
                                 type="checkbox"
                                 className="check-box-demo"
                                 value={service.title}
-                                checked={selectedServices.includes(service.title)}
+                                checked={selectedServices.includes(
+                                  service.title
+                                )}
                                 onChange={handleCheckboxChange}
                               />
                               {service.title}
@@ -164,12 +226,16 @@ const RequestDemoForm = () => {
                     </div>
                   )}
                   <div className="fullwidth">
-                    <textarea className="form-control"
-                    style={{border: "1px solid black"}}
-                    name="note" placeholder="Additional requirements or questions..."></textarea>
+                    <textarea
+                      className="form-control"
+                      name="note"
+                      placeholder="Additional requirements or questions..."
+                    ></textarea>
                   </div>
                   <div className="submit-area">
-                    <button type="submit" className="theme-btn">Get in Touch</button>
+                    <button type="submit" className="theme-btn">
+                      Get in Touch
+                    </button>
                   </div>
                 </form>
               </div>

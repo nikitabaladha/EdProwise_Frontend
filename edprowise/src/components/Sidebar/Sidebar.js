@@ -128,6 +128,149 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         ],
       },
       {
+        id: "payrollModule",
+        label: "Payroll Module",
+        icon: "solar:wallet-money-bold",
+        children: [
+          {
+            id: "employeeSelfService",
+            label: "Employee Self Service",
+            icon: "solar:book-bookmark-bold-duotone",
+            children: [
+              {
+                label: "Update Details",
+                link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "Salary Slip",
+                link: "/admin-dashboard/payroll-module/employee-services/salary-slip",
+              },
+              {
+                label: "IT Declaration",
+                link: "/admin-dashboard/payroll-module/employee-services/it-declaration",
+              },
+              {
+                label: "Income Tax Computation Sheet",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "Form 16",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "My Loan Statement",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "My Attendance Report",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "Apply for Leave",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+            ],
+          },
+          {
+            id: "employer",
+            label: "Employer",
+            icon: "solar:book-bookmark-bold-duotone",
+            children: [
+              {
+                label: "Employee Registration",
+                link: "/admin-dashboard/payroll-module/admin-setting/register-employee-list",
+              },
+              {
+                // LWD Details
+                label: "Employee Update",
+                link: "/admin-dashboard/payroll-module/admin-setting/lwd-details",
+              },
+              {
+                label: "CTC Update",
+                link: "/admin-dashboard/payroll-module/admin-setting/CTC-update",
+              },
+              {
+                label: "Process Payroll",
+                link: "/admin-dashboard/payroll-module/admin-setting/payroll-process",
+              },
+              {
+                label: "Salary Increment",
+                link: "/admin-dashboard/payroll-module/admin-setting/salary-increment",
+              },
+              {
+                label: "Generate Appointment/CTC Letter",
+                // link: "/admin-dashboard/payroll-module/admin-setting/salary-increment",
+              },
+              {
+                label: "Form 16 (Upload)",
+                link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+              },
+              {
+                label: "Check Supporting Submitted for Tax",
+                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+              },
+              {
+                label: "Loan to Employees",
+                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+              },
+              {
+                label: "Pay Loan",
+                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+              },
+              {
+                label: "Loan Statement",
+                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+              },
+              {
+                label: "Overtime Allowance",
+                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+              },
+              {
+                label: "Performance Tracking",
+                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+              },
+            ],
+          },
+          {
+            id: "adminSetting",
+            label: "Admin Setting",
+            icon: "solar:book-bookmark-bold-duotone",
+            children: [
+              {
+                label: "Freeze IT Declaration",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "Annual Leave Update",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "Overtime Allowance Rate",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "CTC Components",
+                link: "/admin-dashboard/payroll-module/admin-setting/define-ctc-components-list",
+                // icon: "solar:users-group-rounded-bold-duotone",
+              },
+              {
+                label: "Grade",
+                // link: ""
+              },
+              {
+                label: "Job Designation",
+                // link: ""
+              },
+              {
+                label: "School Details",
+                // link: ""
+              }
+            ],
+          },
+          
+        ],
+      },
+      {
         id: "requestDemo",
         label: "Request For Demo",
         icon: "solar:wallet-money-bold",
@@ -151,7 +294,7 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
           },
           {
             label: "Marketing",
-            link:"/admin-dashboard/email/marketing",
+            link: "/admin-dashboard/email/marketing",
             icon: "solar:book-bookmark-bold-duotone",
           },
         ],
@@ -193,7 +336,6 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         ],
       },
 
-      // When i click on Fees Module it opens
       {
         id: "feesmodule",
         label: "Fees module",
@@ -254,6 +396,21 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             icon: "solar:users-group-rounded-bold-duotone",
             children: [
               {
+                label: "Registartion Prefix",
+                link: "/school-dashboard/fees-module/admin-setting/prefix-setting/registartion-prefix",
+                icon: "solar:settings-bold-duotone",
+              },
+              {
+                label: "Admission Prefix",
+                link: "/school-dashboard/fees-module/admin-setting/prefix-setting/admission-prefix",
+                icon: "solar:settings-bold-duotone",
+              },
+              {
+                label: "Fine",
+                link: "/school-dashboard/fees-module/admin-setting/fine",
+                icon: "solar:document-bold-duotone",
+              },
+              {
                 label: "Shift",
                 link: "/school-dashboard/fees-module/admin-setting/shifts",
                 icon: "solar:users-group-rounded-bold-duotone",
@@ -277,68 +434,7 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
           },
         ],
       },
-
-      {
-        id: "payrollModule",
-        label: "Payroll Module",
-        icon: "solar:wallet-money-bold",
-        children: [
-          {
-            id: "adminSetting",
-            label: "Admin Setting",
-            icon: "solar:book-bookmark-bold-duotone",
-            children: [
-              {
-                label: "Employee Registration",
-                link: "/school-dashboard/payroll-module/admin-setting/register-employee-list",
-                // icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "LWD Details",
-                link: "/school-dashboard/payroll-module/admin-setting/lwd-details",
-                // icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Define CTC Components",
-                link: "/school-dashboard/payroll-module/admin-setting/define-ctc-components-list",
-                // icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "CTC Update",
-                link: "/school-dashboard/payroll-module/admin-setting/CTC-update",
-                // icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Payroll Process",
-                link: "/school-dashboard/payroll-module/admin-setting/payroll-process",
-                // icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Salary Increment",
-                link: "/school-dashboard/payroll-module/admin-setting/salary-increment",
-                // icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Form 16",
-                link: "/school-dashboard/payroll-module/admin-setting/form-16-list",
-                // icon: "solar:users-group-rounded-bold-duotone",
-              },              
-            ],
-          },
-          {
-            id: "employeeSelfService",
-            label: "Employee Self Service",
-            icon: "solar:book-bookmark-bold-duotone",
-            children: [
-              {
-                label: "Update Details",
-                link: "/school-dashboard/payroll-module/employee-services/update-details",
-              },     
-            ],
-          },
-          
-        ],
-      },
+      
     ],
     Seller: [
       // {
@@ -392,18 +488,98 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
   //   }
   // }
 
+  // const renderMenuItem = (item, parentId = null) => {
+  //   // const isActive = item.children
+  //   //   ? item.children.some((child) => currentRoute === child.link)
+  //   //   : currentRoute === item.link;
+
+  //   let findChilderRoute = null;
+  //   item?.children?.forEach((child) => {
+  //     if (currentRoute === child.link) findChilderRoute = child;
+  //     if (!findChilderRoute) {
+  //       item?.children?.forEach((subChild) => {
+  //         subChild.children?.forEach((childOfChild) => {
+  //           if (currentRoute === childOfChild.link) {
+  //             findChilderRoute = childOfChild;
+  //             if (!findChilderRoute.id) findChilderRoute.id = subChild.id;
+  //             if (!findChilderRoute.parentId)
+  //               findChilderRoute.parentId = item.id;
+  //           }
+  //         });
+  //       });
+  //     }
+  //   });
+  //   const checkItemIsCurrentRoute = currentRoute === item.link;
+  //   const isActive = findChilderRoute || checkItemIsCurrentRoute;
+  //   if (!Object.keys(openMenus).length && isActive) {
+  //     toggleMenu(
+  //       findChilderRoute?.id || item?.id,
+  //       findChilderRoute?.parentId || parentId
+  //     );
+  //   }
+
+  //   return (
+  //     <li className={`nav-item ${isActive ? "active" : ""}`} key={item.id}>
+  //       {item.children ? (
+  //         <>
+  //           <div
+  //             className={`nav-link collapsed ${isActive ? "active" : ""}`}
+  //             onClick={() => toggleMenu(item.id, parentId)}
+  //           >
+  //             <span className="nav-icon">
+  //               <Icon icon={item.icon} />
+  //             </span>
+  //             <span className="nav-text"> {item.label} </span>
+  //             <IoIosArrowForward
+  //               style={{
+  //                 transition: "transform 0.3s ease",
+  //                 transform: openMenus[item.id]
+  //                   ? "rotate(90deg)"
+  //                   : "rotate(0deg)",
+  //               }}
+  //             />
+  //           </div>
+  //           {openMenus[item.id] && (
+  //             <div className="collapse show">
+  //               <ul className="nav sub-navbar-nav">
+  //                 {item.children.map((subItem) =>
+  //                   renderMenuItem(subItem, item.id)
+  //                 )}
+  //               </ul>
+  //             </div>
+  //           )}
+  //         </>
+  //       ) : (
+  //         <Link
+  //           className={`nav-link ${isActive ? "active" : ""}`}
+  //           to={item.link}
+  //         >
+  //           <span className="nav-icon">
+  //             <Icon icon={item.icon} />
+  //           </span>
+  //           <span className="nav-text"> {item.label} </span>
+  //         </Link>
+  //       )}
+  //     </li>
+  //   );
+  // };
+
+  const isCurrentRoute = (route) =>
+    currentRoute === route || currentRoute.startsWith(route + "/");
+
   const renderMenuItem = (item, parentId = null) => {
     // const isActive = item.children
     //   ? item.children.some((child) => currentRoute === child.link)
     //   : currentRoute === item.link;
 
     let findChilderRoute = null;
+
     item?.children?.forEach((child) => {
-      if (currentRoute === child.link) findChilderRoute = child;
+      if (isCurrentRoute(child.link)) findChilderRoute = child;
       if (!findChilderRoute) {
         item?.children?.forEach((subChild) => {
           subChild.children?.forEach((childOfChild) => {
-            if (currentRoute === childOfChild.link) {
+            if (isCurrentRoute(childOfChild.link)) {
               findChilderRoute = childOfChild;
               if (!findChilderRoute.id) findChilderRoute.id = subChild.id;
               if (!findChilderRoute.parentId)
@@ -413,8 +589,10 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
         });
       }
     });
-    const checkItemIsCurrentRoute = currentRoute === item.link;
+
+    const checkItemIsCurrentRoute = isCurrentRoute(item.link);
     const isActive = findChilderRoute || checkItemIsCurrentRoute;
+
     if (!Object.keys(openMenus).length && isActive) {
       toggleMenu(
         findChilderRoute?.id || item?.id,
@@ -444,8 +622,21 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
               />
             </div>
             {openMenus[item.id] && (
-              <div className="collapse show">
-                <ul className="nav sub-navbar-nav">
+              <div
+                className="collapse show"
+                style={{ paddingLeft: parentId ? 30 : 20 }}
+              >
+                <ul
+                  className="nav sub-navbar-nav"
+                  style={{
+                    listStyleType: "none",
+                    paddingLeft: 0,
+                    marginTop: 5,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                  }}
+                >
                   {item.children.map((subItem) =>
                     renderMenuItem(subItem, item.id)
                   )}

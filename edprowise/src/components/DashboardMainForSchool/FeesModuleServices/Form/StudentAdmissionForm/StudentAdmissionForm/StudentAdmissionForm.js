@@ -1,92 +1,478 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from "react";
 import CityData from "../../../../../CityData.json";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import getAPI from "../../../../../../api/getAPI";
+import { toast } from "react-toastify";
+import postAPI from "../../../../../../api/postAPI";
+import {
+  validateBasicForm,
+  validateFullForm,
+} from "../FormValidation/FormValidation";
+import RegistrationSelector from "./RegistrationSelector";
+import Form from "./Form";
+
 const StudentAdmissionForm = () => {
   const navigate = useNavigate();
+  const [schoolId, setSchoolId] = useState("");
+  const [existingStudents, setExistingStudents] = useState([]);
+  const [showFullForm, setShowFullForm] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAdditionalData, setShowAdditionalData] = useState(false);
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [shifts, setShifts] = useState([]);
+
   const [formData, setFormData] = useState({
-    registrationNumber: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    dateOfBirth: '',
-    age: '',
-    nationality: '',
-    gender: '',
-    bloodGroup: '',
-    classApplyingFor: '',
-    shift: '',
-    currentAddress: '',
-    cityStateCountry: '',
-    pincode: '',
-    parentContactNumber: '',
-    motherLanguage: '',
-    previousSchoolName: '',
-    addressOfPreviousSchool: '',
-    previousSchoolBoard: '',
+    registrationNumber: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    dateOfBirth: "",
+    age: "",
+    nationality: "",
+    gender: "",
+    bloodGroup: "",
+    masterDefineClass: "",
+    section: "",
+    masterDefineShift: "",
+    currentAddress: "",
+    cityStateCountry: "",
+    pincode: "",
+    parentContactNumber: "",
+    motherLanguage: "",
+    previousSchoolName: "",
+    addressOfPreviousSchool: "",
+    previousSchoolBoard: "",
     previousSchoolResult: null,
     tcCertificate: null,
     proofOfResidence: null,
-    aadharPassportNumber: '',
+    aadharPassportNumber: "",
     aadharPassportFile: null,
-    studentCategory: '',
+    studentCategory: "",
     castCertificate: null,
     siblingInfoChecked: false,
-    relationType: '',
-    siblingName: '',
+    relationType: null,
+    siblingName: "",
     idCardFile: null,
-    parentalStatus: '',
-    fatherName: '',
-    fatherContactNo: '',
-    fatherQualification: '',
-    fatherProfession: '',
-    motherName: '',
-    motherContactNo: '',
-    motherQualification: '',
-    motherProfession: '',
-    name: '',
-    paymentMode: '',
+    parentalStatus: "Parents",
+    fatherName: "",
+    fatherContactNo: "",
+    fatherQualification: "",
+    fatherProfession: "",
+    motherName: "",
+    motherContactNo: "",
+    motherQualification: "",
+    motherProfession: "",
+    agreementChecked: false,
+    name: "",
+    paymentMode: "",
+    chequeNumber: "",
+    bankName: "",
   });
+
+  useEffect(() => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const id = userDetails?.schoolId;
+
+    if (!id) {
+      toast.error("School ID not found. Please log in again.");
+      return;
+    }
+
+    setSchoolId(id);
+  }, []);
+
+  useEffect(() => {
+    if (!schoolId) return;
+
+    const fetchStudents = async () => {
+      try {
+        const response = await getAPI(`/get-registartion-form/${schoolId}`);
+
+        if (!response.hasError) {
+          const studentArray = Array.isArray(response.data.students)
+            ? response.data.students.map((student) => ({
+                ...student,
+                registrationNumber:
+                  student.registrationNumber ||
+                  `ABC${10000 + response.data.students.indexOf(student) + 1}`,
+              }))
+            : [];
+          setExistingStudents(studentArray);
+        } else {
+          toast.error(response.message || "Failed to fetch student list.");
+        }
+      } catch (err) {
+        toast.error("Error fetching student data.");
+        console.error("Student Fetch Error:", err);
+      }
+    };
+
+    fetchStudents();
+  }, [schoolId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!schoolId) return;
+        const response = await getAPI(
+          `/get-class-and-section/${schoolId}`,
+          {},
+          true
+        );
+        setClasses(response?.data?.data || []);
+      } catch (error) {
+        toast.error("Error fetching class and section data.");
+      }
+    };
+
+    fetchData();
+  }, [schoolId]);
+
+  useEffect(() => {
+    if (!schoolId) return;
+
+    const fetchShifts = async () => {
+      try {
+        const response = await getAPI(`/master-define-shift/${schoolId}`);
+        if (!response.hasError) {
+          const shiftArray = Array.isArray(response.data?.data)
+            ? response.data.data
+            : [];
+          setShifts(shiftArray);
+        } else {
+          toast.error(response.message || "Failed to fetch shifts.");
+        }
+      } catch (err) {
+        toast.error("Error fetching shift data.");
+        console.error("Shift Fetch Error:", err);
+      }
+    };
+
+    fetchShifts();
+  }, [schoolId]);
+
+  const handleClassChange = (e) => {
+    const classId = e.target.value;
+    const selectedClass = classes.find((c) => c._id === classId);
+
+    let filteredSections = selectedClass?.sections || [];
+    if (formData.masterDefineShift) {
+      filteredSections = filteredSections.filter(
+        (section) => section.shiftId === formData.masterDefineShift
+      );
+    }
+
+    setSections(filteredSections);
+
+    setFormData({
+      ...formData,
+      masterDefineClass: classId,
+      section: "",
+    });
+  };
+
+  const handleShiftChange = (e) => {
+    const shiftId = e.target.value;
+
+    if (formData.masterDefineClass) {
+      const selectedClass = classes.find(
+        (c) => c._id === formData.masterDefineClass
+      );
+      const filteredSections =
+        selectedClass?.sections.filter(
+          (section) => section.shiftId === shiftId
+        ) || [];
+      setSections(filteredSections);
+    }
+
+    setFormData({
+      ...formData,
+      masterDefineShift: shiftId,
+      section: "",
+    });
+  };
+  useEffect(() => {
+    if (formData.masterDefineClass && formData.masterDefineShift) {
+      const selectedClass = classes.find(
+        (c) => c._id === formData.masterDefineClass
+      );
+      const filteredSections =
+        selectedClass?.sections.filter(
+          (section) => section.shiftId === formData.masterDefineShift
+        ) || [];
+      setSections(filteredSections);
+
+      if (
+        formData.section &&
+        !filteredSections.some((s) => s._id === formData.section)
+      ) {
+        setFormData((prev) => ({ ...prev, section: "" }));
+      }
+    }
+  }, [formData.masterDefineShift, formData.masterDefineClass, classes]);
 
   const handleChange = (e) => {
     const { name, type, value, checked, files } = e.target;
 
-    if (type === 'checkbox') {
-      setFormData(prev => ({ ...prev, [name]: checked }));
-    } else if (type === 'file') {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
+    if (type === "checkbox") {
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else if (type === "file") {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
     } else {
-      // Handle nationality change
-      if (name === 'nationality') {
-        setFormData(prev => ({
+      if (name === "nationality") {
+        setFormData((prev) => ({
           ...prev,
           nationality: value,
-          studentCategory: (value === 'SAARC Countries' || value === 'International')
-            ? 'General'
-            : prev.studentCategory
+          studentCategory:
+            value === "SAARC Countries" || value === "International"
+              ? "General"
+              : prev.studentCategory,
         }));
       } else {
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
       }
     }
   };
 
+  useEffect(() => {
+    if (formData.dateOfBirth) {
+      try {
+        const birthDate = new Date(formData.dateOfBirth);
+        const today = new Date();
+        if (birthDate > today) {
+          toast.error("Date of birth cannot be in the future");
+          setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
+          return;
+        }
+        const maxAgeDate = new Date();
+        maxAgeDate.setFullYear(maxAgeDate.getFullYear() - 120);
+        if (birthDate < maxAgeDate) {
+          toast.error("Please enter a valid date of birth");
+          setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
+          return;
+        }
 
-  const handleSubmit = (e) => {
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < birthDate.getDate())
+        ) {
+          age--;
+        }
+
+        setFormData((prev) => ({
+          ...prev,
+          age: age > 0 ? age.toString() : "0",
+        }));
+      } catch (error) {
+        console.error("Error calculating age:", error);
+        toast.error("Invalid date format");
+        setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, age: "" }));
+    }
+  }, [formData.dateOfBirth]);
+
+  const handleRegistrationSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    if (!formData.registrationNumber) {
+      toast.error("Please select a registration number");
+      return;
+    }
+
+    const student = existingStudents.find(
+      (s) => s.registrationNumber === formData.registrationNumber
+    );
+
+    if (!student) {
+      toast.error(
+        "Invalid registration number. Please select a valid registration number from the list."
+      );
+      return;
+    }
+    if (student) {
+      setSelectedStudent(student);
+
+      setFormData((prev) => ({
+        ...prev,
+        firstName: student.firstName,
+        middleName: student.middleName,
+        lastName: student.lastName,
+        dateOfBirth: student.dateOfBirth
+          ? student.dateOfBirth.split("T")[0]
+          : "",
+        nationality: student.nationality,
+        gender: student.gender,
+        masterDefineClass:
+          student?.masterDefineClass?._id || student?.masterDefineClass || "",
+        masterDefineShift:
+          student?.masterDefineShift?._id || student?.masterDefineShift || "",
+        currentAddress: student.currentAddress,
+        cityStateCountry: student.cityStateCountry,
+        pincode: student.pincode,
+        parentContactNumber:
+          student.fatherContactNo || student.motherContactNo || "",
+        previousSchoolName: student.previousSchoolName || "",
+        addressOfPreviousSchool: student.addressOfpreviousSchool || "",
+        previousSchoolBoard: student.previousSchoolBoard || "",
+        previousSchoolResult: student?.previousSchoolResult || null,
+        tcCertificate: student?.tcCertificate || null,
+        aadharPassportNumber: student.aadharPassportNumber,
+        castCertificate: student?.castCertificate || null,
+        aadharPassportFile: student.aadharPassportFile || null,
+        studentCategory: student.studentCategory,
+        siblingInfoChecked: false,
+        relationType: null,
+        fatherName: student.fatherName,
+        fatherContactNo: student.fatherContactNo,
+        motherName: student.motherName,
+        motherContactNo: student.motherContactNo,
+        name: student.name,
+        paymentMode: student.paymentMode,
+      }));
+
+      if (student?.masterDefineClass?._id || student?.masterDefineClass) {
+        const classId =
+          student?.masterDefineClass?._id || student?.masterDefineClass;
+        const selectedClass = classes.find((c) => c._id === classId);
+        setSections(selectedClass?.sections || []);
+      }
+    }
+
+    setShowFullForm(true);
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    const isNursery = isNurseryClass(formData.masterDefineClass);
+    const error = validateBasicForm(formData, isNursery);
+
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    setShowAdditionalData(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const isNursery = isNurseryClass(formData.masterDefineClass);
+    const error = validateFullForm(formData, isNursery);
+
+    if (error) {
+      toast.error(error);
+      setIsSubmitting(false);
+      return;
+    }
+
+    const submissionData = {
+      ...formData,
+      ...(formData.siblingInfoChecked && {
+        relationType: null,
+        siblingName: "",
+        idCardFile: null,
+      }),
+    };
+
+    const formDataObj = new FormData();
+
+    const fileFields = [
+      "previousSchoolResult",
+      "tcCertificate",
+      "proofOfResidence",
+      "aadharPassportFile",
+      "castCertificate",
+      "idCardFile",
+    ];
+
+    Object.entries(submissionData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (fileFields.includes(key)) {
+          if (value instanceof File) {
+            formDataObj.append(key, value, value.name);
+          } else if (typeof value === "string" && value) {
+            formDataObj.append(key, value);
+          }
+        } else if (Array.isArray(value)) {
+          value.forEach((item) => {
+            formDataObj.append(`${key}[]`, item);
+          });
+        } else {
+          formDataObj.append(key, value);
+        }
+      }
+    });
+
+    formDataObj.append("schoolId", schoolId);
+
+    try {
+      const response = await postAPI("/create-admission-form", formDataObj, {
+        "Content-Type": "multipart/form-data",
+      });
+
+      if (response?.hasError) {
+        toast.error(response.message || "Something went wrong");
+      } else {
+        toast.success("Admission Form Submitted successfully");
+        const studentData = response.data?.student || response.student;
+
+        navigate(
+          `/school-dashboard/fees-module/form/admission-form/admission-details`,
+          {
+            state: {
+              student: response.data?.admission,
+            },
+          }
+        );
+      }
+    } catch (error) {
+      const backendMessage = error?.response?.data?.message;
+
+      if (backendMessage) {
+        toast.error(backendMessage);
+      } else {
+        toast.error("An error occurred during registration");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
     cities.map((city) => `${city}, ${state}, India`)
   );
 
-  const isNursery = formData.classApplyingFor === "Nursery";
-
-  const navigateToAdmissionOfficialForm = (event) => {
-    event.preventDefault();
-    navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`);
+  const isNurseryClass = (classId) => {
+    const selectedClass = classes.find((c) => c._id === classId);
+    return selectedClass?.className === "Nursery";
   };
-  
+
+  const isNursery = isNurseryClass(formData.masterDefineClass);
+
+  const getFileNameFromPath = (path) => {
+    if (!path) return "";
+    return path.split(/[\\/]/).pop();
+  };
+
+  if (!showFullForm) {
+    return (
+      <RegistrationSelector
+        formData={formData}
+        handleChange={handleChange}
+        handleRegistrationSubmit={handleRegistrationSubmit}
+        existingStudents={existingStudents}
+      />
+    );
+  }
+
   return (
     <div className="container">
       <div className="row">
@@ -100,884 +486,29 @@ const StudentAdmissionForm = () => {
                   </h4>
                 </div>
               </div>
-              <form onSubmit={handleSubmit}>
-                <div className="row">
-                  <div className="col-md-12">
-                    <div className="mb-3">
-                      <label htmlFor="registrationNumber" className="form-label">
-                        Registration No
-                      </label>
-                      <input
-                        type="text"
-                        id="registrationNumber"
-                        name="registrationNumber"
-                        className="form-control"
-                        value={formData.registrationNumber}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="firstName" className="form-label">
-                        First Name
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        className="form-control"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="middleName" className="form-label">
-                        Middle Name
-                      </label>
-                      <input
-                        type="text"
-                        id="middleName"
-                        name="middleName"
-                        className="form-control"
-                        value={formData.middleName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="lastName" className="form-label">
-                        Last Name
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        className="form-control"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="dateOfBirth"
-                        className="form-label"
-                      >
-                        Date Of Birth
-                      </label>
-                      <input
-                        type="date"
-                        id="dateOfBirth"
-                        name="dateOfBirth"
-                        className="form-control"
-                        value={formData.dateOfBirth}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="age" className="form-label">
-                        Age
-                      </label>
-                      <input
-                        type="number"
-                        id="age"
-                        name="age"
-                        className="form-control"
-                        value={formData.age}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="nationality" className="form-label">
-                        Nationality
-                      </label>
-                      <select
-                        id="nationality"
-                        name="nationality"
-                        className="form-control"
-                        value={formData.nationality}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select Nationality</option>
-                        <option value="India">India</option>
-                        <option value="International">
-                          International
-                        </option>
-                        <option value="SAARC Countries">
-                          SAARC Countries
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="gender" className="form-label">
-                        Gender
-                      </label>
-                      <select
-                        id="gender"
-                        name="gender"
-                        className="form-control"
-                        value={formData.gender}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">
-                          Female
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="bloodGroup" className="form-label">
-                        Blood Group
-                      </label>
-                      <select
-                        id="bloodGroup"
-                        name="bloodGroup"
-                        className="form-control"
-                        value={formData.bloodGroup}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select Blood Group</option>
-                        <option value="AB-">AB-</option>
-                        <option value="AB+">AB+</option>
-                        <option value="O-"> O-</option>
-                        <option value="O-"> O+</option>
-                        <option value="B-"> B-</option>
-                        <option value="B+"> B+</option>
-                        <option value="A-"> A-</option>
-                        <option value="A+"> A+</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="classApplyingFor" className="form-label">
-                        Class Applying For
-                      </label>
-                      <select
-                        id="classApplyingFor"
-                        name="classApplyingFor"
-                        className="form-control"
-                        value={formData.classApplyingFor}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select Class</option>   
-                        <option value="Nursery">Nursery</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="shift" className="form-label">
-                        Shift
-                      </label>
-                      <select
-                        id="shift"
-                        name="shift"
-                        className="form-control"
-                        value={formData.shift}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select Shift</option>
-                        <option value="Morning">Morning</option>
-                        <option value="Afternoon">
-                          Afternoon
-                        </option>
-                        <option value="Evening">
-                          Evening
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="mb-3">
-                    <label htmlFor="currentAddress" className="form-label">
-                      Current Address
-                    </label>
-                    <textarea
-                      className="form-control"
-                      id="currentAddress"
-                      name="currentAddress"
-                      rows={3}
-                      value={formData.currentAddress}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="cityStateCountry"
-                        className="form-label"
-                      >
-                        City-State-Country
-                      </label>
-
-                      <select
-                        id="cityStateCountry"
-                        name="cityStateCountry"
-                        className="form-control"
-                        value={formData.cityStateCountry}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select City-State-Country</option>
-                        {cityOptions.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="pincode" className="form-label">
-                        Pincode
-                      </label>
-                      <input
-                        type="number"
-                        id="pincode"
-                        name="pincode"
-                        className="form-control"
-                        value={formData.pincode}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label htmlFor="parentContactNumber" className="form-label">
-                        Parent Contact No.
-                      </label>
-                      <input
-                        type="tel"
-                        id="parentContactNumber"
-                        name="parentContactNumber"
-                        className="form-control"
-                        value={formData.parentContactNumber}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label htmlFor="motherLanguage" className="form-label">
-                        Mother Language
-                      </label>
-                      <input
-                        type="text"
-                        id="motherLanguage"
-                        name="motherLanguage"
-                        className="form-control"
-                        value={formData.motherLanguage}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-
-              {
-                !isNursery &&(
-                  <>
-                    <div className="row">
-                  <div className="col-md-6">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="previousSchoolName" className="form-label">
-                        Previous School Name
-                      </label>
-                      <input
-                        type="text"
-                        id="previousSchoolName"
-                        name="previousSchoolName"
-                        className="form-control"
-                        value={formData.previousSchoolName}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="addressOfPreviousSchool" className="form-label">
-                        Address Of Previous School
-                      </label>
-                      <input
-                        type="text"
-                        id="addressOfPreviousSchool"
-                        name="addressOfPreviousSchool"
-                        className="form-control"
-                        value={formData.addressOfPreviousSchool}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="previousSchoolBoard" className="form-label">
-                        Previous School Board
-                      </label>
-                      <input
-                        type="text"
-                        id="previousSchoolBoard"
-                        name="previousSchoolBoard"
-                        className="form-control"
-                        value={formData.previousSchoolBoard}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="previousSchoolResult"
-                        className="form-label"
-                      >
-                        Result Of Previous School
-                      </label>
-                      <input
-                        type="file"
-                        id="previousSchoolResult"
-                        name="previousSchoolResult"
-                        className="form-control"
-                        accept="image/*,application/pdf"
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="tcCertificate"
-                        className="form-label"
-                      >
-                        TC Certificate
-                      </label>
-                      <input
-                        type="file"
-                        id="tcCertificate"
-                        name="tcCertificate"
-                        className="form-control"
-                        accept="image/*,application/pdf"
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                  </>
-                )
-              }
-
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="proofOfResidence"
-                        className="form-label"
-                      >
-                        Proof Of Residence
-                      </label>
-                      <input
-                        type="file"
-                        id="proofOfResidence"
-                        name="proofOfResidence"
-                        className="form-control"
-                        accept="image/*,application/pdf"
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="aadharPassportNumber" className="form-label">
-                        Aadhar/Passport Number
-                      </label>
-                      <input
-                        type="text"
-                        id="aadharPassportNumber"
-                        name="aadharPassportNumber"
-                        className="form-control"
-                        value={formData.aadharPassportNumber}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label
-                        htmlFor="aadharPassportFile"
-                        className="form-label"
-                      >
-                        Aadhar/Passport Upload
-                      </label>
-                      <input
-                        type="file"
-                        id="aadharPassportFile"
-                        name="aadharPassportFile"
-                        className="form-control"
-                        accept="image/*,application/pdf"
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="studentCategory" className="form-label">
-                        Category
-                      </label>
-                      <select
-                        id="studentCategory"
-                        name="studentCategory"
-                        className="form-control"
-                        value={formData.studentCategory}
-                        onChange={handleChange}
-                        disabled={formData.nationality === 'SAARC Countries' || formData.nationality === 'International'}
-                        required
-                      >
-                        <option value="">Select Category</option>
-                        <option value="General">General</option>
-                        <option value="OBC">
-                          OBC
-                        </option>
-                        <option value="ST">
-                          ST
-                        </option>
-                        <option value="SC">
-                          SC
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {formData.studentCategory !== "General" && (
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label htmlFor="castCertificate" className="form-label">
-                          Caste Certificate
-                        </label>
-                        <input
-                          type="file"
-                          id="castCertificate"
-                          name="castCertificate"
-                          className="form-control"
-                          accept="image/*,application/pdf"
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Sibling Information Study In Same School
-                  </h4>
-                </div>
-                <div className="row">
-                  <div className="form-check ms-1 mb-2">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="customCheck1"
-                      name="siblingInfoChecked"
-                      checked={formData.siblingInfoChecked}
-                      onChange={handleChange}
-
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="customCheck1"
-                    >
-                      Incase of no sibling Click here.
-                    </label>
-                  </div>
-
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="relationType" className="form-label">
-                        Relation Type
-                      </label>
-                      <select
-                        id="relationType"
-                        name="relationType"
-                        className="form-control"
-                        value={formData.relationType}
-                        onChange={handleChange}
-                        required={!formData.siblingInfoChecked} 
-                        disabled={formData.siblingInfoChecked}
-
-                      >
-                        <option value="">Select </option>
-                        <option value="Brother">Brother</option>
-                        <option value="Sister">Sister</option>
-                      </select>
-                    </div>
-                  </div>
-
-
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="siblingName" className="form-label">
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        id="siblingName"
-                        name="siblingName"
-                        className="form-control"
-                        value={formData.siblingName}
-                        onChange={handleChange}
-                        required={!formData.siblingInfoChecked} 
-                        disabled={formData.siblingInfoChecked}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="idCardFile" className="form-label">
-                        ID Card
-                      </label>
-                      <input
-                        type="file"
-                        id="idCardFile"
-                        name="idCardFile"
-                        className="form-control"
-                        accept="image/*,application/pdf"
-                        onChange={handleChange}
-                        required={!formData.siblingInfoChecked} 
-                        disabled={formData.siblingInfoChecked}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Family Information
-                  </h4>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="parentalStatus" className="form-label">
-                        Parental Status
-                      </label>
-                      <select
-                        id="parentalStatus"
-                        name="parentalStatus"
-                        className="form-control"
-                        value={formData.parentalStatus}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select </option>
-                        <option value="Single Father">Single Father</option>
-                        <option value="Single Mother">Single Mother</option>
-                        <option value="Parents">Parents</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {formData.parentalStatus !== 'Single Mother' && (
-                  <div className='row'>
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="fatherName" className="form-label">
-                          Father Name
-                        </label>
-                        <input
-                          type="text"
-                          id="fatherName"
-                          name="fatherName"
-                          className="form-control"
-                          value={formData.fatherName}
-                          onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Mother'}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="fatherContactNo" className="form-label">
-                          Father Contact Number
-                        </label>
-                        <input
-                          type="tel"
-                          id="fatherContactNo"
-                          name="fatherContactNo"
-                          className="form-control"
-                          value={formData.fatherContactNo}
-                          onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Mother'}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="fatherQualification" className="form-label">
-                          Father Higher Qualification
-                        </label>
-                        <input
-                          type="text"
-                          id="fatherQualification"
-                          name="fatherQualification"
-                          className="form-control"
-                          value={formData.fatherQualification}
-                          onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Mother'}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="fatherProfession" className="form-label">
-                          Father Profession
-                        </label>
-                        <input
-                          type="text"
-                          id="fatherProfession"
-                          name="fatherProfession"
-                          className="form-control"
-                          value={formData.fatherProfession}
-                          onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Mother'}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {formData.parentalStatus !== 'Single Father' && (
-                  <div className='row'>
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="motherName" className="form-label">
-                          Mother Name
-                        </label>
-                        <input
-                          type="text"
-                          id="motherName"
-                          name="motherName"
-                          className="form-control"
-                          value={formData.motherName}
-                          onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Father'}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="motherContactNo" className="form-label">
-                          Mother Contact Number
-                        </label>
-                        <input
-                          type="tel"
-                          id="motherContactNo"
-                          name="motherContactNo"
-                          className="form-control"
-                          value={formData.motherContactNo}
-                          onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Father'}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="motherQualification" className="form-label">
-                          Mother Higher Qualification
-                        </label>
-                        <input
-                          type="text"
-                          id="motherQualification"
-                          name="motherQualification"
-                          className="form-control"
-                          value={formData.motherQualification}
-                          onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Father'}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="motherProfession" className="form-label">
-                          Mother Profession
-                        </label>
-                        <input
-                          type="text"
-                          id="motherProfession"
-                          name="motherProfession"
-                          className="form-control"
-                          value={formData.motherProfession}
-                          onChange={handleChange}
-                          required={formData.parentalStatus !== 'Single Father'}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Understanding
-                  </h4>
-                </div>
-                <div className="row">
-                  {/* <div className="form-check ms-1 mb-2">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="customCheck1"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="customCheck1"
-                    >
-                      I Understand & agree that the registration of my word does not guarantee admission to the school & the registration fee is neither transferable not refundable.
-                    </label>
-                  </div> */}
-
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="name" className="form-label">
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        className="form-control"
-                        required
-                        value={formData.name}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="paymentMode" className="form-label">
-                        Payment Option
-                      </label>
-                      <select
-                        id="paymentMode"
-                        name="paymentMode"
-                        className="form-control"
-                        value={formData.paymentMode}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select </option>
-                        <option value="Cash">Cash</option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="Online">Online</option>
-                      </select>
-                    </div>
-
-                  </div>
-                  <div className="text-end">
-                    {" "}
-                    <button
-                      type="submit"
-                      onClick={(event) => navigateToAdmissionOfficialForm(event)}
-                      className="btn btn-primary custom-submit-button"
-                    >
-                      Proceed Further
-                    </button>
-                  </div>
-                </div>
-              </form>
+              <Form
+                formData={formData}
+                setFormData={setFormData}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+                handleSave={handleSave}
+                classes={classes}
+                handleClassChange={handleClassChange}
+                sections={sections}
+                shifts={shifts}
+                cityOptions={cityOptions}
+                isNursery={isNursery}
+                getFileNameFromPath={getFileNameFromPath}
+                isSubmitting={isSubmitting}
+                showAdditionalData={showAdditionalData}
+                handleShiftChange={handleShiftChange}
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
+
 export default StudentAdmissionForm;

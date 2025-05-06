@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -20,8 +20,22 @@ const formatDate = (dateString) => {
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
-  const enquiryNumber = location.state?.enquiryNumber;
+  const [searchParams] = useSearchParams();
 
+  const enquiryNumber =
+    location.state?.searchEnquiryNumber || location.state?.enquiryNumber || searchParams.get('enquiryNumber');
+
+    useEffect(() => {
+      if (searchParams.has('enquiryNumber')) {
+        navigate(
+          '/school-dashboard/procurement-services/view-requested-quote', 
+          { 
+            state: { enquiryNumber },
+            replace: true // Replaces history entry (hides params)
+          }
+        );
+      }
+    }, []);
   const navigate = useNavigate();
 
   const [quotes, setQuotes] = useState([]);
@@ -39,14 +53,16 @@ const ViewRequestedQuote = () => {
 
   const fetchRequestedQuoteData = async () => {
     try {
-      const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/get-quote/${encodedEnquiryNumber}`,
+        {},
+        true
+      );
 
       if (!response.hasError && response.data.data.products) {
         setQuotes(response.data.data.products);
-        console.log(
-          "get Quote List data from function",
-          response.data.data.products
-        );
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -66,8 +82,10 @@ const ViewRequestedQuote = () => {
 
   const fetchAllQuoteData = async (enquiryNumber) => {
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
       const response = await getAPI(
-        `/submit-quote-by-status/${enquiryNumber}`,
+        `/submit-quote-by-status/${encodedEnquiryNumber}`,
         {},
         true
       );
@@ -81,11 +99,6 @@ const ViewRequestedQuote = () => {
           ...prev,
           [enquiryNumber]: response.data.data,
         }));
-        console.log(
-          "Submitted Quote data for",
-          enquiryNumber,
-          response.data.data
-        );
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -197,8 +210,6 @@ const ViewRequestedQuote = () => {
                   </tbody>
                 </table>
               </div>
-
-              
 
               <div className="d-flex justify-content-between mt-2">
                 {Object.values(submittedQuotes).some(

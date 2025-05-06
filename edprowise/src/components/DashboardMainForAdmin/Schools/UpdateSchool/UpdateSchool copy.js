@@ -6,8 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import CityData from "../../../CityData.json";
 import Select from "react-select";
+import { Worker, Viewer } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import { SpecialZoomLevel } from "@react-pdf-viewer/core";
 
-const UpdateSchool = ({ updateSchool }) => {
+const UpdateSchool = () => {
   const location = useLocation();
   const school = location.state?.school;
   const navigate = useNavigate();
@@ -25,9 +28,14 @@ const UpdateSchool = ({ updateSchool }) => {
     panFile: null,
   });
 
-  // const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-  //   cities.map((city) => `${city}, ${state}, India`)
-  // );
+  const [previewProfileImage, setPreviewProfileImage] = useState(null);
+  const [previewAffiliationCertificate, setPreviewAffiliationCertificate] =
+    useState(null);
+  const [previewPanFile, setPreviewPanFile] = useState(null);
+  const [isAffiliationCertificatePDF, setIsAffiliationCertificatePDF] =
+    useState(false);
+  const [isPanFilePDF, setIsPanFilePDF] = useState(false);
+
   const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
     cities.map((city) => ({
       value: `${city}, ${state}, India`,
@@ -41,6 +49,14 @@ const UpdateSchool = ({ updateSchool }) => {
 
   useEffect(() => {
     if (school) {
+      // Check file types for existing files
+      const isAffiliationPDF = school.affiliationCertificate?.endsWith(".pdf");
+      const isPanPDF = school.panFile?.endsWith(".pdf");
+
+      setIsAffiliationCertificatePDF(isAffiliationPDF);
+      setIsPanFilePDF(isPanPDF);
+
+      // Set form data
       setFormData({
         schoolName: school.schoolName || "",
         schoolMobileNo: school.schoolMobileNo || "",
@@ -49,17 +65,64 @@ const UpdateSchool = ({ updateSchool }) => {
         schoolLocation: school.schoolLocation || "",
         affiliationUpto: school.affiliationUpto || "",
         panNo: school.panNo || "",
+        profileImage: school.profileImage || null,
+        affiliationCertificate: school.affiliationCertificate || null,
+        panFile: school.panFile || null,
       });
+
+      // Set previews for existing files
+      if (school.profileImage) {
+        setPreviewProfileImage(
+          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`
+        );
+      }
+      if (school.affiliationCertificate) {
+        setPreviewAffiliationCertificate(
+          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`
+        );
+      }
+      if (school.panFile) {
+        setPreviewPanFile(
+          `${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`
+        );
+      }
     }
   }, [school]);
 
+  useEffect(() => {
+    return () => {
+      // Clean up object URLs to avoid memory leaks
+      if (previewProfileImage) URL.revokeObjectURL(previewProfileImage);
+      if (previewAffiliationCertificate)
+        URL.revokeObjectURL(previewAffiliationCertificate);
+      if (previewPanFile) URL.revokeObjectURL(previewPanFile);
+    };
+  }, [previewProfileImage, previewAffiliationCertificate, previewPanFile]);
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (files) {
+      const file = files[0];
       setFormData((prev) => ({
         ...prev,
-        [name]: files[0],
+        [name]: file,
       }));
+
+      // Handle previews based on file type
+      if (file) {
+        const fileUrl = URL.createObjectURL(file);
+
+        if (name === "profileImage") {
+          setPreviewProfileImage(fileUrl);
+        } else if (name === "affiliationCertificate") {
+          setPreviewAffiliationCertificate(fileUrl);
+          setIsAffiliationCertificatePDF(file.type === "application/pdf");
+        } else if (name === "panFile") {
+          setPreviewPanFile(fileUrl);
+          setIsPanFilePDF(file.type === "application/pdf");
+        }
+      }
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -67,6 +130,8 @@ const UpdateSchool = ({ updateSchool }) => {
       }));
     }
   };
+
+  const [sending, setSending] = useState(false);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -76,10 +141,12 @@ const UpdateSchool = ({ updateSchool }) => {
     for (const key in formData) {
       if (formData[key] instanceof File) {
         formDataToSend.append(key, formData[key]);
-      } else {
-        formDataToSend.append(key, formData[key] || "");
+      } else if (formData[key] !== null) {
+        formDataToSend.append(key, formData[key]);
       }
     }
+
+    setSending(true);
 
     try {
       const response = await putAPI(
@@ -93,62 +160,97 @@ const UpdateSchool = ({ updateSchool }) => {
 
       if (!response.data.hasError) {
         toast.success("School updated successfully!");
-
-        const newUpdatedSchool = {
-          _id: response.data.data._id,
-          schoolId: response.data.data.schoolId,
-          schoolName: response.data.data.schoolName,
-          schoolMobileNo: response.data.data.schoolMobileNo,
-          schoolEmail: response.data.data.schoolEmail,
-          schoolAddress: response.data.data.schoolAddress,
-          schoolLocation: response.data.data.schoolLocation,
-          affiliationUpto: response.data.data.affiliationUpto,
-          panNo: response.data.data.panNo,
-          profileImage: response.data.data.profileImage,
-          affiliationCertificate: response.data.data.affiliationCertificate,
-          panFile: response.data.data.panFile,
-        };
-
-        updateSchool(newUpdatedSchool);
-
-        // Reset formData state
-        setFormData({
-          schoolName: "",
-          schoolMobileNo: "",
-          schoolEmail: "",
-          schoolAddress: "",
-          schoolLocation: "",
-          affiliationUpto: "",
-          panNo: "",
-          profileImage: null,
-          affiliationCertificate: null,
-          panFile: null,
-        });
-
-        // Clear file inputs
-        profileImageRef.current.value = "";
-        affiliationCertificateRef.current.value = "";
-        panFileRef.current.value = "";
-
         navigate(-1);
       } else {
         toast.error("Failed to update School.");
       }
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("An unexpected error occurred. Please try again.");
-      }
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred."
+      );
+    } finally {
+      setSending(false);
     }
   };
 
   const getBaseFileName = (url) => {
     return url ? url.split("/").pop() : "";
+  };
+
+  const renderFilePreview = (preview, isPDF, defaultPreview, altText) => {
+    const fileUrl = preview || defaultPreview;
+    const isPdfFile =
+      isPDF ||
+      (defaultPreview && defaultPreview.toLowerCase().endsWith(".pdf"));
+
+    const containerStyle = {
+      width: "100%",
+      height: "200px",
+      border: "1px solid #ddd",
+      borderRadius: "4px",
+      overflow: "hidden",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "#f8f9fa",
+      marginBottom: "10px",
+    };
+
+    const contentStyle = {
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+
+    if (fileUrl) {
+      if (isPdfFile) {
+        return (
+          <div style={containerStyle}>
+            <Worker
+              workerUrl={
+                process.env.REACT_APP_WORKER_URL ||
+                "https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js"
+              }
+            >
+              <div style={contentStyle}>
+                <Viewer
+                  fileUrl={fileUrl}
+                  defaultScale={SpecialZoomLevel.PageFit}
+                  scrollMode="none"
+                  renderError={(error) => (
+                    <div className="text-danger">
+                      Failed to load PDF: {error.message}
+                    </div>
+                  )}
+                />
+              </div>
+            </Worker>
+          </div>
+        );
+      } else {
+        return (
+          <div style={containerStyle}>
+            <img
+              src={fileUrl}
+              alt={altText}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                objectFit: "contain",
+              }}
+            />
+          </div>
+        );
+      }
+    } else {
+      return (
+        <div style={containerStyle}>
+          <div className="text-muted">No file uploaded</div>
+        </div>
+      );
+    }
   };
 
   return (
@@ -169,7 +271,33 @@ const UpdateSchool = ({ updateSchool }) => {
                 className="custom-font-size-for-form"
               >
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="profileImage" className="form-label">
+                        Profile Image
+                      </label>
+                      <input
+                        type="file"
+                        id="profileImage"
+                        name="profileImage"
+                        className="form-control"
+                        accept="image/*"
+                        onChange={handleChange}
+                        ref={profileImageRef}
+                      />
+                      <div className="d-flex justify-content-center mt-2">
+                        {renderFilePreview(
+                          previewProfileImage,
+                          false,
+                          formData.profileImage
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.profileImage}`
+                            : null,
+                          "Profile Preview"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-8">
                     <div className="mb-3">
                       <label htmlFor="schoolName" className="form-label">
                         School Name <span className="text-danger">*</span>
@@ -184,11 +312,10 @@ const UpdateSchool = ({ updateSchool }) => {
                         required
                       />
                     </div>
-                  </div>
-                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="mobileNo" className="form-label">
-                        School Mobile Number <span className="text-danger">*</span>
+                        School Mobile Number{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="tel"
@@ -200,8 +327,6 @@ const UpdateSchool = ({ updateSchool }) => {
                         required
                       />
                     </div>
-                  </div>
-                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
                         School Email <span className="text-danger">*</span>
@@ -237,75 +362,34 @@ const UpdateSchool = ({ updateSchool }) => {
                 </div>
 
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="cityStateCountry" className="form-label">
-                        City-State-Country <span className="text-danger">*</span>
+                        City-State-Country{" "}
+                        <span className="text-danger">*</span>
                       </label>
-                      {/* <select
+                      <Select
                         id="cityStateCountry"
                         name="schoolLocation"
-                        className="form-control"
-                        value={formData.schoolLocation}
-                        onChange={handleChange}
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === formData.schoolLocation
+                        )}
+                        onChange={(selectedOption) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            schoolLocation: selectedOption
+                              ? selectedOption.value
+                              : "",
+                          }))
+                        }
+                        placeholder="Select City-State-Country"
+                        isSearchable
                         required
-                      >
-                        <option value="">Select City-State-Country</option>
-                        {cityOptions.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select> */}
-
-                      <Select
-                          id="cityStateCountry"
-                          name="schoolLocation"
-                          options={cityOptions}
-                          value={cityOptions.find(option => option.value === formData.schoolLocation)}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              schoolLocation: selectedOption ? selectedOption.value : "",
-                            }))
-                          }
-                          placeholder="Select City-State-Country"
-                          isSearchable
-                          required
-                          classNamePrefix="react-select"
-                          className="custom-react-select"
-                        />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="profileImage" className="form-label">
-                        Profile Image <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="file"
-                        id="profileImage"
-                        name="profileImage"
-                        className="form-control"
-                        accept="image/*"
-                        onChange={handleChange}
-                        ref={profileImageRef}
-                        // required
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
                       />
-                      {school.profileImage ? (
-                        <div>
-                          <small>
-                            Existing Profile Image:{" "}
-                            {getBaseFileName(school.profileImage)}
-                          </small>
-                        </div>
-                      ) : null}
                     </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="affiliationUpto" className="form-label">
                         Affiliation Upto <span className="text-danger">*</span>
@@ -326,46 +410,13 @@ const UpdateSchool = ({ updateSchool }) => {
                         <option value="Secondary (Upto Class 10)">
                           Secondary (Upto Class 10)
                         </option>
-                        <option value="Higher Secondary (Upto Class 12)">
-                          Higher Secondary (Upto Class 12)
+                        <option value="Senior Secondary (Upto Class 12)">
+                          Senior Secondary (Upto Class 12)
                         </option>
                         <option value="College">College</option>
                         <option value="University">University</option>
                       </select>
                     </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="affiliationCertificate"
-                        className="form-label"
-                      >
-                        Affiliation Certificate <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="file"
-                        id="affiliationCertificate"
-                        name="affiliationCertificate"
-                        className="form-control"
-                        accept="image/*,application/pdf"
-                        onChange={handleChange}
-                        ref={affiliationCertificateRef}
-                        // required
-                      />
-                      {school.affiliationCertificate ? (
-                        <div>
-                          <small>
-                            Existing Certificate:{" "}
-                            {getBaseFileName(school.affiliationCertificate)}
-                          </small>
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="panNo" className="form-label">
                         PAN Number <span className="text-danger">*</span>
@@ -381,8 +432,38 @@ const UpdateSchool = ({ updateSchool }) => {
                       />
                     </div>
                   </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="affiliationCertificate"
+                        className="form-label"
+                      >
+                        Affiliation Certificate{" "}
+                        <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="file"
+                        id="affiliationCertificate"
+                        name="affiliationCertificate"
+                        className="form-control"
+                        accept="image/*,application/pdf"
+                        onChange={handleChange}
+                        ref={affiliationCertificateRef}
+                      />
 
-                  <div className="col-md-6">
+                      <div className="d-flex justify-content-center mt-2">
+                        {renderFilePreview(
+                          previewAffiliationCertificate,
+                          isAffiliationCertificatePDF,
+                          formData.affiliationCertificate
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.affiliationCertificate}`
+                            : null,
+                          "Affiliation Certificate"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="panFile" className="form-label">
                         PAN File <span className="text-danger">*</span>
@@ -396,24 +477,28 @@ const UpdateSchool = ({ updateSchool }) => {
                         onChange={handleChange}
                         ref={panFileRef}
                       />
-                      {school.panFile ? (
-                        <div>
-                          <small>
-                            Existing PAN File: {getBaseFileName(school.panFile)}
-                          </small>
-                        </div>
-                      ) : null}
+
+                      <div className="d-flex justify-content-center mt-2">
+                        {renderFilePreview(
+                          previewPanFile,
+                          isPanFilePDF,
+                          formData.panFile
+                            ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.panFile}`
+                            : null,
+                          "PAN File"
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="text-end">
-                  {" "}
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={sending}
                   >
-                    Update School
+                    {sending ? "Updating..." : "Update School"}
                   </button>
                 </div>
               </form>

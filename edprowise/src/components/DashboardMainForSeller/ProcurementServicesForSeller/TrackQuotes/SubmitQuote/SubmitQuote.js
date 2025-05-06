@@ -7,6 +7,7 @@ import getAPI from "../../../../../api/getAPI";
 import { format, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import WarningDialog from "./WarningDialog";
+
 const SubmitQuote = () => {
   const location = useLocation();
   const enquiryNumber = location.state?.enquiryNumber;
@@ -16,6 +17,7 @@ const SubmitQuote = () => {
 
   const navigate = useNavigate();
   const [showWarning, setShowWarning] = useState(false);
+  const [venderStatusFromBuyer, setVenderStatusFromBuyer] = useState("");
 
   const [submittedQuote, setSubmittedQuote] = useState({
     quotedAmount: "",
@@ -29,8 +31,9 @@ const SubmitQuote = () => {
   useEffect(() => {
     const fetchSubmittedQuoteData = async () => {
       try {
+        const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
         const response = await getAPI(
-          `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
+          `/submit-quote?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`
         );
         if (!response.hasError && response.data && response.data.data) {
           const {
@@ -40,12 +43,12 @@ const SubmitQuote = () => {
             expectedDeliveryDateBySeller,
             paymentTerms,
             advanceRequiredAmount,
+            venderStatusFromBuyer: statusFromAPI, // Renamed to avoid conflict
           } = response.data.data;
 
-          const formattedDate = format(
-            parseISO(expectedDeliveryDateBySeller),
-            "yyyy-MM-dd"
-          );
+          const formattedDate = expectedDeliveryDateBySeller
+            ? format(parseISO(expectedDeliveryDateBySeller), "yyyy-MM-dd")
+            : "";
 
           setSubmittedQuote({
             quotedAmount,
@@ -55,6 +58,8 @@ const SubmitQuote = () => {
             paymentTerms,
             advanceRequiredAmount,
           });
+
+          setVenderStatusFromBuyer(statusFromAPI); // Using the state setter here
         } else {
           console.error("Invalid response format or error in response");
         }
@@ -73,6 +78,8 @@ const SubmitQuote = () => {
       [name]: value,
     }));
   };
+
+  const [sending, setSending] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -95,16 +102,18 @@ const SubmitQuote = () => {
       advanceRequiredAmount,
     };
 
+    setSending(true);
+
     try {
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
       const response = await putAPI(
-        `/submit-quote?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`,
+        `/submit-quote?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}`,
         dataToSend,
         true
       );
 
       if (!response.hasError) {
         toast.success("Quote Submitted successfully");
-        // As soon as this toast message is shown after that i want to show  Warning message
         setSubmittedQuote({
           quotedAmount: "",
           description: "",
@@ -115,11 +124,6 @@ const SubmitQuote = () => {
         });
 
         setShowWarning(true);
-
-        // navigate(
-        //   "/seller-dashboard/procurement-services/view-requested-quote",
-        //   { state: { enquiryNumber: enquiryNumber } }
-        // );
       } else {
         toast.error(response.message || "Failed to Prepare quote");
       }
@@ -128,6 +132,8 @@ const SubmitQuote = () => {
         error?.response?.data?.message ||
           "An unexpected error occurred. Please try again."
       );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -166,6 +172,7 @@ const SubmitQuote = () => {
                           onChange={handleInputChange}
                           className="form-control"
                           required
+                          readOnly
                         />
                       </div>
                     </div>
@@ -185,11 +192,16 @@ const SubmitQuote = () => {
                           value={submittedQuote.expectedDeliveryDateBySeller}
                           onChange={handleInputChange}
                           className="form-control"
+                          readOnly={
+                            !(
+                              venderStatusFromBuyer === "Quote Not Accepted" ||
+                              venderStatusFromBuyer === "Pending"
+                            )
+                          }
                         />
                       </div>
                     </div>
                   </div>
-
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -202,8 +214,13 @@ const SubmitQuote = () => {
                           value={submittedQuote.description}
                           onChange={handleInputChange}
                           className="form-control"
-                          // required
                           placeholder="Example : All Products are good"
+                          readOnly={
+                            !(
+                              venderStatusFromBuyer === "Quote Not Accepted" ||
+                              venderStatusFromBuyer === "Pending"
+                            )
+                          }
                         />
                       </div>
                     </div>
@@ -215,14 +232,20 @@ const SubmitQuote = () => {
                         >
                           Remarks from Supplier
                         </label>
+
                         <textarea
                           type="text"
                           name="remarksFromSupplier"
                           value={submittedQuote.remarksFromSupplier}
                           onChange={handleInputChange}
                           className="form-control"
-                          // required
                           placeholder="Example : All Products are good"
+                          readOnly={
+                            !(
+                              venderStatusFromBuyer === "Quote Not Accepted" ||
+                              venderStatusFromBuyer === "Pending"
+                            )
+                          }
                         />
                       </div>
                     </div>
@@ -241,6 +264,12 @@ const SubmitQuote = () => {
                           className="form-control"
                           placeholder="Example : 30 days"
                           required
+                          readOnly={
+                            !(
+                              venderStatusFromBuyer === "Quote Not Accepted" ||
+                              venderStatusFromBuyer === "Pending"
+                            )
+                          }
                         />
                       </div>
                     </div>
@@ -258,18 +287,28 @@ const SubmitQuote = () => {
                           value={submittedQuote.advanceRequiredAmount}
                           onChange={handleInputChange}
                           className="form-control"
+                          readOnly={
+                            !(
+                              venderStatusFromBuyer === "Quote Not Accepted" ||
+                              venderStatusFromBuyer === "Pending"
+                            )
+                          }
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="text-end">
-                    <button
-                      type="submit"
-                      className="btn btn-primary custom-submit-button"
-                    >
-                      Submit
-                    </button>
-                  </div>
+                  {(venderStatusFromBuyer === "Quote Not Accepted" ||
+                    venderStatusFromBuyer === "Pending") && (
+                    <div className="text-end">
+                      <button
+                        type="submit"
+                        className="btn btn-primary custom-submit-button"
+                        disabled={sending}
+                      >
+                        {sending ? "Submitting..." : "Submit"}
+                      </button>
+                    </div>
+                  )}
                 </form>
               </div>
             </div>

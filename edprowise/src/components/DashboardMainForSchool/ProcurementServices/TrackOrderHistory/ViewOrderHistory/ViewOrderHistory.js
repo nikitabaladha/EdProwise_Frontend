@@ -3,11 +3,12 @@ import { format } from "date-fns";
 import React, { useState, useEffect } from "react";
 
 import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { formatCost } from "../../../../CommonFunction";
+import { toast } from "react-toastify";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -16,22 +17,58 @@ const formatDate = (dateString) => {
 
 const ViewOrderHistory = () => {
   const navigate = useNavigate();
-
+const [searchParams] = useSearchParams();
   const location = useLocation();
-  const order = location.state?.order;
-  const orderNumber = order?.orderNumber;
-  const sellerId = order?.sellerId;
 
-  const enquiryNumber = location.state?.enquiryNumber;
+  const orderNumber =
+    location.state?.orderNumber || location.state?.searchOrderNumber || searchParams.get('orderNumber');
 
   const handleNavigation = () => {
     navigate("/school-dashboard/procurement-services/pay-to-edprowise");
   };
 
+  useEffect(() => {
+      if (searchParams.has('orderNumber')) {
+        navigate(location.pathname, { 
+          state: { 
+            orderNumber,
+          },
+          replace: true 
+        });
+      }
+    }, []);
+
   const [quote, setQuote] = useState([]);
   const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
+
+  const [order, setOrderDetails] = useState([]);
+  const [sellerId, setSellerId] = useState("");
+  const [enquiryNumber, setEnquiryNumber] = useState("");
+
+  const fetchOrderData = async () => {
+    try {
+      const response = await getAPI(
+        `/order-details-by-orderNumber/${orderNumber}`,
+        {},
+        true
+      );
+      if (!response.hasError && response.data.data) {
+        setOrderDetails(response.data.data);
+        setSellerId(response.data.data.sellerId);
+        setEnquiryNumber(response.data.data.enquiryNumber);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching Order details:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrderData();
+  }, []);
 
   useEffect(() => {
     if (!enquiryNumber) return;
@@ -42,7 +79,13 @@ const ViewOrderHistory = () => {
 
   const fetchRequestedQuoteData = async () => {
     try {
-      const response = await getAPI(`/get-quote/${enquiryNumber}`, {}, true);
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/get-quote/${encodedEnquiryNumber}`,
+        {},
+        true
+      );
 
       if (!response.hasError && response.data.data.products) {
         setQuote(response.data.data.products);
@@ -64,10 +107,6 @@ const ViewOrderHistory = () => {
 
       if (!response.hasError && response.data.data) {
         setOrders(response.data.data);
-        console.log(
-          "order data from function from school order history",
-          response.data.data
-        );
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -76,55 +115,46 @@ const ViewOrderHistory = () => {
     }
   };
 
-  const fetchInvoiceDataForBuyer = async (enquiryNumber, sellerId) => {
+  const generateInvoicePDFForBuyer = async (enquiryNumber, sellerId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
 
-    if (!sellerId || !enquiryNumber || !schoolId) {
-      console.error("Seller ID, Enquiry Number, or School ID is missing");
+    const missingFields = [];
+    if (!sellerId) missingFields.push("Seller ID");
+    if (!enquiryNumber) missingFields.push("Enquiry Number");
+    if (!schoolId) missingFields.push("School ID");
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
 
     try {
-      // Fetch Prepare Quote data
-      const prepareQuoteResponse = await getAPI(
-        `/prepare-quote?sellerId=${sellerId}&enquiryNumber=${enquiryNumber}`
+      const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+      const response = await getAPI(
+        `/generate-buyer-invoice-pdf?schoolId=${schoolId}&sellerId=${sellerId}&enquiryNumber=${encodedEnquiryNumber}`,
+        { responseType: "blob" },
+        true
       );
 
-      // Fetch Quote Proposal data
-      const quoteProposalResponse = await getAPI(
-        `/quote-proposal?enquiryNumber=${enquiryNumber}&sellerId=${sellerId}`
-      );
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = "buyer-invoice.pdf";
+      link.click();
 
-      // Fetch Profile data based on the schoolId
-      const profileResponse = await getAPI(
-        `/quote-proposal-pdf-required-data/${schoolId}/${enquiryNumber}/${sellerId}`
-      );
-
-      if (
-        !prepareQuoteResponse.hasError &&
-        prepareQuoteResponse.data &&
-        !quoteProposalResponse.hasError &&
-        quoteProposalResponse.data &&
-        !profileResponse.hasError &&
-        profileResponse.data
-      ) {
-        const prepareQuoteData = prepareQuoteResponse.data.data;
-        const quoteProposalData = quoteProposalResponse.data.data;
-        const profileData = profileResponse.data.data;
-
-        navigate(`/school-dashboard/procurement-services/invoice-for-buyer`, {
-          state: { prepareQuoteData, quoteProposalData, profileData },
-        });
+      if (!response.hasError && response.data) {
       } else {
-        console.error(
-          "Error fetching Prepare Quote, Quote Proposal, or School Profile data"
-        );
+        toast.error(response.message || "Failed to fetch invoice data");
       }
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("An error occurred while fetching invoice data");
     }
   };
+
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowModal(true);
@@ -177,7 +207,6 @@ const ViewOrderHistory = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -210,28 +239,6 @@ const ViewOrderHistory = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="advanceAdjustment" className="form-label">
-                        Advance Adjustment
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order?.advanceAdjustment)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="otherCharges" className="form-label">
-                        Other Charges
-                      </label>
-                      <p className="form-control">
-                        {formatCost(order?.otherCharges)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
                       <label htmlFor="taxableValue" className="form-label">
                         Taxable Value
                       </label>
@@ -240,6 +247,8 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
+                </div>
+                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="gstAmount" className="form-label">
@@ -250,8 +259,6 @@ const ViewOrderHistory = () => {
                       </p>
                     </div>
                   </div>
-                </div>
-                <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label
@@ -268,10 +275,32 @@ const ViewOrderHistory = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="tdsValue" className="form-label">
-                        TDS Value
+                        TDS Amount
                       </label>
                       <p className="form-control">
                         {formatCost(order?.tdsValue)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="advanceAdjustment" className="form-label">
+                        Advance Adjustment
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.advanceAdjustment)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="otherCharges" className="form-label">
+                        Other Charges
+                      </label>
+                      <p className="form-control">
+                        {formatCost(order?.otherCharges)}
                       </p>
                     </div>
                   </div>
@@ -295,9 +324,9 @@ const ViewOrderHistory = () => {
                     {["Ready For Transit", "In-Transit", "Delivered"].includes(
                       order.supplierStatus
                     ) && (
-                      <Link
+                      <button
                         onClick={() =>
-                          fetchInvoiceDataForBuyer(
+                          generateInvoicePDFForBuyer(
                             order?.enquiryNumber,
                             order?.sellerId
                           )
@@ -312,7 +341,7 @@ const ViewOrderHistory = () => {
                           icon="solar:download-broken"
                           className="align-middle fs-18"
                         />{" "}
-                      </Link>
+                      </button>
                     )}
                   </Link>
 
