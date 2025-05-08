@@ -15,12 +15,13 @@ import AppRoutes from "./routes";
 const App = () => {
   return (
     <BrowserRouter>
-      <ThemeProvider>
-        <AppRoutes />
-        {/* <ChatBot /> */}
-        {/* <CookieConsent /> */}
-        <ToastContainer />
-      </ThemeProvider>
+      {/* <ThemeProvider> */}
+      <AppRoutes />
+
+      {/* <ChatBot /> */}
+      {/* <CookieConsent /> */}
+      <ToastContainer />
+      {/* </ThemeProvider> */}
     </BrowserRouter>
   );
 };

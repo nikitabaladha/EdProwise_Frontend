@@ -111,6 +111,8 @@ const ViewOrderHistory = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const generateInvoicePDFForBuyer = async (
     enquiryNumber,
     sellerId,
@@ -128,6 +130,8 @@ const ViewOrderHistory = () => {
       toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
+
+    setSending(true);
 
     try {
       const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
@@ -154,6 +158,8 @@ const ViewOrderHistory = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching invoice data");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -363,6 +369,30 @@ const ViewOrderHistory = () => {
                     {["Ready For Transit", "In-Transit", "Delivered"].includes(
                       order.supplierStatus
                     ) && (
+                      // <button
+                      //   onClick={() =>
+                      //     generateInvoicePDFForBuyer(
+                      //       order?.enquiryNumber,
+                      //       order?.sellerId,
+                      //       order?.invoiceForSchool
+                      //     )
+                      //   }
+                      //   className="btn btn-soft-info btn-sm"
+                      //   title="Download PDF Invoice For Buyer"
+                      //   data-bs-toggle="popover"
+                      //   data-bs-trigger="hover"
+                      // >
+                      //   Download Invoice {}
+                      // {sending ? (
+                      //   "Downloading..."
+                      // ) : (
+                      //   <iconify-icon
+                      //     icon="solar:download-broken"
+                      //     className="align-middle fs-18"
+                      //   />
+                      // )}
+                      // </button>
+
                       <button
                         onClick={() =>
                           generateInvoicePDFForBuyer(
@@ -376,11 +406,18 @@ const ViewOrderHistory = () => {
                         data-bs-toggle="popover"
                         data-bs-trigger="hover"
                       >
-                        Download Invoice {}
-                        <iconify-icon
-                          icon="solar:download-broken"
-                          className="align-middle fs-18"
-                        />{" "}
+                        {sending ? (
+                          "Downloading..."
+                        ) : (
+                          <>
+                            {" "}
+                            Download Invoice {}
+                            <iconify-icon
+                              icon="solar:download-broken"
+                              className="align-middle fs-18"
+                            />
+                          </>
+                        )}
                       </button>
                     )}
                   </Link>

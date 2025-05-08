@@ -56,14 +56,13 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
       );
 
       if (!response.hasError) {
-        toast.success("Subscription added successfully");
+        toast.success(response.message || "Subscription added successfully");
 
         const schoolId = response.data.data.schoolId;
-
         const schoolDetails = await getAPI(`/school/${schoolId}`, {}, true);
+
         if (!schoolDetails.hasError) {
           const schoolData = schoolDetails.data.data;
-
           const newSubscription = {
             id: response.data.data._id,
             subscriptionFor: response.data.data.subscriptionFor,
@@ -79,7 +78,6 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
           };
 
           addSubscription(newSubscription);
-
           setFormData({
             schoolId: "",
             subscriptionFor: "",

@@ -153,10 +153,15 @@ const TrackOrderHistoryTable = () => {
     }
   };
 
+  const [downloadingEdprowiseInvoices, setDownloadingEdprowiseInvoices] =
+    useState({});
+  const [downloadingBuyerInvoices, setDownloadingBuyerInvoices] = useState({});
+
   const generateInvoicePDFForEdprowise = async (
     enquiryNumber,
     schoolId,
-    invoiceForEdprowise
+    invoiceForEdprowise,
+    orderNumber
   ) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const sellerId = userDetails?.id;
@@ -170,6 +175,11 @@ const TrackOrderHistoryTable = () => {
       toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
+
+    setDownloadingEdprowiseInvoices((prev) => ({
+      ...prev,
+      [orderNumber]: true,
+    }));
 
     try {
       const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
@@ -194,13 +204,19 @@ const TrackOrderHistoryTable = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching invoice data");
+    } finally {
+      setDownloadingEdprowiseInvoices((prev) => ({
+        ...prev,
+        [orderNumber]: false,
+      }));
     }
   };
 
   const generateInvoicePDFForBuyer = async (
     enquiryNumber,
     schoolId,
-    invoiceForSchool
+    invoiceForSchool,
+    orderNumber
   ) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const sellerId = userDetails?.id;
@@ -214,6 +230,11 @@ const TrackOrderHistoryTable = () => {
       toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
+
+    setDownloadingBuyerInvoices((prev) => ({
+      ...prev,
+      [orderNumber]: true,
+    }));
 
     try {
       const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
@@ -237,6 +258,11 @@ const TrackOrderHistoryTable = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching invoice data");
+    } finally {
+      setDownloadingBuyerInvoices((prev) => ({
+        ...prev,
+        [orderNumber]: false,
+      }));
     }
   };
 
@@ -420,18 +446,30 @@ const TrackOrderHistoryTable = () => {
                                       generateInvoicePDFForEdprowise(
                                         order?.enquiryNumber,
                                         order?.schoolId,
-                                        order?.invoiceForEdprowise
+                                        order?.invoiceForEdprowise,
+                                        order?.orderNumber
                                       )
                                     }
                                     className="btn btn-soft-info btn-sm"
                                     title="Download PDF Invoice For Edprowise"
                                     data-bs-toggle="popover"
                                     data-bs-trigger="hover"
+                                    disabled={
+                                      downloadingEdprowiseInvoices[
+                                        order.orderNumber
+                                      ]
+                                    }
                                   >
-                                    <iconify-icon
-                                      icon="solar:download-broken"
-                                      className="align-middle fs-18"
-                                    />
+                                    {downloadingEdprowiseInvoices[
+                                      order.orderNumber
+                                    ] ? (
+                                      "Downloading..."
+                                    ) : (
+                                      <iconify-icon
+                                        icon="solar:download-broken"
+                                        className="align-middle fs-18"
+                                      />
+                                    )}
                                   </button>
                                 )}
                               </Link>
@@ -447,18 +485,30 @@ const TrackOrderHistoryTable = () => {
                                       generateInvoicePDFForBuyer(
                                         order?.enquiryNumber,
                                         order?.schoolId,
-                                        order?.invoiceForSchool
+                                        order?.invoiceForSchool,
+                                        order?.orderNumber
                                       )
                                     }
                                     className="btn btn-soft-info btn-sm"
                                     title="Download PDF Invoice For Buyer"
                                     data-bs-toggle="popover"
                                     data-bs-trigger="hover"
+                                    disabled={
+                                      downloadingBuyerInvoices[
+                                        order.orderNumber
+                                      ]
+                                    }
                                   >
-                                    <iconify-icon
-                                      icon="solar:download-broken"
-                                      className="align-middle fs-18"
-                                    />
+                                    {downloadingBuyerInvoices[
+                                      order.orderNumber
+                                    ] ? (
+                                      "Downloading..."
+                                    ) : (
+                                      <iconify-icon
+                                        icon="solar:download-broken"
+                                        className="align-middle fs-18"
+                                      />
+                                    )}
                                   </button>
                                 )}
                               </Link>

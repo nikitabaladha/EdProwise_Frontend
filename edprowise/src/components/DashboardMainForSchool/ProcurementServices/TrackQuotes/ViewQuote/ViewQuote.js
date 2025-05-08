@@ -43,6 +43,8 @@ const ViewQuote = () => {
     }
   };
 
+  const [sending, setSending] = useState(false);
+
   const generateQuotePDF = async (enquiryNumber, sellerId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
@@ -52,6 +54,8 @@ const ViewQuote = () => {
       toast.error("Required information is missing");
       return;
     }
+
+    setSending(true);
 
     try {
       const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
@@ -77,6 +81,8 @@ const ViewQuote = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching quote data");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -114,10 +120,14 @@ const ViewQuote = () => {
                         data-bs-toggle="popover"
                         data-bs-trigger="hover"
                       >
-                        <iconify-icon
-                          icon="solar:download-broken"
-                          className="align-middle fs-18"
-                        />
+                        {sending ? (
+                          "Downloading..."
+                        ) : (
+                          <iconify-icon
+                            icon="solar:download-broken"
+                            className="align-middle fs-18"
+                          />
+                        )}
                       </button>
                     </div>
                   </div>

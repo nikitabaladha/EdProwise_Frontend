@@ -162,8 +162,6 @@ import PayToEdProwiseForSchool from "./components/DashboardMainForSchool/Procure
 
 // =====================================School Fees Module==============================================
 
-// =====================================School Fees Module==============================================
-
 import StudentRegisterListTable from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/StudentRegisterListTable.js";
 import StudentRegistrationForm from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/StudentRegistrationForm.js";
 import ViewStudentInfoRegister from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/ViewStudentInfoRegister/ViewStudentInfoRegister.js";
@@ -249,6 +247,10 @@ import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
 
 import Page404ForWebsite from "./components/Pages404/Page404ForWebsite.js";
 import Page404ForDashboard from "./components/Pages404/Page404ForDashboard.js";
+
+import RemoveThemeAttribute from "./components/RemoveThemeAttribute.js";
+
+import { ThemeProvider } from "./components/ThemeProvider";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -359,11 +361,18 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       />
-
       <Route path="/website-page-not-found" element={<Page404ForWebsite />} />
       {/* =========================Website Routes========================= */}
 
-      <Route path="/" element={<WebsiteMain />}>
+      <Route
+        path="/"
+        element={
+          <>
+            <RemoveThemeAttribute />
+            <WebsiteMain />
+          </>
+        }
+      >
         <Route index element={<HomePage />} />
 
         <Route path="about-us" element={<AboutPage />} />
@@ -452,9 +461,11 @@ const AppRoutes = () => {
       <Route
         path="/admin-dashboard"
         element={
-          <PrivateRoute>
-            <AdminDashboardMain />
-          </PrivateRoute>
+          <ThemeProvider>
+            <PrivateRoute>
+              <AdminDashboardMain />
+            </PrivateRoute>
+          </ThemeProvider>
         }
       >
         <Route index element={<Dashboard />} />
@@ -567,9 +578,13 @@ const AppRoutes = () => {
       <Route
         path="/school-dashboard"
         element={
-          <PrivateRoute>
-            <SchoolDashboardMain />
-          </PrivateRoute>
+          <>
+            <ThemeProvider>
+              <PrivateRoute>
+                <SchoolDashboardMain />
+              </PrivateRoute>
+            </ThemeProvider>
+          </>
         }
       >
         <Route index element={<SchoolProcurementDashboard />} />
@@ -873,12 +888,15 @@ const AppRoutes = () => {
         <Route path="*" element={<Page404ForDashboard />} />
       </Route>
       {/* =========================================Seller Routes============================================= */}
+
       <Route
         path="/seller-dashboard"
         element={
-          <PrivateRoute>
-            <SellerDashboardMain />
-          </PrivateRoute>
+          <ThemeProvider>
+            <PrivateRoute>
+              <SellerDashboardMain />
+            </PrivateRoute>
+          </ThemeProvider>
         }
       >
         {/*Seller Dashboard Route */}

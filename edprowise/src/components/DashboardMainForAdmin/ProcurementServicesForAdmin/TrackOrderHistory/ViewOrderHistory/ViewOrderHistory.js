@@ -112,6 +112,9 @@ const ViewOrderHistory = () => {
     fetchOrderDetails();
   }, [enquiryNumber]);
 
+  const [sending, setSending] = useState(false);
+  const [sendingForBuyer, setSendingForBuyer] = useState(false);
+
   const generateInvoicePDFForEdprowise = async () => {
     const missingFields = [];
     if (!sellerId) missingFields.push("Seller ID");
@@ -122,6 +125,8 @@ const ViewOrderHistory = () => {
       toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
+
+    setSending(true);
 
     try {
       const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
@@ -149,6 +154,8 @@ const ViewOrderHistory = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching invoice data");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -162,6 +169,8 @@ const ViewOrderHistory = () => {
       toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
+
+    setSendingForBuyer(true);
 
     try {
       const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
@@ -189,6 +198,8 @@ const ViewOrderHistory = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching invoice data");
+    } finally {
+      setSendingForBuyer(false);
     }
   };
 
@@ -404,19 +415,25 @@ const ViewOrderHistory = () => {
                       order?.supplierStatus
                     ) && (
                       <>
-                        <Link
+                        <button
                           onClick={() => generateInvoicePDFForBuyer()}
                           className="btn btn-soft-info btn-sm"
                           title="Download PDF Invoice For Buyer"
                           data-bs-toggle="popover"
                           data-bs-trigger="hover"
                         >
-                          Download Invoice For Buyer
-                          <iconify-icon
-                            icon="solar:download-broken"
-                            className="align-middle fs-18"
-                          />
-                        </Link>
+                          {sendingForBuyer ? (
+                            "Downloading..."
+                          ) : (
+                            <>
+                              Download Invoice For Buyer
+                              <iconify-icon
+                                icon="solar:download-broken"
+                                className="align-middle fs-18"
+                              />
+                            </>
+                          )}
+                        </button>
                       </>
                     )}
                   </div>
@@ -530,11 +547,17 @@ const ViewOrderHistory = () => {
                           data-bs-toggle="popover"
                           data-bs-trigger="hover"
                         >
-                          Download Invoice For Edprowise
-                          <iconify-icon
-                            icon="solar:download-broken"
-                            className="align-middle fs-18"
-                          />
+                          {sending ? (
+                            "Downloading..."
+                          ) : (
+                            <>
+                              Download Invoice For Edprowise
+                              <iconify-icon
+                                icon="solar:download-broken"
+                                className="align-middle fs-18"
+                              />
+                            </>
+                          )}
                         </button>
                       </>
                     )}

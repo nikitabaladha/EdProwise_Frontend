@@ -95,6 +95,8 @@ const ViewAllQuoteTable = () => {
 
   const handleExport = () => {};
 
+  const [downloadingQuotes, setDownloadingQuotes] = useState({});
+
   const generateQuotePDF = async (enquiryNumber, sellerId, quoteNumber) => {
     const missingFields = [];
     if (!sellerId) missingFields.push("Seller ID");
@@ -105,6 +107,11 @@ const ViewAllQuoteTable = () => {
       toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
+
+    setDownloadingQuotes((prev) => ({
+      ...prev,
+      [sellerId]: true,
+    }));
 
     try {
       const response = await getAPI(
@@ -128,6 +135,12 @@ const ViewAllQuoteTable = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching quote data");
+    } finally {
+      // Reset downloading state for this specific quote
+      setDownloadingQuotes((prev) => ({
+        ...prev,
+        [sellerId]: false,
+      }));
     }
   };
 
@@ -264,11 +277,16 @@ const ViewAllQuoteTable = () => {
                                 title="Download PDF"
                                 data-bs-toggle="popover"
                                 data-bs-trigger="hover"
+                                disabled={downloadingQuotes[quote.sellerId]}
                               >
-                                <iconify-icon
-                                  icon="solar:download-broken"
-                                  className="align-middle fs-18"
-                                />
+                                {downloadingQuotes[quote.sellerId] ? (
+                                  "Downloading..."
+                                ) : (
+                                  <iconify-icon
+                                    icon="solar:download-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                )}
                               </button>
 
                               {[

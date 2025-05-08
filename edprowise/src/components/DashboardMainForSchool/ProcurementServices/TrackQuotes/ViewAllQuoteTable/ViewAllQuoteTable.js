@@ -159,6 +159,8 @@ const ViewAllQuoteTable = () => {
     setIsModalOpen(false);
   };
 
+  const [sending, setSending] = useState(false);
+
   const generateQuotePDF = async (enquiryNumber, sellerId, quoteNumber) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
@@ -172,6 +174,8 @@ const ViewAllQuoteTable = () => {
       toast.error(`Missing: ${missingFields.join(", ")}`);
       return;
     }
+
+    setSending(true);
 
     try {
       const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
@@ -197,6 +201,8 @@ const ViewAllQuoteTable = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching quote data");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -329,10 +335,14 @@ const ViewAllQuoteTable = () => {
                                     data-bs-toggle="popover"
                                     data-bs-trigger="hover"
                                   >
-                                    <iconify-icon
-                                      icon="solar:download-broken"
-                                      className="align-middle fs-18"
-                                    />
+                                    {sending ? (
+                                      "Downloading..."
+                                    ) : (
+                                      <iconify-icon
+                                        icon="solar:download-broken"
+                                        className="align-middle fs-18"
+                                      />
+                                    )}
                                   </button>
                                 </>
                               )}
@@ -365,10 +375,14 @@ const ViewAllQuoteTable = () => {
                                     data-bs-toggle="popover"
                                     data-bs-trigger="hover"
                                   >
-                                    <iconify-icon
-                                      icon="solar:download-broken"
-                                      className="align-middle fs-18"
-                                    />
+                                    {sending ? (
+                                      "Downloading..."
+                                    ) : (
+                                      <iconify-icon
+                                        icon="solar:download-broken"
+                                        className="align-middle fs-18"
+                                      />
+                                    )}
                                   </button>
 
                                   <button

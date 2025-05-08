@@ -6,6 +6,8 @@ import SellerDashboardHeader from "./SellerDashboardHeader";
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
 
+// import { ThemeProvider } from "../../components/ThemeProvider";
+
 const SellerDashboardMain = () => {
   return (
     <>

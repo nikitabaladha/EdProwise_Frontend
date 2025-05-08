@@ -500,11 +500,7 @@ const ViewOrderHistory = () => {
                                       />
                                     </div>
                                   )}
-                                  <div>
-                                    <Link className="text-dark fw-medium">
-                                      {product.subCategoryName}
-                                    </Link>
-                                  </div>
+                                  <div>{product.subCategoryName}</div>
                                 </div>
                               </td>
                               <td>{product.categoryName}</td>
@@ -596,7 +592,6 @@ const ViewOrderHistory = () => {
                               <td>{order.orderNumber}</td>
                               <td>
                                 <div className="d-flex align-items-center gap-2">
-                                  {/* why i am not able to see any image */}
                                   {orderImageUrl && (
                                     <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
                                       <img

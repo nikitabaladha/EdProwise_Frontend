@@ -118,6 +118,8 @@ const TrackQuoteTable = ({}) => {
     exportToExcel(filteredData, "Requested Quotes", "Requested_Quotes");
   };
 
+  const [sending, setSending] = useState(false);
+
   const generateQuotePDF = async (enquiryNumber, schoolId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const sellerId = userDetails?.id;
@@ -133,6 +135,8 @@ const TrackQuoteTable = ({}) => {
     }
 
     const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+    setSending(true);
 
     try {
       const response = await getAPI(
@@ -160,6 +164,8 @@ const TrackQuoteTable = ({}) => {
     } catch (err) {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching quote data");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -359,10 +365,14 @@ const TrackQuoteTable = ({}) => {
                                         data-bs-toggle="popover"
                                         data-bs-trigger="hover"
                                       >
-                                        <iconify-icon
-                                          icon="solar:download-broken"
-                                          className="align-middle fs-18"
-                                        />
+                                        {sending ? (
+                                          "Downloading..."
+                                        ) : (
+                                          <iconify-icon
+                                            icon="solar:download-broken"
+                                            className="align-middle fs-18"
+                                          />
+                                        )}
                                       </button>
                                     ) : null}
 
