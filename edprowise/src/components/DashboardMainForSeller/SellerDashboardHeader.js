@@ -6,15 +6,17 @@ import { IoKeyOutline } from "react-icons/io5";
 import { ThemeContext } from "../ThemeProvider";
 import getAPI from "../../api/getAPI";
 import { useNavigate } from "react-router-dom";
+import { useLogout } from '../../useLogout';
 
 const SellerDashboardHeader = () => {
   const navigate = useNavigate();
+    const logout = useLogout();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userDetails");
-    window.location.href = "/login";
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("userDetails");
+  //   window.location.href = "/login";
+  // };
   const [sellerProfile, setSellerProfile] = useState(null);
 
   const fetchSellerProfileData = async () => {
@@ -37,32 +39,61 @@ const SellerDashboardHeader = () => {
     fetchSellerProfileData();
   }, []);
 
-  const toggleSidebar = () => {
-    const htmlElement = document.documentElement;
-    const bodyElement = document.body;
-
-    htmlElement.classList.toggle("sidebar-enable");
-
-    if (bodyElement.style.overflow === "hidden") {
-      bodyElement.style.overflow = "";
-    } else {
-      bodyElement.style.overflow = "hidden";
-    }
-  };
-
-  const handleDocumentClick = (event) => {
-    const htmlElement = document.documentElement;
-    const mainNav = document.querySelector(".main-nav");
-
-    if (
-      htmlElement.classList.contains("sidebar-enable") &&
-      mainNav &&
-      !mainNav.contains(event.target)
-    ) {
-      toggleSidebar();
-    }
-  };
-
+   const [isMobile, setIsMobile] = useState(false);
+  
+  
+    useEffect(() => {
+      const checkScreenSize = () => {
+        setIsMobile(window.innerWidth <= 768); 
+      };
+  
+      checkScreenSize();
+      window.addEventListener("resize", checkScreenSize);
+  
+      return () => window.removeEventListener("resize", checkScreenSize);
+    }, [])
+  
+    const toggleSidebar = () => {
+      const htmlElement = document.documentElement;
+      const bodyElement = document.body;
+    
+      htmlElement.classList.toggle("sidebar-enable");
+    
+      if (htmlElement.classList.contains("sidebar-enable")) {
+        bodyElement.style.overflow = "hidden";
+    
+        if (!document.querySelector(".offcanvas-backdrop")) {
+          const backdrop = document.createElement("div");
+          backdrop.className = "offcanvas-backdrop fade show";
+          bodyElement.appendChild(backdrop);
+        }
+      } else {
+        bodyElement.style.overflow = "";
+    
+     
+        const backdrop = document.querySelector(".offcanvas-backdrop");
+        if (backdrop) backdrop.remove();
+      }
+    };
+    
+    const handleDocumentClick = (event) => {
+      const htmlElement = document.documentElement;
+      const mainNav = document.querySelector(".main-nav");
+    
+      if (
+        htmlElement.classList.contains("sidebar-enable") &&
+        mainNav &&
+        !mainNav.contains(event.target) &&
+        !event.target.closest(".button-toggle-menu")
+      ) {
+        htmlElement.classList.remove("sidebar-enable");
+        document.body.style.overflow = "";
+  
+        const backdrop = document.querySelector(".offcanvas-backdrop");
+        if (backdrop) backdrop.remove();
+      }
+    };
+    
   useEffect(() => {
     document.addEventListener("click", handleDocumentClick);
 
@@ -179,6 +210,9 @@ const SellerDashboardHeader = () => {
                     event.stopPropagation();
                     toggleSidebar();
                   }}
+                  style={{
+                    display: isMobile ? "block" : "none"
+                  }}
                 >
                   <iconify-icon
                     icon="solar:hamburger-menu-broken"
@@ -204,7 +238,7 @@ const SellerDashboardHeader = () => {
                 >
                   <iconify-icon
                     icon="solar:moon-bold-duotone"
-                    className="fs-24 align-middle"
+                    className="fs-24 align-middle "
                   />
                 </button>
               </div>
@@ -401,7 +435,7 @@ const SellerDashboardHeader = () => {
                   <div className="dropdown-divider my-1" />
                   <Link className="dropdown-item text-danger">
                     <BiLogOut className="bx bx-log-out fs-18 align-middle me-1" />
-                    <span className="align-middle" onClick={handleLogout}>
+                    <span className="align-middle" onClick={logout}>
                       Logout
                     </span>
                   </Link>

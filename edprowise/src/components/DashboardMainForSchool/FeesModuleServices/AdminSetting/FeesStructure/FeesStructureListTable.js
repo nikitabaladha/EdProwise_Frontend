@@ -93,7 +93,7 @@ const FeeStructureList = () => {
 
   const navigateToAddNew = (event) => {
     event.preventDefault();
-    navigate(`/school-dashboard/fees-module/admin-setting/fees-structure/add-fees-structure`);
+    navigate(`/school-dashboard/fees-module/admin-setting/fees-structure/school-fees/add-school-fees`);
   };
 
   return (
@@ -103,7 +103,7 @@ const FeeStructureList = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All Fee Structures</h4>
+                <h4 className="card-title flex-grow-1">All School Fees</h4>
                 <Link onClick={navigateToAddNew} className="btn btn-sm btn-primary">Create Fee Structure</Link>
                 <div className="text-end">
                   <Link className="btn btn-sm btn-outline-light">Export</Link>
@@ -149,7 +149,7 @@ const FeeStructureList = () => {
                           <div className="d-flex gap-2">
                             <button
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/view-fees-structure", {
+                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/school-fees/view-school-fees", {
                                   state: { structure }
                                 })
                               }
@@ -160,7 +160,7 @@ const FeeStructureList = () => {
                             <button
                               className="btn btn-soft-primary btn-sm"
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/update-fees-structure", {
+                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/school-fees/update-school-fees", {
                                   state: { structure }
                                 })
                               }

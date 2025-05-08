@@ -15,6 +15,8 @@ const Fine = () => {
   const [deleteType, setDeleteType] = useState("fine");
   const [selectedFine, setSelectedFine] = useState(null);
 
+  
+
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
@@ -24,13 +26,20 @@ const Fine = () => {
     }
     setSchoolId(id);
   }, []);
+  
 
   useEffect(() => {
     if (!schoolId) return;
-
+  
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    if (!academicYear) {
+      toast.error("Academic year not found. Please select an academic year.");
+      return;
+    }
+  
     const fetchFines = async () => {
       try {
-        const response = await getAPI(`/get-fine/${schoolId}`);
+        const response = await getAPI(`/get-fine/school/${schoolId}/year/${academicYear}`);
         if (!response.hasError) {
           const fineArray = Array.isArray(response.data?.data) ? response.data.data : [];
           setFines(fineArray);
@@ -42,9 +51,10 @@ const Fine = () => {
         console.error("Fine Fetch Error:", err);
       }
     };
-
+  
     fetchFines();
   }, [schoolId]);
+  
 
   const indexOfLast = currentPage * finesPerPage;
   const indexOfFirst = indexOfLast - finesPerPage;
@@ -84,7 +94,7 @@ const Fine = () => {
 
   const navigateToAddNewFine = (e) => {
     e.preventDefault();
-    navigate(`/school-dashboard/fees-module/admin-setting/fine/add-fine`);
+    navigate(`/school-dashboard/fees-module/admin-setting/fees-structure/fine/add-fine`);
   };
 
   return (

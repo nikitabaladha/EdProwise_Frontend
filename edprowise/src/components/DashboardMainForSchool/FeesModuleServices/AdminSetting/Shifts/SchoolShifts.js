@@ -104,7 +104,7 @@ const SchoolShifts = () => {
 
   const navigateToAddNewClass = (event) => {
     event.preventDefault();
-    navigate(`/school-dashboard/fees-module/admin-setting/shifts/add-shift`);
+    navigate(`/school-dashboard/fees-module/admin-setting/grade/shifts/add-shift`);
   }
   return (
     <>
@@ -113,7 +113,7 @@ const SchoolShifts = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All Class & Section</h4>
+                <h4 className="card-title flex-grow-1">All Shifts</h4>
                 <Link
                   onClick={(event) => navigateToAddNewClass(event)}
                   className="btn btn-sm btn-primary"
@@ -183,7 +183,7 @@ const SchoolShifts = () => {
                             <button
                               className="btn btn-soft-primary btn-sm"
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/shifts/update-shift", {
+                                navigate("/school-dashboard/fees-module/admin-setting/grade/shifts/update-shift", {
                                   state: { shift }
                                 })
                               }

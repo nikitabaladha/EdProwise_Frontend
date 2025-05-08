@@ -15,6 +15,7 @@ const useConcessionForm = () => {
     
 
     const [formData, setFormData] = useState({
+        studentPhoto: null,
         AdmissionNumber: '',
         firstName: '',
         middleName: '',
@@ -199,6 +200,7 @@ const useConcessionForm = () => {
 
     const cancelSubmittingForm = () => {
         setFormData({
+            studentPhoto: null,
             AdmissionNumber: '',
             firstName: '',
             middleName: '',
@@ -240,6 +242,7 @@ const useConcessionForm = () => {
 
         setFormData((prev) => ({
             ...prev,
+            studentPhoto: student.studentPhoto || null,
             firstName: student.firstName,
             middleName: student.middleName,
             lastName: student.lastName,
@@ -300,6 +303,10 @@ const useConcessionForm = () => {
             formDataToSend.append('section', formData.section);
             formDataToSend.append('concessionType', formData.concessionType);
             formDataToSend.append('applicableAcademicYear', formData.applicableAcademicYear);
+
+            if (formData.studentPhoto) {
+                formDataToSend.append('studentPhoto', formData.studentPhoto);
+            }
         
             if (formData.castOrIncomeCertificate) {
                 formDataToSend.append('castOrIncomeCertificate', formData.castOrIncomeCertificate);
@@ -314,19 +321,42 @@ const useConcessionForm = () => {
                 formDataToSend.append(`concessionDetails[${index}][balancePayable]`, detail.balancePayable);
             });
         
-            // const response = 
+            const response = 
             await postAPI('/create-Concession-form', formDataToSend, {
                 
                     'Content-Type': 'multipart/form-data',
             
             });
+         
+            if (!response.hasError && response.data) {
+                const { receiptNumber } = response.data.form; 
+    
         
-            toast.success('Concession application submitted successfully!');
-            navigate(-1);
+                toast.success('Concession application submitted successfully!');
+                
+              
+                navigate(`/school-dashboard/fees-module/form/concession-form-details`, {
+                    state: {
+                        formData: {
+                            ...formData,
+                            concessionDetails: formData.concessionDetails.map(detail => ({
+                                ...detail,
+                                feesTypeName: feeTypes.find(ft => ft._id === detail.feesType)?.feesTypeName || detail.feesType
+                            }))
+                        },
+                        className: classes.find(c => c._id === formData.masterDefineClass)?.className || '',
+                        sectionName: sections.find(s => s._id === formData.section)?.name || '',
+                        feeTypes: feeTypes,
+                        receiptNumber: receiptNumber 
+                    }
+                });
+            } else {
+                toast.error('Failed to submit concession application');
+            }
         } catch (error) {
             console.error('Submission error:', error);
             toast.error('Failed to submit concession application');
-        } 
+        }
     };
     
 
@@ -342,6 +372,16 @@ const useConcessionForm = () => {
             concessionDetails: updatedConcessionDetails
         });
     };
+
+    const handlePhotoUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setFormData(prev => ({
+            ...prev,
+            studentPhoto: file
+          }));
+        }
+      };
 
     return {
         formData,
@@ -364,6 +404,7 @@ const useConcessionForm = () => {
         handleClassChange,
         generateAcademicYears,
         cancelSubmittingForm,
+        handlePhotoUpload
     };
 };
 

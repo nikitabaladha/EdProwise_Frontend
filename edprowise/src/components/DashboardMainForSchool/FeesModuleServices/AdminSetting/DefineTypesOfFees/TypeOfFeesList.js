@@ -9,7 +9,7 @@ const TypeOfFeesList = () => {
 
   const [feesTypes, setFeesTypes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [requestPerPage] = useState(5);
+  const [requestPerPage] = useState(7);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [deleteType, setDeleteType] = useState("feesType");
@@ -78,7 +78,7 @@ const TypeOfFeesList = () => {
   };
 
   const navigateToAddNewTypeOfFees = () => {
-    navigate("/school-dashboard/fees-module/admin-setting/fees-type-list/add-fees-type");
+    navigate("/school-dashboard/fees-module/admin-setting/fees-structure/fees-type-list/add-fees-type");
   };
 
 
@@ -110,6 +110,7 @@ const TypeOfFeesList = () => {
                     <tr>
                       <th>#</th>
                       <th>Type Of Fees</th>
+                      <th>Group Of Fees</th>
                       <th className="text-start">Action</th>
                     </tr>
                   </thead>
@@ -123,11 +124,12 @@ const TypeOfFeesList = () => {
                         <tr key={index}>
                           <td>{indexOfFirst + index + 1}</td>
                           <td>{feetype.feesTypeName}</td>
+                          <td>{feetype.groupOfFees}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <button className="btn btn-soft-primary btn-sm"
                                 onClick={() =>
-                                  navigate("/school-dashboard/fees-module/admin-setting/fees-type-list/update-fees-type", {
+                                  navigate("/school-dashboard/fees-module/admin-setting/fees-structure/fees-type-list/update-fees-type", {
                                     state: { feetype } 
                                   })
                                 }

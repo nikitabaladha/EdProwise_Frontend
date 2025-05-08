@@ -104,7 +104,7 @@ const ClassAndSection = () => {
 
   const navigateToAddNewClass = (event) => {
     event.preventDefault();
-    navigate(`/school-dashboard/fees-module/admin-setting/class-section/create-class-section`);
+    navigate(`/school-dashboard/fees-module/admin-setting/grade/class-section/create-class-section`);
   }
   return (
     <>
@@ -161,7 +161,7 @@ const ClassAndSection = () => {
                           <div className="d-flex gap-2">
                             <button
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/class-section/view-class-section", {
+                                navigate("/school-dashboard/fees-module/admin-setting/grade/class-section/view-class-section", {
                                   state: { classandsection }
                                 })
                               }
@@ -172,7 +172,7 @@ const ClassAndSection = () => {
                             <button
                               className="btn btn-soft-primary btn-sm"
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/class-section/update-class-section", {
+                                navigate("/school-dashboard/fees-module/admin-setting/grade/class-section/update-class-section", {
                                   state: { classandsection }
                                 })
                               }

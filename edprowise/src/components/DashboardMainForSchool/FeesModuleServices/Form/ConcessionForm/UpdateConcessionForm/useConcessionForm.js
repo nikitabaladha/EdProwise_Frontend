@@ -16,6 +16,7 @@ export const useConcessionForm = () => {
     const [feeTypes, setFeeTypes] = useState([]);
 
     const [formData, setFormData] = useState({
+        studentPhoto: null,
         AdmissionNumber: '',
         firstName: '',
         middleName: '',
@@ -49,6 +50,7 @@ export const useConcessionForm = () => {
     useEffect(() => {
         if (student) {
             setFormData({
+                studentPhoto: student.studentPhoto || null,
                 AdmissionNumber: student.AdmissionNumber,
                 firstName: student.firstName,
                 middleName: student.middleName || '',
@@ -247,6 +249,17 @@ export const useConcessionForm = () => {
     };
 
 
+    const handlePhotoUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setFormData(prev => ({
+            ...prev,
+            studentPhoto: file
+          }));
+        }
+      };
+
+
  const getFileNameFromPath = (path) => {
         if (!path) return '';
         return path.split('/').pop();
@@ -267,6 +280,7 @@ export const useConcessionForm = () => {
         cancelSubmittingForm,
         toggleRowSelection,
         getFileNameFromPath,
-        generateAcademicYears
+        generateAcademicYears,
+        handlePhotoUpload
     };
 };

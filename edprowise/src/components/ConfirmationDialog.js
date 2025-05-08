@@ -99,6 +99,12 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete fees structure.",
     idKey: "_id",
   },
+  onetimesfees:{
+    getEndpoint: (id) => `/delete-one-time-fees/${id}`,
+    successMessage: "One time fees successfully deleted!",
+    errorMessage: "Failed to delete one time fees.",
+    idKey: "_id",
+  },
   prefix:{
     getEndpoint: (id) => `/delete-prefix/${id}`,
     successMessage: "Prefix successfully deleted!",

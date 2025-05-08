@@ -1,6 +1,7 @@
-import React from "react";
 
+import CreatableSelect from 'react-select/creatable';
 import useStudentRegistration from "./UseStudentRegistration";
+
 
 const StudentRegistrationForm = () => {
   const {
@@ -13,8 +14,19 @@ const StudentRegistrationForm = () => {
     classes,
     shifts,
     cityOptions,
+    countryOptions,
+    stateOptions,
     isNursery,
-    handlePhotoUpload
+    handlePhotoUpload,
+    availableFeeTypes,
+    selectedFeeType,
+    registrationFee,
+    concessionAmount,
+    finalAmount,
+
+    handleCountryChange,
+    handleStateChange,
+    handleCityChange,
   } = useStudentRegistration();
 
   return <>
@@ -346,38 +358,74 @@ const StudentRegistrationForm = () => {
                   </div>
                 </div>
 
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="cityStateCountry"
-                        className="form-label"
-                      >
-                        City-State-Country  <span className="text-danger">*</span>
-                      </label>
 
-                      <select
-                        id="cityStateCountry"
-                        name="cityStateCountry"
-                        className="form-control"
-                        value={formData.cityStateCountry}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select City-State-Country</option>
-                        {cityOptions.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+                <div className="row">
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="country" className="form-label">
+                        Country <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        id="country"
+                        name="country"
+                        options={countryOptions}
+                        value={formData.country ? { value: formData.country, label: formData.country } : null}
+                        onChange={handleCountryChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a country"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => "Type to add a new country"}
+                      />
                     </div>
                   </div>
-                  <div className="col-md-6">
-                    {" "}
+
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        id="state"
+                        name="state"
+                        options={stateOptions}
+                        value={formData.state ? { value: formData.state, label: formData.state } : null}
+                        onChange={handleStateChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a state"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => formData.country ? "Type to add a new state" : "Select a country first"}
+                        isValidNewOption={(inputValue) => inputValue.length > 0}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        id="city"
+                        name="city"
+                        options={cityOptions}
+                        value={formData.city ? { value: formData.city, label: formData.city } : null}
+                        onChange={handleCityChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a city"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => formData.state ? "Type to add a new city" : "Select a state first"}
+                        isValidNewOption={(inputValue) => inputValue.length > 0}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
-                        Pincode  <span className="text-danger">*</span>
+                        Pincode <span className="text-danger">*</span>
                       </label>
                       <input
                         type="number"
@@ -390,9 +438,8 @@ const StudentRegistrationForm = () => {
                       />
                     </div>
                   </div>
-
-
                 </div>
+
 
                 {
                   !isNursery && (
@@ -640,11 +687,81 @@ const StudentRegistrationForm = () => {
                         I Understand & agree that the registration of my word does not guarantee admission to the school & the registration fee is neither transferable not refundable.
                       </label>
                     </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="selectedFeeType" className="form-label">
+                          Fee Type <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          id="selectedFeeType"
+                          name="selectedFeeType"
+                          className="form-control"
+                          value={selectedFeeType}
+                          onChange={handleChange}
+                          required
+                        >
+                          <option value="">Select Fee Type</option>
+                          {availableFeeTypes.map((feeType) => (
+                            <option key={feeType.id} value={feeType.id}>
+                              {feeType.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="Registartionfees" className="form-label">
+                          Registration Fees <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="Registartionfees"
+                          name="Registartionfees"
+                          className="form-control"
+                          value={registrationFee}
+                          readOnly
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="concessionamount" className="form-label">
+                          Concession
+                        </label>
+                        <input
+                          // type="number"
+                          id="concessionamount"
+                          name="concessionamount"
+                          className="form-control"
+                          value={concessionAmount}
+                          onChange={handleChange}
+                          max={registrationFee}
 
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="finalamount" className="form-label">
+                          Final Amount <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="finalamount"
+                          name="finalamount"
+                          className="form-control"
+                          value={finalAmount}
+                          readOnly
+                          required
+                        />
+                      </div>
+                    </div>
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="name" className="form-label">
-                          Name <span className="text-danger">*</span>
+                          Name of person filling the form <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -657,7 +774,7 @@ const StudentRegistrationForm = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="paymentMode" className="form-label">
                           Payment Option  <span className="text-danger">*</span>
@@ -680,7 +797,7 @@ const StudentRegistrationForm = () => {
 
                     {formData.paymentMode === 'Cheque' && (
                       <>
-                        <div className="col-md-3">
+                        <div className="col-md-6">
                           <div className="mb-3">
                             <label htmlFor="chequeNumber" className="form-label">
                               Cheque Number <span className="text-danger">*</span>
@@ -696,7 +813,7 @@ const StudentRegistrationForm = () => {
                             />
                           </div>
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-6">
                           <div className="mb-3">
                             <label htmlFor="bankName" className="form-label">
                               Bank Name <span className="text-danger">*</span>
@@ -719,9 +836,9 @@ const StudentRegistrationForm = () => {
                       <button
                         type="submit"
                         className="btn btn-primary custom-submit-button"
-                      // disabled={isSubmitting}
+                        disabled={isSubmitting}
                       >
-                        {isSubmitting ? 'Proceed Further' : 'Proceed Further'}
+                        {isSubmitting ? 'Proceed Further....' : 'Proceed Further'}
                       </button>
                     </div>
                   </div>

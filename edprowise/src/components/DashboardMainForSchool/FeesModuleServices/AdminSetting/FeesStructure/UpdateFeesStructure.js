@@ -37,7 +37,10 @@ const UpdateFeeStructure = () => {
       try {
         const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
-          setFeesTypesList(feesTypeRes.data.data);
+          const SchoolFees = feesTypeRes.data.data.filter(
+            (fee) => fee.groupOfFees === "School Fees"
+          );
+          setFeesTypesList(SchoolFees);
         } else {
           toast.error("Failed to fetch fees types.");
         }
@@ -295,11 +298,18 @@ const UpdateFeeStructure = () => {
                                       required
                                     >
                                       <option value="">Select Fee Type</option>
-                                      {feesTypesList.map((type) => (
-                                        <option key={type._id} value={type._id}>
-                                          {type.feesTypeName}
-                                        </option>
-                                      ))}
+                                      {feesTypesList
+                                    .filter((type) => {
+                                      const selectedFeeTypes = inst.feesDetails.map((f) => f.feesType);
+                                      return (
+                                        !selectedFeeTypes.includes(type._id) || fee.feesType === type._id
+                                      );
+                                    })
+                                    .map((type) => (
+                                      <option key={type._id} value={type._id}>
+                                        {type.feesTypeName}
+                                      </option>
+                                    ))}
                                     </select>
                                   </div>
                                   <div className="col-md-5">

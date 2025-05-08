@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CityData from "../../../../../CityData.json";
+import countryData from "../../../../../CityData.json";
 import { toast } from "react-toastify";
 import getAPI from "../../../../../../api/getAPI";
 import putAPI from "../../../../../../api/putAPI";
 import { useLocation } from 'react-router-dom';
 import { validateBasicForm } from '../Formvalidation.js/FormValidationUpdate';
+import postAPI from "../../../../../../api/postAPI";
 
 const UseStudentRegistrationUpdate = () => {
   const location = useLocation();
@@ -15,6 +16,7 @@ const UseStudentRegistrationUpdate = () => {
   const [classes, setClasses] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
 
 
   const [formData, setFormData] = useState({
@@ -33,7 +35,9 @@ const UseStudentRegistrationUpdate = () => {
     motherName: student?.motherName || '',
     motherContactNo: student?.motherContactNo || '',
     currentAddress: student?.currentAddress || '',
-    cityStateCountry: student?.cityStateCountry || '',
+    country: student?.country||'', 
+    state:student?.state|| '',  
+    city:student?.city|| '', 
     pincode: student?.pincode || '',
     previousSchoolName: student?.previousSchoolName || '',
     previousSchoolBoard: student?.previousSchoolBoard || '',
@@ -46,6 +50,9 @@ const UseStudentRegistrationUpdate = () => {
     aadharPassportNumber: student?.aadharPassportNumber || '',
     castCertificate: null,
     agreementChecked: student?.agreementChecked || false,
+    registrationFee:student?.registrationFee||0,
+    concessionAmount:student?.concessionAmount||0,
+    finalAmount:student?.finalAmount||0,
     name: student?.name || '',
     paymentMode: student?.paymentMode || '',
     chequeNumber: student?.chequeNumber || '',
@@ -245,13 +252,140 @@ const UseStudentRegistrationUpdate = () => {
     }
   };
 
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
-  );
-
+ const countryOptions = Object.keys(countryData).map(country => ({
+   value: country,
+   label: country
+ }));
+ const stateOptions = formData.country && countryData[formData.country]
+   ? Object.keys(countryData[formData.country]).map(state => ({
+       value: state,
+       label: state
+     }))
+   : [];
+ 
+ const cityOptions = formData.state && formData.country && countryData[formData.country]?.[formData.state]
+   ? countryData[formData.country][formData.state].map(city => ({
+       value: city,
+       label: city
+     }))
+   : [];
+ 
+ 
+   const handleCountryChange = (selectedOption, actionMeta) => {
+     if (actionMeta.action === 'create-option') {
+       setFormData(prev => ({
+         ...prev,
+         country: selectedOption.value,
+         state: '',
+         city: '' 
+       }));
+     } else if (actionMeta.action === 'select-option') {
+  
+       setFormData(prev => ({
+         ...prev,
+         country: selectedOption ? selectedOption.value : '',
+         state: '', 
+         city: ''   
+       }));
+     } else if (actionMeta.action === 'clear') {
+    
+       setFormData(prev => ({
+         ...prev,
+         country: '',
+         state: '',
+         city: ''
+       }));
+     }
+   };
+   
+   const handleStateChange = (selectedOption, actionMeta) => {
+     if (actionMeta.action === 'create-option') {
+       setFormData(prev => ({
+         ...prev,
+         state: selectedOption.value,
+         city: '' 
+       }));
+     } else if (actionMeta.action === 'select-option') {
+       setFormData(prev => ({
+         ...prev,
+         state: selectedOption ? selectedOption.value : '',
+         city: '' 
+       }));
+     } else if (actionMeta.action === 'clear') {
+       setFormData(prev => ({
+         ...prev,
+         state: '',
+         city: ''
+       }));
+     }
+   };
+   
+   const handleCityChange = (selectedOption, actionMeta) => {
+     if (actionMeta.action === 'create-option') {
+       setFormData(prev => ({
+         ...prev,
+         city: selectedOption.value
+       }));
+     } else if (actionMeta.action === 'select-option') {
+       setFormData(prev => ({
+         ...prev,
+         city: selectedOption ? selectedOption.value : ''
+       }));
+     } else if (actionMeta.action === 'clear') {
+       setFormData(prev => ({
+         ...prev,
+         city: ''
+       }));
+     }
+   };
+   
   const getFileNameFromPath = (path) => {
     if (!path) return '';
     return path.split('/').pop();
+  };
+
+  const handleDownload = async () => {
+    try {
+      // Ensure all required fields are present
+      const receiptData = {
+        receiptNumber: formData.receiptNumber || student.receiptNumber || 'REG001',
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        registrationNumber: student?.registrationNumber || 'REG001',
+        registrationDate: formData.registrationDate || new Date().toISOString(),
+        registrationFee: formData.registrationFee || 0,
+        concessionAmount: formData.concessionAmount || 0,
+        finalAmount: formData.finalAmount || 0,
+        paymentMode: formData.paymentMode || 'Cash',
+        transactionNumber: formData.transactionNumber || '',
+        chequeNumber: formData.chequeNumber || '',
+        name: formData.name || 'Admin'
+      };
+  
+      const className = classes.find(c => c._id === formData.masterDefineClass)?.className || '';
+  
+      const response = await postAPI(
+        '/create-registration-receipts',
+        {
+          student: receiptData,
+          feeTypeName: 'Registration Fee',
+          className: className
+        },
+        { responseType: 'blob' }
+      );
+  
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Receipt_${receiptData.receiptNumber}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading receipt:', error);
+      toast.error(error.response?.data?.error || 'Failed to download receipt');
+    }
   };
 
   return {
@@ -262,11 +396,17 @@ const UseStudentRegistrationUpdate = () => {
     isSubmitting,
     classes,
     shifts,
+    countryOptions,
+    stateOptions,
     cityOptions,
     isNursery,
     handlePhotoUpload,
     getFileNameFromPath ,
-    existingFiles
+    existingFiles,
+    handleCountryChange,
+    handleStateChange,
+    handleCityChange,
+    handleDownload
   };
 };
 

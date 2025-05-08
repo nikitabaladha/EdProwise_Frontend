@@ -8,43 +8,75 @@ import { ThemeContext } from "../ThemeProvider";
 
 import getAPI from "../../api/getAPI";
 import { useNavigate } from "react-router-dom";
+import { useLogout } from '../../useLogout';
 
 const AdminDashboardHeader = () => {
   const navigate = useNavigate();
+    const logout = useLogout();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userDetails");
-    window.location.href = "/login";
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("userDetails");
+  //   window.location.href = "/login";
+  // };
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
 
-  const toggleSidebar = () => {
-    const htmlElement = document.documentElement;
-    const bodyElement = document.body;
-
-    htmlElement.classList.toggle("sidebar-enable");
-
-    if (bodyElement.style.overflow === "hidden") {
-      bodyElement.style.overflow = "";
-    } else {
-      bodyElement.style.overflow = "hidden";
-    }
-  };
-
-  const handleDocumentClick = (event) => {
-    const htmlElement = document.documentElement;
-    const mainNav = document.querySelector(".main-nav");
-
-    if (
-      htmlElement.classList.contains("sidebar-enable") &&
-      mainNav &&
-      !mainNav.contains(event.target)
-    ) {
-      toggleSidebar();
-    }
-  };
+    const [isMobile, setIsMobile] = useState(false);
+  
+  
+    useEffect(() => {
+      const checkScreenSize = () => {
+        setIsMobile(window.innerWidth <= 768); 
+      };
+  
+      checkScreenSize();
+      window.addEventListener("resize", checkScreenSize);
+  
+      return () => window.removeEventListener("resize", checkScreenSize);
+    }, [])
+  
+    const toggleSidebar = () => {
+      const htmlElement = document.documentElement;
+      const bodyElement = document.body;
+    
+      htmlElement.classList.toggle("sidebar-enable");
+    
+      if (htmlElement.classList.contains("sidebar-enable")) {
+        bodyElement.style.overflow = "hidden";
+    
+        if (!document.querySelector(".offcanvas-backdrop")) {
+          const backdrop = document.createElement("div");
+          backdrop.className = "offcanvas-backdrop fade show";
+          bodyElement.appendChild(backdrop);
+        }
+      } else {
+        bodyElement.style.overflow = "";
+    
+     
+        const backdrop = document.querySelector(".offcanvas-backdrop");
+        if (backdrop) backdrop.remove();
+      }
+    };
+    
+    const handleDocumentClick = (event) => {
+      const htmlElement = document.documentElement;
+      const mainNav = document.querySelector(".main-nav");
+    
+      if (
+        htmlElement.classList.contains("sidebar-enable") &&
+        mainNav &&
+        !mainNav.contains(event.target) &&
+        !event.target.closest(".button-toggle-menu")
+      ) {
+        htmlElement.classList.remove("sidebar-enable");
+        document.body.style.overflow = "";
+  
+        const backdrop = document.querySelector(".offcanvas-backdrop");
+        if (backdrop) backdrop.remove();
+      }
+    };
+    
 
   useEffect(() => {
     document.addEventListener("click", handleDocumentClick);
@@ -212,6 +244,9 @@ const AdminDashboardHeader = () => {
                     event.stopPropagation();
                     toggleSidebar();
                   }}
+                  style={{
+                    display: isMobile ? "block" : "none"
+                  }}
                 >
                   <iconify-icon
                     icon="solar:hamburger-menu-broken"
@@ -221,7 +256,7 @@ const AdminDashboardHeader = () => {
               </div>
               {/* Menu Toggle Button */}
               <div className="topbar-item">
-                <h4 className="fw-bold topbar-button pe-none text-uppercase mb-0">
+                <h4 className="fw-bold topbar-button pe-none text-uppercase mb-0 ">
                   Welcome! {userDetails?.firstName} {userDetails?.lastName}
                 </h4>
               </div>
@@ -237,7 +272,7 @@ const AdminDashboardHeader = () => {
                 >
                   <iconify-icon
                     icon="solar:moon-bold-duotone"
-                    className="fs-24 align-middle"
+                    className="fs-24 align-middle "
                   />
                 </button>
               </div>
@@ -253,7 +288,7 @@ const AdminDashboardHeader = () => {
                 >
                   <iconify-icon
                     icon="solar:bell-bing-bold-duotone"
-                    className="fs-24 align-middle"
+                    className="fs-24 align-middle "
                   />
                   <span className="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">
                     3<span className="visually-hidden">unread messages</span>
@@ -434,7 +469,7 @@ const AdminDashboardHeader = () => {
                   <div className="dropdown-divider my-1" />
                   <Link className="dropdown-item text-danger">
                     <BiLogOut className="bx bx-log-out fs-18 align-middle me-1" />
-                    <span className="align-middle" onClick={handleLogout}>
+                    <span className="align-middle" onClick={logout}>
                       Logout
                     </span>
                   </Link>

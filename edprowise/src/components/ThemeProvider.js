@@ -12,7 +12,7 @@ export const ThemeProvider = ({ children }) => {
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
+    const newTheme = theme === "light" ? "dark" :"";
     setTheme(newTheme);
     document.documentElement.setAttribute("data-bs-theme", newTheme);
     localStorage.setItem("theme", newTheme);

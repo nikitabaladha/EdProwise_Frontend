@@ -1,453 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import CityData from "../../../../../CityData.json";
-import { useNavigate, useLocation } from 'react-router-dom';
-import getAPI from '../../../../../../api/getAPI';
-import { toast } from 'react-toastify';
-import putAPI from '../../../../../../api/putAPI';
-import { validateFullForm } from '../FormValidation/FormValidation';
+import React from "react";
+import CreatableSelect from 'react-select/creatable';
+
+import UseUpdateAdmissionForm from "./UseUpdateAdmissionForm";
 
 const UpdateAdmissionForm = () => {
-  const navigate = useNavigate();
-  const [schoolId, setSchoolId] = useState('');
-  const [existingStudents, setExistingStudents] = useState([]);
-  const [showFullForm, setShowFullForm] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showAdditionalData, setShowAdditionalData] = useState(false);
-  const [classes, setClasses] = useState([]);
-  const [shifts, setShifts] = useState([]);
-  const [sections, setSections] = useState([]);
-  const location = useLocation();
-  const student = location.state?.student;
-
-  const [formData, setFormData] = useState({
-    registrationNumber: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    dateOfBirth: '',
-    age: '',
-    nationality: '',
-    gender: '',
-    bloodGroup: '',
-    masterDefineClass: '',
-    masterDefineShift: '',
-    section: '',
-    currentAddress: '',
-    cityStateCountry: '',
-    pincode: '',
-    parentContactNumber: '',
-    motherLanguage: '',
-    previousSchoolName: '',
-    addressOfPreviousSchool: '',
-    previousSchoolBoard: '',
-    previousSchoolResult: null,
-    tcCertificate: null,
-    proofOfResidence: null,
-    aadharPassportNumber: '',
-    aadharPassportFile: null,
-    studentCategory: '',
-    castCertificate: null,
-    siblingInfoChecked: false,
-    relationType: null,
-    siblingName: '',
-    idCardFile: null,
-    parentalStatus: '',
-    fatherName: '',
-    fatherContactNo: '',
-    fatherQualification: '',
-    fatherProfession: '',
-    motherName: '',
-    motherContactNo: '',
-    motherQualification: '',
-    motherProfession: '',
-    agreementChecked: false,
-    name: '',
-    paymentMode: '',
-    chequeNumber: '',
-    bankName: '',
-    admissionFeesReceivedBy: ''
-  });
-
-  useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-    const id = userDetails?.schoolId;
-
-    if (!id) {
-      toast.error("School ID not found. Please log in again.");
-      return;
-    }
-
-    setSchoolId(id);
-  }, []);
-
-  useEffect(() => {
-    if (student) {
-      setFormData({
-        registrationNumber: student.registrationNumber,
-        firstName: student.firstName,
-        middleName: student.middleName,
-        lastName: student.lastName,
-        dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
-        age: student.age?.toString() || '',
-        nationality: student.nationality,
-        gender: student.gender,
-        bloodGroup: student.bloodGroup,
-        masterDefineClass: student?.masterDefineClass?._id || student?.masterDefineClass || '',
-        masterDefineShift: student?.masterDefineShift?._id || student?.masterDefineShift || '',
-        section: student?.section?._id || student?.section || '',
-        currentAddress: student.currentAddress,
-        cityStateCountry: student.cityStateCountry,
-        pincode: student.pincode,
-        parentContactNumber: student.parentContactNumber || '',
-        motherLanguage: student.motherLanguage || '',
-        previousSchoolName: student.previousSchoolName || '',
-        addressOfPreviousSchool: student.addressOfPreviousSchool || '',
-        previousSchoolBoard: student.previousSchoolBoard || '',
-        previousSchoolResult: student.previousSchoolResult || null,
-        tcCertificate: student.tcCertificate || null,
-        proofOfResidence: student.proofOfResidence || null,
-        aadharPassportNumber: student.aadharPassportNumber || '',
-        aadharPassportFile: student.aadharPassportFile || null,
-        studentCategory: student.studentCategory || '',
-        castCertificate: student.castCertificate || null,
-        siblingInfoChecked: student.siblingInfoChecked || false,
-        relationType: student.relationType || null,
-        siblingName: student.siblingName || '',
-        idCardFile: student.idCardFile || null,
-        parentalStatus: student.parentalStatus || '',
-        fatherName: student.fatherName || '',
-        fatherContactNo: student.fatherContactNo || '',
-        fatherQualification: student.fatherQualification || '',
-        fatherProfession: student.fatherProfession || '',
-        motherName: student.motherName || '',
-        motherContactNo: student.motherContactNo || '',
-        motherQualification: student.motherQualification || '',
-        motherProfession: student.motherProfession || '',
-        agreementChecked: student.agreementChecked || false,
-        name: student.name || '',
-        paymentMode: student.paymentMode || '',
-        chequeNumber: student?.chequeNumber || '',
-        bankName: student?.bankName || '',
-        admissionNumber: student.AdmissionNumber || '',
-        receiptNumber: student.receiptNumber || '',
-        transactionNumber: student.transactionNumber || '',
-        dateOfAdmission: student.dateOfAdmission ? student.dateOfAdmission.split('T')[0] : '',
-        admissionFeesReceivedBy: student.admissionFeesReceivedBy || ''
-      });
-      setShowFullForm(true);
-      setShowAdditionalData(true);
-    }
-  }, [student]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
-        setClasses(response?.data?.data || []);
-      } catch (error) {
-        toast.error("Error fetching class and section data.");
-      }
-    };
-
-    fetchData();
-  }, [schoolId]);
-
-  useEffect(() => {
-    if (!schoolId) return;
-
-    const fetchShifts = async () => {
-      try {
-        const response = await getAPI(`/master-define-shift/${schoolId}`);
-        if (!response.hasError) {
-          const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
-          setShifts(shiftArray);
-        } else {
-          toast.error(response.message || "Failed to fetch shifts.");
-        }
-      } catch (err) {
-        toast.error("Error fetching shift data.");
-        console.error("Shift Fetch Error:", err);
-      }
-    };
-
-    fetchShifts();
-  }, [schoolId]);
-
-  const handleClassChange = (e) => {
-    const classId = e.target.value;
-    const selectedClass = classes.find(c => c._id === classId);
-
-    let filteredSections = selectedClass?.sections || [];
-    if (formData.masterDefineShift) {
-      filteredSections = filteredSections.filter(
-        section => section.shiftId === formData.masterDefineShift
-      );
-    }
-
-    setSections(filteredSections);
-
-    setFormData({
-      ...formData,
-      masterDefineClass: classId,
-      section: ''
-    });
-  };
-
-  const handleShiftChange = (e) => {
-    const shiftId = e.target.value;
-    let filteredSections = [];
-
-    if (formData.masterDefineClass) {
-      const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
-      filteredSections = selectedClass?.sections.filter(
-        section => section.shiftId === shiftId
-      ) || [];
-    }
-
-    setSections(filteredSections);
-    setFormData({
-      ...formData,
-      masterDefineShift: shiftId,
-      section: ''
-    });
-  };
-
-  useEffect(() => {
-    if (student && classes.length > 0 && shifts.length > 0) {
-      const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
-      if (selectedClass) {
-        const filteredSections = selectedClass.sections.filter(
-          section => section.shiftId === formData.masterDefineShift
-        );
-        setSections(filteredSections);
-      }
-    }
-  }, [student, classes, shifts]);
-
-
-  useEffect(() => {
-    if (formData.masterDefineClass && formData.masterDefineShift && classes.length > 0) {
-      const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
-      if (selectedClass) {
-        const filteredSections = selectedClass.sections.filter(
-          section => section.shiftId === formData.masterDefineShift
-        );
-        setSections(filteredSections);
-
-
-        if (formData.section && !filteredSections.some(s => s._id === formData.section)) {
-          setFormData(prev => ({ ...prev, section: '' }));
-        }
-      }
-    }
-  }, [formData.masterDefineClass, formData.masterDefineShift, classes]);
-
-  const handleChange = (e) => {
-    const { name, type, value, checked, files } = e.target;
-
-    if (type === 'checkbox') {
-      setFormData(prev => ({ ...prev, [name]: checked }));
-    } else if (type === 'file') {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
-    } else {
-      if (name === 'nationality') {
-        setFormData(prev => ({
-          ...prev,
-          nationality: value,
-          studentCategory: (value === 'SAARC Countries' || value === 'International')
-            ? 'General'
-            : prev.studentCategory
-        }));
-      } else {
-        setFormData(prev => ({ ...prev, [name]: value }));
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (formData.dateOfBirth) {
-      try {
-        const birthDate = new Date(formData.dateOfBirth);
-        const today = new Date();
-        if (birthDate > today) {
-          toast.error("Date of birth cannot be in the future");
-          setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
-          return;
-        }
-        const maxAgeDate = new Date();
-        maxAgeDate.setFullYear(maxAgeDate.getFullYear() - 120);
-        if (birthDate < maxAgeDate) {
-          toast.error("Please enter a valid date of birth");
-          setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
-          return;
-        }
-
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-          age--;
-        }
-
-        setFormData(prev => ({
-          ...prev,
-          age: age > 0 ? age.toString() : '0'
-        }));
-
-      } catch (error) {
-        console.error("Error calculating age:", error);
-        toast.error("Invalid date format");
-        setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
-      }
-    } else {
-      setFormData(prev => ({ ...prev, age: '' }));
-    }
-  }, [formData.dateOfBirth]);
-
-  const handleRegistrationSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.registrationNumber) {
-      toast.error("Please select a registration number");
-      return;
-    }
-
-    const student = existingStudents.find(
-      s => s.registrationNumber === formData.registrationNumber
-    );
-
-    if (student) {
-      setSelectedStudent(student);
-      setFormData(prev => ({
-        ...prev,
-        firstName: student.firstName,
-        middleName: student.middleName,
-        lastName: student.lastName,
-        dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
-        nationality: student.nationality,
-        gender: student.gender,
-        masterDefineClass: student?.masterDefineClass?._id || student?.masterDefineClass || '',
-        masterDefineShift: student?.masterDefineShift?._id || student?.masterDefineShift || '',
-        section: student?.section?._id || student?.section || '',
-        currentAddress: student.currentAddress,
-        cityStateCountry: student.cityStateCountry,
-        pincode: student.pincode,
-        parentContactNumber: student.fatherContactNo || student.motherContactNo || '',
-        previousSchoolName: student.previousSchoolName || '',
-        addressOfPreviousSchool: student.addressOfpreviousSchool || '',
-        previousSchoolBoard: student.previousSchoolBoard || '',
-        previousSchoolResult: student?.previousSchoolResult || null,
-        tcCertificate: student?.tcCertificate || null,
-        aadharPassportNumber: student.aadharPassportNumber,
-        castCertificate: student?.castCertificate || null,
-        aadharPassportFile: student.aadharPassportFile || null,
-        studentCategory: student.studentCategory,
-        siblingInfoChecked: false,
-        relationType: null,
-        fatherName: student.fatherName,
-        fatherContactNo: student.fatherContactNo,
-        motherName: student.motherName,
-        motherContactNo: student.motherContactNo,
-        name: student.name,
-        paymentMode: student.paymentMode,
-      }));
-    }
-
-    setShowFullForm(true);
-  };
-
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const isNursery = isNurseryClass(formData.masterDefineClass);
-    const error = validateFullForm(formData, isNursery);
-
-    if (error) {
-      toast.error(error);
-      setIsSubmitting(false);
-      return;
-    }
-
-    const submissionData = {
-      ...formData,
-      ...(formData.siblingInfoChecked && {
-        relationType: null,
-        siblingName: '',
-        idCardFile: null
-      })
-    };
-
-    const formDataObj = new FormData();
-
-
-    Object.entries(submissionData).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        if (value instanceof File) {
-          formDataObj.append(key, value, value.name);
-        } else if (typeof value === 'string' && (key.endsWith('File') || key.endsWith('Certificate') || key.endsWith('Result'))) {
-
-          formDataObj.append(key, value);
-        } else if (Array.isArray(value)) {
-          value.forEach((item) => {
-            formDataObj.append(`${key}[]`, item);
-          });
-        } else {
-          formDataObj.append(key, value);
-        }
-      }
-    });
-
-    formDataObj.append('schoolId', schoolId);
-
-    try {
-      const response = await putAPI(`/update-admission-form/${student._id}`, formDataObj, {
-        'Content-Type': 'multipart/form-data',
-      });
-
-      console.log("API response:", response);
-
-      if (response?.hasError) {
-        toast.error(response.message || 'Something went wrong');
-      } else {
-        toast.success(student ? 'Admission Form Updated successfully' : 'Admission Form Submitted successfully');
-        const studentData = response.data?.student || response.student;
-        console.log("Student data to send in navigate state:", studentData);
-        navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
-          state: {
-            student: response.data?.admission || response.data?.student,
-          },
-        });
-      }
-    } catch (error) {
-      const backendMessage = error?.response?.data?.message;
-      if (backendMessage) {
-        toast.error(backendMessage);
-      } else {
-        toast.error('An error occurred during registration');
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
-  );
-
-  const isNurseryClass = (classId) => {
-    const selectedClass = classes.find(c => c._id === classId);
-    return selectedClass?.className === "Nursery";
-  };
-
-  const isNursery = isNurseryClass(formData.masterDefineClass);
-
-  const getFileNameFromPath = (path) => {
-    if (!path) return '';
-    return path.split('/').pop();
-  };
+  const {
+    formData,
+    handleChange,
+    handlePhotoUpload,
+    handleClassChange,
+    handleShiftChange,
+    handleSubmit,
+    showAdditionalData,
+    classes,
+    shifts,
+    sections,
+    isSubmitting,
+    getFileNameFromPath,
+    isNursery,
+    cityOptions,
+    countryOptions,
+    stateOptions,
+    student,
+    handleCountryChange,
+    handleStateChange,
+    handleCityChange,
+  } = UseUpdateAdmissionForm();
 
   return (
     <div className="container">
@@ -464,110 +42,145 @@ const UpdateAdmissionForm = () => {
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="row">
-                  <div className="col-md-12">
-                    <div className="mb-3">
-                      <label htmlFor="registrationNumber" className="form-label">
-                        Registration No
+                  <div className="col-md-4 d-flex flex-column align-items-center">
+                    <div className="border rounded d-flex justify-content-center align-items-center mb-2"
+                      style={{ width: "150px", height: "180px", overflow: "hidden" }}>
+                      {formData.studentPhoto ? (
+                        typeof formData.studentPhoto === "string" ? (
+                          <img
+                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`}
+                            alt="Student"
+                            className="w-100 h-100 object-fit-cover"
+                          />
+                        ) : (
+                          <img
+                            src={URL.createObjectURL(formData.studentPhoto)}
+                            alt="Student"
+                            className="w-100 h-100 object-fit-cover"
+                          />
+                        )
+                      ) : (
+                        <div className="text-secondary">Photo</div>
+                      )}
+                    </div>
+                    <div className="mb-3 w-100 text-center">
+                      <label className="form-label mb-1 d-block text-start">
                       </label>
                       <input
-                        type="text"
-                        id="registrationNumber"
-                        name="registrationNumber"
-                        className="form-control"
-                        value={formData.registrationNumber}
-                        onChange={handleChange}
-                        required
-                        disabled
+                        type="file"
+                        id="studentPhoto"
+                        name="studentPhoto"
+                        className="d-none"
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
                       />
+                      <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
+                        Upload Photo
+                      </label>
                     </div>
                   </div>
 
+                  <div className="col-md-8">
+                    <div className="row">
+                      <div className="mb-3">
+                        <label htmlFor="registrationNumber" className="form-label">
+                          Registration No
+                        </label>
+                        <input
+                          type="text"
+                          id="registrationNumber"
+                          name="registrationNumber"
+                          className="form-control"
+                          value={formData.registrationNumber}
+                          onChange={handleChange}
+                          required
+                          disabled
+                        />
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="firstName" className="form-label">
+                            First Name <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="firstName"
+                            name="firstName"
+                            className="form-control"
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="middleName" className="form-label">
+                            Middle Name
+                          </label>
+                          <input
+                            type="text"
+                            id="middleName"
+                            name="middleName"
+                            className="form-control"
+                            value={formData.middleName}
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="lastName" className="form-label">
+                            Last Name <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="lastName"
+                            name="lastName"
+                            className="form-control"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="dateOfBirth" className="form-label">
+                            Date Of Birth <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            id="dateOfBirth"
+                            name="dateOfBirth"
+                            className="form-control"
+                            value={formData.dateOfBirth}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="age" className="form-label">
+                            Age <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="age"
+                            name="age"
+                            className="form-control"
+                            value={formData.age}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
                   <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="firstName" className="form-label">
-                        First Name<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        className="form-control"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="middleName" className="form-label">
-                        Middle Name
-                      </label>
-                      <input
-                        type="text"
-                        id="middleName"
-                        name="middleName"
-                        className="form-control"
-                        value={formData.middleName}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="lastName" className="form-label">
-                        Last Name<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        className="form-control"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="dateOfBirth"
-                        className="form-label"
-                      >
-                        Date Of Birth<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="dateOfBirth"
-                        name="dateOfBirth"
-                        className="form-control"
-                        value={formData.dateOfBirth}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label htmlFor="age" className="form-label">
-                        Age<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        id="age"
-                        name="age"
-                        className="form-control"
-                        value={formData.age}
-                        onChange={handleChange}
-                        required
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="nationality" className="form-label">
                         Nationality<span className="text-danger">*</span>
@@ -588,7 +201,7 @@ const UpdateAdmissionForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="gender" className="form-label">
                         Gender<span className="text-danger">*</span>
@@ -608,7 +221,7 @@ const UpdateAdmissionForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="bloodGroup" className="form-label">
@@ -634,10 +247,10 @@ const UpdateAdmissionForm = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="masterDefineClass" className="form-label">
-                        Class<span className="text-danger">*</span>
+                        Class Applying For<span className="text-danger">*</span>
                       </label>
                       <select
                         id="masterDefineClass"
@@ -657,7 +270,7 @@ const UpdateAdmissionForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="masterDefineShift" className="form-label">
                         Shift<span className="text-danger">*</span>
@@ -680,7 +293,7 @@ const UpdateAdmissionForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="section" className="form-label">
                         Section<span className="text-danger">*</span>
@@ -721,34 +334,71 @@ const UpdateAdmissionForm = () => {
                     />
                   </div>
                 </div>
-
                 <div className="row">
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     <div className="mb-3">
-                      <label
-                        htmlFor="cityStateCountry"
-                        className="form-label"
-                      >
-                        City-State-Country<span className="text-danger">*</span>
+                      <label htmlFor="country" className="form-label">
+                        Country <span className="text-danger">*</span>
                       </label>
-                      <select
-                        id="cityStateCountry"
-                        name="cityStateCountry"
-                        className="form-control"
-                        value={formData.cityStateCountry}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select City-State-Country</option>
-                        {cityOptions.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+                      <CreatableSelect
+                        id="country"
+                        name="country"
+                        options={countryOptions}
+                        value={formData.country ? { value: formData.country, label: formData.country } : null}
+                        onChange={handleCountryChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a country"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => "Type to add a new country"}
+                      />
                     </div>
                   </div>
-                  <div className="col-md-3">
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        id="state"
+                        name="state"
+                        options={stateOptions}
+                        value={formData.state ? { value: formData.state, label: formData.state } : null}
+                        onChange={handleStateChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a state"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => formData.country ? "Type to add a new state" : "Select a country first"}
+                        isValidNewOption={(inputValue) => inputValue.length > 0}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        id="city"
+                        name="city"
+                        options={cityOptions}
+                        value={formData.city ? { value: formData.city, label: formData.city } : null}
+                        onChange={handleCityChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a city"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => formData.state ? "Type to add a new city" : "Select a state first"}
+                        isValidNewOption={(inputValue) => inputValue.length > 0}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
                         Pincode<span className="text-danger">*</span>
@@ -765,7 +415,7 @@ const UpdateAdmissionForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="parentContactNumber" className="form-label">
                         Parent Contact No.<span className="text-danger">*</span>
@@ -782,17 +432,17 @@ const UpdateAdmissionForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="motherLanguage" className="form-label">
-                        Mother Language<span className="text-danger">*</span>
+                      <label htmlFor="motherTongue" className="form-label">
+                        Mother Tongue<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
-                        id="motherLanguage"
-                        name="motherLanguage"
+                        id="motherTongue"
+                        name="motherTongue"
                         className="form-control"
-                        value={formData.motherLanguage}
+                        value={formData.motherTongue}
                         onChange={handleChange}
                       />
                     </div>
@@ -1313,40 +963,87 @@ const UpdateAdmissionForm = () => {
                         <input
                           type="checkbox"
                           className="form-check-input"
-                          id="agreementCheck"
+                          id="customCheck1"
                           name="agreementChecked"
                           checked={formData.agreementChecked}
                           onChange={handleChange}
-                          required
                         />
-                        <label
-                          className="form-check-label"
-                          htmlFor="agreementCheck"
-                        >
-                          I Understand & agree that the registration of my ward does not guarantee admission to the school & the registration fee is neither transferable nor refundable.
+                        <label className="form-check-label" htmlFor="customCheck1">
+                          I Understand & agree that the registration of my word does not guarantee admission to the school & the registration fee is neither transferable not refundable.
                         </label>
                       </div>
 
+
+
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="admissionFees" className="form-label">
+                            Admission Fees <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="admissionFees"
+                            name="admissionFees"
+                            className="form-control"
+                            value={formData.admissionFees}
+                            disabled
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="concessionamount" className="form-label">
+                            Concession
+                          </label>
+                          <input
+                            type="number"
+                            id="concessionamount"
+                            name="concessionamount"
+                            className="form-control"
+                            value={formData.concessionAmount || 0}
+                            disabled
+
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="finalamount" className="form-label">
+                            Final Amount <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="finalamount"
+                            name="finalamount"
+                            className="form-control"
+                            value={formData.finalAmount}
+                            disabled
+                          />
+                        </div>
+                      </div>
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="name" className="form-label">
-                            Name<span className="text-danger">*</span>
+                            Name of Person Filling the Form <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
                             id="name"
                             name="name"
                             className="form-control"
-                            required
                             value={formData.name}
                             onChange={handleChange}
+                            required
                           />
                         </div>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="paymentMode" className="form-label">
-                            Payment Option<span className="text-danger">*</span>
+                            Payment Option  <span className="text-danger">*</span>
                           </label>
                           <select
                             id="paymentMode"
@@ -1355,53 +1052,55 @@ const UpdateAdmissionForm = () => {
                             value={formData.paymentMode}
                             onChange={handleChange}
                             required
+                            disabled
                           >
-                            <option value="">Select</option>
+                            <option value="">Select </option>
                             <option value="Cash">Cash</option>
                             <option value="Cheque">Cheque</option>
                             <option value="Online">Online</option>
                           </select>
                         </div>
                       </div>
+
+                      {formData.paymentMode === 'Cheque' && (
+                        <>
+                          <div className="col-md-6">
+                            <div className="mb-3">
+                              <label htmlFor="chequeNumber" className="form-label">
+                                Cheque Number <span className="text-danger">*</span>
+                              </label>
+                              <input
+                                type="text"
+                                id="chequeNumber"
+                                name="chequeNumber"
+                                className="form-control"
+                                value={formData.chequeNumber}
+                                onChange={handleChange}
+                                required
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="mb-3">
+                              <label htmlFor="bankName" className="form-label">
+                                Bank Name <span className="text-danger">*</span>
+                              </label>
+                              <input
+                                type="text"
+                                id="bankName"
+                                name="bankName"
+                                className="form-control"
+                                value={formData.bankName}
+                                onChange={handleChange}
+                                required
+                                disabled
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
-
-
-                    {formData.paymentMode === 'Cheque' && (
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div className="mb-3">
-                            <label htmlFor="chequeNumber" className="form-label">
-                              Cheque Number <span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              id="chequeNumber"
-                              name="chequeNumber"
-                              className="form-control"
-                              value={formData.chequeNumber}
-                              onChange={handleChange}
-                              required
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-3">
-                            <label htmlFor="bankName" className="form-label">
-                              Bank Name <span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              id="bankName"
-                              name="bankName"
-                              className="form-control"
-                              value={formData.bankName}
-                              onChange={handleChange}
-                              required
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
 
                     <div className="card-header mb-2">
                       <h4 className="card-title text-center custom-heading-font">
@@ -1410,94 +1109,102 @@ const UpdateAdmissionForm = () => {
                     </div>
 
                     <div className="row">
-                      <div className="col-md-4">
-                        <div className="mb-3">
-                          <label
-                            htmlFor="dateOfAdmission"
-                            className="form-label"
-                          >
-                            Admission Date
-                          </label>
-                          <input
-                            type="date"
-                            id="applicationDate"
-                            name="applicationDate"
-                            className="form-control"
-                            value={student?.applicationDate ? student.applicationDate.substring(0, 10) : ''}
-                            onChange={handleChange}
-                            disabled
-                          />
-
-                        </div>
-                      </div>
-
-                      <div className="col-md-4">
-                        <div className="mb-3">
-                          <label htmlFor="admissionFeesReceivedBy" className="form-label">
-                            Paymnet Mode
-                          </label>
-                          <input
-                            type="text"
-                            id="admissionFeesReceivedBy"
-                            name="admissionFeesReceivedBy"
-                            className="form-control"
-                            value={formData.paymentMode}
-                            onChange={handleChange}
-                            disabled
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="mb-3">
-                          <label htmlFor="transactionNumber" className="form-label">
-                            Transaction No./ Cheque No.
-                          </label>
-                          <input
-                            type="text"
-                            id="transactionNumber"
-                            name="transactionNumber"
-                            className="form-control"
-                            value={formData.transactionNumber}
-                            onChange={handleChange}
-                            disabled
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="receiptNumber" className="form-label">
-                            Receipts No.
-                          </label>
-                          <input
-                            type="text"
-                            id="receiptNumber"
-                            name="receiptNumber"
-                            className="form-control"
-                            value={formData.receiptNumber}
-                            onChange={handleChange}
-                            disabled
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="admissionNumber" className="form-label">
-                            Admission No.
-                          </label>
-                          <input
-                            type="text"
-                            id="admissionNumber"
-                            name="admissionNumber"
-                            className="form-control"
-                            value={formData.admissionNumber}
-                            onChange={handleChange}
-                            disabled
-                          />
-                        </div>
-                      </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="dateOfApplicatopnReceive" className="form-label">
+                        Application Received on
+                      </label>
+                      <input
+                        type="date"
+                        id="dateOfApplicatopnReceive"
+                        name="dateOfApplicatopnReceive"
+                        className="form-control"
+                        value={student?.applicationDate ? student.applicationDate.substring(0, 10) : ''}
+                        disabled
+                      />
 
                     </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="receiptNumber" className="form-label">
+                        Receipts No.
+                      </label>
+                      <input
+                        type="text"
+                        id="receiptNumber"
+                        name="receiptNumber"
+                        className="form-control"
+                        value={student?.receiptNumber || ''}
+                       disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="registrationNumber" className="form-label">
+                        Admission No.
+                      </label>
+                      <input
+                        type="text"
+                        id="registrationNumber"
+                        name="registrationNumber"
+                        className="form-control"
+                        value={student?.AdmissionNumber|| ''}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="receivedBy" className="form-label">
+                        Payment Mode
+                      </label>
+                      <input
+                        type="text"
+                        id="receivedBy"
+                        name="receivedBy"
+                        className="form-control"
+                        value={formData.paymentMode}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="receivedBy" className="form-label">
+                        Payment Date
+                      </label>
+                      <input
+                        type="text"
+                        id="receivedBy"
+                        name="receivedBy"
+                        className="form-control"
+                        value={student?.paymentDate ? new Date(student.paymentDate).toLocaleDateString('en-GB') : ''}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="transationOrChequetNumber" className="form-label">
+                        Transaction No./ Cheque No.
+                      </label>
+                      <input
+                        type="text"
+                        id="transationOrChequetNumber"
+                        name="transationOrChequetNumber"
+                        className="form-control"
+                        value={student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ''}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
 
                     <div className="d-flex justify-content-end">
                       <div className="text" style={{ marginLeft: "2px" }}>
