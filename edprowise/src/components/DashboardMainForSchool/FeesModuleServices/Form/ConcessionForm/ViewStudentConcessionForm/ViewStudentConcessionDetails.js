@@ -15,7 +15,7 @@ const ConcessionForm = () => {
         cancelSubmittingForm,
         toggleRowSelection,
         getFileNameFromPath,
-        generateAcademicYears
+        academicYears
     } = useConcessionForm();
 
     return (
@@ -32,15 +32,15 @@ const ConcessionForm = () => {
                                 </div>
                             </div>
                             <form onSubmit={handleSubmit}>
-                            <div className="row">
+                                <div className="row">
                                     <div className="col-md-4 d-flex flex-column align-items-center">
                                         <div className="border rounded d-flex justify-content-center align-items-center mb-2"
                                             style={{ width: "150px", height: "180px", overflow: "hidden" }}>
-                                                    <img
-                                                        src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`}
-                                                        alt="Student"
-                                                        className="w-100 h-100 object-fit-cover"
-                                                    />
+                                            <img
+                                                src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`}
+                                                alt="Student"
+                                                className="w-100 h-100 object-fit-cover"
+                                            />
                                         </div>
                                     </div>
 
@@ -215,23 +215,26 @@ const ConcessionForm = () => {
 
                                     <div className="col-md-4">
                                         <div className="mb-3">
-                                            <label htmlFor="applicableAcademicYear" className="form-label">
+                                            <label htmlFor="academicYear" className="form-label">
                                                 Applicable Academic Year <span className="text-danger">*</span>
                                             </label>
                                             <select
-                                                id="applicableAcademicYear"
-                                                name="applicableAcademicYear"
+                                                id="academicYear"
+                                                name="academicYear"
                                                 className="form-control"
-                                                value={formData.applicableAcademicYear}
+                                                value={formData.academicYear}
+                                                // onChange={handleChange}
+                                                required
                                                 disabled
                                             >
-                                                <option value="">Select Academic Year</option>
-                                                {generateAcademicYears(2015, 2030).map((year) => (
-                                                    <option key={year} value={year}>
-                                                        {year}
+                                                <option value="" disabled>Select Year</option>
+                                                {academicYears.map((year) => (
+                                                    <option key={year._id} value={year.academicYear}>
+                                                        {year.academicYear}
                                                     </option>
                                                 ))}
                                             </select>
+
                                         </div>
                                     </div>
                                 </div>

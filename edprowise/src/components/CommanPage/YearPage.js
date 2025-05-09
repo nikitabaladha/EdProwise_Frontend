@@ -47,13 +47,15 @@ const Dropdown = ({ onSelect }) => {
     }
   };
 
-  const handleSubmit = () => {
-    if (selectedAcademicYear) {
-      navigate('/school-dashboard/fees-module/form/registration');
-    } else {
-      toast.error('Please select an academic year first.');
-    }
-  };
+const handleSubmit = () => {
+  if (selectedAcademicYear) {
+    localStorage.setItem('sidebartab', 'FeesModule');
+    navigate('/school-dashboard/fees-module/form/registration');
+  } else {
+    toast.error('Please select an academic year first.');
+  }
+};
+
 
   const handleBack = () => {
     navigate('/school/go-to-dashboard');

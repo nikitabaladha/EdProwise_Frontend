@@ -250,9 +250,14 @@ html[data-bs-theme="light"]{
   --bs-main-nav-bg: #24253b; 
   --bs-main-nav-item-color: #797b97;
   --bs-main-nav-item-hover-bg: transparent;
-  --bs-main-nav-item-hover-color: #ff6c2f;
+  /* --bs-main-nav-item-hover-color: #ff6c2f; */
   --bs-main-nav-border-color: #eaedf1;
 }
+
+html[data-bs-theme="light"] .wrapper {
+  background-color: #d9d9d9;
+}
+
 
 
 /* Main Menu Dark */
@@ -261,7 +266,7 @@ html[data-bs-theme="dark"]{
   --bs-main-nav-bg: #262d34;
   --bs-main-nav-item-color: #9097a7;
   --bs-main-nav-item-hover-bg: transparent;
-  --bs-main-nav-item-hover-color: #ffffff;
+  /* --bs-main-nav-item-hover-color: #ffffff; */
   --bs-main-nav-border-color: #2f3944;
 }
 

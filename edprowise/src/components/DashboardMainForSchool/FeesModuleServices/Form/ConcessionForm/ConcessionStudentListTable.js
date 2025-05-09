@@ -15,6 +15,30 @@ const ConcessionStudentListTable = () => {
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [classes, setClasses] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
 
 
   const openDeleteDialog = (request) => {
@@ -48,11 +72,11 @@ const ConcessionStudentListTable = () => {
 
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchStudents = async () => {
       try {
-        const response = await getAPI(`/get-concession-form/${schoolId}`);
+        const response = await getAPI(`/get-concession-form/${schoolId}/${selectedYear}`);
         console.log("API response:", response);
 
         if (!response.hasError) {
@@ -68,7 +92,7 @@ const ConcessionStudentListTable = () => {
     };
 
     fetchStudents();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -152,6 +176,18 @@ const ConcessionStudentListTable = () => {
     <>
       {" "}
       <div className="container-fluid">
+        <div className="d-flex justify-content-end mb-2 gap-2">
+          <Link
+
+            onClick={(event) => navigateToConcessionForm(event)}
+            className="btn btn-sm btn-primary"
+          >
+            Concession Form
+          </Link>
+          <Link className="btn btn-sm btn-secondary">
+            Export
+          </Link>
+        </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
@@ -159,17 +195,25 @@ const ConcessionStudentListTable = () => {
                 <h4 className="card-title flex-grow-1">
                   Concession List
                 </h4>
-                <Link
 
-                  onClick={(event) => navigateToConcessionForm(event)}
-                  className="btn btn-sm btn-primary"
+
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    localStorage.setItem("selectedAcademicYear", e.target.value);
+                  }}
+                  disabled={loadingYears}
                 >
-                  Concession Form
-                </Link>
+                  <option value="" disabled>Select Year</option>
+                  {academicYears.map((year) => (
+                    <option key={year._id} value={year.academicYear}>
+                      {year.academicYear}
+                    </option>
+                  ))}
 
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
-                </div>
+                </select>
               </div>
               <div>
                 <div className="table-responsive">

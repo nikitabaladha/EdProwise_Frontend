@@ -11,8 +11,10 @@ const UpdateTCForm = () => {
   const student = location.state?.student;
   const [classes, setClasses] = useState([]);
   const [schoolId, setSchoolId] = useState('');
+    const academicYear = localStorage.getItem('selectedAcademicYear');
 
   const [formData, setFormData] = useState({
+    academicYear:academicYear,
     studentPhoto: null,
     AdmissionNumber: '',
     firstName: '',
@@ -75,6 +77,7 @@ const UpdateTCForm = () => {
   useEffect(() => {
     if (student) {
       setFormData({
+              academicYear: student.academicYear|| null,
         studentPhoto: student.studentPhoto || null,
         AdmissionNumber: student.AdmissionNumber || '',
         firstName: student.firstName || '',

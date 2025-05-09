@@ -166,6 +166,7 @@ const ADDFeesStructure = () => {
 
   const handleSubmitAll = async (e) => {
     e.preventDefault();
+    const academicYear = localStorage.getItem('selectedAcademicYear'); 
 
     const combos = forms.map((f) => `${f.selectedClassId}-${f.selectedSections.sort().join(",")}`);
     const seen = new Set();
@@ -182,6 +183,7 @@ const ADDFeesStructure = () => {
     for (let i = 0; i < forms.length; i++) {
       const form = forms[i];
       const payload = {
+        academicYear:academicYear ,
         classId: form.selectedClassId,
         sectionIds: form.selectedSections,
         installments: form.installments.map((inst) => ({

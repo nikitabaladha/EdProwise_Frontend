@@ -17,6 +17,29 @@ const OneTimeFeesTable = () => {
   const [deleteType, setDeleteType] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [schoolId, setSchoolId] = useState("");
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId; 
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
+
+
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -31,11 +54,11 @@ const OneTimeFeesTable = () => {
   }, []);
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchData = async () => {
       try {
-        const feeRes = await getAPI(`/get-one-time-fees/${schoolId}`, {}, true);
+        const feeRes = await getAPI(`/get-one-time-fees/${schoolId}/${selectedYear}`, {}, true);
         setOneTimeFeesList(feeRes?.data?.data || []);
 
         const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
@@ -64,7 +87,8 @@ const OneTimeFeesTable = () => {
     };
 
     fetchData();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
+  
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -94,15 +118,42 @@ const OneTimeFeesTable = () => {
   return (
     <>
       <div className="container-fluid">
+        <div className="d-flex justify-content-end mb-2 gap-2">
+          <Link
+            onClick={navigateToAddNew}
+            className="btn btn-sm btn-primary"
+          >
+            Create One Time Fee
+          </Link>
+          <Link className="btn btn-sm btn-secondary">
+            Export
+          </Link>
+        </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">One Time Fees</h4>
-                <Link onClick={navigateToAddNew} className="btn btn-sm btn-primary">Create One Time Fee</Link>
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
+                <div className="d-flex justify-content-end mb-2 gap-2 align-items-center">
+                  <select
+                    className="form-select form-select-sm w-auto"
+                    value={selectedYear}
+                    onChange={(e) => {
+                      setSelectedYear(e.target.value);
+                      localStorage.setItem("selectedAcademicYear", e.target.value);
+                    }}
+                    disabled={loadingYears}
+                  >
+                    <option value="" disabled>Select Year</option>
+                    {academicYears.map((year) => (
+                      <option key={year._id} value={year.academicYear}>
+                        {year.academicYear}
+                      </option>
+                    ))}
+
+                  </select>
                 </div>
+
               </div>
 
               <div className="table-responsive">

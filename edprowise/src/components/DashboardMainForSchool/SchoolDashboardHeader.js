@@ -247,14 +247,22 @@ const SchoolDashboardHeader = () => {
                   type="button"
                   className="topbar-button"
                   id="light-dark-mode"
-                  onClick={() => navigate('/school/fees-management-year')}
+                  onClick={() => {
+                    const sidebarTab = localStorage.getItem('sidebartab');
+                    if (sidebarTab === 'FeesModule') {
+                      navigate('/school/fees-management-year');
+                    } else {
+                      navigate('/school/go-to-dashboard');
+                    }
+                  }}
                 >
                   <iconify-icon
                     icon="solar:logout-2-outline"
-                    className="fs-24 align-middle "
+                    className="fs-24 align-middle"
                   />
                 </button>
               </div>
+
               {/* Theme Color (Light/Dark) */}
               <div className="topbar-item">
                 <button

@@ -37,10 +37,10 @@ const StudentRegistrationForm = () => {
                   <h4 className="card-title custom-heading-font flex-grow-1 text-center">
                     Student Registration Form
                   </h4>
-                  <button className="btn btn-primary"
+                  {/* <button className="btn btn-primary"
                   onClick={handleDownload}>
                     <i className="fas fa-download"></i>
-                  </button>
+                  </button> */}
                 </div>
 
               </div>

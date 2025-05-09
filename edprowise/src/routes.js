@@ -3,7 +3,6 @@ import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from './AuthContext';
 import PagenotFound404 from "./404page.js";
 import UnauthorizedAccess from "./UnauthorizedPage.js";
-import { WebsiteRoutes } from "./WebsiteRoutes";
 import { ThemeProvider } from "./components/ThemeProvider";
 import RemoveThemeAttribute from './RemoveThemeAttribute';
 
@@ -15,45 +14,45 @@ import InvoiceForEdProwiseForAll from "./components/ProcurementPDF/InvoiceForEdP
 
 // ================================Website Routes================================================
 
-// import WebsiteMain from "./components/WebsiteMain";
-// import HomePage from "./components/HomeSection/HomePage";
-// import AboutPage from "./components/AboutSection/AboutPage";
-// import ContactUsPage from "./components/ContactUsSection/ContactUsPage";
-// import OrderDetailsWebSitePage from "./components/OrderDetailsWebsite/OrderDetailsWebSitePage.js";
+import WebsiteMain from "./components/WebsiteMain";
+import HomePage from "./components/HomeSection/HomePage";
+import AboutPage from "./components/AboutSection/AboutPage";
+import ContactUsPage from "./components/ContactUsSection/ContactUsPage";
+import OrderDetailsWebSitePage from "./components/OrderDetailsWebsite/OrderDetailsWebSitePage.js";
 
-// import ServiceMainPage from "./components/ServiceSection/ServiceMainPage";
-// import DigitalService from "./components/ServiceSection/SubSections/DigitalService";
-// import BusinessSection from "./components/ServiceSection/SubSections/BusinessSection";
-// import RecruitmentSection from "./components/ServiceSection/SubSections/RecruitmentSection";
-// import ProcurementSection from "./components/ServiceSection/SubSections/ProcurementSection";
+import ServiceMainPage from "./components/ServiceSection/ServiceMainPage";
+import DigitalService from "./components/ServiceSection/SubSections/DigitalService";
+import BusinessSection from "./components/ServiceSection/SubSections/BusinessSection";
+import RecruitmentSection from "./components/ServiceSection/SubSections/RecruitmentSection";
+import ProcurementSection from "./components/ServiceSection/SubSections/ProcurementSection";
 
-// import CommunityMainPage from "./components/CommunitySection/CommunityMainPage";
-// import GallerySection from "./components/CommunitySection/SubSection/GallerySection";
-// import EdprowiseTalkSection from "./components/CommunitySection/SubSection/EdprowiseTalkSection.js";
-// import StudentZoneSection from "./components/CommunitySection/SubSection/StudentZoneSection";
-// import EducatorZoneSection from "./components/CommunitySection/SubSection/EducatorZoneSection.js";
+import CommunityMainPage from "./components/CommunitySection/CommunityMainPage";
+import GallerySection from "./components/CommunitySection/SubSection/GallerySection";
+import EdprowiseTalkSection from "./components/CommunitySection/SubSection/EdprowiseTalkSection.js";
+import StudentZoneSection from "./components/CommunitySection/SubSection/StudentZoneSection";
+import EducatorZoneSection from "./components/CommunitySection/SubSection/EducatorZoneSection.js";
 
-// import SupplierPage from "./components/BecomeSupplier/SupplierPage.js";
-// import FaqPage from "./components/FAQSection/FAQPage.js";
-// import PrivacyPage from "./components/PrivacyPage/PrivacyPage.js";
-// import CareerPage from "./components/CareerPage/CareerPage.js";
-// import CareerForm from "./components/CareerPage/CareerForm.js";
+import SupplierPage from "./components/BecomeSupplier/SupplierPage.js";
+import FaqPage from "./components/FAQSection/FAQPage.js";
+import PrivacyPage from "./components/PrivacyPage/PrivacyPage.js";
+import CareerPage from "./components/CareerPage/CareerPage.js";
+import CareerForm from "./components/CareerPage/CareerForm.js";
 
-// import ServiceFess from "./components/ServiceSection/ServiceDetails/FessPixal/ServiceFees.js";
-// import PayrollService from "./components/ServiceSection/ServiceDetails/PayrollService/PayrollService.js";
-// import FinanceBook from "./components/ServiceSection/ServiceDetails/FinanceBook/FinanceBook.js";
-// import SchoolOperation from "./components/ServiceSection/ServiceDetails/SchoolOperations/SchoolOperation.js";
-// import SchoolApplication from "./components/ServiceSection/ServiceDetails/SchoolApplication/SchoolApplication.js";
-// import SchoolWebsiteDesign from "./components/ServiceSection/ServiceDetails/SchoolWebsiteDesign/SchoolWebsiteDesign.js";
+import ServiceFess from "./components/ServiceSection/ServiceDetails/FessPixal/ServiceFees.js";
+import PayrollService from "./components/ServiceSection/ServiceDetails/PayrollService/PayrollService.js";
+import FinanceBook from "./components/ServiceSection/ServiceDetails/FinanceBook/FinanceBook.js";
+import SchoolOperation from "./components/ServiceSection/ServiceDetails/SchoolOperations/SchoolOperation.js";
+import SchoolApplication from "./components/ServiceSection/ServiceDetails/SchoolApplication/SchoolApplication.js";
+import SchoolWebsiteDesign from "./components/ServiceSection/ServiceDetails/SchoolWebsiteDesign/SchoolWebsiteDesign.js";
 
-// import TermsPage from "./components/PrivacyPage/TermsPage.js";
-// import RequestDemoForm from "./components/HomeSection/RequestDemoForm.js";
+import TermsPage from "./components/PrivacyPage/TermsPage.js";
+import RequestDemoForm from "./components/HomeSection/RequestDemoForm.js";
 
-// import StudentZoneFullBlog from "./components/CommunitySection/SubSection/StudentZoneBlog/StudentZoneFullBlog.js";
-// import StudentZoneFullBlog2 from "./components/CommunitySection/SubSection/StudentZoneBlog/StudentZoneFullBlog2.js";
-// import EducatorZoneBlog1 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog1.js";
-// import EducatorZoneBlog2 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog2.js";
-// import EducatorZoneBlog3 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog3.js";
+import StudentZoneFullBlog from "./components/CommunitySection/SubSection/StudentZoneBlog/StudentZoneFullBlog.js";
+import StudentZoneFullBlog2 from "./components/CommunitySection/SubSection/StudentZoneBlog/StudentZoneFullBlog2.js";
+import EducatorZoneBlog1 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog1.js";
+import EducatorZoneBlog2 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog2.js";
+import EducatorZoneBlog3 from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog3.js";
 
 // =================================Signup Login Routes================================================
 
@@ -312,8 +311,8 @@ const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
   return (
     <Routes>
-          {WebsiteRoutes}
-      <Route
+        
+    <Route
         path="/login"
         element={
           <PublicRoute>
@@ -385,7 +384,9 @@ const AppRoutes = () => {
         path="/complete-admin-profile"
         element={
           <PrivateRoute allowedRoles={["Admin"]}>
+            <DashboardLayout>
             <CompleteEdprowiseProfile />
+            </DashboardLayout>
           </PrivateRoute>
         }
       />
@@ -864,7 +865,9 @@ const AppRoutes = () => {
         path="/seller-dashboard"
         element={
           <PrivateRoute allowedRoles={["Seller"]}>
+                  <DashboardLayout>
             <SellerDashboardMain />
+            </DashboardLayout>
           </PrivateRoute>
         }
       >
@@ -930,7 +933,10 @@ const AppRoutes = () => {
 
       {/* Website Routes */}
 
-      {/* <Route path="/" element={<WebsiteMain />}>
+      <Route path="/" element={<>
+    <RemoveThemeAttribute />
+    <WebsiteMain />
+  </>}>
         <Route index element={<HomePage />} />
 
         <Route path="about-us" element={<AboutPage />} />
@@ -1007,7 +1013,7 @@ const AppRoutes = () => {
           path="community-connect/educator-zone/teacher-well-being"
           element={<EducatorZoneBlog3 />}
         />
-      </Route> */}
+      </Route>
       {/*-------------------------------------------- Root Route - Auto Redirect----------------------------------------- */}
       <Route
         path="/"

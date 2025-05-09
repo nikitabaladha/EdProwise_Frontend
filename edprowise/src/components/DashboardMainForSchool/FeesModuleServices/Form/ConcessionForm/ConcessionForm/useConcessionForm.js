@@ -1,8 +1,9 @@
 import { toast } from 'react-toastify';
-import  { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import getAPI from '../../../../../../api/getAPI';
 import postAPI from '../../../../../../api/postAPI';
 import { useNavigate } from 'react-router-dom';
+
 
 const useConcessionForm = () => {
     const navigate = useNavigate();
@@ -12,8 +13,11 @@ const useConcessionForm = () => {
     const [schoolId, setSchoolId] = useState('');
     const [sections, setSections] = useState([]);
     const [feeTypes, setFeeTypes] = useState([]);
-    
-
+    const [academicYears, setAcademicYears] = useState([]);
+    const [selectedYears, setSelectedYears] = useState([]);
+    const [loadingYears, setLoadingYears] = useState(false);
+      const academicYear = localStorage.getItem('selectedAcademicYear');
+  
     const [formData, setFormData] = useState({
         studentPhoto: null,
         AdmissionNumber: '',
@@ -24,7 +28,6 @@ const useConcessionForm = () => {
         section: '',
         concessionType: '',
         castOrIncomeCertificate: null,
-        applicableAcademicYear: '',
         concessionDetails: Array(4).fill({
             installmentName: '',
             feesType: '',
@@ -34,6 +37,38 @@ const useConcessionForm = () => {
             balancePayable: ''
         })
     });
+
+
+    const academicYearOptions = academicYears.map(year => ({
+        value: year.academicYear,
+        label: year.academicYear
+    }));
+
+   
+    const handleYearChange = (selectedOptions) => {
+        setSelectedYears(selectedOptions || []);
+    };
+
+
+
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
 
     useEffect(() => {
         const userDetails = JSON.parse(localStorage.getItem('userDetails'));
@@ -104,7 +139,7 @@ const useConcessionForm = () => {
         const fetchFeeInstallments = async () => {
             if (!formData.masterDefineClass || !formData.section || !schoolId) return;
             try {
-                const response = await getAPI(`/fetch-viva-installments?schoolId=${schoolId}&classId=${formData.masterDefineClass}&sectionIds=${formData.section}`);
+                const response = await getAPI(`/fetch-viva-installments?schoolId=${schoolId}&classId=${formData.masterDefineClass}&sectionIds=${formData.section}&academicYear=${academicYear}`);
         
                 if (response.data) {
                     const updatedConcessionDetails = [];
@@ -200,6 +235,7 @@ const useConcessionForm = () => {
 
     const cancelSubmittingForm = () => {
         setFormData({
+            academicYear:'',
             studentPhoto: null,
             AdmissionNumber: '',
             firstName: '',
@@ -209,7 +245,6 @@ const useConcessionForm = () => {
             section: '',
             concessionType: '',
             castOrIncomeCertificate: null,
-            applicableAcademicYear: '',
             concessionDetails: Array(4).fill({
                 installmentName: '',
                 feesType: '',
@@ -259,18 +294,12 @@ const useConcessionForm = () => {
         setShowFullForm(true);
     };
 
-    const generateAcademicYears = (startYear, endYear) => {
-        const years = [];
-        for (let year = startYear; year < endYear; year++) {
-            years.push(`${year} - ${year + 1}`);
-        }
-        return years;
-    };
+
 
 
     const validateForm = () => {
 
-        if (!formData.concessionType || !formData.applicableAcademicYear || !formData.castOrIncomeCertificate) {
+        if (!formData.concessionType || !formData.castOrIncomeCertificate) {
             toast.error('Please fill all required fields');
             return false;
         }
@@ -289,56 +318,66 @@ const useConcessionForm = () => {
     };
 
 
-    const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
         e.preventDefault();
         
         if (!validateForm()) return;
-        try {
-            const formDataToSend = new FormData();
-            formDataToSend.append('schoolId', schoolId);
-            formDataToSend.append('AdmissionNumber', formData.AdmissionNumber);
-            formDataToSend.append('firstName', formData.firstName);
-            formDataToSend.append('lastName', formData.lastName);
-            formDataToSend.append('masterDefineClass', formData.masterDefineClass);
-            formDataToSend.append('section', formData.section);
-            formDataToSend.append('concessionType', formData.concessionType);
-            formDataToSend.append('applicableAcademicYear', formData.applicableAcademicYear);
+        if (selectedYears.length === 0) {
+            toast.error('Please select at least one academic year');
+            return;
+        }
 
-            if (formData.studentPhoto) {
-                formDataToSend.append('studentPhoto', formData.studentPhoto);
-            }
-        
-            if (formData.castOrIncomeCertificate) {
-                formDataToSend.append('castOrIncomeCertificate', formData.castOrIncomeCertificate);
-            }
-        
-            formData.concessionDetails.forEach((detail, index) => {
-                formDataToSend.append(`concessionDetails[${index}][installmentName]`, detail.installmentName);
-                formDataToSend.append(`concessionDetails[${index}][feesType]`, detail.feesType);
-                formDataToSend.append(`concessionDetails[${index}][totalFees]`, detail.totalFees);
-                formDataToSend.append(`concessionDetails[${index}][concessionPercentage]`, detail.concessionPercentage);
-                formDataToSend.append(`concessionDetails[${index}][concessionAmount]`, detail.concessionAmount);
-                formDataToSend.append(`concessionDetails[${index}][balancePayable]`, detail.balancePayable);
-            });
-        
-            const response = 
-            await postAPI('/create-Concession-form', formDataToSend, {
-                
-                    'Content-Type': 'multipart/form-data',
+        try {
+     
+            const submissionPromises = selectedYears.map(async (yearOption) => {
+                const formDataToSend = new FormData();
+                formDataToSend.append('academicYear', yearOption.value);
+                formDataToSend.append('schoolId', schoolId);
+                formDataToSend.append('AdmissionNumber', formData.AdmissionNumber);
+                formDataToSend.append('firstName', formData.firstName);
+                formDataToSend.append('lastName', formData.lastName);
+                formDataToSend.append('masterDefineClass', formData.masterDefineClass);
+                formDataToSend.append('section', formData.section);
+                formDataToSend.append('concessionType', formData.concessionType);
+
+                if (formData.studentPhoto) {
+                    formDataToSend.append('studentPhoto', formData.studentPhoto);
+                }
             
+                if (formData.castOrIncomeCertificate) {
+                    formDataToSend.append('castOrIncomeCertificate', formData.castOrIncomeCertificate);
+                }
+            
+                formData.concessionDetails.forEach((detail, index) => {
+                    formDataToSend.append(`concessionDetails[${index}][installmentName]`, detail.installmentName);
+                    formDataToSend.append(`concessionDetails[${index}][feesType]`, detail.feesType);
+                    formDataToSend.append(`concessionDetails[${index}][totalFees]`, detail.totalFees);
+                    formDataToSend.append(`concessionDetails[${index}][concessionPercentage]`, detail.concessionPercentage);
+                    formDataToSend.append(`concessionDetails[${index}][concessionAmount]`, detail.concessionAmount);
+                    formDataToSend.append(`concessionDetails[${index}][balancePayable]`, detail.balancePayable);
+                });
+            
+                return await postAPI('/create-Concession-form', formDataToSend, {
+                    'Content-Type': 'multipart/form-data',
+                });
             });
-         
-            if (!response.hasError && response.data) {
-                const { receiptNumber } = response.data.form; 
-    
-        
-                toast.success('Concession application submitted successfully!');
+
+            const responses = await Promise.all(submissionPromises);
+            const successfulSubmissions = responses.filter(response => 
+                !response.hasError && response.data
+            );
+
+            if (successfulSubmissions.length > 0) {
+                const firstSuccess = successfulSubmissions[0];
+                const { receiptNumber } = firstSuccess.data.form;
                 
-              
+                toast.success(`Concession applications submitted for ${successfulSubmissions.length} academic year(s)!`);
+                
                 navigate(`/school-dashboard/fees-module/form/concession-form-details`, {
                     state: {
                         formData: {
                             ...formData,
+                            academicYear: selectedYears[0].value, 
                             concessionDetails: formData.concessionDetails.map(detail => ({
                                 ...detail,
                                 feesTypeName: feeTypes.find(ft => ft._id === detail.feesType)?.feesTypeName || detail.feesType
@@ -347,15 +386,15 @@ const useConcessionForm = () => {
                         className: classes.find(c => c._id === formData.masterDefineClass)?.className || '',
                         sectionName: sections.find(s => s._id === formData.section)?.name || '',
                         feeTypes: feeTypes,
-                        receiptNumber: receiptNumber 
+                        receiptNumber: receiptNumber
                     }
                 });
             } else {
-                toast.error('Failed to submit concession application');
+                toast.error('Failed to submit concession applications');
             }
         } catch (error) {
             console.error('Submission error:', error);
-            toast.error('Failed to submit concession application');
+            toast.error('Failed to submit concession applications');
         }
     };
     
@@ -384,7 +423,7 @@ const useConcessionForm = () => {
       };
 
     return {
-        formData,
+           formData,
         setFormData,
         handleChange,
         handleConcessionDetailChange,
@@ -402,9 +441,12 @@ const useConcessionForm = () => {
         handleAdmissionSubmit,
         handleSubmit,
         handleClassChange,
-        generateAcademicYears,
         cancelSubmittingForm,
-        handlePhotoUpload
+        handlePhotoUpload,
+        academicYearOptions,
+        handleYearChange,
+        selectedYears,
+        loadingYears, 
     };
 };
 

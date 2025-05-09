@@ -11,6 +11,8 @@ const ADDOneTimeFees = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
+
+
   const [forms, setForms] = useState([
     {
       selectedClassId: "",
@@ -86,6 +88,7 @@ const ADDOneTimeFees = () => {
   const handleSubmitAll = async (e) => {
     e.preventDefault()
     setIsSubmitting(true);
+    const academicYear = localStorage.getItem("selectedAcademicYear");
 
     const combos = forms.map((f) => `${f.selectedClassId}-${f.selectedSections.sort().join(",")}`);
     const seen = new Set();
@@ -102,6 +105,7 @@ const ADDOneTimeFees = () => {
     for (let i = 0; i < forms.length; i++) {
       const form = forms[i];
       const payload = {
+        academicYear: academicYear,
         classId: form.selectedClassId,
         sectionIds: form.selectedSections,
         oneTimeFees: form.feesDetails.map((fd) => ({
@@ -121,6 +125,8 @@ const ADDOneTimeFees = () => {
       } catch (err) {
         allSuccess = false;
         toast.error(`Form ${i + 1}: ${err?.response?.data?.message || "Server error."}`);
+      }finally{
+        setIsSubmitting(false);
       }
     }
 

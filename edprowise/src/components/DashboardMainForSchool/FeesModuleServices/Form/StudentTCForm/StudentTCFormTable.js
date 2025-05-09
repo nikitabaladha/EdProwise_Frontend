@@ -14,6 +14,30 @@ const StudentTCFormTable = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
 
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
@@ -46,11 +70,11 @@ const StudentTCFormTable = () => {
 
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchStudents = async () => {
       try {
-        const response = await getAPI(`/get-TC-form/${schoolId}`);
+        const response = await getAPI(`/get-TC-form/${schoolId}/${selectedYear}`);
         console.log("API response:", response);
 
         if (!response.hasError) {
@@ -66,7 +90,7 @@ const StudentTCFormTable = () => {
     };
 
     fetchStudents();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
 
   const navigateToTCForm = (event) => {
     event.preventDefault();
@@ -120,6 +144,17 @@ const StudentTCFormTable = () => {
     <>
       {" "}
       <div className="container-fluid">
+        <div className="d-flex justify-content-end mb-2 gap-2">
+          <Link
+            onClick={(event) => navigateToTCForm(event)}
+            className="btn btn-sm btn-primary"
+          >
+            TC Form
+          </Link>
+          <Link className="btn btn-sm btn-secondary">
+            Export
+          </Link>
+        </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
@@ -127,16 +162,25 @@ const StudentTCFormTable = () => {
                 <h4 className="card-title flex-grow-1">
                   Transfer certificate List
                 </h4>
-                <Link
-                  onClick={(event) => navigateToTCForm(event)}
-                  className="btn btn-sm btn-primary"
-                >
-                  TC Form
-                </Link>
 
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
-                </div>
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    localStorage.setItem("selectedAcademicYear", e.target.value);
+                  }}
+                  disabled={loadingYears}
+                >
+                  <option value="" disabled>Select Year</option>
+                  {academicYears.map((year) => (
+                    <option key={year._id} value={year.academicYear}>
+                      {year.academicYear}
+                    </option>
+                  ))}
+
+                </select>
+
               </div>
               <div>
                 <div className="table-responsive">
@@ -192,7 +236,7 @@ const StudentTCFormTable = () => {
                           <td>
                             <div className="d-flex gap-2">
                               <Link className="btn btn-light btn-sm"
-                                  onClick={(event) => navigateToViewTCInfo(event, student)}
+                                onClick={(event) => navigateToViewTCInfo(event, student)}
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
@@ -200,7 +244,7 @@ const StudentTCFormTable = () => {
                                 />
                               </Link>
                               <Link className="btn btn-soft-primary btn-sm"
-                                  onClick={(event) => navigateToUpdateTCForm(event, student)}
+                                onClick={(event) => navigateToUpdateTCForm(event, student)}
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"

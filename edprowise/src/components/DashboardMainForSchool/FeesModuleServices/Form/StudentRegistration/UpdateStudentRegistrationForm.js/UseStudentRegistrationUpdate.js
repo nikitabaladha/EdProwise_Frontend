@@ -17,9 +17,10 @@ const UseStudentRegistrationUpdate = () => {
   const [shifts, setShifts] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
+  const academicYear = localStorage.getItem('selectedAcademicYear');
 
   const [formData, setFormData] = useState({
+    academicYear:academicYear,
     studentPhoto: null,
     firstName: student?.firstName || '',
     middleName: student?.middleName || '',

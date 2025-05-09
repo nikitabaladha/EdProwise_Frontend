@@ -31,6 +31,7 @@ const SchoolFeesReceipts = () => {
     setShowProcessedData,
     selectedFeeTypesByInstallment,
     handlePaidAmountChange,
+    setTotalInstallments
   } = useSchoolFeesReceipts();
 
   if (!showFullForm) {
@@ -168,31 +169,57 @@ const SchoolFeesReceipts = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {feeData?.concession?.applicableAcademicYear ? (
-                          <tr
-                            className={selectedAcademicYear === feeData.concession.applicableAcademicYear ? 'table-primary' : ''}
-                            onClick={() => handleAcademicYearSelect(feeData.concession.applicableAcademicYear)}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <td>
-                              <input
-                                type="checkbox"
-                                className="form-check-input"
-                                checked={selectedAcademicYear === feeData.concession.applicableAcademicYear || selectAll}
-                                onChange={() => handleAcademicYearSelect(feeData.concession.applicableAcademicYear)}
-                              />
-                            </td>
-                            <td>{feeData.concession.applicableAcademicYear}</td>
-                            <td>{totalInstallments.length}</td>
-                            <td>{feeData.totals.totalFeesAmount}</td>
-                            <td>{feeData.totals.totalConcession}</td>
-                            <td>{feeData.totals.totalFine}</td>
-                            <td>{parseInt(calculatePayFees())}</td>
-                            <td>{feeData.totals.totalFeesPayable}</td>
-                          </tr>
+                        {Array.isArray(feeData) && feeData.length > 0 ? (
+                          feeData.map((yearData, index) => {
+                            const hasUnpaidInstallments = yearData.feeInstallments?.some(
+                              item => item.balanceAmount > 0
+                            );
+
+                            if (!hasUnpaidInstallments) return null;
+
+                            return (
+                              <tr
+                                key={index}
+                                className={selectedAcademicYear === yearData.academicYear ? 'table-primary' : ''}
+                                onClick={() => {
+                                  handleAcademicYearSelect(yearData.academicYear);
+                                  setTotalInstallments(Array.isArray(yearData.installmentsPresent) ? yearData.installmentsPresent : []);
+                                }}
+                                style={{ cursor: 'pointer' }}
+                              >
+                                <td>
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    checked={selectedAcademicYear === yearData.academicYear}
+                                    onChange={() => {
+                                      handleAcademicYearSelect(yearData.academicYear);
+                                      setTotalInstallments(Array.isArray(yearData.installmentsPresent) ? yearData.installmentsPresent : []);
+                                    }}
+                                  />
+                                </td>
+                                <td>{yearData.academicYear}</td>
+                                <td>
+                                  {yearData.installmentsPresent?.filter(instNum => {
+                                    const installmentData = yearData.feeInstallments?.filter(
+                                      item => item.installmentName.includes(`Installment ${instNum}`)
+                                    );
+                                    return installmentData?.some(item => item.balanceAmount > 0);
+                                  }).length || 0}
+                                </td>
+                                <td>{yearData.totals.totalFeesAmount}</td>
+                                <td>{yearData.totals.totalConcession}</td>
+                                <td>{yearData.totals.totalFine}</td>
+                                <td>{yearData.totals.totalFeesPayable}</td>
+                                <td>{yearData.totals.totalFeesPayable}</td>
+                              </tr>
+                            );
+                          })
                         ) : (
                           <tr>
-                            <td colSpan="8">No academic year data available</td>
+                            <td colSpan="8" className="text-center">
+                              {feeData?.message || 'No outstanding fees found for any academic year'}
+                            </td>
                           </tr>
                         )}
                       </tbody>
@@ -236,91 +263,97 @@ const SchoolFeesReceipts = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {totalInstallments.length === 0 && (
+                        {Array.isArray(totalInstallments) && totalInstallments.length > 0 && Array.isArray(feeData) ? (
+                          totalInstallments.map((installmentNum) => {
+                            const selectedYearData = feeData.find(
+                              year => year.academicYear === selectedAcademicYear
+                            );
+                            if (!selectedYearData || !Array.isArray(selectedYearData.feeInstallments)) return null;
+
+                            const installmentData = selectedYearData.feeInstallments
+                              .filter(item => item.installmentName.includes(`Installment ${installmentNum}`))
+                              .filter(item => item.balanceAmount > 0);
+
+                            if (!installmentData?.length) return null;
+
+                            return (
+                              <React.Fragment key={installmentNum}>
+                                {installmentData.map((item, index) => {
+                                  const concessionItem = selectedYearData.concession?.concessionDetails?.find(
+                                    cd => cd.installmentName === item.installmentName &&
+                                      cd.feesType === item.feesTypeId._id
+                                  );
+
+                                  const concessionAmount = concessionItem?.concessionAmount || 0;
+                                  const payableAmount = item.amount - concessionAmount;
+                                  const fineAmount = item.fineAmount || 0;
+                                  const totalPayable = payableAmount + fineAmount;
+                                  const paidAmount = item.paidAmount || 0;
+                                  const balance = totalPayable - paidAmount;
+
+                                  return (
+                                    <tr key={`${installmentNum}-${index}`}>
+                                      {index === 0 && (
+                                        <>
+                                          <td rowSpan={installmentData.length}>
+                                            <input
+                                              type="checkbox"
+                                              className="form-check-input"
+                                              checked={selectedInstallments.includes(installmentNum)}
+                                              onChange={() => handleInstallmentSelection(installmentNum)}
+                                            />
+                                          </td>
+                                          <td rowSpan={installmentData.length}>
+                                            Installment {installmentNum}
+                                          </td>
+                                        </>
+                                      )}
+                                      <td style={{ display: 'flex', alignItems: 'center' }}>
+                                        <input
+                                          type="checkbox"
+                                          className="form-check-input"
+                                          checked={(selectedFeeTypesByInstallment[installmentNum] || []).includes(item.feesTypeId._id)}
+                                          onChange={() => handleFeeTypeSelection(installmentNum, item.feesTypeId._id)}
+                                        />
+                                        <span style={{ marginLeft: '10px' }}>
+                                          {getFeeTypeName(item.feesTypeId._id) || 'Fee Type Not Found'}
+                                        </span>
+                                      </td>
+                                      <td>{new Date(item.dueDate).toLocaleDateString()}</td>
+                                      <td>{item.amount}</td>
+                                      <td>{fineAmount}</td>
+                                      <td>{concessionAmount}</td>
+                                      <td>{totalPayable}</td>
+                                      <td>
+                                        <input
+                                          // type="number"
+                                          className="form-control form-control-sm"
+                                          value={paidAmount}
+                                          onChange={(e) =>
+                                            handlePaidAmountChange(
+                                              installmentNum,
+                                              item.feesTypeId._id,
+                                              Math.max(0, Math.min(totalPayable, Number(e.target.value)))
+                                            )
+                                          }
+                                          min="0"
+                                          max={totalPayable}
+                                        />
+                                      </td>
+                                      <td>{balance}</td>
+                                    </tr>
+                                  );
+                                })}
+                              </React.Fragment>
+                            );
+                          })
+                        ) : (
                           <tr>
                             <td colSpan="10" className="text-center">
-                              No fee data found for any installments
+                              No unpaid installments found for selected academic year
                             </td>
                           </tr>
                         )}
-                        {totalInstallments.map((installmentNum) => {
-                          const installmentData = getInstallmentData(installmentNum);
-                          console.log(`Installment ${installmentNum} data:`, installmentData);
-
-                          if (!installmentData.length) return null;
-
-                          return (
-                            <React.Fragment key={installmentNum}>
-                              {installmentData.map((item, index) => {
-                                const concessionItem = feeData.concession?.concessionDetails?.find(
-                                  (cd) =>
-                                    cd.installmentName === item.installmentName &&
-                                    cd.feesType === item.feesTypeId._id
-                                );
-
-                                const concessionAmount = concessionItem?.concessionAmount || 0;
-                                const payableAmount = item.amount - concessionAmount;
-                                const fineAmount = item.fineAmount || 0;
-                                const totalPayable = payableAmount + fineAmount;
-                                const paidAmount = item.paidAmount || 0;
-                                const balance = totalPayable - paidAmount;
-
-                                return (
-                                  <tr key={`${installmentNum}-${index}`}>
-                                    {index === 0 && (
-                                      <>
-                                        <td rowSpan={installmentData.length}>
-                                          <input
-                                            type="checkbox"
-                                            className="form-check-input"
-                                            checked={selectedInstallments.includes(installmentNum)}
-                                            onChange={() => handleInstallmentSelection(installmentNum)}
-                                          />
-                                        </td>
-                                        <td rowSpan={installmentData.length}>
-                                          Installment {installmentNum}
-                                        </td>
-                                      </>
-                                    )}
-                                    <td style={{ display: 'flex', alignItems: 'center' }}>
-                                      <input
-                                        type="checkbox"
-                                        className="form-check-input"
-                                        checked={(selectedFeeTypesByInstallment[installmentNum] || []).includes(item.feesTypeId._id)}
-                                        onChange={() => handleFeeTypeSelection(installmentNum, item.feesTypeId._id)}
-                                      />
-                                      <span style={{ marginLeft: '10px' }}>
-                                        {getFeeTypeName(item.feesTypeId._id) || 'Fee Type Not Found'}
-                                      </span>
-                                    </td>
-                                    <td>{new Date(item.dueDate).toLocaleDateString()}</td>
-                                    <td>{item.amount}</td>
-                                    <td>{fineAmount}</td>
-                                    <td>{concessionAmount}</td>
-                                    <td>{totalPayable}</td>
-                                    <td>
-                                      <input
-                                        // type="number"
-                                        className="form-control form-control-sm"
-                                        value={paidAmount}
-                                        onChange={(e) =>
-                                          handlePaidAmountChange(
-                                            installmentNum,
-                                            item.feesTypeId._id,
-                                            parseFloat(e.target.value)
-                                          )
-                                        }
-                                        min="0"
-                                        max={totalPayable}
-                                      />
-                                    </td>
-                                    <td>{balance}</td>
-                                  </tr>
-                                );
-                              })}
-                            </React.Fragment>
-                          );
-                        })}
                       </tbody>
                     </table>
                     <div className="text-end my-3">

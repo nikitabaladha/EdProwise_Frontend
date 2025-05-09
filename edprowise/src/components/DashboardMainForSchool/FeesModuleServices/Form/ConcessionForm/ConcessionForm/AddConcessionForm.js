@@ -1,24 +1,31 @@
-import React from "react";
+import Select from 'react-select';
 import useConcessionForm from "./useConcessionForm";
 
 const ConcessionForm = () => {
     const {
         formData,
+        handleChange,
+        handleConcessionDetailChange,
+        toggleRowSelection,
+        fileInputRef,
+        existingStudents,
         classes,
         sections,
         feeTypes,
-        fileInputRef,
-        handleChange,
-        handleClassChange,
-        handleConcessionDetailChange,
-        handleSubmit,
-        cancelSubmittingForm,
-        toggleRowSelection,
         showFullForm,
         handleAdmissionSubmit,
-        existingStudents,
-        generateAcademicYears,
-        handlePhotoUpload
+        handleSubmit,
+        handleClassChange,
+        cancelSubmittingForm,
+        handlePhotoUpload,
+        academicYearOptions,
+        handleYearChange,
+        selectedYears,
+        loadingYears,
+
+
+
+
     } = useConcessionForm();
 
     if (!showFullForm) {
@@ -91,7 +98,7 @@ const ConcessionForm = () => {
                                 </div>
                             </div>
                             <form onSubmit={handleSubmit}>
-                            <div className="row">
+                                <div className="row">
                                     <div className="col-md-4 d-flex flex-column align-items-center">
                                         <div className="border rounded d-flex justify-content-center align-items-center mb-2"
                                             style={{ width: "150px", height: "180px", overflow: "hidden" }}>
@@ -291,24 +298,23 @@ const ConcessionForm = () => {
 
                                     <div className="col-md-4">
                                         <div className="mb-3">
-                                            <label htmlFor="applicableAcademicYear" className="form-label">
-                                                Applicable Academic Year <span className="text-danger">*</span>
+                                            <label htmlFor="academicYear" className="form-label">
+                                                Applicable Academic Year(s) <span className="text-danger">*</span>
                                             </label>
-                                            <select
-                                                id="applicableAcademicYear"
-                                                name="applicableAcademicYear"
-                                                className="form-control"
-                                                value={formData.applicableAcademicYear}
-                                                onChange={handleChange}
+                                            <Select
+                                                id="academicYear"
+                                                name="academicYear"
+                                                options={academicYearOptions}
+                                                isMulti
+                                                value={selectedYears }
+                                                onChange={handleYearChange}
+                                                isLoading={loadingYears}
                                                 required
-                                            >
-                                                <option value="">Select Academic Year</option>
-                                                {generateAcademicYears(2015, 2030).map((year) => (
-                                                    <option key={year} value={year}>
-                                                        {year}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                                className="basic-multi-select"
+                                                classNamePrefix="select"
+                                                placeholder="Select academic year(s)..."
+                                            />
+                                          
                                         </div>
                                     </div>
 

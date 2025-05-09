@@ -16,7 +16,7 @@ const ConcessionForm = () => {
         cancelSubmittingForm,
         toggleRowSelection,
         getFileNameFromPath,
-        generateAcademicYears,
+        academicYears,
         handlePhotoUpload
     } = useConcessionForm();
 
@@ -34,7 +34,7 @@ const ConcessionForm = () => {
                                 </div>
                             </div>
                             <form onSubmit={handleSubmit}>
-                            <div className="row">
+                                <div className="row">
                                     <div className="col-md-4 d-flex flex-column align-items-center">
                                         <div className="border rounded d-flex justify-content-center align-items-center mb-2"
                                             style={{ width: "150px", height: "180px", overflow: "hidden" }}>
@@ -216,49 +216,49 @@ const ConcessionForm = () => {
                                     </div>
                                 </div>
                                 <div className="row">
-                                <div className="col-md-4">
-                                    <div className="mb-3">
-                                        <label htmlFor="castOrIncomeCertificate" className="form-label">
-                                            Caste/Income Certificate<span className="text-danger">*</span>
-                                        </label>
-                                        <input
-                                            type="file"
-                                            id="castOrIncomeCertificate"
-                                            name="castOrIncomeCertificate"
-                                            className="form-control"
-                                            accept="image/*,application/pdf"
-                                            onChange={handleChange}
-                                            ref={fileInputRef}
-                                        />
-                                        {typeof formData.castOrIncomeCertificate === 'string' && (
-                                            <div className="text-muted small mt-1">
-                                                Existing file: {getFileNameFromPath(formData.castOrIncomeCertificate)}
-                                            </div>
-                                        )}
-                                        {formData.castOrIncomeCertificate instanceof File && (
-                                            <div className="text-muted small mt-1">
-                                                New file selected: {formData.castOrIncomeCertificate.name}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="col-md-4">
+                                    <div className="col-md-4">
                                         <div className="mb-3">
-                                            <label htmlFor="applicableAcademicYear" className="form-label">
+                                            <label htmlFor="castOrIncomeCertificate" className="form-label">
+                                                Caste/Income Certificate<span className="text-danger">*</span>
+                                            </label>
+                                            <input
+                                                type="file"
+                                                id="castOrIncomeCertificate"
+                                                name="castOrIncomeCertificate"
+                                                className="form-control"
+                                                accept="image/*,application/pdf"
+                                                onChange={handleChange}
+                                                ref={fileInputRef}
+                                            />
+                                            {typeof formData.castOrIncomeCertificate === 'string' && (
+                                                <div className="text-muted small mt-1">
+                                                    Existing file: {getFileNameFromPath(formData.castOrIncomeCertificate)}
+                                                </div>
+                                            )}
+                                            {formData.castOrIncomeCertificate instanceof File && (
+                                                <div className="text-muted small mt-1">
+                                                    New file selected: {formData.castOrIncomeCertificate.name}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <div className="mb-3">
+                                            <label htmlFor="academicYear" className="form-label">
                                                 Applicable Academic Year <span className="text-danger">*</span>
                                             </label>
                                             <select
-                                                id="applicableAcademicYear"
-                                                name="applicableAcademicYear"
+                                                id="academicYear"
+                                                name="academicYear"
                                                 className="form-control"
-                                                value={formData.applicableAcademicYear}
+                                                value={formData.academicYear}
                                                 onChange={handleChange}
                                                 required
                                             >
-                                                <option value="">Select Academic Year</option>
-                                                {generateAcademicYears(2015, 2030).map((year) => (
-                                                    <option key={year} value={year}>
-                                                        {year}
+                                                <option value="" disabled>Select Year</option>
+                                                {academicYears.map((year) => (
+                                                    <option key={year._id} value={year.academicYear}>
+                                                        {year.academicYear}
                                                     </option>
                                                 ))}
                                             </select>

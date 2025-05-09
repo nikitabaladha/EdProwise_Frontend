@@ -19,8 +19,10 @@ const useStudentRegistration = () => {
   const [registrationFee, setRegistrationFee] = useState(0);
   const [concessionAmount, setConcessionAmount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
+  const academicYear = localStorage.getItem('selectedAcademicYear');
 
   const [formData, setFormData] = useState({
+    academicYear:academicYear,
     studentPhoto: null,
     firstName: '',
     middleName: '',
@@ -92,7 +94,7 @@ const useStudentRegistration = () => {
     try {
       if (!schoolId || !classId) return;
       
-      const response = await getAPI(`/get-one-time-feesbyIds/${schoolId}/${classId}`, {}, true);
+      const response = await getAPI(`/get-one-time-feesbyIds/${schoolId}/${classId}/${academicYear}`, {}, true);
       if (response?.data?.data) {
         setOneTimeFeesList(response.data.data);
         

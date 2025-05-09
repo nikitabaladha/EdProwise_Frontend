@@ -130,6 +130,7 @@ const UpdateFeeStructure = () => {
 
   const handleSubmitAll = async (e) => {
     e.preventDefault();
+    const academicYear = localStorage.getItem('selectedAcademicYear'); 
 
     if (!existingStructure?._id) {
       toast.error("No fee structure ID found for updating");
@@ -148,6 +149,7 @@ const UpdateFeeStructure = () => {
 
     const form = forms[0];
     const payload = {
+      academicYear:academicYear,
       classId: form.selectedClassId,
       sectionIds: form.selectedSections,
       installments: form.installments.map((inst) => ({

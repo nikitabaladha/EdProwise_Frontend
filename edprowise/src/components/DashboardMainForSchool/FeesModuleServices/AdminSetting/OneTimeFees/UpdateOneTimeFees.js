@@ -96,6 +96,7 @@ const UpdateOneTimeFees = () => {
   const handleSubmitAll = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    const academicYear = localStorage.getItem("selectedAcademicYear");
 
     const combos = forms.map((f) => `${f.selectedClassId}-${f.selectedSections.sort().join(",")}`);
     const seen = new Set();
@@ -112,6 +113,7 @@ const UpdateOneTimeFees = () => {
     for (let i = 0; i < forms.length; i++) {
       const form = forms[i];
       const payload = {
+        academicYear: academicYear,
         classId: form.selectedClassId,
         sectionIds: form.selectedSections,
         oneTimeFees: form.feesDetails.map((fd) => ({

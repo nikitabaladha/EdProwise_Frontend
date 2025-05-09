@@ -26,7 +26,7 @@ const Sidebar = () => {
     };
 
     const updateMenuSize = () => {
-      if (window.innerWidth >= 992) {
+      if (window.innerWidth >= 770) {
         htmlTag.setAttribute("data-menu-size", "sm-hover-active");
       } else {
         htmlTag.setAttribute("data-menu-size", "hidden");
