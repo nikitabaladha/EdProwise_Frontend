@@ -117,8 +117,7 @@ const TrackQuoteTable = ({}) => {
 
     exportToExcel(filteredData, "Requested Quotes", "Requested_Quotes");
   };
-
-  const [sending, setSending] = useState(false);
+  const [downloadingQuotes, setDownloadingQuotes] = useState({});
 
   const generateQuotePDF = async (enquiryNumber, schoolId) => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -136,7 +135,7 @@ const TrackQuoteTable = ({}) => {
 
     const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
 
-    setSending(true);
+    setDownloadingQuotes((prev) => ({ ...prev, [enquiryNumber]: true }));
 
     try {
       const response = await getAPI(
@@ -165,7 +164,7 @@ const TrackQuoteTable = ({}) => {
       console.error("Error fetching data:", err);
       toast.error("An error occurred while fetching quote data");
     } finally {
-      setSending(false);
+      setDownloadingQuotes((prev) => ({ ...prev, [enquiryNumber]: false }));
     }
   };
 
@@ -364,8 +363,13 @@ const TrackQuoteTable = ({}) => {
                                         title="Download PDF"
                                         data-bs-toggle="popover"
                                         data-bs-trigger="hover"
+                                        disabled={
+                                          downloadingQuotes[quote.enquiryNumber]
+                                        }
                                       >
-                                        {sending ? (
+                                        {downloadingQuotes[
+                                          quote.enquiryNumber
+                                        ] ? (
                                           "Downloading..."
                                         ) : (
                                           <iconify-icon

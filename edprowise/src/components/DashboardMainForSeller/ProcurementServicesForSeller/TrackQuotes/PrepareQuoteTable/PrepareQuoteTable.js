@@ -52,12 +52,10 @@ const PrepareQuoteTable = ({
             >
               Add Product
             </button>
-            <h4 className="card-title flex-grow-1 m-0 text-center">
+
+            <h4 className="card-title flex-grow-1 m-0 text-center custom-heading-font">
               Prepare Quote
             </h4>
-            <div className="text-end">
-              <Link className="btn btn-sm btn-outline-light">Export</Link>
-            </div>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="table-responsive">
@@ -99,7 +97,7 @@ const PrepareQuoteTable = ({
                         IGST Rate <span className="text-danger">*</span>
                       </th>
                     )}
-                    <th>Upload Sample Images of Products</th>
+                    <th>Upload Sample Images of Products </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -210,7 +208,7 @@ const PrepareQuoteTable = ({
                         </td>
                       )}
 
-                      <td>
+                      {/* <td>
                         <div className="d-flex align-items-start gap-3">
                           <div style={{ flex: "1" }}>
                             <input
@@ -234,6 +232,59 @@ const PrepareQuoteTable = ({
                             )}
                           </div>
                           <div className="d-flex flex-wrap gap-2">
+                            {products[index]?.prepareQuoteImages?.map(
+                              (image, imgIndex) => (
+                                <div
+                                  key={imgIndex}
+                                  className="position-relative"
+                                  style={{ width: "40px", height: "40px" }}
+                                >
+                                  <img
+                                    src={URL.createObjectURL(image)}
+                                    alt={`Preview ${imgIndex + 1}`}
+                                    className="img-fluid h-100 rounded"
+                                  />
+                                  <button
+                                    type="button"
+                                    className="position-absolute top-0 end-0 btn btn-sm btn-danger p-0"
+                                    style={{ width: "20px", height: "20px" }}
+                                    onClick={() =>
+                                      handleRemoveImage(index, imgIndex)
+                                    }
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </td> */}
+
+                      <td>
+                        <div className="d-flex align-items-start gap-3">
+                          {/* File input section */}
+                          <div style={{ minWidth: "250px", flexGrow: 1 }}>
+                            <input
+                              type="file"
+                              id={`prepareQuoteImages-${index}`}
+                              name="prepareQuoteImages"
+                              className="form-control"
+                              accept="image/*"
+                              onChange={(e) => handleImageChange(index, e)}
+                              multiple
+                              disabled={
+                                (products[index]?.prepareQuoteImages?.length ||
+                                  0) >= 4
+                              }
+                            />
+                          </div>
+
+                          {/* Image preview section */}
+                          <div
+                            className="d-flex flex-wrap gap-2"
+                            style={{ maxWidth: "300px", flexShrink: 0 }}
+                          >
                             {products[index]?.prepareQuoteImages?.map(
                               (image, imgIndex) => (
                                 <div

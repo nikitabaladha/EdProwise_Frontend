@@ -53,6 +53,28 @@ const ViewSellerProfile = () => {
     });
   };
 
+  const StarRating = ({ rating }) => {
+    const maxStars = 5;
+    const filledStars = Math.min(Math.max(0, rating), maxStars);
+
+    return (
+      <div className="d-flex">
+        {[...Array(maxStars)].map((_, index) => (
+          <span
+            key={index}
+            style={{
+              fontSize: "1.5rem",
+              color: index < filledStars ? "#ffc107" : "#e4e5e9",
+              lineHeight: 1,
+            }}
+          >
+            {index < filledStars ? "★" : "☆"}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="container">
@@ -81,6 +103,43 @@ const ViewSellerProfile = () => {
                 <h4 className="card-title text-center custom-heading-font mb-3">
                   Company Detail
                 </h4>
+
+                {sellerProfile?.averageRating ? (
+                  <>
+                    <div className="row">
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="rating" className="form-label">
+                            Rating
+                          </label>
+                          <div
+                            className="d-flex align-items-center"
+                            style={{
+                              gap: "0.5rem",
+                            }}
+                          >
+                            {sellerProfile?.averageRating ? (
+                              <>
+                                <StarRating
+                                  rating={sellerProfile.averageRating}
+                                />
+                                <span
+                                  className="text-muted"
+                                  style={{ fontSize: "0.875rem" }}
+                                >
+                                  ({sellerProfile.averageRating}/5){" "}
+                                </span>
+                                <span style={{ fontSize: "0.875rem" }}>
+                                  {sellerProfile?.totalCount} Reviews
+                                </span>
+                              </>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : null}
 
                 <div className="row">
                   <div className="col-md-3">

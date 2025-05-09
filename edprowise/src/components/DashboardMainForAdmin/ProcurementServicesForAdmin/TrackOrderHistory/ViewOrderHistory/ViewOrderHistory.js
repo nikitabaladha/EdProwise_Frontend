@@ -115,6 +115,28 @@ const ViewOrderHistory = () => {
   const [sending, setSending] = useState(false);
   const [sendingForBuyer, setSendingForBuyer] = useState(false);
 
+  const StarRating = ({ rating }) => {
+    const maxStars = 5;
+    const filledStars = Math.min(Math.max(0, rating), maxStars);
+
+    return (
+      <div className="d-flex">
+        {[...Array(maxStars)].map((_, index) => (
+          <span
+            key={index}
+            style={{
+              fontSize: "1.5rem",
+              color: index < filledStars ? "#ffc107" : "#e4e5e9",
+              lineHeight: 1,
+            }}
+          >
+            {index < filledStars ? "★" : "☆"}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
   const generateInvoicePDFForEdprowise = async () => {
     const missingFields = [];
     if (!sellerId) missingFields.push("Seller ID");
@@ -297,7 +319,6 @@ const ViewOrderHistory = () => {
                       >
                         Expected Delivery Date
                       </label>
-
                       <p className="form-control">
                         {formatDate(order?.expectedDeliveryDate)}
                       </p>
@@ -314,8 +335,45 @@ const ViewOrderHistory = () => {
                       <p className="form-control">
                         {order?.actualDeliveryDate
                           ? formatDate(order?.actualDeliveryDate)
-                          : "Null"}
+                          : "Not Provided"}
                       </p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="feedbackComment" className="form-label">
+                        Feedback Comment
+                      </label>
+                      <p className="form-control">
+                        {order?.feedbackComment || "Not Provided"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="rating" className="form-label">
+                        Rating
+                      </label>
+                      <div
+                        className=" d-flex align-items-center"
+                        style={{
+                          gap: "0.5rem",
+                        }}
+                      >
+                        {order?.rating ? (
+                          <>
+                            <StarRating rating={order.rating} />
+                            <span className="text-muted">
+                              ({order.rating}/5)
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-muted">Not rated yet</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

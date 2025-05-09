@@ -17,7 +17,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
   const [preparedQuotes, setPreparedQuotes] = useState([]);
   const [editedQuote, setEditedQuote] = useState({});
   const [showModal, setShowModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState("");
+
   const [locationData, setLocationData] = useState({
     schoolState: null,
     sellerState: null,
@@ -105,65 +105,6 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     }
   };
 
-  // const ImageSlider = ({ images, onImageClick }) => {
-  //   const [currentIndex, setCurrentIndex] = useState(0);
-
-  //   const goToPrev = () => {
-  //     setCurrentIndex((prevIndex) =>
-  //       prevIndex === 0 ? images.length - 1 : prevIndex - 1
-  //     );
-  //   };
-
-  //   const goToNext = () => {
-  //     setCurrentIndex((prevIndex) =>
-  //       prevIndex === images.length - 1 ? 0 : prevIndex + 1
-  //     );
-  //   };
-
-  //   if (images.length === 0) {
-  //     return <div className="text-muted">No images</div>;
-  //   }
-
-  //   const currentImage = images[currentIndex];
-  //   const imageUrl = currentImage
-  //     ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${currentImage}`
-  //     : null;
-
-  //   return (
-  //     <div className="d-flex align-items-center justify-content-center">
-  //       {images.length > 1 && (
-  //         <button
-  //           className="btn btn-sm btn-outline-secondary me-1"
-  //           onClick={goToPrev}
-  //         >
-  //           &lt;
-  //         </button>
-  //       )}
-  //       <div
-  //         className="rounded bg-light"
-  //         style={{ width: "80px", height: "80px" }}
-  //         onClick={() => onImageClick(imageUrl)}
-  //       >
-  //         {imageUrl && (
-  //           <img
-  //             src={imageUrl}
-  //             alt={`Product ${currentIndex + 1}`}
-  //             className="img-fluid h-100"
-  //           />
-  //         )}
-  //       </div>
-  //       {images.length > 1 && (
-  //         <button
-  //           className="btn btn-sm btn-outline-secondary ms-1"
-  //           onClick={goToNext}
-  //         >
-  //           &gt;
-  //         </button>
-  //       )}
-  //     </div>
-  //   );
-  // };
-
   const handleInputChange = (id, e) => {
     const { name, value } = e.target;
     setEditedQuote((prev) => ({
@@ -219,11 +160,6 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     }
   };
 
-  // const handleImageClick = (imageUrl) => {
-  //   setSelectedImage(imageUrl);
-  //   setShowModal(true);
-  // };
-
   const navigateToViewSubmitQuote = (event) => {
     event.preventDefault();
     navigate(`/seller-dashboard/procurement-services/submit-quote`, {
@@ -252,6 +188,16 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
     );
   };
 
+  const isWithinEditTimeframe = (createdAt) => {
+    if (!createdAt) return false;
+
+    const createdTime = new Date(createdAt).getTime();
+    const currentTime = new Date().getTime();
+    const fourHoursInMs = 4 * 60 * 60 * 1000;
+
+    return currentTime - createdTime <= fourHoursInMs;
+  };
+
   return (
     <>
       <div className="container">
@@ -261,13 +207,24 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">Prepared Quote List</h4>
                 <div className="text-end">
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-primary custom-submit-button"
                     onClick={(event) => navigateToViewSubmitQuote(event)}
                   >
                     View Submited Quote
-                  </button>
+                  </button> */}
+                  {!preparedQuotes.some(
+                    (quote) => !isWithinEditTimeframe(quote.createdAt)
+                  ) ? (
+                    <button
+                      type="button"
+                      className="btn btn-primary custom-submit-button"
+                      onClick={(event) => navigateToViewSubmitQuote(event)}
+                    >
+                      View Submitted Quote
+                    </button>
+                  ) : null}
                 </div>
               </div>
 
@@ -422,7 +379,6 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                                           />
                                         </div>
                                       )}
-
                                       <span>{quote.subcategoryName}</span>
                                     </>
                                   )}

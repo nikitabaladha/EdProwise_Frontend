@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 
 import { format, differenceInHours, parseISO } from "date-fns";
 import OrderCancelReasonModal from "./OrderCancelReasonModal";
+import RatingModal from "./RatingModal";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -108,6 +109,20 @@ const TrackOrderHistoryTable = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+
+  const handleOpenRatingModal = (event, enquiryNumber, sellerId, schoolId) => {
+    event.preventDefault();
+    setSelectedEnquiryNumber(enquiryNumber);
+    setSelectedSellerId(sellerId);
+    setSelectedSchoolId(schoolId);
+    setIsRatingModalOpen(true);
+  };
+
+  const handleCloseRatingModal = () => {
+    setIsRatingModalOpen(false);
   };
 
   const navigateToViewOrder = (event, order, orderNumber, enquiryNumber) => {
@@ -317,15 +332,25 @@ const TrackOrderHistoryTable = () => {
                                 </button>
                               )}
 
-                              {/* <button
-                                className="btn btn-success btn-sm"
-                                title="Pay"
-                                data-bs-toggle="popover"
-                                data-bs-trigger="hover"
-                                onClick={handleNavigation}
-                              >
-                                Pay
-                              </button> */}
+                              {order.buyerStatus === "Delivered" &&
+                                (!order.rating || order.rating === 0) && (
+                                  <button
+                                    className="btn btn-info btn-sm"
+                                    title="Give Ratings"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                    onClick={(event) =>
+                                      handleOpenRatingModal(
+                                        event,
+                                        order?.enquiryNumber,
+                                        order?.sellerId,
+                                        order?.schoolId
+                                      )
+                                    }
+                                  >
+                                    Give Ratings
+                                  </button>
+                                )}
                             </div>
                           </td>
                         </tr>
@@ -384,6 +409,16 @@ const TrackOrderHistoryTable = () => {
       {isModalOpen && (
         <OrderCancelReasonModal
           onClose={handleCloseModal}
+          sellerId={selectedSellerId}
+          schoolId={selectedSchoolId}
+          enquiryNumber={selectedEnquiryNumber}
+          fetchOrderData={fetchOrderData}
+        />
+      )}
+
+      {isRatingModalOpen && (
+        <RatingModal
+          onClose={handleCloseRatingModal}
           sellerId={selectedSellerId}
           schoolId={selectedSchoolId}
           enquiryNumber={selectedEnquiryNumber}

@@ -383,7 +383,11 @@ const TrackOrderHistoryTable = () => {
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>{formatCost(order.totalAmount)}</td>
                           <td>
-                            <div className="d-flex gap-2">
+                            {/* why is like when button increases or anything increase at thet time the search bar size dicrese which should not happen give me corrrect code so that what ever number of button i add but existing size of button should not decrease*/}
+                            <div
+                              className="d-flex gap-2"
+                              style={{ flexShrink: 0 }}
+                            >
                               <Link
                                 onClick={(event) =>
                                   navigateToViewOrder(
@@ -451,7 +455,7 @@ const TrackOrderHistoryTable = () => {
                                 ) : null}
                               </>
 
-                              <Link>
+                              <>
                                 {[
                                   "Ready For Transit",
                                   "In-Transit",
@@ -488,9 +492,9 @@ const TrackOrderHistoryTable = () => {
                                     )}
                                   </button>
                                 )}
-                              </Link>
+                              </>
 
-                              <Link>
+                              <>
                                 {[
                                   "Ready For Transit",
                                   "In-Transit",
@@ -527,7 +531,7 @@ const TrackOrderHistoryTable = () => {
                                     )}
                                   </button>
                                 )}
-                              </Link>
+                              </>
 
                               {order.supplierStatus === "Order Received" && (
                                 <button
