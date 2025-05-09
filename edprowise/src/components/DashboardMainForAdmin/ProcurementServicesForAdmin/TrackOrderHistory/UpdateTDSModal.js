@@ -21,9 +21,12 @@ const UpdateTDSModal = ({
   useEffect(() => {
     if (isOpen) {
       const fetchTDSAmount = async () => {
+        const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+        const encodedQuoteNumber = encodeURIComponent(quoteNumber);
+
         try {
           const response = await getAPI(
-            `/tds-amount?enquiryNumber=${enquiryNumber}&quoteNumber=${quoteNumber}&sellerId=${sellerId}`
+            `/tds-amount?enquiryNumber=${encodedEnquiryNumber}&quoteNumber=${encodedQuoteNumber}&sellerId=${sellerId}`
           );
           if (!response.hasError && response.data && response.data.data) {
             const tDSAmount = response.data.data;
@@ -62,10 +65,12 @@ const UpdateTDSModal = ({
     };
 
     setSending(true);
+    const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+    const encodedQuoteNumber = encodeURIComponent(quoteNumber);
 
     try {
       const response = await putAPI(
-        `/update-tds?enquiryNumber=${enquiryNumber}&quoteNumber=${quoteNumber}&sellerId=${sellerId}`,
+        `/update-tds?enquiryNumber=${encodedEnquiryNumber}&quoteNumber=${encodedQuoteNumber}&sellerId=${sellerId}`,
         dataToSend,
         true
       );

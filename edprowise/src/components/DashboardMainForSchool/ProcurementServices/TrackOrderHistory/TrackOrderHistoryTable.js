@@ -8,7 +8,8 @@ import { formatCost } from "../../../CommonFunction";
 
 import { toast } from "react-toastify";
 
-import { format } from "date-fns";
+import { format, differenceInHours, parseISO } from "date-fns";
+import OrderCancelReasonModal from "./OrderCancelReasonModal";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -52,6 +53,62 @@ const TrackOrderHistoryTable = () => {
   useEffect(() => {
     fetchOrderData();
   }, []);
+
+  const canCancelOrder = (updatedAt) => {
+    if (!updatedAt) return false;
+
+    const updatedTime = parseISO(updatedAt);
+    const currentTime = new Date();
+    const hoursDifference = differenceInHours(currentTime, updatedTime);
+
+    return hoursDifference <= 48;
+  };
+
+  const handleCancelOrder = async (
+    enquiryNumber,
+    sellerId,
+    schoolId,
+    newStatus
+  ) => {
+    const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+
+    try {
+      const response = await putAPI(
+        `/cancel-order-by-buyer?enquiryNumber=${encodedEnquiryNumber}&sellerId=${sellerId}&schoolId=${schoolId}`,
+        { buyerStatus: newStatus },
+        true
+      );
+
+      if (!response.hasError) {
+        toast.success(`Order Cancelled successfully!`);
+        fetchOrderData();
+      } else {
+        toast.error(response.message || "Failed to Cancelled Order");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "An unexpected error occurred. Please try again."
+      );
+    }
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSellerId, setSelectedSellerId] = useState(null);
+  const [selectedSchoolId, setSelectedSchoolId] = useState(null);
+  const [selectedEnquiryNumber, setSelectedEnquiryNumber] = useState(null);
+
+  const handleOpenModal = (event, enquiryNumber, sellerId, schoolId) => {
+    event.preventDefault();
+    setSelectedEnquiryNumber(enquiryNumber);
+    setSelectedSellerId(sellerId);
+    setSelectedSchoolId(schoolId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const navigateToViewOrder = (event, order, orderNumber, enquiryNumber) => {
     event.preventDefault();
@@ -201,9 +258,7 @@ const TrackOrderHistoryTable = () => {
                               : "Null"}
                           </td>
                           <td>{formatCost(order?.totalAmount)}</td>
-
                           <td>{order.buyerStatus}</td>
-
                           <td>
                             <div className="d-flex gap-2">
                               <Link
@@ -222,6 +277,45 @@ const TrackOrderHistoryTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
+
+                              {order.buyerStatus === "Order Placed" &&
+                                canCancelOrder(order.updatedAt) && (
+                                  <button
+                                    className="btn btn-danger btn-sm"
+                                    title="Cancel Order"
+                                    data-bs-toggle="popover"
+                                    data-bs-trigger="hover"
+                                    onClick={() =>
+                                      handleCancelOrder(
+                                        order.enquiryNumber,
+                                        order.sellerId,
+                                        order.schoolId,
+                                        "Cancelled by Buyer"
+                                      )
+                                    }
+                                  >
+                                    Cancel Order
+                                  </button>
+                                )}
+
+                              {order.buyerStatus === "Work In Progress" && (
+                                <button
+                                  className="btn btn-info btn-sm"
+                                  title="Request For Cancel Order"
+                                  data-bs-toggle="popover"
+                                  data-bs-trigger="hover"
+                                  onClick={(event) =>
+                                    handleOpenModal(
+                                      event,
+                                      order?.enquiryNumber,
+                                      order?.sellerId,
+                                      order?.schoolId
+                                    )
+                                  }
+                                >
+                                  Request For Cancel
+                                </button>
+                              )}
 
                               {/* <button
                                 className="btn btn-success btn-sm"
@@ -286,6 +380,16 @@ const TrackOrderHistoryTable = () => {
           </div>
         </div>
       </div>
+
+      {isModalOpen && (
+        <OrderCancelReasonModal
+          onClose={handleCloseModal}
+          sellerId={selectedSellerId}
+          schoolId={selectedSchoolId}
+          enquiryNumber={selectedEnquiryNumber}
+          fetchOrderData={fetchOrderData}
+        />
+      )}
     </>
   );
 };

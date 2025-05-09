@@ -9,6 +9,7 @@ import putAPI from "../../../../api/putAPI";
 import { formatCost } from "../../../CommonFunction";
 
 import { format } from "date-fns";
+import OrderCancelReasonModal from "./OrderCancelReasonModal";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -151,6 +152,23 @@ const TrackOrderHistoryTable = () => {
           "An unexpected error occurred. Please try again."
       );
     }
+  };
+
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
+  const [selectedSellerId, setSelectedSellerId] = useState(null);
+  const [selectedSchoolId, setSelectedSchoolId] = useState(null);
+  const [selectedEnquiryNumber, setSelectedEnquiryNumber] = useState(null);
+
+  const handleOpenModal = (event, enquiryNumber, sellerId, schoolId) => {
+    event.preventDefault();
+    setSelectedEnquiryNumber(enquiryNumber);
+    setSelectedSellerId(sellerId);
+    setSelectedSchoolId(schoolId);
+    setIsReasonModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsReasonModalOpen(false);
   };
 
   const [downloadingEdprowiseInvoices, setDownloadingEdprowiseInvoices] =
@@ -338,7 +356,6 @@ const TrackOrderHistoryTable = () => {
                         <th>Status</th>
                         <th>Expected Delivery Date</th>
                         <th>Total Invoice Amount</th>
-
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -362,7 +379,6 @@ const TrackOrderHistoryTable = () => {
                           </td>
                           <td>{order.orderNumber}</td>
                           <td>{order.enquiryNumber}</td>
-
                           <td>{order.supplierStatus}</td>
                           <td>{formatDate(order.expectedDeliveryDate)}</td>
                           <td>{formatCost(order.totalAmount)}</td>
@@ -513,6 +529,25 @@ const TrackOrderHistoryTable = () => {
                                 )}
                               </Link>
 
+                              {order.supplierStatus === "Order Received" && (
+                                <button
+                                  className="btn btn-info btn-sm"
+                                  title="Request For Cancel Order"
+                                  data-bs-toggle="popover"
+                                  data-bs-trigger="hover"
+                                  onClick={(event) =>
+                                    handleOpenModal(
+                                      event,
+                                      order?.enquiryNumber,
+                                      order?.sellerId,
+                                      order?.schoolId
+                                    )
+                                  }
+                                >
+                                  Request For Cancel
+                                </button>
+                              )}
+
                               {/* <button
                                 type="button"
                                 className="btn btn-primary custom-submit-button"
@@ -583,6 +618,16 @@ const TrackOrderHistoryTable = () => {
         orderNumber={selectedOrderNumber} // Fix: Pass selected order number
         onOrderDetailsUpdated={handleOrderDetailsUpdated}
       />
+
+      {isReasonModalOpen && (
+        <OrderCancelReasonModal
+          onClose={handleCloseModal}
+          sellerId={selectedSellerId}
+          schoolId={selectedSchoolId}
+          enquiryNumber={selectedEnquiryNumber}
+          fetchOrderData={fetchOrderData}
+        />
+      )}
     </>
   );
 };

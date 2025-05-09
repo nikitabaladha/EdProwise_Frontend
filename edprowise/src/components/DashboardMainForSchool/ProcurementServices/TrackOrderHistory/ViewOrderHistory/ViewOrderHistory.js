@@ -369,30 +369,6 @@ const ViewOrderHistory = () => {
                     {["Ready For Transit", "In-Transit", "Delivered"].includes(
                       order.supplierStatus
                     ) && (
-                      // <button
-                      //   onClick={() =>
-                      //     generateInvoicePDFForBuyer(
-                      //       order?.enquiryNumber,
-                      //       order?.sellerId,
-                      //       order?.invoiceForSchool
-                      //     )
-                      //   }
-                      //   className="btn btn-soft-info btn-sm"
-                      //   title="Download PDF Invoice For Buyer"
-                      //   data-bs-toggle="popover"
-                      //   data-bs-trigger="hover"
-                      // >
-                      //   Download Invoice {}
-                      // {sending ? (
-                      //   "Downloading..."
-                      // ) : (
-                      //   <iconify-icon
-                      //     icon="solar:download-broken"
-                      //     className="align-middle fs-18"
-                      //   />
-                      // )}
-                      // </button>
-
                       <button
                         onClick={() =>
                           generateInvoicePDFForBuyer(

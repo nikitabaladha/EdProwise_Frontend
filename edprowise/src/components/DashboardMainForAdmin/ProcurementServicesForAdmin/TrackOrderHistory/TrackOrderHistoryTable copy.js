@@ -6,13 +6,12 @@ import getAPI from "../../../../api/getAPI";
 import { toast } from "react-toastify";
 import UpdateTDSModal from "./UpdateTDSModal";
 import putAPI from "../../../../api/putAPI";
+import { TbShoppingCartX } from "react-icons/tb";
 
 import { format } from "date-fns";
 import { formatCost } from "../../../CommonFunction";
 import { Modal, Button } from "react-bootstrap";
 import { RxCross1 } from "react-icons/rx";
-import { TbShoppingCartX } from "react-icons/tb";
-import { TbGardenCartOff } from "react-icons/tb";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -107,33 +106,28 @@ const TrackOrderHistoryTable = () => {
 
   const [showBuyerModal, setShowBuyerModal] = useState(false);
   const [cancelCommentFromBuyer, setCancelCommentFromBuyer] = useState("");
-  const [cancelCommentFromSeller, setCancelCommentFromSeller] = useState("");
+
+  const openBuyerCommentModal = (comment) => {
+    setCancelCommentFromBuyer(comment);
+    setShowBuyerModal(true);
+  };
 
   const closeBuyerModal = () => {
     setShowBuyerModal(false);
     setCancelCommentFromBuyer("");
-    setCancelCommentFromSeller("");
   };
 
-  const openCancelReasonModal = (order) => {
-    const buyerReason =
-      order.buyerStatus === "Requested For Cancel"
-        ? order.cancelReasonFromBuyer
-        : null;
+  const [showSellerModal, setShowSellerModal] = useState(false);
+  const [cancelCommentFromSeller, setCancelCommentFromSeller] = useState("");
 
-    const sellerReason =
-      order.supplierStatus === "Requested For Cancel"
-        ? order.cancelReasonFromSeller
-        : null;
+  const openSellerCommentModal = (comment) => {
+    setCancelCommentFromSeller(comment);
+    setShowSellerModal(true);
+  };
 
-    // Only open modal if at least one reason exists
-    if (buyerReason || sellerReason) {
-      setCancelCommentFromBuyer(buyerReason || "No reason provided by buyer");
-      setCancelCommentFromSeller(
-        sellerReason || "No reason provided by seller"
-      );
-      setShowBuyerModal(true);
-    }
+  const closeSellerModal = () => {
+    setShowSellerModal(false);
+    setCancelCommentFromSeller("");
   };
 
   const handleCancelOrder = async (
@@ -284,167 +278,155 @@ const TrackOrderHistoryTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentOrderDetails.map((order) => {
-                        const isCancelRequested =
-                          order.buyerStatus === "Requested For Cancel" ||
-                          order.supplierStatus === "Requested For Cancel";
-
-                        return (
-                          <tr key={order.id}>
-                            <td>
-                              <div className="form-check ms-1">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`customCheck${order.id}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`customCheck${order.id}`}
-                                >
-                                  &nbsp;
-                                </label>
-                              </div>
-                            </td>
-
-                            <td
-                              style={
-                                isCancelRequested
-                                  ? {
-                                      backgroundColor: "#ff6c2f",
-                                      color: "#ffffff",
-                                    }
-                                  : {}
-                              }
-                            >
-                              {order.orderNumber}
-                            </td>
-                            <td>{order.enquiryNumber}</td>
-                            <td>{order.companyName}</td>
-                            <td>{formatDate(order.expectedDeliveryDate)}</td>
-                            <td>
-                              {order.actualDeliveryDate
-                                ? formatDate(order.actualDeliveryDate)
-                                : "Null"}
-                            </td>
-                            <td>{formatCost(order.totalAmount)}</td>
-                            <td>{order.edprowiseStatus}</td>
-                            <td>{order.tDSAmount}</td>
-                            <td>
-                              <div className="d-flex gap-2">
-                                {order.buyerStatus === "Requested For Cancel" ||
-                                order.supplierStatus ===
-                                  "Requested For Cancel" ? (
-                                  <button
-                                    onClick={() => openCancelReasonModal(order)}
-                                    className="btn btn-light btn-sm"
-                                    title="Order Cancel Reason"
-                                    data-bs-toggle="popover"
-                                    data-bs-trigger="hover"
-                                  >
-                                    <TbShoppingCartX className="align-middle fs-18" />
-                                  </button>
-                                ) : null}
-                                {order.edprowiseStatus !== "Cancelled" &&
-                                  order.edprowiseStatus !== "Delivered" && (
-                                    <button
-                                      onClick={(event) =>
-                                        openUpdateTDSModal(
-                                          event,
-                                          order.enquiryNumber,
-                                          order.quoteNumber,
-                                          order.sellerId
-                                        )
-                                      }
-                                      className="btn btn-soft-primary btn-sm"
-                                      title="Edit TDS"
-                                      data-bs-toggle="popover"
-                                      data-bs-trigger="hover"
-                                    >
-                                      <iconify-icon
-                                        icon="solar:pen-2-broken"
-                                        className="align-middle fs-18"
-                                      />
-                                    </button>
-                                  )}
-
-                                <Link
-                                  onClick={(event) =>
-                                    navigateToViewOrder(
-                                      event,
-                                      order,
-                                      order.orderNumber,
-                                      order.enquiryNumber,
-                                      order.schoolId,
-                                      order.sellerId
+                      {currentOrderDetails.map((order) => (
+                        <tr key={order.id}>
+                          <td>
+                            <div className="form-check ms-1">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id={`customCheck${order.id}`}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor={`customCheck${order.id}`}
+                              >
+                                &nbsp;
+                              </label>
+                            </div>
+                          </td>
+                          <td>{order.orderNumber}</td>
+                          <td>{order.enquiryNumber}</td>
+                          <td>{order.companyName}</td>
+                          <td>{formatDate(order.expectedDeliveryDate)}</td>
+                          <td>
+                            {order.actualDeliveryDate
+                              ? formatDate(order.actualDeliveryDate)
+                              : "Null"}
+                          </td>
+                          <td>{formatCost(order.totalAmount)}</td>
+                          <td>{order.edprowiseStatus}</td>
+                          <td>{order.tDSAmount}</td>
+                          <td>
+                            <div className="d-flex gap-2">
+                              {order.buyerStatus === "Requested For Cancel" && (
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() =>
+                                    openBuyerCommentModal(
+                                      order.cancelReasonFromBuyer
                                     )
                                   }
-                                  className="btn btn-light btn-sm"
                                 >
-                                  <iconify-icon
-                                    icon="solar:eye-broken"
-                                    className="align-middle fs-18"
-                                  />
-                                </Link>
-                                {order.edprowiseStatus !== "Cancelled" && (
-                                  <button
-                                    className="btn btn-soft-primary btn-sm"
-                                    title="Cancel Order"
-                                    data-bs-toggle="popover"
-                                    data-bs-trigger="hover"
-                                    onClick={() =>
-                                      handleCancelOrder(
-                                        order.enquiryNumber,
-                                        order.sellerId,
-                                        order.schoolId,
-                                        "Cancelled"
-                                      )
-                                    }
-                                  >
-                                    <TbGardenCartOff
-                                      icon="solar:pen-2-broken"
-                                      className="align-middle fs-18"
-                                    />
-                                  </button>
-                                )}
-                                {["Delivered"].includes(
-                                  order?.edprowiseStatus
-                                ) && (
-                                  <>
-                                    {order.orderStatus !== "Close" ? (
-                                      <button
-                                        className="btn btn-danger btn-sm"
-                                        onClick={() =>
-                                          handleOrderStatusUpdate(
-                                            order.sellerId,
-                                            order.enquiryNumber,
-                                            "Close"
-                                          )
-                                        }
-                                      >
-                                        Close
-                                      </button>
-                                    ) : (
-                                      <button
-                                        className="btn btn-success btn-sm"
-                                        onClick={() =>
-                                          handleOrderStatusUpdate(
-                                            order.sellerId,
-                                            order.enquiryNumber,
-                                            "Open"
-                                          )
-                                        }
-                                      >
-                                        Open
-                                      </button>
-                                    )}
-                                  </>
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                                  Cancel Reason From Buyer
+                                </button>
+                              )}
+
+                              {order.supplierStatus ===
+                                "Requested For Cancel" && (
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() =>
+                                    openSellerCommentModal(
+                                      order.cancelReasonFromSeller
+                                    )
+                                  }
+                                >
+                                  Cancel Reason From Seller
+                                </button>
+                              )}
+                              <Link
+                                onClick={(event) =>
+                                  openUpdateTDSModal(
+                                    event,
+                                    order.enquiryNumber,
+                                    order.quoteNumber,
+                                    order.sellerId
+                                  )
+                                }
+                                className="btn btn-soft-primary btn-sm"
+                                title="Edit TDS"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                              >
+                                <iconify-icon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
+                              <Link
+                                onClick={(event) =>
+                                  navigateToViewOrder(
+                                    event,
+                                    order,
+                                    order.orderNumber,
+                                    order.enquiryNumber,
+                                    order.schoolId,
+                                    order.sellerId
+                                  )
+                                }
+                                className="btn btn-light btn-sm"
+                              >
+                                <iconify-icon
+                                  icon="solar:eye-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
+
+                              <button
+                                className="btn btn-danger btn-sm"
+                                title="Cancel Order"
+                                data-bs-toggle="popover"
+                                data-bs-trigger="hover"
+                                onClick={() =>
+                                  handleCancelOrder(
+                                    order.enquiryNumber,
+                                    order.sellerId,
+                                    order.schoolId,
+                                    "Cancelled"
+                                  )
+                                }
+                              >
+                                Cancel Order
+                              </button>
+
+                              {["Delivered"].includes(
+                                order?.edprowiseStatus
+                              ) && (
+                                <>
+                                  {order.orderStatus !== "Close" ? (
+                                    <button
+                                      className="btn btn-danger btn-sm"
+                                      onClick={() =>
+                                        handleOrderStatusUpdate(
+                                          order.sellerId,
+                                          order.enquiryNumber,
+                                          "Close"
+                                        )
+                                      }
+                                    >
+                                      Close
+                                    </button>
+                                  ) : (
+                                    <button
+                                      className="btn btn-success btn-sm"
+                                      onClick={() =>
+                                        handleOrderStatusUpdate(
+                                          order.sellerId,
+                                          order.enquiryNumber,
+                                          "Open"
+                                        )
+                                      }
+                                    >
+                                      Open
+                                    </button>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -517,54 +499,69 @@ const TrackOrderHistoryTable = () => {
             <div className="row">
               <div className="col-xl-12">
                 <div className="card">
-                  <div className="card-body">
-                    <div className="text-end">
-                      <RxCross1 onClick={closeBuyerModal} className="ms-2" />
+                  <div className="card-body custom-heading-padding">
+                    <div className="row">
+                      <div className="text-end">
+                        <RxCross1 onClick={closeBuyerModal} className="ms-2" />
+                      </div>
+                      <div className="col-md-12">
+                        <div className="mb-2">
+                          <label
+                            htmlFor="cancelReasonFromBuyer"
+                            className="form-label"
+                          >
+                            Order Cancel Reason By Buyer
+                          </label>
+                          <input
+                            type="text"
+                            name="cancelReasonFromBuyer"
+                            value={cancelCommentFromBuyer}
+                            readOnly
+                            className="form-control"
+                          />
+                        </div>
+                      </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
 
-                    {cancelCommentFromBuyer &&
-                      cancelCommentFromBuyer !==
-                        "No reason provided by buyer" && (
-                        <div className="col-md-12">
-                          <div className="mb-2">
-                            <label
-                              htmlFor="cancelReasonFromBuyer"
-                              className="form-label"
-                            >
-                              Order Cancel Reason By Buyer
-                            </label>
-                            <input
-                              type="text"
-                              name="cancelReasonFromBuyer"
-                              value={cancelCommentFromBuyer}
-                              readOnly
-                              className="form-control"
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                    {cancelCommentFromSeller &&
-                      cancelCommentFromSeller !==
-                        "No reason provided by seller" && (
-                        <div className="col-md-12">
-                          <div className="mb-2">
-                            <label
-                              htmlFor="cancelReasonFromSeller"
-                              className="form-label"
-                            >
-                              Order Cancel Reason By Seller
-                            </label>
-                            <input
-                              type="text"
-                              name="cancelReasonFromSeller"
-                              value={cancelCommentFromSeller}
-                              readOnly
-                              className="form-control"
-                            />
-                          </div>
-                        </div>
-                      )}
+      <Modal
+        show={showSellerModal}
+        onHide={closeSellerModal}
+        centered
+        dialogClassName="custom-modal"
+      >
+        <Modal.Body className="modal-body-scrollable">
+          <div className="container">
+            <div className="row">
+              <div className="col-xl-12">
+                <div className="card">
+                  <div className="card-body custom-heading-padding">
+                    <div className="text-end">
+                      <RxCross1 onClick={closeSellerModal} className="ms-2" />
+                    </div>
+                    <div className="col-md-12">
+                      <div className="mb-2">
+                        <label
+                          htmlFor="cancelReasonFromSeller"
+                          className="form-label"
+                        >
+                          Order Cancel Reason By Seller
+                        </label>
+                        <input
+                          type="text"
+                          name="cancelReasonFromSeller"
+                          value={cancelCommentFromSeller}
+                          readOnly
+                          className="form-control"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
