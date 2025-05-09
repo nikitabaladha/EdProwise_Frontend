@@ -207,22 +207,39 @@ import Fine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSe
 import AddFine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/Addfine.js";
 
 // ===================================PayRoll===========================
-import EmployeeRegistrationList from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/EmployeeRegistration/EmployeeRegistrationList.js";
-import AddEmployeeRegistration from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/EmployeeRegistration/AddEmployeeRegistration.js";
-import UpdateEmployeeRegistrationForm from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/EmployeeRegistration/UpdateEmployeeRegistrationForm.js";
-import ViewEmployeeRegisterDetails from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/EmployeeRegistration/ViewEmployeeRegisterDetails.js";
-import UpdateEmployeeDetails from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/UpdateDetails/UpdateEmployeeDetails.js";
-import CTCUpdate from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/CTCUpdate/CTCUpdate.js";
+import EmployeeRegistrationList from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationList.js";
+import AddEmployeeRegistration from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/AddEmployeeRegistration.js";
+import UpdateEmployeeRegistrationForm from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/UpdateEmployeeRegistrationForm.js";
+import ViewEmployeeRegisterDetails from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/ViewEmployeeRegisterDetails.js";
+import UpdateEmployeeDetails from "./components/DashboardMainForAdmin/PayrollModule/Employer/UpdateDetails/UpdateEmployeeDetails.js";
+import CTCUpdate from "./components/DashboardMainForAdmin/PayrollModule/Employer/CTCUpdate/CTCUpdate.js";
 import DefineCtcComponentsList from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/CTCDefineComponents/DefineCtcComponentsList.js";
 import DefineCtcCOmponents from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/CTCDefineComponents/DefineCtcCOmponents.js";
 import EmployeeDetails from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/EmployeeDetails/EmployeeDetails.js";
-import AddProcessPayroll from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/ProcessPayroll/AddProcessPayroll.js";
-import AddSalaryIncrement from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/SalaryIncrement/AddSalaryIncrement.js";
-import Form16 from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/Form16/Form16.js";
-import ItDeclaration from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/ITDeclaration/ItDeclaration.js";
+import AddProcessPayroll from "./components/DashboardMainForAdmin/PayrollModule/Employer/ProcessPayroll/AddProcessPayroll.js";
+import AddSalaryIncrement from "./components/DashboardMainForAdmin/PayrollModule/Employer/SalaryIncrement/AddSalaryIncrement.js";
 
 // new from 5-5-25
 import SalarySlip from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/Salary Slip/SalarySlip.js";
+import Form16 from "./components/DashboardMainForAdmin/PayrollModule/Employer/Form16/Form16.js";
+import ItDeclaration from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/ITDeclaration/ItDeclaration.js";
+import RentDetails from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/ITDeclaration/RentDetails.js";
+import Form16Self from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/Form16/Form16.js";
+import LoanStatement from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LoanStatement/LoanStatement.js";
+import MyAttendanceReport from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/MyAttendanceReport/MyAttendanceReport.js";
+import ApplyForLeave from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/ApplyForLeave/ApplyForLeave.js";
+import IncomeTaxComputationSheet from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/IncomeTaxComputationSheet/IncomeTaxComputationSheet.js";
+import GenerateAppointmentCTCLetter from "./components/DashboardMainForAdmin/PayrollModule/Employer/Generate AppointmentCTC Letter/GenerateAppointmentCTCLetter.js";
+import CheckSupportingSubmittedForTaxList from "./components/DashboardMainForAdmin/PayrollModule/Employer/CheckSupportingSubmittedForTax/CheckSupportingSubmittedForTaxList.js";
+import ViewCheckSupportingSubmittedForTaxList from "./components/DashboardMainForAdmin/PayrollModule/Employer/CheckSupportingSubmittedForTax/ViewCheckSupportingSubmittedForTaxList.js";
+import VerifyRentDetails from "./components/DashboardMainForAdmin/PayrollModule/Employer/CheckSupportingSubmittedForTax/VerifyRentDetails.js";
+import PayLoan from "./components/DashboardMainForAdmin/PayrollModule/Employer/LoanToEmployees/PayLoan.js";
+import EmployeeLoanStatement from "./components/DashboardMainForAdmin/PayrollModule/Employer/LoanToEmployees/EmployeeLoanStatement.js";
+import ViewEmployeeLoanStatement from "./components/DashboardMainForAdmin/PayrollModule/Employer/LoanToEmployees/ViewEmployeeLoanStatement.js";
+import OvertimeAllowanceEmployeesTable from "./components/DashboardMainForAdmin/PayrollModule/Employer/OvertimeAllowance/OvertimeAllowanceEmployeesTable.js";
+import ViewOvertimeAllowanceEmployeesDetail from "./components/DashboardMainForAdmin/PayrollModule/Employer/OvertimeAllowance/ViewOvertimeAllowanceEmployeesDetail.js";
+
+
 // ======================Seller Routes==========================Seller Routes=====================Seller Routes=======================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 
@@ -252,7 +269,9 @@ import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
 
 import Page404ForWebsite from "./components/Pages404/Page404ForWebsite.js";
 import Page404ForDashboard from "./components/Pages404/Page404ForDashboard.js";
-import RentDetails from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/ITDeclaration/RentDetails.js";
+import PerformanceTrackingTable from "./components/DashboardMainForAdmin/PayrollModule/Employer/PerformanceTracking/PerformanceTrackingTable.js";
+import BulkEmployeeIncrement from "./components/DashboardMainForAdmin/PayrollModule/Employer/SalaryIncrement/BulkEmployeeIncrement/BulkEmployeeIncrement.js";
+import SingleEmployeeIncrement from "./components/DashboardMainForAdmin/PayrollModule/Employer/SalaryIncrement/SingleEmployeeIncrement/SingleEmployeeIncrement.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -380,7 +399,7 @@ const AppRoutes = () => {
           <Route path="hire-teacher" element={<RecruitmentSection />} />
           <Route path="get-goods-for-school" element={<ProcurementSection />} />
         </Route>
-        
+
         <Route path="community-connect" element={<CommunityMainPage />}>
           <Route path="gallery" element={<GallerySection />} />
           <Route path="edprowise-talks" element={<EdprowiseTalkSection />} />
@@ -565,36 +584,8 @@ const AppRoutes = () => {
         <Route path="email/templates" element={<EmailTemplatesList />} />
         <Route path="email/marketing" element={<MarketingEmail />} />
 
-         {/* *****************************Payroll Module ***************************************** */}
-         <Route
-          path="payroll-module/admin-setting/register-employee-list"
-          element={<EmployeeRegistrationList />}
-        />
+        {/* *****************************Payroll Module ***************************************** */}
 
-        <Route
-          path="payroll-module/admin-setting/registration-form"
-          element={<AddEmployeeRegistration />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/update-registration-form"
-          element={<UpdateEmployeeRegistrationForm />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/view-registration-form"
-          element={<ViewEmployeeRegisterDetails />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/lwd-details"
-          element={<UpdateEmployeeDetails />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/CTC-Update"
-          element={<CTCUpdate />}
-        />
 
         <Route
           path="payroll-module/admin-setting/define-ctc-components-list"
@@ -606,20 +597,7 @@ const AppRoutes = () => {
           element={<DefineCtcCOmponents />}
         />
 
-        <Route
-          path="payroll-module/admin-setting/payroll-process"
-          element={<AddProcessPayroll />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/salary-increment"
-          element={<AddSalaryIncrement />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/form-16-list"
-          element={<Form16 />}
-        />
+        
 
         {/* ************Employee Self Services */}
         <Route
@@ -629,19 +607,144 @@ const AppRoutes = () => {
 
         <Route
           path="payroll-module/employee-services/salary-slip"
-          element={<SalarySlip/>}
+          element={<SalarySlip />}
         />
 
-      <Route
+        <Route
           path="payroll-module/employee-services/it-declaration"
-          element={<ItDeclaration/>}
+          element={<ItDeclaration />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/income-tax-computation-sheet"
+          element={<IncomeTaxComputationSheet />}
         />
 
         <Route
           path="payroll-module/employee-services/rent-details"
-          element={<RentDetails/>}
+          element={<RentDetails />}
         />
 
+        <Route
+          path="payroll-module/employee-services/form16"
+          element={<Form16Self />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/my-loan-statement"
+          element={<LoanStatement />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/my-attendance-report"
+          element={<MyAttendanceReport />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/apply-for-leave"
+          element={<ApplyForLeave />}
+        />
+
+        {/* ************Employer************  */}
+        <Route
+          path="payroll-module/employer/registration"
+          element={<EmployeeRegistrationList />}
+        />
+
+        <Route
+          path="payroll-module/employer/registration/registration-form"
+          element={<AddEmployeeRegistration />}
+        />
+
+        <Route
+          path="payroll-module/employer/registration/update-registration-form"
+          element={<UpdateEmployeeRegistrationForm />}
+        />
+
+        <Route
+          path="payroll-module/employer/registration/view-registration-form"
+          element={<ViewEmployeeRegisterDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/update-employee-details"
+          element={<UpdateEmployeeDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/CTC-Update"
+          element={<CTCUpdate />}
+        />
+
+        <Route
+          path="payroll-module/employer/payroll-process"
+          element={<AddProcessPayroll />}
+        />
+
+        <Route
+          path="payroll-module/employer/salary-increment/bulk-employee-increment"
+          element={<BulkEmployeeIncrement />}
+        />
+
+        <Route
+          path="payroll-module/employer/salary-increment/single-employee-increment"
+          element={<SingleEmployeeIncrement />}
+        />
+
+        <Route
+          path="payroll-module/employer/form-16-list"
+          element={<Form16 />}
+        />
+
+        <Route
+          path="payroll-module/employer/generate-appointment-ctc-letter"
+          element={<GenerateAppointmentCTCLetter />}
+        />
+
+        <Route
+          path="payroll-module/employer/check-supporting-submitted-for-Tax"
+          element={<CheckSupportingSubmittedForTaxList />}
+        />
+
+        <Route
+          path="payroll-module/employer/view-check-supporting-submitted-for-Tax"
+          element={<ViewCheckSupportingSubmittedForTaxList />}
+        />
+
+        <Route
+          path="payroll-module/employer/view-check-rent-details"
+          element={<VerifyRentDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/loan-to-employees/pay-loan"
+          element={<PayLoan />}
+        />
+
+        <Route
+          path="payroll-module/employer/loan-to-employees/loan-statement"
+          element={<EmployeeLoanStatement />}
+        />
+
+        <Route
+          path="payroll-module/employer/loan-to-employees/loan-statement/view-loan-Statement"
+          element={<ViewEmployeeLoanStatement />}
+        />
+
+        <Route
+          path="payroll-module/employer/overtime-allowance"
+          element={<OvertimeAllowanceEmployeesTable />}
+        />
+
+        <Route
+          path="payroll-module/employer/overtime-allowance/view-overtime-allowance-detail"
+          element={<ViewOvertimeAllowanceEmployeesDetail />}
+        />
+
+        <Route
+          path="payroll-module/employer/performance-tracking"
+          element={<PerformanceTrackingTable />}
+        />
 
         <Route path="*" element={<Page404ForDashboard />} />
       </Route>

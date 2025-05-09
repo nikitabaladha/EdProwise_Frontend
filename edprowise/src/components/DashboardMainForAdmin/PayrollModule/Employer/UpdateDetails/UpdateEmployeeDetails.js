@@ -75,8 +75,7 @@ const UpdateEmployeeDetails = () => {
                       />
                     </div>
                   </div>
-                </div>
-                <div className="text-end">
+                  <div className={`col-md-2 ${showForm ? 'd-none' : ''}`} style={{alignContent:"end", textAlign:"center"}}>
                   <button
                     type="button"
                     className="btn btn-primary custom-submit-button"
@@ -85,6 +84,8 @@ const UpdateEmployeeDetails = () => {
                     Proceed
                   </button>
                 </div>
+                </div>
+                
                 {showForm && (
                   <>
                     <div className="row mb-3">
@@ -98,7 +99,7 @@ const UpdateEmployeeDetails = () => {
                             id="name"
                             name="name"
                             className="form-control"
-                            // value={formData.name}
+                            value={"umesh jadhav"}
                             // onChange={handleChange}
                             required
                             placeholder='Name'
@@ -118,7 +119,7 @@ const UpdateEmployeeDetails = () => {
                             id="contactNumber"
                             name="contactNumber"
                             className="form-control"
-                            // value={formData.contactNumber}
+                            value={"1234567890"}
                             // onChange={handleChange}
                             required
                             placeholder='Example : 1234567890'
@@ -138,7 +139,7 @@ const UpdateEmployeeDetails = () => {
                             id="emailId"
                             name="emailId"
                             className="form-control"
-                            // value={formData.emailId}
+                            value={"xyz@gmail.com"}
                             // onChange={handleChange}
                             required
                             placeholder='Example : xyz@gmail.com'
@@ -160,7 +161,7 @@ const UpdateEmployeeDetails = () => {
                             id="categoryOfEmployees"
                             name="categoryOfEmployees"
                             className="form-control"
-                            // value={formData.categoryOfEmployee}
+                            value={"Teaching Staff"}
                             // onChange={handleChange}
                             required
 
@@ -183,7 +184,7 @@ const UpdateEmployeeDetails = () => {
                             id="grade"
                             name="grade"
                             className="form-control"
-                            // value={formData.grade}
+                            value={"A"}
                             // onChange={handleChange}
                             required
                             placeholder='Grade'
@@ -201,7 +202,7 @@ const UpdateEmployeeDetails = () => {
                             id="jobDesignation"
                             name="jobDesignation"
                             className="form-control"
-                            // value={formData.jobDesignation}
+                            value={"Teacher"}
                             // onChange={handleChange}
                             required
                             placeholder='Job Designation'
@@ -219,7 +220,7 @@ const UpdateEmployeeDetails = () => {
                             id="joiningDate"
                             name="joiningDate"
                             className="form-control"
-                            // value={formData.joiningDate}
+                            // value={"2025-05-05"}
                             // onChange={handleChange}
                             required
                           />

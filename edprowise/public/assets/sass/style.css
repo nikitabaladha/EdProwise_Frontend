@@ -101,6 +101,17 @@ Version:        1.0.0
 /* Nikita Css Starts */
 /* Tabs.css */
 /* Target the placeholder */
+.declaration-form-btn{
+  width: 100%;
+  background-color: black;
+}
+@media (min-width:1200px) {
+  .declaration-form-btn{
+    width: 30%;
+    background: black;
+  }
+}
+
 .custom-react-select .react-select__placeholder {
   font-size: 0.875rem !important;
 }

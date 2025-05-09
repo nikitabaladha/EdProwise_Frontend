@@ -1,6 +1,25 @@
-import React from 'react'
+import React ,{useState} from 'react'
 
 const UpdateEmployeeRegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    name: 'Umesh Jadhav',
+    contactNumber: '0123456789',
+    emailId: 'XYZ@gmail.com',
+    categoryOfEmployees: 'Teaching Staff',
+    grade: 'A',
+    jobDesignation: 'Teacher',
+    joiningDate: '07-05-2025',
+  });
+
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="container">
     <div className="row">
@@ -26,8 +45,8 @@ const UpdateEmployeeRegistrationForm = () => {
                       id="name"
                       name="name"
                       className="form-control"
-                      // value={formData.name}
-                      // onChange={handleChange}
+                      value={formData.name}
+                      onChange={handleChange}
                       required
                      placeholder='Name'
                     />
@@ -46,8 +65,8 @@ const UpdateEmployeeRegistrationForm = () => {
                       id="contactNumber"
                       name="contactNumber"
                       className="form-control"
-                      // value={formData.contactNumber}
-                      // onChange={handleChange}
+                      value={formData.contactNumber}
+                      onChange={handleChange}
                       required
                      placeholder='Example : 1234567890'
                     />
@@ -66,8 +85,8 @@ const UpdateEmployeeRegistrationForm = () => {
                       id="emailId"
                       name="emailId"
                       className="form-control"
-                      // value={formData.emailId}
-                      // onChange={handleChange}
+                      value={formData.emailId}
+                      onChange={handleChange}
                       required
                       placeholder='Example : xyz@gmail.com'
                     />
@@ -88,8 +107,8 @@ const UpdateEmployeeRegistrationForm = () => {
                       id="categoryOfEmployees"
                       name="categoryOfEmployees"
                       className="form-control"
-                      // value={formData.categoryOfEmployee}
-                      // onChange={handleChange}
+                      value={formData.categoryOfEmployees}
+                      onChange={handleChange}
                       required
                       
                     >
@@ -111,8 +130,8 @@ const UpdateEmployeeRegistrationForm = () => {
                       id="grade"
                       name="grade"
                       className="form-control"
-                      // value={formData.grade}
-                      // onChange={handleChange}
+                      value={formData.grade}
+                      onChange={handleChange}
                       required
                       placeholder='grade'
                     />
@@ -129,8 +148,8 @@ const UpdateEmployeeRegistrationForm = () => {
                       id="jobDesignation"
                       name="jobDesignation"
                       className="form-control"
-                      // value={formData.jobDesignation}
-                      // onChange={handleChange}
+                      value={formData.jobDesignation}
+                      onChange={handleChange}
                       required
                       placeholder='job Designation'
                     />
@@ -147,8 +166,8 @@ const UpdateEmployeeRegistrationForm = () => {
                       id="joiningDate"
                       name="joiningDate"
                       className="form-control"
-                      // value={formData.joiningDate}
-                      // onChange={handleChange}
+                      value={formData.joiningDate}
+                      onChange={handleChange}
                       required
                       placeholder='joiningDate'
                     />

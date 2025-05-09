@@ -151,23 +151,23 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
               },
               {
                 label: "Income Tax Computation Sheet",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+                link: "/admin-dashboard/payroll-module/employee-services/income-tax-computation-sheet",
               },
               {
                 label: "Form 16",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+                link: "/admin-dashboard/payroll-module/employee-services/form16",
               },
               {
                 label: "My Loan Statement",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+                link: "/admin-dashboard/payroll-module/employee-services/my-loan-statement",
               },
               {
                 label: "My Attendance Report",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+                link: "/admin-dashboard/payroll-module/employee-services/my-attendance-report",
               },
               {
                 label: "Apply for Leave",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+                link: "/admin-dashboard/payroll-module/employee-services/apply-for-leave",
               },
             ],
           },
@@ -178,36 +178,44 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
             children: [
               {
                 label: "Employee Registration",
-                link: "/admin-dashboard/payroll-module/admin-setting/register-employee-list",
+                link: "/admin-dashboard/payroll-module/employer/registration",
               },
               {
                 // LWD Details
                 label: "Employee Update",
-                link: "/admin-dashboard/payroll-module/admin-setting/lwd-details",
+                link: "/admin-dashboard/payroll-module/employer/update-employee-details",
               },
               {
                 label: "CTC Update",
-                link: "/admin-dashboard/payroll-module/admin-setting/CTC-update",
+                link: "/admin-dashboard/payroll-module/employer/CTC-update",
               },
               {
                 label: "Process Payroll",
-                link: "/admin-dashboard/payroll-module/admin-setting/payroll-process",
+                link: "/admin-dashboard/payroll-module/employer/payroll-process",
               },
               {
                 label: "Salary Increment",
-                link: "/admin-dashboard/payroll-module/admin-setting/salary-increment",
+                // link: "/admin-dashboard/payroll-module/employer/salary-increment",
+              },
+              {
+                label: "Bulk Employee Increment",
+                link: "/admin-dashboard/payroll-module/employer/salary-increment/bulk-employee-increment",
+              },
+              {
+                label: "Single Employee Increment",
+                link: "/admin-dashboard/payroll-module/employer/salary-increment/single-employee-increment",
               },
               {
                 label: "Generate Appointment/CTC Letter",
-                // link: "/admin-dashboard/payroll-module/admin-setting/salary-increment",
+                link: "/admin-dashboard/payroll-module/employer/generate-appointment-ctc-letter",
               },
               {
                 label: "Form 16 (Upload)",
-                link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+                link: "/admin-dashboard/payroll-module/employer/form-16-list",
               },
               {
                 label: "Check Supporting Submitted for Tax",
-                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+                link: "/admin-dashboard/payroll-module/employer/check-supporting-submitted-for-Tax",
               },
               {
                 label: "Loan to Employees",
@@ -215,19 +223,19 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
               },
               {
                 label: "Pay Loan",
-                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+                link: "/admin-dashboard/payroll-module/employer/loan-to-employees/pay-loan",
               },
               {
                 label: "Loan Statement",
-                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+                link: "/admin-dashboard/payroll-module/employer/loan-to-employees/loan-statement",
               },
               {
                 label: "Overtime Allowance",
-                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+                link: "/admin-dashboard/payroll-module/employer/overtime-allowance",
               },
               {
                 label: "Performance Tracking",
-                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+                link: "/admin-dashboard/payroll-module/employer/performance-tracking",
               },
             ],
           },

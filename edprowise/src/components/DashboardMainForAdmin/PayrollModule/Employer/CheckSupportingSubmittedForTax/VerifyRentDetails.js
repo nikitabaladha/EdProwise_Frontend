@@ -1,8 +1,8 @@
 import React from 'react'
 
-const RentDetails = () => {
-    return (
-        <div className="container">
+const VerifyRentDetails = () => {
+  return (
+<div className="container">
             <div className="row">
                 <div className="col-xl-12">
                     <div className="card m-2">
@@ -537,7 +537,7 @@ const RentDetails = () => {
                 </div>
             </div>
         </div>
-    )
+  )
 }
 
-export default RentDetails
+export default VerifyRentDetails

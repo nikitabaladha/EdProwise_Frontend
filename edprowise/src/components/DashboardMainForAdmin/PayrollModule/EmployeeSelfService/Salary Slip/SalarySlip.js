@@ -6,7 +6,7 @@ const SalarySlip = () => {
     return (
         <div className="container my-4 text-dark" style={{ padding: 16 }}>
             <div class="custom-bg d-flex flex-wrap align-items-center justify-content-between gap-3 p-3">
-            <div className="d-flex flex-wrap align-items-center gap-3">
+             <div className="d-flex flex-wrap align-items-center gap-3">
                 <label for="yearSelect" class="mb-0">Year :</label>
                 <select id="yearSelect" class="custom-select" aria-label="Select Year">
                     <option selected>2025</option>
@@ -107,13 +107,13 @@ const SalarySlip = () => {
                                     Earning
                                 </th>
                                 <th className="text-center p-2" style={{ border: "1px solid black" }}>
-                                    Amt.
+                                    Amount
                                 </th>
                                 <th className="text-center p-2" style={{ border: "1px solid black" }}>
                                     Deduction
                                 </th>
                                 <th className="text-center p-2" style={{ border: "1px solid black" }}>
-                                    Amt.
+                                   Amount
                                 </th>
 
                             </tr>
@@ -192,7 +192,7 @@ const SalarySlip = () => {
 
                     <div className="col-12 text-end">
                         <p style={{ color: 'black' }}>
-                            <strong>Signature of Principal</strong>
+                            <strong>Signature Of Principal</strong>
                         </p>
 
                     </div>

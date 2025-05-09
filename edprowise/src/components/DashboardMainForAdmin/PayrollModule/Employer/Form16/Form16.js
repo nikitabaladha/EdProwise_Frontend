@@ -56,9 +56,10 @@ const Form16 = () => {
                             />
                           </div>
                         </td>
-                        <td>Emp10</td>
+                        <td>Emp-0001</td>
                         <td>Kunal Shah</td>
                         <td>
+                        <div className="col-md-8" style={{justifySelf:"center"}}>
                           <input
                             type="file"
                             id="documentFile"
@@ -66,6 +67,7 @@ const Form16 = () => {
                             className="form-control"
                             accept="image/*,application/pdf"
                           />
+                          </div>
                         </td>
                       </tr>
                     </tbody>

@@ -44,18 +44,18 @@ const EmployeeRegistrationList = () => {
     
     const navigateToRegisterEmployee = (event) => {
         event.preventDefault();
-        navigate(`/admin-dashboard/payroll-module/admin-setting/registration-form`);
+        navigate(`/admin-dashboard/payroll-module/employer/registration/registration-form`);
       };
 
       const navigateToRegisterInfo = (event, employee) => {
         event.preventDefault();
-    navigate(`/admin-dashboard/payroll-module/admin-setting/view-registration-form`, {
+    navigate(`/admin-dashboard/payroll-module/employer/registration/view-registration-form`, {
     //   state: { employee },
     });      };
 
       const navigateToUpdateRegisterInfo = (event, employee) => {
         event.preventDefault();
-       navigate(`/admin-dashboard/payroll-module/admin-setting/update-registration-form`, {
+       navigate(`/admin-dashboard/payroll-module/employer/registration/update-registration-form`, {
     //   state: { employee },
     });
       };
@@ -160,12 +160,12 @@ const EmployeeRegistrationList = () => {
                                   </label>
                                 </div>
                               </td>
-                              <td>Emp1020</td> 
+                              <td>Emp-0001</td> 
     
                               <td>Umesh jadhav</td>
     
                               <td>1234567890</td>
-                              <td>umesh@gmail.com</td>
+                              <td>XYZ@gmail.com</td>
                               <td>Teacher</td>
                              
                                {/* <td>{student.dateOfApplicatopnReceive}</td> */}

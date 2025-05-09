@@ -1,6 +1,12 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const ViewEmployeeRegisterDetails = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1); 
+  };
   return (
     <div className="container">
     <div className="row">
@@ -26,7 +32,7 @@ const ViewEmployeeRegisterDetails = () => {
                       id="name"
                       name="name"
                       className="form-control"
-                      // value={formData.name}
+                      value={"Umesh Jadhav"}
                       required
                      placeholder='Name'
                     />
@@ -45,7 +51,7 @@ const ViewEmployeeRegisterDetails = () => {
                       id="contactNumber"
                       name="contactNumber"
                       className="form-control"
-                      // value={formData.contactNumber}
+                      value={"1234567890"}
                       required
                      placeholder='Example : 1234567890'
                     />
@@ -64,7 +70,7 @@ const ViewEmployeeRegisterDetails = () => {
                       id="emailId"
                       name="emailId"
                       className="form-control"
-                      // value={formData.emailId}
+                      value={"xyz@gmail.com"}
                       required
                       placeholder='Example : xyz@gmail.com'
                     />
@@ -81,33 +87,29 @@ const ViewEmployeeRegisterDetails = () => {
                     >
                      Category OF Employees
                     </label>
-                    <select
+
+                    <input
+                      type="text"
                       id="categoryOfEmployees"
                       name="categoryOfEmployees"
                       className="form-control"
-                      // value={formData.categoryOfEmployee}
+                      value={"Teaching Staff"}
                       required
-                      
-                    >
-                      <option value="">Select Employee Category</option>
-                      <option value="Teaching Staff">Teaching Staff</option>
-                      <option value="Non Teaching Staff">
-                      Non Teaching Staff
-                      </option>
-                    </select>
+                      placeholder='grade'
+                    />
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label htmlFor="grade" className="form-label">
-                   Grade
+                    Grade
                     </label>
                     <input
                       type="text"
                       id="grade"
                       name="grade"
                       className="form-control"
-                      // value={formData.grade}
+                      value={"A"}
                       required
                       placeholder='grade'
                     />
@@ -124,8 +126,7 @@ const ViewEmployeeRegisterDetails = () => {
                       id="jobDesignation"
                       name="jobDesignation"
                       className="form-control"
-                      // value={formData.jobDesignation}
-                     
+                      value={"Teacher"}
                       required
                       placeholder='job Designation'
                     />
@@ -143,7 +144,6 @@ const ViewEmployeeRegisterDetails = () => {
                       name="joiningDate"
                       className="form-control"
                       // value={formData.joiningDate}
-                     
                       required
                       placeholder='joiningDate'
                     />
@@ -154,6 +154,7 @@ const ViewEmployeeRegisterDetails = () => {
               <div className="text-end">
                 <button
                   type="button"
+                  onClick={handleBack}
                   className="btn btn-primary custom-submit-button"
                 >
                   Back
