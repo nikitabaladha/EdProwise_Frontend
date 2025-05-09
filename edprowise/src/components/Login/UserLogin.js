@@ -4,6 +4,7 @@ import postAPI from "../../api/postAPI";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from "../../AuthContext";
 
 const UserLogin = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const UserLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,6 +55,9 @@ const UserLogin = () => {
 
       if (!response.hasError) {
         const { token, userDetails } = response.data;
+
+        login(token, userDetails);
+
         localStorage.setItem("accessToken", JSON.stringify(token));
         localStorage.setItem("userDetails", JSON.stringify(userDetails));
 
@@ -63,9 +68,7 @@ const UserLogin = () => {
             if (userDetails.status === "Pending") {
               return navigate(`/complete-school-profile`);
             } else if (userDetails.status === "Completed") {
-              return navigate(
-                "/school-dashboard/procurement-services/dashboard"
-              );
+              return navigate("/school/go-to-dashboard");
             }
           } else if (userDetails.role === "Auditor") {
             return navigate(

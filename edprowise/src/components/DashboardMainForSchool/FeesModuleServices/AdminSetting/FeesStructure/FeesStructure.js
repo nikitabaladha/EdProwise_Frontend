@@ -28,8 +28,6 @@ const ADDFeesStructure = () => {
     setSchoolId(id);
   }, []);
 
-
-
   useEffect(() => {
     if (!schoolId) return;
 
@@ -44,7 +42,10 @@ const ADDFeesStructure = () => {
       try {
         const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
-          setFeesTypesList(feesTypeRes.data.data);
+          const SchoolFees = feesTypeRes.data.data.filter(
+            (fee) => fee.groupOfFees === "School Fees"
+          );
+          setFeesTypesList(SchoolFees);
         } else {
           toast.error("Failed to fetch fees types.");
         }
@@ -65,24 +66,71 @@ const ADDFeesStructure = () => {
   const handleInstallmentChange = (formIndex, installmentIndex, field, value) => {
     const newForms = [...forms];
     newForms[formIndex].installments[installmentIndex][field] = value;
+    
+    // If due date of first installment is changed, update subsequent installments
+    if (field === 'dueDate' && installmentIndex === 0) {
+      const firstDueDate = new Date(value);
+      if (!isNaN(firstDueDate.getTime())) {
+        for (let i = 1; i < newForms[formIndex].installments.length; i++) {
+          const newDate = new Date(firstDueDate);
+          newDate.setMonth(newDate.getMonth() + i);
+          newForms[formIndex].installments[i].dueDate = newDate.toISOString().split('T')[0];
+        }
+      }
+    }
+    
     setForms(newForms);
   };
 
   const handleAddInstallmentField = (formIndex, instIndex) => {
     const newForms = [...forms];
-    newForms[formIndex].installments[instIndex].feesDetails.push({ feesType: "", amount: "" });
+    const newFeeDetail = { feesType: "", amount: "" };
+    
+    // Add to the specified installment
+    newForms[formIndex].installments[instIndex].feesDetails.push(newFeeDetail);
+    
+    // If adding to first installment, add to all other installments
+    if (instIndex === 0) {
+      for (let i = 1; i < newForms[formIndex].installments.length; i++) {
+        newForms[formIndex].installments[i].feesDetails.push({...newFeeDetail});
+      }
+    }
+    
     setForms(newForms);
   };
 
   const handleRemoveInstallmentField = (formIndex, instIndex, feeIndex) => {
     const newForms = [...forms];
+    
+    // Remove from the specified installment
     newForms[formIndex].installments[instIndex].feesDetails.splice(feeIndex, 1);
+    
+    // If removing from first installment, remove from all other installments at same index
+    if (instIndex === 0) {
+      for (let i = 1; i < newForms[formIndex].installments.length; i++) {
+        if (newForms[formIndex].installments[i].feesDetails.length > feeIndex) {
+          newForms[formIndex].installments[i].feesDetails.splice(feeIndex, 1);
+        }
+      }
+    }
+    
     setForms(newForms);
   };
 
   const handleInstallmentFeeChange = (formIndex, instIndex, feeIndex, field, value) => {
     const newForms = [...forms];
     newForms[formIndex].installments[instIndex].feesDetails[feeIndex][field] = value;
+    
+    // If changing first installment, copy to subsequent installments
+    if (instIndex === 0) {
+      for (let i = 1; i < newForms[formIndex].installments.length; i++) {
+        // Only update if the fee detail exists at this index
+        if (newForms[formIndex].installments[i].feesDetails[feeIndex]) {
+          newForms[formIndex].installments[i].feesDetails[feeIndex][field] = value;
+        }
+      }
+    }
+    
     setForms(newForms);
   };
 
@@ -96,15 +144,21 @@ const ADDFeesStructure = () => {
     const num = parseInt(value);
     if (isNaN(num) || num <= 0) return;
 
+    // Get the first installment's feesDetails if they exist
+    const firstInstallmentFees = newForms[index].installments[0]?.feesDetails || [
+      { feesType: "", amount: "" }
+    ];
+
+    const firstDueDate = newForms[index].installments[0]?.dueDate 
+      ? new Date(newForms[index].installments[0].dueDate)
+      : null;
+
     const newInstallments = Array.from({ length: num }, (_, i) => ({
       name: `Installment ${i + 1}`,
-      dueDate: "",
-      feesDetails: [
-        {
-          feesType: "",
-          amount: "",
-        },
-      ],
+      dueDate: firstDueDate 
+        ? new Date(new Date(firstDueDate).setMonth(firstDueDate.getMonth() + i)).toISOString().split('T')[0]
+        : "",
+      feesDetails: firstInstallmentFees.map(fee => ({ ...fee }))
     }));
 
     updateForm(index, { installments: newInstallments });
@@ -112,6 +166,7 @@ const ADDFeesStructure = () => {
 
   const handleSubmitAll = async (e) => {
     e.preventDefault();
+    const academicYear = localStorage.getItem('selectedAcademicYear'); 
 
     const combos = forms.map((f) => `${f.selectedClassId}-${f.selectedSections.sort().join(",")}`);
     const seen = new Set();
@@ -128,6 +183,7 @@ const ADDFeesStructure = () => {
     for (let i = 0; i < forms.length; i++) {
       const form = forms[i];
       const payload = {
+        academicYear:academicYear ,
         classId: form.selectedClassId,
         sectionIds: form.selectedSections,
         installments: form.installments.map((inst) => ({
@@ -259,7 +315,7 @@ const ADDFeesStructure = () => {
                                     }
                                   />
                                 </div>
-                                <div className="col-md-6">
+                                <div className="col-md-5">
                                   <label>Due Date</label>
                                   <input
                                     type="date"
@@ -273,8 +329,8 @@ const ADDFeesStructure = () => {
                               </div>
 
                               {inst.feesDetails.map((fee, feeIndex) => (
-                                <div className="row" key={feeIndex}>
-                                  <div className="col-md-5">
+                                <div className="row mb-2" key={feeIndex}>
+                                  <div className="col-md-6">
                                     <label>Fee Type</label>
                                     <select
                                       className="form-control"
@@ -288,13 +344,23 @@ const ADDFeesStructure = () => {
                                           e.target.value
                                         )
                                       }
+                                      required
                                     >
                                       <option value="">Select Fee Type</option>
-                                      {feesTypesList.map((type) => (
-                                        <option key={type._id} value={type._id}>
-                                          {type.feesTypeName}
-                                        </option>
-                                      ))}
+                                      {feesTypesList
+                                        .filter((type) => {
+                                          return (
+                                            fee.feesType === type._id ||
+                                            !inst.feesDetails.some(
+                                              (f, idx) => idx !== feeIndex && f.feesType === type._id
+                                            )
+                                          );
+                                        })
+                                        .map((type) => (
+                                          <option key={type._id} value={type._id}>
+                                            {type.feesTypeName}
+                                          </option>
+                                        ))}
                                     </select>
                                   </div>
                                   <div className="col-md-5">
@@ -312,26 +378,27 @@ const ADDFeesStructure = () => {
                                           e.target.value
                                         )
                                       }
+                                      required
                                     />
                                   </div>
-                                  <div className="col-md-2 d-flex align-items-end">
-                                  <button
-                                     type="button"
-                                     className="btn btn-danger btn-sm ms-auto d-block"
-                                    onClick={() =>
-                                    handleRemoveInstallmentField(index, instIndex, feeIndex)
-                                        }
-                                   >
-                                    Remove
-                                         </button>
-
+                                  <div className="col-md-1 d-flex align-items-end">
+                                    <button
+                                      type="button"
+                                      className="btn btn-danger btn-sm ms-auto d-block"
+                                      onClick={() =>
+                                        handleRemoveInstallmentField(index, instIndex, feeIndex)
+                                      }
+                                      disabled={inst.feesDetails.length <= 1}
+                                    >
+                                      Remove
+                                    </button>
                                   </div>
                                 </div>
                               ))}
                               <div className="text-end mt-2">
                                 <button
                                   type="button"
-                                  className="btn btn-secondary btn-sm "
+                                  className="btn btn-secondary btn-sm"
                                   onClick={() => handleAddInstallmentField(index, instIndex)}
                                 >
                                   Add Fee Type
@@ -347,7 +414,7 @@ const ADDFeesStructure = () => {
 
                 <div className="d-flex justify-content-between mt-4">
                   <button type="button" className="btn btn-primary" onClick={handleAddNewForm}>
-                    Add New
+                    Add New Form
                   </button>
                   <button type="submit" className="btn btn-success">
                     Create Fees Structure
@@ -363,366 +430,3 @@ const ADDFeesStructure = () => {
 };
 
 export default ADDFeesStructure;
-
-
-// import React, { useEffect, useState } from "react";
-// import { toast } from "react-toastify";
-// import getAPI from "../../../../../api/getAPI";
-// import postAPI from "../../../../../api/postAPI";
-// import { useNavigate } from "react-router-dom";
-
-// const ADDFeesStructure = () => {
-//   const [schoolId, setSchoolId] = useState("");
-//   const [classData, setClassData] = useState([]);
-//   const [feesTypesList, setFeesTypesList] = useState([]);
-//   const navigate = useNavigate();
-//   const [forms, setForms] = useState([
-//     {
-//       step: 1,
-//       selectedClassId: "",
-//       selectedSections: [],
-//       feesType: "",
-//       numInstallments: 1,
-//       installments: [],
-//     },
-//   ]);
-
-//   useEffect(() => {
-//     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-//     const id = userDetails?.schoolId;
-//     if (!id) {
-//       toast.error("School ID not found. Please log in again.");
-//       return;
-//     }
-//     setSchoolId(id);
-//   }, []);
-
-//   useEffect(() => {
-//     if (!schoolId) return;
-
-//     const fetchData = async () => {
-//       try {
-//         const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
-//         setClassData(classRes?.data?.data || []);
-//       } catch (error) {
-//         toast.error("Error fetching class and section data.");
-//       }
-
-//       try {
-//         const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`);
-//         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
-//           setFeesTypesList(feesTypeRes.data.data);
-//         } else {
-//           toast.error("Failed to fetch fees types.");
-//         }
-//       } catch (error) {
-//         toast.error("Error fetching fees types.");
-//       }
-//     };
-
-//     fetchData();
-//   }, [schoolId]);
-
-//   const handleProceed = (index) => {
-//     const form = forms[index];
-
-//     if (form.step === 1 && form.selectedClassId && form.selectedSections.length > 0) {
-//       updateForm(index, { step: 2 });
-//     } else if (form.step === 2 && form.feesType && form.numInstallments > 0) {
-//       const newInstallments = Array.from({ length: form.numInstallments }, (_, i) => ({
-//         name: `Installment ${i + 1}`,
-//         amount: "",
-//         dueDate: "",
-//       }));
-//       updateForm(index, { step: 3, installments: newInstallments });
-//     }
-//   };
-
-//   const updateForm = (index, updatedFields) => {
-//     const newForms = [...forms];
-//     newForms[index] = { ...newForms[index], ...updatedFields };
-//     setForms(newForms);
-//   };
-
-//   const handleInstallmentChange = (formIndex, installmentIndex, field, value) => {
-//     const newForms = [...forms];
-//     newForms[formIndex].installments[installmentIndex][field] = value;
-//     setForms(newForms);
-//   };
-
-//   const handleAddForm = () => {
-//     setForms([
-//       ...forms,
-//       {
-//         step: 1,
-//         selectedClassId: "",
-//         selectedSections: [],
-//         feesType: "",
-//         numInstallments: 1,
-//         installments: [],
-//       },
-//     ]);
-//   };
-
-//   const handleRemoveForm = (index) => {
-//     const newForms = forms.filter((_, i) => i !== index);
-//     setForms(newForms);
-//   };
-
-//   const handleSubmitAll = async (e) => {
-//     e.preventDefault();
-  
-//     let allSuccess = true;
-  
-//     for (let i = 0; i < forms.length; i++) {
-//       const form = forms[i];
-  
-//       const payload = {
-//         classId: form.selectedClassId,
-//         sectionIds: form.selectedSections,
-//         feesTypeId: form.feesType,
-//         installments: form.installments.map((inst) => ({
-//           name: inst.name,
-//           amount: Number(inst.amount),
-//           dueDate: new Date(inst.dueDate),
-//         })),
-//       };
-  
-//       try {
-//         const response = await postAPI("/create-fees-structure", payload, {}, true);
-  
-//         if (response.hasError) {
-//           allSuccess = false;
-//           toast.error(`Form ${i + 1}: ${response.message || "Failed to create fee structure."}`);
-//         } else {
-//           toast.success(`Form ${i + 1}: ${response.message || "Fee structure created successfully."}`);
-//         }
-//       } catch (err) {
-//         allSuccess = false;
-//         const backendMessage =
-//           err?.response?.data?.message || "Server error while creating fee structure.";
-//         toast.error(`Form ${i + 1}: ${backendMessage}`);
-//         console.error(`Form ${i + 1} error:`, err);
-//       }
-//     }
-  
-   
-//     if (allSuccess) {
-//       navigate(-1); 
-//     }
-//   };
-  
-  
-  
-  
-
-//   const getClassById = (id) => classData.find((cls) => cls._id === id);
-
-//   return (
-//     <div className="container">
-//       <div className="row">
-//         <div className="col-xl-12">
-//           <div className="card m-2">
-//             <div className="card-body">
-//               <h4 className="card-title text-center">Add Fees Structure</h4>
-//               <form onSubmit={handleSubmitAll}>
-//                 {forms.map((form, index) => {
-//                   const selectedClass = getClassById(form.selectedClassId);
-//                   return (
-//                     <div key={index} className="border rounded p-3 my-3">
-//                       <h5>Form {index + 1}</h5>
-
-//                       {form.step >= 1 && (
-//                         <>
-//                           <div className="row">
-//                             <div className="col-md-6">
-//                               <label>Class</label>
-//                               <select
-//                                 className="form-control"
-//                                 value={form.selectedClassId}
-//                                 onChange={(e) =>
-//                                   updateForm(index, {
-//                                     selectedClassId: e.target.value,
-//                                     selectedSections: [],
-//                                   })
-//                                 }
-//                                 required
-//                               >
-//                                 <option value="">Select Class</option>
-//                                 {classData.map((cls) => (
-//                                   <option key={cls._id} value={cls._id}>
-//                                     {cls.className}
-//                                   </option>
-//                                 ))}
-//                               </select>
-//                             </div>
-//                             <div className="col-md-6">
-//                               <label>Sections</label>
-//                               <div className="d-flex flex-wrap">
-//                                 {selectedClass?.sections.map((section) => (
-//                                   <div key={section._id} className="form-check me-3">
-//                                     <input
-//                                       type="checkbox"
-//                                       className="form-check-input"
-//                                       value={section._id}
-//                                       checked={form.selectedSections.includes(section._id)}
-//                                       onChange={(e) => {
-//                                         const { checked, value } = e.target;
-//                                         const updatedSections = checked
-//                                           ? [...form.selectedSections, value]
-//                                           : form.selectedSections.filter((id) => id !== value);
-//                                         updateForm(index, { selectedSections: updatedSections });
-//                                       }}
-//                                     />
-//                                     <label className="form-check-label">{section.name}</label>
-//                                   </div>
-//                                 ))}
-//                               </div>
-//                             </div>
-//                           </div>
-//                           <div className="text-end mt-2">
-//                             <button
-//                               type="button"
-//                               className="btn btn-primary"
-//                               onClick={() => handleProceed(index)}
-//                             >
-//                               Proceed
-//                             </button>
-//                           </div>
-//                         </>
-//                       )}
-
-//                       {form.step >= 2 && (
-//                         <>
-//                           <div className="row mt-3">
-//                             <div className="col-md-6">
-//                               <label>Fees Type</label>
-//                               <select
-//                                 className="form-control"
-//                                 value={form.feesType}
-//                                 onChange={(e) =>
-//                                   updateForm(index, { feesType: e.target.value })
-//                                 }
-//                                 required
-//                               >
-//                                 <option value="">Select Fees Type</option>
-//                                 {feesTypesList.map((type) => (
-//                                   <option key={type._id} value={type._id}>
-//                                     {type.feesTypeName}
-//                                   </option>
-//                                 ))}
-//                               </select>
-//                             </div>
-//                             <div className="col-md-6">
-//                               <label>No. of Installments</label>
-//                               <input
-//                                 type="number"
-//                                 className="form-control"
-//                                 value={form.numInstallments}
-//                                 onChange={(e) =>
-//                                   updateForm(index, {
-//                                     numInstallments: e.target.value,
-//                                   })
-//                                 }
-//                                 required
-//                               />
-//                             </div>
-//                           </div>
-//                           <div className="text-end mt-2">
-//                             <button
-//                               type="button"
-//                               className="btn btn-primary"
-//                               onClick={() => handleProceed(index)}
-//                             >
-//                               Proceed
-//                             </button>
-//                           </div>
-//                         </>
-//                       )}
-
-//                       {form.step === 3 && (
-//                         <div className="table-responsive mt-3">
-//                           <table className="table table-hover text-center">
-//                             <thead>
-//                               <tr>
-//                                 <th>Name</th>
-//                                 <th>Amount</th>
-//                                 <th>Due Date</th>
-//                               </tr>
-//                             </thead>
-//                             <tbody>
-//                               {form.installments.map((inst, i) => (
-//                                 <tr key={i}>
-//                                   <td>
-//                                     <input
-//                                       type="text"
-//                                       className="form-control"
-//                                       value={inst.name}
-//                                       onChange={(e) =>
-//                                         handleInstallmentChange(index, i, "name", e.target.value)
-//                                       }
-//                                       required
-//                                     />
-//                                   </td>
-//                                   <td>
-//                                     <input
-//                                       type="number"
-//                                       className="form-control"
-//                                       value={inst.amount}
-//                                       onChange={(e) =>
-//                                         handleInstallmentChange(index, i, "amount", e.target.value)
-//                                       }
-//                                       required
-//                                     />
-//                                   </td>
-//                                   <td>
-//                                     <input
-//                                       type="date"
-//                                       className="form-control"
-//                                       value={inst.dueDate}
-//                                       onChange={(e) =>
-//                                         handleInstallmentChange(index, i, "dueDate", e.target.value)
-//                                       }
-//                                       required
-//                                     />
-//                                   </td>
-//                                 </tr>
-//                               ))}
-//                             </tbody>
-//                           </table>
-//                         </div>
-//                       )}
-
-//                       {forms.length > 1 && (
-//                         <div className="text-end mt-3">
-//                           <button
-//                             type="button"
-//                             className="btn btn-danger"
-//                             onClick={() => handleRemoveForm(index)}
-//                           >
-//                             Remove
-//                           </button>
-//                         </div>
-//                       )}
-//                     </div>
-//                   );
-//                 })}
-
-//                 <div className="d-flex justify-content-between mt-4">
-//                   <button type="button" className="btn btn-secondary" onClick={handleAddForm}>
-//                     Add New Form
-//                   </button>
-//                   <button type="submit" className="btn btn-success">
-//                     Create Fees Structure
-//                   </button>
-//                 </div>
-//               </form>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ADDFeesStructure;

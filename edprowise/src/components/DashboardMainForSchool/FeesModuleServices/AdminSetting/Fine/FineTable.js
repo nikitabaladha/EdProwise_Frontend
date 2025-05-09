@@ -14,6 +14,30 @@ const Fine = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("fine");
   const [selectedFine, setSelectedFine] = useState(null);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+  
+
+  
+    useEffect(() => {
+      const fetchAcademicYears = async () => {
+        try {
+          setLoadingYears(true);
+          const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+          const schoolId = userDetails?.schoolId; 
+          const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+          setAcademicYears(response.data.data || []);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setLoadingYears(false);
+        }
+      };
+  
+      fetchAcademicYears();
+    }, []);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -24,13 +48,14 @@ const Fine = () => {
     }
     setSchoolId(id);
   }, []);
+  
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchFines = async () => {
       try {
-        const response = await getAPI(`/get-fine/${schoolId}`);
+        const response = await getAPI(`/get-fine/school/${schoolId}/year/${selectedYear}`);
         if (!response.hasError) {
           const fineArray = Array.isArray(response.data?.data) ? response.data.data : [];
           setFines(fineArray);
@@ -42,9 +67,10 @@ const Fine = () => {
         console.error("Fine Fetch Error:", err);
       }
     };
-
+  
     fetchFines();
-  }, [schoolId]);
+  }, [schoolId,selectedYear]);
+  
 
   const indexOfLast = currentPage * finesPerPage;
   const indexOfFirst = indexOfLast - finesPerPage;
@@ -84,7 +110,7 @@ const Fine = () => {
 
   const navigateToAddNewFine = (e) => {
     e.preventDefault();
-    navigate(`/school-dashboard/fees-module/admin-setting/fine/add-fine`);
+    navigate(`/school-dashboard/fees-module/admin-setting/fees-structure/fine/add-fine`);
   };
 
   return (
@@ -100,9 +126,25 @@ const Fine = () => {
                     Add Fine
                   </Link>
                 )}
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
-                </div>
+                 
+                  <select
+                    className="form-select form-select-sm w-auto"
+                    value={selectedYear}
+                    onChange={(e) => {
+                      setSelectedYear(e.target.value);
+                      localStorage.setItem("selectedAcademicYear", e.target.value);
+                    }}
+                    disabled={loadingYears}
+                  >
+                    <option value="" disabled>Select Year</option>
+                    {academicYears.map((year) => (
+                      <option key={year._id} value={year.academicYear}>
+                        {year.academicYear}
+                      </option>
+                    ))}
+
+                  </select>
+               
               </div>
 
               <div className="table-responsive">

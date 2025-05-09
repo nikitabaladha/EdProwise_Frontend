@@ -5,7 +5,6 @@ import Select from "react-select";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import CityData from "../../CityData.json";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { SpecialZoomLevel } from "@react-pdf-viewer/core";

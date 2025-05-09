@@ -1,27 +1,24 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { ThemeProvider } from "./components/ThemeProvider";
+import { AuthProvider } from "./AuthContext";
 import CookieConsent from "./CookieConsent";
-import ChatBot from "./components/CompanyChatBot/ChatBot";
-
-// import "bootstrap/dist/css/bootstrap.min.css";
+import { CookiesProvider } from "react-cookie";
 
 import AppRoutes from "./routes";
 
 const App = () => {
   return (
     <BrowserRouter>
-      {/* <ThemeProvider> */}
-      <AppRoutes />
-
-      {/* <ChatBot /> */}
-      {/* <CookieConsent /> */}
-      <ToastContainer />
-      {/* </ThemeProvider> */}
+      <AuthProvider>
+        <CookiesProvider>
+          <AppRoutes />
+          <CookieConsent />
+          <ToastContainer />
+        </CookiesProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 };

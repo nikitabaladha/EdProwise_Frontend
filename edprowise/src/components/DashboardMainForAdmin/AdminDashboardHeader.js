@@ -5,31 +5,41 @@ import { BiLogOut } from "react-icons/bi";
 import { IoKeyOutline } from "react-icons/io5";
 
 import { ThemeContext } from "../ThemeProvider";
+import { useLogout } from "../../useLogout";
 
 import getAPI from "../../api/getAPI";
 import { useNavigate } from "react-router-dom";
 
 const AdminDashboardHeader = () => {
   const navigate = useNavigate();
+  const logout = useLogout();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userDetails");
-    window.location.href = "/login";
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("userDetails");
+  //   window.location.href = "/login";
+  // };
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-
   const toggleSidebar = () => {
     const htmlElement = document.documentElement;
     const bodyElement = document.body;
 
     htmlElement.classList.toggle("sidebar-enable");
 
-    if (bodyElement.style.overflow === "hidden") {
-      bodyElement.style.overflow = "";
-    } else {
+    if (htmlElement.classList.contains("sidebar-enable")) {
       bodyElement.style.overflow = "hidden";
+
+      if (!document.querySelector(".offcanvas-backdrop")) {
+        const backdrop = document.createElement("div");
+        backdrop.className = "offcanvas-backdrop fade show";
+        bodyElement.appendChild(backdrop);
+      }
+    } else {
+      bodyElement.style.overflow = "";
+
+      const backdrop = document.querySelector(".offcanvas-backdrop");
+      if (backdrop) backdrop.remove();
     }
   };
 
@@ -40,9 +50,14 @@ const AdminDashboardHeader = () => {
     if (
       htmlElement.classList.contains("sidebar-enable") &&
       mainNav &&
-      !mainNav.contains(event.target)
+      !mainNav.contains(event.target) &&
+      !event.target.closest(".button-toggle-menu")
     ) {
-      toggleSidebar();
+      htmlElement.classList.remove("sidebar-enable");
+      document.body.style.overflow = "";
+
+      const backdrop = document.querySelector(".offcanvas-backdrop");
+      if (backdrop) backdrop.remove();
     }
   };
 
@@ -448,7 +463,7 @@ const AdminDashboardHeader = () => {
                   <div className="dropdown-divider my-1" />
                   <Link className="dropdown-item text-danger">
                     <BiLogOut className="bx bx-log-out fs-18 align-middle me-1" />
-                    <span className="align-middle" onClick={handleLogout}>
+                    <span className="align-middle" onClick={logout}>
                       Logout
                     </span>
                   </Link>

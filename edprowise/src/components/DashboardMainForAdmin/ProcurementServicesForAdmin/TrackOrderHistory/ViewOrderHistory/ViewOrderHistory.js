@@ -366,7 +366,10 @@ const ViewOrderHistory = () => {
                         {order?.rating ? (
                           <>
                             <StarRating rating={order.rating} />
-                            <span className="text-muted">
+                            <span
+                              className="text-muted"
+                              style={{ fontSize: "0.875rem" }}
+                            >
                               ({order.rating}/5)
                             </span>
                           </>

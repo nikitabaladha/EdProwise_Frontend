@@ -17,6 +17,30 @@ const FeeStructureList = () => {
   const [deleteType, setDeleteType] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [schoolId, setSchoolId] = useState("");
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -31,15 +55,15 @@ const FeeStructureList = () => {
   }, []);
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchData = async () => {
       try {
-        // Fee structures
-        const feeRes = await getAPI(`/get-fees-structure/${schoolId}`, {}, true);
+
+        const feeRes = await getAPI(`/get-fees-structure/${schoolId}/${selectedYear}`, {}, true);
         setFeeStructures(feeRes?.data?.data || []);
 
-        // Class & Section Maps
+
         const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
         const classMap = {};
         const sectionMap = {};
@@ -55,7 +79,7 @@ const FeeStructureList = () => {
         setClassMap(classMap);
         setSectionMap(sectionMap);
 
-        // Fee Type Map
+
         const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`, {}, true);
         const feesMap = {};
         feesTypeRes?.data?.data?.forEach(ft => {
@@ -69,7 +93,7 @@ const FeeStructureList = () => {
     };
 
     fetchData();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -93,21 +117,45 @@ const FeeStructureList = () => {
 
   const navigateToAddNew = (event) => {
     event.preventDefault();
-    navigate(`/school-dashboard/fees-module/admin-setting/fees-structure/add-fees-structure`);
+    navigate(`/school-dashboard/fees-module/admin-setting/fees-structure/school-fees/add-school-fees`);
   };
 
   return (
     <>
       <div className="container-fluid">
+        <div className="d-flex justify-content-end mb-2 gap-2">
+          <Link
+            onClick={navigateToAddNew}
+            className="btn btn-sm btn-primary"
+          >
+            Create Fee Structure
+          </Link>
+          <Link className="btn btn-sm btn-secondary">
+            Export
+          </Link>
+        </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All Fee Structures</h4>
-                <Link onClick={navigateToAddNew} className="btn btn-sm btn-primary">Create Fee Structure</Link>
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
-                </div>
+                <h4 className="card-title flex-grow-1">All School Fees</h4>
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    localStorage.setItem("selectedAcademicYear", e.target.value);
+                  }}
+                  disabled={loadingYears}
+                >
+                  <option value="" disabled>Select Year</option>
+                  {academicYears.map((year) => (
+                    <option key={year._id} value={year.academicYear}>
+                      {year.academicYear}
+                    </option>
+                  ))}
+
+                </select>
               </div>
 
               <div className="table-responsive">
@@ -149,7 +197,7 @@ const FeeStructureList = () => {
                           <div className="d-flex gap-2">
                             <button
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/view-fees-structure", {
+                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/school-fees/view-school-fees", {
                                   state: { structure }
                                 })
                               }
@@ -160,7 +208,7 @@ const FeeStructureList = () => {
                             <button
                               className="btn btn-soft-primary btn-sm"
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/update-fees-structure", {
+                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/school-fees/update-school-fees", {
                                   state: { structure }
                                 })
                               }

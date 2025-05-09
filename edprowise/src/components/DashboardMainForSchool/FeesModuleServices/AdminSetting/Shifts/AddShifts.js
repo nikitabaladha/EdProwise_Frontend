@@ -25,6 +25,7 @@ const AddShifts = () => {
     setShifts(updatedShifts);
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -99,6 +100,7 @@ const AddShifts = () => {
                         value={shift.startTime}
                         onChange={(e) => handleInputChange(index, 'startTime', e.target.value)}
                       />
+                     
                     </div>
                     <div className="col-md-3">
                       <label className="form-label">End Time</label>

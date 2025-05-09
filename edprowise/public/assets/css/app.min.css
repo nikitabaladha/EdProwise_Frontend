@@ -185,24 +185,24 @@ html[data-bs-theme="dark"],
 
 /* Main Menu Light */
 
-html[data-menu-color="light"] {
+/* html[data-menu-color="light"] {
   --bs-main-nav-bg: #f8f5f1;
   --bs-main-nav-item-color: #797b97;
   --bs-main-nav-item-hover-bg: transparent;
   --bs-main-nav-item-hover-color: #ff6c2f;
   --bs-main-nav-border-color: #eaedf1;
-}
+} */
 
 /* Main Menu Dark */
 
-html[data-menu-color="dark"],
+/* html[data-menu-color="dark"],
 html[data-bs-theme="dark"][data-menu-color="light"] {
   --bs-main-nav-bg: #262d34;
   --bs-main-nav-item-color: #9097a7;
   --bs-main-nav-item-hover-bg: transparent;
   --bs-main-nav-item-hover-color: #ffffff;
   --bs-main-nav-border-color: #2f3944;
-}
+} */
 
 /* Topbar Light */
 
@@ -212,26 +212,69 @@ html[data-bs-theme="dark"][data-menu-color="light"] {
   --bs-topbar-search-bg: #eae8e8 !important;
 } */
 
-html[data-topbar-color="light"] {
+/* html[data-topbar-color="light"] {
   --bs-topbar-bg: #262d34 !important;
   --bs-topbar-item-color: #9097a7 !important;
   --bs-topbar-search-bg: #eae8e8 !important;
-}
+} */
 
 /* Topbar Dark */
 
-html[data-topbar-color="dark"],
+/* html[data-topbar-color="dark"],
 html[data-bs-theme="dark"][data-topbar-color="light"] {
   --bs-topbar-bg: #22282e;
   --bs-topbar-item-color: #dee2e6;
   --bs-topbar-search-bg: #2c3238;
-}
+} */
 
 /*!
  * Bootstrap  v5.3.3 (https://getbootstrap.com/)
  * Copyright 2011-2024 The Bootstrap Authors
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+
+/*========= Shantanu Css Starts=========== */
+
+/* Topbar Light */
+
+html[data-bs-theme="light"] .topbar {
+  --bs-topbar-bg: #ffffff !important;
+  --bs-topbar-item-color: black;
+  --bs-topbar-search-bg: #eae8e8;
+}
+
+/* Dark theme (topbar) */
+html[data-bs-theme="dark"] .topbar {
+  --bs-topbar-bg: #22282e;
+  --bs-topbar-item-color: #dee2e6;
+  --bs-topbar-search-bg: #2c3238;
+}
+
+/* Main Menu Light */
+
+html[data-bs-theme="light"] {
+  --bs-main-nav-bg: #24253b;
+  --bs-main-nav-item-color: #797b97;
+  --bs-main-nav-item-hover-bg: transparent;
+  /* --bs-main-nav-item-hover-color: #ff6c2f; */
+  --bs-main-nav-border-color: #eaedf1;
+}
+
+html[data-bs-theme="light"] .wrapper {
+  background-color: #d9d9d9;
+}
+
+/* Main Menu Dark */
+
+html[data-bs-theme="dark"] {
+  --bs-main-nav-bg: #262d34;
+  --bs-main-nav-item-color: #9097a7;
+  --bs-main-nav-item-hover-bg: transparent;
+  /* --bs-main-nav-item-hover-color: #ffffff; */
+  --bs-main-nav-border-color: #2f3944;
+}
+
+/* ==========Shantanu Css Ends==============*/
 
 :root,
 [data-bs-theme="light"] {
@@ -324,7 +367,8 @@ html[data-bs-theme="dark"][data-topbar-color="light"] {
   --bs-body-line-height: 1.5;
   --bs-body-color: black;
   --bs-body-color-rgb: 93, 113, 134;
-  --bs-body-bg: #f9f7f7;
+  /* --bs-body-bg: #d9d9d9; */
+  --bs-body-bg: #ffff;
   --bs-body-bg-rgb: 249, 247, 247;
   --bs-emphasis-color: rgba(93, 113, 134, 0.75);
   --bs-emphasis-color-rgb: 93, 113, 134;
@@ -16860,9 +16904,7 @@ fieldset:disabled .btn {
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
   height: var(--bs-topbar-height);
-  /* background-color: var(--bs-topbar-bg) !important; */
-  background-color: #262d34 !important;
-
+  background-color: var(--bs-topbar-bg) !important;
   padding-left: var(--bs-main-nav-width);
 }
 
@@ -17032,8 +17074,8 @@ html[data-menu-size="hidden"] .topbar {
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
   width: var(--bs-main-nav-width);
-  /* background: var(--bs-main-nav-bg); */
-  background: #262d34 !important;
+  background: var(--bs-main-nav-bg);
+  /* background: #262d34 !important; */
   min-width: var(--bs-main-nav-width);
   padding-bottom: 1.5rem;
   border-right: 0 solid var(--bs-main-nav-border-color);
@@ -17104,27 +17146,36 @@ html[data-menu-size="hidden"] .topbar {
   white-space: nowrap;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
-  color: var(--bs-main-nav-item-color);
+  /* color: var(--bs-main-nav-item-color); */
+  color: #ffffff;
   font-size: var(--bs-main-nav-item-font-size);
-  padding: var(--bs-main-nav-item-padding-y) var(--bs-main-nav-item-padding-x);
+  /* padding: var(--bs-main-nav-item-padding-y) var(--bs-main-nav-item-padding-x); */
   border-left: 3px solid transparent;
 }
 
 .wrapper .main-nav .navbar-nav .nav-item .nav-link.active {
   font-weight: 500;
-  border-left-color: var(--bs-primary);
+  /* border-left-color: var(--bs-primary); */
+  background-color: #f9f7f7 !important;
+  border-radius: 10px;
+  /* width: 90%;
+  padding-left: 5px !important;
+  margin-left: 10px; */
+  margin: 0px 5px 0px 5px;
 }
 
 .wrapper .main-nav .navbar-nav .nav-item .nav-link.active .nav-icon {
-  color: var(--bs-primary);
+  /* color: var(--bs-primary); */
+  color: #000000;
 }
 
 .wrapper .main-nav .navbar-nav .nav-item .nav-link.show,
 .wrapper .main-nav .navbar-nav .nav-item .nav-link.active,
-.wrapper .main-nav .navbar-nav .nav-item .nav-link:active,
-.wrapper .main-nav .navbar-nav .nav-item .nav-link:hover,
-.wrapper .main-nav .navbar-nav .nav-item .nav-link:focus {
-  color: var(--bs-main-nav-item-hover-color);
+.wrapper .main-nav .navbar-nav .nav-item .nav-link:active
+/* .wrapper .main-nav .navbar-nav .nav-item .nav-link:hover, */
+/* .wrapper .main-nav .navbar-nav .nav-item .nav-link:focus  */ {
+  /* color: var(--bs-main-nav-item-hover-color); */
+  color: #000000;
   background-color: var(--bs-main-nav-item-hover-bg);
 }
 
@@ -17161,9 +17212,9 @@ html[data-menu-size="hidden"] .topbar {
   padding-left: 12px;
 }
 
-.wrapper .main-nav .navbar-nav .sub-navbar-nav .menu-arrow::after {
+/* .wrapper .main-nav .navbar-nav .sub-navbar-nav .menu-arrow::after {
   right: 0;
-}
+} */
 
 .wrapper .main-nav .navbar-nav .sub-navbar-nav .sub-nav-item {
   cursor: pointer;
@@ -24713,3 +24764,14 @@ p.no-span::after {
     display: none;
   }
 }
+
+/* ===================below changes made by Shantanu=========== */
+
+@media (min-width: 768px) {
+  .nav-radius {
+    border-radius: 20px;
+    margin: 10px !important;
+  }
+}
+
+/* ===================below changes made by Shantanu=========== */

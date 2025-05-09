@@ -12,7 +12,7 @@ const useSchoolFeesReceipts = () => {
   const [classes, setClasses] = useState([]);
   const [showFullForm, setShowFullForm] = useState(false);
   const [sections, setSections] = useState([]);
-  const [feeData, setFeeData] = useState(null);
+  const [feeData, setFeeData] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
   const [formData, setFormData] = useState({
     AdmissionNumber: '',
@@ -24,7 +24,7 @@ const useSchoolFeesReceipts = () => {
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
   const [currentInstallment, setCurrentInstallment] = useState(1);
-  const [totalInstallments, setTotalInstallments] = useState(0);
+  const [totalInstallments, setTotalInstallments] = useState([]);
   const [selectedInstallments, setSelectedInstallments] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showProcessedData, setShowProcessedData] = useState(false);
@@ -70,8 +70,12 @@ const useSchoolFeesReceipts = () => {
   }, [schoolId]);
 
   const getInstallmentData = (installmentNumber) => {
-    if (!feeData?.feeInstallments) return [];
-    return feeData.feeInstallments.filter(item => 
+    if (!Array.isArray(feeData) || !selectedAcademicYear) return [];
+
+    const selectedYearData = feeData.find(year => year.academicYear === selectedAcademicYear);
+    if (!selectedYearData?.feeInstallments) return [];
+
+    return selectedYearData.feeInstallments.filter(item => 
       item.installmentName.includes(`Installment ${installmentNumber}`) || 
       item.installmentName === `Installment ${installmentNumber}`
     );
@@ -80,11 +84,11 @@ const useSchoolFeesReceipts = () => {
   const handleAdmissionSubmit = async (e) => {
     e.preventDefault();
     const admissionNumber = formData.AdmissionNumber.trim();
-  
+
     try {
       const student = existingStudents.find(s => s.AdmissionNumber.trim() === admissionNumber);
       if (!student) throw new Error('Invalid admission number');
-  
+
       const updatedFormData = {
         ...formData,
         firstName: student.firstName,
@@ -93,44 +97,38 @@ const useSchoolFeesReceipts = () => {
         section: student?.section?._id || student?.section || ''
       };
       setFormData(updatedFormData);
-  
+
       if (updatedFormData.masterDefineClass) {
         const selectedClass = classes.find(c => c._id === updatedFormData.masterDefineClass);
         setSections(selectedClass?.sections || []);
       }
-  
+
       if (schoolId && admissionNumber && updatedFormData.masterDefineClass && updatedFormData.section) {
-        const concessionRes = await getAPI(
+        const response = await getAPI(
           `/get-concession-formbyADMID?classId=${updatedFormData.masterDefineClass}&sectionIds=${updatedFormData.section}&schoolId=${schoolId}&admissionNumber=${admissionNumber}`
         );
-  
-       
-        if (!concessionRes?.data?.data) {
-          throw new Error('No concession data found');
+
+        if (!response?.data?.data || !Array.isArray(response.data.data)) {
+          throw new Error('All fees are paid or no fee data found');
         }
-  
-        const concessionData = concessionRes.data.data;
-        setFeeData(concessionData);
-  
-        
-        const installmentsPresent = Array.from(
-          new Set(concessionData.feeInstallments.map(item => parseInt(item.installmentName.split(' ')[1])))
-        ).sort((a, b) => a - b);
-  
-        setTotalInstallments(installmentsPresent);
-  
-        if (concessionData.concession?.applicableAcademicYear) {
-          setSelectedAcademicYear(concessionData.concession.applicableAcademicYear);
+
+        setFeeData(response.data.data);
+        setShowFullForm(true);
+
+        if (response.data.data.length > 0) {
+          setSelectedAcademicYear(response.data.data[0].academicYear);
+          setTotalInstallments(
+            Array.isArray(response.data.data[0].installmentsPresent)
+              ? response.data.data[0].installmentsPresent
+              : []
+          );
         }
       }
-  
-      setShowFullForm(true);
     } catch (error) {
       toast.error(error.message || 'Error processing student data');
       console.error('Submission error:', error);
     }
   };
-  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -144,54 +142,101 @@ const useSchoolFeesReceipts = () => {
     return feeTypes.find(ft => ft._id === feeTypeId)?.feesTypeName || 'Unknown Fee Type';
   };
 
+const handleInstallmentSelection = (installmentNumber) => {
+  setSelectedInstallments(prev => {
+    const newSelectedInstallments = prev.includes(installmentNumber) 
+      ? prev.filter(num => num !== installmentNumber) 
+      : [...prev, installmentNumber];
+    
+    // If we're selecting the installment, select all its fee types
+    if (!prev.includes(installmentNumber)) {
+      const installmentData = getInstallmentData(installmentNumber);
+      setSelectedFeeTypesByInstallment(prevTypes => ({
+        ...prevTypes,
+        [installmentNumber]: installmentData.map(item => item.feesTypeId._id)
+      }));
+    } else {
+      // If deselecting, remove all fee types for this installment
+      setSelectedFeeTypesByInstallment(prevTypes => {
+        const newTypes = {...prevTypes};
+        delete newTypes[installmentNumber];
+        return newTypes;
+      });
+    }
+    
+    return newSelectedInstallments;
+  });
+};
 
-
-  const handleInstallmentSelection = (installmentNumber) => {
-    setSelectedInstallments(prev => 
-      prev.includes(installmentNumber) 
-        ? prev.filter(num => num !== installmentNumber) 
-        : [...prev, installmentNumber]
-    );
-  };
-
-  const handleFeeTypeSelection = (installmentNumber, feeTypeId) => {
-    setSelectedFeeTypesByInstallment(prev => ({
+const handleFeeTypeSelection = (installmentNumber, feeTypeId) => {
+  setSelectedFeeTypesByInstallment(prev => {
+    const currentInstallmentTypes = prev[installmentNumber] || [];
+    const newTypes = currentInstallmentTypes.includes(feeTypeId)
+      ? currentInstallmentTypes.filter(id => id !== feeTypeId)
+      : [...currentInstallmentTypes, feeTypeId];
+    
+    // If all fee types are selected, select the installment
+    const installmentData = getInstallmentData(installmentNumber);
+    if (newTypes.length === installmentData.length) {
+      if (!selectedInstallments.includes(installmentNumber)) {
+        setSelectedInstallments(prevInst => [...prevInst, installmentNumber]);
+      }
+    } else {
+      // If not all fee types are selected, deselect the installment
+      if (selectedInstallments.includes(installmentNumber)) {
+        setSelectedInstallments(prevInst => prevInst.filter(num => num !== installmentNumber));
+      }
+    }
+    
+    return {
       ...prev,
-      [installmentNumber]: (prev[installmentNumber] || []).includes(feeTypeId)
-        ? prev[installmentNumber].filter(id => id !== feeTypeId)
-        : [...(prev[installmentNumber] || []), feeTypeId]
-    }));
-  };
+      [installmentNumber]: newTypes
+    };
+  });
+};
 
   const areAllFeeTypesSelected = () => {
-    if (!feeData?.feeInstallments) return false;
-    
-    const allFeeTypes = new Set();
-    const selectedFeeTypes = new Set();
-    
-    feeData.feeInstallments.forEach(item => {
-      allFeeTypes.add(item.feesTypeId._id);
-    });
-    
-    Object.values(selectedFeeTypesByInstallment).forEach(types => {
-      types.forEach(type => selectedFeeTypes.add(type));
-    });
-    
-    return allFeeTypes.size > 0 && allFeeTypes.size === selectedFeeTypes.size;
-  };
+  if (!selectedAcademicYear || !feeData) return false;
 
-  const handleSelectAllFeeTypes = (e) => {
-    if (e.target.checked) {
-      const allSelected = {};
-      Array.from({ length: totalInstallments }, (_, i) => i + 1).forEach(num => {
-        const installmentData = getInstallmentData(num);
+  const selectedYearData = feeData.find(year => year.academicYear === selectedAcademicYear);
+  if (!selectedYearData?.feeInstallments) return false;
+
+  const allFeeTypes = new Set();
+  const selectedFeeTypes = new Set();
+
+  selectedYearData.feeInstallments.forEach(item => {
+    allFeeTypes.add(item.feesTypeId._id);
+  });
+
+  Object.values(selectedFeeTypesByInstallment).forEach(types => {
+    types.forEach(type => selectedFeeTypes.add(type));
+  });
+
+  return allFeeTypes.size > 0 && allFeeTypes.size === selectedFeeTypes.size;
+};
+
+const handleSelectAllFeeTypes = (e) => {
+  if (e.target.checked) {
+    // Select all installments and all fee types
+    const allSelected = {};
+    const allInstallments = [];
+    
+    totalInstallments.forEach(num => {
+      const installmentData = getInstallmentData(num);
+      if (installmentData.length > 0) {
         allSelected[num] = installmentData.map(item => item.feesTypeId._id);
-      });
-      setSelectedFeeTypesByInstallment(allSelected);
-    } else {
-      setSelectedFeeTypesByInstallment({});
-    }
-  };
+        allInstallments.push(num);
+      }
+    });
+    
+    setSelectedFeeTypesByInstallment(allSelected);
+    setSelectedInstallments(allInstallments);
+  } else {
+    // Deselect all
+    setSelectedFeeTypesByInstallment({});
+    setSelectedInstallments([]);
+  }
+};
 
   const calculatePayFees = () => {
     if (!feeData?.totals) return 0;
@@ -204,16 +249,30 @@ const useSchoolFeesReceipts = () => {
       ...prev,
       [`${installmentNum}-${feeTypeId}`]: amount
     }));
-    
+
+    if (!feeData || !Array.isArray(feeData)) return;
+
     setFeeData(prev => {
-      const updatedInstallments = prev.feeInstallments.map(item => {
-        if (item.installmentName === `Installment ${installmentNum}` && 
-            item.feesTypeId._id === feeTypeId) {
+      if (!prev || !Array.isArray(prev)) return prev;
+
+      const selectedYearData = prev.find(year => year.academicYear === selectedAcademicYear);
+      if (!selectedYearData || !Array.isArray(selectedYearData.feeInstallments)) return prev;
+
+      const updatedInstallments = selectedYearData.feeInstallments.map(item => {
+        if (
+          item.installmentName === `Installment ${installmentNum}` && 
+          item.feesTypeId._id === feeTypeId
+        ) {
           return { ...item, paidAmount: amount };
         }
         return item;
       });
-      return { ...prev, feeInstallments: updatedInstallments };
+
+      return prev.map(year => 
+        year.academicYear === selectedAcademicYear 
+          ? { ...year, feeInstallments: updatedInstallments }
+          : year
+      );
     });
   };
 
@@ -222,99 +281,121 @@ const useSchoolFeesReceipts = () => {
       setSelectAll(false);
     }
     setSelectedAcademicYear(academicYear === selectedAcademicYear ? null : academicYear);
+
+    const selectedYearData = feeData.find(year => year.academicYear === academicYear);
+    if (selectedYearData) {
+      setTotalInstallments(Array.isArray(selectedYearData.installmentsPresent) ? selectedYearData.installmentsPresent : []);
+    } else {
+      setTotalInstallments([]);
+    }
   };
 
   const handleFinalSubmit = async (e) => {
-    e.preventDefault();
-  
-    if (!formData.paymentMode || !formData.name) {
-      toast.error('Please fill all required fields');
-      return;
+  e.preventDefault();
+
+  if (!formData.paymentMode || !formData.name) {
+    toast.error('Please fill all required fields');
+    return;
+  }
+
+  setIsGenerating(true);
+
+  try {
+    const receiptDetails = {
+      receiptNumber: generateReceiptNumber(),
+      transactionNumber: formData.paymentMode === 'Cash'
+        ? generateTransactionNumber()
+        : formData.chequeNumber,
+      studentName: `${formData.firstName} ${formData.lastName}`,
+      studentAdmissionNumber: formData.AdmissionNumber,
+      className: classes.find(c => c._id === formData.masterDefineClass)?.className || '',
+      section: sections.find(s => s._id === formData.section)?.name || '',
+      date: new Date().toISOString().split('T')[0],
+      academicYear: selectedAcademicYear || 'N/A',
+      paymentMode: formData.paymentMode,
+      collectorName: formData.name,
+      installments: []
+    };
+
+    // Get all unique installments that have selected fee types
+    const allRelevantInstallments = new Set([
+      ...selectedInstallments,
+      ...Object.keys(selectedFeeTypesByInstallment).map(Number)
+    ]);
+
+    for (const installmentNum of allRelevantInstallments) {
+      const installmentData = getInstallmentData(installmentNum);
+      const selectedTypes = selectedFeeTypesByInstallment[installmentNum] || [];
+
+      const feeItems = installmentData
+        .filter(item => 
+          selectedInstallments.includes(installmentNum) || // Include all if installment is selected
+          selectedTypes.includes(item.feesTypeId._id) // Or include only selected fee types
+        )
+        .map(item => {
+          const concessionItem = feeData.concession?.concessionDetails?.find(
+            cd => cd.installmentName === item.installmentName && cd.feesType === item.feesTypeId._id
+          );
+          const concession = concessionItem?.concessionAmount || 0;
+          const fineAmount = item.fineAmount || 0;
+          const payable = item.amount - concession;
+          const paid = item.paidAmount || 0;
+
+          return {
+            feeTypeId: item.feesTypeId._id,
+            amount: item.amount,
+            concession,
+            fineAmount,
+            payable,
+            paid,
+            balance: payable - paid
+          };
+        });
+
+      if (feeItems.length > 0) {
+        receiptDetails.installments.push({
+          number: installmentNum,
+          feeItems
+        });
+      }
     }
-  
-    setIsGenerating(true);
-  
-    try {
-      const receiptDetails = {
-        receiptNumber: generateReceiptNumber(),
-        transactionNumber: formData.paymentMode === 'Cash'
-          ? generateTransactionNumber()
-          : formData.chequeNumber,
-        studentName: `${formData.firstName} ${formData.lastName}`,
-        studentAdmissionNumber: formData.AdmissionNumber,
-        className: classes.find(c => c._id === formData.masterDefineClass)?.className || '',
-        section: sections.find(s => s._id === formData.section)?.name || '',
-        date: new Date().toISOString().split('T')[0],
-        academicYear: selectedAcademicYear || 'N/A',
-        paymentMode: formData.paymentMode,
-        collectorName: formData.name,
-        installments: []
-      };
-  
-      for (const installmentNum of selectedInstallments) {
-        const installmentData = getInstallmentData(installmentNum);
-        const selectedTypes = selectedFeeTypesByInstallment[installmentNum] || [];
-  
-        const feeItems = installmentData
-          .filter(item => selectedTypes.length === 0 || selectedTypes.includes(item.feesTypeId._id))
-          .map(item => {
-            const concessionItem = feeData.concession?.concessionDetails?.find(
-              cd => cd.installmentName === item.installmentName && cd.feesType === item.feesTypeId._id
-            );
-            const concession = concessionItem?.concessionAmount || 0;
-            const fineAmount = item.fineAmount || 0;
-            const payable = item.amount - concession;
-            const paid = item.paidAmount || 0;
-  
-            return {
-              feeTypeId: item.feesTypeId._id,
-              amount: item.amount,
-              concession,
-              fineAmount,
-              payable,
-              paid,
-              balance: payable - paid
-            };
-          });
-  
-        if (feeItems.length > 0) {
-          receiptDetails.installments.push({
-            number: installmentNum,
-            feeItems
-          });
-        }
-      }
-  
-      const response = await postAPI('/create-schoolfees', receiptDetails, true);
-  
-      if (response.hasError) {
-        throw new Error(response.message || 'Failed to save receipt');
-      }
-  
-      const frontendReceiptDetails = {
-        ...receiptDetails,
-        installments: receiptDetails.installments.map(inst => ({
-          ...inst,
-          feeItems: inst.feeItems.map(item => ({
-            ...item,
-            type: getFeeTypeName(item.feeTypeId) 
-          }))
+
+    // Check if there are any items to process
+    if (receiptDetails.installments.length === 0) {
+      throw new Error('No fee items selected for processing');
+    }
+
+    const response = await postAPI('/create-schoolfees', receiptDetails, true);
+
+    if (response.hasError) {
+      throw new Error(response.message || 'Failed to save receipt');
+    }
+
+    const frontendReceiptDetails = {
+      ...receiptDetails,
+      installments: receiptDetails.installments.map(inst => ({
+        ...inst,
+        feeItems: inst.feeItems.map(item => ({
+          ...item,
+          type: getFeeTypeName(item.feeTypeId) 
         }))
-      };
-  
-      toast.success('Receipt generated successfully!');
-  
-      navigate('/school-dashboard/fees-module/fees-receipts/school-fees/student-receipts', {
-        state: frontendReceiptDetails
-      });
-  
-    } catch (error) {
-      toast.error(error.message || 'Failed to generate receipt');
-      console.error('Receipt generation error:', error);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+      }))
+    };
+
+    toast.success('Receipt generated successfully!');
+
+    navigate('/school-dashboard/fees-module/fees-receipts/school-fees/student-receipts', {
+      state: frontendReceiptDetails
+    });
+
+  } catch (error) {
+    toast.error(error.message || 'Failed to generate receipt');
+    console.error('Receipt generation error:', error);
+  } finally {
+    setIsGenerating(false);
+  }
+};
+
 
   return {
     formData,
@@ -348,7 +429,9 @@ const useSchoolFeesReceipts = () => {
     paidAmounts,
     areAllFeeTypesSelected,
     handleSelectAllFeeTypes,
-    handleAcademicYearSelect
+    handleAcademicYearSelect,
+    setTotalInstallments,
+ 
   };
 };
 

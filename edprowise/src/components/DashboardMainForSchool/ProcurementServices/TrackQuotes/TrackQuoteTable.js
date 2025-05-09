@@ -653,11 +653,6 @@ const TrackQuoteTable = ({}) => {
                                           alt={quote?.subCategoryName}
                                           src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${availableImages[0]}`}
                                         />
-                                        {availableImages.length > 1 && (
-                                          <span className="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle px-1">
-                                            +{availableImages.length - 1}
-                                          </span>
-                                        )}
                                       </div>
                                     )}
                                     <div>{quote.subCategoryName}</div>

@@ -17,12 +17,22 @@ export const validateBasicForm = (formData, toast, isNurseryClass) => {
       { field: 'motherName', message: "Mother's name is required" },  
       { field: 'motherContactNo', message: "Mother's contact number is required" }, 
       { field: 'currentAddress', message: 'Current address is required' },
-      { field: 'cityStateCountry', message: 'City, state, and country are required' },
+      { field: 'country', message: 'country' },   
+      { field: 'state', message: 'state ' },      
+      { field: 'city', message: 'city ' },   
       { field: 'pincode', message: 'Pincode is required' },
       { field: 'studentCategory', message: 'Student category is required' },
       { field: 'howReachUs', message: 'Please specify how you reached us' },
       { field: 'aadharPassportNumber', message: 'Aadhaar/Passport number is required' }
     ];
+
+    if (!isNurseryClass(formData.masterDefineClass)) {
+        requiredFields.push(
+          { field: 'previousSchoolName', message: 'Previous school name is required' },
+          { field: 'addressOfpreviousSchool', message: 'Address of previous school is required' },
+          { field: 'previousSchoolBoard', message: 'Previous school board is required' }
+        );
+      }
 
 
     for (const { field, message } of requiredFields) {

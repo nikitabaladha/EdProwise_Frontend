@@ -1,4 +1,5 @@
 import React from "react";
+import CreatableSelect from 'react-select/creatable';
 
 import useStudentRegistration from "./UseStudentRegistrationUpdate";
 
@@ -12,10 +13,17 @@ const StudentRegistrationForm = () => {
     classes,
     shifts,
     cityOptions,
+    countryOptions,
+    stateOptions,
     isNursery,
     handlePhotoUpload,
-    getFileNameFromPath,      
-    existingFiles 
+    getFileNameFromPath,
+    existingFiles,
+    handleCountryChange,
+    handleStateChange,
+    handleCityChange,
+    handleDownload
+    
   } = useStudentRegistration();
 
   return (
@@ -25,11 +33,16 @@ const StudentRegistrationForm = () => {
           <div className="card m-2">
             <div className="card-body custom-heading-padding">
               <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
+                <div className="card-header mb-2 d-flex justify-content-between">
+                  <h4 className="card-title custom-heading-font flex-grow-1 text-center">
                     Student Registration Form
                   </h4>
+                  {/* <button className="btn btn-primary"
+                  onClick={handleDownload}>
+                    <i className="fas fa-download"></i>
+                  </button> */}
                 </div>
+
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="row">
@@ -45,11 +58,11 @@ const StudentRegistrationForm = () => {
                     >
                       {formData.studentPhoto ? (
                         <img
-                        src={
-                          typeof formData.studentPhoto === "string"
-                            ? formData.studentPhoto
-                            : URL.createObjectURL(formData.studentPhoto)
-                        }
+                          src={
+                            typeof formData.studentPhoto === "string"
+                              ? formData.studentPhoto
+                              : URL.createObjectURL(formData.studentPhoto)
+                          }
                           alt="Passport"
                           className="w-100 h-100 object-fit-cover"
                         />
@@ -73,7 +86,7 @@ const StudentRegistrationForm = () => {
                         className="d-none"
                         accept="image/*"
                         onChange={handlePhotoUpload}
-                      
+
                       />
                       <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
                         Upload Photo
@@ -166,7 +179,7 @@ const StudentRegistrationForm = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-md-2">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="nationality" className="form-label">
                         Nationality <span className="text-danger">*</span>
@@ -187,7 +200,7 @@ const StudentRegistrationForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-2">
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="gender" className="form-label">
                         Gender <span className="text-danger">*</span>
@@ -339,29 +352,69 @@ const StudentRegistrationForm = () => {
                 </div>
 
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-3">
                     <div className="mb-3">
-                      <label htmlFor="cityStateCountry" className="form-label">
-                        City-State-Country <span className="text-danger">*</span>
+                      <label htmlFor="country" className="form-label">
+                        Country <span className="text-danger">*</span>
                       </label>
-                      <select
-                        id="cityStateCountry"
-                        name="cityStateCountry"
-                        className="form-control"
-                        value={formData.cityStateCountry}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select City-State-Country</option>
-                        {cityOptions.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+                      <CreatableSelect
+                        id="country"
+                        name="country"
+                        options={countryOptions}
+                        value={formData.country ? { value: formData.country, label: formData.country } : null}
+                        onChange={handleCountryChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a country"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => "Type to add a new country"}
+                      />
                     </div>
                   </div>
-                  <div className="col-md-6">
+
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        id="state"
+                        name="state"
+                        options={stateOptions}
+                        value={formData.state ? { value: formData.state, label: formData.state } : null}
+                        onChange={handleStateChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a state"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => formData.country ? "Type to add a new state" : "Select a country first"}
+                        isValidNewOption={(inputValue) => inputValue.length > 0}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        id="city"
+                        name="city"
+                        options={cityOptions}
+                        value={formData.city ? { value: formData.city, label: formData.city } : null}
+                        onChange={handleCityChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a city"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => formData.state ? "Type to add a new city" : "Select a state first"}
+                        isValidNewOption={(inputValue) => inputValue.length > 0}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
                         Pincode <span className="text-danger">*</span>
@@ -597,13 +650,12 @@ const StudentRegistrationForm = () => {
                     </div>
                   </div>
                 </div>
-
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Understanding
-                  </h4>
-                </div>
                 <div className="row">
+                  <div className="card-header mb-2">
+                    <h4 className="card-title text-center custom-heading-font">
+                      Understanding
+                    </h4>
+                  </div>
                   <div className="form-check ms-1 mb-2">
                     <input
                       type="checkbox"
@@ -613,15 +665,65 @@ const StudentRegistrationForm = () => {
                       checked={formData.agreementChecked}
                       onChange={handleChange}
                     />
-                    <label className="form-check-label" htmlFor="customCheck1">
+                    <label
+                      className="form-check-label"
+                      htmlFor="customCheck1"
+                    >
                       I Understand & agree that the registration of my word does not guarantee admission to the school & the registration fee is neither transferable not refundable.
                     </label>
                   </div>
-
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="Registartionfees" className="form-label">
+                        Registration Fees <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="Registartionfees"
+                        name="Registartionfees"
+                        className="form-control"
+                        value={formData.registrationFee}
+                        disabled
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="concessionamount" className="form-label">
+                        Concession
+                      </label>
+                      <input
+                        // type="number"
+                        id="concessionamount"
+                        name="concessionamount"
+                        className="form-control"
+                        value={formData.concessionAmount}
+                        onChange={handleChange}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="finalamount" className="form-label">
+                        Final Amount <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="finalamount"
+                        name="finalamount"
+                        className="form-control"
+                        value={formData.finalAmount}
+                        disabled
+                        required
+                      />
+                    </div>
+                  </div>
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="name" className="form-label">
-                        Name <span className="text-danger">*</span>
+                        Name of person filling the form <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -631,14 +733,13 @@ const StudentRegistrationForm = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        readOnly
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="paymentMode" className="form-label">
-                        Payment Option <span className="text-danger">*</span>
+                        Payment Option  <span className="text-danger">*</span>
                       </label>
                       <select
                         id="paymentMode"
@@ -647,8 +748,9 @@ const StudentRegistrationForm = () => {
                         value={formData.paymentMode}
                         onChange={handleChange}
                         required
+                        disabled
                       >
-                        <option value="">Select</option>
+                        <option value="">Select </option>
                         <option value="Cash">Cash</option>
                         <option value="Cheque">Cheque</option>
                         <option value="Online">Online</option>
@@ -658,7 +760,7 @@ const StudentRegistrationForm = () => {
 
                   {formData.paymentMode === 'Cheque' && (
                     <>
-                      <div className="col-md-3">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="chequeNumber" className="form-label">
                             Cheque Number <span className="text-danger">*</span>
@@ -671,10 +773,11 @@ const StudentRegistrationForm = () => {
                             value={formData.chequeNumber}
                             onChange={handleChange}
                             required
+                            disabled
                           />
                         </div>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="bankName" className="form-label">
                             Bank Name <span className="text-danger">*</span>
@@ -687,6 +790,7 @@ const StudentRegistrationForm = () => {
                             value={formData.bankName}
                             onChange={handleChange}
                             required
+                            disabled
                           />
                         </div>
                       </div>
@@ -712,7 +816,7 @@ const StudentRegistrationForm = () => {
                         name="dateOfApplicatopnReceive"
                         className="form-control"
                         value={student?.createdAt ? student.createdAt.substring(0, 10) : ''}
-                        readOnly
+                         disabled
                       />
 
                     </div>
@@ -720,8 +824,40 @@ const StudentRegistrationForm = () => {
 
                   <div className="col-md-4">
                     <div className="mb-3">
+                      <label htmlFor="receiptNumber" className="form-label">
+                        Receipts No.
+                      </label>
+                      <input
+                        type="text"
+                        id="receiptNumber"
+                        name="receiptNumber"
+                        className="form-control"
+                        value={student?.receiptNumber || ''}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="registrationNumber" className="form-label">
+                        Registration No.
+                      </label>
+                      <input
+                        type="text"
+                        id="registrationNumber"
+                        name="registrationNumber"
+                        className="form-control"
+                        value={student?.registrationNumber || ''}
+                       disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
                       <label htmlFor="receivedBy" className="form-label">
-                       Payment Mode
+                        Payment Mode
                       </label>
                       <input
                         type="text"
@@ -729,7 +865,23 @@ const StudentRegistrationForm = () => {
                         name="receivedBy"
                         className="form-control"
                         value={formData.paymentMode}
-                        readOnly
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="receivedBy" className="form-label">
+                        Payment Date
+                      </label>
+                      <input
+                        type="text"
+                        id="receivedBy"
+                        name="receivedBy"
+                        className="form-control"
+                        value={student?.paymentDate ? new Date(student.paymentDate).toLocaleDateString('en-GB') : ''}
+                        disabled
                       />
                     </div>
                   </div>
@@ -743,39 +895,8 @@ const StudentRegistrationForm = () => {
                         id="transationOrChequetNumber"
                         name="transationOrChequetNumber"
                         className="form-control"
-                        value={student?.transactionNumber || ''}
-                        readOnly
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="receiptNumber" className="form-label">
-                        Receipts No.
-                      </label>
-                      <input
-                        type="text"
-                        id="receiptNumber"
-                        name="receiptNumber"
-                        className="form-control"
-                        value={student?.receiptNumber || ''}
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="registrationNumber" className="form-label">
-                        Registration No.
-                      </label>
-                      <input
-                        type="text"
-                        id="registrationNumber"
-                        name="registrationNumber"
-                        className="form-control"
-                        value={student?.registrationNumber || ''}
-                        readOnly
+                        value={student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ''}
+                        disabled
                       />
                     </div>
                   </div>
@@ -785,18 +906,12 @@ const StudentRegistrationForm = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={isSubmitting}
                     >
-                      Update
+                      {isSubmitting ? 'Updating...' : 'Update'}
                     </button>
                   </div>
                   <div className="text" style={{ marginLeft: "2px" }}>
-                    {/* <button
-                      type="button"
-                      className="btn btn-primary "
-                      onClick={() => navigate(-1)}
-                    >
-                      Discard Changes
-                    </button> */}
                   </div>
                 </div>
               </form>

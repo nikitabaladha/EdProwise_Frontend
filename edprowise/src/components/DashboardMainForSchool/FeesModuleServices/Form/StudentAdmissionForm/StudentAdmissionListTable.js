@@ -5,6 +5,8 @@ import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 
+
+
 const StudentAdmissionListTable = () => {
   const navigate = useNavigate();
   const [schoolId, setSchoolId] = useState(null);
@@ -12,6 +14,31 @@ const StudentAdmissionListTable = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [classList, setClassList] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
 
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
@@ -28,6 +55,8 @@ const StudentAdmissionListTable = () => {
     );
   };
 
+
+
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
@@ -40,17 +69,21 @@ const StudentAdmissionListTable = () => {
     setSchoolId(id);
   }, []);
 
+
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchStudents = async () => {
       try {
-        const response = await getAPI(`/get-admission-form/${schoolId}`);
+        const response = await getAPI(`/get-admission-form-by-year-schoolId/${schoolId}/${selectedYear}`);
+        console.log("API response:", response);
+        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        if (!classRes.hasError) {
+          setClassList(classRes.data.data);
+        }
 
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.data)
-            ? response.data.data
-            : [];
+          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
           setStudentData(studentArray);
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -62,7 +95,13 @@ const StudentAdmissionListTable = () => {
     };
 
     fetchStudents();
-  }, [schoolId]);
+  }, [schoolId, selectedYear,]);
+
+  const getClassNameById = (id) => {
+    const found = classList.find((cls) => cls._id === id);
+    return found ? found.className : "N/A";
+  };
+
 
   const navigateToAdmission = (event) => {
     event.preventDefault();
@@ -81,17 +120,17 @@ const StudentAdmissionListTable = () => {
     navigate(`/school-dashboard/fees-module/form/update-admission-form`, {
       state: { student },
     });
-  };
+  }
 
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
 
+
+
+
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(
-    indexOfFirstStudent,
-    indexOfLastStudent
-  );
+  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
 
   const totalPages = Math.ceil(studentData.length / studentListPerPage);
 
@@ -110,30 +149,50 @@ const StudentAdmissionListTable = () => {
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-  const pagesToShow = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, index) => startPage + index
-  );
+  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
 
   return (
     <>
       {" "}
       <div className="container-fluid">
+        <div className="d-flex justify-content-end mb-2 gap-2">
+          <Link
+
+            onClick={(event) => navigateToAdmission(event)}
+            className="btn btn-sm btn-primary"
+          >
+            Admission Form
+          </Link>
+          <Link className="btn btn-sm btn-secondary">
+            Export
+          </Link>
+        </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">Admission List</h4>
-                <Link
-                  onClick={(event) => navigateToAdmission(event)}
-                  className="btn btn-sm btn-primary"
-                >
-                  Admission Form
-                </Link>
+                <h4 className="card-title flex-grow-1">
+                  Admission List
+                </h4>
 
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
-                </div>
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    localStorage.setItem("selectedAcademicYear", e.target.value);
+                  }}
+                  disabled={loadingYears}
+                >
+                  <option value="" disabled>Select Year</option>
+                  {academicYears.map((year) => (
+                    <option key={year._id} value={year.academicYear}>
+                      {year.academicYear}
+                    </option>
+                  ))}
+
+                </select>
+
               </div>
               <div>
                 <div className="table-responsive">
@@ -156,8 +215,8 @@ const StudentAdmissionListTable = () => {
                         <th>Admission No.</th>
                         <th>Student First Name</th>
                         <th>Student Last Name</th>
-                        <th>Transaction No</th>
-                        <th>Date Of Recordes</th>
+                        <th>Class</th>
+                        <th>Contac No</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -182,43 +241,28 @@ const StudentAdmissionListTable = () => {
                           <td>{student.AdmissionNumber}</td>
                           <td>{student.firstName}</td>
                           <td>{student.lastName}</td>
-                          <td>{student.transactionNumber}</td>
-                          <td>
-                            {new Date(
-                              student.applicationDate
-                            ).toLocaleDateString()}
-                          </td>
+                          <td>{getClassNameById(student.masterDefineClass)}</td>
+                          <td>{student.fatherContactNo}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link
-                                className="btn btn-light btn-sm"
-                                onClick={(event) =>
-                                  navigateToViewAdmissionInfo(event, student)
-                                }
+                              <Link className="btn btn-light btn-sm"
+                                onClick={(event) => navigateToViewAdmissionInfo(event, student)}
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                className="btn btn-soft-primary btn-sm"
-                                onClick={(event) =>
-                                  navigateToUpdateAdmissionForm(event, student)
-                                }
+                              <Link className="btn btn-soft-primary btn-sm"
+                                onClick={(event) => navigateToUpdateAdmissionForm(event, student)}
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                className="btn btn-soft-danger btn-sm"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  openDeleteDialog(student);
-                                }}
-                              >
+                              <Link className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}>
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -247,14 +291,12 @@ const StudentAdmissionListTable = () => {
                     {pagesToShow.map((page) => (
                       <li
                         key={page}
-                        className={`page-item ${
-                          currentPage === page ? "active" : ""
-                        }`}
+                        className={`page-item ${currentPage === page ? "active" : ""
+                          }`}
                       >
                         <button
-                          className={`page-link pagination-button ${
-                            currentPage === page ? "active" : ""
-                          }`}
+                          className={`page-link pagination-button ${currentPage === page ? "active" : ""
+                            }`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -290,3 +332,7 @@ const StudentAdmissionListTable = () => {
 };
 
 export default StudentAdmissionListTable;
+
+
+
+

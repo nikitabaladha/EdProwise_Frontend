@@ -17,17 +17,32 @@ export const validateBasicForm = (formData, isNursery) => {
         { field: 'motherName', name: 'mother name' },
         { field: 'motherContactNo', name: 'mother contact number' },
         { field: 'currentAddress', name: 'current address' },
-        { field: 'cityStateCountry', name: 'city-state-country' },
+        { field: 'country', message: 'country ' },   
+        { field: 'state', message: 'state ' },      
+        { field: 'city', message: 'city ' }, 
         { field: 'pincode', name: 'pincode' },
         { field: 'studentCategory', name: 'category' },
         { field: 'aadharPassportNumber', name: 'Aadhar/Passport number' },
-        { field: 'motherLanguage', name: 'mother language' }
+        { field: 'motherTongue', name: 'mother tongue' }
     ];
+
+    // if (!isNurseryClass(formData.masterDefineClass)) {
+    //     requiredFields.push(
+    //       { field: 'previousSchoolName', message: 'Previous school name is required' },
+    //       { field: 'addressOfpreviousSchool', message: 'Address of previous school is required' },
+    //       { field: 'previousSchoolBoard', message: 'Previous school board is required' }
+    //     );
+    //   }
 
     for (const { field, name } of requiredFields) {
         if (!formData[field]) {
             return `Please fill in ${name}`;
         }
+    }
+
+    if (!formData.studentPhoto) {
+           return 'Please upload the student photo';
+       
     }
 
 

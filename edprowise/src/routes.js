@@ -1,5 +1,8 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import PagenotFound404 from "./components/ErrorPages/404Page.js";
+import UnauthorizedAccess from "./components/ErrorPages/403Page.js";
 
 import QuoteProposalForAll from "./components/ProcurementPDF/QuoteProposal.js";
 import InvoiceForBuyerForAll from "./components/ProcurementPDF/InvoiceForBuyer.js";
@@ -197,12 +200,18 @@ import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesReceipts
 import StudentReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/Recipt.js";
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
+import TcOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/StudentTCForm/TCOfficialInformation.js";
+import ConcessionFormInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/ConcessionForm/ConcessionForm/ConcessionOfficialInformation.js";
 import PrefixSetting from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/RegistartionPrefix/PrefixTable.js";
 import AddPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/RegistartionPrefix/AddPrefix.js";
 import AdmissionPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/AdmissionPrefix/PrefixTable.js";
 import AddAdmissionPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/AdmissionPrefix/AddPrefix.js";
 import Fine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/FineTable.js";
 import AddFine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/Addfine.js";
+import OneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/OneTimeFeesTable.js";
+import AddOneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/AddoneTimeFees.js";
+import UpdateOneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/UpdateOneTimeFees.js";
+import ViewOneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/ViewOneTimeFees.js";
 
 // ===================================PayRoll===========================
 import EmployeeRegistrationList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeRegistration/EmployeeRegistrationList.js";
@@ -243,26 +252,74 @@ import PayToEdprowiseForSeller from "./components/DashboardMainForSeller/Procure
 import ForgotPassword from "./components/ForgotPasswordorUserId/ForgotPassword.js";
 import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
 
-// 404 pages
-
-import Page404ForWebsite from "./components/Pages404/Page404ForWebsite.js";
-import Page404ForDashboard from "./components/Pages404/Page404ForDashboard.js";
+// ================================Comman Pages================================================//
+import SchoolCommanpage from "./components/CommanPage/CommanPageCardsSchool.js";
+import SchoolFeesManagementYear from "./components/CommanPage/YearPage.js";
 
 import RemoveThemeAttribute from "./components/RemoveThemeAttribute.js";
-
 import { ThemeProvider } from "./components/ThemeProvider";
 
-const PrivateRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem("accessToken");
-  return isAuthenticated ? children : <Navigate to="/login" />;
+const DashboardLayout = ({ children }) => {
+  return <ThemeProvider>{children}</ThemeProvider>;
+};
+
+const PrivateRoute = ({ allowedRoles, requiredSubscription, children }) => {
+  const { isAuthenticated, role, subscription } = useAuth();
+
+  if (!isAuthenticated) {
+    console.log("Not authenticated, redirecting to login");
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    console.log(`Role ${role} not allowed, redirecting to unauthorized`);
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  if (requiredSubscription) {
+    const hasSubscription = subscription?.some(
+      (sub) =>
+        sub.subscriptionFor === requiredSubscription &&
+        new Date(sub.subscriptionEndDate) > new Date()
+    );
+
+    if (!hasSubscription) {
+      console.log(
+        `Subscription ${requiredSubscription} required but not active`
+      );
+      return <Navigate to="/unauthorized" replace />;
+    }
+  }
+
+  console.log("Access granted");
+  return children ? children : <Outlet />;
 };
 
 const PublicRoute = ({ children }) => {
-  const isAuthenticated = !localStorage.getItem("accessToken");
-  return isAuthenticated ? children : <Navigate to="/" />;
+  const { isAuthenticated, role } = useAuth();
+
+  if (isAuthenticated) {
+    return (
+      <Navigate
+        to={
+          role === "Admin"
+            ? "/admin-dashboard"
+            : role === "School"
+            ? "/school/go-to-dashboard"
+            : role === "Seller"
+            ? "/seller-dashboard"
+            : "/"
+        }
+        replace
+      />
+    );
+  }
+
+  return children;
 };
 
 const AppRoutes = () => {
+  const { isAuthenticated, role } = useAuth();
   return (
     <Routes>
       <Route
@@ -273,6 +330,7 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+
       <Route
         path="/login/admin"
         element={
@@ -297,6 +355,24 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+
+      <Route
+        path="/school/go-to-dashboard"
+        element={
+          <PrivateRoute allowedRoles={["School"]}>
+            <SchoolCommanpage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/school/fees-management-year"
+        element={
+          <PrivateRoute allowedRoles={["School"]}>
+            <SchoolFeesManagementYear />
+          </PrivateRoute>
+        }
+      />
+
       <Route
         path="/forgot-password"
         element={
@@ -305,6 +381,7 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+
       <Route
         path="/forgot-password/new-password"
         element={
@@ -313,34 +390,21 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-      <Route
-        path="/forgot-userId"
-        element={
-          <PublicRoute>
-            <ForgotUserId />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/forgot-userId/new-userId"
-        element={
-          <PublicRoute>
-            <NewUserId />
-          </PublicRoute>
-        }
-      />
+
       <Route
         path="/complete-admin-profile"
         element={
-          <PrivateRoute>
-            <CompleteEdprowiseProfile />
+          <PrivateRoute allowedRoles={["Admin"]}>
+            <DashboardLayout>
+              <CompleteEdprowiseProfile />
+            </DashboardLayout>
           </PrivateRoute>
         }
       />
       <Route
         path="/complete-school-profile"
         element={
-          <PrivateRoute>
+          <PrivateRoute allowedRoles={["School"]}>
             <CompleteSchoolProfile />
           </PrivateRoute>
         }
@@ -348,20 +412,21 @@ const AppRoutes = () => {
       <Route
         path="/complete-your-school-profile"
         element={
-          <PrivateRoute>
+          <PrivateRoute allowedRoles={["School"]}>
             <CompleteSchoolProfileBySchool />
           </PrivateRoute>
         }
       />
+
       <Route
         path="/complete-seller-profile"
         element={
-          <PrivateRoute>
+          <PrivateRoute allowedRoles={["Seller"]}>
             <CompleteSellerProfile />
           </PrivateRoute>
         }
       />
-      <Route path="/website-page-not-found" element={<Page404ForWebsite />} />
+
       {/* =========================Website Routes========================= */}
 
       <Route
@@ -462,7 +527,7 @@ const AppRoutes = () => {
         path="/admin-dashboard"
         element={
           <ThemeProvider>
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["Admin"]}>
               <AdminDashboardMain />
             </PrivateRoute>
           </ThemeProvider>
@@ -571,8 +636,6 @@ const AppRoutes = () => {
         <Route path="email/smtp-setting" element={<SMTPHostSettings />} />
         <Route path="email/templates" element={<EmailTemplatesList />} />
         <Route path="email/marketing" element={<MarketingEmail />} />
-
-        <Route path="*" element={<Page404ForDashboard />} />
       </Route>
       {/* ==========================================Schhool Routes================================*/}
       <Route
@@ -580,7 +643,7 @@ const AppRoutes = () => {
         element={
           <>
             <ThemeProvider>
-              <PrivateRoute>
+              <PrivateRoute allowedRoles={["School"]}>
                 <SchoolDashboardMain />
               </PrivateRoute>
             </ThemeProvider>
@@ -646,10 +709,14 @@ const AppRoutes = () => {
           element={<InvoiceForBuyerForAll />}
         />
 
-        {/* ***********Fees Module********* */}
+        {/* ==========================================Fees Module================================== */}
         <Route
           path="fees-module/form/registration"
-          element={<StudentRegisterListTable />}
+          element={
+            <PrivateRoute allowedRoles={["School"]} requiredSubscription="Fees">
+              <StudentRegisterListTable />
+            </PrivateRoute>
+          }
         />
         <Route
           path="fees-module/form/registration-form"
@@ -669,7 +736,7 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="fees-module/form/admission-list"
+          path="fees-module/form/admission"
           element={<StudentAdmissionListTable />}
         />
         <Route
@@ -707,6 +774,11 @@ const AppRoutes = () => {
         />
 
         <Route
+          path="fees-module/form/trasfer-certificate-form-details"
+          element={<TcOfficialInformation />}
+        />
+
+        <Route
           path="fees-module/form/concession-table"
           element={<ConcessionStudentListTable />}
         />
@@ -722,72 +794,14 @@ const AppRoutes = () => {
           path="fees-module/form/update-concession-form"
           element={<UpdateConcessionForm />}
         />
-
         <Route
-          path="fees-module/admin-setting/class-section"
-          element={<ClassAndSection />}
-        />
-        <Route
-          path="fees-module/admin-setting/class-section/create-class-section"
-          element={<CreateClassAndSection />}
+          path="fees-module/form/concession-form-details"
+          element={<ConcessionFormInformation />}
         />
 
-        <Route
-          path="fees-module/admin-setting/class-section/update-class-section"
-          element={<UpdateClassAndSection />}
-        />
+        {/*---------------------- Admin Settings ------------------*/}
 
-        <Route
-          path="fees-module/admin-setting/class-section/view-class-section"
-          element={<ViewClassAndSection />}
-        />
-
-        <Route
-          path="fees-module/admin-setting/fees-type-list"
-          element={<TypeOfFeesList />}
-        />
-        <Route
-          path="fees-module/admin-setting/fees-type-list/add-fees-type"
-          element={<AddFeesType />}
-        />
-
-        <Route
-          path="fees-module/admin-setting/fees-type-list/update-fees-type"
-          element={<UpdateFeesType />}
-        />
-
-        <Route
-          path="fees-module/admin-setting/fees-structure"
-          element={<FeesStructureListTable />}
-        />
-        <Route
-          path="fees-module/admin-setting/fees-structure/add-fees-structure"
-          element={<FeesStructure />}
-        />
-
-        <Route
-          path="fees-module/admin-setting/fees-structure/update-fees-structure"
-          element={<UpdateFeesStructure />}
-        />
-
-        <Route
-          path="fees-module/admin-setting/fees-structure/view-fees-structure"
-          element={<ViewFeesStructure />}
-        />
-
-        <Route
-          path="fees-module/admin-setting/shifts"
-          element={<SchoolShifts />}
-        />
-        <Route
-          path="fees-module/admin-setting/shifts/add-shift"
-          element={<AddShifts />}
-        />
-
-        <Route
-          path="fees-module/admin-setting/shifts/update-shift"
-          element={<UpdateShifts />}
-        />
+        {/*------------------------------------ Prefix Seetings----------------------------- */}
 
         <Route
           path="fees-module/admin-setting/prefix-setting/registartion-prefix"
@@ -807,11 +821,105 @@ const AppRoutes = () => {
           element={<AddAdmissionPrefix />}
         />
 
-        <Route path="fees-module/admin-setting/fine" element={<Fine />} />
+        {/*--------------------------------------- Grade-------------------------------- */}
+
         <Route
-          path="fees-module/admin-setting/fine/add-fine"
+          path="fees-module/admin-setting/grade/class-section"
+          element={<ClassAndSection />}
+        />
+        <Route
+          path="fees-module/admin-setting/grade/class-section/create-class-section"
+          element={<CreateClassAndSection />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/grade/class-section/update-class-section"
+          element={<UpdateClassAndSection />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/grade/class-section/view-class-section"
+          element={<ViewClassAndSection />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/grade/shifts"
+          element={<SchoolShifts />}
+        />
+        <Route
+          path="fees-module/admin-setting/grade/shifts/add-shift"
+          element={<AddShifts />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/grade/shifts/update-shift"
+          element={<UpdateShifts />}
+        />
+
+        {/*-------------------------------------- Fees Structure--------------------------------------- */}
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/fees-type-list"
+          element={<TypeOfFeesList />}
+        />
+        <Route
+          path="fees-module/admin-setting/fees-structure/fees-type-list/add-fees-type"
+          element={<AddFeesType />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/fees-type-list/update-fees-type"
+          element={<UpdateFeesType />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/school-fees"
+          element={<FeesStructureListTable />}
+        />
+        <Route
+          path="fees-module/admin-setting/fees-structure/school-fees/add-school-fees"
+          element={<FeesStructure />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/school-fees/update-school-fees"
+          element={<UpdateFeesStructure />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/school-fees/view-school-fees"
+          element={<ViewFeesStructure />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/one-time-fees"
+          element={<OneTimeFees />}
+        />
+        <Route
+          path="fees-module/admin-setting/fees-structure/one-time-fees-add"
+          element={<AddOneTimeFees />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/one-time-fees-update"
+          element={<UpdateOneTimeFees />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/one-time-fees-view"
+          element={<ViewOneTimeFees />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/fees-structure/fine"
+          element={<Fine />}
+        />
+        <Route
+          path="fees-module/admin-setting/fees-structure/fine/add-fine"
           element={<AddFine />}
         />
+
+        {/* --------------------------------------------------------------------------------------------------- */}
 
         <Route
           path="fees-module/fees-receipts/school-fees"
@@ -823,7 +931,7 @@ const AppRoutes = () => {
           element={<StudentReceipts />}
         />
 
-        {/* *****************************Payroll Module ***************************************** */}
+        {/* =====================================Payroll Module==================================== */}
         <Route
           path="payroll-module/admin-setting/register-employee-list"
           element={<EmployeeRegistrationList />}
@@ -884,8 +992,6 @@ const AppRoutes = () => {
           path="payroll-module/employee-services/update-details"
           element={<EmployeeDetails />}
         />
-
-        <Route path="*" element={<Page404ForDashboard />} />
       </Route>
       {/* =========================================Seller Routes============================================= */}
 
@@ -893,7 +999,7 @@ const AppRoutes = () => {
         path="/seller-dashboard"
         element={
           <ThemeProvider>
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["Seller"]}>
               <SellerDashboardMain />
             </PrivateRoute>
           </ThemeProvider>
@@ -901,7 +1007,6 @@ const AppRoutes = () => {
       >
         {/*Seller Dashboard Route */}
 
-        <Route path="*" element={<Page404ForDashboard />} />
         <Route index element={<SellerProcurementDashboard />} />
 
         <Route path="view-seller-profile" element={<ViewSellerProfile />} />
@@ -959,6 +1064,29 @@ const AppRoutes = () => {
           element={<QuoteProposalForAll />}
         />
       </Route>
+      <Route
+        path="/"
+        element={
+          isAuthenticated ? (
+            role === "Admin" ? (
+              <Navigate to="/admin-dashboard/dashboard" replace />
+            ) : role === "School" ? (
+              <Navigate to="/school-dashboard/dashboard" replace />
+            ) : role === "Seller" ? (
+              <Navigate to="/seller-dashboard/dashboard" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      {/*----------------------------------------- Error Routes-------------------------------------------------------- */}
+      <Route path="/404" element={<PagenotFound404 />} />
+      <Route path="/unauthorized" element={<UnauthorizedAccess />} />
+      <Route path="*" element={<Navigate to="/404" replace />} />
     </Routes>
   );
 };

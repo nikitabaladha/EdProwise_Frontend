@@ -1,23 +1,31 @@
-import React from "react";
+import Select from 'react-select';
 import useConcessionForm from "./useConcessionForm";
 
 const ConcessionForm = () => {
     const {
         formData,
+        handleChange,
+        handleConcessionDetailChange,
+        toggleRowSelection,
+        fileInputRef,
+        existingStudents,
         classes,
         sections,
         feeTypes,
-        fileInputRef,
-        handleChange,
-        handleClassChange,
-        handleConcessionDetailChange,
-        handleSubmit,
-        cancelSubmittingForm,
-        toggleRowSelection,
         showFullForm,
         handleAdmissionSubmit,
-        existingStudents,
-        generateAcademicYears
+        handleSubmit,
+        handleClassChange,
+        cancelSubmittingForm,
+        handlePhotoUpload,
+        academicYearOptions,
+        handleYearChange,
+        selectedYears,
+        loadingYears,
+
+
+
+
     } = useConcessionForm();
 
     if (!showFullForm) {
@@ -91,72 +99,113 @@ const ConcessionForm = () => {
                             </div>
                             <form onSubmit={handleSubmit}>
                                 <div className="row">
-                                    <div className="col-md-12">
-                                        <div className="mb-3">
-                                            <label htmlFor="AdmissionNumber" className="form-label">
-                                                Admission No
+                                    <div className="col-md-4 d-flex flex-column align-items-center">
+                                        <div className="border rounded d-flex justify-content-center align-items-center mb-2"
+                                            style={{ width: "150px", height: "180px", overflow: "hidden" }}>
+                                            {formData.studentPhoto ? (
+                                                typeof formData.studentPhoto === "string" ? (
+                                                    <img
+                                                        src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`}
+                                                        alt="Student"
+                                                        className="w-100 h-100 object-fit-cover"
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src={URL.createObjectURL(formData.studentPhoto)}
+                                                        alt="Student"
+                                                        className="w-100 h-100 object-fit-cover"
+                                                    />
+                                                )
+                                            ) : (
+                                                <div className="text-secondary">Photo</div>
+                                            )}
+                                        </div>
+                                        <div className="mb-3 w-100 text-center">
+                                            <label className="form-label mb-1 d-block text-start">
                                             </label>
                                             <input
-                                                type="text"
-                                                id="AdmissionNumber"
-                                                name="AdmissionNumber"
-                                                className="form-control"
-                                                value={formData.AdmissionNumber}
-                                                onChange={handleChange}
-                                                required
-                                                disabled
+                                                type="file"
+                                                id="studentPhoto"
+                                                name="studentPhoto"
+                                                className="d-none"
+                                                accept="image/*"
+                                                onChange={handlePhotoUpload}
                                             />
+                                            <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
+                                                Upload Photo
+                                            </label>
                                         </div>
                                     </div>
 
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="firstName" className="form-label">
-                                                First Name<span className="text-danger">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="firstName"
-                                                name="firstName"
-                                                className="form-control"
-                                                value={formData.firstName}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="middleName" className="form-label">
-                                                Middle Name
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="middleName"
-                                                name="middleName"
-                                                className="form-control"
-                                                value={formData.middleName}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="lastName" className="form-label">
-                                                Last Name<span className="text-danger">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="lastName"
-                                                name="lastName"
-                                                className="form-control"
-                                                value={formData.lastName}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
+                                    <div className="col-md-8">
+                                        <div className="row">
+                                            <div className="mb-3">
+                                                <label htmlFor="AdmissionNumber" className="form-label">
+                                                    Admission No
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="AdmissionNumber"
+                                                    name="AdmissionNumber"
+                                                    className="form-control"
+                                                    value={formData.AdmissionNumber}
+                                                    onChange={handleChange}
+                                                    required
+                                                    disabled
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="mb-3">
+                                                    <label htmlFor="firstName" className="form-label">
+                                                        First Name <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="firstName"
+                                                        name="firstName"
+                                                        className="form-control"
+                                                        value={formData.firstName}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="mb-3">
+                                                    <label htmlFor="middleName" className="form-label">
+                                                        Middle Name
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="middleName"
+                                                        name="middleName"
+                                                        className="form-control"
+                                                        value={formData.middleName}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="mb-3">
+                                                    <label htmlFor="lastName" className="form-label">
+                                                        Last Name <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="lastName"
+                                                        name="lastName"
+                                                        className="form-control"
+                                                        value={formData.lastName}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="masterDefineClass" className="form-label">
@@ -249,24 +298,23 @@ const ConcessionForm = () => {
 
                                     <div className="col-md-4">
                                         <div className="mb-3">
-                                            <label htmlFor="applicableAcademicYear" className="form-label">
-                                                Applicable Academic Year <span className="text-danger">*</span>
+                                            <label htmlFor="academicYear" className="form-label">
+                                                Applicable Academic Year(s) <span className="text-danger">*</span>
                                             </label>
-                                            <select
-                                                id="applicableAcademicYear"
-                                                name="applicableAcademicYear"
-                                                className="form-control"
-                                                value={formData.applicableAcademicYear}
-                                                onChange={handleChange}
+                                            <Select
+                                                id="academicYear"
+                                                name="academicYear"
+                                                options={academicYearOptions}
+                                                isMulti
+                                                value={selectedYears }
+                                                onChange={handleYearChange}
+                                                isLoading={loadingYears}
                                                 required
-                                            >
-                                                <option value="">Select Academic Year</option>
-                                                {generateAcademicYears(2015, 2030).map((year) => (
-                                                    <option key={year} value={year}>
-                                                        {year}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                                className="basic-multi-select"
+                                                classNamePrefix="select"
+                                                placeholder="Select academic year(s)..."
+                                            />
+                                          
                                         </div>
                                     </div>
 

@@ -1,71 +1,148 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { FaPrint, FaDownload } from "react-icons/fa";
+import html2pdf from "html2pdf.js";
 
-const formatDate = (isoDate) => {
-  if (!isoDate) return "N/A";
-  const date = new Date(isoDate);
-  return date.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-};
-
-const RegistrationOfficialDetails = () => {
+const FeesReceipt = () => {
   const location = useLocation();
-  const student = location.state?.student;
+  const { student, feeTypeName,className } = location.state || {};
 
-  if (!student) {
-    return (
-      <div className="container mt-5 text-center">
-        <div className="alert alert-warning">No student data available.</div>
-      </div>
-    );
-  }
+  const printReceipt = () => {
+    window.print();
+  };
+
+  const downloadReceiptAsPDF = () => {
+    const element = document.getElementById("receipt-content");
+
+    const options = {
+      filename: "fees_receipt.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    };
+
+    html2pdf().from(element).set(options).save();
+  };
 
   return (
-    <div className="container my-4">
-      <div className="row justify-content-center">
-        <div className="col-lg-10">
-          <div className="card shadow border-0">
-            <div
-              className="card-header text-white text-center"
-              style={{ backgroundColor: "rgb(169, 255, 253)" }}
-            >
-              <h4 className="mb-0">Student Registration Details</h4>
-            </div>
-            <div className="card-body p-4">
-              <div className="table-responsive">
-                <table className="table table-bordered table-striped table-hover text-center">
-                  <tbody>
-                    <tr>
-                      <th>Application Received Date</th>
-                      <td>{formatDate(student.createdAt)}</td>
-                    </tr>
-                    <tr>
-                      <th>Payment Mode</th>
-                      <td>{student.paymentMode || "N/A"}</td>
-                    </tr>
-                    <tr>
-                      <th>Transaction No./Cheque No.</th>
-                      <td>{student.transactionNumber || "N/A"}</td>
-                    </tr>
-                    <tr>
-                      <th>Receipt No.</th>
-                      <td>{student.receiptNumber || "N/A"}</td>
-                    </tr>
-                    <tr>
-                      <th>Date Of Receipt</th>
-                      <td>{formatDate(student.registrationDate)}</td>
-                    </tr>
-                    <tr>
-                      <th>Registration No.</th>
-                      <td>{student.registrationNumber || "N/A"}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+    <div className="container my-4 text-dark" style={{ padding: 16 }}>
+      <h6>
+        <strong>Registartion Fees Receipts</strong>
+      </h6>
+      <div className="text-end mb-3">
+        <button onClick={printReceipt} className="btn btn-light me-2">
+          <FaPrint /> Print
+        </button>
+        <button onClick={downloadReceiptAsPDF} className="btn btn-light">
+          <FaDownload /> Download PDF
+        </button>
+      </div>
+
+      <div id="receipt-content" className="border border-dark p-3">
+        <div className="text-center mb-3">
+          <h6>
+            <strong>[From Letter Head]</strong>
+          </h6>
+        </div>
+        <h6 className="text-center bg-light py-1">
+          <strong>Registartion Fees Receipts</strong>
+        </h6>
+        <div className="row mb-2">
+          <div className="col-4">
+            <p style={{ color: 'black' }}>
+              <strong>Receipts No :</strong> {student.receiptNumber}
+            </p>
+            <p style={{ color: 'black' }}>
+            <strong>Student Name :</strong> {student.firstName} {student.lastName}
+            </p>
+            <p style={{ color: 'black' }}>
+              <strong>Registration No :</strong> {student.registrationNumber}
+            </p>
+          </div>
+          <div className="col-4">
+            <p style={{ color: 'black' }}>&nbsp;</p>
+            <p style={{ color: 'black' }}>
+              <strong>Class :</strong> {className}
+            </p>
+          </div>
+          <div className="col-4">
+            <p style={{ color: 'black' }}>
+              <strong>Date :</strong>{' '}
+              {new Date(student.registrationDate).toLocaleDateString('en-GB')}
+            </p>
+            <p style={{ color: 'black' }}>
+              <strong>Academic Year :</strong>{' '}
+              {(() => {
+                const year = new Date(student.registrationDate).getFullYear();
+                return `${year}-${year + 1}`;
+              })()}
+
+            </p>
+          </div>
+        </div>
+
+        <div className="row pt-3 mb-2" style={{ borderTop: "2px solid black" }} />
+
+        <div className="mb-4">
+          <table className="table mb-4" style={{ border: "1px solid black", color: "black" }}>
+            <thead>
+              <tr>
+                <th className="text-center p-2" style={{ border: "1px solid black" }}>
+                  Type of Fees
+                </th>
+                <th className="text-center p-2" style={{ border: "1px solid black" }}>
+                  Registration Fees Amount
+                </th>
+                <th className="text-center p-2" style={{ border: "1px solid black" }}>
+                  Concession
+                </th>
+                <th className="text-center p-2" style={{ border: "1px solid black" }}>
+                  Final Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="text-center p-2" style={{ border: "1px solid black" }}>
+                  {feeTypeName}
+                </td>
+                <td className="text-center p-2" style={{ border: "1px solid black" }}>
+                  {student.registrationFee}
+                </td>
+                <td className="text-center p-2" style={{ border: "1px solid black" }}>
+                  {student.concessionAmount}
+                </td>
+                <td className="text-center p-2" style={{ border: "1px solid black" }}>
+                  {student.finalAmount}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <div className="row text-dark">
+          <div className="col-6">
+            <p style={{ color: 'black' }}>
+              <strong>Payment Mode:</strong> {student.paymentMode}
+            </p>
+            <p style={{ color: 'black' }}>
+              <strong>Date of Payment:</strong>{new Date(student.paymentDate).toLocaleDateString('en-GB')}
+            </p>
+            <p style={{ color: 'black' }}>
+              <strong>Transaction No./Cheque No.:</strong> {student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ''}
+            </p>
+          </div>
+          <div className="col-4 text-end">
+          <p>
+              &nbsp;&nbsp;&nbsp;
+            </p>
+            <p style={{ color: 'black' }}>
+              <strong>Signature of Collector</strong>
+            </p>
+            <p style={{ color: 'black' }}>
+              <strong>Name:</strong> {student.name}
+            </p>
           </div>
         </div>
       </div>
@@ -73,4 +150,4 @@ const RegistrationOfficialDetails = () => {
   );
 };
 
-export default RegistrationOfficialDetails;
+export default FeesReceipt;

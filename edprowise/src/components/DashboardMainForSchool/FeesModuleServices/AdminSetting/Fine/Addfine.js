@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const AddFine = () => {
   const navigate = useNavigate();
 
-  const [feeType, setFeeType] = useState('fixed'); // fixed or percentage
+  const [feeType, setFeeType] = useState('fixed'); 
   const [frequency, setFrequency] = useState('');
   const [amountOrPercentage, setAmountOrPercentage] = useState('');
   const [maxCapFee, setMaxCapFee] = useState('');
@@ -26,12 +26,14 @@ const AddFine = () => {
   
   
     const maxCapFeeValue = maxCapFee ? parseFloat(maxCapFee) : null;
+    const academicYear = localStorage.getItem('selectedAcademicYear'); 
   
     const payload = {
       feeType,
       frequency,
       value: parseFloat(amountOrPercentage),
       maxCapFee: maxCapFeeValue, 
+      academicYear,
     };
   
     try {

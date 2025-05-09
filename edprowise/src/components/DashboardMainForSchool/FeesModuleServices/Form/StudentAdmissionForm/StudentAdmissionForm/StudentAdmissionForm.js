@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CityData from "../../../../../CityData.json";
+import countryData from "../../../../../CountryStateCityData.json";
 import { useNavigate } from "react-router-dom";
 import getAPI from "../../../../../../api/getAPI";
 import { toast } from "react-toastify";
@@ -22,8 +22,17 @@ const StudentAdmissionForm = () => {
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
   const [shifts, setShifts] = useState([]);
+  const [oneTimeFeesList, setOneTimeFeesList] = useState([]);
+  const [availableFeeTypes, setAvailableFeeTypes] = useState([]);
+  const [selectedFeeType, setSelectedFeeType] = useState("");
+  const [concessionAmount, setConcessionAmount] = useState(0);
+  const [finalAmount, setFinalAmount] = useState(0);
+  const [admissionFees, setAdmissionFees] = useState(0);
+  const academicYear = localStorage.getItem("selectedAcademicYear");
 
   const [formData, setFormData] = useState({
+    academicYear: academicYear,
+    studentPhoto: null,
     registrationNumber: "",
     firstName: "",
     middleName: "",
@@ -37,10 +46,12 @@ const StudentAdmissionForm = () => {
     section: "",
     masterDefineShift: "",
     currentAddress: "",
-    cityStateCountry: "",
+    country: "",
+    state: "",
+    city: "",
     pincode: "",
     parentContactNumber: "",
-    motherLanguage: "",
+    motherTongue: "",
     previousSchoolName: "",
     addressOfPreviousSchool: "",
     previousSchoolBoard: "",
@@ -88,7 +99,10 @@ const StudentAdmissionForm = () => {
 
     const fetchStudents = async () => {
       try {
-        const response = await getAPI(`/get-registartion-form/${schoolId}`);
+        const response = await getAPI(
+          `/get-registartion-formbySchoolId/${schoolId}`
+        );
+        console.log("API response:", response);
 
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.students)
@@ -152,6 +166,59 @@ const StudentAdmissionForm = () => {
 
     fetchShifts();
   }, [schoolId]);
+
+  const fetchClassRelatedFeeTypes = async (classId, sectionId) => {
+    try {
+      if (!schoolId || !classId || !sectionId) return;
+
+      const response = await getAPI(
+        `/get-one-time-feesBysectionIds/${schoolId}/${classId}/${sectionId}/${academicYear}`,
+        {},
+        true
+      );
+      if (response?.data?.data) {
+        setOneTimeFeesList(response.data.data);
+
+        const feeTypes = response.data.data.flatMap((feeItem) =>
+          feeItem.oneTimeFees.map((fee) => ({
+            id: fee.feesTypeId._id,
+            name: fee.feesTypeId.feesTypeName,
+            amount: fee.amount,
+          }))
+        );
+        setAvailableFeeTypes(feeTypes);
+      }
+    } catch (error) {
+      toast.error("Error fetching fee types for selected class");
+      console.error("Fee type fetch error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (formData.masterDefineClass && formData.section) {
+      fetchClassRelatedFeeTypes(formData.masterDefineClass, formData.section);
+    }
+  }, [formData.masterDefineClass, formData.section]);
+
+  const handleFeeTypeChange = (e) => {
+    const feeTypeId = e.target.value;
+    setSelectedFeeType(feeTypeId);
+
+    const selectedFee = availableFeeTypes.find((fee) => fee.id === feeTypeId);
+    if (selectedFee) {
+      setAdmissionFees(selectedFee.amount);
+      setFinalAmount(selectedFee.amount - concessionAmount);
+    } else {
+      setAdmissionFees(0);
+      setFinalAmount(0);
+    }
+  };
+
+  const handleConcessionChange = (e) => {
+    const concession = Number(e.target.value);
+    setConcessionAmount(concession);
+    setFinalAmount(admissionFees - concession);
+  };
 
   const handleClassChange = (e) => {
     const classId = e.target.value;
@@ -300,6 +367,7 @@ const StudentAdmissionForm = () => {
 
       setFormData((prev) => ({
         ...prev,
+        studentPhoto: student.studentPhoto || null,
         firstName: student.firstName,
         middleName: student.middleName,
         lastName: student.lastName,
@@ -312,9 +380,11 @@ const StudentAdmissionForm = () => {
           student?.masterDefineClass?._id || student?.masterDefineClass || "",
         masterDefineShift:
           student?.masterDefineShift?._id || student?.masterDefineShift || "",
-        currentAddress: student.currentAddress,
-        cityStateCountry: student.cityStateCountry,
-        pincode: student.pincode,
+        currentAddress: student.currentAddress || "",
+        country: student?.country || "",
+        state: student?.state || "",
+        city: student?.city || "",
+        pincode: student.pincode || "",
         parentContactNumber:
           student.fatherContactNo || student.motherContactNo || "",
         previousSchoolName: student.previousSchoolName || "",
@@ -347,6 +417,16 @@ const StudentAdmissionForm = () => {
     setShowFullForm(true);
   };
 
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        studentPhoto: file,
+      }));
+    }
+  };
+
   const handleSave = (e) => {
     e.preventDefault();
     const isNursery = isNurseryClass(formData.masterDefineClass);
@@ -362,6 +442,7 @@ const StudentAdmissionForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submit button clicked");
     setIsSubmitting(true);
 
     const isNursery = isNurseryClass(formData.masterDefineClass);
@@ -375,6 +456,9 @@ const StudentAdmissionForm = () => {
 
     const submissionData = {
       ...formData,
+      admissionFees,
+      concessionAmount,
+      finalAmount,
       ...(formData.siblingInfoChecked && {
         relationType: null,
         siblingName: "",
@@ -385,6 +469,7 @@ const StudentAdmissionForm = () => {
     const formDataObj = new FormData();
 
     const fileFields = [
+      "studentPhoto",
       "previousSchoolResult",
       "tcCertificate",
       "proofOfResidence",
@@ -418,17 +503,29 @@ const StudentAdmissionForm = () => {
         "Content-Type": "multipart/form-data",
       });
 
+      console.log("API response:", response);
+
       if (response?.hasError) {
         toast.error(response.message || "Something went wrong");
       } else {
         toast.success("Admission Form Submitted successfully");
         const studentData = response.data?.student || response.student;
 
+        const selectedClass = classes.find(
+          (c) => c._id === response.data.admission.masterDefineClass
+        );
+
         navigate(
           `/school-dashboard/fees-module/form/admission-form/admission-details`,
           {
             state: {
               student: response.data?.admission,
+              className: selectedClass?.className || "",
+              sectionName:
+                sections.find((s) => s._id === formData.section)?.name || "",
+              feeTypeName:
+                availableFeeTypes.find((fee) => fee.id === selectedFeeType)
+                  ?.name || "",
             },
           }
         );
@@ -446,9 +543,93 @@ const StudentAdmissionForm = () => {
     }
   };
 
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
-  );
+  const countryOptions = Object.keys(countryData).map((country) => ({
+    value: country,
+    label: country,
+  }));
+  const stateOptions =
+    formData.country && countryData[formData.country]
+      ? Object.keys(countryData[formData.country]).map((state) => ({
+          value: state,
+          label: state,
+        }))
+      : [];
+
+  const cityOptions =
+    formData.state &&
+    formData.country &&
+    countryData[formData.country]?.[formData.state]
+      ? countryData[formData.country][formData.state].map((city) => ({
+          value: city,
+          label: city,
+        }))
+      : [];
+
+  const handleCountryChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === "create-option") {
+      setFormData((prev) => ({
+        ...prev,
+        country: selectedOption.value,
+        state: "",
+        city: "",
+      }));
+    } else if (actionMeta.action === "select-option") {
+      setFormData((prev) => ({
+        ...prev,
+        country: selectedOption ? selectedOption.value : "",
+        state: "",
+        city: "",
+      }));
+    } else if (actionMeta.action === "clear") {
+      setFormData((prev) => ({
+        ...prev,
+        country: "",
+        state: "",
+        city: "",
+      }));
+    }
+  };
+
+  const handleStateChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === "create-option") {
+      setFormData((prev) => ({
+        ...prev,
+        state: selectedOption.value,
+        city: "",
+      }));
+    } else if (actionMeta.action === "select-option") {
+      setFormData((prev) => ({
+        ...prev,
+        state: selectedOption ? selectedOption.value : "",
+        city: "",
+      }));
+    } else if (actionMeta.action === "clear") {
+      setFormData((prev) => ({
+        ...prev,
+        state: "",
+        city: "",
+      }));
+    }
+  };
+
+  const handleCityChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === "create-option") {
+      setFormData((prev) => ({
+        ...prev,
+        city: selectedOption.value,
+      }));
+    } else if (actionMeta.action === "select-option") {
+      setFormData((prev) => ({
+        ...prev,
+        city: selectedOption ? selectedOption.value : "",
+      }));
+    } else if (actionMeta.action === "clear") {
+      setFormData((prev) => ({
+        ...prev,
+        city: "",
+      }));
+    }
+  };
 
   const isNurseryClass = (classId) => {
     const selectedClass = classes.find((c) => c._id === classId);
@@ -496,12 +677,25 @@ const StudentAdmissionForm = () => {
                 handleClassChange={handleClassChange}
                 sections={sections}
                 shifts={shifts}
+                countryOptions={countryOptions}
+                stateOptions={stateOptions}
                 cityOptions={cityOptions}
                 isNursery={isNursery}
                 getFileNameFromPath={getFileNameFromPath}
                 isSubmitting={isSubmitting}
                 showAdditionalData={showAdditionalData}
                 handleShiftChange={handleShiftChange}
+                handlePhotoUpload={handlePhotoUpload}
+                selectedFeeType={selectedFeeType}
+                admissionFees={admissionFees}
+                concessionAmount={concessionAmount}
+                finalAmount={finalAmount}
+                availableFeeTypes={availableFeeTypes}
+                handleFeeTypeChange={handleFeeTypeChange}
+                handleConcessionChange={handleConcessionChange}
+                handleCountryChange={handleCountryChange}
+                handleStateChange={handleStateChange}
+                handleCityChange={handleCityChange}
               />
             </div>
           </div>

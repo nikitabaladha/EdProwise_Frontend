@@ -13,8 +13,10 @@
     "date-fns": "^4.1.0",
     "edprowise": "file:",
     "file-saver": "^2.0.5",
+    "framer-motion": "^12.10.5",
     "html2canvas": "^1.4.1",
     "html2pdf": "^0.0.11",
+    "html2pdf.js": "^0.10.3",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
     "jsvectormap": "^1.6.0",
@@ -34,9 +36,9 @@
     "react-toastify": "^10.0.6",
     "recharts": "^2.15.1",
     "slick-carousel": "^1.8.1",
+    "styled-components": "^6.1.18",
     "web-vitals": "^4.2.4",
-    "xlsx": "^0.18.5",
-    "html2pdf.js": "^0.10.3"
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",

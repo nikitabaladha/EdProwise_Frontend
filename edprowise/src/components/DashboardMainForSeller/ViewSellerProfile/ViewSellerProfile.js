@@ -84,9 +84,33 @@ const ViewSellerProfile = () => {
               <div className="card-body custom-heading-padding">
                 <div className="container">
                   <div className="card-header mb-2 d-flex justify-content-between align-items-center">
-                    <h4 className="card-title text-center custom-heading-font card-title">
+                    <h4 className="card-title custom-heading-font mb-0">
                       Seller Details
                     </h4>
+
+                    {sellerProfile?.averageRating && (
+                      <div
+                        className="d-flex align-items-center"
+                        style={{ gap: "0.5rem" }}
+                      >
+                        <label
+                          htmlFor="rating"
+                          className="form-label mb-0 me-2"
+                        >
+                          Rating :
+                        </label>
+                        <StarRating rating={sellerProfile.averageRating} />
+                        <span
+                          className="text-muted"
+                          style={{ fontSize: "0.875rem" }}
+                        >
+                          ({sellerProfile.averageRating}/5)
+                        </span>
+                        <span style={{ fontSize: "0.875rem" }}>
+                          {sellerProfile?.totalCount} Reviews
+                        </span>
+                      </div>
+                    )}
                     <Link
                       onClick={(event) =>
                         navigateToUpdateSellerProfile(event, sellerProfile)
@@ -103,43 +127,6 @@ const ViewSellerProfile = () => {
                 <h4 className="card-title text-center custom-heading-font mb-3">
                   Company Detail
                 </h4>
-
-                {sellerProfile?.averageRating ? (
-                  <>
-                    <div className="row">
-                      <div className="col-md-4">
-                        <div className="mb-3">
-                          <label htmlFor="rating" className="form-label">
-                            Rating
-                          </label>
-                          <div
-                            className="d-flex align-items-center"
-                            style={{
-                              gap: "0.5rem",
-                            }}
-                          >
-                            {sellerProfile?.averageRating ? (
-                              <>
-                                <StarRating
-                                  rating={sellerProfile.averageRating}
-                                />
-                                <span
-                                  className="text-muted"
-                                  style={{ fontSize: "0.875rem" }}
-                                >
-                                  ({sellerProfile.averageRating}/5){" "}
-                                </span>
-                                <span style={{ fontSize: "0.875rem" }}>
-                                  {sellerProfile?.totalCount} Reviews
-                                </span>
-                              </>
-                            ) : null}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : null}
 
                 <div className="row">
                   <div className="col-md-3">

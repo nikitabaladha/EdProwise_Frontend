@@ -5,6 +5,8 @@ import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 
+
+
 const StudentRegisterListTable = () => {
   const navigate = useNavigate();
   const [schoolId, setSchoolId] = useState(null);
@@ -12,6 +14,33 @@ const StudentRegisterListTable = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [classList, setClassList] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
+
+
 
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
@@ -28,6 +57,8 @@ const StudentRegisterListTable = () => {
     );
   };
 
+
+
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
@@ -40,17 +71,21 @@ const StudentRegisterListTable = () => {
     setSchoolId(id);
   }, []);
 
+
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchStudents = async () => {
       try {
-        const response = await getAPI(`/get-registartion-form/${schoolId}`);
+        const response = await getAPI(`/get-registartion-form/${schoolId}/${selectedYear}`);
+        console.log("API response:", response);
+        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        if (!classRes.hasError) {
+          setClassList(classRes.data.data);
+        }
 
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.students)
-            ? response.data.students
-            : [];
+          const studentArray = Array.isArray(response.data.students) ? response.data.students : [];
           setStudentData(studentArray);
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -62,7 +97,13 @@ const StudentRegisterListTable = () => {
     };
 
     fetchStudents();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
+
+  const getClassNameById = (id) => {
+    const found = classList.find((cls) => cls._id === id);
+    return found ? found.className : "N/A";
+  };
+
 
   const navigateToRegisterStudent = (event) => {
     event.preventDefault();
@@ -78,23 +119,20 @@ const StudentRegisterListTable = () => {
 
   const navigateToUpdateRegisterStudentInfo = (event, student) => {
     event.preventDefault();
-    navigate(
-      `/school-dashboard/fees-module/form/update-registed-student-info`,
-      {
-        state: { student },
-      }
-    );
-  };
+    navigate(`/school-dashboard/fees-module/form/update-registed-student-info`, {
+      state: { student },
+    });
+  }
 
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
 
+
+
+
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(
-    indexOfFirstStudent,
-    indexOfLastStudent
-  );
+  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
 
   const totalPages = Math.ceil(studentData.length / studentListPerPage);
 
@@ -113,15 +151,24 @@ const StudentRegisterListTable = () => {
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-  const pagesToShow = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, index) => startPage + index
-  );
+  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
 
   return (
     <>
       {" "}
       <div className="container-fluid">
+        <div className="d-flex justify-content-end mb-2 gap-2">
+          <Link
+
+            onClick={(event) => navigateToRegisterStudent(event)}
+            className="btn btn-sm btn-primary"
+          >
+            Registration Form
+          </Link>
+          <Link className="btn btn-sm btn-secondary">
+            Export
+          </Link>
+        </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
@@ -129,16 +176,23 @@ const StudentRegisterListTable = () => {
                 <h4 className="card-title flex-grow-1">
                   Registered Student List
                 </h4>
-                <Link
-                  onClick={(event) => navigateToRegisterStudent(event)}
-                  className="btn btn-sm btn-primary"
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    localStorage.setItem("selectedAcademicYear", e.target.value);
+                  }}
+                  disabled={loadingYears}
                 >
-                  Registration Form
-                </Link>
+                  <option value="" disabled>Select Year</option>
+                  {academicYears.map((year) => (
+                    <option key={year._id} value={year.academicYear}>
+                      {year.academicYear}
+                    </option>
+                  ))}
 
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
-                </div>
+                </select>
               </div>
               <div>
                 <div className="table-responsive">
@@ -161,8 +215,8 @@ const StudentRegisterListTable = () => {
                         <th>Registration No.</th>
                         <th>Student First Name</th>
                         <th>Student Last Name</th>
-                        <th>Transaction No</th>
-                        <th>Date Of Recordes</th>
+                        <th>Class</th>
+                        <th>Contac No</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -187,46 +241,28 @@ const StudentRegisterListTable = () => {
                           <td>{student.registrationNumber}</td>
                           <td>{student.firstName}</td>
                           <td>{student.lastName}</td>
-                          <td>{student.transactionNumber}</td>
-                          <td>
-                            {new Date(
-                              student.registrationDate
-                            ).toLocaleDateString()}
-                          </td>
+                          <td>{getClassNameById(student.masterDefineClass)}</td>
+                          <td>{student.fatherContactNo}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link
-                                className="btn btn-light btn-sm"
-                                onClick={(event) =>
-                                  navigateToRegisterStudentInfo(event, student)
-                                }
+                              <Link className="btn btn-light btn-sm"
+                                onClick={(event) => navigateToRegisterStudentInfo(event, student)}
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                className="btn btn-soft-primary btn-sm"
-                                onClick={(event) =>
-                                  navigateToUpdateRegisterStudentInfo(
-                                    event,
-                                    student
-                                  )
-                                }
+                              <Link className="btn btn-soft-primary btn-sm"
+                                onClick={(event) => navigateToUpdateRegisterStudentInfo(event, student)}
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                className="btn btn-soft-danger btn-sm"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  openDeleteDialog(student);
-                                }}
-                              >
+                              <Link className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}>
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -255,14 +291,12 @@ const StudentRegisterListTable = () => {
                     {pagesToShow.map((page) => (
                       <li
                         key={page}
-                        className={`page-item ${
-                          currentPage === page ? "active" : ""
-                        }`}
+                        className={`page-item ${currentPage === page ? "active" : ""
+                          }`}
                       >
                         <button
-                          className={`page-link pagination-button ${
-                            currentPage === page ? "active" : ""
-                          }`}
+                          className={`page-link pagination-button ${currentPage === page ? "active" : ""
+                            }`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -298,3 +332,5 @@ const StudentRegisterListTable = () => {
 };
 
 export default StudentRegisterListTable;
+
+

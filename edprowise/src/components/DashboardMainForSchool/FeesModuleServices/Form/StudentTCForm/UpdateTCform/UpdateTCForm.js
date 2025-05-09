@@ -11,8 +11,11 @@ const UpdateTCForm = () => {
   const student = location.state?.student;
   const [classes, setClasses] = useState([]);
   const [schoolId, setSchoolId] = useState('');
+    const academicYear = localStorage.getItem('selectedAcademicYear');
 
   const [formData, setFormData] = useState({
+    academicYear:academicYear,
+    studentPhoto: null,
     AdmissionNumber: '',
     firstName: '',
     middleName: '',
@@ -34,6 +37,9 @@ const UpdateTCForm = () => {
     reasonForLeaving: '',
     anyRemarks: '',
     agreementChecked: false,
+    TCfees: '',
+    concessionAmount: '',
+    finalAmount: '',
     name: '',
     paymentMode: '',
     chequeNumber: '',
@@ -71,6 +77,8 @@ const UpdateTCForm = () => {
   useEffect(() => {
     if (student) {
       setFormData({
+              academicYear: student.academicYear|| null,
+        studentPhoto: student.studentPhoto || null,
         AdmissionNumber: student.AdmissionNumber || '',
         firstName: student.firstName || '',
         middleName: student.middleName || '',
@@ -92,6 +100,9 @@ const UpdateTCForm = () => {
         agreementChecked: student.agreementChecked || '',
         reasonForLeaving: student.reasonForLeaving || '',
         anyRemarks: student.anyRemarks || '',
+        TCfees: student.TCfees || 0,
+        concessionAmount: student.concessionAmount || 0,
+        finalAmount: student.finalAmount || 0,
         name: student.name || '',
         paymentMode: student.paymentMode || '',
         ApplicationReceivedOn: student.ApplicationReceivedOn ? student.ApplicationReceivedOn.split('T')[0] : '',
@@ -101,6 +112,16 @@ const UpdateTCForm = () => {
       });
     }
   }, [student]);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        studentPhoto: file
+      }));
+    }
+  };
 
   const handleChange = (e) => {
     const { name, type, value, checked, files } = e.target;
@@ -122,13 +143,21 @@ const UpdateTCForm = () => {
       return;
     }
 
-    const payload = {
-      ...formData,
-      schoolId,
-    };
+    const payload = new FormData();
+    payload.append('schoolId', schoolId);
+
+    for (const key in formData) {
+      if (formData.hasOwnProperty(key)) {
+        payload.append(key, formData[key]);
+      }
+    }
 
     try {
-      const response = await putAPI(`/update-TC-form/${student._id}`, payload);
+      const response = await putAPI(`/update-TC-form/${student._id}`, payload,
+        {
+          'Content-Type': 'multipart/form-data',
+        }
+      );
 
       if (!response.hasError) {
         toast.success("Transfer Certificate update and submitted successfully!");
@@ -163,115 +192,145 @@ const UpdateTCForm = () => {
               </div>
               <form onSubmit={""}>
                 <div className="row">
-                  <div className="col-md-12">
-                    <div className="mb-3">
-                      <label htmlFor="AdmissionNumber" className="form-label">
-                        Admission No
+                  <div className="col-md-4 d-flex flex-column align-items-center">
+                    <div className="border rounded d-flex justify-content-center align-items-center mb-2"
+                      style={{ width: "150px", height: "180px", overflow: "hidden" }}>
+                      {formData.studentPhoto ? (
+                        typeof formData.studentPhoto === "string" ? (
+                          <img
+                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`}
+                            alt="Student"
+                            className="w-100 h-100 object-fit-cover"
+                          />
+                        ) : (
+                          <img
+                            src={URL.createObjectURL(formData.studentPhoto)}
+                            alt="Student"
+                            className="w-100 h-100 object-fit-cover"
+                          />
+                        )
+                      ) : (
+                        <div className="text-secondary">Photo</div>
+                      )}
+                    </div>
+                    <div className="mb-3 w-100 text-center">
+                      <label className="form-label mb-1 d-block text-start">
                       </label>
                       <input
-                        type="text"
-                        id="AdmissionNumber"
-                        name="AdmissionNumber"
-                        className="form-control"
-                        value={formData.AdmissionNumber}
-                        onChange={handleChange}
-                        required
-                        disabled
+                        type="file"
+                        id="studentPhoto"
+                        name="studentPhoto"
+                        className="d-none"
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
                       />
+                      <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
+                        Upload Photo
+                      </label>
                     </div>
                   </div>
 
+                  <div className="col-md-8">
+                    <div className="row">
+                      <div className="mb-3">
+                        <label htmlFor="AdmissionNumber" className="form-label">
+                          Admission No
+                        </label>
+                        <input
+                          type="text"
+                          id="AdmissionNumber"
+                          name="AdmissionNumber"
+                          className="form-control"
+                          value={formData.AdmissionNumber}
+                          onChange={handleChange}
+                          required
+                          disabled
+                        />
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="firstName" className="form-label">
+                            First Name <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="firstName"
+                            name="firstName"
+                            className="form-control"
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="middleName" className="form-label">
+                            Middle Name
+                          </label>
+                          <input
+                            type="text"
+                            id="middleName"
+                            name="middleName"
+                            className="form-control"
+                            value={formData.middleName}
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="lastName" className="form-label">
+                            Last Name <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="lastName"
+                            name="lastName"
+                            className="form-control"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="dateOfBirth" className="form-label">
+                            Date Of Birth <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            id="dateOfBirth"
+                            name="dateOfBirth"
+                            className="form-control"
+                            value={formData.dateOfBirth}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="age" className="form-label">
+                            Age <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="age"
+                            name="age"
+                            className="form-control"
+                            value={formData.age}
+                            onChange={handleChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
                   <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="firstName" className="form-label">
-                        First Name<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        className="form-control"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="middleName" className="form-label">
-                        Middle Name
-                      </label>
-                      <input
-                        type="text"
-                        id="middleName"
-                        name="middleName"
-                        className="form-control"
-                        value={formData.middleName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="lastName" className="form-label">
-                        Last Name<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        className="form-control"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-
-                  <div className="col-md-2">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="dateOfBirth"
-                        className="form-label"
-                      >
-                        Date Of Birth<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="dateOfBirth"
-                        name="dateOfBirth"
-                        className="form-control"
-                        value={formData.dateOfBirth}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-2">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="age" className="form-label">
-                        Age<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        id="age"
-                        name="age"
-                        className="form-control"
-                        value={formData.age}
-                        onChange={handleChange}
-                        required
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-2">
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="nationality" className="form-label">
@@ -297,7 +356,7 @@ const UpdateTCForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="fatherName" className="form-label">
@@ -315,7 +374,7 @@ const UpdateTCForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="motherName" className="form-label">
@@ -565,10 +624,57 @@ const UpdateTCForm = () => {
                     </label>
                   </div>
 
+                  <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="TCfees" className="form-label">
+                          TC Fees <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="TCfees"
+                          name="TCfees"
+                          className="form-control"
+                          value={formData.TCfees}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="concessionamount" className="form-label">
+                          Concession
+                        </label>
+                        <input
+                          // type="number"
+                          id="concessionamount"
+                          name="concessionamount"
+                          className="form-control"
+                          value={formData.concessionAmount}
+                           disabled
+
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="finalamount" className="form-label">
+                          Final Amount <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="finalamount"
+                          name="finalamount"
+                          className="form-control"
+                          value={formData.finalAmount}
+                          disabled
+                        />
+                      </div>
+                    </div>
+
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="name" className="form-label">
-                        Name <span className="text-danger">*</span>
+                      Name of Person Filling the Form  <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -581,7 +687,7 @@ const UpdateTCForm = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="paymentMode" className="form-label">
                         Payment Option <span className="text-danger">*</span>
@@ -593,6 +699,7 @@ const UpdateTCForm = () => {
                         value={formData.paymentMode}
                         onChange={handleChange}
                         required
+                        disabled
                       >
                         <option value="">Select</option>
                         <option value="Cash">Cash</option>
@@ -618,6 +725,7 @@ const UpdateTCForm = () => {
                           value={formData.chequeNumber}
                           onChange={handleChange}
                           required
+                          disabled
                         />
                       </div>
                     </div>
@@ -634,6 +742,7 @@ const UpdateTCForm = () => {
                           value={formData.bankName}
                           onChange={handleChange}
                           required
+                          disabled
                         />
                       </div>
                     </div>
@@ -669,6 +778,41 @@ const UpdateTCForm = () => {
                   </div>
 
                   <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="receiptNumber" className="form-label">
+                        Receipts No.
+                      </label>
+                      <input
+                        type="text"
+                        id="receiptNumber"
+                        name="receiptNumber"
+                        className="form-control"
+                        value={formData.receiptNumber}
+                        onChange={handleChange}
+                        required
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="certificateNumber" className="form-label">
+                        Certificate No.
+                      </label>
+                      <input
+                        type="text"
+                        id="certificateNumber"
+                        name="certificateNumber"
+                        className="form-control"
+                        value={formData.certificateNumber}
+                        onChange={handleChange}
+                        required
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="feesReceivedBy" className="form-label">
@@ -687,56 +831,36 @@ const UpdateTCForm = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
+                      <label htmlFor="receivedBy" className="form-label">
+                        Payment Date
+                      </label>
+                      <input
+                        type="text"
+                        id="receivedBy"
+                        name="receivedBy"
+                        className="form-control"
+                        value={student?.paymentDate ? new Date(student.paymentDate).toLocaleDateString('en-GB') : ''}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
                       <label htmlFor="transationOrChequetNumber" className="form-label">
-                        Transaction No
+                        Transaction No./ Cheque No.
                       </label>
                       <input
                         type="text"
                         id="transationOrChequetNumber"
                         name="transationOrChequetNumber"
                         className="form-control"
-                        value={formData.transactionNumber}
-                        onChange={handleChange}
-                        required
+                        value={student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ''}
                         disabled
                       />
                     </div>
                   </div>
 
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="receiptNumber" className="form-label">
-                        Receipts No.
-                      </label>
-                      <input
-                        type="text"
-                        id="receiptNumber"
-                        name="receiptNumber"
-                        className="form-control"
-                        value={formData.receiptNumber}
-                        onChange={handleChange}
-                        required
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="certificateNumber" className="form-label">
-                        Certificate No.
-                      </label>
-                      <input
-                        type="text"
-                        id="certificateNumber"
-                        name="certificateNumber"
-                        className="form-control"
-                        value={formData.certificateNumber}
-                        onChange={handleChange}
-                        required
-                        disabled
-                      />
-                    </div>
-                  </div>
+                
                 </div>
 
 

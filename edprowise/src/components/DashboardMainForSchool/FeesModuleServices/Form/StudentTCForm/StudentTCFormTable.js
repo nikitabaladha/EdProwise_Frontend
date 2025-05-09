@@ -5,6 +5,8 @@ import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 
+
+
 const StudentTCFormTable = () => {
   const navigate = useNavigate();
   const [schoolId, setSchoolId] = useState(null);
@@ -12,6 +14,30 @@ const StudentTCFormTable = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
 
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
@@ -28,6 +54,8 @@ const StudentTCFormTable = () => {
     );
   };
 
+
+
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
@@ -40,17 +68,17 @@ const StudentTCFormTable = () => {
     setSchoolId(id);
   }, []);
 
+
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchStudents = async () => {
       try {
-        const response = await getAPI(`/get-TC-form/${schoolId}`);
+        const response = await getAPI(`/get-TC-form/${schoolId}/${selectedYear}`);
+        console.log("API response:", response);
 
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.data)
-            ? response.data.data
-            : [];
+          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
           setStudentData(studentArray);
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -62,7 +90,7 @@ const StudentTCFormTable = () => {
     };
 
     fetchStudents();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
 
   const navigateToTCForm = (event) => {
     event.preventDefault();
@@ -71,33 +99,27 @@ const StudentTCFormTable = () => {
 
   const navigateToViewTCInfo = (event, student) => {
     event.preventDefault();
-    navigate(
-      `/school-dashboard/fees-module/form/view-trasfer-certificate-details`,
-      {
-        state: { student },
-      }
-    );
+    navigate(`/school-dashboard/fees-module/form/view-trasfer-certificate-details`, {
+      state: { student },
+    });
   };
 
   const navigateToUpdateTCForm = (event, student) => {
     event.preventDefault();
-    navigate(
-      `/school-dashboard/fees-module/form/update-trasfer-certificate-form`,
-      {
-        state: { student },
-      }
-    );
-  };
+    navigate(`/school-dashboard/fees-module/form/update-trasfer-certificate-form`, {
+      state: { student },
+    });
+  }
 
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
 
+
+
+
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(
-    indexOfFirstStudent,
-    indexOfLastStudent
-  );
+  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
 
   const totalPages = Math.ceil(studentData.length / studentListPerPage);
 
@@ -116,15 +138,23 @@ const StudentTCFormTable = () => {
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-  const pagesToShow = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, index) => startPage + index
-  );
+  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
 
   return (
     <>
       {" "}
       <div className="container-fluid">
+        <div className="d-flex justify-content-end mb-2 gap-2">
+          <Link
+            onClick={(event) => navigateToTCForm(event)}
+            className="btn btn-sm btn-primary"
+          >
+            TC Form
+          </Link>
+          <Link className="btn btn-sm btn-secondary">
+            Export
+          </Link>
+        </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
@@ -132,16 +162,25 @@ const StudentTCFormTable = () => {
                 <h4 className="card-title flex-grow-1">
                   Transfer certificate List
                 </h4>
-                <Link
-                  onClick={(event) => navigateToTCForm(event)}
-                  className="btn btn-sm btn-primary"
-                >
-                  TC Form
-                </Link>
 
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
-                </div>
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    localStorage.setItem("selectedAcademicYear", e.target.value);
+                  }}
+                  disabled={loadingYears}
+                >
+                  <option value="" disabled>Select Year</option>
+                  {academicYears.map((year) => (
+                    <option key={year._id} value={year.academicYear}>
+                      {year.academicYear}
+                    </option>
+                  ))}
+
+                </select>
+
               </div>
               <div>
                 <div className="table-responsive">
@@ -193,42 +232,27 @@ const StudentTCFormTable = () => {
                           <td>{student.firstName}</td>
                           <td>{student.lastName}</td>
                           <td>{student.transactionNumber}</td>
-                          <td>
-                            {new Date(
-                              student.ApplicationReceivedOn
-                            ).toLocaleDateString()}
-                          </td>
+                          <td>{new Date(student.ApplicationReceivedOn).toLocaleDateString()}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link
-                                className="btn btn-light btn-sm"
-                                onClick={(event) =>
-                                  navigateToViewTCInfo(event, student)
-                                }
+                              <Link className="btn btn-light btn-sm"
+                                onClick={(event) => navigateToViewTCInfo(event, student)}
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                className="btn btn-soft-primary btn-sm"
-                                onClick={(event) =>
-                                  navigateToUpdateTCForm(event, student)
-                                }
+                              <Link className="btn btn-soft-primary btn-sm"
+                                onClick={(event) => navigateToUpdateTCForm(event, student)}
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
-                                className="btn btn-soft-danger btn-sm"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  openDeleteDialog(student);
-                                }}
-                              >
+                              <Link className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}>
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
@@ -257,14 +281,12 @@ const StudentTCFormTable = () => {
                     {pagesToShow.map((page) => (
                       <li
                         key={page}
-                        className={`page-item ${
-                          currentPage === page ? "active" : ""
-                        }`}
+                        className={`page-item ${currentPage === page ? "active" : ""
+                          }`}
                       >
                         <button
-                          className={`page-link pagination-button ${
-                            currentPage === page ? "active" : ""
-                          }`}
+                          className={`page-link pagination-button ${currentPage === page ? "active" : ""
+                            }`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -300,3 +322,7 @@ const StudentTCFormTable = () => {
 };
 
 export default StudentTCFormTable;
+
+
+
+

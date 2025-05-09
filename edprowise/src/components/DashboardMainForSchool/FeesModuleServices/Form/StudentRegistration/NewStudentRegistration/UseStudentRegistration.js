@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CityData from "../../../../../CityData.json";
+import countryData from "../../../../../CountryStateCityData.json";
 import { toast } from "react-toastify";
 import getAPI from "../../../../../../api/getAPI";
 import postAPI from "../../../../../../api/postAPI";
@@ -13,7 +13,16 @@ const useStudentRegistration = () => {
   const [shifts, setShifts] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAdditionalData, setShowAdditionalData] = useState(false);
+  const [oneTimeFeesList, setOneTimeFeesList] = useState([]);
+  const [availableFeeTypes, setAvailableFeeTypes] = useState([]);
+  const [selectedFeeType, setSelectedFeeType] = useState("");
+  const [registrationFee, setRegistrationFee] = useState(0);
+  const [concessionAmount, setConcessionAmount] = useState(0);
+  const [finalAmount, setFinalAmount] = useState(0);
+  const academicYear = localStorage.getItem("selectedAcademicYear");
+
   const [formData, setFormData] = useState({
+    academicYear: academicYear,
     studentPhoto: null,
     firstName: "",
     middleName: "",
@@ -29,7 +38,9 @@ const useStudentRegistration = () => {
     motherName: "",
     motherContactNo: "",
     currentAddress: "",
-    cityStateCountry: "",
+    country: "",
+    state: "",
+    city: "",
     pincode: "",
     previousSchoolName: "",
     previousSchoolBoard: "",
@@ -42,6 +53,9 @@ const useStudentRegistration = () => {
     aadharPassportNumber: "",
     castCertificate: null,
     agreementChecked: false,
+    registrationFee: "",
+    concessionAmount: "",
+    finalAmount: "",
     name: "",
     paymentMode: "",
     chequeNumber: "",
@@ -78,13 +92,43 @@ const useStudentRegistration = () => {
     fetchData();
   }, [schoolId]);
 
+  const fetchClassRelatedFeeTypes = async (classId) => {
+    try {
+      if (!schoolId || !classId) return;
+
+      const response = await getAPI(
+        `/get-one-time-feesbyIds/${schoolId}/${classId}/${academicYear}`,
+        {},
+        true
+      );
+      if (response?.data?.data) {
+        setOneTimeFeesList(response.data.data);
+
+        const feeTypes = response.data.data.flatMap((feeItem) =>
+          feeItem.oneTimeFees.map((fee) => ({
+            id: fee.feesTypeId._id,
+            name: fee.feesTypeId.feesTypeName,
+          }))
+        );
+        setAvailableFeeTypes(feeTypes);
+      }
+    } catch (error) {
+      toast.error("Error fetching fee types for selected class");
+      console.error("Fee type fetch error:", error);
+    }
+  };
+
+  useEffect(() => {
+    setFinalAmount(registrationFee - concessionAmount);
+  }, [registrationFee, concessionAmount]);
+
   useEffect(() => {
     if (!schoolId) return;
 
     const fetchShifts = async () => {
       try {
         const response = await getAPI(`/master-define-shift/${schoolId}`);
-
+        console.log("Fetched Shifts:", response);
         if (!response.hasError) {
           const shiftArray = Array.isArray(response.data?.data)
             ? response.data.data
@@ -156,9 +200,7 @@ const useStudentRegistration = () => {
 
   const handleChange = (e) => {
     const { name, type, value, checked, files } = e.target;
-
-    // Remove this line - it's preventing name field updates
-    // if (name === 'name') return;
+    console.log("handleChange triggered for:", e.target.name);
 
     if (type === "checkbox") {
       setFormData((prev) => ({ ...prev, [name]: checked }));
@@ -175,6 +217,41 @@ const useStudentRegistration = () => {
             value === "SAARC Countries" || value === "International"
               ? "General"
               : prev.studentCategory,
+        }));
+      } else if (name === "masterDefineClass") {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        fetchClassRelatedFeeTypes(value);
+      } else if (name === "selectedFeeType") {
+        setSelectedFeeType(value);
+        const feeItem = oneTimeFeesList.find((item) =>
+          item.oneTimeFees.some((fee) => fee.feesTypeId._id === value)
+        );
+
+        if (feeItem) {
+          const selectedFee = feeItem.oneTimeFees.find(
+            (fee) => fee.feesTypeId._id === value
+          );
+          if (selectedFee) {
+            const newRegistrationFee = selectedFee.amount;
+            setRegistrationFee(newRegistrationFee);
+            setConcessionAmount(0);
+            setFormData((prev) => ({
+              ...prev,
+              registrationFee: newRegistrationFee,
+              concessionAmount: 0,
+              finalAmount: newRegistrationFee,
+            }));
+          }
+        }
+      } else if (name === "concessionamount") {
+        const concession = Number(value) || 0;
+        const newFinalAmount = registrationFee - concession;
+        setConcessionAmount(concession);
+        setFinalAmount(newFinalAmount);
+        setFormData((prev) => ({
+          ...prev,
+          concessionAmount: concession,
+          finalAmount: newFinalAmount,
         }));
       } else {
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -237,6 +314,12 @@ const useStudentRegistration = () => {
       navigate(`/school-dashboard/fees-module/form/registration-form/sucess`, {
         state: {
           student: response.data?.student || response.student,
+          feeTypeName:
+            availableFeeTypes.find((fee) => fee.id === selectedFeeType)?.name ||
+            "",
+          className:
+            classes.find((c) => c._id === formData.masterDefineClass)
+              ?.className || "",
         },
       });
     } catch (error) {
@@ -248,9 +331,94 @@ const useStudentRegistration = () => {
       setIsSubmitting(false);
     }
   };
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
-  );
+
+  const countryOptions = Object.keys(countryData).map((country) => ({
+    value: country,
+    label: country,
+  }));
+  const stateOptions =
+    formData.country && countryData[formData.country]
+      ? Object.keys(countryData[formData.country]).map((state) => ({
+          value: state,
+          label: state,
+        }))
+      : [];
+
+  const cityOptions =
+    formData.state &&
+    formData.country &&
+    countryData[formData.country]?.[formData.state]
+      ? countryData[formData.country][formData.state].map((city) => ({
+          value: city,
+          label: city,
+        }))
+      : [];
+
+  const handleCountryChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === "create-option") {
+      setFormData((prev) => ({
+        ...prev,
+        country: selectedOption.value,
+        state: "",
+        city: "",
+      }));
+    } else if (actionMeta.action === "select-option") {
+      setFormData((prev) => ({
+        ...prev,
+        country: selectedOption ? selectedOption.value : "",
+        state: "",
+        city: "",
+      }));
+    } else if (actionMeta.action === "clear") {
+      setFormData((prev) => ({
+        ...prev,
+        country: "",
+        state: "",
+        city: "",
+      }));
+    }
+  };
+
+  const handleStateChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === "create-option") {
+      setFormData((prev) => ({
+        ...prev,
+        state: selectedOption.value,
+        city: "",
+      }));
+    } else if (actionMeta.action === "select-option") {
+      setFormData((prev) => ({
+        ...prev,
+        state: selectedOption ? selectedOption.value : "",
+        city: "",
+      }));
+    } else if (actionMeta.action === "clear") {
+      setFormData((prev) => ({
+        ...prev,
+        state: "",
+        city: "",
+      }));
+    }
+  };
+
+  const handleCityChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === "create-option") {
+      setFormData((prev) => ({
+        ...prev,
+        city: selectedOption.value,
+      }));
+    } else if (actionMeta.action === "select-option") {
+      setFormData((prev) => ({
+        ...prev,
+        city: selectedOption ? selectedOption.value : "",
+      }));
+    } else if (actionMeta.action === "clear") {
+      setFormData((prev) => ({
+        ...prev,
+        city: "",
+      }));
+    }
+  };
 
   return {
     formData,
@@ -261,9 +429,20 @@ const useStudentRegistration = () => {
     showAdditionalData,
     classes,
     shifts,
+    countryOptions,
+    stateOptions,
     cityOptions,
     isNursery,
     handlePhotoUpload,
+    availableFeeTypes,
+    selectedFeeType,
+    registrationFee,
+    concessionAmount,
+    finalAmount,
+    setFormData,
+    handleCountryChange,
+    handleStateChange,
+    handleCityChange,
   };
 };
 

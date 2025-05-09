@@ -1,4 +1,3 @@
-// src/CookieConsent.js
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useLocation } from "react-router-dom";
@@ -9,14 +8,12 @@ const CookieConsent = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Show popup only if "userConsent" cookie is NOT set
-    if (!cookies.userConsent) {
+    if (cookies.userConsent === undefined) {
       setShowPopup(true);
     }
-  }, [cookies]);
+  }, [cookies.userConsent]);
 
   useEffect(() => {
-    // Update pageData on each route change
     if (cookies.userConsent) {
       setCookie(
         "pageData",
@@ -32,7 +29,6 @@ const CookieConsent = () => {
   }, [location, cookies.userConsent, setCookie]);
 
   useEffect(() => {
-    // Save the user's theme preference in cookies and track theme changes
     const handleThemeChange = () => {
       if (cookies.userConsent) {
         const currentTheme =
@@ -46,7 +42,7 @@ const CookieConsent = () => {
       }
     };
 
-    handleThemeChange(); // Initial sync
+    handleThemeChange();
 
     const observer = new MutationObserver(handleThemeChange);
     observer.observe(document.documentElement, {
@@ -58,7 +54,6 @@ const CookieConsent = () => {
   }, [cookies.userConsent, setCookie]);
 
   useEffect(() => {
-    // Save the user's theme preference in cookies
     if (cookies.userConsent) {
       const savedTheme =
         document.documentElement.getAttribute("data-bs-theme") || "light";
@@ -71,13 +66,12 @@ const CookieConsent = () => {
     }
   }, [cookies.userConsent, setCookie]);
 
-  // Accept all cookies and hide popup
   const acceptCookies = () => {
     setCookie("userConsent", true, {
       path: "/",
-      maxAge: 36000, // Cookie expires in 10 hours
-      secure: true, // Only sent over HTTPS
-      sameSite: "Strict", // Prevents CSRF attacks
+      maxAge: 36000,
+      secure: true,
+      sameSite: "Strict",
     });
 
     setCookie(
@@ -103,15 +97,11 @@ const CookieConsent = () => {
     setShowPopup(false);
   };
 
-  // If user already accepted, do not show the popup
   if (!showPopup) return null;
 
   return (
     <div style={popupStyle}>
-      <p>
-        We use cookies to enhance your experience. By continuing, you agree to
-        our use of cookies.
-      </p>
+      <p style={{ margin: 0 }}>We use cookies to improve your experience.</p>
       <button onClick={acceptCookies} style={buttonStyle}>
         Accept All Cookies
       </button>
@@ -119,27 +109,29 @@ const CookieConsent = () => {
   );
 };
 
-// Simple inline styles (customize as needed)
 const popupStyle = {
   position: "fixed",
-  top: "10%",
-  right: "10px",
+  bottom: "20px",
+  left: "20px",
   background: "#333",
   color: "#fff",
-  padding: "15px",
-  borderRadius: "10px",
+  padding: "10px 15px",
+  borderRadius: "8px",
   zIndex: 1000,
-  // maxWidth: "300px",
+  fontSize: "14px",
+  maxWidth: "250px",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
 };
 
 const buttonStyle = {
   background: "#4CAF50",
   color: "white",
   border: "none",
-  padding: "8px 16px",
-  marginLeft: "10px",
+  padding: "6px 12px",
+  marginTop: "10px",
   borderRadius: "5px",
   cursor: "pointer",
+  fontSize: "13px",
 };
 
 export default CookieConsent;

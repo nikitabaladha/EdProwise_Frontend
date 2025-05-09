@@ -15,7 +15,7 @@ const ConcessionForm = () => {
         cancelSubmittingForm,
         toggleRowSelection,
         getFileNameFromPath,
-        generateAcademicYears
+        academicYears
     } = useConcessionForm();
 
     return (
@@ -33,71 +33,82 @@ const ConcessionForm = () => {
                             </div>
                             <form onSubmit={handleSubmit}>
                                 <div className="row">
-                                    <div className="col-md-12">
-                                        <div className="mb-3">
-                                            <label htmlFor="AdmissionNumber" className="form-label">
-                                                Admission No
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="AdmissionNumber"
-                                                name="AdmissionNumber"
-                                                className="form-control"
-                                                value={formData.AdmissionNumber}
-                                                disabled
+                                    <div className="col-md-4 d-flex flex-column align-items-center">
+                                        <div className="border rounded d-flex justify-content-center align-items-center mb-2"
+                                            style={{ width: "150px", height: "180px", overflow: "hidden" }}>
+                                            <img
+                                                src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`}
+                                                alt="Student"
+                                                className="w-100 h-100 object-fit-cover"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="firstName" className="form-label">
-                                                First Name<span className="text-danger">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="firstName"
-                                                name="firstName"
-                                                className="form-control"
-                                                value={formData.firstName}
-                                                disabled
+                                    <div className="col-md-8">
+                                        <div className="row">
+                                            <div className="mb-3">
+                                                <label htmlFor="AdmissionNumber" className="form-label">
+                                                    Admission No
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="AdmissionNumber"
+                                                    name="AdmissionNumber"
+                                                    className="form-control"
+                                                    value={formData.AdmissionNumber}
+                                                    disabled
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="mb-3">
+                                                    <label htmlFor="firstName" className="form-label">
+                                                        First Name <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="firstName"
+                                                        name="firstName"
+                                                        className="form-control"
+                                                        value={formData.firstName}
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="mb-3">
+                                                    <label htmlFor="middleName" className="form-label">
+                                                        Middle Name
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="middleName"
+                                                        name="middleName"
+                                                        className="form-control"
+                                                        value={formData.middleName}
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="mb-3">
+                                                    <label htmlFor="lastName" className="form-label">
+                                                        Last Name <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="lastName"
+                                                        name="lastName"
+                                                        className="form-control"
+                                                        value={formData.lastName}
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
 
-                                            />
                                         </div>
                                     </div>
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="middleName" className="form-label">
-                                                Middle Name
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="middleName"
-                                                name="middleName"
-                                                className="form-control"
-                                                value={formData.middleName}
-                                                disabled
-
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="lastName" className="form-label">
-                                                Last Name<span className="text-danger">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="lastName"
-                                                name="lastName"
-                                                className="form-control"
-                                                value={formData.lastName}
-                                                disabled
-
-                                            />
-                                        </div>
-                                    </div>
-
+                                </div>
+                                <div className="row">
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="masterDefineClass" className="form-label">
@@ -204,23 +215,26 @@ const ConcessionForm = () => {
 
                                     <div className="col-md-4">
                                         <div className="mb-3">
-                                            <label htmlFor="applicableAcademicYear" className="form-label">
+                                            <label htmlFor="academicYear" className="form-label">
                                                 Applicable Academic Year <span className="text-danger">*</span>
                                             </label>
                                             <select
-                                                id="applicableAcademicYear"
-                                                name="applicableAcademicYear"
+                                                id="academicYear"
+                                                name="academicYear"
                                                 className="form-control"
-                                                value={formData.applicableAcademicYear}
+                                                value={formData.academicYear}
+                                                // onChange={handleChange}
+                                                required
                                                 disabled
                                             >
-                                                <option value="">Select Academic Year</option>
-                                                {generateAcademicYears(2015, 2030).map((year) => (
-                                                    <option key={year} value={year}>
-                                                        {year}
+                                                <option value="" disabled>Select Year</option>
+                                                {academicYears.map((year) => (
+                                                    <option key={year._id} value={year.academicYear}>
+                                                        {year.academicYear}
                                                     </option>
                                                 ))}
                                             </select>
+
                                         </div>
                                     </div>
                                 </div>
