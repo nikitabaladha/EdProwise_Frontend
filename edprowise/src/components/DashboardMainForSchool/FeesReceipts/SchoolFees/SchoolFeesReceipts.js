@@ -18,8 +18,8 @@ const SchoolFeesReceipts = () => {
     selectedInstallments,
     handleAcademicYearSelect,
     getFeeTypeName,
-    getInstallmentData,
-    calculatePayFees,
+    // getInstallmentData,
+    // calculatePayFees,
     handleInstallmentSelection,
     handleFeeTypeSelection,
     handleFinalSubmit,
@@ -31,7 +31,8 @@ const SchoolFeesReceipts = () => {
     setShowProcessedData,
     selectedFeeTypesByInstallment,
     handlePaidAmountChange,
-    setTotalInstallments
+    setTotalInstallments,
+
   } = useSchoolFeesReceipts();
 
   if (!showFullForm) {
@@ -308,7 +309,7 @@ const SchoolFeesReceipts = () => {
                                           </td>
                                         </>
                                       )}
-                                      <td style={{ display: 'flex', alignItems: 'center' }}>
+                                      <td style={{ verticalAlign: 'middle', textAlign: 'left', whiteSpace: 'nowrap' }}>
                                         <input
                                           type="checkbox"
                                           className="form-check-input"
@@ -362,7 +363,10 @@ const SchoolFeesReceipts = () => {
                           type="button"
                           className="btn btn-primary"
                           onClick={() => setShowProcessedData(!showProcessedData)}
-                          disabled={selectedInstallments.length === 0}
+                          disabled={
+                            selectedInstallments.length === 0 &&
+                            Object.keys(selectedFeeTypesByInstallment).length === 0
+                          }
                         >
                           Processed Data
                         </button>
