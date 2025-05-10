@@ -126,7 +126,7 @@ const Signup = () => {
             <div className="form-content justify-content-end">
               <div className="form-items">
                 <div className="website-logoo-inside logo-normal">
-                  <Link to="" className="custom-link">
+                  <Link to="/" className="custom-link">
                     <div>
                       <img
                         className="logos"
@@ -137,7 +137,7 @@ const Signup = () => {
                   </Link>
                 </div>
                 <h3 className="font-md">Whatever School Need, We Provide</h3>
-                <p>We Listen...We Resolve...We Deliver</p>
+                <p>We Listen... We Resolve... We Deliver</p>
                 <form onSubmit={handleSignup}>
                   <input
                     className="form-control"
@@ -193,7 +193,7 @@ const Signup = () => {
                         onClick={togglePasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(80%)",
                           cursor: "pointer",
@@ -204,7 +204,7 @@ const Signup = () => {
                         onClick={togglePasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(-80%)",
                           cursor: "pointer",
@@ -233,7 +233,7 @@ const Signup = () => {
                         onClick={toggleConformPasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(-80%)",
                           cursor: "pointer",
@@ -244,7 +244,7 @@ const Signup = () => {
                         onClick={toggleConformPasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(-80%)",
                           cursor: "pointer",
@@ -258,7 +258,13 @@ const Signup = () => {
                       {generalError}
                     </div>
                   )}
-                  <div className="form-button d-flex">
+                  <div
+                    className="form-button d-flex"
+                    style={{
+                      width: "80%",
+                      justifySelf: "center",
+                    }}
+                  >
                     <button
                       type="submit"
                       className="btn btn-primary"
@@ -271,10 +277,10 @@ const Signup = () => {
                       {sending ? "Processing..." : "Sign Up"}
                     </button>
                   </div>
-                  <Link to="/" onClick={navigateToHomes}>
+                  {/* <Link to="/" onClick={navigateToHomes}>
                     Go to Home
-                  </Link>
-                  <div className=" mt-3 text-center">
+                  </Link> */}
+                  <div className=" mt-2 text-center">
                     <Link onClick={navigateToLogin}>
                       If Already Registered, Sign In Here
                     </Link>

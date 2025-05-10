@@ -135,6 +135,167 @@ const Sidebar = () => {
         ],
       },
       {
+        id: "payrollModule",
+        label: "Payroll Module",
+        icon: "solar:wallet-money-bold",
+        children: [
+          {
+            id: "employeeSelfService",
+            label: "Employee Self Service",
+            icon: "solar:book-bookmark-bold-duotone",
+            children: [
+              {
+                label: "Update Details",
+                link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "Salary Slip",
+                link: "/admin-dashboard/payroll-module/employee-services/salary-slip",
+              },
+              {
+                label: "IT Declaration",
+                link: "/admin-dashboard/payroll-module/employee-services/it-declaration",
+              },
+              {
+                label: "Income Tax Computation Sheet",
+                link: "/admin-dashboard/payroll-module/employee-services/income-tax-computation-sheet",
+              },
+              {
+                label: "Form 16",
+                link: "/admin-dashboard/payroll-module/employee-services/form16",
+              },
+              {
+                label: "My Loan Statement",
+                link: "/admin-dashboard/payroll-module/employee-services/my-loan-statement",
+              },
+              {
+                label: "My Attendance Report",
+                link: "/admin-dashboard/payroll-module/employee-services/my-attendance-report",
+              },
+              {
+                label: "Apply for Leave",
+                link: "/admin-dashboard/payroll-module/employee-services/apply-for-leave",
+              },
+            ],
+          },
+          {
+            id: "employer",
+            label: "Employer",
+            icon: "solar:book-bookmark-bold-duotone",
+            children: [
+              {
+                label: "Employee Registration",
+                link: "/admin-dashboard/payroll-module/employer/registration",
+              },
+              {
+                // LWD Details
+                label: "Employee Update",
+                link: "/admin-dashboard/payroll-module/employer/update-employee-details",
+              },
+              {
+                label: "CTC Update",
+                link: "/admin-dashboard/payroll-module/employer/CTC-update",
+              },
+              {
+                label: "Process Payroll",
+                link: "/admin-dashboard/payroll-module/employer/payroll-process",
+              },
+
+              {
+                id: "salaryIncrement",
+                label: "Salary Increment",
+                icon: "bx-cog",
+                children: [
+                  {
+                    label: "Bulk Employee Increment",
+                    link: "/school-dashboard/fees-module/admin-setting/prefix-setting/registartion-prefix",
+                    // icon: "bx-hash",
+                  },
+                  {
+                    label: "Single Employee Increment",
+                    link: "/school-dashboard/fees-module/admin-setting/prefix-setting/admission-prefix",
+                    // icon: "bx-hash",
+                  },
+                ],
+              },
+
+              {
+                label: "Generate Appointment/CTC Letter",
+                link: "/admin-dashboard/payroll-module/employer/generate-appointment-ctc-letter",
+              },
+              {
+                label: "Form 16 (Upload)",
+                link: "/admin-dashboard/payroll-module/employer/form-16-list",
+              },
+              {
+                label: "Check Supporting Submitted for Tax",
+                link: "/admin-dashboard/payroll-module/employer/check-supporting-submitted-for-Tax",
+              },
+              {
+                id: "loanToEmployees",
+                label: "Loan To Employees",
+                icon: "bx-cog",
+                children: [
+                  {
+                    label: "Pay Loan",
+                    link: "/admin-dashboard/payroll-module/employer/loan-to-employees/pay-loan",
+                  },
+                  {
+                    label: "Loan Statement",
+                    link: "/admin-dashboard/payroll-module/employer/loan-to-employees/loan-statement",
+                  },
+                ],
+              },
+
+              {
+                label: "Overtime Allowance",
+                link: "/admin-dashboard/payroll-module/employer/overtime-allowance",
+              },
+              {
+                label: "Performance Tracking",
+                link: "/admin-dashboard/payroll-module/employer/performance-tracking",
+              },
+            ],
+          },
+          {
+            id: "adminSetting",
+            label: "Admin Setting",
+            icon: "solar:book-bookmark-bold-duotone",
+            children: [
+              {
+                label: "Freeze IT Declaration",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "Annual Leave Update",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "Overtime Allowance Rate",
+                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+              },
+              {
+                label: "CTC Components",
+                link: "/admin-dashboard/payroll-module/admin-setting/define-ctc-components-list",
+                // icon: "solar:users-group-rounded-bold-duotone",
+              },
+              {
+                label: "Grade",
+                // link: ""
+              },
+              {
+                label: "Job Designation",
+                // link: ""
+              },
+              {
+                label: "School Details",
+                // link: ""
+              },
+            ],
+          },
+        ],
+      },
+      {
         id: "requestDemo",
         label: "Request For Demo",
         icon: "solar:wallet-money-bold",

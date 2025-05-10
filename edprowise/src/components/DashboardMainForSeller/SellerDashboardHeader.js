@@ -12,12 +12,6 @@ const SellerDashboardHeader = () => {
   const navigate = useNavigate();
   const logout = useLogout();
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem("accessToken");
-  //   localStorage.removeItem("userDetails");
-  //   window.location.href = "/login";
-  // };
-
   const [sellerProfile, setSellerProfile] = useState(null);
 
   const fetchSellerProfileData = async () => {

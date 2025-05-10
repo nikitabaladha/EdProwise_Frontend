@@ -17,9 +17,9 @@ const menuData = [
       { name: "Acadmic & Admin", link: "/services/academic-admin-services" },
       {
         name: "Get Goods For Your School",
-        link: "/services/get-goods-services",
+        link: "/services/get-goods-for-school",
       },
-      { name: "Hire School Teacher", link: "/services/recruitment-services" },
+      { name: "Hire School Teacher", link: "/services/hire-teacher" },
     ],
   },
   { name: "Orders", link: "/order", subMenu: [] },

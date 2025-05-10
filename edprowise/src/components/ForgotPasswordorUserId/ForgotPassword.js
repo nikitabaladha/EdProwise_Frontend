@@ -6,15 +6,13 @@ import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ForgotPassword = (e) => {
-  const [formData, setFormData] = useState({
-    userId: "",
-    verificationCode: "",
-  });
+  const [formData, setFormData] = useState({ userId: "", verificationCode: "" });
   const [step, setStep] = useState(1); // 1 = Enter User ID, 2 = Enter Verification Code
   const [generalError, setGeneralError] = useState("");
   const [email, setEmail] = useState("");
   const [timeLeft, setTimeLeft] = useState(60);
   const [canResend, setCanResend] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -44,17 +42,14 @@ const ForgotPassword = (e) => {
   const handleSubmitUserId = async (e) => {
     e.preventDefault();
     try {
-      const response = await postAPI(
-        "/send-verification-code",
-        { userId: formData.userId },
-        false
-      );
+      const response = await postAPI("/send-verification-code", { userId: formData.userId }, false);
+      console.log("responce: ", response);
 
       if (!response.hasError) {
         toast.success(" Verification code sent on Register Email.");
-        const email = response?.data?.email;
-        setEmail(email);
-
+        const email = response?.data?.email
+        setEmail(email)
+        console.log(email);
         setStep(2);
         setTimeLeft(60);
         setCanResend(false);
@@ -69,29 +64,20 @@ const ForgotPassword = (e) => {
   const handleSubmitCode = async (e) => {
     e.preventDefault();
     try {
-      const response = await postAPI(
-        "/verify-code",
-        {
-          userId: formData.userId,
-          verificationCode: formData.verificationCode,
-        },
-        false
-      );
+      const response = await postAPI("/verify-code", {
+        userId: formData.userId,
+        verificationCode: formData.verificationCode,
+      }, false);
 
       if (!response.hasError) {
-        toast.success(
-          "Verification successful! You can now reset your password."
-        );
-        navigate("/forgot-password/new-password", {
-          state: { userId: formData.userId },
-        });
+        toast.success("Verification successful! You can now reset your password.");
+        navigate("/forgot-password/new-password", { state: { userId: formData.userId } });
       } else {
         toast.error(response.data.message);
         setGeneralError(response.data.message);
       }
     } catch (error) {
-      const errorMsg =
-        error?.response?.data?.message || "Invalid code. Please try again.";
+      const errorMsg = error?.response?.data?.message || "Invalid code. Please try again.";
       toast.error(errorMsg);
       setGeneralError(errorMsg);
       // setGeneralError("Invalid code. Please try again.");
@@ -100,11 +86,7 @@ const ForgotPassword = (e) => {
 
   const handleResendCode = async () => {
     try {
-      const response = await postAPI(
-        "/send-verification-code",
-        { userId: formData.userId },
-        false
-      );
+      const response = await postAPI("/send-verification-code", { userId: formData.userId }, false);
       if (!response.hasError) {
         toast.success("Verification code resent successfully.");
         const email = response?.data?.email;
@@ -128,6 +110,7 @@ const ForgotPassword = (e) => {
     }
     return () => clearTimeout(timer);
   }, [timeLeft, step]);
+
 
   return (
     <>
@@ -164,13 +147,10 @@ const ForgotPassword = (e) => {
                   </Link>
                 </div>
                 <h3 className="font-md">Whatever School Need, We Provide</h3>
-                <p>We Listen...We Resolve...We Deliver</p>
+                <p>We Listen... We Resolve... We Deliver</p>
                 {step === 1 && (
                   <form onSubmit={handleSubmitUserId}>
-                    <p style={{ fontSize: "1rem" }}>
-                      {" "}
-                      Enter the userId associated with your Edprowise account.
-                    </p>
+                    <p style={{ fontSize: "1rem" }}> Enter the userId associated with your Edprowise account.</p>
                     <input
                       className="form-control"
                       type="text"
@@ -191,7 +171,10 @@ const ForgotPassword = (e) => {
                         {generalError}
                       </div>
                     )}
-                    <div className="form-button d-flex">
+                    <div className="form-button d-flex" style={{
+                      width:"80%",
+                      justifySelf:"center",
+                    }}>
                       <button
                         id="submit"
                         type="submit"
@@ -208,18 +191,15 @@ const ForgotPassword = (e) => {
                 )}
 
                 {step === 2 && (
-                  <form onSubmit={handleSubmitCode}>
-                    <p style={{ fontSize: "1rem" }}>
-                      {" "}
-                      Your verification code send on {email}.
-                    </p>
+                  <form onSubmit={handleSubmitCode} >
+                    <p style={{ fontSize: "1rem" }}> Your verification code send on {email}.</p>
                     <input
                       className="form-control"
                       type="text"
                       name="verificationCode"
                       value={formData.verificationCode}
                       onChange={handleChange}
-                      placeholder="verification code"
+                      placeholder="Verification code"
                       required=""
                       onKeyDown={(e) => {
                         if (e.key === " ") {
@@ -236,8 +216,7 @@ const ForgotPassword = (e) => {
 
                     {!canResend ? (
                       <p style={{ fontSize: "1rem" }}>
-                        Verification code valid for{" "}
-                        <strong>{timeLeft} seconds</strong>.
+                        Verification code valid for <strong>{timeLeft} seconds</strong>.
                       </p>
                     ) : (
                       <p style={{ fontSize: "1rem" }}>
@@ -256,7 +235,10 @@ const ForgotPassword = (e) => {
                         </button>
                       </p>
                     )}
-                    <div className="form-button d-flex">
+                    <div className="form-button d-flex" style={{
+                      width:"80%",
+                      justifySelf:"center",
+                    }}>
                       <button
                         id="submit"
                         type="submit"
@@ -272,17 +254,11 @@ const ForgotPassword = (e) => {
                   </form>
                 )}
                 <div className=" text-center">
-                  <Link onClick={navigateToForgotUserId}>
+                  <Link onClick={navigateToForgotUserId} >
                     Forgot userId?{"  "}
                   </Link>
                 </div>
-                <div className=" mt-3 text-center">
-                  <Link to="/" onClick={navigateToHome}>
-                    {"  "}
-                    Go to Home{" "}
-                  </Link>
-                </div>
-                <div className=" mt-3 text-center">
+                <div className=" mt-2 text-center bottom-margin-forgot">
                   <Link onClick={navigateToSignup}>
                     If you are not Register, Sign Up Here
                   </Link>

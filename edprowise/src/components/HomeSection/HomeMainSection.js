@@ -1,3 +1,4 @@
+
 import react, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { RiEmotionHappyLine } from "react-icons/ri";
@@ -8,13 +9,18 @@ import { IoIosSend } from "react-icons/io";
 const HomeMainSection = () => {
   const slideTrackRef = useRef(null);
   const [counter, setCounter] = useState(0);
-  const words = ["Improving", "Unlocking", "Redifining", "Nurturing"];
+  const words = [
+    "Improving",
+    "Unlocking",
+    "Redifining",
+    "Nurturing",
+  ];
   const intervalTime = 3000;
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef(null);
   const [autoplay, setAutoplay] = useState(window.innerWidth <= 570);
   const [activeIndex, setActiveIndex] = useState(1);
-  const [translateValue, setTranslateValue] = useState(100);
+  const [translateValue, setTranslateValue] = useState(100); 
 
   useEffect(() => {
     const handleResize = () => {
@@ -84,6 +90,9 @@ const HomeMainSection = () => {
     }
   };
 
+
+
+
   const handleMouseEnter = (index) => {
     setActiveIndex(index);
   };
@@ -139,72 +148,39 @@ const HomeMainSection = () => {
   const duplicatedFeaturesData = [...featuresData, ...featuresData];
 
   const serviceData = [
-    {
-      title: "School Fees Management Software - Pixel Fees",
-      send: "/services/digital-services/fees",
-    },
-    {
-      title: "Payroll Management Software – Ease Payroll",
-      send: "/services/digital-services/payroll",
-    },
-    {
-      title: "Financial Management Software – Book Sync",
-      send: "/services/digital-services/booksync",
-    },
-    {
-      title: "School Operational Management Software",
-      send: "/services/digital-services/schooloperation",
-    },
-    {
-      title: "School Mobile Application",
-      send: "/services/digital-services/schoolApplication",
-    },
-    {
-      title: "School Website Design",
-      send: "/services/digital-services/school-Website-Design",
-    },
+    { title: "School Fees Management Software - Pixel Fees", send: "/services/digital-services/fees", },
+    { title: "Payroll Management Software – Ease Payroll", send: "/services/digital-services/payroll" },
+    { title: "Financial Management Software – Book Sync", send: "/services/digital-services/booksync" },
+    { title: "School Operational Management Software", send: "/services/digital-services/schooloperation" },
+    { title: "School Mobile Application", send: "/services/digital-services/schoolApplication" },
+    { title: "School Website Design", send: "/services/digital-services/school-Website-Design" },
     { title: "Digital Exam Result System", send: "/services/digital-services" },
     { title: "Digital Student Attendance", send: "/services/digital-services" },
     { title: "Digital Staff Attendance", send: "/services/digital-services" },
-    {
-      title: "Library Management Software",
-      send: "/services/digital-services",
-    },
-    {
-      title: "Entrance Management Software",
-      send: "/services/digital-services",
-    },
+    { title: "Library Management Software", send: "/services/digital-services" },
+    { title: "Entrance Management Software", send: "/services/digital-services" },
     { title: "Online Payment Gateway", send: "/services/digital-services" },
-    {
-      title: "SMS & WhatsApp Integration Services",
-      send: "/services/digital-services",
-    },
+    { title: "SMS & WhatsApp Integration Services", send: "/services/digital-services" },
     { title: "PF Consultancy", send: "/services/business-services" },
     { title: "ESI Consultancy", send: "/services/business-services" },
     { title: "Affiliation Support", send: "/services/business-services" },
-    {
-      title: "International Tour Management",
-      send: "/services/business-services",
-    },
+    { title: "International Tour Management", send: "/services/business-services" },
     { title: "Student Counselling", send: "/services/business-services" },
-    {
-      title: "Training & Workshop for Teache",
-      send: "/services/business-services",
-    },
+    { title: "Training & Workshop for Teache", send: "/services/business-services" },
+
   ];
+
 
   const filteredServices = searchQuery
     ? serviceData.filter((service) =>
-        service.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      service.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : serviceData.slice(0, 5);
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        searchBoxRef.current &&
-        !searchBoxRef.current.contains(event.target)
-      ) {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
         setIsExpanded(false);
       }
     };
@@ -226,7 +202,7 @@ const HomeMainSection = () => {
           </div>
         </div>
       </section>
-      <section className="static-hero-s2 home-hero-section">
+      <section className="static-hero-s2 home-hero-section" >
         <div className="hero-container home-hero-container">
           <div className="hero-inner home-hero-inner p-0">
             <div className="container-fluid home-hero-container-fluid">
@@ -248,15 +224,14 @@ const HomeMainSection = () => {
                   </h2>
                 </div>
                 <div data-swiper-parallax="400" class="slide-text">
-                  <p className="text-black">
-                    Inspiring growth, fostering innovation, shaping the future,
-                    and cultivating success in education.
-                  </p>
+                  <p className="text-black">Inspiring growth, fostering innovation, shaping the future, and cultivating success in education.</p>
                 </div>
 
                 {/* Slide Text */}
                 <div data-swiper-parallax="400" className="slide-text">
-                  <p className="font-family-web"></p>
+                  <p className="font-family-web">
+
+                  </p>
                 </div>
 
                 <div className="serach-expand slide-text" ref={searchBoxRef}>
@@ -267,7 +242,7 @@ const HomeMainSection = () => {
                     <input
                       className="home-search-input"
                       type="text"
-                      placeholder="Search Our Services..."
+                      placeholder="Whatever School Need, We Provide... Search Now"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onClick={() => setIsExpanded(true)}
@@ -281,7 +256,7 @@ const HomeMainSection = () => {
                     <ul className="service-suggestions slide-text pb-2  ">
                       {filteredServices.length > 0 ? (
                         filteredServices.map((service, index) => (
-                          <Link to={service.send}>
+                          <Link to={service.send} >
                             <li className="d-flex justify-content-between text-black mb-1 align-item-center pl-2 ">
                               <div
                                 key={index}
@@ -293,9 +268,7 @@ const HomeMainSection = () => {
                               >
                                 {service.title}
                               </div>
-                              <span className="">
-                                <IoIosSend />
-                              </span>
+                              <span className=""><IoIosSend /></span>
                             </li>
                           </Link>
                         ))
@@ -318,23 +291,22 @@ const HomeMainSection = () => {
               <div className="home-hero-outer-pic">
                 <div className="student-pic home-hero-student-pic home-page-section-img hero-section-img-small">
                   {/* <img src="assets/website-images/event/HomePage.png" alt="Student" /> */}
-                  <div
-                    className="wpo-about-img"
-                    style={{ textAlign: "center" }}
-                  >
+                  <div className="wpo-about-img" style={{ textAlign: "center" }}>
+                  <img
+                   className="home-img-section"
+                    src="/assets/images/EdProwiseFavicon.png"
+                    alt=""
+                    // style={{ width: "29%" }}
+                  />
+                  <div className="back-shapee">
                     <img
-                      src="/assets/images/EdProwiseFavicon.png"
+                    className="home-img-back-section"
+                      src="/assets/website-images/event/HomePage.png"
                       alt=""
-                      style={{ width: "29%" }}
+                      // style={{ width: "80%" }}
                     />
-                    <div className="back-shapee">
-                      <img
-                        src="/assets/website-images/event/HomePage.png"
-                        alt=""
-                        style={{ width: "80%" }}
-                      />
-                    </div>
                   </div>
+                </div> 
                   <div className="wp-shape-1">
                     <img
                       src="assets/website-images/slider/shape-1.svg"
@@ -365,7 +337,7 @@ const HomeMainSection = () => {
           </div>
         </div>
       </section>
-      <section className="wpo-features-area section-padding section-background-box-shadow pt-0">
+      <section className="wpo-features-area section-padding section-background-box-shadow pt-0" >
         <div className="container-fluid">
           <div className="features-wrap">
             <div
@@ -381,22 +353,20 @@ const HomeMainSection = () => {
               {featuresData.map((feature, index) => (
                 <div
                   key={feature.id}
-                  className={`col col-lg-3 col-md-6 col-12 carousel-itemm ${
-                    index === currentIndex ? "active" : "item"
-                  }`}
+                  className={`col col-lg-3 col-md-6 col-12 carousel-itemm ${index === currentIndex ? "active" : "item"
+                    }`}
                   onMouseEnter={() => handleMouseEnter(index)}
                   onMouseLeave={handleMouseLeave}
                 >
                   <div
-                    className={`feature-item-wrap ${
-                      window.innerWidth <= 992
-                        ? index === currentIndex
-                          ? "active"
-                          : ""
-                        : activeIndex === index
+                    className={`feature-item-wrap ${window.innerWidth <= 992
+                      ? index === currentIndex
                         ? "active"
                         : ""
-                    }`}
+                      : activeIndex === index
+                        ? "active"
+                        : ""
+                      }`}
                   >
                     <div className="feature-item d-flex feature-itemm-small">
                       <div className="icon">
@@ -408,7 +378,7 @@ const HomeMainSection = () => {
                       </div>
                       <div className="feature-text align-content-center m-2">
                         <h2 className="font-weight-web-h2 mb-0">
-                          <a className="feature-title-color">{feature.title}</a>
+                          <a className="feature-title-color" >{feature.title}</a>
                         </h2>
                         {/* <p>{feature.description}</p> */}
                       </div>
@@ -424,6 +394,7 @@ const HomeMainSection = () => {
                           {feature.title}
                         </h2>
                         {/* <p>{feature.hiddenDescription}</p> */}
+
                       </div>
                     </div>
                   </div>

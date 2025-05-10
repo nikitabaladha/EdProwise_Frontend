@@ -3,6 +3,7 @@ import { RiEmotionHappyLine } from "react-icons/ri";
 import { FaHandsHelping } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa6";
 import { TbReportSearch } from "react-icons/tb";
+import TabsWithContent from "../TabsWithContent";
 const AboutusSection = () => {
   return (
     <>
@@ -11,8 +12,8 @@ const AboutusSection = () => {
         
       >
         <div className="container container-big">
-          <div className="wpo-about-wrap" style={{padding:"0 1.5rem"}}>
-            <div className="row-web align-items-center">
+          <div className="wpo-about-wrap" >
+            <div className="row-web align-items-center" style={{padding:"0 1rem"}}>
               <div className="col-lg-4 col-md-12 col-12" style={{ order: 2 }}>
                 {/* <div className="wpo-about-img" style={{ textAlign: "center" }}>
                   <img
@@ -59,7 +60,7 @@ const AboutusSection = () => {
                 </div>
               </div>
             </div>
-            <div className="wpo-about-text">
+            {/* <div className="wpo-about-text">
               <h3>Digital Services - Advance ERP</h3>
               <p className="about-para-text">
                 Our robust suite of digital services is designed to bring schools into the modern era of education management. We provide custom school applications for principals, teachers, students, and parents, along with professionally designed websites that enhance a school’s digital presence.
@@ -96,7 +97,8 @@ const AboutusSection = () => {
                 At EdProwise, we don’t just offer services—we build long-term partnerships. Our dedicated relationship managers work closely with each school to understand their needs, provide tailored solutions, and ensure a smooth, responsive service experience. Your success is our priority.
               </p>
 
-            </div>
+            </div>         */}
+            <TabsWithContent/>
           </div>
         </div>
       </section>
@@ -108,21 +110,7 @@ const AboutusSection = () => {
             <div className="row align-items-center">
               <div className="col-lg-6 col-md-12 col-12">
                 <div className="wpo-about-img-wrap">
-                  {/* <div className="wpo-about-img-left">
-                    <div className="wpo-about-img">
-                      <img
-                        src="assets/website-images/about/img-1.webp"
-                        alt=""
-                      />
-                    </div>
-                  </div> */}
                   <div className="wpo-about-img-right">
-                    {/* <div className="wpo-about-img-inner">
-                      <img
-                        src="assets/website-images/about/img-2.webp"
-                        alt=""
-                      />
-                    </div> */}
                     <div className="exprience-wrap ">
                       <div className="exprience">
                         <div className="icon">
@@ -139,29 +127,6 @@ const AboutusSection = () => {
               </div>
               <div className="col-lg-6 col-md-12 col-12">
                 <div className="wpo-about-text">
-                  {/* <div className="wpo-section-title">
-
-                    <h2>
-                      A New Different Way To Improve Your
-                      <span>
-                        Skills.
-                        <i className="shape">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 206 53"
-                            fill="none"
-                          >
-                            <path d="M152.182 2.58319C107.878 0.889793 54.8748 6.13932 21.2281 18.6943C14.2699 21.4407 7.93951 24.7738 5.70192 28.7128C4.27488 31.2398 5.03121 33.954 7.69121 36.2925C14.8835 42.3911 31.9822 45.4011 46.8006 47.3115C78.3067 51.0179 113.672 51.7406 145.489 48.3204C167.194 46.0009 200.667 39.5923 199.399 28.5709C198.543 20.0621 180.437 14.5729 162.979 11.6178C138.219 7.469 111.131 6.00576 84.5743 5.86862C71.32 5.85789 58.0913 6.85723 45.6675 8.78436C33.512 10.7186 21.2709 13.4317 12.6602 17.5817C11.2246 18.2877 8.62449 17.4553 9.9973 16.6813C20.7486 11.2493 38.0215 7.73493 53.9558 5.76368C77.1194 2.90994 101.75 3.75426 125.339 5.14356C158.167 7.2615 207.554 13.5139 204.928 30.7413C203.629 36.0898 194.762 40.5057 184.681 43.5503C156.563 51.768 119.114 53.6844 85.6331 52.5265C65.1694 51.7477 44.4831 50.1855 25.9972 46.2442C11.4129 43.1186 -1.0337 37.8297 0.0679738 30.5063C2.14003 19.9035 31.4913 12.0006 52.6201 7.98775C71.2971 4.45904 91.3384 2.2302 111.674 1.24636C125.228 0.595237 138.962 0.539188 152.536 1.15931C153.475 1.20224 154.154 1.55523 154.051 1.94876C153.951 2.33872 153.115 2.62135 152.182 2.58319Z" />
-                          </svg>
-                        </i>
-                      </span>
-                    </h2>
-                  </div>
-                  <p className="text-black">
-                  We offer a wide range of services including technology integration, administrative solutions, educational consultation, and professional development, providing holistic support tailored to enhance every aspect of educational operations.                 </p>
-                  <p className="text-black">
-                  We brings deep expertise and understanding of the unique needs and challenges faced by educational institutions. 
-                  </p> */}
                   <div className="wpo-about-features-wrap">
                     <div className="wpo-about-features-item">
                       <div className="wpo-about-features-icon">

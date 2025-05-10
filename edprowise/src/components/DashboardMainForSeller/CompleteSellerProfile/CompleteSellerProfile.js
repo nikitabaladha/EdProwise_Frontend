@@ -4,6 +4,7 @@ import getAPI from "../../../api/getAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import EmailVerificationModal from "./EmailVerificationModal";
 
 import CountryStateCityData from "../../CountryStateCityData.json";
 import CreatableSelect from "react-select/creatable";
@@ -46,6 +47,112 @@ const CompleteSellerProfile = () => {
     isCustomState: false,
     isCustomCity: false,
   });
+
+  const [timer, setTimer] = useState(0);
+
+  const [isVerificationSuccessful, setIsVerificationSuccessful] =
+    useState(false);
+
+  const [emailVerificationState, setEmailVerificationState] =
+    useState("unverified"); // 'unverified', 'pending', 'verified'
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [verifyingOTP, setVerifyingOTP] = useState(false); // For verifying OTP
+
+  const [otpData, setOtpData] = useState({
+    email: "",
+    otp: "",
+  });
+
+  useEffect(() => {
+    let interval;
+
+    if (emailVerificationState === "pending" && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [emailVerificationState, timer]);
+
+  const handleSendOTP = async () => {
+    if (
+      !formData.emailId.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
+    ) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    setSending(true);
+
+    try {
+      const response = await postAPI("/send-otp-email-verification", {
+        email: formData.emailId,
+      });
+      setSending(true);
+
+      if (!response.data.hasError) {
+        setEmailVerificationState("pending");
+
+        setOtpData((prev) => ({ ...prev, email: formData.emailId }));
+
+        setIsModalOpen(true);
+
+        setTimer(60);
+
+        toast.success("OTP sent to your email!");
+      } else {
+        toast.error("Failed to send OTP");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to send OTP");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    try {
+      setVerifyingOTP(true);
+
+      const response = await postAPI("/verify-email-code", {
+        email: otpData.email,
+
+        verificationCode: otpData.otp,
+      });
+
+      if (!response.data.hasError) {
+        setEmailVerificationState("verified");
+
+        setIsVerificationSuccessful(true);
+
+        setIsModalOpen(false);
+
+        setTimer(0);
+
+        toast.success("Email verified successfully!");
+      } else {
+        toast.error("Invalid OTP");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Verification failed");
+    } finally {
+      setVerifyingOTP(false); // Ensure state is reset no matter what
+    }
+  };
+
+  const handleResendOTP = async () => {
+    await handleSendOTP();
+  };
+
+  const handleOTPChange = (e) => {
+    setOtpData((prev) => ({
+      ...prev,
+
+      otp: e.target.value,
+    }));
+  };
+
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState({});
   const [dealingProducts, setDealingProducts] = useState([
@@ -152,6 +259,10 @@ const CompleteSellerProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
+
+    if (!isVerificationSuccessful) {
+      return toast.error("Email verification not done");
+    }
 
     Object.keys(formData).forEach((key) => {
       if (!["isCustomCountry", "isCustomState", "isCustomCity"].includes(key)) {
@@ -758,16 +869,76 @@ const CompleteSellerProfile = () => {
                         <label htmlFor="emailId" className="form-label">
                           Email ID <span className="text-danger">*</span>
                         </label>
-                        <input
-                          type="email"
-                          id="emailId"
-                          name="emailId"
-                          className="form-control"
-                          value={formData.emailId}
-                          onChange={handleChange}
-                          // required
-                          placeholder="Example : example@gmail.com"
-                        />
+                        <span
+                          style={{
+                            display: "flex",
+
+                            alignItems: "center",
+
+                            justifyContent: "end",
+                          }}
+                        >
+                          <input
+                            type="email"
+                            id="emailId"
+                            name="emailId"
+                            className="form-control"
+                            value={formData.emailId}
+                            onChange={handleChange}
+                            disabled={emailVerificationState === "verified"}
+                            placeholder="Example : example@gmail.com"
+                          />
+
+                          <div
+                            className="form-label"
+                            style={{
+                              position: "absolute",
+
+                              margin: "0 0.9rem 0 0",
+                            }}
+                          >
+                            <div
+                              className={`d-inline-block px-2 py-1 rounded ${
+                                emailVerificationState === "verified"
+                                  ? "text-success"
+                                  : "text-black"
+                              } ${!formData.emailId ? "text-muted" : ""}`}
+                              style={{
+                                cursor:
+                                  emailVerificationState === "verified" ||
+                                  !formData.emailId
+                                    ? "default"
+                                    : "pointer",
+
+                                opacity:
+                                  emailVerificationState === "verified" ||
+                                  !formData.emailId
+                                    ? 0.7
+                                    : 1,
+                              }}
+                              onClick={async () => {
+                                if (
+                                  emailVerificationState !== "verified" &&
+                                  formData.emailId
+                                ) {
+                                  await handleSendOTP();
+                                }
+                              }}
+                            >
+                              {emailVerificationState === "verified" ? (
+                                <>
+                                  <i className="fas fa-check-circle me-1"></i>
+
+                                  {/* Verified */}
+                                </>
+                              ) : sending ? (
+                                "Verifying..."
+                              ) : (
+                                "Verify"
+                              )}
+                            </div>
+                          </div>
+                        </span>
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -1098,6 +1269,22 @@ const CompleteSellerProfile = () => {
           </div>
         </div>
       </div>
+      {isModalOpen && (
+        <EmailVerificationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          otpData={otpData}
+          onOtpChange={(e) =>
+            setOtpData((prev) => ({ ...prev, otp: e.target.value }))
+          }
+          onVerify={handleVerifyOTP}
+          onResend={handleResendOTP}
+          timer={timer}
+          emailVerificationState={emailVerificationState}
+          sending={sending}
+          verifyingOTP={verifyingOTP}
+        />
+      )}
     </>
   );
 };

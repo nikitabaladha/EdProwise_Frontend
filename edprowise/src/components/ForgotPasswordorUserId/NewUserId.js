@@ -12,13 +12,13 @@ const NewUserId = (e) => {
     const navigate = useNavigate();
 
     const [generalError, setGeneralError] = useState("");
-    
-    const passedUserId = location?.state?.userId || ""; 
 
-    
+    const passedUserId = location?.state?.userId || "";
+
+
     const [formData, setFormData] = useState({ userId: "", confirmUserId: "" });
 
-    
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -37,46 +37,46 @@ const NewUserId = (e) => {
         navigate("/signup");
     };
 
-    
+
     const handleUserIdSubmit = async (e) => {
         e.preventDefault();
         setGeneralError("");
-    
-        if (formData.userId !== formData.confirmUserId) {
-          setGeneralError("UserId do not match.");
-          return;
-        }
-    
-        if (!passedUserId) {
-          setGeneralError("Missing user ID. Please restart the process.");
-          return;
-        }
-    
-        try {
-          const response = await putAPI(
-            "/reset-userid",
-            {
-              userId: passedUserId,
-              NewUserId: formData.userId,
-            },
-            false
-          );
-    
-          if (!response.hasError) {
-            toast.success("UserId updated successfully.");
-            navigate("/login");
-          } else {
-            setGeneralError(response.data.message);
-          }
-        } catch (error) {
-          const errorMsg =
-            error?.response?.data?.message || "Something went wrong.";
-          setGeneralError(errorMsg);
-        }
-      };
-    
 
-    
+        if (formData.userId !== formData.confirmUserId) {
+            setGeneralError("UserId do not match.");
+            return;
+        }
+
+        if (!passedUserId) {
+            setGeneralError("Missing user ID. Please restart the process.");
+            return;
+        }
+
+        try {
+            const response = await putAPI(
+                "/reset-userid",
+                {
+                    userId: passedUserId,
+                    NewUserId: formData.userId,
+                },
+                false
+            );
+
+            if (!response.hasError) {
+                toast.success("UserId updated successfully.");
+                navigate("/login");
+            } else {
+                setGeneralError(response.data.message);
+            }
+        } catch (error) {
+            const errorMsg =
+                error?.response?.data?.message || "Something went wrong.";
+            setGeneralError(errorMsg);
+        }
+    };
+
+
+
     return (
         <>
             <div className="form-body form-left">
@@ -112,7 +112,7 @@ const NewUserId = (e) => {
                                     </Link>
                                 </div>
                                 <h3 className="font-md">Whatever School Need, We Provide</h3>
-                                <p>We Listen...We Resolve...We Deliver</p>
+                                <p>We Listen... We Resolve... We Deliver</p>
                                 <form onSubmit={handleUserIdSubmit}>
                                     {/* <p style={{ fontSize: "1rem" }}> Enter the userId associated with your Edprowise account.</p> */}
                                     <div
@@ -156,7 +156,10 @@ const NewUserId = (e) => {
                                             {generalError}
                                         </div>
                                     )}
-                                    <div className="form-button d-flex">
+                                    <div className="form-button d-flex" style={{
+                                        width: "80%",
+                                        justifySelf: "center",
+                                    }}>
                                         <button
                                             id="submit"
                                             type="submit"
@@ -171,11 +174,7 @@ const NewUserId = (e) => {
                                     </div>
                                 </form>
 
-                                <Link to="/" onClick={navigateToHome}>
-                                    {"  "}
-                                    Go to Home{" "}
-                                </Link>
-                                <div className=" mt-3 text-center">
+                                <div className=" mt-2 text-center bottom-margin-forgot">
                                     <Link onClick={navigateToSignup}>
                                         If you are not Register, Sign Up Here
                                     </Link>

@@ -112,7 +112,7 @@ const AdminLogin = () => {
                   </Link>
                 </div>
                 <h3 className="font-md">Whatever School Need, We Provide</h3>
-                <p>We Listen...We Resolve...We Deliver</p>
+                <p>We Listen... We Resolve... We Deliver</p>
                 <form onSubmit={handleSubmit}>
                   <input
                     className="form-control"
@@ -149,7 +149,7 @@ const AdminLogin = () => {
                         onClick={togglePasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(-80%)",
                           cursor: "pointer",
@@ -160,7 +160,7 @@ const AdminLogin = () => {
                         onClick={togglePasswordVisibility}
                         style={{
                           position: "absolute",
-                          right: "10px",
+                          right: "60px",
                           top: "50%",
                           transform: "translateY(-80%)",
                           cursor: "pointer",
@@ -174,7 +174,14 @@ const AdminLogin = () => {
                       {generalError}
                     </div>
                   )}
-                  <div className="form-button d-flex">
+                  <div
+                    className="form-button d-flex"
+                    style={{
+                      width: "80%",
+
+                      justifySelf: "center",
+                    }}
+                  >
                     <button
                       type="submit"
                       className="btn btn-primary"
@@ -188,11 +195,11 @@ const AdminLogin = () => {
                     </button>
                   </div>
 
-                  <Link to="/" onClick={navigateToHome}>
+                  {/* <Link to="/" onClick={navigateToHome}>
                     {" "}
                     Go to Home{" "}
-                  </Link>
-                  <div className=" mt-3 text-center">
+                  </Link> */}
+                  <div className=" mt-2 text-center">
                     <Link onClick={navigateToSignup}>
                       If you are not Register, Sign Up Here
                     </Link>
