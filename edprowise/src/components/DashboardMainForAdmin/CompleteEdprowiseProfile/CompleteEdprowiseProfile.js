@@ -27,7 +27,7 @@ const CompleteEdprowiseProfile = () => {
     contactNo: "",
     alternateContactNo: "",
     emailId: "",
-    insuranceCharges: "",
+    // insuranceCharges: "",
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
@@ -120,7 +120,7 @@ const CompleteEdprowiseProfile = () => {
           contactNo: "",
           alternateContactNo: "",
           emailId: "",
-          insuranceCharges: "",
+          // insuranceCharges: "",
           isCustomCountry: false,
           isCustomState: false,
           isCustomCity: false,
@@ -298,7 +298,7 @@ const CompleteEdprowiseProfile = () => {
                       </div>
                     </div>
                   </div>
-                  <div>
+                  {/* <div>
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label
@@ -319,7 +319,7 @@ const CompleteEdprowiseProfile = () => {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   <h4 className="card-title text-center custo m-heading-font">
                     Address Details

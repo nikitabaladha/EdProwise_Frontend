@@ -39,7 +39,7 @@ const UpdateAdminProfile = () => {
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
-    insuranceCharges: "",
+    // insuranceCharges: "",
   });
 
   const edprowiseProfileRef = useRef(null);
@@ -92,7 +92,7 @@ const UpdateAdminProfile = () => {
           contactNo: profileData.contactNo || "",
           alternateContactNo: profileData.alternateContactNo || "",
           emailId: profileData.emailId || "",
-          insuranceCharges: profileData.insuranceCharges || "",
+          // insuranceCharges: profileData.insuranceCharges || "",
         });
       } else {
         console.error("Invalid response format or error in response");
@@ -129,7 +129,7 @@ const UpdateAdminProfile = () => {
         "contactNo",
         "alternateContactNo",
         "emailId",
-        "insuranceCharges",
+        // "insuranceCharges",
       ];
 
       fieldsToSend.forEach((key) => {
@@ -321,7 +321,7 @@ const UpdateAdminProfile = () => {
                       />
                     </div>
 
-                    <div className="mb-3">
+                    {/* <div className="mb-3">
                       <label htmlFor="insuranceCharges" className="form-label">
                         Insurance Charges <span className="text-danger">*</span>
                       </label>
@@ -334,7 +334,7 @@ const UpdateAdminProfile = () => {
                         onChange={handleChange}
                         placeholder="Example : 1%"
                       />
-                    </div>
+                    </div> */}
                   </div>
                   <div className="col-md-4">
                     <div className="mb-3">
