@@ -173,10 +173,29 @@ const Header = () => {
     navigate(`/`);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userDetails");
-    window.location.href = "/login";
+  // const handleLogout = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("userDetails");
+  //   window.location.href = "/login";
+  // };
+
+  const handleLogout = (event) => {
+    try {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userDetails");
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 50);
+    } catch (error) {
+      console.error("Logout error:", error);
+      window.location.href = "/login";
+    }
   };
 
   return (

@@ -378,15 +378,31 @@ const ViewSeller = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="cityStateCountry" className="form-label">
-                        City State Country Location
+                      <label htmlFor="country" className="form-label">
+                        Country
                       </label>
-                      <p className="form-control">
-                        {sellerProfile?.cityStateCountry}
-                      </p>
+                      <p className="form-control">{sellerProfile?.country}</p>
                     </div>
                   </div>
                   <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State
+                      </label>
+                      <p className="form-control">{sellerProfile?.state}</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City
+                      </label>
+                      <p className="form-control">{sellerProfile?.city}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="landmark" className="form-label">
                         Land Mark
@@ -394,7 +410,7 @@ const ViewSeller = () => {
                       <p className="form-control">{sellerProfile?.landmark}</p>
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
                         Pin Code
