@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+// EdProwise_Frontend\edprowise\src\components\DashboardMainForSeller\SellerDashboardHeader.jsimport React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { BiLogOut } from "react-icons/bi";
@@ -7,8 +7,12 @@ import { ThemeContext } from "../ThemeProvider";
 import getAPI from "../../api/getAPI";
 import { useNavigate } from "react-router-dom";
 import { useLogout } from "../../useLogout";
+import { useContext } from "react";
 
+import { useEffect, useState } from "react";
 import { useNotifications } from "../NotificationProvider";
+import patchAPI from "../../api/patchAPI";
+import putAPI from "../../api/putAPI";
 
 const SellerDashboardHeader = () => {
   const navigate = useNavigate();
@@ -33,7 +37,6 @@ const SellerDashboardHeader = () => {
   useEffect(() => {
     fetchSellerProfileData();
   }, []);
-
   const toggleSidebar = () => {
     const htmlElement = document.documentElement;
     const bodyElement = document.body;
@@ -52,7 +55,9 @@ const SellerDashboardHeader = () => {
       bodyElement.style.overflow = "";
 
       const backdrop = document.querySelector(".offcanvas-backdrop");
-      if (backdrop) backdrop.remove();
+      if (backdrop && backdrop.parentNode) {
+        backdrop.parentNode.removeChild(backdrop);
+      }
     }
   };
 
@@ -82,8 +87,6 @@ const SellerDashboardHeader = () => {
     };
   }, []);
 
-  const { theme, toggleTheme } = useContext(ThemeContext);
-
   const navigateToViewSellerProfile = (event, _id) => {
     event.preventDefault();
     navigate("/seller-dashboard/view-seller-profile", {
@@ -98,107 +101,14 @@ const SellerDashboardHeader = () => {
     });
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [showResults, setShowResults] = useState(false);
-
-  const handleSearch = async (event) => {
-    if (event.key === "Enter" || event.type === "click") {
-      event.preventDefault();
-
-      if (!searchQuery.trim()) {
-        setShowResults(false);
-        return;
-      }
-
-      try {
-        const response = await getAPI(
-          `/global-search?query=${encodeURIComponent(searchQuery)}`,
-          {},
-          true
-        );
-
-        if (response.data?.success) {
-          if (response.data.data.length > 0) {
-            const result = response.data.data[0];
-
-            if (result.type === "quoteRequest") {
-              navigate(
-                `/seller-dashboard/procurement-services/view-requested-quote`,
-                {
-                  state: { searchEnquiryNumber: result.text },
-                }
-              );
-            }
-            if (result.type === "orderFromBuyer") {
-              navigate(
-                `/seller-dashboard/procurement-services/view-order-history`,
-                {
-                  state: { searchOrderNumber: result.text },
-                }
-              );
-            }
-          } else {
-            setSearchResults([
-              {
-                type: "noResults",
-                text: "No matching records found",
-              },
-            ]);
-            setShowResults(true);
-          }
-        }
-      } catch (err) {
-        console.error("Search error:", err);
-        setSearchResults([
-          {
-            type: "error",
-            text: "Search failed. Please try again.",
-          },
-        ]);
-        setShowResults(true);
-      }
-    }
-  };
-
-  const handleResultClick = (result) => {
-    if (result.type === "quoteRequest") {
-      navigate(`/seller-dashboard/procurement-services/view-requested-quote`, {
-        state: { searchEnquiryNumber: result.text },
-      });
-    }
-    if (result.type === "orderFromBuyer") {
-      navigate(`/seller-dashboard/procurement-services/view-order-history`, {
-        state: { searchOrderNumber: result.text },
-      });
-    }
-    setShowResults(false);
-    setSearchQuery("");
-  };
-
-  const { notifications, fetchNotifications } = useNotifications();
+  const { notifications, unreadCount, fetchNotifications, markAsRead } =
+    useNotifications();
 
   useEffect(() => {
     fetchNotifications();
   }, []);
 
-  const handleNotificationClick = (notification) => {
-    try {
-      if (notification.entityType === "QuoteRequest") {
-        navigate(
-          "/seller-dashboard/procurement-services/view-requested-quote",
-          {
-            state: {
-              searchEnquiryNumber: notification.metadata.enquiryNumber,
-            },
-          }
-        );
-      }
-    } catch (error) {
-      console.error("Error handling notification click:", error);
-    }
-  };
-
+  const [searchQuery, setSearchQuery] = useState("");
   return (
     <>
       <header className="topbar">
@@ -228,21 +138,9 @@ const SellerDashboardHeader = () => {
               </div>
             </div>
             <div className="d-flex align-items-center gap-1">
-              {/* Theme Color (Light/Dark) */}
-              <div className="topbar-item">
-                <button
-                  type="button"
-                  className="topbar-button"
-                  id="light-dark-mode"
-                  onClick={toggleTheme}
-                >
-                  <iconify-icon
-                    icon="solar:moon-bold-duotone"
-                    className="fs-24 align-middle"
-                  />
-                </button>
-              </div>
-
+              {/* Notification Dropdown */}
+              {/* i want all notification to same background and have fixed size have fixed height but want scrolling functionality
+               */}
               <div className="dropdown topbar-item">
                 <button
                   type="button"
@@ -251,11 +149,21 @@ const SellerDashboardHeader = () => {
                   data-bs-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    markAsRead();
+                  }}
                 >
                   <iconify-icon
                     icon="solar:bell-bing-bold-duotone"
                     className="fs-24 align-middle"
                   />
+                  {unreadCount > 0 && (
+                    <span className="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">
+                      {unreadCount}
+                      <span className="visually-hidden">unread messages</span>
+                    </span>
+                  )}
                 </button>
                 <div
                   className="dropdown-menu py-0 dropdown-lg dropdown-menu-end"
@@ -274,8 +182,7 @@ const SellerDashboardHeader = () => {
                         <div
                           className="dropdown-item py-3 border-bottom text-wrap"
                           key={notification._id}
-                          onClick={() => handleNotificationClick(notification)}
-                          style={{ cursor: "pointer" }}
+                          // onClick={() => markAsRead(notification._id)}
                         >
                           <div className="d-flex">
                             <div className="flex-shrink-0">
@@ -310,7 +217,6 @@ const SellerDashboardHeader = () => {
                   </div>
                 </div>
               </div>
-
               {/* User */}
               <div className="dropdown topbar-item">
                 <Link
@@ -363,48 +269,6 @@ const SellerDashboardHeader = () => {
                 </div>
               </div>
               {/* App Search*/}
-              <form
-                className="app-search d-none d-md-block ms-2"
-                onSubmit={(e) => e.preventDefault()}
-              >
-                <div className="position-relative">
-                  <input
-                    type="search"
-                    className="form-control"
-                    placeholder="Search..."
-                    autoComplete="off"
-                    defaultValue=""
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleSearch}
-                  />
-                  <iconify-icon
-                    icon="solar:magnifer-linear"
-                    className="search-widget-icon"
-                    onClick={handleSearch}
-                    style={{ cursor: "pointer" }}
-                  />
-
-                  {showResults && (
-                    <div className="search-results-dropdown">
-                      {searchResults.map((result) => (
-                        <div
-                          key={`${result.type}-${result.id}`}
-                          className="search-result-item"
-                          onClick={() => handleResultClick(result)}
-                        >
-                          {result.type === "noResults" && (
-                            <span className="text-muted">{result.text}</span>
-                          )}
-                          {result.type === "error" && (
-                            <span className="text-danger">{result.text}</span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </form>
             </div>
           </div>
         </div>

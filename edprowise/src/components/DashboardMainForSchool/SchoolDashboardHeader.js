@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -11,15 +17,11 @@ import { useLogout } from "../../useLogout";
 
 import getAPI from "../../api/getAPI";
 
+import { NotificationProviderForSchool } from "../NotificationProviderForSchool";
+
 const SchoolDashboardHeader = () => {
   const navigate = useNavigate();
   const logout = useLogout();
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem("accessToken");
-  //   localStorage.removeItem("userDetails");
-  //   window.location.href = "/login";
-  // };
 
   const [school, setSchool] = useState(null);
 
@@ -47,6 +49,7 @@ const SchoolDashboardHeader = () => {
 
   useEffect(() => {
     fetchSchoolData();
+    fetchNotifications();
   }, []);
 
   const navigateToViewSchoolProfile = (event, _id, schoolId) => {
@@ -191,6 +194,40 @@ const SchoolDashboardHeader = () => {
     setSearchQuery("");
   };
 
+  const [notifications, setNotifications] = useState([]);
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await getAPI(`/school-notifications`, {}, true);
+
+      if (!response.hasError && response.data && response.data.data) {
+        setNotifications(response.data.data);
+        console.log("Notifications", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
+    }
+  };
+
+  const handleNotificationClick = (notification) => {
+    try {
+      if (notification.entityType === "QuoteRequest") {
+        navigate(
+          "/school-dashboard/procurement-services/view-requested-quote",
+          {
+            state: {
+              searchEnquiryNumber: notification.metadata.enquiryNumber,
+            },
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Error handling notification click:", error);
+    }
+  };
+
   return (
     <>
       <header className="topbar">
@@ -270,9 +307,6 @@ const SchoolDashboardHeader = () => {
                     icon="solar:bell-bing-bold-duotone"
                     className="fs-24 align-middle"
                   />
-                  <span className="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">
-                    3<span className="visually-hidden">unread messages</span>
-                  </span>
                 </button>
                 <div
                   className="dropdown-menu py-0 dropdown-lg dropdown-menu-end"
@@ -281,126 +315,49 @@ const SchoolDashboardHeader = () => {
                   <div className="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
                     <div className="row align-items-center">
                       <div className="col">
-                        <h6 className="m-0 fs-16 fw-semibold">
-                          {" "}
-                          Notifications
-                        </h6>
-                      </div>
-                      <div className="col-auto">
-                        <Link
-                          to=""
-                          className="text-dark text-decoration-underline"
-                        >
-                          <small>Clear All</small>
-                        </Link>
+                        <h6 className="m-0 fs-16 fw-semibold">Notifications</h6>
                       </div>
                     </div>
                   </div>
-                  <div data-simplebar="" style={{ maxHeight: 280 }}>
-                    {/* Item */}
-                    <Link
-                      to=""
-                      className="dropdown-item py-3 border-bottom text-wrap"
-                    >
-                      <div className="d-flex">
-                        <div className="flex-shrink-0">
-                          <img
-                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
-                            alt={`${school?.schoolName} Profile`}
-                            className="img-fluid me-2 avatar-sm rounded-circle"
-                          />
-                        </div>
-                        <div className="flex-grow-1">
-                          <p className="mb-0">
-                            <span className="fw-medium">
-                              Josephine Thompson{" "}
-                            </span>
-                            commented on admin panel{" "}
-                            <span>
-                              " Wow 😍! this admin looks good and awesome
-                              design"
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                    {/* Item */}
-                    <Link to="" className="dropdown-item py-3 border-bottom">
-                      <div className="d-flex">
-                        <div className="flex-shrink-0">
-                          <div className="avatar-sm me-2">
-                            <span className="avatar-title bg-soft-info text-info fs-20 rounded-circle">
-                              D
-                            </span>
+                  <div className="notification-scroll-area">
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <div
+                          className="dropdown-item py-3 border-bottom text-wrap"
+                          key={notification._id}
+                          onClick={() => handleNotificationClick(notification)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <div className="d-flex">
+                            <div className="flex-shrink-0">
+                              <div className="avatar-sm me-2">
+                                <span className="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
+                                  <iconify-icon icon="solar:bell-bing-bold-duotone" />
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="flex-grow-1">
+                              <p className="mb-0 fw-semibold">
+                                {notification.title}
+                              </p>
+                              <p className="mb-0 text-wrap">
+                                {notification.message}
+                              </p>
+                              <small className="text-muted">
+                                {new Date(
+                                  notification.createdAt
+                                ).toLocaleString()}
+                              </small>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex-grow-1">
-                          <p className="mb-0 fw-semibold">Donoghue Susan</p>
-                          <p className="mb-0 text-wrap">
-                            Hi, How are you? What about our next meeting
-                          </p>
-                        </div>
+                      ))
+                    ) : (
+                      <div className="dropdown-item py-3 text-center">
+                        <p className="mb-0">No notifications found</p>
                       </div>
-                    </Link>
-                    {/* Item */}
-                    <Link to="" className="dropdown-item py-3 border-bottom">
-                      <div className="d-flex">
-                        <div className="flex-shrink-0">
-                          <img
-                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
-                            className="img-fluid me-2 avatar-sm rounded-circle"
-                            alt=""
-                          />
-                        </div>
-                        <div className="flex-grow-1">
-                          <p className="mb-0 fw-semibold">Jacob Gines</p>
-                          <p className="mb-0 text-wrap">
-                            Answered to your comment on the cash flow forecast's
-                            graph 🔔.
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                    {/* Item */}
-                    <Link to="" className="dropdown-item py-3 border-bottom">
-                      <div className="d-flex">
-                        <div className="flex-shrink-0">
-                          <div className="avatar-sm me-2">
-                            <span className="avatar-title bg-soft-warning text-warning fs-20 rounded-circle">
-                              <iconify-icon icon="iconamoon:comment-dots-duotone" />
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1">
-                          <p className="mb-0 fw-semibold text-wrap">
-                            You have received <b>20</b> new messages in the
-                            conversation
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                    {/* Item */}
-                    <Link to="" className="dropdown-item py-3 border-bottom">
-                      <div className="d-flex">
-                        <div className="flex-shrink-0">
-                          <img
-                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school?.profileImage}`}
-                            className="img-fluid me-2 avatar-sm rounded-circle"
-                            alt=""
-                          />
-                        </div>
-                        <div className="flex-grow-1">
-                          <p className="mb-0 fw-semibold">Shawn Bunch</p>
-                          <p className="mb-0 text-wrap">Commented on Admin</p>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className="text-center py-3">
-                    <Link to="to" className="btn btn-primary btn-sm">
-                      View All Notification{" "}
-                      <i className="bx bx-right-arrow-alt ms-1" />
-                    </Link>
+                    )}
                   </div>
                 </div>
               </div>

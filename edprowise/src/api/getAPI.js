@@ -18,9 +18,8 @@ async function getAPI(
       },
     };
 
-    // Conditionally include query parameters
     if (includeParams && config.params) {
-      requestConfig.params = config.params; // Only add params if includeParams is true and params are provided
+      requestConfig.params = config.params;
     }
 
     if (config.responseType) requestConfig.responseType = config.responseType;

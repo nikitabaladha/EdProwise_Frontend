@@ -4,20 +4,26 @@ import SchoolDashboardHeader from "./SchoolDashboardHeader";
 
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
+import { NotificationProviderForSchool } from "../NotificationProviderForSchool";
 
 const SchoolDashboardMain = () => {
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const schoolId = userDetails?.schoolId;
+
   return (
     <>
-      <div className="wrapper">
-        <SchoolDashboardHeader />
-        <Sidebar />
+      <NotificationProviderForSchool schoolId={schoolId}>
+        <div className="wrapper">
+          <SchoolDashboardHeader />
+          <Sidebar />
 
-        <div className="page-content custom-font-size">
-          <Outlet />
+          <div className="page-content custom-font-size">
+            <Outlet />
+          </div>
+
+          <Footer />
         </div>
-
-        <Footer />
-      </div>
+      </NotificationProviderForSchool>
     </>
   );
 };
