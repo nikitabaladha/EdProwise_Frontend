@@ -77,7 +77,7 @@ const UpdateDeliveryChargesModal = ({
         setSubmittedQuote({
           deliveryCharges: "",
         });
-        // onQuoteUpdated();
+
         await onQuoteUpdated();
         onClose();
       } else {

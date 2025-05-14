@@ -223,6 +223,32 @@ const SchoolDashboardHeader = () => {
           }
         );
       }
+      if (notification.entityType === "QuoteProposal") {
+        navigate(
+          "/school-dashboard/procurement-services/view-requested-quote",
+          {
+            state: {
+              searchEnquiryNumber: notification.metadata.enquiryNumber,
+            },
+          }
+        );
+      }
+
+      if (notification.entityType === "QuoteProposal From Edprowise") {
+        navigate("/school-dashboard/procurement-services/view-quote", {
+          state: {
+            searchEnquiryNumber: notification.metadata.enquiryNumber,
+            searchSellerId: notification.metadata.sellerId,
+          },
+        });
+      }
+      if (notification.entityType === "QuoteProposal Reject") {
+        navigate("/school-dashboard/procurement-services/view-quote-table", {
+          state: {
+            searchEnquiryNumber: notification.metadata.enquiryNumber,
+          },
+        });
+      }
     } catch (error) {
       console.error("Error handling notification click:", error);
     }

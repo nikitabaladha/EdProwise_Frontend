@@ -27,7 +27,11 @@ const formatDate = (dateString) => {
 const ViewQuote = () => {
   const location = useLocation();
 
-  const { quote, sellerId, enquiryNumber, schoolId } = location.state || {};
+  const { quote, schoolId } = location.state || {};
+
+  const enquiryNumber =
+    location.state?.enquiryNumber || location.state?.searchEnquiryNumber;
+  const sellerId = location.state?.sellerId || location.state?.searchSellerId;
 
   const [currentQuote, setCurrentQuote] = useState(quote);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,6 +47,7 @@ const ViewQuote = () => {
       );
       if (!response.hasError && response.data && response.data.data) {
         setCurrentQuote(response.data.data);
+        // from submitted quote i am getting quote number so tell me how to redirect to this page
         console.log("submit-quote", response.data.data);
       } else {
         console.error("Error fetching quote data");

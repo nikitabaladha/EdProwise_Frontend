@@ -194,6 +194,16 @@ const SellerDashboardHeader = () => {
           }
         );
       }
+      if (notification.entityType === "QuoteProposal") {
+        navigate(
+          "/seller-dashboard/procurement-services/view-requested-quote",
+          {
+            state: {
+              searchEnquiryNumber: notification.metadata.enquiryNumber,
+            },
+          }
+        );
+      }
     } catch (error) {
       console.error("Error handling notification click:", error);
     }

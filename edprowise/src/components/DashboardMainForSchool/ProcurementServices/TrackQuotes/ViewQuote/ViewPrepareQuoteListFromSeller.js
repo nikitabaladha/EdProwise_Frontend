@@ -10,7 +10,10 @@ import { FaArrowRight } from "react-icons/fa";
 
 const ViewPrepareQuoteListFromSeller = () => {
   const location = useLocation();
-  const { sellerId, enquiryNumber } = location.state || {};
+
+  const enquiryNumber =
+    location.state?.enquiryNumber || location.state?.searchEnquiryNumber;
+  const sellerId = location.state?.sellerId || location.state?.searchSellerId;
 
   const [preparedQuotes, setPreparedQuotes] = useState([]);
 

@@ -207,16 +207,12 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">Prepared Quote List</h4>
                 <div className="text-end">
-                  {/* <button
-                    type="button"
-                    className="btn btn-primary custom-submit-button"
-                    onClick={(event) => navigateToViewSubmitQuote(event)}
-                  >
-                    View Submited Quote
-                  </button> */}
-                  {!preparedQuotes.some(
-                    (quote) => !isWithinEditTimeframe(quote.createdAt)
-                  ) ? (
+                  {preparedQuotes.some(
+                    (quote) =>
+                      !isWithinEditTimeframe(quote.createdAt) &&
+                      (quote.supplierStatus === "Quote Requested" ||
+                        quote.supplierStatus === "Quote Submitted")
+                  ) && (
                     <button
                       type="button"
                       className="btn btn-primary custom-submit-button"
@@ -224,7 +220,7 @@ const ViewPrepareQuoteListSeller = ({ sellerId, enquiryNumber }) => {
                     >
                       View Submitted Quote
                     </button>
-                  ) : null}
+                  )}
                 </div>
               </div>
 

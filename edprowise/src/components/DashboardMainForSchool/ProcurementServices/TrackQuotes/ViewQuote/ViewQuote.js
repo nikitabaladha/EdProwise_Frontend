@@ -21,7 +21,11 @@ const formatDate = (dateString) => {
 const ViewQuote = () => {
   const location = useLocation();
 
-  const { quote, sellerId, enquiryNumber } = location.state || {};
+  const { quote } = location.state || {};
+
+  const enquiryNumber =
+    location.state?.enquiryNumber || location.state?.searchEnquiryNumber;
+  const sellerId = location.state?.sellerId || location.state?.searchSellerId;
 
   const [currentQuote, setCurrentQuote] = useState(quote);
   const [isModalOpen, setIsModalOpen] = useState(false);
