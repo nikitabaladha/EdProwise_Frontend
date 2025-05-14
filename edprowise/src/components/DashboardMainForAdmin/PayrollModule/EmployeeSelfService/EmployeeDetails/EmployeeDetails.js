@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 const EmployeeDetails = () => {
     const [showForm, setShowForm] = useState(false);
     const [experiences, setExperiences] = useState([{ id: 1 }]);
+    const [nominees, setNominees] = useState([{ id: 1 }]);
 
     const handleProceed = () => {
         setShowForm(true);
@@ -14,82 +15,43 @@ const EmployeeDetails = () => {
     };
 
     const removeExperience = (id) => {
-        setExperiences(experiences.filter(exp => exp.id !== id));
+        if (id !== 1) {
+            setExperiences(experiences.filter(exp => exp.id !== id));
+        }
     };
+
+    const addNominee = () => {
+        const newNominee = { id: nominees.length + 1 };
+        setNominees([...nominees, newNominee]);
+    };
+
+    const removeNominee = (id) => {
+        if (id !== 1) {
+            setNominees(nominees.filter(nom => nom.id !== id));
+        }
+    };
+
+    
 
     return (
         <div className="container">
             <div className="row">
                 <div className="col-xl-12">
                     <div className="card m-2">
-                        <div className="card-body">
+                        <div className="card-body custom-heading-padding">
                             <div className="container">
                                 <div className="card-header mb-2">
-                                    <h4 className="card-title text-center custom-heading-font">
+                                    <h4 className="payroll-title text-center mb-0">
                                         Employee Details
                                     </h4>
                                 </div>
                             </div>
                             <form onSubmit="">
-                                {/* <div className="row mb-3">
-                                    <div className="col-md-6">
-                                        <div className="mb-6">
-                                            <label htmlFor="employeeID" className="form-label">
-                                                Employee ID
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="employeeID"
-                                                name="employeeID"
-                                                className="form-control"
-                                                // value={formData.employeeID}
-                                                // onChange={handleChange}
-                                                required
-                                                placeholder='Enter Employee ID'
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="mb-6">
-                                            <label htmlFor="password" className="form-label">
-                                                password
-                                            </label>
-                                            <input
-                                                type="password"
-                                                id="password"
-                                                name="password"
-                                                className="form-control"
-                                                // value={formData.password}
-                                                // onChange={handleChange}
-                                                required
-                                                placeholder='Password'
-                                            />
-                                        </div>
-                                    </div>
-                                </div> */}
-
-                                {/* <div className="text-end">
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary custom-submit-button"
-                                        onClick={handleProceed}
-                                    >
-                                        Proceed
-                                    </button>
-                                </div> */}
-
-
-
-                                {/* <div className="card-header mb-2">
-                                    <h4 className="card-title text-center custom-heading-font">
-                                        Personal Information
-                                    </h4>
-                                </div> */}
                                 <div className="row mb-3">
                                     <div className="col-md-6">
                                         <div className="mb-6">
                                             <label htmlFor="employeeID" className="form-label">
-                                                Employee ID
+                                                Employee ID <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -105,7 +67,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-6">
                                             <label htmlFor="name" className="form-label">
-                                                Name Of Employee
+                                                Name of Employee <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -125,7 +87,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="joiningDate" className="form-label">
-                                                Joining Date
+                                                Joining Date <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="date"
@@ -144,7 +106,7 @@ const EmployeeDetails = () => {
                                                 htmlFor="categoryOfEmployees"
                                                 className="form-label"
                                             >
-                                                Category Of Employees
+                                                Category of Employees <span className="text-danger">*</span>
                                             </label>
                                             <select
                                                 id="categoryOfEmployees"
@@ -167,7 +129,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="grade" className="form-label">
-                                                Grade
+                                                Grade <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -177,7 +139,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.grade}
                                                 // onChange={handleChange}
                                                 required
-                                                placeholder='Grade'
+                                                placeholder='Enter Grade'
                                             />
                                         </div>
                                     </div>
@@ -185,7 +147,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="jobDesignation" className="form-label">
-                                                Job Designation
+                                                Job Designation <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -195,7 +157,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.jobDesignation}
                                                 // onChange={handleChange}
                                                 required
-                                                placeholder='Job Designation'
+                                                placeholder='Enter Job Designation'
                                             />
                                         </div>
                                     </div>
@@ -203,7 +165,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="dateOfBirth" className="form-label">
-                                                Date Of Birth
+                                                Date of Birth <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="date"
@@ -220,7 +182,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-6">
                                             <label htmlFor="fatherName" className="form-label">
-                                                Father Name
+                                                Father Name <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -237,7 +199,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-6">
                                             <label htmlFor="spouseName" className="form-label">
-                                                Spouse Name
+                                                Spouse Name 
                                             </label>
                                             <input
                                                 type="text"
@@ -254,7 +216,7 @@ const EmployeeDetails = () => {
                                     <div className="row">
                                         <div className="mb-3 mt-2">
                                             <label htmlFor="currentAddress" className="form-label">
-                                                Current Address
+                                                Current Address <span className="text-danger">*</span>
                                             </label>
                                             <textarea
                                                 className="form-control"
@@ -271,7 +233,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="contactNumber" className="form-label">
-                                                Contact No
+                                                Contact Number <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="tel"
@@ -289,7 +251,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="emergencyContactNumber" className="form-label">
-                                                Emergency Contact No
+                                                Emergency Contact Number <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="tel"
@@ -309,7 +271,7 @@ const EmployeeDetails = () => {
                                                 htmlFor="emailId"
                                                 className="form-label"
                                             >
-                                                Email ID
+                                                Email ID <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="email"
@@ -327,7 +289,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="nationality" className="form-label">
-                                                Nationality
+                                                Nationality <span className="text-danger">*</span>
                                             </label>
                                             <select
                                                 id="nationality"
@@ -355,7 +317,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-6">
                                             <label htmlFor="religion" className="form-label">
-                                                Religion
+                                                Religion <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -372,7 +334,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="gender" className="form-label">
-                                                Gender
+                                                Gender <span className="text-danger">*</span>
                                             </label>
                                             <select
                                                 id="gender"
@@ -397,7 +359,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="maritalStatus" className="form-label">
-                                                Marital Status
+                                                Marital Status <span className="text-danger">*</span>
                                             </label>
                                             <select
                                                 id="maritalStatus"
@@ -425,7 +387,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="higherQualification" className="form-label">
-                                                Higher Qualification
+                                                Higher Qualification <span className="text-danger">*</span>
                                             </label>
                                             <select
                                                 id="higherQualification"
@@ -453,7 +415,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="physicalHandicap" className="form-label">
-                                                Physical Handicap
+                                                Physical Handicap <span className="text-danger">*</span>
                                             </label>
                                             <select
                                                 id="physicalHandicap"
@@ -475,7 +437,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="aadharPassportNumber" className="form-label">
-                                                Aadhar/Passport Number
+                                                Aadhar/Passport Number <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -485,6 +447,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.aadharPassportNumber}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter Aadhar/Passport Number'
                                             />
                                         </div>
                                     </div>
@@ -495,7 +458,7 @@ const EmployeeDetails = () => {
                                                 htmlFor="aadharPassportFile"
                                                 className="form-label"
                                             >
-                                                Aadhar/Passport Upload
+                                                Aadhar/Passport Upload <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="file"
@@ -505,6 +468,7 @@ const EmployeeDetails = () => {
                                                 accept="image/*,application/pdf"
                                                 // onChange={handleChange}
                                                 required
+
                                             />
                                         </div>
                                     </div>
@@ -512,7 +476,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="panNumber" className="form-label">
-                                                PAN No
+                                                PAN Number <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -522,6 +486,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.panNumber}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter PAN Number'
                                             />
                                         </div>
                                     </div>
@@ -532,7 +497,7 @@ const EmployeeDetails = () => {
                                                 htmlFor="panFile"
                                                 className="form-label"
                                             >
-                                                PAN Upload
+                                                PAN Upload <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="file"
@@ -549,7 +514,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="UANNumber" className="form-label">
-                                                UAN No
+                                                UAN Number <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -559,6 +524,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.panNumber}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter UAN Number'
                                             />
                                         </div>
                                     </div>
@@ -566,7 +532,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="ESICNumber" className="form-label">
-                                                ESIC No
+                                                ESIC Number <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -576,6 +542,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.ESICNumber}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter ESIC Number'
                                             />
                                         </div>
                                     </div>
@@ -590,7 +557,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="nameOfAccountholder" className="form-label">
-                                                Name Of Accountholder
+                                                Name of Accountholder <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -600,6 +567,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.nameOfAccountholder}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter Name of Accountholder'
                                             />
                                         </div>
                                     </div>
@@ -607,7 +575,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="nameOfBank" className="form-label">
-                                                Name Of Bank
+                                                Name of Bank <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -617,6 +585,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.nameOfBank}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter Bank Name'
                                             />
                                         </div>
                                     </div>
@@ -624,7 +593,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="IFSCCode" className="form-label">
-                                                IFSC Code
+                                                IFSC Code <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -634,6 +603,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.IFSCCode}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter IFSC Code'
                                             />
                                         </div>
                                     </div>
@@ -641,7 +611,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="accountNumber" className="form-label">
-                                                Account Number
+                                                Account Number <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -651,6 +621,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.accountNumber}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter Account Number'
                                             />
                                         </div>
                                     </div>
@@ -658,7 +629,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="accountType" className="form-label">
-                                                Account Type
+                                                Account Type <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -668,6 +639,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.accountType}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter Account Type'
                                             />
                                         </div>
                                     </div>
@@ -685,7 +657,7 @@ const EmployeeDetails = () => {
                                                 htmlFor="class12Certificate"
                                                 className="form-label"
                                             >
-                                                Class 12 Certificate (Upload)
+                                                Class 12 Certificate  <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="file"
@@ -705,7 +677,7 @@ const EmployeeDetails = () => {
                                                 htmlFor="degreeCertificate"
                                                 className="form-label"
                                             >
-                                                Degree Certificate (Upload)
+                                                Degree Certificate <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="file"
@@ -719,13 +691,13 @@ const EmployeeDetails = () => {
                                         </div>
                                     </div>
 
-                                    <div className="col-md-6">
+                                    <div className="col-md-4">
                                         <div className="mb-3">
                                             <label
                                                 htmlFor="resume"
                                                 className="form-label"
                                             >
-                                                Resume (Upload)
+                                                Resume  <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="file"
@@ -739,13 +711,13 @@ const EmployeeDetails = () => {
                                         </div>
                                     </div>
 
-                                    <div className="col-md-6">
+                                    <div className="col-md-4">
                                         <div className="mb-3">
                                             <label
                                                 htmlFor="experienceLetter"
                                                 className="form-label"
                                             >
-                                                Experience Letter, If Applicable (Upload)
+                                                Experience Letter
                                             </label>
                                             <input
                                                 type="file"
@@ -757,6 +729,293 @@ const EmployeeDetails = () => {
                                             />
                                         </div>
                                     </div>
+
+                                    <div className="col-md-4">
+                                        <div className="mb-3">
+                                            <label
+                                                htmlFor="relievingLetter"
+                                                className="form-label"
+                                            >
+                                                Relieving Letter 
+                                            </label>
+                                            <input
+                                                type="file"
+                                                id="relievingLetter"
+                                                name="relievingLetter"
+                                                className="form-control"
+                                                accept="image/*,application/pdf"
+                                            // onChange={handleChange}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="card-header mb-2">
+                                    <h4 className="card-title text-center custom-heading-font">
+                                        Nomination For Gratuity & Others
+                                    </h4>
+                                </div>
+
+                                {nominees.map((nominee, index) => (
+                                    <div key={nominee.id} className='row'>
+                                        <div className='d-flex justify-content-between' style={{ padding: "0" }}>
+                                            <div className="card-header mt-0" style={{ padding: "0.50rem", borderBottom: "none" }}>
+                                                <h4 className="card-title text-center">
+                                                    Nominee {index + 1}
+                                                </h4>
+                                            </div>
+                                            {nominee.id !== 1 && (
+                                                <div className="card-header p-0">
+                                                    <Link className="btn btn-soft-danger btn-sm"
+                                                        onClick={() => removeNominee(nominee.id)}>
+                                                        <iconify-icon
+                                                            icon="solar:trash-bin-minimalistic-2-broken"
+                                                            className="align-middle fs-18"
+                                                        />
+                                                    </Link>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="mb-3">
+                                                <label htmlFor="nomineeName" className="form-label">
+                                                    Nominee Name <span className="text-danger">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="nomineeName"
+                                                    name="nomineeName"
+                                                    className="form-control"
+                                                    // value={formData.nomineeName}
+                                                    // onChange={handleChange}
+                                                    required
+                                                    placeholder='Enter Nominee Name'
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-6">
+                                            <div className="mb-3">
+                                                <label htmlFor="nomineeRelation" className="form-label">
+                                                    Relation <span className="text-danger">*</span>
+                                                </label>
+                                                <select
+                                                    id="nomineeRelation"
+                                                    name="nomineeRelation"
+                                                    className="form-control"
+                                                    // value={formData.nomineeRelation}
+                                                    // onChange={handleChange}
+                                                    required
+                                                >
+                                                    <option value="">Select Relation</option>
+                                                    <option value="Father">Father</option>
+                                                    <option value="Mother">Mother</option>
+                                                    <option value="Sibling">Sibling</option>
+                                                    <option value="Spouse">Spouse</option>
+                                                    <option value="Child">Child</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-4">
+                                            <div className="mb-3">
+                                                <label htmlFor="nomineeAadharNumber" className="form-label">
+                                                    Aadhar Number <span className="text-danger">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="nomineeAadharNumber"
+                                                    name="nomineeAadharNumber"
+                                                    className="form-control"
+                                                    // value={formData.nomineeAadharNumber}
+                                                    // onChange={handleChange}
+                                                    required
+                                                    placeholder='Enter Nominee Aadhar Number'
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-4">
+                                            <div className="mb-3">
+                                                <label
+                                                    htmlFor="nomineeAadharCardOrPassportFile"
+                                                    className="form-label"
+                                                >
+                                                    Aadhar Card/Passport Upload <span className="text-danger">*</span>
+                                                </label>
+                                                <input
+                                                    type="file"
+                                                    id="nomineeAadharCardOrPassportFile"
+                                                    name="nomineeAadharCardOrPassportFile"
+                                                    className="form-control"
+                                                    accept="image/*,application/pdf"
+                                                    required
+                                                // onChange={handleChange}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-4">
+                                            <div className="mb-3">
+                                                <label htmlFor="nomineeShearPortion" className="form-label">
+                                                    Share Percentage (%) <span className="text-danger">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="nomineeShearPortion"
+                                                    name="nomineeShearPortion"
+                                                    className="form-control"
+                                                    // value={formData.nomineeName}
+                                                    // onChange={handleChange}
+                                                    required
+                                                    placeholder='Enter Nominee Shear of Portion '
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                <div className="text-end card-header">
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary custom-submit-button"
+                                        onClick={addNominee}
+                                    >
+                                        Add Nominee
+                                    </button>
+                                </div>
+
+                                <div className="card-header mt-1">
+                                    <h4 className="card-title text-center custom-heading-font">
+                                        Previous Employment
+                                    </h4>
+                                </div>
+
+                                {
+                                    experiences.map((exp, index) => (
+                                        <div key={exp.id} className='row'>
+                                            <div className='d-flex justify-content-between' style={{ padding: "0" }}>
+                                                <div className="card-header mt-0" style={{ padding: "0.50rem", borderBottom: "none" }}>
+                                                    <h4 className="card-title text-center">
+                                                        Experience {index + 1}
+                                                    </h4>
+                                                </div>
+                                                {exp.id !== 1 && (
+                                                <div className="card-header p-0">
+                                                    <Link className="btn btn-soft-danger btn-sm"
+                                                        onClick={() => removeExperience(exp.id)}>
+                                                        <iconify-icon
+                                                            icon="solar:trash-bin-minimalistic-2-broken"
+                                                            className="align-middle fs-18"
+                                                        />
+                                                    </Link>
+                                                </div>
+                                            )}
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="mb-3">
+                                                    <label htmlFor={`previousSchoolName-${exp.id}`} className="form-label">
+                                                        Name of School/Others <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id={`previousSchoolName-${exp.id}`}
+                                                        name={`previousSchoolName-${exp.id}`}
+                                                        className="form-control"
+                                                        required
+                                                        placeholder='Enter Previous School Name'
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="mb-3">
+                                                    <label htmlFor={`previousSchoolAddress-${exp.id}`} className="form-label">
+                                                        Address <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id={`previousSchoolAddress-${exp.id}`}
+                                                        name={`previousSchoolAddress-${exp.id}`}
+                                                        className="form-control"
+                                                        required
+                                                        placeholder='Enter Previous School Address'
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="mb-3">
+                                                    <label htmlFor={`previousSchoolJoiningDate-${exp.id}`} className="form-label">
+                                                        From <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="date"
+                                                        id={`previousSchoolJoiningDate-${exp.id}`}
+                                                        name={`previousSchoolJoiningDate-${exp.id}`}
+                                                        className="form-control"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="mb-3">
+                                                    <label htmlFor={`previousSchoolLastDate-${exp.id}`} className="form-label">
+                                                        To <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="date"
+                                                        id={`previousSchoolLastDate-${exp.id}`}
+                                                        name={`previousSchoolLastDate-${exp.id}`}
+                                                        className="form-control"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="mb-3">
+                                                    <label htmlFor={`previousJobDesignation-${exp.id}`} className="form-label">
+                                                        Job Designation <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id={`previousJobDesignation-${exp.id}`}
+                                                        name={`previousJobDesignation-${exp.id}`}
+                                                        className="form-control"
+                                                        required
+                                                        placeholder='Enter Previous Job Designation '
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="mb-3">
+                                                    <label htmlFor={`numberOfExperience-${exp.id}`} className="form-label">
+                                                        No. of Experience <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id={`numberOfExperience-${exp.id}`}
+                                                        name={`numberOfExperience-${exp.id}`}
+                                                        className="form-control"
+                                                        required
+                                                        placeholder='Enter Number of Experience'
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                                < div className="text-end card-header" >
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary custom-submit-button"
+                                        onClick={addExperience}
+                                    >
+                                        Add Employment
+                                    </button>
                                 </div>
 
                                 <div className="card-header mb-2">
@@ -768,7 +1027,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="securityDepositAmount" className="form-label">
-                                                Security Deposit Amount
+                                                Security Deposit Amount <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="number"
@@ -778,6 +1037,7 @@ const EmployeeDetails = () => {
                                                 // value={formData.securityDepositAmount}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter Security Deposit Amount'
                                             />
                                         </div>
                                     </div>
@@ -785,7 +1045,7 @@ const EmployeeDetails = () => {
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="voluntaryPFContribution" className="form-label">
-                                                Voluntary PF Contribution (Amt)
+                                                Voluntary PF Contribution (Amount)
                                             </label>
                                             <input
                                                 type="number"
@@ -795,24 +1055,25 @@ const EmployeeDetails = () => {
                                                 // value={formData.voluntaryPFContribution}
                                                 // onChange={handleChange}
                                                 required
+                                                placeholder='Enter Voluntary PF Contribution'
                                             />
                                         </div>
                                     </div>
 
                                     <div className="col-md-4">
                                         <div className="mb-3">
-                                            <label htmlFor="taxSystem" className="form-label">
-                                                Tax System
+                                            <label htmlFor="taxRegime" className="form-label">
+                                                Tax Regime <span className="text-danger">*</span>
                                             </label>
                                             <select
-                                                id="taxSystem"
-                                                name="taxSystem"
+                                                id="taxRegime"
+                                                name="taxRegime"
                                                 className="form-control"
                                                 // value={formData.physicalHandicap}
                                                 // onChange={handleChange}
                                                 required
                                             >
-                                                <option value="">Select Tax System</option>
+                                                <option value="">Select Tax Regime</option>
                                                 <option value="old">Old</option>
                                                 <option value="New">
                                                     New
@@ -822,181 +1083,6 @@ const EmployeeDetails = () => {
                                     </div>
                                 </div>
 
-                                <div className="card-header mb-2">
-                                    <h4 className="card-title text-center custom-heading-font">
-                                        Nomination For Gratuity & Others
-                                    </h4>
-                                </div>
-                                <div className='row'>
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label htmlFor="nomineeName" className="form-label">
-                                                Nominee Name
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="nomineeName"
-                                                name="nomineeName"
-                                                className="form-control"
-                                                // value={formData.nomineeName}
-                                                // onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label htmlFor="nomineeRelation" className="form-label">
-                                                Relation
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="nomineeRelation"
-                                                name="nomineeRelation"
-                                                className="form-control"
-                                                // value={formData.nomineeRelation}
-                                                // onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label htmlFor="nomineeAadharNumber" className="form-label">
-                                                Aadhar Number
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="nomineeAadharNumber"
-                                                name="nomineeAadharNumber"
-                                                className="form-control"
-                                                // value={formData.nomineeAadharNumber}
-                                                // onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label
-                                                htmlFor="nomineeAadharCardOrPassportFile"
-                                                className="form-label"
-                                            >
-                                                Aadhar Card/ Passport (Upload)
-                                            </label>
-                                            <input
-                                                type="file"
-                                                id="nomineeAadharCardOrPassportFile"
-                                                name="nomineeAadharCardOrPassportFile"
-                                                className="form-control"
-                                                accept="image/*,application/pdf"
-                                                required
-                                            // onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='d-flex  justify-content-between align-item-center'>
-                                    <div className="card-header mt-1">
-
-                                    </div>
-                                    <div className="card-header mt-1">
-                                        <h4 className="card-title text-center custom-heading-font">
-                                            Previous Employment
-                                        </h4>
-                                    </div>
-                                    <div className="text-end card-header">
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary custom-submit-button"
-                                            onClick={addExperience}
-                                        >
-                                            Add Employment
-                                        </button>
-                                    </div>
-                                </div>
-                                {experiences.map((exp, index) => (
-                                    <div key={exp.id} className='row'>
-                                        <div className='d-flex justify-content-between'>
-                                            <div className="card-header mt-0" style={{ padding: "0.50rem" }}>
-                                                <h4 className="card-title text-center">
-                                                    Experience {index + 1}
-                                                </h4>
-                                            </div>
-                                            <div className="card-header p-0">
-                                                <Link className="btn btn-soft-danger btn-sm"
-                                                    onClick={() => removeExperience(exp.id)}>
-                                                    <iconify-icon
-                                                        icon="solar:trash-bin-minimalistic-2-broken"
-                                                        className="align-middle fs-18"
-
-                                                    />
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="mb-3">
-                                                <label htmlFor={`previousSchoolName-${exp.id}`} className="form-label">
-                                                    School Name
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id={`previousSchoolName-${exp.id}`}
-                                                    name={`previousSchoolName-${exp.id}`}
-                                                    className="form-control"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="col-md-6">
-                                            <div className="mb-3">
-                                                <label htmlFor={`previousSchoolAddress-${exp.id}`} className="form-label">
-                                                    Address
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id={`previousSchoolAddress-${exp.id}`}
-                                                    name={`previousSchoolAddress-${exp.id}`}
-                                                    className="form-control"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="col-md-6">
-                                            <div className="mb-3">
-                                                <label htmlFor={`previousSchoolJoiningDate-${exp.id}`} className="form-label">
-                                                    From
-                                                </label>
-                                                <input
-                                                    type="date"
-                                                    id={`previousSchoolJoiningDate-${exp.id}`}
-                                                    name={`previousSchoolJoiningDate-${exp.id}`}
-                                                    className="form-control"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="col-md-6">
-                                            <div className="mb-3">
-                                                <label htmlFor={`previousSchoolLastDate-${exp.id}`} className="form-label">
-                                                    To
-                                                </label>
-                                                <input
-                                                    type="date"
-                                                    id={`previousSchoolLastDate-${exp.id}`}
-                                                    name={`previousSchoolLastDate-${exp.id}`}
-                                                    className="form-control"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
                                 <div className="text-end">
                                     <button
                                         type="submit"
@@ -1009,8 +1095,8 @@ const EmployeeDetails = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 

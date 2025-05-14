@@ -25,7 +25,7 @@ const CTCUpdate = () => {
             <div className="card-body">
               <div className="container">
                 <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
+                  <h4 className="payroll-title text-center mb-0">
                     CTC Update
                   </h4>
                 </div>
@@ -65,7 +65,7 @@ const CTCUpdate = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="name" className="form-label">
-                          Name Of Employee
+                          Name of Employee
                         </label>
                         <input
                           type="text"
@@ -110,7 +110,7 @@ const CTCUpdate = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="categoryOfEmployees" className="form-label">
-                          Category Of Employees
+                          Category of Employees
                         </label>
                         <input
                           type="text"
@@ -126,7 +126,7 @@ const CTCUpdate = () => {
                     <div className="table-responsive">
                       <table className="table align-middle mb-0 table-hover table-centered text-center">
                         <thead className="bg-light-subtle">
-                          <tr>
+                          <tr className="">
                             <th style={{ width: 20 }}>
                               <div className="form-check ms-1">
                                 <input
@@ -163,7 +163,7 @@ const CTCUpdate = () => {
                             </td>
                             <td>
                               <label htmlFor="basicSalary" className="form-label fw-bold" style={{ fontSize: "1rem" }}>
-                                Basic Salary
+                                Basic Salary <span className="text-danger">*</span>
                               </label>
                               {/* <p>Basic Salary</p> */}
                             </td>
@@ -197,7 +197,7 @@ const CTCUpdate = () => {
                             </td>
                             <td>
                               <label htmlFor="HRA" className="form-label fw-bold" style={{ fontSize: "1rem" }}>
-                                HRA
+                                HRA <span className="text-danger">*</span>
                               </label>
                               {/* <p>Basic Salary</p> */}
                             </td>
@@ -233,8 +233,8 @@ const CTCUpdate = () => {
                             </td>
                             <td>
                               <label htmlFor="pfContribution" className="form-label fw-bold" style={{ fontSize: "1rem" }}>
-                                PF Contribution
-                              </label>
+                                PF Contribution <span className="text-danger">*</span>
+                              </label> 
                               {/* <p>Basic Salary</p> */}
                             </td>
                             <td>
@@ -268,7 +268,7 @@ const CTCUpdate = () => {
                             </td>
                             <td>
                               <label htmlFor="totalAnnualGross" className="form-label fw-bold" style={{ fontSize: "1rem" }}>
-                                Total Annual Gross
+                                Total Annual Gross <span className="text-danger">*</span>
                               </label>
                               {/* <p>Basic Salary</p> */}
                             </td>
@@ -303,7 +303,7 @@ const CTCUpdate = () => {
                             </td>
                             <td>
                               <label htmlFor="gratuity" className="form-label fw-bold" style={{ fontSize: "1rem" }}>
-                                Gratuity
+                                Gratuity <span className="text-danger">*</span>
                               </label>
                               {/* <p>Basic Salary</p> */}
                             </td>
@@ -338,7 +338,7 @@ const CTCUpdate = () => {
                             </td>
                             <td>
                               <label htmlFor="annualCostToInstitution" className="form-label fw-bold" style={{ fontSize: "1rem" }}>
-                                Annual Cost To Institution
+                                Annual Cost To Institution <span className="text-danger">*</span>
                               </label>
                               {/* <p>Basic Salary</p> */}
                             </td>

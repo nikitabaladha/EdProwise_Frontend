@@ -122,7 +122,7 @@ const PayLoan = () => {
                                             <div className="col-md-4">
                                                 <div className="mb-3">
                                                     <label htmlFor="rateOfInterest" className="form-label">
-                                                        Rate Of Interest
+                                                        Rate of Interest
                                                     </label>
                                                     <input
                                                         type="text"
@@ -170,7 +170,7 @@ const PayLoan = () => {
                                             <div className="col-md-4">
                                                 <div className="mb-6">
                                                     <label htmlFor="periodOfLoan" className="form-label">
-                                                        Period Of Loan (Months)
+                                                        Period of Loan (Months)
                                                     </label>
                                                     <input
                                                         type="text"

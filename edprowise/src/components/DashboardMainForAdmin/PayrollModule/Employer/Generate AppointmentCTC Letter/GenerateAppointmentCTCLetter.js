@@ -63,7 +63,7 @@ const GenerateAppointmentCTCLetter = () => {
                                             <div className="row mb-2">
                                                 <div className="col-6">
                                                     <p style={{ color: 'black' }}>
-                                                        Name Of Employee : Umesh jadhav
+                                                        Name of Employee : Umesh jadhav
                                                     </p>
 
                                                     <p style={{ color: 'black' }}>

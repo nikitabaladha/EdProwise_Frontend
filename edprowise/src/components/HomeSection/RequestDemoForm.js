@@ -226,44 +226,44 @@ const RequestDemoForm = () => {
                     </div>
                   )} */}
 
-<div className="fullwidth">
-  <label className="text-black">Select Services*</label>
-  <div
-    className="custom-multi-select"
-    onMouseLeave={() => setIsDropdownOpen(false)} // <- move here
-  >
-    <div
-      className="dropdown-header-web"
-      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-    >
-      {selectedServices.length > 0
-        ? `${selectedServices.length} services selected`
-        : "Select services"}
-      <span className="arrow">{isDropdownOpen ? "▲" : "▼"}</span>
-    </div>
+                  <div className="fullwidth">
+                    <label className="text-black">Select Services*</label>
+                    <div
+                      className="custom-multi-select"
+                      onMouseLeave={() => setIsDropdownOpen(false)} // <- move here
+                    >
+                      <div
+                        className="dropdown-header-web"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      >
+                        {selectedServices.length > 0
+                          ? `${selectedServices.length} services selected`
+                          : "Select services"}
+                        <span className="arrow">{isDropdownOpen ? "▲" : "▼"}</span>
+                      </div>
 
-    {isDropdownOpen && (
-      <div className="dropdown-options">
-        {coursesData.map((service) => (
-          <label
-            key={service.id}
-            className="dropdown-option text-black"
-          >
-            <input
-              type="checkbox"
-              className="check-box-demo"
-              value={service.title}
-              checked={selectedServices.includes(service.title)}
-              onChange={handleCheckboxChange}
-            />
-            {service.title}
-          </label>
-        ))}
-      </div>
-    )}
-  </div>
-</div>
-{selectedServices.length >= 1 && (
+                      {isDropdownOpen && (
+                        <div className="dropdown-options">
+                          {coursesData.map((service) => (
+                            <label
+                              key={service.id}
+                              className="dropdown-option text-black"
+                            >
+                              <input
+                                type="checkbox"
+                                className="check-box-demo"
+                                value={service.title}
+                                checked={selectedServices.includes(service.title)}
+                                onChange={handleCheckboxChange}
+                              />
+                              {service.title}
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {selectedServices.length >= 1 && (
                     <div className="fullwidth mt-4">
                       <h4>Selected Services:</h4>
                       <ul>
@@ -272,7 +272,7 @@ const RequestDemoForm = () => {
                         ))}
                       </ul>
                     </div>
-                  )} 
+                  )}
 
                   <div className="fullwidth">
                     <textarea

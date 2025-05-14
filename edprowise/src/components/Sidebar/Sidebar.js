@@ -1,62 +1,702 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+// import React, { useState, useEffect, useRef } from "react";
+// import { Link, useLocation } from "react-router-dom";
+// import { Icon } from "@iconify/react";
+// import { IoIosArrowForward } from "react-icons/io";
+// import getAPI from "../../api/getAPI";
+
+// const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
+//   const [openMenus, setOpenMenus] = useState({});
+//   const location = useLocation();
+
+//   const toggleMenu = (menuId, parentId = null) => {
+//     setOpenMenus((prev) => {
+//       const newOpenMenus = { ...prev };
+
+//       if (parentId) {
+//         Object.keys(newOpenMenus).forEach((key) => {
+//           if (key !== parentId) {
+//             delete newOpenMenus[key];
+//           }
+//         });
+//       } else {
+//         Object.keys(newOpenMenus).forEach((key) => {
+//           delete newOpenMenus[key];
+//         });
+//       }
+
+//       if (newOpenMenus[menuId]) {
+//         delete newOpenMenus[menuId];
+//       } else {
+//         newOpenMenus[menuId] = true;
+//       }
+
+//       return newOpenMenus;
+//     });
+//   };
+//   const sidebarRef = useRef(null);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (
+//         sidebarRef.current &&
+//         !sidebarRef.current.contains(event.target) &&
+//         sidebarVisible
+//       ) {
+//         toggleSidebar();
+//       }
+//     };
+
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, [sidebarVisible, toggleSidebar]);
+
+//   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+//   const userRole = userDetails?.role || "Guest";
+//   const email = userDetails.email;
+
+//   const currentRoute = location.pathname;
+
+//   const menuConfig = {
+//     Admin: [
+//       {
+//         id: "dashboard",
+//         label: "Dashboard",
+//         icon: "solar:widget-5-bold-duotone",
+//         link: "/admin-dashboard",
+//       },
+//       ...(email === "edprowise@gmail.com"
+//         ? [
+//             {
+//               id: "admin",
+//               label: "Admins",
+//               icon: "solar:users-group-rounded-bold-duotone",
+//               link: "/admin-dashboard/admins",
+//             },
+//           ]
+//         : []),
+//       {
+//         id: "school",
+//         label: "Schools",
+//         icon: "solar:users-group-rounded-bold-duotone",
+//         link: "/admin-dashboard/schools",
+//       },
+//       {
+//         id: "seller",
+//         label: "Sellers",
+//         icon: "solar:users-group-rounded-bold-duotone",
+//         link: "/admin-dashboard/sellers",
+//       },
+//       {
+//         id: "subscriptions",
+//         label: "Subscriptions",
+//         icon: "solar:wallet-money-bold",
+//         link: "/admin-dashboard/subscriptions",
+//       },
+
+//       {
+//         id: "procurementServices",
+//         label: "Procurement Services",
+//         icon: "solar:wallet-money-bold",
+//         children: [
+//           {
+//             label: "Dashboard",
+//             link: "/admin-dashboard/procurement-services/dashboard",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Quotes",
+//             link: "/admin-dashboard/procurement-services/track-quote",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Track Order & Order History",
+//             link: "/admin-dashboard/procurement-services/track-order-history",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Define Goods & Services",
+//             link: "/admin-dashboard/procurement-services/good-services",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Bank Details",
+//             link: "/admin-dashboard/procurement-services/bank-details",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//         ],
+//       },
+//       {
+//         id: "payrollModule",
+//         label: "Payroll Module",
+//         icon: "solar:wallet-money-bold",
+//         children: [
+//           {
+//             id: "employeeSelfService",
+//             label: "Employee Self Service",
+//             icon: "solar:book-bookmark-bold-duotone",
+//             children: [
+//               {
+//                 label: "Update Details",
+//                 link: "/admin-dashboard/payroll-module/employee-services/update-details",
+//               },
+//               {
+//                 label: "Salary Slip",
+//                 link: "/admin-dashboard/payroll-module/employee-services/salary-slip",
+//               },
+//               {
+//                 label: "Income Tax",
+//                 // link: "/admin-dashboard/payroll-module/employer/salary-increment",
+//               },
+//               {
+//                 label: "IT Declaration",
+//                 link: "/admin-dashboard/payroll-module/employee-services/income-tax/it-declaration",
+//               },
+//               {
+//                 label: "Income Tax Computation Sheet",
+//                 link: "/admin-dashboard/payroll-module/employee-services/income-tax/income-tax-computation-sheet",
+//               },
+//               {
+//                 label: "Form 16",
+//                 link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
+//               },
+//               {
+//                 label: "Previous Employment Income",
+//                 link: "/admin-dashboard/payroll-module/employee-services/income-tax/previous-employment-income",
+//               },
+//               {
+//                 label: "My Loan Statement",
+//                 link: "/admin-dashboard/payroll-module/employee-services/loan-summary",
+//               },
+//               {
+//                 label: "My Attendance Report",
+//                 link: "/admin-dashboard/payroll-module/employee-services/my-attendance-report",
+//               },
+//               {
+//                 label: "Apply for Leave",
+//                 link: "/admin-dashboard/payroll-module/employee-services/apply-for-leave",
+//               },
+//             ],
+//           },
+//           {
+//             id: "employer",
+//             label: "Employer",
+//             icon: "solar:book-bookmark-bold-duotone",
+//             children: [
+//               {
+//                 label: "Employee Registration",
+//                 link: "/admin-dashboard/payroll-module/employer/registration",
+//               },
+//               {
+//                 // LWD Details
+//                 label: "Employee Update",
+//                 link: "/admin-dashboard/payroll-module/employer/update-employee-details",
+//               },
+//               {
+//                 label: "CTC Update",
+//                 link: "/admin-dashboard/payroll-module/employer/CTC-update",
+//               },
+//               {
+//                 label: "Process Payroll",
+//                 link: "/admin-dashboard/payroll-module/employer/payroll-process",
+//               },
+//               {
+//                 label: "Salary Increment",
+//                 // link: "/admin-dashboard/payroll-module/employer/salary-increment",
+//               },
+//               {
+//                 label: "Bulk Employee Increment",
+//                 link: "/admin-dashboard/payroll-module/employer/salary-increment/bulk-employee-increment",
+//               },
+//               {
+//                 label: "Single Employee Increment",
+//                 link: "/admin-dashboard/payroll-module/employer/salary-increment/single-employee-increment",
+//               },
+//               {
+//                 label: "Generate Appointment/CTC Letter",
+//                 link: "/admin-dashboard/payroll-module/employer/generate-appointment-ctc-letter",
+//               },
+//               {
+//                 label: "Form 16 (Upload)",
+//                 link: "/admin-dashboard/payroll-module/employer/form-16-list",
+//               },
+//               {
+//                 label: "Check Supporting Submitted for Tax",
+//                 link: "/admin-dashboard/payroll-module/employer/check-supporting-submitted-for-Tax",
+//               },
+//               {
+//                 label: "Loan to Employees",
+//                 // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+//               },
+//               {
+//                 label: "Pay Loan",
+//                 link: "/admin-dashboard/payroll-module/employer/loan-to-employees/pay-loan",
+//               },
+//               {
+//                 label: "Loan Statement",
+//                 link: "/admin-dashboard/payroll-module/employer/loan-to-employees/loan-statement",
+//               },
+//               {
+//                 label: "Overtime Allowance",
+//                 link: "/admin-dashboard/payroll-module/employer/overtime-allowance",
+//               },
+//               {
+//                 label: "Performance Tracking",
+//                 link: "/admin-dashboard/payroll-module/employer/performance-tracking",
+//               },
+//             ],
+//           },
+//           {
+//             id: "adminSetting",
+//             label: "Admin Setting",
+//             icon: "solar:book-bookmark-bold-duotone",
+//             children: [
+//               {
+//                 label: "Freeze IT Declaration",
+//                 // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+//               },
+//               {
+//                 label: "Annual Leave Update",
+//                 link: "/admin-dashboard/payroll-module/admin-setting/annual-leave-update",
+//               },
+//               {
+//                 label: "Overtime Allowance Rate",
+//                 link: "/admin-dashboard/payroll-module/admin-setting/overtime-allowance-rate",
+//               },
+//               {
+//                 label: "CTC Components",
+//                 link: "/admin-dashboard/payroll-module/admin-setting/define-ctc-components-list",
+//               },
+//               {
+//                 label: "Grade",
+
+//               },
+//               {
+//                 label: "Job Designation",
+//                 // link: ""
+//               },
+//               {
+//                 label: "School Details",
+//                 // link: ""
+//               }
+//             ],
+//           },
+
+//         ],
+//       },
+//       {
+//         id: "requestDemo",
+//         label: "Request For Demo",
+//         icon: "solar:wallet-money-bold",
+//         link: "/admin-dashboard/request-for-demo",
+//       },
+//       {
+//         id: "contact",
+//         label: "Enquiry",
+//         icon: "solar:wallet-money-bold",
+//         link: "/admin-dashboard/enquiry",
+//       },
+//       {
+//         id: "emailSettings",
+//         label: "Email Settings",
+//         icon: "solar:wallet-money-bold",
+//         children: [
+//           {
+//             label: "SMTP Settings",
+//             link: "/admin-dashboard/email/smtp-setting",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Marketing",
+//             link: "/admin-dashboard/email/marketing",
+//             icon: "solar:book-bookmark-bold-duotone",
+//           },
+//         ],
+//       },
+//     ],
+
+//     School: [
+
+//       {
+//         id: "procurementServices",
+//         label: "Procurement Services",
+//         icon: "solar:wallet-money-bold",
+//         children: [
+//           {
+//             label: "Dashboard",
+//             link: "/school-dashboard/procurement-services/dashboard",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Quotes",
+//             link: "/school-dashboard/procurement-services/track-quote",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Track Order & Order History",
+//             link: "/school-dashboard/procurement-services/track-order-history",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Pay To EdProwise",
+//             link: "/school-dashboard/procurement-services/pay-to-edprowise",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//         ],
+//       },
+
+//       {
+//         id: "feesmodule",
+//         label: "Fees module",
+//         icon: "solar:wallet-money-bold",
+//         children: [
+//           {
+//             id: "form",
+//             label: "Form",
+//             icon: "solar:book-bookmark-bold-duotone",
+//             children: [
+//               {
+//                 label: "Registration Form",
+//                 link: "/school-dashboard/fees-module/form/registration",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//               {
+//                 label: "Admission Form",
+//                 link: "/school-dashboard/fees-module/form/admission-list",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//               {
+//                 label: "TC Form",
+//                 link: "/school-dashboard/fees-module/form/trasfer-certificate-list",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//               {
+//                 label: "Concession Form",
+//                 link: "/school-dashboard/fees-module/form/concession-table",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//             ],
+//           },
+//           {
+//             id: "feesReceipts",
+//             label: "Fees Receipts",
+//             icon: "solar:bill-list-bold-duotone",
+//             children: [
+//               {
+//                 label: "School Fees",
+//                 link: "/school-dashboard/fees-module/fees-receipts/school-fees",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//               {
+//                 label: "Board Registration Fees",
+//                 link: "/school-dashboard/fees-module/fees-receipts/board-registration-fees",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//               {
+//                 label: "Board Exam fees",
+//                 link: "/school-dashboard/fees-module/fees-receipts/board-exam-fees",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//             ],
+//           },
+//           {
+//             id: "adminSetting",
+//             label: "Admin Setting",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//             children: [
+//               {
+//                 label: "Registartion Prefix",
+//                 link: "/school-dashboard/fees-module/admin-setting/prefix-setting/registartion-prefix",
+//                 icon: "solar:settings-bold-duotone",
+//               },
+//               {
+//                 label: "Admission Prefix",
+//                 link: "/school-dashboard/fees-module/admin-setting/prefix-setting/admission-prefix",
+//                 icon: "solar:settings-bold-duotone",
+//               },
+//               {
+//                 label: "Fine",
+//                 link: "/school-dashboard/fees-module/admin-setting/fine",
+//                 icon: "solar:document-bold-duotone",
+//               },
+//               {
+//                 label: "Shift",
+//                 link: "/school-dashboard/fees-module/admin-setting/shifts",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//               {
+//                 label: "Class & Section",
+//                 link: "/school-dashboard/fees-module/admin-setting/class-section",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//               {
+//                 label: "Fees Types",
+//                 link: "/school-dashboard/fees-module/admin-setting/fees-type-list",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//               {
+//                 label: "Fees Structure",
+//                 link: "/school-dashboard/fees-module/admin-setting/fees-structure",
+//                 icon: "solar:users-group-rounded-bold-duotone",
+//               },
+//             ],
+//           },
+//         ],
+//       },
+
+//     ],
+//     Seller: [
+
+//       {
+//         id: "procurementServices",
+//         label: "Procurement Services",
+//         icon: "solar:wallet-money-bold",
+//         children: [
+//           {
+//             label: "Dashboard",
+//             link: "/seller-dashboard/procurement-services/dashboard",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Quote Enquiry",
+//             link: "/seller-dashboard/procurement-services/track-quote",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+
+//           {
+//             label: "Track Order & Order History",
+//             link: "/seller-dashboard/procurement-services/track-order-history",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//           {
+//             label: "Pay To EdProwise",
+//             link: "/seller-dashboard/procurement-services/pay-to-edprowise",
+//             icon: "solar:users-group-rounded-bold-duotone",
+//           },
+//         ],
+//       },
+//     ],
+//     Guest: [
+//       { id: "login", label: "Login", icon: "solar:login-bold", link: "/login" },
+//     ],
+//   };
+
+//   const menuItems = menuConfig[userRole] || menuConfig["Guest"];
+
+
+//   const isCurrentRoute = (route) =>
+//     currentRoute === route || currentRoute.startsWith(route + "/");
+
+//   const renderMenuItem = (item, parentId = null) => {
+
+//     let findChilderRoute = null;
+
+//     item?.children?.forEach((child) => {
+//       if (isCurrentRoute(child.link)) findChilderRoute = child;
+//       if (!findChilderRoute) {
+//         item?.children?.forEach((subChild) => {
+//           subChild.children?.forEach((childOfChild) => {
+//             if (isCurrentRoute(childOfChild.link)) {
+//               findChilderRoute = childOfChild;
+//               if (!findChilderRoute.id) findChilderRoute.id = subChild.id;
+//               if (!findChilderRoute.parentId)
+//                 findChilderRoute.parentId = item.id;
+//             }
+//           });
+//         });
+//       }
+//     });
+
+//     const checkItemIsCurrentRoute = isCurrentRoute(item.link);
+//     const isActive = findChilderRoute || checkItemIsCurrentRoute;
+
+//     if (!Object.keys(openMenus).length && isActive) {
+//       toggleMenu(
+//         findChilderRoute?.id || item?.id,
+//         findChilderRoute?.parentId || parentId
+//       );
+//     }
+
+//     return (
+//       <li className={`nav-item ${isActive ? "active" : ""}`} key={item.id}>
+//         {item.children ? (
+//           <>
+//             <div
+//               className={`nav-link collapsed ${isActive ? "active" : ""}`}
+//               onClick={() => toggleMenu(item.id, parentId)}
+//             >
+//               <span className="nav-icon">
+//                 <Icon icon={item.icon} />
+//               </span>
+//               <span className="nav-text"> {item.label} </span>
+//               <IoIosArrowForward
+//                 style={{
+//                   transition: "transform 0.3s ease",
+//                   transform: openMenus[item.id]
+//                     ? "rotate(90deg)"
+//                     : "rotate(0deg)",
+//                 }}
+//               />
+//             </div>
+//             {openMenus[item.id] && (
+//               <div
+//                 className="collapse show"
+//                 style={{ paddingLeft: parentId ? 30 : 20 }}
+//               >
+//                 <ul
+//                   className="nav sub-navbar-nav"
+//                   style={{
+//                     listStyleType: "none",
+//                     paddingLeft: 0,
+//                     marginTop: 5,
+//                     display: "flex",
+//                     flexDirection: "column",
+//                     gap: "4px",
+//                   }}
+//                 >
+//                   {item.children.map((subItem) =>
+//                     renderMenuItem(subItem, item.id)
+//                   )}
+//                 </ul>
+//               </div>
+//             )}
+//           </>
+//         ) : (
+//           <Link
+//             className={`nav-link ${isActive ? "active" : ""}`}
+//             to={item.link}
+//           >
+//             <span className="nav-icon">
+//               <Icon icon={item.icon} />
+//             </span>
+//             <span className="nav-text"> {item.label} </span>
+//           </Link>
+//         )}
+//       </li>
+//     );
+//   };
+
+//   return (
+//     <div
+//       ref={sidebarRef}
+//       className={`main-nav ${sidebarVisible ? "sidebar-enable" : ""}`}
+//     >
+
+//       <div className="logo-box">
+//         <Link to="/" className="logo-dark">
+//           <img
+//             src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
+//             className="logo-sm"
+//           />
+//           <img
+//             src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
+//             className="logo-lg"
+//           />
+//         </Link>
+//         <Link to="/" className="logo-light">
+//           <img
+//             src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
+//             className="logo-sm"
+//           />
+//           <span>
+//             <img
+//               src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
+//               className="logo-lg"
+//               style={{ height: "80px !important", width: "160px !important" }}
+//             />
+//           </span>
+//         </Link>
+//       </div>
+
+//       <button
+//         type="button"
+//         className="button-sm-hover"
+//         aria-label="Show Full Sidebar"
+//       >
+//         <iconify-icon
+//           icon="solar:double-alt-arrow-right-bold-duotone"
+//           className="button-sm-hover-icon"
+//         />
+//       </button>
+
+//       <div className="scrollbar" data-simplebar="">
+//         <ul className="navbar-nav" id="navbar-nav">
+//           {menuItems.map((item) => renderMenuItem(item))}
+//         </ul>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Sidebar;
+
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { IoIosArrowForward } from "react-icons/io";
-import getAPI from "../../api/getAPI";
+import { Link, useLocation } from "react-router-dom";
 
-const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
-  const [openMenus, setOpenMenus] = useState({});
+const Sidebar = () => {
   const location = useLocation();
-
-  const toggleMenu = (menuId, parentId = null) => {
-    setOpenMenus((prev) => {
-      const newOpenMenus = { ...prev };
-
-      if (parentId) {
-        Object.keys(newOpenMenus).forEach((key) => {
-          if (key !== parentId) {
-            delete newOpenMenus[key];
-          }
-        });
-      } else {
-        Object.keys(newOpenMenus).forEach((key) => {
-          delete newOpenMenus[key];
-        });
-      }
-
-      if (newOpenMenus[menuId]) {
-        delete newOpenMenus[menuId];
-      } else {
-        newOpenMenus[menuId] = true;
-      }
-
-      return newOpenMenus;
-    });
-  };
-  const sidebarRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target) &&
-        sidebarVisible
-      ) {
-        toggleSidebar();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [sidebarVisible, toggleSidebar]);
-
+  const currentPath = location.pathname;
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const userRole = userDetails?.role || "Guest";
-  const email = userDetails.email;
+  const email = userDetails?.email;
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  useEffect(() => {
+    if (userRole === "Admin" || userRole === "Seller") {
+      localStorage.removeItem("sidebartab");
+    }
+  }, [userRole]);
 
-  const currentRoute = location.pathname;
+  useEffect(() => {
+    const htmlTag = document.documentElement;
+    const menuSize = htmlTag.getAttribute("data-menu-size");
+    setIsCollapsed(menuSize === "sm-hover");
+
+    const updateMenuState = () => {
+      const current = htmlTag.getAttribute("data-menu-size");
+      setIsCollapsed(
+        current === "sm-hover" && !htmlTag.querySelector(".main-nav:hover")
+      );
+    };
+
+    const updateMenuSize = () => {
+      if (window.innerWidth >= 770) {
+        htmlTag.setAttribute("data-menu-size", "sm-hover-active");
+      } else {
+        htmlTag.setAttribute("data-menu-size", "hidden");
+      }
+      updateMenuState();
+    };
+
+    updateMenuSize();
+    window.addEventListener("resize", updateMenuSize);
+    const observer = new MutationObserver(updateMenuState);
+    observer.observe(htmlTag, { attributes: true });
+
+    const mainNav = document.querySelector(".main-nav");
+    const handleHover = () => updateMenuState();
+    mainNav?.addEventListener("mouseenter", handleHover);
+    mainNav?.addEventListener("mouseleave", handleHover);
+
+    return () => {
+      window.removeEventListener("resize", updateMenuSize);
+      observer.disconnect();
+      mainNav?.removeEventListener("mouseenter", handleHover);
+      mainNav?.removeEventListener("mouseleave", handleHover);
+    };
+  }, []);
+
+  const handleIconClick = () => {
+    const htmlElement = document.documentElement;
+    const current = htmlElement.getAttribute("data-menu-size");
+
+    if (current === "sm-hover") {
+      htmlElement.setAttribute("data-menu-size", "sm-hover-active");
+    } else if (current === "sm-hover-active") {
+      htmlElement.setAttribute("data-menu-size", "sm-hover");
+    }
+  };
 
   const menuConfig = {
     Admin: [
@@ -68,13 +708,13 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
       },
       ...(email === "edprowise@gmail.com"
         ? [
-            {
-              id: "admin",
-              label: "Admins",
-              icon: "solar:users-group-rounded-bold-duotone",
-              link: "/admin-dashboard/admins",
-            },
-          ]
+          {
+            id: "admin",
+            label: "Admins",
+            icon: "solar:users-group-rounded-bold-duotone",
+            link: "/admin-dashboard/admins",
+          },
+        ]
         : []),
       {
         id: "school",
@@ -146,21 +786,33 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
                 link: "/admin-dashboard/payroll-module/employee-services/salary-slip",
               },
               {
-                label: "IT Declaration",
-                link: "/admin-dashboard/payroll-module/employee-services/it-declaration",
-              },
-              {
-                label: "Income Tax Computation Sheet",
-                link: "/admin-dashboard/payroll-module/employee-services/income-tax-computation-sheet",
-              },
-              {
-                label: "Form 16",
-                link: "/admin-dashboard/payroll-module/employee-services/form16",
+                id: "incomeTax",
+                label: "Income Tax",
+                icon: "bx-cog",
+                children: [
+                  {
+                    label: "IT Declaration",
+                    link: "/admin-dashboard/payroll-module/employee-services/income-tax/it-declaration",
+                  },
+                  {
+                    label: "Income Tax Computation Sheet",
+                    link: "/admin-dashboard/payroll-module/employee-services/income-tax/income-tax-computation-sheet",
+                  },
+                  {
+                    label: "Form 16",
+                    link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
+                  },
+                  {
+                    label: "Previous Employment Income",
+                    link: "/admin-dashboard/payroll-module/employee-services/income-tax/previous-employment-income",
+                  },
+                ],
               },
               {
                 label: "My Loan Statement",
-                link: "/admin-dashboard/payroll-module/employee-services/my-loan-statement",
+                link: "/admin-dashboard/payroll-module/employee-services/loan-summary",
               },
+
               {
                 label: "My Attendance Report",
                 link: "/admin-dashboard/payroll-module/employee-services/my-attendance-report",
@@ -169,6 +821,30 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
                 label: "Apply for Leave",
                 link: "/admin-dashboard/payroll-module/employee-services/apply-for-leave",
               },
+              {
+                id: "exit",
+                label: "Exit",
+                icon: "bx-cog",
+                children: [
+                  {
+                    label: "Employee Resignation",
+                    link: "/admin-dashboard/payroll-module/employee-services/exit/employee-resignation-form",
+                  },
+                  {
+                    label: "Exit Interview",
+                    link: "/admin-dashboard/payroll-module/employee-services/exit/exit-interview",
+                  },
+                  // {
+                  //   label: "Form 16",
+                  //   link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
+                  // },
+                  // {
+                  //   label: "Previous Employment Income",
+                  //   link: "/admin-dashboard/payroll-module/employee-services/income-tax/previous-employment-income",
+                  // },
+                ],
+              },
+
             ],
           },
           {
@@ -193,18 +869,25 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
                 label: "Process Payroll",
                 link: "/admin-dashboard/payroll-module/employer/payroll-process",
               },
+
               {
+                id: "salaryIncrement",
                 label: "Salary Increment",
-                // link: "/admin-dashboard/payroll-module/employer/salary-increment",
+                icon: "bx-cog",
+                children: [
+                  {
+                    label: "Bulk Employee Increment",
+                    link: "/school-dashboard/fees-module/admin-setting/prefix-setting/registartion-prefix",
+                    // icon: "bx-hash",
+                  },
+                  {
+                    label: "Single Employee Increment",
+                    link: "/school-dashboard/fees-module/admin-setting/prefix-setting/admission-prefix",
+                    // icon: "bx-hash",
+                  },
+                ],
               },
-              {
-                label: "Bulk Employee Increment",
-                link: "/admin-dashboard/payroll-module/employer/salary-increment/bulk-employee-increment",
-              },
-              {
-                label: "Single Employee Increment",
-                link: "/admin-dashboard/payroll-module/employer/salary-increment/single-employee-increment",
-              },
+
               {
                 label: "Generate Appointment/CTC Letter",
                 link: "/admin-dashboard/payroll-module/employer/generate-appointment-ctc-letter",
@@ -218,17 +901,21 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
                 link: "/admin-dashboard/payroll-module/employer/check-supporting-submitted-for-Tax",
               },
               {
-                label: "Loan to Employees",
-                // link: "/admin-dashboard/payroll-module/admin-setting/form-16-list",
+                id: "loanToEmployees",
+                label: "Loan To Employees",
+                icon: "bx-cog",
+                children: [
+                  {
+                    label: "Pay Loan",
+                    link: "/admin-dashboard/payroll-module/employer/loan-to-employees/pay-loan",
+                  },
+                  {
+                    label: "Loan Statement",
+                    link: "/admin-dashboard/payroll-module/employer/loan-to-employees/loan-statement",
+                  },
+                ],
               },
-              {
-                label: "Pay Loan",
-                link: "/admin-dashboard/payroll-module/employer/loan-to-employees/pay-loan",
-              },
-              {
-                label: "Loan Statement",
-                link: "/admin-dashboard/payroll-module/employer/loan-to-employees/loan-statement",
-              },
+
               {
                 label: "Overtime Allowance",
                 link: "/admin-dashboard/payroll-module/employer/overtime-allowance",
@@ -237,486 +924,477 @@ const Sidebar = ({ sidebarVisible, toggleSidebar }) => {
                 label: "Performance Tracking",
                 link: "/admin-dashboard/payroll-module/employer/performance-tracking",
               },
-            ],
+              {
+                label: "Resignation Approval",
+                link: "/admin-dashboard/payroll-module/employer/resignation-Approval",
+              },
+              {
+                label: "Resignation Report",
+                link: "/admin-dashboard/payroll-module/employer/resignation-list",
+              },
+            ], 
           },
-          {
-            id: "adminSetting",
-            label: "Admin Setting",
-            icon: "solar:book-bookmark-bold-duotone",
-            children: [
-              {
-                label: "Freeze IT Declaration",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
-              },
-              {
-                label: "Annual Leave Update",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
-              },
-              {
-                label: "Overtime Allowance Rate",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
-              },
-              {
-                label: "CTC Components",
-                link: "/admin-dashboard/payroll-module/admin-setting/define-ctc-components-list",
-                // icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Grade",
-                // link: ""
-              },
-              {
-                label: "Job Designation",
-                // link: ""
-              },
-              {
-                label: "School Details",
-                // link: ""
-              }
-            ],
-          },
-          
-        ],
-      },
       {
-        id: "requestDemo",
-        label: "Request For Demo",
-        icon: "solar:wallet-money-bold",
-        link: "/admin-dashboard/request-for-demo",
-      },
-      {
-        id: "contact",
-        label: "Enquiry",
-        icon: "solar:wallet-money-bold",
-        link: "/admin-dashboard/enquiry",
-      },
-      {
-        id: "emailSettings",
-        label: "Email Settings",
-        icon: "solar:wallet-money-bold",
+        id: "adminSetting",
+        label: "Admin Setting",
+        icon: "solar:book-bookmark-bold-duotone",
         children: [
           {
-            label: "SMTP Settings",
-            link: "/admin-dashboard/email/smtp-setting",
-            icon: "solar:users-group-rounded-bold-duotone",
+            label: "Freeze IT Declaration",
+            // link: "/admin-dashboard/payroll-module/employee-services/update-details",
           },
           {
-            label: "Marketing",
-            link: "/admin-dashboard/email/marketing",
-            icon: "solar:book-bookmark-bold-duotone",
+            label: "Annual Leave Update",
+            // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+          },
+          {
+            label: "Overtime Allowance Rate",
+            // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+          },
+          {
+            label: "CTC Components",
+            link: "/admin-dashboard/payroll-module/admin-setting/define-ctc-components-list",
+            // icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Grade",
+            // link: ""
+          },
+          {
+            label: "Job Designation",
+            // link: ""
+          },
+          {
+            label: "School Details",
+            // link: ""
           },
         ],
       },
     ],
+  },
+    {
+      id: "requestDemo",
+      label: "Request For Demo",
+      icon: "solar:wallet-money-bold",
+      link: "/admin-dashboard/request-for-demo",
+    },
+    {
+      id: "contact",
+      label: "Enquiry",
+      icon: "solar:wallet-money-bold",
+      link: "/admin-dashboard/enquiry",
+    },
+    {
+      id: "emailSettings",
+      label: "Email Settings",
+      icon: "solar:wallet-money-bold",
+      children: [
+        {
+          label: "SMTP Settings",
+          link: "/admin-dashboard/email/smtp-setting",
+          icon: "solar:users-group-rounded-bold-duotone",
+        },
+        {
+          label: "Marketing",
+          link: "/admin-dashboard/email/marketing",
+          icon: "solar:book-bookmark-bold-duotone",
+        },
+      ],
+    },
+    ],
 
-    School: [
-      // {
-      //   id: "dashboard",
-      //   label: "Dashboard",
-      //   icon: "solar:widget-5-bold-duotone",
-      //   link: "/school-dashboard",
-      // },
+School: [
+  {
+    id: "procurementServices",
+    label: "Procurement Services",
+    icon: "solar:wallet-money-bold",
+    children: [
       {
-        id: "procurementServices",
-        label: "Procurement Services",
-        icon: "solar:wallet-money-bold",
+        label: "Dashboard",
+        link: "/school-dashboard/procurement-services/dashboard",
+        icon: "solar:widget-3-bold-duotone",
+      },
+      {
+        label: "Quotes",
+        link: "/school-dashboard/procurement-services/track-quote",
+        icon: "solar:file-text-bold-duotone",
+      },
+      {
+        label: "Track & Order History",
+        link: "/school-dashboard/procurement-services/track-order-history",
+        icon: "solar:delivery-bold-duotone",
+      },
+      {
+        label: "Pay To EdProwise",
+        link: "/school-dashboard/procurement-services/pay-to-edprowise",
+        icon: "solar:card-bold-duotone",
+      },
+    ],
+  },
+  {
+    id: "feesmodule",
+    label: "Fees module",
+    icon: "solar:file-text-bold",
+    children: [
+      {
+        id: "form",
+        label: "Form",
+        icon: "bx-receipt",
         children: [
           {
-            label: "Dashboard",
-            link: "/school-dashboard/procurement-services/dashboard",
+            label: "Registration Form",
+            link: "/school-dashboard/fees-module/form/registration",
+            icon: "bx-receipt",
+          },
+          {
+            label: "Admission Form",
+            link: "/school-dashboard/fees-module/form/admission",
             icon: "solar:users-group-rounded-bold-duotone",
           },
           {
-            label: "Quotes",
-            link: "/school-dashboard/procurement-services/track-quote",
+            label: "TC Form",
+            link: "/school-dashboard/fees-module/form/trasfer-certificate-list",
             icon: "solar:users-group-rounded-bold-duotone",
           },
           {
-            label: "Track Order & Order History",
-            link: "/school-dashboard/procurement-services/track-order-history",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
-          {
-            label: "Pay To EdProwise",
-            link: "/school-dashboard/procurement-services/pay-to-edprowise",
+            label: "Concession Form",
+            link: "/school-dashboard/fees-module/form/concession-table",
             icon: "solar:users-group-rounded-bold-duotone",
           },
         ],
       },
-
       {
-        id: "feesmodule",
-        label: "Fees module",
-        icon: "solar:wallet-money-bold",
+        id: "feesReceipts",
+        label: "Fees Receipts",
+        icon: "solar:bill-list-bold-duotone",
         children: [
           {
-            id: "form",
-            label: "Form",
-            icon: "solar:book-bookmark-bold-duotone",
-            children: [
-              {
-                label: "Registration Form",
-                link: "/school-dashboard/fees-module/form/registration",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Admission Form",
-                link: "/school-dashboard/fees-module/form/admission-list",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "TC Form",
-                link: "/school-dashboard/fees-module/form/trasfer-certificate-list",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Concession Form",
-                link: "/school-dashboard/fees-module/form/concession-table",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-            ],
-          },
-          {
-            id: "feesReceipts",
-            label: "Fees Receipts",
-            icon: "solar:bill-list-bold-duotone",
-            children: [
-              {
-                label: "School Fees",
-                link: "/school-dashboard/fees-module/fees-receipts/school-fees",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Board Registration Fees",
-                link: "/school-dashboard/fees-module/fees-receipts/board-registration-fees",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-              {
-                label: "Board Exam fees",
-                link: "/school-dashboard/fees-module/fees-receipts/board-exam-fees",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
-            ],
-          },
-          {
-            id: "adminSetting",
-            label: "Admin Setting",
+            label: "School Fees",
+            link: "/school-dashboard/fees-module/fees-receipts/school-fees",
             icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Board Registration Fees",
+            link: "/school-dashboard/fees-module/fees-receipts/board-registration-fees",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+          {
+            label: "Board Exam fees",
+            link: "/school-dashboard/fees-module/fees-receipts/board-exam-fees",
+            icon: "solar:users-group-rounded-bold-duotone",
+          },
+        ],
+      },
+      {
+        id: "adminSetting",
+        label: "Admin Setting",
+        icon: "bx-cog",
+        children: [
+          {
+            label: "Prefix Settings",
+            icon: "bx-edit",
             children: [
               {
-                label: "Registartion Prefix",
+                label: "Registration",
                 link: "/school-dashboard/fees-module/admin-setting/prefix-setting/registartion-prefix",
-                icon: "solar:settings-bold-duotone",
+                icon: "bx-hash",
               },
               {
-                label: "Admission Prefix",
+                label: "Admission",
                 link: "/school-dashboard/fees-module/admin-setting/prefix-setting/admission-prefix",
-                icon: "solar:settings-bold-duotone",
+                icon: "bx-hash",
               },
-              {
-                label: "Fine",
-                link: "/school-dashboard/fees-module/admin-setting/fine",
-                icon: "solar:document-bold-duotone",
-              },
+            ],
+          },
+          {
+            label: "Grade",
+            icon: "bx-clipboard",
+            children: [
               {
                 label: "Shift",
-                link: "/school-dashboard/fees-module/admin-setting/shifts",
-                icon: "solar:users-group-rounded-bold-duotone",
+                link: "/school-dashboard/fees-module/admin-setting/grade/shifts",
+                icon: "bx-alarm",
               },
               {
                 label: "Class & Section",
-                link: "/school-dashboard/fees-module/admin-setting/class-section",
-                icon: "solar:users-group-rounded-bold-duotone",
+                link: "/school-dashboard/fees-module/admin-setting/grade/class-section",
+                icon: "bx-chalkboard",
               },
+            ],
+          },
+          {
+            label: "Fees Structure",
+            icon: "bx-collection",
+            children: [
               {
                 label: "Fees Types",
-                link: "/school-dashboard/fees-module/admin-setting/fees-type-list",
-                icon: "solar:users-group-rounded-bold-duotone",
+                link: "/school-dashboard/fees-module/admin-setting/fees-structure/fees-type-list",
+                icon: "bx-list-ul",
               },
               {
-                label: "Fees Structure",
-                link: "/school-dashboard/fees-module/admin-setting/fees-structure",
-                icon: "solar:users-group-rounded-bold-duotone",
+                label: "School Fees",
+                link: "/school-dashboard/fees-module/admin-setting/fees-structure/school-fees",
+                icon: "bx-spreadsheet",
+              },
+              {
+                label: "One Time Fees",
+                link: "/school-dashboard/fees-module/admin-setting/fees-structure/one-time-fees",
+                icon: "bx-money-withdraw",
+              },
+              {
+                label: "Fine",
+                link: "/school-dashboard/fees-module/admin-setting/fees-structure/fine",
+                icon: "bx-money",
               },
             ],
           },
         ],
       },
-      
     ],
-    Seller: [
-      // {
-      //   id: "dashboard",
-      //   label: "Dashboard",
-      //   icon: "solar:widget-5-bold-duotone",
-      //   link: "/seller-dashboard",
-      // },
-      {
-        id: "procurementServices",
-        label: "Procurement Services",
-        icon: "solar:wallet-money-bold",
-        children: [
-          {
-            label: "Dashboard",
-            link: "/seller-dashboard/procurement-services/dashboard",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
-          {
-            label: "Quote Enquiry",
-            link: "/seller-dashboard/procurement-services/track-quote",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
-
-          {
-            label: "Track Order & Order History",
-            link: "/seller-dashboard/procurement-services/track-order-history",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
-          {
-            label: "Pay To EdProwise",
-            link: "/seller-dashboard/procurement-services/pay-to-edprowise",
-            icon: "solar:users-group-rounded-bold-duotone",
-          },
-        ],
-      },
-    ],
+  },
+],
+  Seller: [
+    {
+      id: "procurementServices",
+      label: "Procurement Services",
+      icon: "solar:wallet-money-bold",
+      children: [
+        {
+          label: "Dashboard",
+          link: "/seller-dashboard/procurement-services/dashboard",
+          icon: "solar:users-group-rounded-bold-duotone",
+        },
+        {
+          label: "Quote Enquiry",
+          link: "/seller-dashboard/procurement-services/track-quote",
+          icon: "solar:users-group-rounded-bold-duotone",
+        },
+        {
+          // label: "Track Order & Order History",
+          label: "Track & Order History",
+          link: "/seller-dashboard/procurement-services/track-order-history",
+          icon: "solar:users-group-rounded-bold-duotone",
+        },
+        {
+          label: "Pay To EdProwise",
+          link: "/seller-dashboard/procurement-services/pay-to-edprowise",
+          icon: "solar:users-group-rounded-bold-duotone",
+        },
+      ],
+    },
+  ],
     Guest: [
       { id: "login", label: "Login", icon: "solar:login-bold", link: "/login" },
     ],
   };
 
-  const menuItems = menuConfig[userRole] || menuConfig["Guest"];
+let currentMenu = menuConfig[userRole] || menuConfig.Guest;
 
-  // if (!Object.keys(openMenus).length) {
-  //   if (currentRoute.indexOf("procurement-services"))
-  //     toggleMenu("procurementServices");
-  //   if (currentRoute.indexOf("fees-module")) {
-  //     if (currentRoute.indexOf("form")) toggleMenu("form", "feesmodule");
-  //     else toggleMenu("feesmodule");
-  //   }
-  // }
+const sidebarTab = localStorage.getItem("sidebartab");
+if (sidebarTab === "ProcurementService") {
+  currentMenu = currentMenu.filter(
+    (item) => item.id === "procurementServices"
+  );
+} else if (sidebarTab === "FeesModule") {
+  currentMenu = currentMenu.filter((item) => item.id === "feesmodule");
+}
 
-  // const renderMenuItem = (item, parentId = null) => {
-  //   // const isActive = item.children
-  //   //   ? item.children.some((child) => currentRoute === child.link)
-  //   //   : currentRoute === item.link;
+const getActivePaths = () => {
+  const activePaths = new Set();
 
-  //   let findChilderRoute = null;
-  //   item?.children?.forEach((child) => {
-  //     if (currentRoute === child.link) findChilderRoute = child;
-  //     if (!findChilderRoute) {
-  //       item?.children?.forEach((subChild) => {
-  //         subChild.children?.forEach((childOfChild) => {
-  //           if (currentRoute === childOfChild.link) {
-  //             findChilderRoute = childOfChild;
-  //             if (!findChilderRoute.id) findChilderRoute.id = subChild.id;
-  //             if (!findChilderRoute.parentId)
-  //               findChilderRoute.parentId = item.id;
-  //           }
-  //         });
-  //       });
-  //     }
-  //   });
-  //   const checkItemIsCurrentRoute = currentRoute === item.link;
-  //   const isActive = findChilderRoute || checkItemIsCurrentRoute;
-  //   if (!Object.keys(openMenus).length && isActive) {
-  //     toggleMenu(
-  //       findChilderRoute?.id || item?.id,
-  //       findChilderRoute?.parentId || parentId
-  //     );
-  //   }
-
-  //   return (
-  //     <li className={`nav-item ${isActive ? "active" : ""}`} key={item.id}>
-  //       {item.children ? (
-  //         <>
-  //           <div
-  //             className={`nav-link collapsed ${isActive ? "active" : ""}`}
-  //             onClick={() => toggleMenu(item.id, parentId)}
-  //           >
-  //             <span className="nav-icon">
-  //               <Icon icon={item.icon} />
-  //             </span>
-  //             <span className="nav-text"> {item.label} </span>
-  //             <IoIosArrowForward
-  //               style={{
-  //                 transition: "transform 0.3s ease",
-  //                 transform: openMenus[item.id]
-  //                   ? "rotate(90deg)"
-  //                   : "rotate(0deg)",
-  //               }}
-  //             />
-  //           </div>
-  //           {openMenus[item.id] && (
-  //             <div className="collapse show">
-  //               <ul className="nav sub-navbar-nav">
-  //                 {item.children.map((subItem) =>
-  //                   renderMenuItem(subItem, item.id)
-  //                 )}
-  //               </ul>
-  //             </div>
-  //           )}
-  //         </>
-  //       ) : (
-  //         <Link
-  //           className={`nav-link ${isActive ? "active" : ""}`}
-  //           to={item.link}
-  //         >
-  //           <span className="nav-icon">
-  //             <Icon icon={item.icon} />
-  //           </span>
-  //           <span className="nav-text"> {item.label} </span>
-  //         </Link>
-  //       )}
-  //     </li>
-  //   );
-  // };
-
-  const isCurrentRoute = (route) =>
-    currentRoute === route || currentRoute.startsWith(route + "/");
-
-  const renderMenuItem = (item, parentId = null) => {
-    // const isActive = item.children
-    //   ? item.children.some((child) => currentRoute === child.link)
-    //   : currentRoute === item.link;
-
-    let findChilderRoute = null;
-
-    item?.children?.forEach((child) => {
-      if (isCurrentRoute(child.link)) findChilderRoute = child;
-      if (!findChilderRoute) {
-        item?.children?.forEach((subChild) => {
-          subChild.children?.forEach((childOfChild) => {
-            if (isCurrentRoute(childOfChild.link)) {
-              findChilderRoute = childOfChild;
-              if (!findChilderRoute.id) findChilderRoute.id = subChild.id;
-              if (!findChilderRoute.parentId)
-                findChilderRoute.parentId = item.id;
-            }
-          });
-        });
+  const checkActive = (items) => {
+    items.forEach((item) => {
+      if (item.link && currentPath.startsWith(item.link)) {
+        activePaths.add(item.link);
+      }
+      if (item.children) {
+        checkActive(item.children);
       }
     });
+  };
 
-    const checkItemIsCurrentRoute = isCurrentRoute(item.link);
-    const isActive = findChilderRoute || checkItemIsCurrentRoute;
+  checkActive(currentMenu);
+  return Array.from(activePaths);
+};
 
-    if (!Object.keys(openMenus).length && isActive) {
-      toggleMenu(
-        findChilderRoute?.id || item?.id,
-        findChilderRoute?.parentId || parentId
-      );
+const findDeepestActivePath = () => {
+  const activePaths = getActivePaths();
+  if (activePaths.length === 0) return null;
+
+  return activePaths.reduce((longest, current) =>
+    current.length > longest.length ? current : longest
+  );
+};
+
+const isPathActive = (link) => {
+  const deepestPath = findDeepestActivePath();
+  return link === deepestPath;
+};
+
+const hasActiveChild = (items) => {
+  const deepestPath = findDeepestActivePath();
+  if (!deepestPath) return false;
+
+  return items.some((item) => {
+    if (item.link && deepestPath.startsWith(item.link)) {
+      return true;
+    }
+    if (item.children) {
+      return hasActiveChild(item.children);
+    }
+    return false;
+  });
+};
+
+const renderMenuItems = (items, level = 0) =>
+  items.map((item) => {
+    // Only apply the sidebarTab filtering for School role
+    if (
+      userRole === "School" &&
+      (sidebarTab === "ProcurementService" || sidebarTab === "FeesModule") &&
+      level === 0
+    ) {
+      if (
+        (sidebarTab === "ProcurementService" &&
+          item.id === "procurementServices" &&
+          item.children) ||
+        (sidebarTab === "FeesModule" &&
+          item.id === "feesmodule" &&
+          item.children)
+      ) {
+        return (
+          <React.Fragment key={item.id || item.label}>
+            {renderMenuItems(item.children, level + 1)}
+          </React.Fragment>
+        );
+      }
+      return null;
     }
 
-    return (
-      <li className={`nav-item ${isActive ? "active" : ""}`} key={item.id}>
-        {item.children ? (
-          <>
-            <div
-              className={`nav-link collapsed ${isActive ? "active" : ""}`}
-              onClick={() => toggleMenu(item.id, parentId)}
-            >
-              <span className="nav-icon">
-                <Icon icon={item.icon} />
-              </span>
-              <span className="nav-text"> {item.label} </span>
-              <IoIosArrowForward
-                style={{
-                  transition: "transform 0.3s ease",
-                  transform: openMenus[item.id]
-                    ? "rotate(90deg)"
-                    : "rotate(0deg)",
-                }}
-              />
-            </div>
-            {openMenus[item.id] && (
-              <div
-                className="collapse show"
-                style={{ paddingLeft: parentId ? 30 : 20 }}
-              >
-                <ul
-                  className="nav sub-navbar-nav"
-                  style={{
-                    listStyleType: "none",
-                    paddingLeft: 0,
-                    marginTop: 5,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
-                  }}
-                >
-                  {item.children.map((subItem) =>
-                    renderMenuItem(subItem, item.id)
-                  )}
-                </ul>
-              </div>
-            )}
-          </>
-        ) : (
-          <Link
-            className={`nav-link ${isActive ? "active" : ""}`}
-            to={item.link}
+    const isActive = item.link ? isPathActive(item.link) : false;
+    const hasChildren = item.children && item.children.length > 0;
+    const isExpanded = hasChildren && hasActiveChild(item.children);
+    const collapseId = `sidebar-${item.id || item.label.replace(/\s+/g, "-")
+      }`;
+
+    if (hasChildren) {
+      return (
+        <li className="nav-item" key={item.id || item.label}>
+          <a
+            className="nav-link "
+            href={`#${collapseId}`}
+            data-bs-toggle="collapse"
+            role="button"
+            aria-expanded={isExpanded}
+            aria-controls={collapseId}
+            style={{
+              justifyContent: isCollapsed ? "center" : "flex-start",
+              paddingLeft: isCollapsed ? "0" : level > 0 ? "1rem" : "",
+              paddingRight: isCollapsed ? "0" : "",
+            }}
           >
             <span className="nav-icon">
               <Icon icon={item.icon} />
             </span>
-            <span className="nav-text"> {item.label} </span>
+            {!isCollapsed && (
+              <>
+                <span className="nav-text">{item.label}</span>
+                <span className="nav-arrow ms-auto">
+                  <Icon
+                    icon={isExpanded ? "bi:chevron-down" : "bi:chevron-right"}
+                    width="12"
+                  />
+                </span>
+              </>
+            )}
+          </a>
+          <div
+            className={`collapse ${isExpanded ? "show" : ""}`}
+            id={collapseId}
+          >
+            <ul className={`nav flex-column ${level > 0 ? "ms-3" : ""}`}>
+              {renderMenuItems(item.children, level + 1)}
+            </ul>
+          </div>
+        </li>
+      );
+    } else {
+      return (
+        <li className="nav-item" key={item.id || item.label}>
+          <Link
+            className={`nav-link ${isActive ? "active" : ""}`}
+            to={item.link}
+            style={{
+              justifyContent: isCollapsed ? "center" : "flex-start",
+              paddingLeft: isCollapsed ? "0" : level > 0 ? "1rem" : "",
+              paddingRight: isCollapsed ? "0" : "",
+            }}
+          >
+            <span className="nav-icon">
+              <Icon icon={item.icon} />
+            </span>
+            {!isCollapsed && (
+              <>
+                <span className="nav-text">{item.label}</span>
+                <span style={{ width: "16px" }}></span>
+              </>
+            )}
           </Link>
-        )}
-      </li>
-    );
-  };
+        </li>
+      );
+    }
+  });
 
-  return (
-    <div
-      ref={sidebarRef}
-      className={`main-nav ${sidebarVisible ? "sidebar-enable" : ""}`}
-    >
-      {/* Sidebar Logo */}
-      <div className="logo-box">
-        <Link to="/" className="logo-dark">
-          <img
-            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
-            className="logo-sm"
-          />
-          <img
-            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
-            className="logo-lg"
-          />
-        </Link>
-        <Link to="/" className="logo-light">
-          <img
-            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
-            className="logo-sm"
-          />
-          <span>
-            <img
-              src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.webp`}
-              className="logo-lg"
-              style={{ height: "80px !important", width: "160px !important" }}
-            />
-          </span>
-        </Link>
-      </div>
-
-      <button
-        type="button"
-        className="button-sm-hover"
-        aria-label="Show Full Sidebar"
-      >
-        <iconify-icon
-          icon="solar:double-alt-arrow-right-bold-duotone"
-          className="button-sm-hover-icon"
+return (
+  <div className="main-nav nav-radius">
+    <div className="logo-box">
+      <Link to="/" className="logo-dark">
+        <img
+          src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseFavicon.png`}
+          className="logo-sm"
         />
-      </button>
-
-      <div className="scrollbar" data-simplebar="">
-        <ul className="navbar-nav" id="navbar-nav">
-          {menuItems.map((item) => renderMenuItem(item))}
-        </ul>
-      </div>
+        {!isCollapsed && (
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
+            className="logo-lg"
+            style={{ width: "80%" }}
+          />
+        )}
+      </Link>
+      <Link to="/" className="logo-light">
+        <img
+          src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseFavicon.png`}
+          className="logo-sm"
+        />
+        {!isCollapsed && (
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/EdProwiseLogoWhite.png`}
+            className="logo-lg"
+            style={{ width: "80%" }}
+          />
+        )}
+      </Link>
     </div>
-  );
+
+    <button
+      type="button"
+      className="button-sm-hover"
+      aria-label="Show Full Sidebar"
+      onClick={handleIconClick}
+    >
+      <Icon
+        icon="solar:double-alt-arrow-right-bold-duotone"
+        className="button-sm-hover-icon"
+      />
+    </button>
+
+    <div className="scrollbar " data-simplebar style={{ margin: "10px" }}>
+      <ul className="navbar-nav" id="navbar-nav">
+        {renderMenuItems(currentMenu)}
+      </ul>
+    </div>
+  </div>
+);
 };
 
 export default Sidebar;

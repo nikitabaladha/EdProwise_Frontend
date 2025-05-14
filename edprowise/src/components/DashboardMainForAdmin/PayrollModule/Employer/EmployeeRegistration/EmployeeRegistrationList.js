@@ -101,7 +101,7 @@ const EmployeeRegistrationList = () => {
               <div className="col-xl-12">
                 <div className="card">
                   <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                    <h4 className="card-title flex-grow-1">
+                    <h4 className="payroll-title mb-0 flex-grow-1">
                       Registered Empolyee List
                     </h4>
                     <Link
@@ -120,7 +120,7 @@ const EmployeeRegistrationList = () => {
                     <div className="table-responsive">
                       <table className="table align-middle mb-0 table-hover table-centered text-center">
                         <thead className="bg-light-subtle">
-                          <tr>
+                          <tr className='payroll-table-header'>
                             <th style={{ width: 20 }}>
                               <div className="form-check ms-1">
                                 <input
@@ -144,7 +144,7 @@ const EmployeeRegistrationList = () => {
                         </thead>
                         <tbody>
                           {/* {studentData.map((student, index) => ( */}
-                            <tr >
+                            <tr className='payroll-table-body' >
                               <td>
                                 <div className="form-check ms-1">
                                   <input
@@ -201,47 +201,41 @@ const EmployeeRegistrationList = () => {
                       </table>
                     </div>
                   </div>
-                  <div className="card-footer border-top">
-                    <nav aria-label="Page navigation example">
-                      <ul className="pagination justify-content-end mb-0">
-                        <li className="page-item">
-                          <button
-                            className="page-link"
-                            // onClick={handlePreviousPage}
-                            disabled={currentPage === 1}
-                          >
-                            Previous
-                          </button>
-                        </li>
-                        {/* {pagesToShow.map((page) => ( */}
-                          <li
-                            
-                            // className={`page-item ${
-                            //   currentPage === page ? "active" : ""
-                            // }`}
-                          >
-                            <button
-                            //   className={`page-link pagination-button ${
-                            //     currentPage === page ? "active" : ""
-                            //   }`}
-                            //   onClick={() => handlePageClick(page)}
-                            >
-                              {/* {page} */}1
-                            </button>
-                          </li>
-                        {/* ))} */}
-                        <li className="page-item">
-                          <button
-                            className="page-link"
-                            // onClick={handleNextPage}
-                            disabled={currentPage === totalPages}
-                          >
-                            Next
-                          </button>
-                        </li>
-                      </ul>
-                    </nav>
-                  </div>
+<div className="card-footer border-top">
+                                <nav aria-label="Page navigation example">
+                                    <ul className="pagination justify-content-end mb-0">
+                                        <li className="page-item">
+                                            <button
+                                                className="page-link"
+                                            // onClick={handlePreviousPage}
+                                            // disabled={currentPage === 1}
+                                            >
+                                                Previous
+                                            </button>
+                                        </li>
+                                        <li
+                                            className={`page-item`}
+                                        >
+                                            <button
+                                                className={`page-link pagination-button `}
+                                            //   onClick={() => handlePageClick(page)}
+                                            >
+                                                1
+                                            </button>
+                                        </li>
+
+                                        <li className="page-item">
+                                            <button
+                                                className="page-link"
+                                            // onClick={handleNextPage}
+                                            // disabled={currentPage === totalPages}
+                                            >
+                                                Next
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
                 </div>
               </div>
             </div>

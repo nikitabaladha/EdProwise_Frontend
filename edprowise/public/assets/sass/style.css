@@ -107,7 +107,6 @@ Version:        1.0.0
 }
 @media (min-width:1200px) {
   .declaration-form-btn{
-    width: 30%;
     background: black;
   }
 }

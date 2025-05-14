@@ -33,7 +33,7 @@ const ViewOvertimeAllowanceEmployeesDetail = () => {
                                             <th>Date</th>
                                             <th>In Time</th>
                                             <th>Out Time</th>
-                                            <th>No.Of Hours Worked</th>
+                                            <th>No.of Hours Worked</th>
                                             <th>Working Hours</th>
                                             <th>Overtime Hours</th>
                                             <th>Rate</th>
