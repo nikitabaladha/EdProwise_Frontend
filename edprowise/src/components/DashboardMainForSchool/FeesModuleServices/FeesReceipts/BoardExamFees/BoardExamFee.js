@@ -4,7 +4,7 @@ import getAPI from '../../../../../api/getAPI';
 import postAPI from '../../../../../api/postAPI';
 import { useNavigate } from 'react-router-dom';
 
-const BoardFeeRegistration = () => {
+const BoardFeeExam = () => {
     const [classes, setClasses] = useState([]);
     const [sections, setSections] = useState([]);
     const [selectedClass, setSelectedClass] = useState('');
@@ -15,7 +15,7 @@ const BoardFeeRegistration = () => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [schoolId, setSchoolId] = useState('');
     const [boardFees, setBoardFees] = useState({});
-    const [selectedStudentIds, setSelectedStudentIds] = useState([]); 
+    const [selectedStudentIds, setSelectedStudentIds] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,7 +39,7 @@ const BoardFeeRegistration = () => {
                 const classResponse = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
                 setClasses(classResponse?.data?.data || []);
 
-                const feesResponse = await getAPI(`/get-board-registration-fees/${schoolId}/${academicYear}`, {}, true);
+                const feesResponse = await getAPI(`/get-board-exam-fees/${schoolId}/${academicYear}`, {}, true);
                 const feesData = feesResponse?.data?.data || [];
                 const feesMap = {};
                 feesData.forEach(fee => {
@@ -72,7 +72,7 @@ const BoardFeeRegistration = () => {
         setLoading(true);
         try {
             const response = await getAPI(
-                `/admission-forms/${schoolId}/${academicYear}/${selectedClass}/${selectedSection}`,
+                `/admission-forms-board-exam/${schoolId}/${academicYear}/${selectedClass}/${selectedSection}`,
                 {},
                 true
             );
@@ -85,9 +85,9 @@ const BoardFeeRegistration = () => {
                 response?.data?.data?.map((student) => ({
                     ...student,
                     feesAmt: feeAmount,
-                    paymentStatus: student.boardRegistrationStatus || 'Pending',
+                    paymentStatus: student.boardExamStatus || 'Pending',
                     paymentMode:
-                        student.boardRegistrationStatus === 'Paid'
+                        student.boardExamStatus === 'Paid'
                             ? student.paymentMode === 'N/A' ? '' : student.paymentMode
                             : 'Cash',
                     chequeNumber:
@@ -103,7 +103,7 @@ const BoardFeeRegistration = () => {
                 })) || []
             );
             setShowTable(true);
-            setSelectedStudentIds([]); 
+            setSelectedStudentIds([]);
         } catch (error) {
             toast.error('Error fetching students data.');
         } finally {
@@ -159,7 +159,7 @@ const BoardFeeRegistration = () => {
                 schoolId,
             };
 
-            const response = await postAPI('/submit-board-registration-fees-payment', { payments: [payment] }, true);
+            const response = await postAPI('/submit-board-exam-fees-payment', { payments: [payment] }, true);
             toast.success(`Payment submitted for ${student.firstName} ${student.lastName}. Viewing receipt.`);
 
             const receiptData = {
@@ -173,10 +173,10 @@ const BoardFeeRegistration = () => {
                 transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
             };
 
-            navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
+            navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
                 state: {
                     student: receiptData,
-                    feeTypeName: 'Board Registration Fee',
+                    feeTypeName: 'Board Exam Fee',
                     className: student.className,
                     sectionName: student.sectionName,
                 },
@@ -191,7 +191,6 @@ const BoardFeeRegistration = () => {
         }
     };
 
- 
     const handleCheckboxChange = (studentId) => {
         setSelectedStudentIds((prev) =>
             prev.includes(studentId)
@@ -203,7 +202,6 @@ const BoardFeeRegistration = () => {
     const handleSubmitPayments = async (event) => {
         event.preventDefault();
 
-    
         const selectedStudents = students.filter((student) =>
             selectedStudentIds.includes(student._id)
         );
@@ -255,7 +253,7 @@ const BoardFeeRegistration = () => {
                 return;
             }
 
-            const response = await postAPI('/submit-board-registration-fees-payment', { payments }, true);
+            const response = await postAPI('/submit-board-exam-fees-payment', { payments }, true);
             toast.success('Selected payments submitted successfully');
 
             const receiptStudents = selectedStudents
@@ -272,22 +270,22 @@ const BoardFeeRegistration = () => {
                     transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
                 }));
 
-            if (receiptStudents.length > 0) {
-                navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
+            // if (receiptStudents.length > 0) {
+                navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
                     state: {
                         students: receiptStudents,
-                        feeTypeName: 'Board Registration Fee',
+                        feeTypeName: 'Board Exam Fee',
                         className: receiptStudents[0].className,
                         sectionName: receiptStudents[0].sectionName,
                     },
                 });
 
-                if (receiptStudents.length > 1) {
-                    toast.info(
-                        `${receiptStudents.length} receipts generated. You can view all receipts and download them from the receipt page.`
-                    );
-                }
-            }
+                // if (receiptStudents.length > 1) {
+                //     toast.info(
+                //         `${receiptStudents.length} receipts generated. You can view all receipts and download them from the receipt page.`
+                //     );
+                // }
+            // }
 
             await fetchStudents();
         } catch (error) {
@@ -304,7 +302,7 @@ const BoardFeeRegistration = () => {
     return (
         <div className="container-fluid">
             <div className="container">
-                <h1 className="h3 fw-bold text-dark mb-4">Board Registration Fee Collection</h1>
+                <h1 className="h3 fw-bold text-dark mb-4">Board Exam Fee Collection</h1>
 
                 <div className="card shadow-sm mb-4">
                     <div className="card-body">
@@ -398,7 +396,7 @@ const BoardFeeRegistration = () => {
                                             <th scope="col" className="text-uppercase small fw-semibold m-2">Student Name</th>
                                             <th scope="col" className="text-uppercase small fw-semibold m-2">Class</th>
                                             <th scope="col" className="text-uppercase small fw-semibold m-2">Section</th>
-                                            <th scope="col" className="text-uppercase small fw-semibold m-2">Board Reg. Fees (₹)</th>
+                                            <th scope="col" className="text-uppercase small fw-semibold m-2">Board Exam Fees (₹)</th>
                                             <th scope="col" className="text-uppercase small fw-semibold m-2">Mode of Payment</th>
                                             {hasChequePayment && (
                                                 <>
@@ -545,4 +543,4 @@ const BoardFeeRegistration = () => {
     );
 };
 
-export default BoardFeeRegistration;
+export default BoardFeeExam;
