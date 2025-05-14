@@ -1,5 +1,5 @@
 import React from "react";
-import useSchoolFeesReceipts from "./SchoolFeesReceiptsdata";
+import useSchoolFeesReceipts from "../../../FeesReceipts/SchoolFees/SchoolFeesReceiptsdata";
 
 const SchoolFeesReceipts = () => {
   const {

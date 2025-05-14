@@ -190,8 +190,10 @@ import UpdateFeesType from "./components/DashboardMainForSchool/FeesModuleServic
 import AddShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/AddShifts.js";
 import UpdateShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/UpdateShifts.js"
 import FeesStructureListTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructureListTable.js";
-import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
-import StudentReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/Recipt.js"
+import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
+import StudentReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/Recipt.js"
+import BoardRegistrationFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationFees.js";
+import BoardRegistrationFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceipts.js"
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
 import TcOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/StudentTCForm/TCOfficialInformation.js"
@@ -206,6 +208,17 @@ import OneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/
 import AddOneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/AddoneTimeFees.js";
 import UpdateOneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/UpdateOneTimeFees.js";
 import ViewOneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/ViewOneTimeFees.js";
+
+import AddBoardRegistrationFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardRegistrationFees/AddBoardRegistrationFees.js";
+import UpdateBoardRegistrationFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardRegistrationFees/UpdateBoardRegistration.js";
+import ViewBoardRegistrationFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardRegistrationFees/ViewBoardRegistration.js";
+import BoardRegistrationFeesList from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardRegistrationFees/BoardRegistrationFeesTable.js";
+
+import AddBoardExamFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/AddBoardExamFees.js";
+import UpdateBoardExamFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/UpdateBoardExamFees.js";
+import ViewBoardExamFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/ViewBoardExamFees.js";
+import BoardExamFeesList from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/BoardExamFeesTable.js";
+
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 
@@ -291,16 +304,16 @@ const PrivateRoute = ({ allowedRoles, requiredSubscription, children }) => {
 };
 
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, role } = useAuth();
+  // const { isAuthenticated, role } = useAuth();
 
-  if (isAuthenticated) {
-    return <Navigate to={
-      role === "Admin" ? "/admin-dashboard" :
-        role === "School" ? "/school/go-to-dashboard" :
-          role === "Seller" ? "/seller-dashboard" :
-            "/"
-    } replace />;
-  }
+  // if (isAuthenticated) {
+  //   return <Navigate to={
+  //     role === "Admin" ? "/admin-dashboard" :
+  //       role === "School" ? "/school/go-to-dashboard" :
+  //         role === "Seller" ? "/seller-dashboard" :
+  //           "/"
+  //   } replace />;
+  // }
 
   return children;
 };
@@ -311,8 +324,8 @@ const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
   return (
     <Routes>
-        
-    <Route
+
+      <Route
         path="/login"
         element={
           <PublicRoute>
@@ -385,7 +398,7 @@ const AppRoutes = () => {
         element={
           <PrivateRoute allowedRoles={["Admin"]}>
             <DashboardLayout>
-            <CompleteEdprowiseProfile />
+              <CompleteEdprowiseProfile />
             </DashboardLayout>
           </PrivateRoute>
         }
@@ -557,8 +570,8 @@ const AppRoutes = () => {
         path="/school-dashboard"
         element={
           <PrivateRoute allowedRoles={["School"]}>
-              <DashboardLayout>
-            <SchoolDashboardMain />
+            <DashboardLayout>
+              <SchoolDashboardMain />
             </DashboardLayout>
           </PrivateRoute>
         }
@@ -843,7 +856,47 @@ const AppRoutes = () => {
           element={<AddFine />}
         />
 
-        {/* --------------------------------------------------------------------------------------------------- */}
+        {/*--------------------------------------Board Fees--------------------------------------- */}
+
+
+        <Route
+          path="fees-module/admin-setting/board-fees/registration-fees"
+          element={<BoardRegistrationFeesList />}
+        />
+        <Route
+          path="fees-module/admin-setting/board-fees/registration-fees-add"
+          element={<AddBoardRegistrationFees />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/board-fees/registration-fees-update"
+          element={<UpdateBoardRegistrationFees />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/board-fees/registration-fees-view"
+          element={<ViewBoardRegistrationFees />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/board-fees/exam-fees"
+          element={<BoardExamFeesList />}
+        />
+        <Route
+          path="fees-module/admin-setting/board-fees/exam-fees-add"
+          element={<AddBoardExamFees />}
+        />
+        <Route
+          path="fees-module/admin-setting/board-fees/exam-fees-update"
+          element={<UpdateBoardExamFees />}
+        />
+        <Route
+          path="fees-module/admin-setting/board-fees/exam-fees-view"
+          element={<ViewBoardExamFees />}
+        />
+
+
+        {/* --------------------------------------------Fees Receipts------------------------------------------------------- */}
 
         <Route
           path="fees-module/fees-receipts/school-fees"
@@ -855,6 +908,18 @@ const AppRoutes = () => {
           element={<StudentReceipts />}
         />
 
+        <Route
+          path="fees-module/fees-receipts/board-registration-fees"
+          element={<BoardRegistrationFee />}
+        />
+
+          <Route
+          path="fees-module/fees-receipts/board-registration-fees/receipts"
+          element={<BoardRegistrationFeeReceipts/>}
+        />
+
+  
+
 
 
       </Route>
@@ -865,8 +930,8 @@ const AppRoutes = () => {
         path="/seller-dashboard"
         element={
           <PrivateRoute allowedRoles={["Seller"]}>
-                  <DashboardLayout>
-            <SellerDashboardMain />
+            <DashboardLayout>
+              <SellerDashboardMain />
             </DashboardLayout>
           </PrivateRoute>
         }
@@ -934,9 +999,9 @@ const AppRoutes = () => {
       {/* Website Routes */}
 
       <Route path="/" element={<>
-    <RemoveThemeAttribute />
-    <WebsiteMain />
-  </>}>
+        <RemoveThemeAttribute />
+        <WebsiteMain />
+      </>}>
         <Route index element={<HomePage />} />
 
         <Route path="about-us" element={<AboutPage />} />

@@ -44,7 +44,7 @@ const ConcessionForm = () => {
                                 </div>
                                 <form onSubmit={handleAdmissionSubmit}>
                                     <div className="row">
-                                        <div className="col-md-12">
+                                        <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="AdmissionNumber" className="form-label">
                                                     Admission No
@@ -69,12 +69,15 @@ const ConcessionForm = () => {
                                                 </datalist>
                                             </div>
                                         </div>
+                                        <div className="col-md-6">
+                                            <div className="mt-3">
+                                                <button type="submit" className="btn btn-primary custom-submit-button">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="text-end">
-                                        <button type="submit" className="btn btn-primary custom-submit-button">
-                                            Submit
-                                        </button>
-                                    </div>
+
                                 </form>
                             </div>
                         </div>
@@ -306,7 +309,7 @@ const ConcessionForm = () => {
                                                 name="academicYear"
                                                 options={academicYearOptions}
                                                 isMulti
-                                                value={selectedYears }
+                                                value={selectedYears}
                                                 onChange={handleYearChange}
                                                 isLoading={loadingYears}
                                                 required
@@ -314,7 +317,7 @@ const ConcessionForm = () => {
                                                 classNamePrefix="select"
                                                 placeholder="Select academic year(s)..."
                                             />
-                                          
+
                                         </div>
                                     </div>
 
@@ -348,7 +351,7 @@ const ConcessionForm = () => {
                                                     <th>Concession %</th>
                                                     <th>Concession Amt.</th>
                                                     <th>Balance Payable</th>
-                                                    <th>Action</th>
+                                                    {/* <th>Action</th> */}
                                                 </tr>
                                             </thead>
                                             <tbody>

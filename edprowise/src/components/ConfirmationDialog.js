@@ -146,7 +146,20 @@ const DELETE_CONFIG = {
   successMessage: "Concession form successfully deleted!",
   errorMessage: "Failed to delete Concession form .",
   idKey: "_id",
- }
+ },
+ boardregistrationfees:{
+  getEndpoint: (id) => `/delete-board-registration-fees/${id}`,
+  successMessage: "Board registartion fees successfully deleted!",
+  errorMessage: "Failed to delete board registartion fees .",
+  idKey: "_id",
+ },
+ boardexamfees: {
+  getEndpoint: (id) => `/delete-board-exam-fees/${id}`,
+  successMessage: "Board exam fees successfully deleted!",
+  errorMessage: "Failed to delete board exam fees.",
+  idKey: "_id",
+},
+
 };
 
 const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {

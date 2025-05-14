@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import getAPI from '../../../../api/getAPI';
-import postAPI from '../../../../api/postAPI';
+import getAPI from '../../../../../api/getAPI';
+import postAPI from '../../../../../api/postAPI';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 

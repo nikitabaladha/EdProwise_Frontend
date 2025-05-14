@@ -307,6 +307,22 @@ const Sidebar = () => {
                   }
                 ]
               },
+              {
+                label: "Board Fees",
+                icon: "bx-clipboard",
+                children: [
+                  {
+                    label: "Registartion Fees",
+                    link: "/school-dashboard/fees-module/admin-setting/board-fees/registration-fees",
+                    icon: "bx-alarm"
+                  },
+                  {
+                    label: "Exam Fees",
+                    link: "/school-dashboard/fees-module/admin-setting/board-fees/exam-fees",
+                    icon: "bx-chalkboard"
+                  }
+                ]
+              },
              
             ]
           }

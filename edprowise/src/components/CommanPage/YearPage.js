@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import getAPI from '../../api/getAPI';
 import { toast } from 'react-toastify';
+import CreateYearModal from './CreateYear'; 
 
 
 const Dropdown = ({ onSelect }) => {
@@ -11,29 +12,31 @@ const Dropdown = ({ onSelect }) => {
   const [error, setError] = useState(null);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(null); 
   const [isBackHovered, setIsBackHovered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchAcademicYears = async () => {
-      try {
-        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-        const schoolId = userDetails?.schoolId;
+  const fetchAcademicYears = async () => {
+    try {
+      const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+      const schoolId = userDetails?.schoolId;
 
-        if (!schoolId) {
-          setError('School ID not found in local storage');
-          return;
-        }
-
-        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
-        setAcademicYears(response.data.data || []);
-      } catch (err) {
-        setError('Failed to fetch academic years.');
-        console.error(err);
-      } finally {
-        setLoading(false);
+      if (!schoolId) {
+        setError('School ID not found in local storage');
+        return;
       }
-    };
 
+      const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+      setAcademicYears(response.data.data || []);
+    } catch (err) {
+      setError('Failed to fetch academic years.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAcademicYears();
   }, []);
 
@@ -115,14 +118,30 @@ const handleSubmit = () => {
   };
 
   return (
+    <>
     <div style={styles.container}>
-      <button onClick={handleBack} 
-      style={styles.backButton}
-      onMouseEnter={() => setIsBackHovered(true)}
-      onMouseLeave={() => setIsBackHovered(false)}
-      >
-        Back
-        </button>
+ <div className="position-absolute top-0 end-0 d-flex gap-2 p-3">
+  <button
+    className="btn btn-dark"
+    onClick={() => setIsModalOpen(true)}
+  >
+    Add Year
+  </button>
+
+  <button
+    className="btn btn-dark"
+    onClick={handleBack}
+    onMouseEnter={() => setIsBackHovered(true)}
+    onMouseLeave={() => setIsBackHovered(false)}
+    style={{
+      transform: isBackHovered ? 'scale(1.1)' : 'scale(1)',
+      transition: 'transform 0.3s ease',
+    }}
+  >
+    Back
+  </button>
+</div>
+
         <h2 className="mb-4 text-center text-black">Select an Academic Year to View Related Data</h2>
       <Select
         options={options}
@@ -147,6 +166,12 @@ const handleSubmit = () => {
         Submit
       </button>
     </div>
+    <CreateYearModal
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+    fetchAcademicYears={fetchAcademicYears}
+/>
+</>
   );
 };
 
