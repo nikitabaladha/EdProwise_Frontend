@@ -261,6 +261,7 @@ const SellerDashboardHeader = () => {
                   data-bs-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
+                  onClick={fetchNotifications}
                 >
                   <iconify-icon
                     icon="solar:bell-bing-bold-duotone"
