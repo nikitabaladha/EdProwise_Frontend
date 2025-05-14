@@ -192,8 +192,10 @@ import UpdateFeesType from "./components/DashboardMainForSchool/FeesModuleServic
 import AddShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/AddShifts.js";
 import UpdateShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/UpdateShifts.js";
 import FeesStructureListTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructureListTable.js";
-import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
-import StudentReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/Recipt.js";
+import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
+import StudentReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/Recipt.js";
+import BoardRegistrationFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationFees.js";
+import BoardRegistrationFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceipts.js";
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
 import TcOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/StudentTCForm/TCOfficialInformation.js";
@@ -208,6 +210,16 @@ import OneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/
 import AddOneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/AddoneTimeFees.js";
 import UpdateOneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/UpdateOneTimeFees.js";
 import ViewOneTimeFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/OneTimeFees/ViewOneTimeFees.js";
+
+import AddBoardRegistrationFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardRegistrationFees/AddBoardRegistrationFees.js";
+import UpdateBoardRegistrationFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardRegistrationFees/UpdateBoardRegistration.js";
+import ViewBoardRegistrationFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardRegistrationFees/ViewBoardRegistration.js";
+import BoardRegistrationFeesList from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardRegistrationFees/BoardRegistrationFeesTable.js";
+
+import AddBoardExamFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/AddBoardExamFees.js";
+import UpdateBoardExamFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/UpdateBoardExamFees.js";
+import ViewBoardExamFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/ViewBoardExamFees.js";
+import BoardExamFeesList from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/BoardExamFeesTable.js";
 
 // ===================================PayRoll===========================
 import EmployeeRegistrationList from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationList.js";
@@ -1083,7 +1095,45 @@ const AppRoutes = () => {
           element={<AddFine />}
         />
 
-        {/* --------------------------------------------------------------------------------------------------- */}
+        {/*--------------------------------------Board Fees--------------------------------------- */}
+
+        <Route
+          path="fees-module/admin-setting/board-fees/registration-fees"
+          element={<BoardRegistrationFeesList />}
+        />
+        <Route
+          path="fees-module/admin-setting/board-fees/registration-fees-add"
+          element={<AddBoardRegistrationFees />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/board-fees/registration-fees-update"
+          element={<UpdateBoardRegistrationFees />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/board-fees/registration-fees-view"
+          element={<ViewBoardRegistrationFees />}
+        />
+
+        <Route
+          path="fees-module/admin-setting/board-fees/exam-fees"
+          element={<BoardExamFeesList />}
+        />
+        <Route
+          path="fees-module/admin-setting/board-fees/exam-fees-add"
+          element={<AddBoardExamFees />}
+        />
+        <Route
+          path="fees-module/admin-setting/board-fees/exam-fees-update"
+          element={<UpdateBoardExamFees />}
+        />
+        <Route
+          path="fees-module/admin-setting/board-fees/exam-fees-view"
+          element={<ViewBoardExamFees />}
+        />
+
+        {/* --------------------------------------------Fees Receipts------------------------------------------------------- */}
 
         <Route
           path="fees-module/fees-receipts/school-fees"
@@ -1093,6 +1143,16 @@ const AppRoutes = () => {
         <Route
           path="fees-module/fees-receipts/school-fees/student-receipts"
           element={<StudentReceipts />}
+        />
+
+        <Route
+          path="fees-module/fees-receipts/board-registration-fees"
+          element={<BoardRegistrationFee />}
+        />
+
+        <Route
+          path="fees-module/fees-receipts/board-registration-fees/receipts"
+          element={<BoardRegistrationFeeReceipts />}
         />
       </Route>
       {/* =========================================Seller Routes============================================= */}

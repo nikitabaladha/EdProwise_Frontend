@@ -343,9 +343,9 @@ const StudentAddTCForm = () => {
      
         console.log("State data being passed:", stateData);
   
-        navigate(`/school-dashboard/fees-module/form/trasfer-certificate-form-details`, {
-          state: stateData,
-        });
+        // navigate(`/school-dashboard/fees-module/form/trasfer-certificate-form-details`, {
+        //   state: stateData,
+        // });
       } else {
         toast.error(response.message || "Something went wrong");
       }

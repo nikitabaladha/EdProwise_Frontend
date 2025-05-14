@@ -221,30 +221,30 @@ const FeesReceipt = () => {
 
       <div 
         id="receipt-content" 
-        className="border border-2 border-primary rounded-3 p-4 shadow-sm"
-        style={{ backgroundColor: '#f8f9fa' }}
+        className=" p-4 shadow-sm"
+        style={{ backgroundColor: '#ffffff' }}
       >
    
-        <div className="text-center mb-4">
+        <div className="text-center mb-3">
           <h2 className="text-primary mb-1">ABC International School</h2>
           <p className="mb-1">123 Education Street, Knowledge City</p>
           <p>Phone: (123) 456-7890 | Email: info@abcschool.edu</p>
           <div className="d-flex justify-content-center">
             <div style={{ 
               borderTop: '2px solid #0d6efd', 
-              width: '100px', 
+              width: '100%', 
               margin: '0 10px' 
             }}></div>
           </div>
         </div>
 
 
-        <h3 className="text-center text-uppercase mb-4" style={{ color: '#0d6efd' }}>
-          <strong>Official Fees Receipt</strong>
+        <h3 className="text-center text-uppercase mb-3" style={{ color: '#0d6efd' }}>
+          <strong> Fees Receipt</strong>
         </h3>
 
    
-        <div className="row mb-4">
+        <div className="row mb-3 text-black">
           <div className="col-md-6">
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: '120px' }}>Receipt No:</span>
@@ -281,7 +281,7 @@ const FeesReceipt = () => {
         </div>
 
    
-        <div className="table-responsive mb-4">
+        <div className="table-responsive mb-3">
           <table className="table table-bordered">
             <thead className="table-primary">
               <tr>
@@ -295,7 +295,7 @@ const FeesReceipt = () => {
               <tr>
                 <td className="text-center">{feeTypeName}</td>
                 <td className="text-center">{student.admissionFees}</td>
-                <td className="text-center text-danger">-{student.concessionAmount}</td>
+                <td className="text-center text-danger">{student.concessionAmount}</td>
                 <td className="text-center fw-bold">{student.finalAmount}</td>
               </tr>
               <tr className="table-active">
@@ -307,7 +307,7 @@ const FeesReceipt = () => {
         </div>
 
      
-        <div className="row mb-4">
+        <div className="row mb-3 text-black">
           <div className="col-md-6">
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: '150px' }}>Payment Mode:</span>
@@ -333,7 +333,7 @@ const FeesReceipt = () => {
             )}
           </div>
           <div className="col-md-6">
-            <div className="border p-3 text-center" style={{ height: '100%' }}>
+            <div className=" p-3 text-center" style={{ height: '100%' }}>
               <p className="mb-4">Authorized Signature</p>
               <div className="mt-4 pt-3" style={{ borderTop: '1px solid #dee2e6' }}>
                 <p className="mb-0 fw-bold">{student.name || "School Administrator"}</p>
