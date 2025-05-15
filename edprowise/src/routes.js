@@ -241,6 +241,9 @@ import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesModuleSe
 import StudentReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/Recipt.js";
 import BoardRegistrationFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationFees.js";
 import BoardRegistrationFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceipts.js";
+import BoardExamFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamFee.js";
+import BoardExamFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamFee.js";
+
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
 import TcOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/StudentTCForm/TCOfficialInformation.js";
@@ -1202,6 +1205,16 @@ const AppRoutes = () => {
         <Route
           path="fees-module/fees-receipts/board-registration-fees/receipts"
           element={<BoardRegistrationFeeReceipts />}
+        />
+
+        <Route
+          path="fees-module/fees-receipts/board-exam-fees"
+          element={<BoardExamFee />}
+        />
+
+        <Route
+          path="fees-module/fees-receipts/board-exam-fees/receipts"
+          element={<BoardExamFeeReceipts />}
         />
       </Route>
       {/* =========================================Seller Routes============================================= */}
