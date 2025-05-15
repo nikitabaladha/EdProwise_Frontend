@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import getAPI from "../../../../../api/getAPI";
 import ViewAllQuoteTable from "../ViewAllQuoteTable/ViewAllQuoteTable";
@@ -16,9 +16,23 @@ const formatDate = (dateString) => {
 };
 
 const ViewRequestedQuote = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const location = useLocation();
+
   const enquiryNumber =
-    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
+    location.state?.searchEnquiryNumber ||
+    location.state?.enquiryNumber ||
+    searchParams.get("enquiryNumber");
+
+  useEffect(() => {
+    if (searchParams.has("enquiryNumber")) {
+      navigate("/school-dashboard/procurement-services/view-requested-quote", {
+        state: { enquiryNumber },
+        replace: true,
+      });
+    }
+  }, []);
 
   const [quotes, setQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);

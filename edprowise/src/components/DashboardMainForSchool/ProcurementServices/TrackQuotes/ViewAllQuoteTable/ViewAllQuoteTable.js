@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,8 +21,12 @@ const formatDate = (dateString) => {
 const ViewAllQuoteTable = () => {
   const location = useLocation();
 
+  const [searchParams] = useSearchParams();
+
   const enquiryNumber =
-    location.state?.enquiryNumber || location.state?.searchEnquiryNumber;
+    location.state?.enquiryNumber ||
+    location.state?.searchEnquiryNumber ||
+    searchParams.get("enquiryNumber");
 
   const navigate = useNavigate();
 
@@ -31,6 +35,17 @@ const ViewAllQuoteTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSellerId, setSelectedSellerId] = useState(null);
   const [selectedEnquiryNumber, setSelectedEnquiryNumber] = useState(null);
+
+  useEffect(() => {
+    if (searchParams.has("enquiryNumber")) {
+      navigate(location.pathname, {
+        state: {
+          enquiryNumber,
+        },
+        replace: true,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!enquiryNumber) return;

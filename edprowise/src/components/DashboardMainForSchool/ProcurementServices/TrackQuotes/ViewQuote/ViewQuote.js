@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../../export-excel";
 import { toast } from "react-toastify";
@@ -21,11 +21,29 @@ const formatDate = (dateString) => {
 const ViewQuote = () => {
   const location = useLocation();
 
-  const { quote } = location.state || {};
+  const quote = location.state.quote || {};
+  const [searchParams] = useSearchParams();
 
   const enquiryNumber =
     location.state?.enquiryNumber || location.state?.searchEnquiryNumber;
-  const sellerId = location.state?.sellerId || location.state?.searchSellerId;
+  const sellerId =
+    location.state?.sellerId ||
+    location.state?.searchSellerId ||
+    searchParams.get("sellerId");
+
+  useEffect(() => {
+    if (searchParams.has("enquiryNumber") || searchParams.has("sellerId")) {
+      navigate(location.pathname, {
+        state: {
+          enquiryNumber,
+          sellerId,
+          quote,
+        },
+
+        replace: true,
+      });
+    }
+  }, []);
 
   const [currentQuote, setCurrentQuote] = useState(quote);
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -36,7 +36,7 @@ const OvertimeAllowanceEmployeesTable = () => {
                                             </th>
                                             <th>Employee ID</th>
                                             <th>Employee Name </th>
-                                            <th>No.Of Hrs Worked</th>
+                                            <th>No.of Hours Worked</th>
                                             <th>Working Hours</th>
                                             <th>Overtime Hours</th>
                                             <th>Total Amount</th>

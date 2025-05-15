@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
@@ -18,15 +18,29 @@ const formatDate = (dateString) => {
 
 const ViewOrderHistory = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   const orderNumber =
-    location.state?.orderNumber || location.state?.searchOrderNumber;
+    location.state?.orderNumber ||
+    location.state?.searchOrderNumber ||
+    searchParams.get("orderNumber");
 
   const navigate = useNavigate();
 
   const handleNavigation = () => {
     navigate("/seller-dashboard/procurement-services/pay-to-edprowise");
   };
+
+  useEffect(() => {
+    if (searchParams.has("orderNumber")) {
+      navigate(location.pathname, {
+        state: {
+          orderNumber,
+        },
+        replace: true,
+      });
+    }
+  }, []);
 
   const [quote, setQuote] = useState([]);
   const [orders, setOrders] = useState([]);

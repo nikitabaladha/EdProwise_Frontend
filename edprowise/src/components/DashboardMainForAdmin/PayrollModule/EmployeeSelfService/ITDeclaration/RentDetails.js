@@ -1,535 +1,194 @@
-import React from 'react'
-
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MdOutlineAutorenew } from "react-icons/md";
 const RentDetails = () => {
+    const months = [
+        'April', 'May', 'June', 'July', 'August', 'September',
+        'October', 'November', 'December', 'January', 'February', 'March'
+    ];
+    
+    const navigate = useNavigate();
+    const [rentData, setRentData] = useState(
+        months.reduce((acc, month) => {
+            acc[month] = {
+                rent: '',
+                city: '',
+                landlordName: '',
+                landlordPan: '',
+                landlordAddress: '',
+                receipt: null
+            };
+            return acc;
+        }, {})
+    );
+
+    const handleChange = (month, field, value) => {
+        setRentData(prev => ({
+            ...prev,
+            [month]: {
+                ...prev[month],
+                [field]: value
+            }
+        }));
+    };
+
+    const handleFileChange = (month, file) => {
+        setRentData(prev => ({
+            ...prev,
+            [month]: {
+                ...prev[month],
+                receipt: file
+            }
+        }));
+    };
+
+
+
     return (
         <div className="container">
             <div className="row">
                 <div className="col-xl-12">
                     <div className="card m-2">
-                        <div className="card-body">
+                        <div className="card-body custom-heading-padding">
                             <div className="container">
                                 <div className="card-header mb-2">
-                                    <h4 className="card-title text-center custom-heading-font">
-                                        Rent Details
-                                    </h4>
+                                    <h4 className="payroll-title text-center mb-0">House Rent Details</h4>
                                 </div>
                             </div>
-                            <form onSubmit="">
-                                {/* <div className="row mb-2">
-                                    <div className="col-6">
-                                        <p style={{ color: 'black' }}>
-                                            Employee Name : Umesh jadhav
-                                        </p>
-
-                                        <p style={{ color: 'black' }}>
-                                            Tax Regime :
-                                        </p>
-                                    </div>
-
-                                    <div className="col-6">
-                                        <p style={{ color: 'black' }}>
-                                            Financial Year: 2025-26
-                                        </p>
-                                    </div>
-                                </div> */}
-
-                                <div className="table-responsive mb-4">
-                                    <table className="table mb-4" style={{ border: "1px solid black", color: "black", placeContent: "center" }}>
+                            <form >
+                                <div className="table-responsive mb-2">
+                                    <table className="table text-dark border border-dark mb-4">
                                         <thead>
-                                            <tr >
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    Month
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    Declared Rent
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    City
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    Name Of Landlord
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    PAN Of Landlord
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    Address Of Landlord
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    Upload Rent Receipt
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    Actual HRA Received (A)
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    Actual Rent Paid - 10% Of Basic Salary (B)
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    50% / 40% Of Basic Salary (C )
-                                                </th>
-                                                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    Min of A,B,C
-                                                </th>
+                                            <tr className="payroll-table-header">
+                                                <th className="text-center align-content-center border border-dark p-2">Month</th>
+                                                <th className="text-center align-content-center border border-dark p-2">Declared Rent</th>
+                                                <th className="text-center align-content-center border border-dark p-2" style={{ minWidth: "9rem" }}>City</th>
+                                                {/* we give the 9rem === 135px */}
+                                                <th className="text-center align-content-center border border-dark p-2">Name of Landlord</th>
+                                                <th className="text-center align-content-center border border-dark p-2">PAN of Landlord</th>
+                                                <th className="text-center align-content-center border border-dark p-2">Address of Landlord</th>
+                                                <th className="text-center align-content-center border border-dark p-2">Upload Rent Receipt</th>
+                                                <th className="text-center align-content-center border border-dark p-2">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    January
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    10,000.00
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    13,000.00
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    February
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    March
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                April
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    May
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    June
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    July
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                August
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                September
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                October
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                November
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                December
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black", fontWeight: "bold" }}>
-                                                    Total
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                    0
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                                                </td>
-                                            </tr>
+                                            {months.map((month, index) => (
+                                                <tr key={month} className="payroll-table-body">
+                                                    <td className="text-center align-content-center border border-dark p-2">{month}</td>
+                                                    <td className="text-end align-content-center border border-dark p-2">
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end"
+                                                            required
+                                                            value={rentData[month].rent}
+                                                            onChange={(e) =>
+                                                                handleChange(month, 'rent', e.target.value)
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="text-end border border-dark p-2" style={{ minWidth: "9rem" }}>
+                                                        <select
+                                                            className="form-control payroll-table-body payroll-input-border"
+                                                            required
+                                                            value={rentData[month].city}
+                                                            onChange={(e) =>
+                                                                handleChange(month, 'city', e.target.value)
+                                                            }
+                                                        >
+                                                            <option value="">Select City</option>
+                                                            <option value="Metro">Metro</option>
+                                                            <option value="Non-Metro">Non-Metro</option>
+                                                        </select>
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2">
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end"
+                                                            required
+                                                            value={rentData[month].landlordName}
+                                                            onChange={(e) =>
+                                                                handleChange(month, 'landlordName', e.target.value)
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2">
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end"
+                                                            required
+                                                            value={rentData[month].landlordPan}
+                                                            onChange={(e) =>
+                                                                handleChange(month, 'landlordPan', e.target.value)
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2">
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end"
+                                                            required
+                                                            value={rentData[month].landlordAddress}
+                                                            onChange={(e) =>
+                                                                handleChange(month, 'landlordAddress', e.target.value)
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2">
+                                                        <input
+                                                            type="file"
+                                                            className="form-control payroll-input-border"
+                                                            accept="image/*,application/pdf"
+                                                            onChange={(e) =>
+                                                                handleFileChange(month, e.target.files[0])
+                                                            }
+                                                            required
+                                                        />
+                                                    </td>
+                                                    {/* <td className="text-end align-content-center border border-dark p-2">
+                                                        <button
+                                            type="button"
+                                            className="btn btn-primary fs-4 custom-submit-button"
+                                        >
+                                            <MdOutlineAutorenew />
+                                        </button>
+                                                    </td> */}
+                                                    <td className="text-end align-content-center border border-dark p-2">
+                                                        {index > 0 && (
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-primary fs-4 custom-submit-button"
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="left"
+                                                                title="Auto fill same previous month's data"
+                                                                onClick={() => {
+                                                                    const prevMonth = months[index - 1];
+                                                                    const prevData = rentData[prevMonth];
+                                                                    setRentData(prev => ({
+                                                                        ...prev,
+                                                                        [month]: {
+                                                                            ...prevData,
+                                                                            receipt: null // Don't copy file
+                                                                        }
+                                                                    }));
+                                                                }}
+                                                            >
+                                                                <MdOutlineAutorenew />
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
+                                </div>
+                                <div className="text-end">
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary custom-submit-button"
+                                        onClick={() => navigate(-1)}
+                                    >
+                                        Back
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -537,7 +196,7 @@ const RentDetails = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default RentDetails
+export default RentDetails;

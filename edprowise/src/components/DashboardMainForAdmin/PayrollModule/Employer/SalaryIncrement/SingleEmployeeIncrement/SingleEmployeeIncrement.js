@@ -58,7 +58,7 @@ const SingleEmployeeIncrement = () => {
                                                     </p>
 
                                                     <p style={{ color: 'black' }}>
-                                                        Category Of Employees : Teaching Staff
+                                                        Category of Employees : Teaching Staff
                                                     </p>
                                                 </div>
 

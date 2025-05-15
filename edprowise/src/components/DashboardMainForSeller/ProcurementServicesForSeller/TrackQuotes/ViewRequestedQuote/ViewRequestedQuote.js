@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,9 +25,12 @@ const formatDate = (dateString) => {
 
 const ViewRequestedQuote = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   const enquiryNumber =
-    location.state?.searchEnquiryNumber || location.state?.enquiryNumber;
+    location.state?.searchEnquiryNumber ||
+    location.state?.enquiryNumber ||
+    searchParams.get("enquiryNumber");
 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const sellerId = userDetails?.id;
@@ -36,11 +39,19 @@ const ViewRequestedQuote = () => {
 
   const [quote, setQuote] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
   const [preparedQuotes, setPreparedQuotes] = useState([]);
   const [isPrepareQuoteTableVisible, setIsPrepareQuoteTableVisible] =
     useState(false);
   const [supplierStatus, setSupplierStatus] = useState(null);
+
+  useEffect(() => {
+    if (searchParams.has("enquiryNumber")) {
+      navigate("/seller-dashboard/procurement-services/view-requested-quote", {
+        state: { enquiryNumber },
+        replace: true,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!enquiryNumber) return;

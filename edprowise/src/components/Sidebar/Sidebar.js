@@ -153,21 +153,32 @@ const Sidebar = () => {
                 link: "/admin-dashboard/payroll-module/employee-services/salary-slip",
               },
               {
-                label: "IT Declaration",
-                link: "/admin-dashboard/payroll-module/employee-services/it-declaration",
-              },
-              {
-                label: "Income Tax Computation Sheet",
-                link: "/admin-dashboard/payroll-module/employee-services/income-tax-computation-sheet",
-              },
-              {
-                label: "Form 16",
-                link: "/admin-dashboard/payroll-module/employee-services/form16",
+                id: "incomeTax",
+                label: "Income Tax",
+                children: [
+                  {
+                    label: "IT Declaration",
+                    link: "/admin-dashboard/payroll-module/employee-services/income-tax/it-declaration",
+                  },
+                  {
+                    label: "Income Tax Computation Sheet",
+                    link: "/admin-dashboard/payroll-module/employee-services/income-tax/income-tax-computation-sheet",
+                  },
+                  {
+                    label: "Form 16",
+                    link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
+                  },
+                  {
+                    label: "Previous Employment Income",
+                    link: "/admin-dashboard/payroll-module/employee-services/income-tax/previous-employment-income",
+                  },
+                ],
               },
               {
                 label: "My Loan Statement",
-                link: "/admin-dashboard/payroll-module/employee-services/my-loan-statement",
+                link: "/admin-dashboard/payroll-module/employee-services/loan-summary",
               },
+
               {
                 label: "My Attendance Report",
                 link: "/admin-dashboard/payroll-module/employee-services/my-attendance-report",
@@ -175,6 +186,28 @@ const Sidebar = () => {
               {
                 label: "Apply for Leave",
                 link: "/admin-dashboard/payroll-module/employee-services/apply-for-leave",
+              },
+              {
+                id: "exit",
+                label: "Exit",
+                children: [
+                  {
+                    label: "Employee Resignation",
+                    link: "/admin-dashboard/payroll-module/employee-services/exit/employee-resignation-form",
+                  },
+                  {
+                    label: "Exit Interview",
+                    link: "/admin-dashboard/payroll-module/employee-services/exit/exit-interview",
+                  },
+                  // {
+                  //   label: "Form 16",
+                  //   link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
+                  // },
+                  // {
+                  //   label: "Previous Employment Income",
+                  //   link: "/admin-dashboard/payroll-module/employee-services/income-tax/previous-employment-income",
+                  // },
+                ],
               },
             ],
           },
@@ -254,6 +287,14 @@ const Sidebar = () => {
               {
                 label: "Performance Tracking",
                 link: "/admin-dashboard/payroll-module/employer/performance-tracking",
+              },
+              {
+                label: "Resignation Approval",
+                // link: "/admin-dashboard/payroll-module/employer/resignation-Approval",
+              },
+              {
+                label: "Resignation Report",
+                link: "/admin-dashboard/payroll-module/employer/resignation-list",
               },
             ],
           },

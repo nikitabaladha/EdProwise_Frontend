@@ -3,356 +3,359 @@ import React from 'react'
 const IncomeTaxComputationSheet = () => {
   return (
     <div className="container my-4 text-dark" style={{ padding: 16 }}>
-      {/* <div class="custom-bg d-flex flex-wrap align-items-center justify-content-between gap-3 p-3">
-                <div className="d-flex flex-wrap align-items-center gap-3">
-                    <label for="yearSelect" class="mb-0">Year :</label>
-                    <select id="yearSelect" class="custom-select" aria-label="Select Year">
-                        <option selected>2025</option>
-                        <option>2026</option>
-                        <option>2027</option>
-                        <option>2028</option>
-                        <option>2029</option>
-                    </select>
-    
-                    <label for="monthSelect" class="mb-0">Month :</label>
-                    <select id="monthSelect" class="custom-select" aria-label="Select Month">
-                        <option selected>January</option>
-                        <option>February</option>
-                        <option>March</option>
-                        <option>April</option>
-                        <option>May</option>
-                        <option>June</option>
-                        <option>July</option>
-                        <option>August</option>
-                        <option>September</option>
-                        <option>October</option>
-                        <option>November</option>
-                        <option>December.</option>
-                    </select>
-                    <button className="btn btn-light btn-sm"
-                    >
-                        <iconify-icon
-                            icon="solar:eye-broken"
-                            className="align-middle fs-18"
-                        />
-                    </button>
-                    </div>
-                    <div className="d-flex">
-                    <button className="btn btn-light me-2">
-                        <FaPrint /> Print
-                    </button>
-    
-                    <button className="btn btn-light">
-                        <FaDownload /> Download PDF
-                    </button>
-                    </div>
-                </div> */}
-
-      <div id="receipt-content" className="border border-dark p-3">
+      <div id="receipt-content" className="salary-slip-box p-3"  >
         <div className="text-center mb-3">
           <h6>
             <strong>[From Letter Head]</strong>
           </h6>
         </div>
-        <h6 className="text-center bg-light py-1">
+        <div className="row border border-dark"  />
+
+        <h4 className="text-center payroll-title mb-0 p-2" >
           <strong>TAX COMPUTATION</strong>
-        </h6>
-        <div className="row mb-2">
-          <div className="col-6">
-            <p style={{ color: 'black' }}>
-              <strong>Name :</strong> Umesh Jadhav
+        </h4>
+        <div className="row border border-dark"  />
+
+        <div className="row m-0 salary-slip-box pt-2 my-2">
+          <div className="col-7">
+            <p className='text-dark payroll-box-text' >
+              <strong>Employee Name : </strong> Umesh Jadhav
             </p>
-            <p style={{ color: 'black' }}>
-              <strong>Employee No:</strong> 1
+            <p className='text-dark payroll-box-text' >
+              <strong>Employee ID : </strong> EMP-001
             </p>
-            <p style={{ color: 'black' }}>
-              <strong>PF No :</strong> 123456
+            <p className='text-dark payroll-box-text'>
+              <strong>PF No : </strong> 123456
             </p>
           </div>
 
-          <div className="col-6">
-            <p style={{ color: 'black' }}>
-              <strong>Grade :</strong> A
+          <div className="col-5">
+            <p className='text-dark payroll-box-text'>
+              <strong>Grade : </strong> A
             </p>
-            <p style={{ color: 'black' }}>
+            <p className='text-dark payroll-box-text'>
               <strong>Job Designation :</strong> Teacher
             </p>
-            <p style={{ color: 'black' }}>
+            <p className='text-dark payroll-box-text' >
               <strong>Security Deposit :</strong> 500
             </p>
           </div>
         </div>
 
-        <div className="row pt-3 mb-2" style={{ borderTop: "2px solid black" }} />
-        <div className="table-responsive mb-4">
-          <table className="table mb-4" style={{ border: "1px solid black", color: "black" }}>
+        <div className="table-responsive mb-2">
+          <table className="table border border-dark text-dark mb-2">
             <thead>
-              <tr>
-                <th className="text-center p-2" style={{ border: "1px solid black" }}>
-
+              <tr className="payroll-table-header">
+                <th className="text-center align-content-center border border-dark p-2">
+                 Particulars
                 </th>
-                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <th className="text-center align-content-center border border-dark p-2 " >
                   Actual Salary
                 </th>
-                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <th className="text-center align-content-center border border-dark p-2 " >
                   projection
                 </th>
-                <th className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <th className="text-center align-content-center border border-dark p-2" >
                   Total
                 </th>
 
               </tr>
             </thead>
             <tbody>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
-                  No.Of Months
+              <tr className='payroll-table-body' >
+                <td className="align-content-center p-2 border border-dark" >
+                  No.of Months
                 </td>
-                <td className="align-content-center text-center p-2" style={{ border: "1px solid black" }}>
+                <td className="align-content-center text-end p-2 border border-dark" >
                   3
                 </td>
-                <td className="align-content-center text-center p-2" style={{ border: "1px solid black" }}>
+                <td className="align-content-center text-end p-2 border border-dark" >
                   9
                 </td>
-                <td className="align-content-center text-center p-2" style={{ border: "1px solid black" }}>
+                <td className="align-content-center text-end p-2 border border-dark" >
 
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center p-2 border border-dark" >
                   Basic Salary
                 </td>
-                <td className="align-content-center text-center p-2" style={{ border: "1px solid black" }}>
-                  1,00,000.00
+                <td className="align-content-center text-end p-2 border border-dark" >
+                  1,00,000
                 </td>
-                <td className="align-content-center text-center p-2" style={{ border: "1px solid black" }}>
-                  9,00,000.00
+                <td className="align-content-center text-end p-2 border border-dark" >
+                  9,00,000
                 </td>
-                <td className="align-content-center text-center p-2" style={{ border: "1px solid black" }}>
-                  10,00,000.00
+                <td className="align-content-center text-end p-2 border border-dark" >
+                  10,00,000
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center p-2 border border-dark" >
                   HRA
                 </td>
-                <td className="align-content-center text-center p-2" style={{ border: "1px solid black" }}>
+                <td className="align-content-center text-end p-2 border border-dark" >
 
                 </td>
-                <td className="align-content-center text-center p-2" style={{ border: "1px solid black" }}>
+                <td className="align-content-center text-end p-2 border border-dark" >
 
                 </td>
-                <td className="align-content-center text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-              </tr>
-              <tr >
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
+                <td className="align-content-center text-end p-2 border border-dark" >
 
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center fw-bold p-2" style={{ border: "1px solid black", fontWeight: "bold" }}>
-                  Income From Salary
+              
+              <tr className='it-declaration-section-bg payroll-box-text fw-bold' >
+                <td className="align-content-center fw-bold p-2 border border-dark" >
+                  Income from Salary
                 </td>
-                <td className="text-center align-content-center fw-bold p-2" style={{ border: "1px solid black", fontWeight: "bold" }}>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center fw-bold p-2" style={{ border: "1px solid black", fontWeight: "bold" }}>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center fw-bold p-2" style={{ border: "1px solid black", fontWeight: "bold" }}>
-                  10,00,000.00
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+                  10,00,000
                 </td>
               </tr>
-              <tr >
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
 
-                </td>
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-              </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center px-3 p-2 border border-dark" >
                   Less: HRA Exemption
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                  10,000.00
+                <td className="text-end align-content-center p-2 border border-dark" >
+                  10,000
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black"}}>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center px-3 p-2 border border-dark" style={{ border: "1px solid black"}}>
                   Less: Standard Deduction
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black", }}>
+                <td className="text-end align-content-center p-2 border border-dark" style={{ border: "1px solid black", }}>
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                  75,000.00
+                <td className="text-end align-content-center p-2 border border-dark" >
+                  75,000
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+                            <tr className='payroll-table-body' >
+                <td className="align-content-center px-3 p-2 border border-dark" >
+                  Less: LTA Exemption
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+                  
+                </td>
+              </tr>
+                            <tr className='payroll-table-body' >
+                <td className="align-content-center px-3 p-2 border border-dark" >
+                  Less: Professional Tax Exemption
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+                  
+                </td>
+              </tr>
+              <tr className='it-declaration-section-bg payroll-box-text fw-bold' >
+                <td className="align-content-center fw-bold p-2 border border-dark" >
+                  Salary After Deduction Under Section 16 
+                </td>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+                  
+                </td>
+              </tr>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center px-3 p-2 border border-dark" >
+                  Other Income
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+                
+                </td>
+              </tr>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center px-3 p-2 border border-dark" >
+                  Income from House Property
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+                  
+                </td>
+              </tr>
+             <tr className='it-declaration-section-bg payroll-box-text fw-bold' >
+                <td className="align-content-center fw-bold p-2 border border-dark" >
+              Total Income 
+                </td>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+                  
+                </td>
+              </tr>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center px-3 p-2 border border-dark" >
                   Less: Section 80C
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                  1,50,000.00
+                <td className="text-end align-content-center p-2 border border-dark" >
+                  1,50,000
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black", }}>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center px-3 p-2 border border-dark" style={{ border: "1px solid black", }}>
                   Less: Section 80D
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                  20,000.00
+                <td className="text-end align-content-center p-2 border border-dark" >
+                  20,000
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center px-3 p-2 border border-dark" >
                   Less: Other Section
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black",  }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                  45,000.00
+                <td className="text-end align-content-center p-2 border border-dark" >
+                  45,000
                 </td>
               </tr>
-              <tr >
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
 
-                </td>
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-                <td className="text-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-              </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black",  }}>
+              <tr className='it-declaration-section-bg payroll-box-text fw-bold' >
+                <td className="align-content-center fw-bold p-2 border border-dark" >
                   Net Taxable Income
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black", }}>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" style={{ border: "1px solid black", }}>
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black", }}>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" style={{ border: "1px solid black", }}>
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black", }}>
-                  7,00,000.00
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" style={{ border: "1px solid black", }}>
+                  7,00,000
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center p-2 border border-dark" >
                   Total Tax Incl Education Cess
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-              </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
-                  Rebate 87A (New Regime: If Net Taxable Income is upto 7 Lakhs,Old Regime: If Net Taxable Income is upto 5 Lakhs)
-                </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
-                </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center p-2 border border-dark" >
+                  Rebate 87A (New Regime: If Net Taxable Income is upto 7 Lakhs, Old Regime: If Net Taxable Income is upto 5 Lakhs)
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+                <td className="text-end align-content-center p-2 border border-dark" >
+
+                </td>
+              </tr>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center p-2 border border-dark" >
                   Net Tax Payable
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black"}}>
+              <tr className='payroll-table-body' >
+                <td className="align-content-center p-2 border border-dark" style={{ border: "1px solid black"}}>
                   Tax already deducted
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black",}}>
+                <td className="text-end align-content-center p-2 border border-dark" style={{ border: "1px solid black",}}>
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black", }}>
+                <td className="text-end align-content-center p-2 border border-dark" style={{ border: "1px solid black", }}>
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center p-2 border border-dark" >
 
                 </td>
               </tr>
-              <tr >
-                <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+              <tr className='it-declaration-section-bg payroll-box-text fw-bold'>
+                <td className="align-content-center fw-bold p-2 border border-dark" >
                   Tax yet to be deducted
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black", }}>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" style={{ border: "1px solid black", }}>
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
 
                 </td>
-                <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                <td className="text-end align-content-center fw-bold p-2 border border-dark" >
 
                 </td>
               </tr>

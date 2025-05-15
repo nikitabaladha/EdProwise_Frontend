@@ -9,17 +9,17 @@ const AddEmployeeRegistration = () => {
             <div className="card-body">
               <div className="container">
                 <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
+                  <h4 className="payroll-title mb-0 text-center">
                     Registration Form
                   </h4>
                 </div>
               </div>
               <form onSubmit="">
                 <div className="row mb-3">
-                  <div className="col-md-12">
+                  <div className="col-md-6">
                     <div className="mb-6">
                       <label htmlFor="name" className="form-label">
-                        Name Of Teacher (As Per Aadhar)
+                        Name of Teacher (As per Aadhar) <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -29,27 +29,7 @@ const AddEmployeeRegistration = () => {
                         // value={formData.name}
                         // onChange={handleChange}
                         required
-                       placeholder='Name'
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="contactNumber" className="form-label">
-                     Contact No
-                      </label>
-                      <input
-                        type="tel"
-                        id="contactNumber"
-                        name="contactNumber"
-                        className="form-control"
-                        // value={formData.contactNumber}
-                        // onChange={handleChange}
-                        required
-                       placeholder='Example : 1234567890'
+                        placeholder='Enter Employee Name'
                       />
                     </div>
                   </div>
@@ -59,7 +39,7 @@ const AddEmployeeRegistration = () => {
                         htmlFor="emailId"
                         className="form-label"
                       >
-                        Email ID
+                        Email ID <span className="text-danger">*</span>
                       </label>
                       <input
                         type="email"
@@ -73,16 +53,74 @@ const AddEmployeeRegistration = () => {
                       />
                     </div>
                   </div>
-                </div>
 
-                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="contactNumber" className="form-label">
+                        Contact Number <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        id="contactNumber"
+                        name="contactNumber"
+                        className="form-control"
+                        // value={formData.contactNumber}
+                        // onChange={handleChange}
+                        required
+                        placeholder='Example : 1234567890'
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="dateOfBirth" className="form-label">
+                        Date of Birth <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        className="form-control"
+                        // value={formData.dateOfBirth}
+                        required
+                        placeholder='Date Of Birth'
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="gender" className="form-label">
+                        Gender <span className="text-danger">*</span>
+                      </label>
+                      <select
+                        id="gender"
+                        name="gender"
+                        className="form-control"
+                        // value={formData.gender}
+                        // onChange={handleChange}
+                        required
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">
+                          Female
+                        </option>
+                        <option value="Transgender">
+                          Transgender
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label
                         htmlFor="categoryOfEmployees"
                         className="form-label"
                       >
-                       Category Of Employees
+                        Category of Employees <span className="text-danger">*</span>
                       </label>
                       <select
                         id="categoryOfEmployees"
@@ -91,12 +129,12 @@ const AddEmployeeRegistration = () => {
                         // value={formData.categoryOfEmployee}
                         // onChange={handleChange}
                         required
-                        
+
                       >
                         <option value="">Select Employee Category</option>
                         <option value="Teaching Staff">Teaching Staff</option>
                         <option value="Non Teaching Staff">
-                        Non Teaching Staff
+                          Non Teaching Staff
                         </option>
                       </select>
                     </div>
@@ -104,7 +142,7 @@ const AddEmployeeRegistration = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="grade" className="form-label">
-                     Grade
+                        Grade <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -122,7 +160,7 @@ const AddEmployeeRegistration = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="jobDesignation" className="form-label">
-                      Job Designation
+                        Job Designation <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -140,7 +178,7 @@ const AddEmployeeRegistration = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="joiningDate" className="form-label">
-                     Joining Date
+                        Joining Date <span className="text-danger">*</span>
                       </label>
                       <input
                         type="date"

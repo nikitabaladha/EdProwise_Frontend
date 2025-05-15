@@ -109,19 +109,19 @@ const Form16 = () => {
           </div>
         </div>
       </div> */}
-      <div className="container-fluid">
+      <div className="container">
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">Form16</h4>
+                <h4 className=" payroll-title text-center mb-0 flex-grow-1">Form16</h4>
 
               </div>
               <div>
                 <div className="table-responsive">
                   <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
                     <thead className="bg-light-subtle">
-                      <tr>
+                      <tr className='payroll-table-header'>
                         <th style={{ width: 20 }}>
                           <div className="form-check ms-1">
                             <input
@@ -136,14 +136,13 @@ const Form16 = () => {
                           </div>
                         </th>
                         <th>Employee ID</th>
-                        <th>Name of Employees</th>
+                        <th>Name of Employee</th>
                         <th>Financial Year</th>
-                        <th>Documents</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr className='payroll-table-body'>
                         <td>
                           <div className="form-check ms-1">
                             <input
@@ -164,17 +163,7 @@ const Form16 = () => {
                         <td>
                           2025-26
                         </td>
-                        <td>
-                        <div className="col-md-8" style={{justifySelf:"center"}}>
-                          <input
-                            type="file"
-                            className="form-control"
-                            accept="image/*,application/pdf"
-                            // onChange={handleChange}
-                            required
-                          />
-                          </div>
-                        </td>
+                        
                         <td>
                             <div className="d-flex justify-content-center gap-2">
 

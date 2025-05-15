@@ -1,5 +1,6 @@
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=Play:wght@400;700&amp;display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=Play:wght@400;700&amp;display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 
 /*By Nikita: Custom css Start*/
 
@@ -159,6 +160,40 @@ input[type="file"]:valid {
 }
 
 /* Custom css End */
+
+/* ================Umesh CSS===================*/
+.salary-slip-box {
+  border: 2px solid black;
+}
+
+.payroll-box-line {
+  border-top: 2px solid black;
+}
+
+.payroll-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.payroll-table-header {
+  font-size: 1.3rem;
+  background: #a8fffe;
+}
+
+.payroll-input-border {
+  border-color: #f2be00 !important;
+}
+.payroll-box-text {
+  font-size: 1.3rem;
+}
+
+.payroll-table-body {
+  font-size: 1.2rem !important;
+}
+
+.it-declaration-section-bg {
+  background: #e7e6e6;
+}
 
 /* Root Prefix Variable */
 
@@ -529,7 +564,7 @@ h1,
 .h1 {
   margin-top: 0;
   margin-bottom: 10px;
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "Tinos", sans-serif;
   font-weight: 600;
   line-height: 1.1;
   color: var(--bs-heading-color);
@@ -3187,7 +3222,7 @@ progress {
 
 .form-label {
   margin-bottom: 0.4rem;
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   font-weight: 500;
   color: var(--bs-body-color);
 }
@@ -3224,7 +3259,7 @@ progress {
   display: block;
   width: 100%;
   padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  font-size: 0.94rem;
   font-weight: 400;
   line-height: 1.5;
   color: var(--bs-body-color);
@@ -11036,6 +11071,10 @@ fieldset:disabled .btn {
 
 .border-2 {
   border-width: 2px !important;
+}
+
+.borderr-2 {
+  border-width: 2px solid !important;
 }
 
 .border-3 {
