@@ -207,7 +207,9 @@ const SellerDashboardHeader = () => {
       if (
         notification.entityType === "Order From Buyer" ||
         notification.entityType === "Order Cancel" ||
-        notification.entityType === "TDS Update"
+        notification.entityType === "TDS Update" ||
+        notification.entityType === "Delivery Date Changed" ||
+        notification.entityType === "Order Progress"
       ) {
         navigate("/seller-dashboard/procurement-services/view-order-history", {
           state: {

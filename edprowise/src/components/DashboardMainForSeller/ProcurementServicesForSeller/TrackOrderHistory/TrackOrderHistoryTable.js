@@ -407,7 +407,8 @@ const TrackOrderHistoryTable = () => {
                               </Link>
 
                               <>
-                                {order.orderStatus !== "Close" ? (
+                                {order.orderStatus !== "Close" &&
+                                order.supplierStatus !== "Cancelled" ? (
                                   <>
                                     <Link
                                       onClick={(event) =>
@@ -460,6 +461,8 @@ const TrackOrderHistoryTable = () => {
                                   "Ready For Transit",
                                   "In-Transit",
                                   "Delivered",
+                                  "Cancelled by Buyer",
+                                  "Cancelled",
                                 ].includes(order.supplierStatus) && (
                                   <button
                                     onClick={() =>
@@ -499,6 +502,8 @@ const TrackOrderHistoryTable = () => {
                                   "Ready For Transit",
                                   "In-Transit",
                                   "Delivered",
+                                  "Cancelled by Buyer",
+                                  "Cancelled",
                                 ].includes(order.supplierStatus) && (
                                   <button
                                     onClick={() =>

@@ -282,7 +282,9 @@ const AdminDashboardHeader = () => {
       if (
         notification.entityType === "Order From Buyer" ||
         notification.entityType === "TDS Update" ||
-        notification.entityType === "Order Cancel"
+        notification.entityType === "Order Cancel" ||
+        notification.entityType === "Delivery Date Changed" ||
+        notification.entityType === "Order Progress"
       ) {
         navigate("/admin-dashboard/procurement-services/view-order-history", {
           state: {

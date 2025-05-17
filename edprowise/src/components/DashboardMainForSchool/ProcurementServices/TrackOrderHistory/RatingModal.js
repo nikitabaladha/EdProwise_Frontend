@@ -86,7 +86,7 @@ const RatingModal = ({
                   <div className="container">
                     <div className="card-header mb-2">
                       <h4 className="card-title text-center custom-heading-font">
-                        Give Rating
+                        Give Ratings
                       </h4>
                     </div>
                   </div>

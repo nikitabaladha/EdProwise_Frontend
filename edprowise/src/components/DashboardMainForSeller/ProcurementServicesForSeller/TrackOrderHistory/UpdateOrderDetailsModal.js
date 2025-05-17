@@ -62,7 +62,7 @@ const UpdateOrderDetailsModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { actualDeliveryDate, otherCharges } = orderDetailsFromSeller;
+    const { actualDeliveryDate } = orderDetailsFromSeller;
 
     const dataToSend = {
       actualDeliveryDate,
