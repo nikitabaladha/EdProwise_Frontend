@@ -249,6 +249,26 @@ const SchoolDashboardHeader = () => {
           },
         });
       }
+      if (notification.entityType === "QuoteProposal From Seller") {
+        navigate("/school-dashboard/procurement-services/view-quote", {
+          state: {
+            searchEnquiryNumber: notification.metadata.enquiryNumber,
+            searchSellerId: notification.metadata.sellerId,
+          },
+        });
+      }
+
+      if (
+        notification.entityType === "Order From Buyer" ||
+        notification.entityType === "Order Cancel" ||
+        notification.entityType === "TDS Update"
+      ) {
+        navigate("/school-dashboard/procurement-services/view-order-history", {
+          state: {
+            searchOrderNumber: notification.metadata.orderNumber,
+          },
+        });
+      }
     } catch (error) {
       console.error("Error handling notification click:", error);
     }

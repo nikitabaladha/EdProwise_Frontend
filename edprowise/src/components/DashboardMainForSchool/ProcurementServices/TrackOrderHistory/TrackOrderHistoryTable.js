@@ -270,7 +270,7 @@ const TrackOrderHistoryTable = () => {
                           <td>
                             {order.actualDeliveryDate
                               ? formatDate(order.actualDeliveryDate)
-                              : "Null"}
+                              : "Not Provided"}
                           </td>
                           <td>{formatCost(order?.totalAmount)}</td>
                           <td>{order.buyerStatus}</td>

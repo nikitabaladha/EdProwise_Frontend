@@ -204,6 +204,18 @@ const SellerDashboardHeader = () => {
           }
         );
       }
+      if (
+        notification.entityType === "Order From Buyer" ||
+        notification.entityType === "Order Cancel" ||
+        notification.entityType === "TDS Update"
+      ) {
+        navigate("/seller-dashboard/procurement-services/view-order-history", {
+          state: {
+            searchOrderNumber: notification.metadata.orderNumber,
+            searchEnquiryNumber: notification.enquiryNumber,
+          },
+        });
+      }
     } catch (error) {
       console.error("Error handling notification click:", error);
     }

@@ -7,8 +7,6 @@ const ContactUsEdprowise = () => {
   const navigate = useNavigate();
 
   const [requests, setRequests] = useState([]); // Initialize as an empty array
-  const [currentPage, setCurrentPage] = useState(1);
-  const [requestPerPage] = useState(5);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -37,6 +35,10 @@ const ContactUsEdprowise = () => {
   }, []);
 
   // Pagination logic
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [requestPerPage] = useState(10);
+
   const indexOfLastRequest = currentPage * requestPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
   const currentRequests = requests.slice(

@@ -19,13 +19,12 @@ const formatDate = (dateString) => {
 const ViewOrderHistory = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const orderNumber =
     location.state?.orderNumber ||
     location.state?.searchOrderNumber ||
     searchParams.get("orderNumber");
-
-  const navigate = useNavigate();
 
   const handleNavigation = () => {
     navigate("/seller-dashboard/procurement-services/pay-to-edprowise");
@@ -40,53 +39,59 @@ const ViewOrderHistory = () => {
         replace: true,
       });
     }
-  }, []);
+  }, [searchParams, location.pathname, navigate, orderNumber]);
 
   const [quote, setQuote] = useState([]);
   const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
-
   const [order, setOrderDetails] = useState([]);
   const [sellerId, setSellerId] = useState("");
   const [enquiryNumber, setEnquiryNumber] = useState("");
 
-  const fetchOrderData = async () => {
-    try {
-      const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-      const response = await getAPI(
-        `/order-details-by-orderNumber/${encodedOrderNumber}`,
-        {},
-        true
-      );
-      if (!response.hasError && response.data.data) {
-        setOrderDetails(response.data.data);
-        setSellerId(response.data.data.sellerId);
-        setEnquiryNumber(response.data.data.enquiryNumber);
-      } else {
-        console.error("Invalid response format or error in response");
-      }
-    } catch (err) {
-      console.error("Error fetching Order details:", err);
-    }
-  };
-
   useEffect(() => {
+    const fetchOrderData = async () => {
+      if (!orderNumber) return;
+
+      try {
+        const encodedOrderNumber = encodeURIComponent(orderNumber);
+        const response = await getAPI(
+          `/order-details-by-orderNumber/${encodedOrderNumber}`,
+          {},
+          true
+        );
+
+        if (!response.hasError && response.data.data) {
+          setOrderDetails(response.data.data);
+          setSellerId(response.data.data.sellerId);
+          setEnquiryNumber(response.data.data.enquiryNumber);
+        } else {
+          console.error("Invalid response format or error in response");
+        }
+      } catch (err) {
+        console.error("Error fetching Order details:", err);
+      }
+    };
+
     fetchOrderData();
-  }, []);
+  }, [orderNumber]);
 
   useEffect(() => {
     const fetchQuoteData = async () => {
+      if (!enquiryNumber) return;
+
       try {
         const encodedEnquiryNumber = encodeURIComponent(enquiryNumber);
+        console.log("Fetching quote for enquiry:", enquiryNumber);
         const response = await getAPI(
           `/get-according-to-category-filter/${encodedEnquiryNumber}`,
           {},
           true
         );
 
-        if (!response.hasError && response.data.data.products) {
+        console.log("Quote API response:", response); // Debug log
+
+        if (!response.hasError && response.data?.data?.products) {
           setQuote(response.data.data.products);
         } else {
           console.error("Invalid response format or error in response");
@@ -99,29 +104,30 @@ const ViewOrderHistory = () => {
     fetchQuoteData();
   }, [enquiryNumber]);
 
-  const fetchOrderDetails = async () => {
-    try {
-      const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-      const response = await getAPI(
-        `/order-from-buyer/${encodedOrderNumber}/${sellerId}`,
-        {},
-        true
-      );
-
-      if (!response.hasError && response.data.data) {
-        setOrders(response.data.data);
-      } else {
-        console.error("Invalid response format or error in response");
-      }
-    } catch (err) {
-      console.error("Error fetching quote:", err);
-    }
-  };
-
   useEffect(() => {
+    const fetchOrderDetails = async () => {
+      if (!orderNumber || !sellerId) return;
+
+      try {
+        const encodedOrderNumber = encodeURIComponent(orderNumber);
+        const response = await getAPI(
+          `/order-from-buyer/${encodedOrderNumber}/${sellerId}`,
+          {},
+          true
+        );
+
+        if (!response.hasError && response.data.data) {
+          setOrders(response.data.data);
+        } else {
+          console.error("Invalid response format or error in response");
+        }
+      } catch (err) {
+        console.error("Error fetching order details:", err);
+      }
+    };
+
     fetchOrderDetails();
-  }, [enquiryNumber]);
+  }, [orderNumber, sellerId]);
 
   const [selectedImages, setSelectedImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);

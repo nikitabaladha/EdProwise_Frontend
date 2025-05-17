@@ -404,7 +404,9 @@ const ViewOrderHistory = () => {
                       <label htmlFor="feedbackComment" className="form-label">
                         Feedback Comment
                       </label>
-                      <p className="form-control">{order?.feedbackComment}</p>
+                      <p className="form-control">
+                        {order?.feedbackComment || "Not Provided"}
+                      </p>
                     </div>
                   </div>
                   <div className="col-md-4">

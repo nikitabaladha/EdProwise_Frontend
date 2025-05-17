@@ -262,6 +262,7 @@ const SubmitQuote = () => {
                           value={submittedQuote.paymentTerms}
                           onChange={handleInputChange}
                           className="form-control"
+                          placeholder="Ex : 45"
                           required
                           readOnly={
                             !(
@@ -286,6 +287,7 @@ const SubmitQuote = () => {
                           value={submittedQuote.advanceRequiredAmount}
                           onChange={handleInputChange}
                           className="form-control"
+                          placeholder="Ex : 1000"
                           readOnly={
                             !(
                               venderStatusFromBuyer === "Quote Not Accepted" ||

@@ -256,14 +256,6 @@ const AdminDashboardHeader = () => {
           },
         });
       }
-      if (notification.entityType === "QuoteProposal From Seller") {
-        navigate("/admin-dashboard/procurement-services/view-quote", {
-          state: {
-            searchEnquiryNumber: notification.metadata.enquiryNumber,
-            searchSellerId: notification.senderId,
-          },
-        });
-      }
       if (notification.entityType === "QuoteProposal From Edprowise") {
         navigate("/admin-dashboard/procurement-services/view-quote", {
           state: {
@@ -272,10 +264,29 @@ const AdminDashboardHeader = () => {
           },
         });
       }
+      if (notification.entityType === "QuoteProposal From Seller") {
+        navigate("/admin-dashboard/procurement-services/view-quote", {
+          state: {
+            searchEnquiryNumber: notification.metadata.enquiryNumber,
+            searchSellerId: notification.senderId,
+          },
+        });
+      }
       if (notification.entityType === "QuoteProposal Reject") {
         navigate("/admin-dashboard/procurement-services/view-quote-table", {
           state: {
             searchEnquiryNumber: notification.metadata.enquiryNumber,
+          },
+        });
+      }
+      if (
+        notification.entityType === "Order From Buyer" ||
+        notification.entityType === "TDS Update" ||
+        notification.entityType === "Order Cancel"
+      ) {
+        navigate("/admin-dashboard/procurement-services/view-order-history", {
+          state: {
+            searchOrderNumber: notification.metadata.orderNumber,
           },
         });
       }
