@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import SellerDashboardHeader from "./SellerDashboardHeader";
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
-import { NotificationProvider } from "../NotificationProvider";
+import { NotificationProvider } from "../NotificationProviderForSeller";
 
 const SellerDashboardMain = () => {
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));

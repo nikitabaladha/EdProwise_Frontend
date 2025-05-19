@@ -8,7 +8,7 @@ import getAPI from "../../api/getAPI";
 import { useNavigate } from "react-router-dom";
 import { useLogout } from "../../useLogout";
 
-import { useNotifications } from "../NotificationProvider";
+import { useNotifications } from "../NotificationProviderForSeller";
 
 const SellerDashboardHeader = () => {
   const navigate = useNavigate();
@@ -176,13 +176,15 @@ const SellerDashboardHeader = () => {
     setSearchQuery("");
   };
 
-  const { notifications, fetchNotifications } = useNotifications();
+  const { notifications, fetchNotifications, markNotificationRead } =
+    useNotifications();
 
   useEffect(() => {
     fetchNotifications();
   }, []);
 
-  const handleNotificationClick = (notification) => {
+  const handleNotificationClick = async (notification) => {
+    await markNotificationRead(notification._id);
     try {
       if (notification.entityType === "QuoteRequest") {
         navigate(
@@ -281,6 +283,12 @@ const SellerDashboardHeader = () => {
                     icon="solar:bell-bing-bold-duotone"
                     className="fs-24 align-middle"
                   />
+                  {notifications.filter((n) => !n.read).length > 0 && (
+                    <span class="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">
+                      {notifications.filter((n) => !n.read).length}
+                      <span class="visually-hidden">unread messages</span>
+                    </span>
+                  )}
                 </button>
                 <div
                   className="dropdown-menu py-0 dropdown-lg dropdown-menu-end"
@@ -312,13 +320,27 @@ const SellerDashboardHeader = () => {
                             </div>
 
                             <div className="flex-grow-1">
-                              <p className="mb-0 fw-semibold">
+                              <p
+                                className="mb-0 fw-semibold"
+                                style={{
+                                  color: notification.read ? "#666" : "blue",
+                                }}
+                              >
                                 {notification.title}
                               </p>
-                              <p className="mb-0 text-wrap">
+                              <p
+                                className="mb-0 text-wrap"
+                                style={{
+                                  color: notification.read ? "#666" : "blue",
+                                }}
+                              >
                                 {notification.message}
                               </p>
-                              <small className="text-muted">
+                              <small
+                                style={{
+                                  color: notification.read ? "#666" : "blue",
+                                }}
+                              >
                                 {new Date(
                                   notification.createdAt
                                 ).toLocaleString()}

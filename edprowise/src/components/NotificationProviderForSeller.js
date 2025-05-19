@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import getAPI from "../api/getAPI";
+import putAPI from "../api/putAPI";
 
 const NotificationContext = createContext();
 
@@ -18,9 +19,32 @@ export const NotificationProvider = ({ children, sellerId }) => {
     }
   }, []);
 
+  const markNotificationRead = useCallback(async (notificationId) => {
+    try {
+      const response = await putAPI(
+        `/mark-read-for-seller/${notificationId}`,
+        {},
+        true
+      );
+
+      if (!response.hasError && response.data) {
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notification) =>
+            notification._id === notificationId
+              ? { ...notification, read: true }
+              : notification
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Error marking notification read:", err);
+    }
+  }, []);
+
   const contextValue = {
     notifications,
     fetchNotifications,
+    markNotificationRead,
   };
 
   return (
