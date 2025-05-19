@@ -1,14 +1,46 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+
+import getAPI from "../../../../api/getAPI";
 import "@react-pdf-viewer/core/lib/styles/index.css";
+
+import { format } from "date-fns";
 
 const ViewSubscriptions = () => {
   const location = useLocation();
-  const subscription = location.state?.subscriptions;
 
-  if (!subscription) {
-    return <p>No subscription details available.</p>;
-  }
+  const subscriptionId = location?.state?.subscriptionId;
+
+  const [subscription, setSubscription] = useState(null);
+
+  console.log("Received subscriptionId:", subscriptionId);
+  // i am getting undefined
+
+  const fetchSubscriptionData = async () => {
+    try {
+      const response = await getAPI(
+        `/subscription-by-id/${subscriptionId}`,
+        {},
+        true
+      );
+      if (!response.hasError && response.data) {
+        setSubscription(response.data.data);
+        console.log("subscription", response.data.data);
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching User:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (subscriptionId) {
+      fetchSubscriptionData();
+    } else {
+      console.error("No subcription  provided");
+    }
+  }, [subscriptionId]);
 
   return (
     <div className="container">
@@ -29,8 +61,8 @@ const ViewSubscriptions = () => {
                   <div className="d-flex align-items-center">
                     <div className="rounded bg-light d-flex align-items-center justify-content-center">
                       <img
-                        src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${subscription.profileImage}`}
-                        alt={`${subscription.schoolName} Profile`}
+                        src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${subscription?.profileImage}`}
+                        alt={`${subscription?.schoolName} Profile`}
                         className="avatar-md"
                         style={{
                           objectFit: "cover",
@@ -50,7 +82,7 @@ const ViewSubscriptions = () => {
                           School Name
                         </label>
                         <p className="form-control">
-                          {subscription.schoolName}
+                          {subscription?.schoolName}
                         </p>
                       </div>
                     </div>
@@ -61,7 +93,7 @@ const ViewSubscriptions = () => {
                           School Mobile Number
                         </label>
                         <p className="form-control">
-                          {subscription.schoolMobileNo}
+                          {subscription?.schoolMobileNo}
                         </p>
                       </div>
                     </div>
@@ -73,7 +105,7 @@ const ViewSubscriptions = () => {
                           School Email
                         </label>
                         <p className="form-control">
-                          {subscription.schoolEmail}
+                          {subscription?.schoolEmail}
                         </p>
                       </div>
                     </div>
@@ -86,7 +118,7 @@ const ViewSubscriptions = () => {
                           Subscription Module
                         </label>
                         <p className="form-control">
-                          {subscription.subscriptionFor}
+                          {subscription?.subscriptionFor}
                         </p>
                       </div>
                     </div>
@@ -97,7 +129,7 @@ const ViewSubscriptions = () => {
                           Subscription No.Month
                         </label>
                         <p className="form-control">
-                          {subscription.subscriptionNoOfMonth}
+                          {subscription?.subscriptionNoOfMonth}
                         </p>
                       </div>
                     </div>
@@ -110,11 +142,12 @@ const ViewSubscriptions = () => {
                           Subscription Start Date
                         </label>
                         <p className="form-control">
-                          {
-                            new Date(subscription.subscriptionStartDate)
-                              .toISOString()
-                              .split("T")[0]
-                          }
+                          {subscription?.subscriptionStartDate
+                            ? format(
+                                new Date(subscription?.subscriptionStartDate),
+                                "dd-MM-yyyy"
+                              )
+                            : "Not Prowided"}
                         </p>
                       </div>
                     </div>
@@ -125,7 +158,7 @@ const ViewSubscriptions = () => {
                           Monthly Rate
                         </label>
                         <p className="form-control">
-                          {subscription.monthlyRate}
+                          {subscription?.monthlyRate}
                         </p>
                       </div>
                     </div>

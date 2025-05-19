@@ -224,23 +224,6 @@ const AdminDashboardHeader = () => {
     setSearchQuery("");
   };
 
-  // const [notifications, setNotifications] = useState([]);
-
-  // const fetchNotifications = async () => {
-  //   try {
-  //     const response = await getAPI(`/edprowise-notifications`, {}, true);
-
-  //     if (!response.hasError && response.data && response.data.data) {
-  //       setNotifications(response.data.data);
-  //       console.log("Notifications", response.data.data);
-  //     } else {
-  //       console.error("Invalid response format or error in response");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error fetching notifications:", err);
-  //   }
-  // };
-
   const { notifications, fetchNotifications } = useNotifications();
 
   useEffect(() => {
@@ -289,6 +272,27 @@ const AdminDashboardHeader = () => {
         navigate("/admin-dashboard/procurement-services/view-order-history", {
           state: {
             searchOrderNumber: notification.metadata.orderNumber,
+          },
+        });
+      }
+      if (notification.entityType === "School Registred") {
+        navigate("/admin-dashboard/schools/view-school", {
+          state: {
+            schoolId: notification.metadata.schoolId,
+          },
+        });
+      }
+      if (notification.entityType === "Seller Registred") {
+        navigate("/admin-dashboard/sellers/view-seller", {
+          state: {
+            sellerId: notification.metadata.sellerId,
+          },
+        });
+      }
+      if (notification.entityType === "School Subscription") {
+        navigate("/admin-dashboard/subscriptions/view-subscriptions", {
+          state: {
+            subscriptionId: notification?.metadata?.subscriptionId,
           },
         });
       }

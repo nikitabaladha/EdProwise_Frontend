@@ -17,7 +17,7 @@ import { useLogout } from "../../useLogout";
 
 import getAPI from "../../api/getAPI";
 
-import { NotificationProviderForSchool } from "../NotificationProviderForSchool";
+import { useNotifications } from "../NotificationProviderForSchool";
 
 const SchoolDashboardHeader = () => {
   const navigate = useNavigate();
@@ -49,7 +49,6 @@ const SchoolDashboardHeader = () => {
 
   useEffect(() => {
     fetchSchoolData();
-    fetchNotifications();
   }, []);
 
   const navigateToViewSchoolProfile = (event, _id, schoolId) => {
@@ -194,22 +193,11 @@ const SchoolDashboardHeader = () => {
     setSearchQuery("");
   };
 
-  const [notifications, setNotifications] = useState([]);
+  const { notifications, fetchNotifications } = useNotifications();
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await getAPI(`/school-notifications`, {}, true);
-
-      if (!response.hasError && response.data && response.data.data) {
-        setNotifications(response.data.data);
-        console.log("Notifications", response.data.data);
-      } else {
-        console.error("Invalid response format or error in response");
-      }
-    } catch (err) {
-      console.error("Error fetching notifications:", err);
-    }
-  };
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
   const handleNotificationClick = (notification) => {
     try {
@@ -234,7 +222,10 @@ const SchoolDashboardHeader = () => {
         );
       }
 
-      if (notification.entityType === "QuoteProposal From Edprowise") {
+      if (
+        notification.entityType === "QuoteProposal From Edprowise" ||
+        notification.entityType === "QuoteProposal From Seller"
+      ) {
         navigate("/school-dashboard/procurement-services/view-quote", {
           state: {
             searchEnquiryNumber: notification.metadata.enquiryNumber,
@@ -249,15 +240,6 @@ const SchoolDashboardHeader = () => {
           },
         });
       }
-      if (notification.entityType === "QuoteProposal From Seller") {
-        navigate("/school-dashboard/procurement-services/view-quote", {
-          state: {
-            searchEnquiryNumber: notification.metadata.enquiryNumber,
-            searchSellerId: notification.metadata.sellerId,
-          },
-        });
-      }
-
       if (
         notification.entityType === "Order From Buyer" ||
         notification.entityType === "Order Cancel" ||

@@ -38,10 +38,10 @@ const SubscriptionTable = ({
     navigate(`/admin-dashboard/subscriptions/add-new-subscriptions`);
   };
 
-  const navigateToViewSubscription = (event, subscriptions) => {
+  const navigateToViewSubscription = (event, subscriptions, id) => {
     event.preventDefault();
     navigate(`/admin-dashboard/subscriptions/view-subscriptions`, {
-      state: { subscriptions },
+      state: { subscriptions, subscriptionId: id },
     });
   };
 
@@ -205,7 +205,8 @@ const SubscriptionTable = ({
                                 onClick={(event) =>
                                   navigateToViewSubscription(
                                     event,
-                                    subscriptions
+                                    subscriptions,
+                                    subscriptions.id
                                   )
                                 }
                                 className="btn btn-light btn-sm"

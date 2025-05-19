@@ -550,8 +550,6 @@ const CompleteSchoolProfile = () => {
                               {emailVerificationState === "verified" ? (
                                 <>
                                   <i className="fas fa-check-circle me-1"></i>
-
-                                  {/* Verified */}
                                 </>
                               ) : sending ? (
                                 "Verifying..."
