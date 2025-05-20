@@ -1,29 +1,33 @@
-import React, { useState, useEffect } from "react";
+// EdProwise_Frontend\edprowise\src\components\DashboardMainForSchool\SchoolDashboardMain.js
 import { Outlet } from "react-router-dom";
 import SchoolDashboardHeader from "./SchoolDashboardHeader";
 
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
 import { NotificationProviderForSchool } from "../NotificationProviderForSchool";
+import { SocketProvider } from "../SocketContext";
 
 const SchoolDashboardMain = () => {
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const schoolId = userDetails?.schoolId;
+  const userType = "school";
 
   return (
     <>
-      <NotificationProviderForSchool schoolId={schoolId}>
-        <div className="wrapper">
-          <SchoolDashboardHeader />
-          <Sidebar />
+      <SocketProvider userId={schoolId} userType={userType}>
+        <NotificationProviderForSchool schoolId={schoolId}>
+          <div className="wrapper">
+            <SchoolDashboardHeader />
+            <Sidebar />
 
-          <div className="page-content custom-font-size">
-            <Outlet />
+            <div className="page-content custom-font-size">
+              <Outlet />
+            </div>
+
+            <Footer />
           </div>
-
-          <Footer />
-        </div>
-      </NotificationProviderForSchool>
+        </NotificationProviderForSchool>
+      </SocketProvider>
     </>
   );
 };

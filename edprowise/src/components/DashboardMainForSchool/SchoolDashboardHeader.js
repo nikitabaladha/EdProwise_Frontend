@@ -187,8 +187,12 @@ const SchoolDashboardHeader = () => {
     setSearchQuery("");
   };
 
-  const { notifications, fetchNotifications, markNotificationRead } =
-    useNotifications();
+  const {
+    notifications,
+    unreadCount,
+    fetchNotifications,
+    markNotificationRead,
+  } = useNotifications();
 
   useEffect(() => {
     fetchNotifications();
@@ -339,6 +343,13 @@ const SchoolDashboardHeader = () => {
                       <span class="visually-hidden">unread messages</span>
                     </span>
                   )}
+
+                  {/* {unreadCount > 0 && (
+                    <span className="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">
+                      {unreadCount}
+                      <span className="visually-hidden">unread messages</span>
+                    </span>
+                  )} */}
                 </button>
                 <div
                   className="dropdown-menu py-0 dropdown-lg dropdown-menu-end"
