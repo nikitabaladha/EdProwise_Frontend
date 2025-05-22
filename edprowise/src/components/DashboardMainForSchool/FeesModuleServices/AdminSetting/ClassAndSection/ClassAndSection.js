@@ -1,30 +1,28 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import ConfirmationDialog from "../../../../ConfirmationDialog";
+import ConfirmationDialog from '../../../../ConfirmationDialog';
 import getAPI from '../../../../../api/getAPI';
-import { toast } from "react-toastify";
-
+import { toast } from 'react-toastify';
+import ExcelSheetModal from './ExcelSheetModal'; 
 
 const ClassAndSection = () => {
   const navigate = useNavigate();
-
-  const [requests, setRequests] = useState([]);  
+  const [requests, setRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [requestPerPage] = useState(5);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [deleteType, setDeleteType] = useState("");
+  const [deleteType, setDeleteType] = useState('');
   const [selectedRequest, setSelectedRequest] = useState(null);
-
-
-  const [schoolId, setSchoolId] = useState("");
-
+  const [schoolId, setSchoolId] = useState('');
+  const [shifts, setShifts] = useState([]);
+  const [showImportModal, setShowImportModal] = useState(false);
 
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     const id = userDetails?.schoolId;
 
     if (!id) {
-      toast.error("School ID not found. Please log in again.");
+      toast.error('School ID not found. Please log in again.');
       return;
     }
 
@@ -32,31 +30,43 @@ const ClassAndSection = () => {
   }, []);
 
   useEffect(() => {
+    if (!schoolId) return;
+
     const fetchData = async () => {
       try {
-        if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
-        console.log("my data", response);
+        const classResponse = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        setRequests(classResponse?.data?.data || []);
 
-        setRequests(response?.data?.data || []);
-
+        const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
+        if (!shiftResponse.hasError) {
+          const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
+          setShifts(shiftArray);
+        } else {
+          toast.error(shiftResponse.message || 'Failed to fetch shifts.');
+          setShifts([]);
+        }
       } catch (error) {
-        toast.error("Error fetching class and section data.");
+        toast.error('Error fetching data.');
+        console.error('Fetch Error:', error);
       }
     };
 
     fetchData();
   }, [schoolId]);
 
+  const handleImportSuccess = async () => {
+    try {
+      const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+      setRequests(response?.data?.data || []);
+    } catch (error) {
+      toast.error('Error refreshing class and section data.');
+    }
+  };
 
 
-
-
-  // Pagination logic
   const indexOfLastRequest = currentPage * requestPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
   const currentRequests = requests.slice(indexOfFirstRequest, indexOfLastRequest);
-
   const totalPages = Math.ceil(requests.length / requestPerPage);
 
   const handleNextPage = () => {
@@ -74,7 +84,6 @@ const ClassAndSection = () => {
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-
   const pagesToShow = Array.from(
     { length: endPage - startPage + 1 },
     (_, index) => startPage + index
@@ -83,29 +92,22 @@ const ClassAndSection = () => {
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
     setIsDeleteDialogOpen(true);
-    setDeleteType("classandsection");
+    setDeleteType('classandsection');
   };
 
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
   };
+
   const handleDeleteConfirmed = (_id) => {
-    setRequests((prevRequests) =>
-      prevRequests.filter((request) => request._id !== _id)
-    );
+    setRequests((prevRequests) => prevRequests.filter((request) => request._id !== _id));
   };
-  // const navigateToViewRequestInfo = (event, request) => {
-  //   event.preventDefault();
-  //   navigate(`/school-dashboard/enquiry/enquity-details`, {
-  //     state: { request }, // Pass student data through state
-  //   });
-  // };
-  // fees-module/admin-setting/class-section/create-class-section
 
   const navigateToAddNewClass = (event) => {
     event.preventDefault();
     navigate(`/school-dashboard/fees-module/admin-setting/grade/class-section/create-class-section`);
-  }
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -120,11 +122,13 @@ const ClassAndSection = () => {
                 >
                   Create Class & Section
                 </Link>
-
                 <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">
-                    Export
-                  </Link>
+                  <button
+                    className="btn btn-sm btn-outline-light"
+                    onClick={() => setShowImportModal(true)}
+                  >
+                    Import
+                  </button>
                 </div>
               </div>
 
@@ -140,7 +144,6 @@ const ClassAndSection = () => {
                       </th>
                       <th>Class</th>
                       <th>Section</th>
-
                       <th className="text-start">Action</th>
                     </tr>
                   </thead>
@@ -152,46 +155,59 @@ const ClassAndSection = () => {
                             <input type="checkbox" className="form-check-input" />
                           </div>
                         </td>
-
                         <td>{classandsection.className}</td>
-                        <td>{classandsection.sections.map(section => section.name).join(", ")}</td>
-
-
+                        <td>{classandsection.sections.map((section) => section.name).join(', ')}</td>
                         <td>
                           <div className="d-flex gap-2">
                             <button
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/grade/class-section/view-class-section", {
-                                  state: { classandsection }
-                                })
+                                navigate(
+                                  '/school-dashboard/fees-module/admin-setting/grade/class-section/view-class-section',
+                                  {
+                                    state: { classandsection },
+                                  }
+                                )
                               }
                               className="btn btn-light btn-sm"
                             >
-                              <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
+                              <iconify-icon
+                                icon="solar:eye-broken"
+                                className="align-middle fs-18"
+                              />
                             </button>
                             <button
                               className="btn btn-soft-primary btn-sm"
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/grade/class-section/update-class-section", {
-                                  state: { classandsection }
-                                })
+                                navigate(
+                                  '/school-dashboard/fees-module/admin-setting/grade/class-section/update-class-section',
+                                  {
+                                    state: { classandsection },
+                                  }
+                                )
                               }
                             >
-                         
-                              <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
+                              <iconify-icon
+                                icon="solar:pen-2-broken"
+                                className="align-middle fs-18"
+                              />
                             </button>
                             <Link
-                              onClick={(e) => { e.preventDefault(); openDeleteDialog(classandsection); }}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                openDeleteDialog(classandsection);
+                              }}
                               className="btn btn-soft-danger btn-sm"
                             >
-                              <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
+                              <iconify-icon
+                                icon="solar:trash-bin-minimalistic-2-broken"
+                                className="align-middle fs-18"
+                              />
                             </Link>
                           </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
-
                 </table>
               </div>
 
@@ -199,14 +215,22 @@ const ClassAndSection = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <button className="page-link" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                      <button
+                        className="page-link"
+                        onClick={handlePreviousPage}
+                        disabled={currentPage === 1}
+                      >
                         Previous
                       </button>
                     </li>
                     {pagesToShow.map((page) => (
-                      <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
+                      <li
+                        key={page}
+                        className={`page-item ${currentPage === page ? 'active' : ''}`}
+                      >
                         <button
-                          className={`page-link pagination-button ${currentPage === page ? "active" : ""}`}
+                          className={`page-link pagination-button ${currentPage === page ? 'active' : ''
+                            }`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -214,7 +238,11 @@ const ClassAndSection = () => {
                       </li>
                     ))}
                     <li className="page-item">
-                      <button className="page-link" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                      <button
+                        className="page-link"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                      >
                         Next
                       </button>
                     </li>
@@ -225,6 +253,15 @@ const ClassAndSection = () => {
           </div>
         </div>
       </div>
+
+      <ExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        shifts={shifts}
+        schoolId={schoolId}
+        onImportSuccess={handleImportSuccess}
+      />
+
       {isDeleteDialogOpen && (
         <ConfirmationDialog
           onClose={handleDeleteCancel}
@@ -234,6 +271,7 @@ const ClassAndSection = () => {
         />
       )}
     </>
-  )
-}
+  );
+};
+
 export default ClassAndSection;

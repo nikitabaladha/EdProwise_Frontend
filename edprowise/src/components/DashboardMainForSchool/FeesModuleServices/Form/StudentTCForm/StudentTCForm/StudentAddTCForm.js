@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import getAPI from '../../../../../../api/getAPI';
 import { toast } from 'react-toastify';
-import validateBasicForm from '../FormValidation/FormValidation';
+import validateBasicForm from '../FormValidation/FormValidation'
 import postAPI from '../../../../../../api/postAPI';
 import { useNavigate } from 'react-router-dom';
-
 
 const StudentAddTCForm = () => {
   const navigate = useNavigate();
@@ -20,11 +19,12 @@ const StudentAddTCForm = () => {
   const [tcFees, setTcFees] = useState(0);
   const [concessionAmount, setConcessionAmount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
+  const [isFetchingFees, setIsFetchingFees] = useState(false);
 
-    const academicYear = localStorage.getItem('selectedAcademicYear');
+  const academicYear = localStorage.getItem('selectedAcademicYear');
 
   const [formData, setFormData] = useState({
-    academicYear:academicYear,
+    academicYear: academicYear,
     studentPhoto: null,
     AdmissionNumber: '',
     firstName: '',
@@ -105,13 +105,20 @@ const StudentAddTCForm = () => {
     fetchData();
   }, [schoolId]);
 
-
   const fetchClassRelatedFeeTypes = async (classId) => {
+    if (!classId) {
+      setAvailableFeeTypes([]);
+      setOneTimeFeesList([]);
+      setSelectedFeeType('');
+      setTcFees(0);
+      setConcessionAmount(0);
+      setFinalAmount(0);
+      return;
+    }
+
+    setIsFetchingFees(true);
     try {
-      if (!schoolId || !classId) return;
-
-        const response = await getAPI(`/get-one-time-feesbyIds/${schoolId}/${classId}/${academicYear}`, {}, true);
-
+      const response = await getAPI(`/get-one-time-feesbyIds/${schoolId}/${classId}/${academicYear}`, {}, true);
       if (response?.data?.data) {
         setOneTimeFeesList(response.data.data);
         const feeTypes = [];
@@ -128,78 +135,109 @@ const StudentAddTCForm = () => {
           }
         });
 
-        setAvailableFeeTypes(feeTypes);
+        setAvailableFeeTypes(feeTypes, () => {
+          console.log("Updated availableFeeTypes:", feeTypes);
+        });
+
+        if (feeTypes.length === 0) {
+          toast.warn("No fee types available for the selected class.");
+        }
       } else {
         setAvailableFeeTypes([]);
+        toast.error("No fee types found for the selected class.");
       }
     } catch (error) {
       toast.error("Error fetching fee types for selected class");
       console.error("Fee type fetch error:", error);
       setAvailableFeeTypes([]);
+    } finally {
+      setIsFetchingFees(false);
     }
   };
 
   useEffect(() => {
     setFinalAmount(tcFees - concessionAmount);
+    setFormData(prev => ({
+      ...prev,
+      finalAmount: (tcFees - concessionAmount).toString()
+    }));
   }, [tcFees, concessionAmount]);
-
 
   const handleChange = (e) => {
     const { name, type, value, checked, files } = e.target;
-  
+
     if (type === 'checkbox') {
       setFormData(prev => ({ ...prev, [name]: checked }));
     } else if (type === 'file') {
       setFormData(prev => ({ ...prev, [name]: files[0] }));
     } else if (name === 'masterDefineClass') {
-      setFormData(prev => ({ ...prev, [name]: value }));
-      fetchClassRelatedFeeTypes(value);
+      setAvailableFeeTypes([]);
+      setSelectedFeeType('');
+      setTcFees(0);
+      setConcessionAmount(0);
+      setFinalAmount(0);
+      setOneTimeFeesList([]);
+
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        TCfees: '',
+        concessionAmount: '',
+        finalAmount: ''
+      }));
+
+      if (value) {
+        fetchClassRelatedFeeTypes(value);
+      }
     } else if (name === 'selectedFeeType') {
       setSelectedFeeType(value);
       const feeItem = oneTimeFeesList.find(item =>
         item.oneTimeFees.some(fee => fee.feesTypeId._id === value)
       );
-  
+
       if (feeItem) {
         const selectedFee = feeItem.oneTimeFees.find(fee => fee.feesTypeId._id === value);
         if (selectedFee) {
           const newTCFees = selectedFee.amount;
           setTcFees(newTCFees);
-  
           setConcessionAmount(0);
+          setFinalAmount(newTCFees);
+
           setFormData(prev => ({
             ...prev,
-            TCfees: newTCFees,
-            concessionAmount: '0', 
-            finalAmount: newTCFees
+            TCfees: newTCFees.toString(),
+            concessionAmount: '0',
+            finalAmount: newTCFees.toString()
           }));
         }
       }
-    } else if (name === 'concessionamount') {
+    } else if (name === 'concessionAmount') {
       const concession = Number(value) || 0;
+      if (concession > tcFees) {
+        toast.error("Concession cannot exceed TC fees");
+        return;
+      }
       const newFinalAmount = tcFees - concession;
 
       setConcessionAmount(concession);
+      setFinalAmount(newFinalAmount);
       setFormData(prev => ({
         ...prev,
-        concessionAmount: value, 
-        finalAmount: newFinalAmount
+        concessionAmount: value,
+        finalAmount: newFinalAmount.toString()
       }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
-  }
-
+  };
 
   const handleAdmissionSubmit = (e) => {
     e.preventDefault();
 
     const selectedAdmissionNumber = formData.AdmissionNumber.trim();
-
     const student = existingStudents.find(
       (s) => s.AdmissionNumber.trim() === selectedAdmissionNumber
     );
-
 
     if (!student) {
       toast.error('Invalid admission number. Please select a valid admission number from the list.');
@@ -221,8 +259,11 @@ const StudentAddTCForm = () => {
       name: student.name,
       paymentMode: student.paymentMode,
       dateOfAdmission: student.applicationDate ? student.applicationDate.split('T')[0] : '',
-
     }));
+
+    if (student?.masterDefineClass?._id || student?.masterDefineClass) {
+      fetchClassRelatedFeeTypes(student.masterDefineClass._id || student.masterDefineClass);
+    }
 
     setShowFullForm(true);
   };
@@ -266,7 +307,6 @@ const StudentAddTCForm = () => {
           ...prev,
           age: age > 0 ? age.toString() : '0'
         }));
-
       } catch (error) {
         console.error("Error calculating age:", error);
         toast.error("Invalid date format");
@@ -276,7 +316,6 @@ const StudentAddTCForm = () => {
       setFormData(prev => ({ ...prev, age: '' }));
     }
   }, [formData.dateOfBirth]);
-
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -326,32 +365,25 @@ const StudentAddTCForm = () => {
     }
 
     try {
-      const response = await postAPI('/create-TC-form', payload,
-        {
-          'Content-Type': 'multipart/form-data',
-        }
-      );
+      const response = await postAPI('/create-TC-form', payload, {
+        'Content-Type': 'multipart/form-data',
+      });
 
       if (!response.hasError) {
         toast.success("Transfer Certificate submitted successfully!");
         const stateData = {
-          data: response.data|| response.student,
+          data: response.data || response.student,
           feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || '',
           className: classes.find(c => c._id === formData.masterDefineClass)?.className || ''
         };
-  
-     
+
         console.log("State data being passed:", stateData);
-  
-        // navigate(`/school-dashboard/fees-module/form/trasfer-certificate-form-details`, {
-        //   state: stateData,
-        // });
+        navigate(`/school-dashboard/fees-module/form/trasfer-certificate-list`);
       } else {
         toast.error(response.message || "Something went wrong");
       }
     } catch (error) {
       const backendMessage = error?.response?.data?.message;
-
       if (backendMessage) {
         toast.error(backendMessage);
       } else {
@@ -360,6 +392,13 @@ const StudentAddTCForm = () => {
     }
   };
 
+  const handleRefreshFeeTypes = () => {
+    if (formData.masterDefineClass) {
+      fetchClassRelatedFeeTypes(formData.masterDefineClass);
+    } else {
+      toast.error("Please select a class first");
+    }
+  };
 
   if (!showFullForm) {
     return (
@@ -377,7 +416,7 @@ const StudentAddTCForm = () => {
                 </div>
                 <form onSubmit={handleAdmissionSubmit}>
                   <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="AdmissionNumber" className="form-label">
                           Admission No
@@ -402,11 +441,13 @@ const StudentAddTCForm = () => {
                         </datalist>
                       </div>
                     </div>
-                  </div>
-                  <div className="text-end">
-                    <button type="submit" className="btn btn-primary custom-submit-button">
-                      Submit
-                    </button>
+                    <div className="col-md-6">
+                      <div className="mt-3">
+                        <button type="submit" className="btn btn-primary custom-submit-button">
+                          Submit
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -416,7 +457,6 @@ const StudentAddTCForm = () => {
       </div>
     );
   }
-
 
   return (
     <div className="container">
@@ -431,7 +471,7 @@ const StudentAddTCForm = () => {
                   </h4>
                 </div>
               </div>
-              <form onSubmit={""}>
+              <form>
                 <div className="row">
                   <div className="col-md-4 d-flex flex-column align-items-center">
                     <div className="border rounded d-flex justify-content-center align-items-center mb-2"
@@ -455,14 +495,12 @@ const StudentAddTCForm = () => {
                       )}
                     </div>
                     <div className="mb-3 w-100 text-center">
-                      <label className="form-label mb-1 d-block text-start">
-                      </label>
                       <input
                         type="file"
                         id="studentPhoto"
                         name="studentPhoto"
                         className="d-none"
-                        accept="image/*"
+                        accept=".jpg,.jpeg"
                         onChange={handlePhotoUpload}
                       />
                       <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
@@ -572,7 +610,6 @@ const StudentAddTCForm = () => {
                 </div>
                 <div className="row">
                   <div className="col-md-4">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="nationality" className="form-label">
                         Nationality<span className="text-danger">*</span>
@@ -587,18 +624,12 @@ const StudentAddTCForm = () => {
                       >
                         <option value="">Select Nationality</option>
                         <option value="India">India</option>
-                        <option value="International">
-                          International
-                        </option>
-                        <option value="SAARC Countries">
-                          SAARC Countries
-                        </option>
+                        <option value="International">International</option>
+                        <option value="SAARC Countries">SAARC Countries</option>
                       </select>
                     </div>
                   </div>
-
                   <div className="col-md-4">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="fatherName" className="form-label">
                         Father Name<span className="text-danger">*</span>
@@ -614,9 +645,7 @@ const StudentAddTCForm = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-4">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="motherName" className="form-label">
                         Mother Name<span className="text-danger">*</span>
@@ -636,10 +665,7 @@ const StudentAddTCForm = () => {
                 <div className="row">
                   <div className="col-md-3">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfIssue"
-                        className="form-label"
-                      >
+                      <label htmlFor="dateOfIssue" className="form-label">
                         Date Of Issue<span className="text-danger">*</span>
                       </label>
                       <input
@@ -653,13 +679,9 @@ const StudentAddTCForm = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-3">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfAdmission"
-                        className="form-label"
-                      >
+                      <label htmlFor="dateOfAdmission" className="form-label">
                         Date Of Admission In School<span className="text-danger">*</span>
                       </label>
                       <input
@@ -673,11 +695,9 @@ const StudentAddTCForm = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-3">
-                    {" "}
                     <div className="mb-3">
-                      <label htmlFor="studentLastClass" className="form-label">
+                      <label htmlFor="masterDefineClass" className="form-label">
                         Class in Which Student Studied Last<span className="text-danger">*</span>
                       </label>
                       <select
@@ -697,12 +717,10 @@ const StudentAddTCForm = () => {
                       </select>
                     </div>
                   </div>
-
                   <div className="col-md-3">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="percentageObtainInLastExam" className="form-label">
-                        Percentage/Gradem Obtain In Last Exam<span className="text-danger">*</span>
+                        Percentage/Grade Obtain In Last Exam<span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -716,10 +734,8 @@ const StudentAddTCForm = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-md-6">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="qualifiedPromotionInHigherClass" className="form-label">
                         Whether Qualified For Promotion In Higher Class<span className="text-danger">*</span>
@@ -735,7 +751,6 @@ const StudentAddTCForm = () => {
                     </div>
                   </div>
                   <div className="col-md-6">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="whetherFaildInAnyClass" className="form-label">
                         Whether Failed In Any Class<span className="text-danger">*</span>
@@ -750,9 +765,7 @@ const StudentAddTCForm = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-6">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="anyOutstandingDues" className="form-label">
                         Any Outstanding Dues<span className="text-danger">*</span>
@@ -767,9 +780,7 @@ const StudentAddTCForm = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-6">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="moralBehaviour" className="form-label">
                         Moral Behaviour<span className="text-danger">*</span>
@@ -784,13 +795,9 @@ const StudentAddTCForm = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-5">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfLastAttendanceAtSchool"
-                        className="form-label"
-                      >
+                      <label htmlFor="dateOfLastAttendanceAtSchool" className="form-label">
                         Date Of Last Attendance At School<span className="text-danger">*</span>
                       </label>
                       <input
@@ -804,9 +811,7 @@ const StudentAddTCForm = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-7">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="reasonForLeaving" className="form-label">
                         Reason For Leaving
@@ -821,9 +826,7 @@ const StudentAddTCForm = () => {
                       />
                     </div>
                   </div>
-
                   <div className="col-md-12">
-                    {" "}
                     <div className="mb-3">
                       <label htmlFor="anyRemarks" className="form-label">
                         Any Other Remarks
@@ -840,8 +843,7 @@ const StudentAddTCForm = () => {
                   </div>
                 </div>
 
-                 {!showAdditionalData ? ( 
-                <>
+                {!showAdditionalData ? (
                   <div className="text-center">
                     <button
                       type="button"
@@ -851,197 +853,198 @@ const StudentAddTCForm = () => {
                       Save & Continue
                     </button>
                   </div>
-                </>
-                ) : ( 
-                <>
-                  <div className="row">
-                    <div className="card-header mb-2">
-                      <h4 className="card-title text-center custom-heading-font">
-                        Understanding
-                      </h4>
-                    </div>
-                    <div className="form-check ms-1 mb-2">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="agreementCheck"
-                        name="agreementChecked"
-                        checked={formData.agreementChecked}
-                        onChange={handleChange}
-
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="agreementCheck"
-                      >
-                        The certificate is issued for the purpose of admission to another School.
-                      </label>
-                    </div>
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="selectedFeeType" className="form-label">
-                          Fee Type <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          id="selectedFeeType"
-                          name="selectedFeeType"
-                          className="form-control"
-                          value={selectedFeeType}
-                          onChange={handleChange}
-                          required
-                        >
-                          <option value="">Select Fee Type</option>
-                          {availableFeeTypes.map((feeType) => (
-                            <option key={feeType.id} value={feeType.id}>
-                              {feeType.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="TCfees" className="form-label">
-                          TC Fees <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="number"
-                          id="TCfees"
-                          name="TCfees"
-                          className="form-control"
-                          value={tcFees}
-                          readOnly
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="concessionamount" className="form-label">
-                          Concession
-                        </label>
-                        <input
-                          // type="number"
-                          id="concessionamount"
-                          name="concessionamount"
-                          className="form-control"
-                          value={concessionAmount}
-                          onChange={handleChange}
-                          max={tcFees}
-
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="finalamount" className="form-label">
-                          Final Amount <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="number"
-                          id="finalamount"
-                          name="finalamount"
-                          className="form-control"
-                          value={finalAmount}
-                          readOnly
-                          required
-                        />
-                      </div>
-                    </div>
-
-
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label htmlFor="name" className="form-label">
-                        Name of Person Filling the Form  <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          className="form-control"
-                          required
-                          value={formData.name}
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label htmlFor="paymentMode" className="form-label">
-                          Payment Option <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          id="paymentMode"
-                          name="paymentMode"
-                          className="form-control"
-                          value={formData.paymentMode}
-                          onChange={handleChange}
-                          required
-                        >
-                          <option value="">Select</option>
-                          <option value="Cash">Cash</option>
-                          <option value="Cheque">Cheque</option>
-                          <option value="Online">Online</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  {formData.paymentMode === 'Cheque' && (
+                ) : (
+                  <>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="card-header mb-2">
+                        <h4 className="card-title text-center custom-heading-font">
+                          Understanding
+                        </h4>
+                      </div>
+                      <div className="form-check ms-1 mb-2">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id="agreementCheck"
+                          name="agreementChecked"
+                          checked={formData.agreementChecked}
+                          onChange={handleChange}
+                        />
+                        <label className="form-check-label" htmlFor="agreementCheck">
+                          The certificate is issued for the purpose of admission to another School.
+                        </label>
+                      </div>
+                      <div className="col-md-3">
                         <div className="mb-3">
-                          <label htmlFor="chequeNumber" className="form-label">
-                            Cheque Number <span className="text-danger">*</span>
+                          <label htmlFor="selectedFeeType" className="form-label">
+                            Fee Type <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            id="selectedFeeType"
+                            name="selectedFeeType"
+                            className="form-control"
+                            value={selectedFeeType}
+                            onChange={handleChange}
+                            required
+                            disabled={isFetchingFees}
+                          >
+                            <option value="">{isFetchingFees ? 'Loading...' : 'Select Fee Type'}</option>
+                            {availableFeeTypes.map((feeType) => (
+                              <option key={feeType.id} value={feeType.id}>
+                                {feeType.name}
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            className="btn btn-link btn-sm mt-1"
+                            onClick={handleRefreshFeeTypes}
+                            disabled={isFetchingFees || !formData.masterDefineClass}
+                          >
+                          </button>
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div className="mb-3">
+                          <label htmlFor="TCfees" className="form-label">
+                            TC Fees <span className="text-danger">*</span>
                           </label>
                           <input
-                            type="text"
-                            id="chequeNumber"
-                            name="chequeNumber"
+                            type="number"
+                            id="TCfees"
+                            name="TCfees"
                             className="form-control"
-                            value={formData.chequeNumber}
+                            value={tcFees}
+                            readOnly
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div className="mb-3">
+                          <label htmlFor="concessionAmount" className="form-label">
+                            Concession
+                          </label>
+                          <input
+                            type="number"
+                            id="concessionAmount"
+                            name="concessionAmount"
+                            className="form-control"
+                            value={concessionAmount}
                             onChange={handleChange}
+                            max={tcFees}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-3">
+                        <div className="mb-3">
+                          <label htmlFor="finalAmount" className="form-label">
+                            Final Amount <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="finalAmount"
+                            name="finalAmount"
+                            className="form-control"
+                            value={finalAmount}
+                            readOnly
                             required
                           />
                         </div>
                       </div>
                       <div className="col-md-6">
                         <div className="mb-3">
-                          <label htmlFor="bankName" className="form-label">
-                            Bank Name <span className="text-danger">*</span>
+                          <label htmlFor="name" className="form-label">
+                            Name of Person Filling the Form <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
-                            id="bankName"
-                            name="bankName"
+                            id="name"
+                            name="name"
                             className="form-control"
-                            value={formData.bankName}
+                            required
+                            value={formData.name}
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="paymentMode" className="form-label">
+                            Payment Option <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            id="paymentMode"
+                            name="paymentMode"
+                            className="form-control"
+                            value={formData.paymentMode}
                             onChange={handleChange}
                             required
-                          />
+                          >
+                            <option value="">Select</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Cheque">Cheque</option>
+                            <option value="Online">Online</option>
+                          </select>
                         </div>
                       </div>
                     </div>
-                  )}
 
-                  <div className="text-end">
-                    <button
-                      type="submit"
-                      className="btn btn-primary custom-submit-button"
-                      onClick={handleFinalSubmit}
-                    >
-                      Submit To Principal Approval
-                    </button>
-                  </div>
-                </>
-               )} 
+                    {formData.paymentMode === 'Cheque' && (
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label htmlFor="chequeNumber" className="form-label">
+                              Cheque Number <span className="text-danger">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              id="chequeNumber"
+                              name="chequeNumber"
+                              className="form-control"
+                              value={formData.chequeNumber}
+                              onChange={handleChange}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label htmlFor="bankName" className="form-label">
+                              Bank Name <span className="text-danger">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              id="bankName"
+                              name="bankName"
+                              className="form-control"
+                              value={formData.bankName}
+                              onChange={handleChange}
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="text-end">
+                      <button
+                        type="submit"
+                        className="btn btn-primary custom-submit-button"
+                        onClick={handleFinalSubmit}
+                      >
+                        Submit To Principal Approval
+                      </button>
+                    </div>
+                  </>
+                )}
               </form>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
+
 export default StudentAddTCForm;

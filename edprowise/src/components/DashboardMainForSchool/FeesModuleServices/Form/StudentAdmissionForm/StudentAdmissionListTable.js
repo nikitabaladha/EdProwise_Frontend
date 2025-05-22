@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-
-
+import AdmissionExcelSheetModal from "./ExcelSheetModal";
 
 const StudentAdmissionListTable = () => {
   const navigate = useNavigate();
@@ -18,9 +17,7 @@ const StudentAdmissionListTable = () => {
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
-
-
-
+  const [showImportModal, setShowImportModal] = useState(false);
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -49,13 +46,12 @@ const StudentAdmissionListTable = () => {
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
   };
+
   const handleDeleteConfirmed = (_id) => {
     setStudentData((prevRequests) =>
       prevRequests.filter((request) => request._id !== _id)
     );
   };
-
-
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -69,14 +65,12 @@ const StudentAdmissionListTable = () => {
     setSchoolId(id);
   }, []);
 
-
   useEffect(() => {
     if (!schoolId || !selectedYear) return;
 
     const fetchStudents = async () => {
       try {
         const response = await getAPI(`/get-admission-form-by-year-schoolId/${schoolId}/${selectedYear}`);
-        console.log("API response:", response);
         const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
         if (!classRes.hasError) {
           setClassList(classRes.data.data);
@@ -84,6 +78,7 @@ const StudentAdmissionListTable = () => {
 
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
+          console.log("Student Data:", studentArray);
           setStudentData(studentArray);
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -95,13 +90,21 @@ const StudentAdmissionListTable = () => {
     };
 
     fetchStudents();
-  }, [schoolId, selectedYear,]);
+  }, [schoolId, selectedYear]);
 
   const getClassNameById = (id) => {
     const found = classList.find((cls) => cls._id === id);
     return found ? found.className : "N/A";
   };
 
+ const getSectionNameById = (sectionId) => {
+  if (!sectionId) {
+    return "N/A";
+  }
+  const found = classList.find((cls) => cls.sections?.some((sec) => sec._id === sectionId));
+  const section = found?.sections?.find((sec) => sec._id === sectionId);
+  return section ? section.name : "N/A";
+};
 
   const navigateToAdmission = (event) => {
     event.preventDefault();
@@ -120,13 +123,43 @@ const StudentAdmissionListTable = () => {
     navigate(`/school-dashboard/fees-module/form/update-admission-form`, {
       state: { student },
     });
-  }
+  };
+
+
+
+
+const navigateToFeesReceipt = (event, student) => {
+  event.preventDefault();
+  const sectionName = student.section ? getSectionNameById(student.section) : "N/A";
+  navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
+    state: {
+      student,
+      feeTypeName: "Admission Fee",
+      sectionName,
+      className: getClassNameById(student.masterDefineClass),
+    },
+  });
+};
+
+  const handleImportSuccess = () => {
+    setShowImportModal(false);
+
+    const fetchStudents = async () => {
+      try {
+        const response = await getAPI(`/get-admission-form-by-year-schoolId/${schoolId}/${selectedYear}`);
+        if (!response.hasError) {
+          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
+          setStudentData(studentArray);
+        }
+      } catch (err) {
+        toast.error("Error refreshing student data.");
+      }
+    };
+    fetchStudents();
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
-
-
-
 
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
@@ -153,16 +186,20 @@ const StudentAdmissionListTable = () => {
 
   return (
     <>
-      {" "}
       <div className="container-fluid">
         <div className="d-flex justify-content-end mb-2 gap-2">
           <Link
-
             onClick={(event) => navigateToAdmission(event)}
             className="btn btn-sm btn-primary"
           >
             Admission Form
           </Link>
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={() => setShowImportModal(true)}
+          >
+            Import
+          </button>
           <Link className="btn btn-sm btn-secondary">
             Export
           </Link>
@@ -174,7 +211,6 @@ const StudentAdmissionListTable = () => {
                 <h4 className="card-title flex-grow-1">
                   Admission List
                 </h4>
-
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}
@@ -190,9 +226,7 @@ const StudentAdmissionListTable = () => {
                       {year.academicYear}
                     </option>
                   ))}
-
                 </select>
-
               </div>
               <div>
                 <div className="table-responsive">
@@ -216,7 +250,8 @@ const StudentAdmissionListTable = () => {
                         <th>Student First Name</th>
                         <th>Student Last Name</th>
                         <th>Class</th>
-                        <th>Contac No</th>
+                        <th>Section</th>
+                        <th>Contact No</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -234,7 +269,7 @@ const StudentAdmissionListTable = () => {
                                 className="form-check-label"
                                 htmlFor="customCheck2"
                               >
-                                &nbsp;
+
                               </label>
                             </div>
                           </td>
@@ -242,10 +277,12 @@ const StudentAdmissionListTable = () => {
                           <td>{student.firstName}</td>
                           <td>{student.lastName}</td>
                           <td>{getClassNameById(student.masterDefineClass)}</td>
+                          <td>{getSectionNameById(student.section)}</td>
                           <td>{student.fatherContactNo}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link className="btn btn-light btn-sm"
+                              <Link
+                                className="btn btn-light btn-sm"
                                 onClick={(event) => navigateToViewAdmissionInfo(event, student)}
                               >
                                 <iconify-icon
@@ -253,7 +290,8 @@ const StudentAdmissionListTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-primary btn-sm"
+                              <Link
+                                className="btn btn-soft-primary btn-sm"
                                 onClick={(event) => navigateToUpdateAdmissionForm(event, student)}
                               >
                                 <iconify-icon
@@ -261,10 +299,23 @@ const StudentAdmissionListTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-danger btn-sm"
-                                onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}>
+                              <Link
+                                className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openDeleteDialog(student);
+                                }}
+                              >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
+                              <Link className="btn btn-soft-success btn-sm"
+                                onClick={(event) => navigateToFeesReceipt(event, student)}
+                              >
+                                <iconify-icon
+                                  icon="solar:download-minimalistic-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
@@ -291,12 +342,10 @@ const StudentAdmissionListTable = () => {
                     {pagesToShow.map((page) => (
                       <li
                         key={page}
-                        className={`page-item ${currentPage === page ? "active" : ""
-                          }`}
+                        className={`page-item ${currentPage === page ? "active" : ""}`}
                       >
                         <button
-                          className={`page-link pagination-button ${currentPage === page ? "active" : ""
-                            }`}
+                          className={`page-link pagination-button ${currentPage === page ? "active" : ""}`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -327,12 +376,15 @@ const StudentAdmissionListTable = () => {
           onDeleted={() => handleDeleteConfirmed(selectedRequest._id)}
         />
       )}
+      <AdmissionExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        academicYear={selectedYear}
+        onImportSuccess={handleImportSuccess}
+      />
     </>
   );
 };
 
 export default StudentAdmissionListTable;
-
-
-
-

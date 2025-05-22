@@ -488,7 +488,6 @@ const StudentAdmissionForm = () => {
             className: selectedClass?.className || '',
             sectionName: sections.find(s => s._id === formData.section)?.name|| '',
             feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || ''
-      
           },
         });
       }

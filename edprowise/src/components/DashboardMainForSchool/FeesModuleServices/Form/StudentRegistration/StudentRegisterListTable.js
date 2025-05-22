@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-
-
+import RegistrationExcelSheetModal from "./ExcelSheetModal";
 
 const StudentRegisterListTable = () => {
   const navigate = useNavigate();
@@ -18,9 +16,7 @@ const StudentRegisterListTable = () => {
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
-
-
-
+  const [showImportModal, setShowImportModal] = useState(false);
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -40,7 +36,19 @@ const StudentRegisterListTable = () => {
     fetchAcademicYears();
   }, []);
 
-
+  const handleImportSuccess = async () => {
+    try {
+      const response = await getAPI(`/get-registartion-form/${schoolId}/${selectedYear}`);
+      if (!response.hasError) {
+        const studentArray = Array.isArray(response.data.students) ? response.data.students : [];
+        setStudentData(studentArray);
+      } else {
+        toast.error(response.message || "Failed to fetch student list.");
+      }
+    } catch (err) {
+      toast.error("Error refreshing student data.");
+    }
+  };
 
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
@@ -51,13 +59,12 @@ const StudentRegisterListTable = () => {
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
   };
+
   const handleDeleteConfirmed = (_id) => {
     setStudentData((prevRequests) =>
       prevRequests.filter((request) => request._id !== _id)
     );
   };
-
-
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -71,14 +78,12 @@ const StudentRegisterListTable = () => {
     setSchoolId(id);
   }, []);
 
-
   useEffect(() => {
     if (!schoolId || !selectedYear) return;
 
     const fetchStudents = async () => {
       try {
         const response = await getAPI(`/get-registartion-form/${schoolId}/${selectedYear}`);
-        console.log("API response:", response);
         const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
         if (!classRes.hasError) {
           setClassList(classRes.data.data);
@@ -104,7 +109,6 @@ const StudentRegisterListTable = () => {
     return found ? found.className : "N/A";
   };
 
-
   const navigateToRegisterStudent = (event) => {
     event.preventDefault();
     navigate(`/school-dashboard/fees-module/form/registration-form`);
@@ -122,13 +126,21 @@ const StudentRegisterListTable = () => {
     navigate(`/school-dashboard/fees-module/form/update-registed-student-info`, {
       state: { student },
     });
-  }
+  };
+
+  const navigateToFeesReceipt = (event, student) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/fees-module/form/registration-form/receipts`, {
+      state: {
+        student,
+        feeTypeName: "Registration Fee",
+        className: getClassNameById(student.masterDefineClass),
+      },
+    });
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
-
-
-
 
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
@@ -155,19 +167,20 @@ const StudentRegisterListTable = () => {
 
   return (
     <>
-      {" "}
       <div className="container-fluid">
         <div className="d-flex justify-content-end mb-2 gap-2">
           <Link
-
             onClick={(event) => navigateToRegisterStudent(event)}
             className="btn btn-sm btn-primary"
           >
             Registration Form
           </Link>
-          <Link className="btn btn-sm btn-secondary">
-            Export
-          </Link>
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={() => setShowImportModal(true)}
+          >
+            Import
+          </button>
         </div>
         <div className="row">
           <div className="col-xl-12">
@@ -191,7 +204,6 @@ const StudentRegisterListTable = () => {
                       {year.academicYear}
                     </option>
                   ))}
-
                 </select>
               </div>
               <div>
@@ -216,7 +228,7 @@ const StudentRegisterListTable = () => {
                         <th>Student First Name</th>
                         <th>Student Last Name</th>
                         <th>Class</th>
-                        <th>Contac No</th>
+                        <th>Contact No</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -234,7 +246,7 @@ const StudentRegisterListTable = () => {
                                 className="form-check-label"
                                 htmlFor="customCheck2"
                               >
-                                &nbsp;
+                                 
                               </label>
                             </div>
                           </td>
@@ -268,6 +280,14 @@ const StudentRegisterListTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
+                              <Link className="btn btn-soft-success btn-sm"
+                                onClick={(event) => navigateToFeesReceipt(event, student)}
+                              >
+                                <iconify-icon
+                                  icon="solar:download-minimalistic-broken"
+                                  className="align-middle fs-18"
+                                />
+                              </Link>
                             </div>
                           </td>
                         </tr>
@@ -291,12 +311,10 @@ const StudentRegisterListTable = () => {
                     {pagesToShow.map((page) => (
                       <li
                         key={page}
-                        className={`page-item ${currentPage === page ? "active" : ""
-                          }`}
+                        className={`page-item ${currentPage === page ? "active" : ""}`}
                       >
                         <button
-                          className={`page-link pagination-button ${currentPage === page ? "active" : ""
-                            }`}
+                          className={`page-link pagination-button ${currentPage === page ? "active" : ""}`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -319,6 +337,13 @@ const StudentRegisterListTable = () => {
           </div>
         </div>
       </div>
+      <RegistrationExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        academicYear={selectedYear}
+        onImportSuccess={handleImportSuccess}
+      />
       {isDeleteDialogOpen && (
         <ConfirmationDialog
           onClose={handleDeleteCancel}
@@ -332,5 +357,3 @@ const StudentRegisterListTable = () => {
 };
 
 export default StudentRegisterListTable;
-
-

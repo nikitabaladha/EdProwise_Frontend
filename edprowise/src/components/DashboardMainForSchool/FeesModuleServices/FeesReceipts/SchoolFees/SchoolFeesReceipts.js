@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from 'react';
 import useSchoolFeesReceipts from "../SchoolFees/SchoolFeesReceiptsdata";
+import SchoolFeesExcelSheetModal from './SchoolFeesExcelSheetModal';
+import { useNavigate } from "react-router-dom";
 
 const SchoolFeesReceipts = () => {
   const {
@@ -29,7 +31,12 @@ const SchoolFeesReceipts = () => {
     paidAmounts,
     handleAcademicYearSelect,
     handleSelectAllYears,
+    schoolId,
+    feeTypes,
   } = useSchoolFeesReceipts();
+  const navigate = useNavigate();
+
+  const [showImportModal, setShowImportModal] = useState(false);
 
   if (!showFullForm) {
     return (
@@ -39,11 +46,34 @@ const SchoolFeesReceipts = () => {
             <div className="card m-2">
               <div className="card-body custom-heading-padding">
                 <div className="container">
-                  <div className="card-header mb-2">
-                    <h4 className="card-title text-center custom-heading-font">
-                      School Fees
-                    </h4>
+                  <div className="card-header">
+                    <div className="row align-items-center">
+                      <div className="col-4"></div>
+
+                      <div className="col-4 text-center">
+                        <h4 className="card-title custom-heading-font mb-0">School Fees</h4>
+                      </div>
+
+                      <div className="col-4 d-flex justify-content-end gap-2">
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() => setShowImportModal(true)}
+                        >
+                          Import
+                        </button>
+                      <button
+                      type="button" // Change to type="button" to prevent form submission
+                      className="btn btn-primary custom-submit-button"
+                      onClick={() => navigate("/school-dashboard/fees-module/fees-receipts/school-fees/fees-receipts")}
+                    >
+                      Fee Receipts
+                    </button> 
+                      </div>
+                    </div>
                   </div>
+
+
                 </div>
                 <form onSubmit={handleAdmissionSubmit}>
                   <div className="row">
@@ -52,17 +82,19 @@ const SchoolFeesReceipts = () => {
                         <label htmlFor="AdmissionNumber" className="form-label">
                           Admission No
                         </label>
-                        <input
-                          type="text"
-                          id="AdmissionNumber"
-                          name="AdmissionNumber"
-                          className="form-control"
-                          list="AdmissionNumbers"
-                          value={formData.AdmissionNumber}
-                          onChange={handleChange}
-                          required
-                          placeholder="Search or select admission number"
-                        />
+                        <div className="input-group">
+                          <input
+                            type="text"
+                            id="AdmissionNumber"
+                            name="AdmissionNumber"
+                            className="form-control"
+                            list="AdmissionNumbers"
+                            value={formData.AdmissionNumber}
+                            onChange={handleChange}
+                            required
+                            placeholder="Search or select admission number"
+                          />
+                        </div>
                         <datalist id="AdmissionNumbers">
                           {existingStudents.map((student, index) => (
                             <option key={index} value={student.AdmissionNumber}>
@@ -73,18 +105,35 @@ const SchoolFeesReceipts = () => {
                       </div>
                     </div>
                     <div className="col-md-6">
-                      <div className="mt-3">
+                      <div className="mt-3 d-flex justify-content-between">
                         <button type="submit" className="btn btn-primary custom-submit-button">
                           Submit
                         </button>
+                        {/* <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() => setShowImportModal(true)}
+                        >
+                          Import
+                        </button> */}
                       </div>
                     </div>
+
                   </div>
                 </form>
               </div>
             </div>
           </div>
         </div>
+        <SchoolFeesExcelSheetModal
+          show={showImportModal}
+          onClose={() => setShowImportModal(false)}
+          schoolId={schoolId} // Use schoolId from hook
+          existingStudents={existingStudents}
+          classes={classes}
+          feeTypes={feeTypes}
+          handleFinalSubmit={handleFinalSubmit}
+        />
       </div>
     );
   }

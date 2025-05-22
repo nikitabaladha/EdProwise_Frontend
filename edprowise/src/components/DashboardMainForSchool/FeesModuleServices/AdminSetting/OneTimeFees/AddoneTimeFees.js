@@ -303,7 +303,7 @@ const ADDOneTimeFees = () => {
                     className="btn btn-success"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Submitting..." : "Create One-Time Fees"}
+                    {isSubmitting ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </form>

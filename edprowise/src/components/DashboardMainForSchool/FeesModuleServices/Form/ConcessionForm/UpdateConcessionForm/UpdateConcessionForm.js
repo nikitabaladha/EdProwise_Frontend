@@ -64,7 +64,7 @@ const ConcessionForm = () => {
                                                 id="studentPhoto"
                                                 name="studentPhoto"
                                                 className="d-none"
-                                                accept="image/*"
+                                                 accept=".jpg,.jpeg"
                                                 onChange={handlePhotoUpload}
                                             />
                                             <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
@@ -226,7 +226,7 @@ const ConcessionForm = () => {
                                                 id="castOrIncomeCertificate"
                                                 name="castOrIncomeCertificate"
                                                 className="form-control"
-                                                accept="image/*,application/pdf"
+                                                 accept=".jpg,.jpeg,.pdf"
                                                 onChange={handleChange}
                                                 ref={fileInputRef}
                                             />
@@ -327,6 +327,7 @@ const ConcessionForm = () => {
                                                                 value={detail.feesType || ""}
                                                                 onChange={(e) => handleConcessionDetailChange(index, e)}
                                                                 required
+                                                                style={{ pointerEvents: 'none' }}
                                                             >
                                                                 <option value="">Select Fee Type</option>
                                                                 {feeTypes.map((type) => (

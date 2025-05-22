@@ -393,8 +393,8 @@ const useConcessionForm = () => {
                 toast.error('Failed to submit concession applications');
             }
         } catch (error) {
-            console.error('Submission error:', error);
-            toast.error('Failed to submit concession applications');
+           const backendMessage = error?.response?.data?.message;
+            toast.error(backendMessage||'Failed to submit concession applications');
         }
     };
     

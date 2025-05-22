@@ -136,7 +136,7 @@ const FeesReceipt = () => {
           <div className="col-md-6">
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: '120px' }}>Receipt No:</span>
-              <span>{currentStudent.receiptNumber}</span>
+              <span>{currentStudent.receiptNumberBrf}</span>
             </div>
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: '120px' }}>Student Name:</span>

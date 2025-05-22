@@ -9,6 +9,7 @@ const UpdateClassAndSection = () => {
     const navigate = useNavigate();
   const location = useLocation();
   const data = location.state?.classandsection;
+   const [loading, setLoading] = useState(false);
 
   const [className, setClassName] = useState(data?.className || "");
   const [numberOfSections, setNumberOfSections] = useState(data?.sections?.length?.toString() || "1");
@@ -56,6 +57,7 @@ const UpdateClassAndSection = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!className.trim()) {
       toast.error("Class name is required.");
@@ -86,6 +88,8 @@ const UpdateClassAndSection = () => {
     } catch (err) {
       const errorMessage = err?.response?.data?.message || "An error occurred while updating class and sections.";
       toast.error(errorMessage);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -172,8 +176,11 @@ const UpdateClassAndSection = () => {
                       </div>
                     ))}
                     <div className="text-end">
-                      <button type="submit" className="btn btn-success">
-                        {data ? "Update Sections" : "Save Sections"}
+                      <button type="submit"
+                            className="btn btn-success"
+                      disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Update"}
                       </button>
                     </div>
                   </form>

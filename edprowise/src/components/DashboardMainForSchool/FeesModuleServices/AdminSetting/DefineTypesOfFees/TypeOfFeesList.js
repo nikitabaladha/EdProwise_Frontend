@@ -1,47 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
+import ExcelSheetModal from './ExcelSheetModal'; 
 
 const TypeOfFeesList = () => {
   const navigate = useNavigate();
-
   const [feesTypes, setFeesTypes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [requestPerPage] = useState(7);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [deleteType, setDeleteType] = useState("feesType");
+  const [showImportModal, setShowImportModal] = useState(false); 
+  const [schoolId, setSchoolId] = useState(''); 
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-    const schoolId = userDetails?.schoolId;
+    const id = userDetails?.schoolId;
 
-    if (!schoolId) {
+    if (!id) {
       toast.error("School ID not found. Please log in again.");
       return;
     }
 
+    setSchoolId(id);
+  }, []);
+
+  useEffect(() => {
+    if (!schoolId) return;
+
     const fetchFeesTypes = async () => {
       try {
         const data = await getAPI(`/getall-fess-type/${schoolId}`);
-        console.log("Raw API Response:", data);
         if (!data.hasError && Array.isArray(data.data.data)) {
           setFeesTypes(data.data.data);
-          console.log("Fees types set:", data.data.data);
         } else {
-          console.error("Error fetching data:", data.message);
+          toast.error(data.message || "Error fetching fees types.");
         }
-
       } catch (error) {
-        console.error("Error fetching fees types:", error);
+        toast.error("Error fetching fees types.");
+        console.error("Fetch Error:", error);
       }
     };
 
     fetchFeesTypes();
-  }, []);
+  }, [schoolId]);
 
+  // Handle import success to refresh the fees types list
+  const handleImportSuccess = async () => {
+    try {
+      const data = await getAPI(`/getall-fess-type/${schoolId}`);
+      if (!data.hasError && Array.isArray(data.data.data)) {
+        setFeesTypes(data.data.data);
+      } else {
+        toast.error(data.message || "Error refreshing fees types.");
+      }
+    } catch (error) {
+      toast.error("Error refreshing fees types.");
+    }
+  };
 
   const indexOfLast = currentPage * requestPerPage;
   const indexOfFirst = indexOfLast - requestPerPage;
@@ -60,8 +79,6 @@ const TypeOfFeesList = () => {
     setCurrentPage(page);
   };
 
-
-
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
     setIsDeleteDialogOpen(true);
@@ -71,6 +88,7 @@ const TypeOfFeesList = () => {
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
   };
+
   const handleDeleteConfirmed = (_id) => {
     setFeesTypes((prevRequests) =>
       prevRequests.filter((request) => request._id !== _id)
@@ -80,8 +98,6 @@ const TypeOfFeesList = () => {
   const navigateToAddNewTypeOfFees = () => {
     navigate("/school-dashboard/fees-module/admin-setting/fees-structure/fees-type-list/add-fees-type");
   };
-
-
 
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
@@ -100,7 +116,12 @@ const TypeOfFeesList = () => {
                   Add Type Of Fees
                 </button>
                 <div className="text-end">
-                  <button className="btn btn-sm btn-outline-light">Export</button>
+                  <button
+                    className="btn btn-sm btn-outline-light"
+                    onClick={() => setShowImportModal(true)} 
+                  >
+                    Import
+                  </button>
                 </div>
               </div>
 
@@ -117,7 +138,7 @@ const TypeOfFeesList = () => {
                   <tbody>
                     {currentFees.length === 0 ? (
                       <tr>
-                        <td colSpan="3">No fees types found.</td>
+                        <td colSpan="4">No fees types found.</td>
                       </tr>
                     ) : (
                       currentFees.map((feetype, index) => (
@@ -127,10 +148,11 @@ const TypeOfFeesList = () => {
                           <td>{feetype.groupOfFees}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <button className="btn btn-soft-primary btn-sm"
+                              <button
+                                className="btn btn-soft-primary btn-sm"
                                 onClick={() =>
                                   navigate("/school-dashboard/fees-module/admin-setting/fees-structure/fees-type-list/update-fees-type", {
-                                    state: { feetype } 
+                                    state: { feetype },
                                   })
                                 }
                               >
@@ -148,7 +170,6 @@ const TypeOfFeesList = () => {
                       ))
                     )}
                   </tbody>
-
                 </table>
               </div>
 
@@ -179,6 +200,13 @@ const TypeOfFeesList = () => {
           </div>
         </div>
       </div>
+
+      <ExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        onImportSuccess={handleImportSuccess}
+      />
 
       {isDeleteDialogOpen && (
         <ConfirmationDialog

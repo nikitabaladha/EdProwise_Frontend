@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import getAPI from '../../../../../api/getAPI';
 import { toast } from "react-toastify";
+import ExcelSheetModal from './ExcelSheetModal'; 
 
 const FeeStructureList = () => {
   const navigate = useNavigate();
-
   const [feeStructures, setFeeStructures] = useState([]);
   const [classMap, setClassMap] = useState({});
   const [sectionMap, setSectionMap] = useState({});
@@ -20,9 +20,7 @@ const FeeStructureList = () => {
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
-
-
-
+  const [showImportModal, setShowImportModal] = useState(false);
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -33,6 +31,7 @@ const FeeStructureList = () => {
         const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
         setAcademicYears(response.data.data || []);
       } catch (err) {
+        toast.error("Error fetching academic years.");
         console.error(err);
       } finally {
         setLoadingYears(false);
@@ -59,18 +58,14 @@ const FeeStructureList = () => {
 
     const fetchData = async () => {
       try {
-
         const feeRes = await getAPI(`/get-fees-structure/${schoolId}/${selectedYear}`, {}, true);
         setFeeStructures(feeRes?.data?.data || []);
-
 
         const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
         const classMap = {};
         const sectionMap = {};
-
         classRes?.data?.data?.forEach(cls => {
           classMap[cls._id] = cls.className;
-
           cls.sections?.forEach(section => {
             sectionMap[section._id] = section.name;
           });
@@ -79,14 +74,12 @@ const FeeStructureList = () => {
         setClassMap(classMap);
         setSectionMap(sectionMap);
 
-
         const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`, {}, true);
         const feesMap = {};
         feesTypeRes?.data?.data?.forEach(ft => {
           feesMap[ft._id] = ft.feesTypeName;
         });
         setFeesTypeMap(feesMap);
-
       } catch (error) {
         toast.error("Error fetching data.");
       }
@@ -94,6 +87,15 @@ const FeeStructureList = () => {
 
     fetchData();
   }, [schoolId, selectedYear]);
+
+  const handleImportSuccess = async () => {
+    try {
+      const feeRes = await getAPI(`/get-fees-structure/${schoolId}/${selectedYear}`, {}, true);
+      setFeeStructures(feeRes?.data?.data || []);
+    } catch (error) {
+      toast.error("Error refreshing fee structures.");
+    }
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -130,9 +132,12 @@ const FeeStructureList = () => {
           >
             Create Fee Structure
           </Link>
-          <Link className="btn btn-sm btn-secondary">
-            Export
-          </Link>
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={() => setShowImportModal(true)}
+          >
+            Import
+          </button>
         </div>
         <div className="row">
           <div className="col-xl-12">
@@ -154,7 +159,6 @@ const FeeStructureList = () => {
                       {year.academicYear}
                     </option>
                   ))}
-
                 </select>
               </div>
 
@@ -184,12 +188,11 @@ const FeeStructureList = () => {
                         </td>
                         <td>{classMap[structure.classId] || "N/A"}</td>
                         <td>{structure.sectionIds?.map(id => sectionMap[id] || "N/A").join(", ") || "N/A"}</td>
-
                         <td>
                           ₹
                           {Array.isArray(structure.installments)
                             ? structure.installments.reduce((sum, inst) =>
-                              sum + (inst.fees?.reduce((subSum, fee) => subSum + fee.amount, 0) || 0), 0)
+                                sum + (inst.fees?.reduce((subSum, fee) => subSum + fee.amount, 0) || 0), 0)
                             : 0}
                         </td>
                         <td>{structure.installments?.length || 0}</td>
@@ -229,7 +232,6 @@ const FeeStructureList = () => {
                       </tr>
                     ))}
                   </tbody>
-
                 </table>
               </div>
 
@@ -256,6 +258,14 @@ const FeeStructureList = () => {
           </div>
         </div>
       </div>
+
+      <ExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        academicYear={selectedYear}
+        onImportSuccess={handleImportSuccess}
+      />
 
       {isDeleteDialogOpen && (
         <ConfirmationDialog

@@ -84,7 +84,7 @@ const StudentRegistrationForm = () => {
                         id="studentPhoto"
                         name="studentPhoto"
                         className="d-none"
-                        accept="image/*"
+                        accept=".jpg,.jpeg" 
                         onChange={handlePhotoUpload}
 
                       />
@@ -491,7 +491,7 @@ const StudentRegistrationForm = () => {
                             id="previousSchoolResult"
                             name="previousSchoolResult"
                             className="form-control"
-                            accept="image/*,application/pdf"
+                            accept=".jpg,.jpeg,.pdf"
                             onChange={handleChange}
                           />
                           {existingFiles.previousSchoolResult && !formData.previousSchoolResult && (
@@ -516,7 +516,7 @@ const StudentRegistrationForm = () => {
                             id="tcCertificate"
                             name="tcCertificate"
                             className="form-control"
-                            accept="image/*,application/pdf"
+                            accept=".jpg,.jpeg,.pdf"
                             onChange={handleChange}
                           />
                           {existingFiles.tcCertificate && !formData.tcCertificate && (
@@ -570,7 +570,7 @@ const StudentRegistrationForm = () => {
                           id="castCertificate"
                           name="castCertificate"
                           className="form-control"
-                          accept="image/*,application/pdf"
+                         accept=".jpg,.jpeg,.pdf"
                           onChange={handleChange}
                         />
                         {existingFiles.castCertificate && !formData.castCertificate && (
@@ -596,7 +596,7 @@ const StudentRegistrationForm = () => {
                         id="aadharPassportFile"
                         name="aadharPassportFile"
                         className="form-control"
-                        accept="image/*,application/pdf"
+                       accept=".jpg,.jpeg,.pdf"
                         onChange={handleChange}
                       />
                       {existingFiles.aadharPassportFile && !formData.aadharPassportFile && (

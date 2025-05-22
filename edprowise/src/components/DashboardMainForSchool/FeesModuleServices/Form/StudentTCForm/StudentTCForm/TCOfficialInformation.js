@@ -53,7 +53,7 @@ const FeesReceipt = () => {
         <div className="row mb-2">
           <div className="col-4">
             <p style={{ color: 'black' }}>
-              {/* <strong>Receipts No :</strong> {student.receiptNumber} */}
+              <strong>Receipts No :</strong> {student.receiptNumber}
             </p>
             <p style={{ color: 'black' }}>
               <strong>Student Name :</strong>{student.firstName}{student.lastName}

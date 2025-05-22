@@ -303,7 +303,7 @@ const handleSubmit = async (e) => {
       return;
     }
     toast.success('Student registered successfully');
-    navigate(`/school-dashboard/fees-module/form/registration-form/sucess`, {
+    navigate(`/school-dashboard/fees-module/form/registration-form/receipts`, {
       state: {
         student: response.data?.student || response.student,
          feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || '',

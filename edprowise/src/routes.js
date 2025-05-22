@@ -192,10 +192,11 @@ import UpdateShifts from "./components/DashboardMainForSchool/FeesModuleServices
 import FeesStructureListTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructureListTable.js";
 import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
 import StudentReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/Recipt.js"
+import FeeReceiptsSchoolFees from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/FeeReceiptsForm.js"
 import BoardRegistrationFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationFees.js";
 import BoardRegistrationFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceipts.js"
 import BoardExamFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamFee.js";
-import BoardExamFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamFee.js"
+import BoardExamFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamReceipts.js"
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
 import TcOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/StudentTCForm/TCOfficialInformation.js"
@@ -645,7 +646,8 @@ const AppRoutes = () => {
         <Route
           path="fees-module/form/registration"
           element={
-            <PrivateRoute allowedRoles={["School"]} requiredSubscription="Fees">
+            // <PrivateRoute allowedRoles={["School"]} requiredSubscription="Fees">
+                     <PrivateRoute>
               <StudentRegisterListTable />
             </PrivateRoute>
           }
@@ -663,7 +665,7 @@ const AppRoutes = () => {
           element={<UpdateStudentRegistrationForm />}
         />
         <Route
-          path="fees-module/form/registration-form/sucess"
+          path="fees-module/form/registration-form/receipts"
           element={<RegistrationOfficialDetails />}
         />
 
@@ -909,6 +911,12 @@ const AppRoutes = () => {
           path="fees-module/fees-receipts/school-fees/student-receipts"
           element={<StudentReceipts />}
         />
+        <Route
+          path="fees-module/fees-receipts/school-fees/fees-receipts"
+          element={<FeeReceiptsSchoolFees />}
+        />
+
+        
 
         <Route
           path="fees-module/fees-receipts/board-registration-fees"

@@ -11,6 +11,7 @@ const UpdateFeeStructure = () => {
   const [classData, setClassData] = useState([]);
   const [feesTypesList, setFeesTypesList] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [forms, setForms] = useState([]);
 
   useEffect(() => {
@@ -130,6 +131,7 @@ const UpdateFeeStructure = () => {
 
   const handleSubmitAll = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const academicYear = localStorage.getItem('selectedAcademicYear'); 
 
     if (!existingStructure?._id) {
@@ -172,6 +174,8 @@ const UpdateFeeStructure = () => {
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Server error.");
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -369,8 +373,11 @@ const UpdateFeeStructure = () => {
                   <button type="button" className="btn btn-secondary" onClick={() => navigate(-1)}>
                     Cancel
                   </button>
-                  <button type="submit" className="btn btn-success">
-                    Update Fees Structure
+                  <button type="submit" 
+                  className="btn btn-success"
+                    disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Update"}
                   </button>
                 </div>
               </form>

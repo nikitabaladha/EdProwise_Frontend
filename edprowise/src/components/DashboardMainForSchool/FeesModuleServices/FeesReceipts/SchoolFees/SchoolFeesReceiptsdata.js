@@ -31,7 +31,7 @@ const useSchoolFeesReceipts = () => {
   const [selectedFeeTypesByInstallment, setSelectedFeeTypesByInstallment] = useState({});
   const [paidAmounts, setPaidAmounts] = useState({});
 
-  const generateReceiptNumber = () => `${'RCPT'}-${Math.floor(100000 + Math.random() * 900000)}`;
+  // const generateReceiptNumber = () => `${'RCPT'}-${Math.floor(100000 + Math.random() * 900000)}`;
   const generateTransactionNumber = () => `${'TXN'}-${Math.floor(100000 + Math.random() * 900000)}`;
 
   useEffect(() => {
@@ -75,7 +75,6 @@ const useSchoolFeesReceipts = () => {
     return [];
   }
 
-  // Always filter by the specified academic year, regardless of selectAllYears
   const selectedYearData = feeData.find(year => year.academicYear === academicYear);
   if (!selectedYearData?.feeInstallments) {
     console.warn(`No feeInstallments found for academic year: ${academicYear}`);
@@ -183,7 +182,7 @@ const useSchoolFeesReceipts = () => {
             .find(y => y.academicYear === academicYear)
             ?.concession?.concessionDetails
             ?.find(cd =>
-              cd.installmentName === `Installment ${installmentNumber}` &&
+              cd.installmentName === `installmentName  ${installmentNumber}` &&
               cd.feesType === item.feesTypeId._id
             );
           
@@ -418,6 +417,7 @@ const useSchoolFeesReceipts = () => {
       studentAdmissionNumber: formData.AdmissionNumber,
       className: classes.find(c => c._id === formData.masterDefineClass)?.className || '',
       section: sections.find(s => s._id === formData.section)?.name || '',
+      paymentDate: new Date().toISOString().split('T')[0],
       date: new Date().toISOString().split('T')[0],
       paymentMode: formData.paymentMode,
       collectorName: formData.name,
@@ -434,10 +434,12 @@ const useSchoolFeesReceipts = () => {
 
       const receiptDetails = {
         ...baseReceiptDetails,
-        receiptNumber: generateReceiptNumber(),
+        // receiptNumber: generateReceiptNumber(),
         transactionNumber: formData.paymentMode === 'Online Transfer'
           ? generateTransactionNumber()
           : formData.chequeNumber,
+        chequeNumber:formData.chequeNumber,
+        bankName:formData.bankName,
         academicYear,
         installments: []
       };
@@ -511,6 +513,7 @@ const useSchoolFeesReceipts = () => {
 
       frontendReceiptDetails.push({
         ...receiptDetails,
+        receiptNumber: response.data.receipt.receiptNumber,
         bankName: formData.paymentMode === 'Cheque' ? formData.bankName : undefined,
         installments: receiptDetails.installments.map(inst => ({
           ...inst,
@@ -573,6 +576,8 @@ const useSchoolFeesReceipts = () => {
     handleAcademicYearSelect,
     handleSelectAllYears,
     setTotalInstallments,
+     schoolId,
+      feeTypes,
   };
 };
 

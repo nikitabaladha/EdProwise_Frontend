@@ -4,22 +4,20 @@ import { Link } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-
-
+import ExcelSheetModal from "./ExcelSheetModal"; 
 
 const StudentTCFormTable = () => {
   const navigate = useNavigate();
   const [schoolId, setSchoolId] = useState(null);
   const [studentData, setStudentData] = useState([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [classList, setClassList] = useState([]);
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
-
-
-
+  const [showImportModal, setShowImportModal] = useState(false); 
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -30,6 +28,7 @@ const StudentTCFormTable = () => {
         const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
         setAcademicYears(response.data.data || []);
       } catch (err) {
+        toast.error("Error fetching academic years.");
         console.error(err);
       } finally {
         setLoadingYears(false);
@@ -38,6 +37,22 @@ const StudentTCFormTable = () => {
 
     fetchAcademicYears();
   }, []);
+
+
+  const handleImportSuccess = async () => {
+    try {
+      const response = await getAPI(`/get-TC-form/${schoolId}/${selectedYear}`);
+
+      if (!response.hasError) {
+        const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
+        setStudentData(studentArray);
+      } else {
+        toast.error(response.message || "Failed to fetch TC form list.");
+      }
+    } catch (err) {
+      toast.error("Error refreshing TC form data.");
+    }
+  };
 
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
@@ -48,13 +63,17 @@ const StudentTCFormTable = () => {
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
   };
+
   const handleDeleteConfirmed = (_id) => {
     setStudentData((prevRequests) =>
       prevRequests.filter((request) => request._id !== _id)
     );
   };
 
-
+    const getClassNameById = (id) => {
+    const found = classList.find((cls) => cls._id === id);
+    return found ? found.className : "N/A";
+  };
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -68,15 +87,17 @@ const StudentTCFormTable = () => {
     setSchoolId(id);
   }, []);
 
-
   useEffect(() => {
     if (!schoolId || !selectedYear) return;
 
     const fetchStudents = async () => {
       try {
         const response = await getAPI(`/get-TC-form/${schoolId}/${selectedYear}`);
-        console.log("API response:", response);
 
+        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        if (!classRes.hasError) {
+          setClassList(classRes.data.data);
+        }
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
           setStudentData(studentArray);
@@ -109,13 +130,10 @@ const StudentTCFormTable = () => {
     navigate(`/school-dashboard/fees-module/form/update-trasfer-certificate-form`, {
       state: { student },
     });
-  }
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
-
-
-
 
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
@@ -142,7 +160,6 @@ const StudentTCFormTable = () => {
 
   return (
     <>
-      {" "}
       <div className="container-fluid">
         <div className="d-flex justify-content-end mb-2 gap-2">
           <Link
@@ -151,18 +168,20 @@ const StudentTCFormTable = () => {
           >
             TC Form
           </Link>
-          <Link className="btn btn-sm btn-secondary">
-            Export
-          </Link>
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={() => setShowImportModal(true)} 
+          >
+            Import
+          </button>
         </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">
-                  Transfer certificate List
+                  Transfer Certificate List
                 </h4>
-
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}
@@ -178,9 +197,7 @@ const StudentTCFormTable = () => {
                       {year.academicYear}
                     </option>
                   ))}
-
                 </select>
-
               </div>
               <div>
                 <div className="table-responsive">
@@ -200,12 +217,12 @@ const StudentTCFormTable = () => {
                             />
                           </div>
                         </th>
-                        <th>TC certificate No.</th>
+                        <th>TC Certificate No.</th>
                         <th>Admission No.</th>
                         <th>Student First Name</th>
                         <th>Student Last Name</th>
-                        <th>Transaction No</th>
-                        <th>Application Received On</th>
+                        <th>Class</th>
+                        <th>Date of Issue</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -223,7 +240,7 @@ const StudentTCFormTable = () => {
                                 className="form-check-label"
                                 htmlFor="customCheck2"
                               >
-                                &nbsp;
+                                 
                               </label>
                             </div>
                           </td>
@@ -231,8 +248,8 @@ const StudentTCFormTable = () => {
                           <td>{student.AdmissionNumber}</td>
                           <td>{student.firstName}</td>
                           <td>{student.lastName}</td>
-                          <td>{student.transactionNumber}</td>
-                          <td>{new Date(student.ApplicationReceivedOn).toLocaleDateString()}</td>
+                          <td>{getClassNameById(student.masterDefineClass)}</td>
+                          <td>{new Date(student.dateOfIssue).toLocaleDateString()}</td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link className="btn btn-light btn-sm"
@@ -281,12 +298,10 @@ const StudentTCFormTable = () => {
                     {pagesToShow.map((page) => (
                       <li
                         key={page}
-                        className={`page-item ${currentPage === page ? "active" : ""
-                          }`}
+                        className={`page-item ${currentPage === page ? "active" : ""}`}
                       >
                         <button
-                          className={`page-link pagination-button ${currentPage === page ? "active" : ""
-                            }`}
+                          className={`page-link pagination-button ${currentPage === page ? "active" : ""}`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -309,6 +324,13 @@ const StudentTCFormTable = () => {
           </div>
         </div>
       </div>
+      <ExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        academicYear={selectedYear}
+        onImportSuccess={handleImportSuccess}
+      />
       {isDeleteDialogOpen && (
         <ConfirmationDialog
           onClose={handleDeleteCancel}
@@ -322,7 +344,3 @@ const StudentTCFormTable = () => {
 };
 
 export default StudentTCFormTable;
-
-
-
-

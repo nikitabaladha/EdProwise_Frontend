@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import getAPI from '../../../../../api/getAPI';
 import { toast } from "react-toastify";
+import ExcelSheetModal from './ExcelSheetModal'; 
 
 const OneTimeFeesTable = () => {
   const navigate = useNavigate();
-
   const [oneTimeFeesList, setOneTimeFeesList] = useState([]);
   const [classMap, setClassMap] = useState({});
   const [sectionMap, setSectionMap] = useState({});
@@ -20,16 +20,18 @@ const OneTimeFeesTable = () => {
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false); // State for import modal
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
       try {
         setLoadingYears(true);
         const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-        const schoolId = userDetails?.schoolId; 
+        const schoolId = userDetails?.schoolId;
         const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
         setAcademicYears(response.data.data || []);
       } catch (err) {
+        toast.error("Error fetching academic years.");
         console.error(err);
       } finally {
         setLoadingYears(false);
@@ -38,8 +40,6 @@ const OneTimeFeesTable = () => {
 
     fetchAcademicYears();
   }, []);
-
-
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -88,7 +88,16 @@ const OneTimeFeesTable = () => {
 
     fetchData();
   }, [schoolId, selectedYear]);
-  
+
+
+  const handleImportSuccess = async () => {
+    try {
+      const feeRes = await getAPI(`/get-one-time-fees/${schoolId}/${selectedYear}`, {}, true);
+      setOneTimeFeesList(feeRes?.data?.data || []);
+    } catch (error) {
+      toast.error("Error refreshing one-time fees.");
+    }
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -125,9 +134,12 @@ const OneTimeFeesTable = () => {
           >
             Create One Time Fee
           </Link>
-          <Link className="btn btn-sm btn-secondary">
-            Export
-          </Link>
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={() => setShowImportModal(true)} 
+          >
+            Import
+          </button>
         </div>
         <div className="row">
           <div className="col-xl-12">
@@ -150,10 +162,8 @@ const OneTimeFeesTable = () => {
                         {year.academicYear}
                       </option>
                     ))}
-
                   </select>
                 </div>
-
               </div>
 
               <div className="table-responsive">
@@ -232,7 +242,6 @@ const OneTimeFeesTable = () => {
                       ));
                     })}
                   </tbody>
-
                 </table>
               </div>
 
@@ -259,6 +268,14 @@ const OneTimeFeesTable = () => {
           </div>
         </div>
       </div>
+
+      <ExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        academicYear={selectedYear}
+        onImportSuccess={handleImportSuccess}
+      />
 
       {isDeleteDialogOpen && (
         <ConfirmationDialog

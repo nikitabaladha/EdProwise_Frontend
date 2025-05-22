@@ -71,7 +71,7 @@ const UpdateAdmissionForm = () => {
                         id="studentPhoto"
                         name="studentPhoto"
                         className="d-none"
-                        accept="image/*"
+                        accept=".jpg,.jpeg"
                         onChange={handlePhotoUpload}
                       />
                       <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
@@ -511,7 +511,7 @@ const UpdateAdmissionForm = () => {
                             id="previousSchoolResult"
                             name="previousSchoolResult"
                             className="form-control"
-                            accept="image/*,application/pdf"
+                             accept=".jpg,.jpeg,.pdf"
                             onChange={handleChange}
                             required={!student?.previousSchoolResult}
                           />
@@ -540,7 +540,7 @@ const UpdateAdmissionForm = () => {
                             id="tcCertificate"
                             name="tcCertificate"
                             className="form-control"
-                            accept="image/*,application/pdf"
+                            accept=".jpg,.jpeg,.pdf"
                             onChange={handleChange}
                             required={!student?.tcCertificate}
                           />
@@ -574,7 +574,7 @@ const UpdateAdmissionForm = () => {
                         id="proofOfResidence"
                         name="proofOfResidence"
                         className="form-control"
-                        accept="image/*,application/pdf"
+                         accept=".jpg,.jpeg,.pdf"
                         onChange={handleChange}
                         required={!student?.proofOfResidence}
                       />
@@ -621,7 +621,7 @@ const UpdateAdmissionForm = () => {
                         id="aadharPassportFile"
                         name="aadharPassportFile"
                         className="form-control"
-                        accept="image/*,application/pdf"
+                         accept=".jpg,.jpeg,.pdf"
                         onChange={handleChange}
                         required={!student?.aadharPassportFile}
                       />
@@ -672,7 +672,7 @@ const UpdateAdmissionForm = () => {
                           id="castCertificate"
                           name="castCertificate"
                           className="form-control"
-                          accept="image/*,application/pdf"
+                           accept=".jpg,.jpeg,.pdf"
                           onChange={handleChange}
                           required={!student?.castCertificate}
                         />
@@ -763,7 +763,7 @@ const UpdateAdmissionForm = () => {
                         id="idCardFile"
                         name="idCardFile"
                         className="form-control"
-                        accept="image/*,application/pdf"
+                         accept=".jpg,.jpeg,.pdf"
                         onChange={handleChange}
                         // required={!formData.siblingInfoChecked}
                         disabled={formData.siblingInfoChecked}

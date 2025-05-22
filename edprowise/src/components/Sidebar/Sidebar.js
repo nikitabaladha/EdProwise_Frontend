@@ -233,14 +233,92 @@ const Sidebar = () => {
                 icon: "solar:users-group-rounded-bold-duotone",
               },
               {
-                label: "Board Registration Fees",
+                label: "Board Registration ",
                 link: "/school-dashboard/fees-module/fees-receipts/board-registration-fees",
                 icon: "solar:users-group-rounded-bold-duotone",
               },
               {
-                label: "Board Exam fees",
+                label: "Board Exam ",
                 link: "/school-dashboard/fees-module/fees-receipts/board-exam-fees",
                 icon: "solar:users-group-rounded-bold-duotone",
+              },
+            ],
+          },
+          {
+            label: "Reports",
+            icon: "solar:chart-bold-duotone", 
+            children: [
+              {
+                label: "Student Ledger",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/student-ledger",
+              },
+              {
+                label: "Daily Collection",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/daily-collection-school-fees",
+              },
+              {
+                label: "Fees Concession",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/fees-concession",
+              },
+              {
+                label: "Defaulter Fees",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/defaulter-fees",
+              },
+              {
+                label: "Left Student Loss",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/loss-left-students",
+              },
+              {
+                label: "Late Admission Loss",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/loss-late-admission",
+              },
+              {
+                label: "Arrear Fees Received",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/arrear-fees",
+              },
+              {
+                label: "Advance Fees",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/advance-fees",
+              },
+              {
+                label: "Registration Fee",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/registration-fee",
+              },
+              {
+                label: "Admission Fee",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/admission-fee",
+              },
+              {
+                label: "TC Fees Report",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/tc-fees-report",
+              },
+              {
+                label: "Board Registration Fees",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/board-registration-fees",
+              },
+              {
+                label: "Board Exam Fees",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/board-exam-fees",
+              },
+              {
+                label: "Fees Structure",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/fees-structure",
+              },
+              {
+                label: "Late Fees Report",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/late-fees-report",
+              },
+              {
+                label: "Excess Fees Report",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/excess-fees-report",
+              },
+              {
+                label: "Fees Refund Report",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/fees-refund-report",
+              },
+              {
+                label: "Cancelled Receipt Report",
+                link: "/school-dashboard/fees-module/fees-receipts/reports/cancelled-receipt-report",
               },
             ],
           },
@@ -301,33 +379,34 @@ const Sidebar = () => {
                     icon: "bx-money-withdraw"
                   },
                   {
+                    label: "Board Fees",
+                    icon: "bx-clipboard",
+                    children: [
+                      {
+                        label: "Registartion",
+                        link: "/school-dashboard/fees-module/admin-setting/board-fees/registration-fees",
+                        icon: "bx-alarm"
+                      },
+                      {
+                        label: "Exam",
+                        link: "/school-dashboard/fees-module/admin-setting/board-fees/exam-fees",
+                        icon: "bx-chalkboard"
+                      }
+                    ]
+                  },
+                  {
                     label: "Fine",
                     link: "/school-dashboard/fees-module/admin-setting/fees-structure/fine",
                     icon: "bx-money"
-                  }
-                ]
-              },
-              {
-                label: "Board Fees",
-                icon: "bx-clipboard",
-                children: [
-                  {
-                    label: "Registartion Fees",
-                    link: "/school-dashboard/fees-module/admin-setting/board-fees/registration-fees",
-                    icon: "bx-alarm"
                   },
-                  {
-                    label: "Exam Fees",
-                    link: "/school-dashboard/fees-module/admin-setting/board-fees/exam-fees",
-                    icon: "bx-chalkboard"
-                  }
                 ]
               },
-             
+
+
             ]
           }
-          
-          
+
+
         ],
       },
     ],
@@ -367,19 +446,19 @@ const Sidebar = () => {
   };
 
 
-  
+
   let currentMenu = menuConfig[userRole] || menuConfig.Guest;
 
   const sidebarTab = localStorage.getItem("sidebartab");
   if (sidebarTab === "ProcurementService") {
     currentMenu = currentMenu.filter(item => item.id === "procurementServices");
-  }else if(sidebarTab==="FeesModule"){
+  } else if (sidebarTab === "FeesModule") {
     currentMenu = currentMenu.filter(item => item.id === "feesmodule");
   }
 
   const getActivePaths = () => {
     const activePaths = new Set();
-    
+
     const checkActive = (items) => {
       items.forEach(item => {
         if (item.link && currentPath.startsWith(item.link)) {
@@ -390,7 +469,7 @@ const Sidebar = () => {
         }
       });
     };
-    
+
     checkActive(currentMenu);
     return Array.from(activePaths);
   };
@@ -398,8 +477,8 @@ const Sidebar = () => {
   const findDeepestActivePath = () => {
     const activePaths = getActivePaths();
     if (activePaths.length === 0) return null;
-    
-    return activePaths.reduce((longest, current) => 
+
+    return activePaths.reduce((longest, current) =>
       current.length > longest.length ? current : longest
     );
   };
@@ -412,7 +491,7 @@ const Sidebar = () => {
   const hasActiveChild = (items) => {
     const deepestPath = findDeepestActivePath();
     if (!deepestPath) return false;
-    
+
     return items.some(item => {
       if (item.link && deepestPath.startsWith(item.link)) {
         return true;
@@ -512,12 +591,12 @@ const Sidebar = () => {
         }
         return null;
       }
-  
+
       const isActive = item.link ? isPathActive(item.link) : false;
       const hasChildren = item.children && item.children.length > 0;
       const isExpanded = hasChildren && hasActiveChild(item.children);
       const collapseId = `sidebar-${item.id || item.label.replace(/\s+/g, "-")}`;
-  
+
       if (hasChildren) {
         return (
           <li className="nav-item" key={item.id || item.label}>
@@ -541,9 +620,9 @@ const Sidebar = () => {
                 <>
                   <span className="nav-text">{item.label}</span>
                   <span className="nav-arrow ms-auto">
-                    <Icon 
-                      icon={isExpanded ? "bi:chevron-down" : "bi:chevron-right"} 
-                      width="12" 
+                    <Icon
+                      icon={isExpanded ? "bi:chevron-down" : "bi:chevron-right"}
+                      width="12"
                     />
                   </span>
                 </>
@@ -559,7 +638,7 @@ const Sidebar = () => {
       } else {
         return (
           <li className="nav-item" key={item.id || item.label}>
-            <Link 
+            <Link
               className={`nav-link ${isActive ? "active" : ""}`}
               to={item.link}
               style={{
@@ -614,9 +693,9 @@ const Sidebar = () => {
         </Link>
       </div>
 
-      <button 
-        type="button" 
-        className="button-sm-hover" 
+      <button
+        type="button"
+        className="button-sm-hover"
         aria-label="Show Full Sidebar"
         onClick={handleIconClick}
       >
@@ -626,7 +705,7 @@ const Sidebar = () => {
         />
       </button>
 
-      <div className="scrollbar " data-simplebar style={{margin:"10px"}}>
+      <div className="scrollbar " data-simplebar style={{ margin: "10px" }}>
         <ul className="navbar-nav" id="navbar-nav">
           {renderMenuItems(currentMenu)}
         </ul>
