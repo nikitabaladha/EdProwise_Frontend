@@ -250,7 +250,7 @@ const UpdateAdmissionForm = () => {
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="masterDefineClass" className="form-label">
-                        Class Applying For<span className="text-danger">*</span>
+                        Class <span className="text-danger">*</span>
                       </label>
                       <select
                         id="masterDefineClass"
