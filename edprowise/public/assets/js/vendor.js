@@ -90859,7 +90859,7 @@ var multi = (function () {
         })(s),
         c = {
           scope: u.default.Scope.INLINE,
-          whitelist: ["serif", "monospace"],
+          whitelist: ["serif", "monospace","Arial"],
         },
         f = new u.default.Attributor.Class("font", "ql-font", c),
         h = (function (t) {
@@ -91481,7 +91481,7 @@ var multi = (function () {
           "#002966",
           "#3d1466",
         ],
-        P = [!1, "serif", "monospace"],
+        P = [!1, "serif", "monospace","Arial"],
         S = ["1", "2", "3", !1],
         C = ["small", !1, "large", "huge"],
         L = (function (t) {

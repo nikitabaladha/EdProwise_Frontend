@@ -11,10 +11,17 @@ const LoanStatement = () => {
                     <div className="card m-2">
                         <div className="card-body custom-heading-padding">
                             <div className="container">
-                                <div className="card-header mb-2">
-                                    <h4 className="payroll-title text-center mb-0 ">
+                                <div className="card-header mb-2 d-flex align-items-center">
+                                    <h4 className="card-title flex-grow-1 text-center ">
                                         Loan Statement
                                     </h4>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary custom-submit-button"
+                                        onClick={() => navigate(-1)}
+                                    >
+                                        Back
+                                    </button>
                                 </div>
                             </div>
                             <form onSubmit="">
@@ -165,13 +172,7 @@ const LoanStatement = () => {
                                     </table>
                                 </div>
                                 <div className="text-end">
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary custom-submit-button"
-                                        onClick={() => navigate(-1)}
-                                    >
-                                        Back
-                                    </button>
+                                    
                                 </div>
                             </form>
                         </div>

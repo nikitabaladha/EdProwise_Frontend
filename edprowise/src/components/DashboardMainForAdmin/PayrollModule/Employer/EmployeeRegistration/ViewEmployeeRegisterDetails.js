@@ -12,12 +12,19 @@ const ViewEmployeeRegisterDetails = () => {
       <div className="row">
         <div className="col-xl-12">
           <div className="card m-2">
-            <div className="card-body">
+            <div className="card-body custom-heading-padding">
               <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="payroll-title mb-0 text-center">
-                    View  Registration Details
+                <div className="card-header mb-2 d-flex align-items-center">
+                  <h4 className="card-title flex-grow-1 text-center">
+                     Registration Details
                   </h4>
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={() => navigate(-1)}
+                  >
+                    Back
+                  </button>
                 </div>
               </div>
               <form onSubmit="">

@@ -2,26 +2,29 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
 const EmployeeLoanStatement = () => {
-  
+
   const navigate = useNavigate();
-          
-          const handleNavigateToViewLoanStatement = () => {
-              navigate("/admin-dashboard/payroll-module/employer/loan-to-employees/loan-statement/view-loan-Statement");
-          };
+
+  const handleNavigateToViewLoanStatement = () => {
+    navigate("/admin-dashboard/payroll-module/employer/loan-to-employees/loan-statement/view-loan-summary");
+  };
+
   return (
     <div className="container-fluid">
-        <div className="row">
-          <div className="col-xl-12">
-            <div className="card">
-              <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">Loan Statement</h4>
-
+      <div className="row">
+        <div className="col-xl-12">
+          <div className="card m-2">
+            <div className="card-body custom-heading-padding">
+              <div className="container">
+                <div className="card-header d-flex align-items-center gap-1">
+                  <h4 className="card-title text-center flex-grow-1">Loan Statement</h4>
+                </div>
               </div>
               <div>
                 <div className="table-responsive">
                   <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
                     <thead className="bg-light-subtle">
-                      <tr>
+                      <tr className='payroll-table-header'>
                         <th style={{ width: 20 }}>
                           <div className="form-check ms-1">
                             <input
@@ -35,20 +38,16 @@ const EmployeeLoanStatement = () => {
                             />
                           </div>
                         </th>
-                        <th>Employee ID/NO</th>
+                        <th>Employee ID</th>
                         <th>Employee Name </th>
                         <th>Grade</th>
                         <th>Designation</th>
-                        <th>Category</th>
-                        <th>Opening</th>
-                        <th>Loan Given</th>
-                        <th>Recovery</th>
-                        <th>Closing</th>
+                        <th>Outstanding Amount</th>
                         <th>Statement</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr className='payroll-table-body'>
                         <td>
                           <div className="form-check ms-1">
                             <input
@@ -70,27 +69,23 @@ const EmployeeLoanStatement = () => {
                           A
                         </td>
                         <td>
-Teacher
+                          Teacher
                         </td>
-                        <td>Teaching Staff</td>
-                        <td>9-5-2025</td>
                         <td>15,000</td>
-                        <td>15,500</td>
-                        <td>9-11-2025</td>
                         <td>
-                            <div className="d-flex justify-content-center gap-2">
+                          <div className="d-flex justify-content-center gap-2">
 
-                              <button
-                                className="btn btn-light btn-sm"
-                                onClick={handleNavigateToViewLoanStatement}
-                              >
-                                <iconify-icon
-                                  icon="solar:eye-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </button>
-                            </div>
-                          </td>
+                            <button
+                              className="btn btn-light btn-sm"
+                              onClick={handleNavigateToViewLoanStatement}
+                            >
+                              <iconify-icon
+                                icon="solar:eye-broken"
+                                className="align-middle fs-18"
+                              />
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -136,6 +131,7 @@ Teacher
           </div>
         </div>
       </div>
+    </div>
   )
 }
 

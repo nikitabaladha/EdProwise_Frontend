@@ -2,12 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 const ItDeclaration = () => {
-    const [showForm, setShowForm] = useState(false);
-    const [employeeID, setEmployeeID] = useState('');
     const navigate = useNavigate();
-    const handleProceed = () => {
-        setShowForm(true);
-    };
 
     const [isBuyer, setIsBuyer] = useState(true);
     const [isYes, setIsYes] = useState(true);
@@ -72,47 +67,50 @@ const ItDeclaration = () => {
                                         </div>
 
                                         <div className="col-md-4">
-                                            <p className='text-dark' >
-                                                <label for="yearSelect" className="mb-0 payroll-box-text fw-bold">Financial Year : </label>
-                                                <select id="yearSelect" className="custom-select" aria-label="Select Year" style={{ marginLeft: "5px" }}>
-                                                    <option selected>2025</option>
-                                                    <option>2026</option>
-                                                    <option>2027</option>
-                                                    <option>2028</option>
-                                                    <option>2029</option>
-                                                </select>
+                                            <p className='text-dark payroll-box-text' >
+                                                <strong> PAN No :</strong> CPJPKPP1
                                             </p>
                                         </div>
 
                                         <div className="col-md-4">
-                                            <p className='text-dark payroll-box-text' >
-                                                <strong> PAN No :</strong> CPJPKPP1
+                                            <p className='text-dark' >
+                                                <label for="yearSelect" className="mb-0 payroll-box-text fw-bold">Financial Year : </label>
+                                                <select id="yearSelect" className="custom-select" aria-label="Select Year" style={{ marginLeft: "5px" }}>
+                                                    <option selected>2025-26</option>
+                                                    <option>2026-27</option>
+                                                    <option>2027-28</option>
+                                                    <option>2028-29</option>
+                                                    <option>2029-30</option>
+                                                </select>
                                             </p>
                                         </div>
 
                                     </div>
 
                                     <div className="table-responsive mb-4">
-                                        <table className="table text-dark border border-dark  mb-4" >
-                                            <thead>
+                                        <table className="border border-dark mb-4 table table-hover " >
+                                            <thead className="bg-light-subtle">
                                                 <tr className="payroll-table-header">
-                                                    <th className="text-center align-content-center border border-dark p-2">
+                                                    <th className="text-center align-content-center border border-dark p-2 text-nowrap">
                                                         Investment
                                                     </th>
-                                                    <th className="text-center align-content-center border border-dark p-2">
+                                                    <th className="text-center align-content-center border border-dark p-2 text-nowrap">
                                                         Limit
                                                     </th>
-                                                    <th className="text-center align-content-center border border-dark p-2">
+                                                    <th className="text-center align-content-center border border-dark p-2 text-nowrap">
                                                         Declared
                                                     </th>
-                                                    <th className="text-center align-content-center border border-dark p-2">
+                                                    <th className="text-center align-content-center border border-dark text-nowrap p-2">
                                                         Proof Submitted
                                                     </th>
 
-                                                    <th className="text-center align-content-center border border-dark p-2">
+                                                    <th className="text-center align-content-center border border-dark text-nowrap p-2">
                                                         Upload Document
                                                     </th>
-                                                    <th className="text-center align-content-center border border-dark p-2">
+                                                    <th className="text-center align-content-center border text-nowrap border-dark p-2">
+                                                        Status
+                                                    </th>
+                                                    <th className="text-center align-content-center border border-dark p-2 text-nowrap">
                                                         Admin Remarks
                                                     </th>
                                                 </tr>
@@ -138,6 +136,9 @@ const ItDeclaration = () => {
                                                     <td className="text-end align-content-center border border-dark fw-bold p-2" >
 
                                                     </td>
+                                                    <td className="text-end align-content-center border border-dark fw-bold p-2" >
+
+                                                    </td>
                                                 </tr>
                                                 <tr className='payroll-table-body' >
                                                     <td className="align-content-center border border-dark  px-3 py-2" >
@@ -155,7 +156,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-                                                        40,000
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                            value={"40,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -164,6 +170,13 @@ const ItDeclaration = () => {
                                                             className="form-control  payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -187,7 +200,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-                                                        50,000
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                            value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -196,6 +214,13 @@ const ItDeclaration = () => {
                                                             className="form-control  payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -219,7 +244,12 @@ const ItDeclaration = () => {
                                                     </td>
 
                                                     <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
 
+                                                        />
                                                     </td>
                                                     <td className="text-center align-content-center border border-dark p-2" >
                                                         <input
@@ -227,6 +257,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -250,7 +287,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-                                                        80,000
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                            value={"80,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -259,6 +301,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -281,7 +330,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -290,6 +344,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -312,7 +373,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -321,6 +387,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -343,7 +416,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -352,6 +430,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -374,7 +459,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -383,6 +473,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -410,6 +507,9 @@ const ItDeclaration = () => {
                                                     <td className="text-end align-content-center border border-dark fw-bold p-2" >
 
                                                     </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+
+                                                    </td>
                                                 </tr>
                                                 <tr className='payroll-table-body'>
                                                     <td className="align-content-center border border-dark px-3 p-2" >
@@ -427,7 +527,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-                                                        20,000
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                            value={"20,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -436,6 +541,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -458,7 +570,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -467,6 +584,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -489,7 +613,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -498,6 +627,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -520,7 +656,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -533,6 +674,13 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-center align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
 
                                                     </td>
                                                 </tr>
@@ -551,7 +699,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                            value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -560,6 +713,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -585,8 +745,12 @@ const ItDeclaration = () => {
 
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark fw-bold p-2" >
+                                                        
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark fw-bold p-2" >
 
                                                     </td>
+
                                                 </tr>
                                                 <tr className='payroll-table-body'>
                                                     <td className="align-content-center border border-dark px-3 p-2" >
@@ -640,7 +804,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -649,6 +818,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -709,7 +885,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -718,6 +899,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -777,7 +965,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -786,6 +979,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -845,7 +1045,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                        // value={"50,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -854,6 +1059,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -876,7 +1088,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-                                                        10,000
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                            value={"10,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -885,6 +1102,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -907,7 +1131,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-                                                        25,000
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                            value={"25,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -916,6 +1145,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -938,7 +1174,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark p-2" >
-                                                        10,000
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                            value={"10,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark p-2" >
@@ -947,6 +1188,13 @@ const ItDeclaration = () => {
                                                             className="form-control payroll-input-border"
                                                             accept="image/*,application/pdf"
                                                             // onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
                                                             required
                                                         />
                                                     </td>
@@ -971,7 +1219,12 @@ const ItDeclaration = () => {
                                                         />
                                                     </td>
                                                     <td className="text-end align-content-center border border-dark fw-bold p-2" >
-                                                        10,000
+                                                        <input
+                                                            type="text"
+                                                            className="form-control payroll-table-body payroll-input-border text-end "
+                                                            required
+                                                            value={"10,000"}
+                                                        />
                                                     </td>
 
                                                     <td className="text-center align-content-center border border-dark fw-bold p-2" >
@@ -990,6 +1243,9 @@ const ItDeclaration = () => {
                                                         </button>
                                                     </td>
                                                     <td className="text-center align-content-center border border-dark fw-bold p-2" >
+                                                    </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+
                                                     </td>
                                                 </tr>
                                                 <tr className='payroll-table-body' >
@@ -1012,10 +1268,13 @@ const ItDeclaration = () => {
                                                     <td className="text-center align-content-center border border-dark p-2" >
 
                                                     </td>
+                                                    <td className="text-end align-content-center border border-dark p-2" >
+
+                                                    </td>
                                                 </tr>
 
                                                 <tr >
-                                                    <td colSpan={7} className="align-content-center border border-dark fw-bold p-2" >
+                                                    <td colSpan={8} className="align-content-center border border-dark fw-bold p-2" >
                                                         I hereby declare that all the investment proofs given by me as mentioned above are correct. In case of any tax deduction being levied on account of incorrect proofs, I shall be fully responsible for payment of such income tax.
                                                     </td>
                                                 </tr>
@@ -1027,7 +1286,7 @@ const ItDeclaration = () => {
                                             type="submit"
                                             className="btn btn-primary custom-submit-button"
                                         >
-                                            Submit For Verification
+                                            Submit for Verification
                                         </button>
                                     </div>
 
@@ -1038,6 +1297,7 @@ const ItDeclaration = () => {
                     </div>
                 </div>
             </div>
+
         </>
     )
 }

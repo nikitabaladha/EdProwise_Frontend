@@ -1,6 +1,8 @@
 import React from 'react'
 import CreatableSelect from "react-select/creatable";
+import { useNavigate } from 'react-router-dom';
 const EmployerResignationApproval = () => {
+    const navigate = useNavigate();
     const reasonForLeaving = [
         { label: 'Absconding', value: 'Absconding' },
         { label: 'Better opportunity & Remuneration', value: 'Better opportunity & Remuneration' },
@@ -18,17 +20,24 @@ const EmployerResignationApproval = () => {
 
     return (
         <>
-           
+
             <div className="container">
                 <div className="row">
                     <div className="col-xl-12">
                         <div className="card m-2">
-                            <div className="card-body">
+                            <div className="card-body custom-heading-padding">
                                 <div className="container">
-                                    <div className="card-header mb-2">
-                                        <h4 className="payroll-title mb-0 text-center">
-                                           Resignation Approval
+                                    <div className="card-header mb-2 d-flex align-items-center">
+                                        <h4 className="card-title flex-grow-1 text-center">
+                                            Resignation Approval
                                         </h4>
+                                        <button
+                                            type="button "
+                                            className="btn btn-primary ms-2 custom-submit-button"
+                                            onClick={()=>{navigate(-1)}}
+                                        >
+                                            Back
+                                        </button>
                                     </div>
                                 </div>
                                 <form onSubmit="">
@@ -36,7 +45,7 @@ const EmployerResignationApproval = () => {
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="contactNumber" className="form-label">
-                                                Reason of Leaving by Employee
+                                                    Reason of Leaving by Employee
                                                 </label>
                                                 <input
                                                     type="text"
@@ -53,18 +62,18 @@ const EmployerResignationApproval = () => {
 
                                         <div className="col-md-6">
                                             <div className="mb-3">
-                                                <label htmlFor="contactNumber" className="form-label">
-                                                Employee Remarks
+                                                <label htmlFor="employeeRemarks" className="form-label">
+                                                    Employee Remarks
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    id="contactNumber"
-                                                    name="contactNumber"
+                                                    id="employeeRemarks"
+                                                    name="employeeRemarks"
                                                     className="form-control"
-                                                    value={" "}
+                                                    value={"Employee Remark"}
                                                     // onChange={handleChange}
                                                     required
-                                                    placeholder='Example : 1234567890'
+                                                    placeholder='Employee Remark'
                                                 />
                                             </div>
                                         </div>
@@ -72,7 +81,7 @@ const EmployerResignationApproval = () => {
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="dateOfBirth" className="form-label">
-                                                     Notice Period as per policy
+                                                    Notice Period as per policy
                                                 </label>
                                                 <input
                                                     type="text"
@@ -81,14 +90,14 @@ const EmployerResignationApproval = () => {
                                                     className="form-control"
                                                     value={"90"}
                                                     required
-                                                  />
+                                                />
                                             </div>
                                         </div>
 
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="gender" className="form-label">
-                                                    Earned Leave Balance 
+                                                    Earned Leave Balance
                                                 </label>
                                                 <input
                                                     type="text"
@@ -97,7 +106,7 @@ const EmployerResignationApproval = () => {
                                                     className="form-control"
                                                     value={"10"}
                                                     required
-                                                  />
+                                                />
                                             </div>
                                         </div>
 
@@ -107,7 +116,7 @@ const EmployerResignationApproval = () => {
                                                     htmlFor="categoryOfEmployees"
                                                     className="form-label"
                                                 >
-                                               Applicable Notice Period (Notice period-leave balance)
+                                                    Applicable Notice Period (Notice period-leave balance)
                                                 </label>
                                                 <input
                                                     type="text"
@@ -116,13 +125,13 @@ const EmployerResignationApproval = () => {
                                                     className="form-control"
                                                     value={"79.5"}
                                                     required
-                                                  />
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="grade" className="form-label">
-                                                    LWD as per system 
+                                                    LWD as per system
                                                 </label>
                                                 <input
                                                     type="date"
@@ -140,15 +149,15 @@ const EmployerResignationApproval = () => {
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="jobDesignation" className="form-label">
-                                                    Final LWD 
+                                                    Final LWD
                                                 </label>
                                                 <input
                                                     type="date"
                                                     id="jobDesignation"
                                                     name="jobDesignation"
                                                     className="form-control"
-                                                    // value={formData.jobDesignation}
-                                                    // onChange={handleChange}
+                                                // value={formData.jobDesignation}
+                                                // onChange={handleChange}
                                                 />
                                             </div>
                                         </div>
@@ -156,7 +165,7 @@ const EmployerResignationApproval = () => {
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="joiningDate" className="form-label">
-                                               Unserved Notice Period (In Days)
+                                                    Unserved Notice Period (In Days)
                                                 </label>
                                                 <input
                                                     type="text"
@@ -174,13 +183,13 @@ const EmployerResignationApproval = () => {
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="joiningDate" className="form-label">
-                                                Action to be taken for unserved notice period (In Days) <span className="text-danger">*</span>
+                                                    Action to be taken for unserved notice period (In Days) <span className="text-danger">*</span>
                                                 </label>
                                                 <select
                                                     id="categoryOfEmployees"
                                                     name="categoryOfEmployees"
                                                     className="form-control"
-                                                    value={"Waive off"}
+                                                    // value={"Waive off"}
                                                     // onChange={handleChange}
                                                     required
 
@@ -197,13 +206,13 @@ const EmployerResignationApproval = () => {
                                         <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="joiningDate" className="form-label">
-                                                Resignation Type <span className="text-danger">*</span>
+                                                    Resignation Type <span className="text-danger">*</span>
                                                 </label>
                                                 <select
                                                     id="categoryOfEmployees"
                                                     name="categoryOfEmployees"
                                                     className="form-control"
-                                                    value={"Voluntary"}
+                                                    // value={"Voluntary"}
                                                     // onChange={handleChange}
                                                     required
 
@@ -235,10 +244,10 @@ const EmployerResignationApproval = () => {
                                             </div>
                                         </div>
 
-                                                                                <div className="col-md-6">
+                                        <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="joiningDate" className="form-label">
-                                                Reason for leaving by Principal <span className="text-danger">*</span>
+                                                    Reason for leaving by Principal <span className="text-danger">*</span>
                                                 </label>
                                                 <CreatableSelect
                                                     options={reasonForLeaving}
@@ -250,7 +259,7 @@ const EmployerResignationApproval = () => {
                                             </div>
                                         </div>
 
-                                                                                <div className="col-md-6">
+                                        <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="joiningDate" className="form-label">
                                                     Do you want to retain the employee  <span className="text-danger">*</span>
@@ -259,7 +268,6 @@ const EmployerResignationApproval = () => {
                                                     id="categoryOfEmployees"
                                                     name="categoryOfEmployees"
                                                     className="form-control"
-                                                    value={"Voluntary"}
                                                     // onChange={handleChange}
                                                     required
 
@@ -271,10 +279,10 @@ const EmployerResignationApproval = () => {
                                             </div>
                                         </div>
 
-                                                                                <div className="col-md-6">
+                                        <div className="col-md-6">
                                             <div className="mb-3">
                                                 <label htmlFor="joiningDate" className="form-label">
-                                                Principal Remark (if any)
+                                                    Principal Remark (if any)
                                                 </label>
                                                 <input
                                                     type="text"
@@ -284,7 +292,7 @@ const EmployerResignationApproval = () => {
                                                     // value={formData.joiningDate}
                                                     // onChange={handleChange}
                                                     required
-                                                    placeholder='joiningDate'
+                                                    placeholder='Enter Principal Remark'
                                                 />
                                             </div>
                                         </div>
@@ -296,6 +304,13 @@ const EmployerResignationApproval = () => {
                                             className="btn btn-primary custom-submit-button"
                                         >
                                             Accept Registartion
+                                        </button>
+
+                                        <button
+                                            type="button "
+                                            className="btn btn-primary ms-2 custom-submit-button"
+                                        >
+                                            Retained
                                         </button>
                                     </div>
                                 </form>

@@ -70,7 +70,7 @@ const UpdateEmployeeDetails = () => {
       <div className="row">
         <div className="col-xl-12">
           <div className="card m-2">
-            <div className="card-body">
+            <div className="card-body custom-heading-padding">
               <div className="container">
                 <div className="card-header mb-2">
                   <h4 className="payroll-title text-center">
@@ -110,24 +110,8 @@ const UpdateEmployeeDetails = () => {
                 
                 {showForm && (
                   <>
-                    <div className="row mb-3">
-                                    <div className="col-md-6">
-                                        <div className="mb-6">
-                                            <label htmlFor="employeeID" className="form-label">
-                                                Employee ID <span className="text-danger">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="employeeID"
-                                                name="employeeID"
-                                                className="form-control"
-                                                // value={formData.employeeID}
-                                                value={"EMP-001"}
-                                                required
-                                                placeholder='Enter Employee ID'
-                                            />
-                                        </div>
-                                    </div>
+                    <div className="row">
+                                    
                                     <div className="col-md-6">
                                         <div className="mb-6">
                                             <label htmlFor="name" className="form-label">
@@ -143,6 +127,21 @@ const UpdateEmployeeDetails = () => {
                                                 value={"Umesh Jadhav"}
                                                 required
                                                 placeholder='Enter Employee Name'
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label htmlFor="joiningDate" className="form-label">
+                                                Joining Date <span className="text-danger">*</span>
+                                            </label>
+                                            <input
+                                                type="date"
+                                                id="joiningDate"
+                                                name="joiningDate"
+                                                className="form-control"
+                                                // value={formData.joiningDate}
+                                                required
                                             />
                                         </div>
                                     </div>
@@ -1185,7 +1184,7 @@ const UpdateEmployeeDetails = () => {
 
                     <div className="card-header mb-2">
                       <h4 className="card-title text-center custom-heading-font">
-                        Status of Employee<span className="text-danger">*</span>
+                        Status
                       </h4>
                     </div>
                     <div className="row">

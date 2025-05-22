@@ -6,10 +6,10 @@ const AddProcessPayroll = () => {
       <div className="row">
         <div className="col-xl-12">
           <div className="card m-2">
-            <div className="card-body">
+            <div className="card-body custom-heading-padding">
               <div className="container">
                 <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
+                  <h4 className="card-title text-center">
                     Payroll Process
                   </h4>
                 </div>
@@ -17,8 +17,8 @@ const AddProcessPayroll = () => {
               <form onSubmit="">
                 <div class="custom-bg d-flex flex-wrap align-items-center justify-content-between gap-3 p-3">
                   <div className="d-flex flex-wrap align-items-center gap-3">
-                    <label for="yearSelect" class="mb-0">Year :</label>
-                    <select id="yearSelect" class="custom-select" aria-label="Select Year">
+                    <label for="yearSelect" className="mb-0 fw-bold">Year :</label>
+                    <select id="yearSelect" className="custom-select" aria-label="Select Year">
                       <option selected>2025</option>
                       <option>2026</option>
                       <option>2027</option>
@@ -26,8 +26,8 @@ const AddProcessPayroll = () => {
                       <option>2029</option>
                     </select>
 
-                    <label for="monthSelect" class="mb-0">Month :</label>
-                    <select id="monthSelect" class="custom-select" aria-label="Select Month">
+                    <label for="monthSelect" className="mb-0 fw-bold">Month :</label>
+                    <select id="monthSelect" className="custom-select" aria-label="Select Month">
                       <option selected>January</option>
                       <option>February</option>
                       <option>March</option>
@@ -44,149 +44,149 @@ const AddProcessPayroll = () => {
                   </div>
                 </div>
                 <div className="table-responsive mb-4">
-                  <table className="table mb-4" style={{ border: "1px solid black", color: "black" }}>
+                  <table className="table text-dark border border-dark mb-4" >
                     <thead>
-                      <tr>
-                        <th colSpan={5} className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                      <tr className="payroll-table-header">
+                        <th colSpan={5} className="text-center text-nowrap border border-dark align-content-center p-2" >
 
                         </th>
-                        <th colSpan={4} className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th colSpan={4} className="text-center text-nowrap border border-dark align-content-center p-2" >
                           Days
                         </th>
-                        <th colSpan={12} className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th colSpan={12} className="text-center text-nowrap border border-dark align-content-center p-2" >
                           Salary Components
                         </th>
                       </tr>
-                      <tr>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                      <tr className='it-declaration-section-bg payroll-box-text fw-bold'>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Employee ID
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Employee Name
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black", fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Grade
                         </th>
 
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black", fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Designation
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black", fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Category
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black", fontSize: "1.1rem" }}>
-                          Total Days In A Month
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
+                          Total Days in a Month
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Paid Days
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Regularization Leave
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
-                          Paid Leave Deduction
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
+                          Leave Deduction
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Basic Salary
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           HRA
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Variable Pay
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Overtime Allowance
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Bonus
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Gross Earning
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black" ,fontSize: "1.1rem"}}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           PF Deduction
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Income Tax
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Professional Tax
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black",fontSize: "1.1rem" }}>
-                          Paid Leave Deduction
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
+                          Leave Deduction
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black", fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Gross Deduction
                         </th>
-                        <th className="text-center align-content-center p-2" style={{ border: "1px solid black", fontSize: "1.1rem" }}>
+                        <th className="text-center border border-dark align-content-center text-nowrap p-2" >
                           Net Salary
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr >
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                      <tr className='payroll-table-body'>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           Emp-001
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           Umesh Jadhav
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           A
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           Teacher 
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                         Teaching Staff
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           31
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           0
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           0
                         </td>
-                        <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
+                        <td className="text-center border border-dark align-content-center p-2" >
                           0
                         </td>
                       </tr>
@@ -201,7 +201,7 @@ const AddProcessPayroll = () => {
                       type="submit"
                       className="btn btn-primary custom-submit-button"
                     >
-                      Submit For Principal Approval
+                      Submit for Principal Approval
                     </button>
                   </div>
                   <div className="text" style={{ marginLeft: "1rem" }}>
@@ -210,7 +210,7 @@ const AddProcessPayroll = () => {
                       className="btn btn-primary custom-submit-button"
 
                     >
-                      Proceed For Payment
+                      Proceed for Payment
                     </button>
                   </div>
                 </div>

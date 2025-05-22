@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineAutorenew } from "react-icons/md";
+
 const RentDetails = () => {
     const months = [
         'April', 'May', 'June', 'July', 'August', 'September',
@@ -51,8 +52,15 @@ const RentDetails = () => {
                     <div className="card m-2">
                         <div className="card-body custom-heading-padding">
                             <div className="container">
-                                <div className="card-header mb-2">
-                                    <h4 className="payroll-title text-center mb-0">House Rent Details</h4>
+                                <div className="card-header mb-2 d-flex align-items-center">
+                                    <h4 className="card-title flex-grow-1 text-center">House Rent Details</h4>
+                                    <button
+                                            type="button "
+                                            className="btn btn-primary ms-2 custom-submit-button"
+                                            onClick={()=>{navigate(-1)}}
+                                        >
+                                            Back
+                                        </button>
                                 </div>
                             </div>
                             <form >
@@ -60,15 +68,14 @@ const RentDetails = () => {
                                     <table className="table text-dark border border-dark mb-4">
                                         <thead>
                                             <tr className="payroll-table-header">
-                                                <th className="text-center align-content-center border border-dark p-2">Month</th>
-                                                <th className="text-center align-content-center border border-dark p-2">Declared Rent</th>
-                                                <th className="text-center align-content-center border border-dark p-2" style={{ minWidth: "9rem" }}>City</th>
-                                                {/* we give the 9rem === 135px */}
-                                                <th className="text-center align-content-center border border-dark p-2">Name of Landlord</th>
-                                                <th className="text-center align-content-center border border-dark p-2">PAN of Landlord</th>
-                                                <th className="text-center align-content-center border border-dark p-2">Address of Landlord</th>
-                                                <th className="text-center align-content-center border border-dark p-2">Upload Rent Receipt</th>
-                                                <th className="text-center align-content-center border border-dark p-2">Action</th>
+                                                <th className="text-center align-content-center border border-dark text-nowrap p-2">Month</th>
+                                                <th className="text-center align-content-center border border-dark text-nowrap p-2">Declared Rent</th>
+                                                <th className="text-center align-content-center border border-dark text-nowrap p-2" style={{ minWidth: "9rem" }}>City</th>
+                                                <th className="text-center align-content-center border border-dark text-nowrap p-2">Name of Landlord</th>
+                                                <th className="text-center align-content-center border border-dark text-nowrap p-2">PAN of Landlord</th>
+                                                <th className="text-center align-content-center border border-dark text-nowrap p-2">Address of Landlord</th>
+                                                <th className="text-center align-content-center border border-dark text-nowrap p-2">Upload Rent Receipt</th>
+                                                <th className="text-center align-content-center border border-dark text-nowrap p-2">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -144,14 +151,7 @@ const RentDetails = () => {
                                                             required
                                                         />
                                                     </td>
-                                                    {/* <td className="text-end align-content-center border border-dark p-2">
-                                                        <button
-                                            type="button"
-                                            className="btn btn-primary fs-4 custom-submit-button"
-                                        >
-                                            <MdOutlineAutorenew />
-                                        </button>
-                                                    </td> */}
+                                                    
                                                     <td className="text-end align-content-center border border-dark p-2">
                                                         {index > 0 && (
                                                             <button
@@ -183,11 +183,11 @@ const RentDetails = () => {
                                 </div>
                                 <div className="text-end">
                                     <button
-                                        type="button"
+                                        type="submit"
                                         className="btn btn-primary custom-submit-button"
-                                        onClick={() => navigate(-1)}
+                                        
                                     >
-                                        Back
+                                        Save
                                     </button>
                                 </div>
                             </form>

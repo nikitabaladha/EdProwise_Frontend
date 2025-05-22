@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const UpdateEmployeeRegistrationForm = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: 'Umesh Jadhav',
     contactNumber: '0123456789',
@@ -26,12 +29,19 @@ const UpdateEmployeeRegistrationForm = () => {
       <div className="row">
         <div className="col-xl-12">
           <div className="card m-2">
-            <div className="card-body">
+            <div className="card-body custom-heading-padding">
               <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="payroll-title mb-0 text-center">
+                <div className="card-header mb-2 d-flex align-items-center">
+                  <h4 className="card-title flex-grow-1 text-center">
                     Update Registration Form
                   </h4>
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={() => navigate(-1)}
+                  >
+                    Back
+                  </button>
                 </div>
               </div>
               <form onSubmit="">

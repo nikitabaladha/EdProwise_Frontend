@@ -15,15 +15,15 @@ const PreviousEmploymentIncome = () => {
                                 </div>
                             </div>
                             <form onSubmit="">
-                                <div className="table-responsive mb-2">
+                                <div className="table-responsive px-lg-6 px-md-4 mb-2">
                                     <table className="table border border-dark text-dark mb-2">
                                         <thead>
                                             <tr className="payroll-table-header">
-                                                <th className="text-center align-content-center border border-dark p-2">
+                                                <th className="text-center align-content-center w-75 border border-dark p-2">
                                                     Particulars
                                                 </th>
                                                 
-                                                <th className="text-center align-content-center border border-dark p-2" >
+                                                <th className="text-center align-content-center w-25 border border-dark p-2" >
                                                     Amount
                                                 </th>
 

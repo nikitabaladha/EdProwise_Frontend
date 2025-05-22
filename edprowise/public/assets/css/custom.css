@@ -22,3 +22,9 @@
 .custom-heading-padding {
   padding-top: 0px;
 }
+
+.quill-editor-custom .ql-editor {
+  min-height: 150px;
+  max-height: 300px;
+}
+

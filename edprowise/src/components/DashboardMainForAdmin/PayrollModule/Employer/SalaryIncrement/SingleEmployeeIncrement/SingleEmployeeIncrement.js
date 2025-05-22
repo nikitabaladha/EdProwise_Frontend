@@ -12,11 +12,11 @@ const SingleEmployeeIncrement = () => {
                 <div className="row">
                     <div className="col-xl-12">
                         <div className="card m-2">
-                            <div className="card-body">
+                            <div className="card-body custom-heading-padding">
                                 <div className="container">
                                     <div className="card-header mb-2">
-                                        <h4 className="card-title text-center custom-heading-font">
-                                            IT Declaration
+                                        <h4 className="card-title text-center ">
+                                            Single Employee Increment
                                         </h4>
                                     </div>
                                 </div>
@@ -51,32 +51,45 @@ const SingleEmployeeIncrement = () => {
                                     </div>
                                     {showForm && (
                                         <>
-                                            <div className="row mb-2 mt-4">
-                                                <div className="col-6">
-                                                    <p style={{ color: 'black' }}>
-                                                        Employee Name : Umesh jadhav
+                                            <div className="row m-0 mb-2 pt-2 salary-slip-box">
+                                                <div className="col-md-8">
+                                                    <p className='text-dark payroll-box-text'>
+                                                        <strong>Employee Name : </strong>Umesh jadhav
                                                     </p>
 
-                                                    <p style={{ color: 'black' }}>
-                                                        Category of Employees : Teaching Staff
+                                                </div>
+
+                                                <div className="col-md-4">
+                                                    <p className='text-dark payroll-box-text' >
+                                                        <strong>Employee ID : </strong>Emp-001
                                                     </p>
                                                 </div>
 
-                                                <div className="col-6">
-                                                    <p style={{ color: 'black' }}>
-                                                        Grade : A
-                                                    </p>
+                                                <div className="col-md-4">
 
-                                                    <p style={{ color: 'black' }}>
-                                                        Designation : Teacher
+                                                    <p className='text-dark payroll-box-text'>
+                                                        <strong>Designation : </strong> Teacher
                                                     </p>
                                                 </div>
+
+                                                <div className="col-md-4">
+                                                    <p className='text-dark' >
+                                                        <strong>Category of Employees : </strong> Teaching Staff
+                                                    </p>
+                                                </div>
+
+                                                <div className="col-md-4">
+                                                    <p className='text-dark payroll-box-text' >
+                                                        <strong> Grade : </strong> A
+                                                    </p>
+                                                </div>
+
                                             </div>
-                                            
+
                                             <div className="row mb-2 mt-4">
-                                            <h6 className="card-title  custom-heading-font">
-                                                Enter Increment Details :
-                                            </h6>
+                                                <h6 className="card-title custom-heading-font">
+                                                    Enter Increment Details :
+                                                </h6>
                                             </div>
                                             <div className="row mb-3">
                                                 <div className="col-md-6">
@@ -113,92 +126,127 @@ const SingleEmployeeIncrement = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="table-responsive mb-4">
-                                                <table className="table mb-4" style={{ border: "1px solid black", color: "black", placeContent: "center" }}>
+                                            <div className="table-responsive px-lg-5 mb-4">
+                                                <table className="table text-dark border border-dark mb-4" >
                                                     <thead>
-                                                        <tr >
-                                                            <th className="text-center align-content-center p-2" style={{ border: "1px solid black", fontSize: "1.3rem" }}>
+                                                        <tr className="payroll-table-header" >
+                                                            <th className="text-center w-50 align-content-center p-2 border border-dark">
                                                                 Components
                                                             </th>
-                                                            <th className="text-center align-content-center p-2" style={{ border: "1px solid black", fontSize: "1.3rem" }}>
+                                                            <th className="text-center w-25 align-content-center p-2 border border-dark">
                                                                 Old Amount
                                                             </th>
-                                                            <th className="text-center align-content-center p-2" style={{ border: "1px solid black", fontSize: "1.3rem" }}>
+                                                            <th className="text-center w-25 align-content-center p-2 border border-dark">
                                                                 Revised Amount
                                                             </th>
-
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr >
-                                                            <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+                                                        <tr className='payroll-table-body'>
+                                                            <td className="align-content-center p-2 border border-dark" >
                                                                 Basic Salary
                                                             </td>
-                                                            <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                                10,000.00
+                                                            <td className="text-end align-content-center p-2 border border-dark" >
+                                                                10,000
                                                             </td>
-                                                            <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
+                                                            <td className="text-end align-content-center p-2 border border-dark" >
+                                                                <input
+                                                                    type="number"
+                                                                    id="basicSalary"
+                                                                    name="basicSalary"
+                                                                    className="form-control payroll-table-body text-end payroll-input-border"
+                                                                    required
+                                                                />
                                                             </td>
                                                         </tr>
 
-                                                        <tr >
-                                                            <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+                                                        <tr className='payroll-table-body'>
+                                                            <td className="align-content-center p-2 border border-dark" >
                                                                 HRA
                                                             </td>
-                                                            <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                                5,000.00
+                                                            <td className="text-end align-content-center p-2 border border-dark" >
+                                                                5,000
                                                             </td>
-                                                            <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
+                                                            <td className="text-end align-content-center p-2 border border-dark" >
+                                                                <input
+                                                                    type="number"
+                                                                    id="basicSalary"
+                                                                    name="basicSalary"
+                                                                    className="form-control payroll-table-body text-end payroll-input-border"
+                                                                    required
+                                                                />
                                                             </td>
                                                         </tr>
 
-                                                        <tr >
-                                                            <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+                                                        <tr className='payroll-table-body'>
+                                                            <td className="align-content-center p-2 border border-dark" >
                                                                 PF Contribution
                                                             </td>
-                                                            <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                                1,000.00
+                                                            <td className="text-end align-content-center p-2 border border-dark" >
+                                                                1,000
                                                             </td>
-                                                            <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
+                                                            <td className="text-end align-content-center p-2 border border-dark" >
+                                                                <input
+                                                                    type="number"
+                                                                    id="basicSalary"
+                                                                    name="basicSalary"
+                                                                    className="form-control payroll-table-body text-end payroll-input-border"
+                                                                    required
+                                                                />
                                                             </td>
                                                         </tr>
 
-                                                        <tr >
-                                                            <td className="align-content-center fw-bold p-2" style={{ border: "1px solid black" }}>
+                                                        <tr className='payroll-table-body it-declaration-section-bg'>
+                                                            <td className="align-content-center fw-bold p-2 border border-dark" >
                                                                 Total Annual Gross
                                                             </td>
-                                                            <td className="text-center align-content-center fw-bold p-2" style={{ border: "1px solid black" }}>
-                                                                16,000.00
+                                                            <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+                                                                16,000
                                                             </td>
-                                                            <td className="text-center align-content-center fw-bold p-2" style={{ border: "1px solid black" }}>
-
+                                                            <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+                                                                <input
+                                                                    type="number"
+                                                                    id="basicSalary"
+                                                                    name="basicSalary"
+                                                                    className="form-control payroll-table-body text-end payroll-input-border"
+                                                                    required
+                                                                />
                                                             </td>
                                                         </tr>
 
-                                                        <tr >
-                                                            <td className="align-content-center p-2" style={{ border: "1px solid black" }}>
+                                                        <tr className='payroll-table-body'>
+                                                            <td className="align-content-center p-2 border border-dark" >
                                                                 Gratuity
                                                             </td>
-                                                            <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-                                                                900.00
+                                                            <td className="text-end align-content-center p-2 border border-dark" >
+                                                                900
                                                             </td>
-                                                            <td className="text-center align-content-center p-2" style={{ border: "1px solid black" }}>
-
+                                                            <td className="text-end align-content-center p-2 border border-dark" >
+                                                                <input
+                                                                    type="number"
+                                                                    id="basicSalary"
+                                                                    name="basicSalary"
+                                                                    className="form-control payroll-table-body text-end payroll-input-border"
+                                                                    required
+                                                                />
                                                             </td>
                                                         </tr>
 
-                                                        <tr >
-                                                            <td className="align-content-center fw-bold p-2" style={{ border: "1px solid black" }}>
+                                                        <tr className='payroll-table-body it-declaration-section-bg'>
+                                                            <td className="align-content-center fw-bold p-2 border border-dark" >
                                                                 Annual Cost To Institution
                                                             </td>
-                                                            <td className="text-center align-content-center fw-bold p-2" style={{ border: "1px solid black" }}>
-                                                                16,900.00
+                                                            <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+                                                                16,900
                                                             </td>
-                                                            <td className="text-center align-content-center fw-bold p-2" style={{ border: "1px solid black" }}>
-
+                                                            <td className="text-end align-content-center fw-bold p-2 border border-dark" >
+                                                                <input
+                                                                    type="number"
+                                                                    id="basicSalary"
+                                                                    name="basicSalary"
+                                                                    className="form-control payroll-table-body text-end payroll-input-border"
+                                                                    required
+                                                                />
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -209,7 +257,7 @@ const SingleEmployeeIncrement = () => {
                                                     type="submit"
                                                     className="btn btn-primary custom-submit-button"
                                                 >
-                                                    Submit For Principal Approval
+                                                    Submit for Principal Approval
                                                 </button>
                                             </div>
                                         </>

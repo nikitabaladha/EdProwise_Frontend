@@ -117,7 +117,7 @@ const SMTPHostSettings = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="mailType" className="form-label">
-                        Type
+                        Type <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -135,7 +135,7 @@ const SMTPHostSettings = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="mailHost" className="form-label">
-                        Mail Host
+                        Mail Host <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -154,7 +154,7 @@ const SMTPHostSettings = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="mailPort" className="form-label">
-                        Mail Port
+                        Mail Port <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -170,7 +170,7 @@ const SMTPHostSettings = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="mailUsername" className="form-label">
-                        Mail Username
+                        Mail Username <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -189,7 +189,7 @@ const SMTPHostSettings = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="mailPassword" className="form-label">
-                        Mail Password
+                        Mail Password <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -205,7 +205,7 @@ const SMTPHostSettings = () => {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="mailEncryption" className="form-label">
-                        Mail Encryption
+                        Mail Encryption <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -225,7 +225,7 @@ const SMTPHostSettings = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="mailFromAddress" className="form-label">
-                        Mail From Address
+                        Mail From Address <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -242,7 +242,7 @@ const SMTPHostSettings = () => {
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="mailFromName" className="form-label">
-                        Mail From Name
+                        Mail From Name <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -284,14 +284,18 @@ const SMTPHostSettings = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <h5 className="text-center">Send Test Email</h5>
-            <input
-              type="email"
-              className="form-control"
-              placeholder="Enter Email"
-              value={testEmail}
-              onChange={(e) => setTestEmail(e.target.value)}
-              required
-            />
+            <div className="col-md-6">
+              <div className="mb-3">
+                <input
+                  type="email"
+                  className="form-control"
+                  placeholder="Enter Email"
+                  value={testEmail}
+                  onChange={(e) => setTestEmail(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
             <div className="d-flex justify-content-end mt-3">
               {/* {sending && <label><i className="fas fa-clock"></i> Sending...</label>} */}
               <button

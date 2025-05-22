@@ -239,6 +239,25 @@ import ViewEmployeeLoanStatement from "./components/DashboardMainForAdmin/Payrol
 import OvertimeAllowanceEmployeesTable from "./components/DashboardMainForAdmin/PayrollModule/Employer/OvertimeAllowance/OvertimeAllowanceEmployeesTable.js";
 import ViewOvertimeAllowanceEmployeesDetail from "./components/DashboardMainForAdmin/PayrollModule/Employer/OvertimeAllowance/ViewOvertimeAllowanceEmployeesDetail.js";
 
+import PerformanceTrackingTable from "./components/DashboardMainForAdmin/PayrollModule/Employer/PerformanceTracking/PerformanceTrackingTable.js";
+import BulkEmployeeIncrement from "./components/DashboardMainForAdmin/PayrollModule/Employer/SalaryIncrement/BulkEmployeeIncrement/BulkEmployeeIncrement.js";
+import SingleEmployeeIncrement from "./components/DashboardMainForAdmin/PayrollModule/Employer/SalaryIncrement/SingleEmployeeIncrement/SingleEmployeeIncrement.js";
+import AnnualLeaveUpdate from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/AnnualLeaveUpdate/AnnualLeaveUpdate.js";
+import OvertimeAllowanceRate from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/OvertimeAllowanceRate/OvertimeAllowanceRate.js";
+import LoanSummary from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LoanStatement/LoanSummary.js";
+import PreviousEmploymentIncome from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/PreviousEmploymentIncome/PreviousEmploymentIncome.js";
+import EmployeeResignationForm from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/EmployeeExit/EmployeeResignation/EmployeeResignationForm.js";
+import ResignationReport from "./components/DashboardMainForAdmin/PayrollModule/Employer/ResignationReport/ResignationReport.js";
+import EmployeeExitInterview from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/EmployeeExit/EmployeeExitInterview/EmployeeExitInterview.js";
+import EmployerResignationApproval from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployerResignationApproval/EmployerResignationApproval.js";
+import ViewEmployeeResignationDetail from "./components/DashboardMainForAdmin/PayrollModule/Employer/ResignationReport/ViewEmployeeResignationDetails.js";
+import ViewEmployeeExitInterview from "./components/DashboardMainForAdmin/PayrollModule/Employer/ResignationReport/ViewEmployeeExitInterview.js";
+import RequestForLoan from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/RequestForLoan/RequestForLoan.js";
+import PayLoanEmployeeTable from "./components/DashboardMainForAdmin/PayrollModule/Employer/LoanToEmployees/PayLoanEmployeeTable.js";
+import ViewEmployeeLoanSummary from "./components/DashboardMainForAdmin/PayrollModule/Employer/LoanToEmployees/ViewEmployeeLoanSummary.js";
+import FreezeITDeclaration from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/FreezeITDeclaration/FreezeITDeclaration.js";
+import DefineJobDesignation from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/JobDesignation/DefineJobDesignation.js";
+import DefineGrade from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/Grade/DefineGrade.js";
 
 // ======================Seller Routes==========================Seller Routes=====================Seller Routes=======================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
@@ -269,17 +288,17 @@ import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
 
 import Page404ForWebsite from "./components/Pages404/Page404ForWebsite.js";
 import Page404ForDashboard from "./components/Pages404/Page404ForDashboard.js";
-import PerformanceTrackingTable from "./components/DashboardMainForAdmin/PayrollModule/Employer/PerformanceTracking/PerformanceTrackingTable.js";
-import BulkEmployeeIncrement from "./components/DashboardMainForAdmin/PayrollModule/Employer/SalaryIncrement/BulkEmployeeIncrement/BulkEmployeeIncrement.js";
-import SingleEmployeeIncrement from "./components/DashboardMainForAdmin/PayrollModule/Employer/SalaryIncrement/SingleEmployeeIncrement/SingleEmployeeIncrement.js";
-import AnnualLeaveUpdate from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/AnnualLeaveUpdate/AnnualLeaveUpdate.js";
-import OvertimeAllowanceRate from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/OvertimeAllowanceRate/OvertimeAllowanceRate.js";
-import LoanSummary from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LoanStatement/LoanSummary.js";
-import PreviousEmploymentIncome from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/PreviousEmploymentIncome/PreviousEmploymentIncome.js";
-import EmployeeResignationForm from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/EmployeeExit/EmployeeResignation/EmployeeResignationForm.js";
-import ResignationReport from "./components/DashboardMainForAdmin/PayrollModule/Employer/ResignationReport/ResignationReport.js";
-import EmployeeExitInterview from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/EmployeeExit/EmployeeExitInterview/EmployeeExitInterview.js";
-import EmployerResignationApproval from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployerResignationApproval/EmployerResignationApproval.js";
+import ViewEmployeePerformanceAppraisal from "./components/DashboardMainForAdmin/PayrollModule/Employer/PerformanceTracking/ViewEmployeePerformanceAppraisal.js";
+import DefineCategory from "./components/DashboardMainForAdmin/PayrollModule/AdminSettings/DefineCategory/DefineCategory.js";
+import LetterAndDocuments from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LetterAndDocuments/LetterAndDocuments.js";
+import PromotionNomination from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/PromotionNomination/PromotionNomination.js";
+import AddAwardsAndAchievement from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/AwardsAndAchievement/AddAwardsAndAchievement.js";
+import AwardsAndAchievement from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/AwardsAndAchievement/AwardsAndAchievement.js";
+import ViewAwardAndAchievement from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/AwardsAndAchievement/ViewAwardAndAchievement.js";
+import AddLetterAndDocuments from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LetterAndDocuments/AddLetterAndDocuments.js";
+import ViewLetterAndDocuments from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LetterAndDocuments/ViewLetterAndDocuments.js";
+import UpdateLetterAndDocuments from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LetterAndDocuments/UpdateLetterAndDocuments.js";
+import UpdateAwardsAndAchievement from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/AwardsAndAchievement/UpdateAwardsAndAchievement.js";
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -596,13 +615,28 @@ const AppRoutes = () => {
 
         {/* ===========================Admin Settings=================== */}
         <Route
-          path="payroll-module/admin-setting/define-ctc-components-list"
+          path="payroll-module/admin-setting/freeze-it-declaration"
+          element={<FreezeITDeclaration />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/ctc-components"
           element={<DefineCtcComponentsList />}
         />
 
         <Route
-          path="payroll-module/admin-setting/define-ctc-components"
+          path="payroll-module/admin-setting/ctc-components/define-ctc-components"
           element={<DefineCtcCOmponents />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-grade"
+          element={<DefineGrade />}
+        />
+
+         <Route
+          path="payroll-module/admin-setting/define-category"
+          element={<DefineCategory />}
         />
 
         <Route
@@ -613,6 +647,11 @@ const AppRoutes = () => {
         <Route
           path="payroll-module/admin-setting/overtime-allowance-rate"
           element={<OvertimeAllowanceRate />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-job-designation"
+          element={<DefineJobDesignation />}
         />
 
 
@@ -654,6 +693,11 @@ const AppRoutes = () => {
         />
 
         <Route
+          path="payroll-module/employee-services/request-for-loan"
+          element={<RequestForLoan />}
+        />
+
+        <Route
           path="payroll-module/employee-services/loan-summary"
           element={<LoanSummary />}
         />
@@ -683,6 +727,51 @@ const AppRoutes = () => {
           element={<EmployeeExitInterview />}
         />
 
+        <Route
+          path="payroll-module/employee-services/letter-documents"
+          element={<LetterAndDocuments />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/letter-documents/add-letter-documents"
+          element={<AddLetterAndDocuments />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/letter-documents/view-letter-documents"
+          element={<ViewLetterAndDocuments />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/letter-documents/update-letter-documents"
+          element={<UpdateLetterAndDocuments />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/award-achievement"
+          element={<AwardsAndAchievement />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/award-achievement/add-award-achievement"
+          element={<AddAwardsAndAchievement />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/award-achievement/view-award-achievement"
+          element={<ViewAwardAndAchievement />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/award-achievement/update-award-achievement"
+          element={<UpdateAwardsAndAchievement />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/promotion-nomination"
+          element={<PromotionNomination />}
+        />
+
         {/* ************Employer************  */}
         <Route
           path="payroll-module/employer/registration"
@@ -710,7 +799,7 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="payroll-module/employer/CTC-Update"
+          path="payroll-module/employer/ctc-Update"
           element={<CTCUpdate />}
         />
 
@@ -740,22 +829,27 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="payroll-module/employer/check-supporting-submitted-for-Tax"
+          path="payroll-module/employer/supporting-tax-submitted"
           element={<CheckSupportingSubmittedForTaxList />}
         />
 
         <Route
-          path="payroll-module/employer/view-check-supporting-submitted-for-Tax"
+          path="payroll-module/employer/supporting-tax-submitted/view-supporting-submitted-for-Tax"
           element={<ViewCheckSupportingSubmittedForTaxList />}
         />
 
         <Route
-          path="payroll-module/employer/view-check-rent-details"
+          path="payroll-module/employer/supporting-tax-submitted/view-supporting-submitted-for-Tax/view-rent-details"
           element={<VerifyRentDetails />}
         />
 
         <Route
           path="payroll-module/employer/loan-to-employees/pay-loan"
+          element={<PayLoanEmployeeTable />}
+        />
+
+        <Route
+          path="payroll-module/employer/loan-to-employees/pay-loan/pay-loan-detail"
           element={<PayLoan />}
         />
 
@@ -765,7 +859,12 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="payroll-module/employer/loan-to-employees/loan-statement/view-loan-Statement"
+          path="payroll-module/employer/loan-to-employees/loan-statement/view-loan-summary"
+          element={<ViewEmployeeLoanSummary />}
+        />
+
+        <Route
+          path="payroll-module/employer/loan-to-employees/loan-statement/view-loan-summary/view-loan-Statement"
           element={<ViewEmployeeLoanStatement />}
         />
 
@@ -785,13 +884,28 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="payroll-module/employer/resignation-list"
+          path="payroll-module/employer/performance-tracking/employee-performance-appraisal"
+          element={<ViewEmployeePerformanceAppraisal />}
+        />
+
+        <Route
+          path="payroll-module/employer/resignation"
           element={<ResignationReport />}
         />
 
         <Route
-          path="payroll-module/employer/resignation-Approval"
+          path="payroll-module/employer/resignation/resignation-approval-form"
           element={<EmployerResignationApproval />}
+        />
+
+        <Route
+          path="payroll-module/employer/resignation/view-employee-resignation-detail"
+          element={<ViewEmployeeResignationDetail />}
+        />
+
+        <Route
+          path="payroll-module/employer/resignation/view-employee-exit-interview"
+          element={<ViewEmployeeExitInterview />}
         />
 
 
