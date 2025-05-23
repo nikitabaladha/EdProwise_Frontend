@@ -15,7 +15,9 @@ const StudentAdmissionListTable = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [classList, setClassList] = useState([]);
   const [academicYears, setAcademicYears] = useState([]);
-  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [selectedYear, setSelectedYear] = useState(
+    localStorage.getItem("selectedAcademicYear") || ""
+  );
   const [loadingYears, setLoadingYears] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
 
@@ -23,7 +25,7 @@ const StudentAdmissionListTable = () => {
     const fetchAcademicYears = async () => {
       try {
         setLoadingYears(true);
-        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const userDetails = JSON.parse(localStorage.getItem("userDetails"));
         const schoolId = userDetails?.schoolId;
         const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
         setAcademicYears(response.data.data || []);
@@ -70,14 +72,22 @@ const StudentAdmissionListTable = () => {
 
     const fetchStudents = async () => {
       try {
-        const response = await getAPI(`/get-admission-form-by-year-schoolId/${schoolId}/${selectedYear}`);
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const response = await getAPI(
+          `/get-admission-form-by-year-schoolId/${schoolId}/${selectedYear}`
+        );
+        const classRes = await getAPI(
+          `/get-class-and-section/${schoolId}`,
+          {},
+          true
+        );
         if (!classRes.hasError) {
           setClassList(classRes.data.data);
         }
 
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
+          const studentArray = Array.isArray(response.data.data)
+            ? response.data.data
+            : [];
           console.log("Student Data:", studentArray);
           setStudentData(studentArray);
         } else {
@@ -97,14 +107,16 @@ const StudentAdmissionListTable = () => {
     return found ? found.className : "N/A";
   };
 
- const getSectionNameById = (sectionId) => {
-  if (!sectionId) {
-    return "N/A";
-  }
-  const found = classList.find((cls) => cls.sections?.some((sec) => sec._id === sectionId));
-  const section = found?.sections?.find((sec) => sec._id === sectionId);
-  return section ? section.name : "N/A";
-};
+  const getSectionNameById = (sectionId) => {
+    if (!sectionId) {
+      return "N/A";
+    }
+    const found = classList.find((cls) =>
+      cls.sections?.some((sec) => sec._id === sectionId)
+    );
+    const section = found?.sections?.find((sec) => sec._id === sectionId);
+    return section ? section.name : "N/A";
+  };
 
   const navigateToAdmission = (event) => {
     event.preventDefault();
@@ -125,30 +137,36 @@ const StudentAdmissionListTable = () => {
     });
   };
 
-
-
-
-const navigateToFeesReceipt = (event, student) => {
-  event.preventDefault();
-  const sectionName = student.section ? getSectionNameById(student.section) : "N/A";
-  navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
-    state: {
-      student,
-      feeTypeName: "Admission Fee",
-      sectionName,
-      className: getClassNameById(student.masterDefineClass),
-    },
-  });
-};
+  const navigateToFeesReceipt = (event, student) => {
+    event.preventDefault();
+    const sectionName = student.section
+      ? getSectionNameById(student.section)
+      : "N/A";
+    navigate(
+      `/school-dashboard/fees-module/form/admission-form/admission-details`,
+      {
+        state: {
+          student,
+          feeTypeName: "Admission Fee",
+          sectionName,
+          className: getClassNameById(student.masterDefineClass),
+        },
+      }
+    );
+  };
 
   const handleImportSuccess = () => {
     setShowImportModal(false);
 
     const fetchStudents = async () => {
       try {
-        const response = await getAPI(`/get-admission-form-by-year-schoolId/${schoolId}/${selectedYear}`);
+        const response = await getAPI(
+          `/get-admission-form-by-year-schoolId/${schoolId}/${selectedYear}`
+        );
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
+          const studentArray = Array.isArray(response.data.data)
+            ? response.data.data
+            : [];
           setStudentData(studentArray);
         }
       } catch (err) {
@@ -163,7 +181,10 @@ const navigateToFeesReceipt = (event, student) => {
 
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
+  const currentStudent = studentData.slice(
+    indexOfFirstStudent,
+    indexOfLastStudent
+  );
 
   const totalPages = Math.ceil(studentData.length / studentListPerPage);
 
@@ -182,7 +203,10 @@ const navigateToFeesReceipt = (event, student) => {
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+  const pagesToShow = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index
+  );
 
   return (
     <>
@@ -200,27 +224,30 @@ const navigateToFeesReceipt = (event, student) => {
           >
             Import
           </button>
-          <Link className="btn btn-sm btn-secondary">
+          {/* <Link className="btn btn-sm btn-secondary">
             Export
-          </Link>
+          </Link> */}
         </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">
-                  Admission List
-                </h4>
+                <h4 className="card-title flex-grow-1">Admission List</h4>
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}
                   onChange={(e) => {
                     setSelectedYear(e.target.value);
-                    localStorage.setItem("selectedAcademicYear", e.target.value);
+                    localStorage.setItem(
+                      "selectedAcademicYear",
+                      e.target.value
+                    );
                   }}
                   disabled={loadingYears}
                 >
-                  <option value="" disabled>Select Year</option>
+                  <option value="" disabled>
+                    Select Year
+                  </option>
                   {academicYears.map((year) => (
                     <option key={year._id} value={year.academicYear}>
                       {year.academicYear}
@@ -268,9 +295,7 @@ const navigateToFeesReceipt = (event, student) => {
                               <label
                                 className="form-check-label"
                                 htmlFor="customCheck2"
-                              >
-
-                              </label>
+                              ></label>
                             </div>
                           </td>
                           <td>{student.AdmissionNumber}</td>
@@ -283,7 +308,9 @@ const navigateToFeesReceipt = (event, student) => {
                             <div className="d-flex gap-2">
                               <Link
                                 className="btn btn-light btn-sm"
-                                onClick={(event) => navigateToViewAdmissionInfo(event, student)}
+                                onClick={(event) =>
+                                  navigateToViewAdmissionInfo(event, student)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:eye-broken"
@@ -292,7 +319,9 @@ const navigateToFeesReceipt = (event, student) => {
                               </Link>
                               <Link
                                 className="btn btn-soft-primary btn-sm"
-                                onClick={(event) => navigateToUpdateAdmissionForm(event, student)}
+                                onClick={(event) =>
+                                  navigateToUpdateAdmissionForm(event, student)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:pen-2-broken"
@@ -311,8 +340,11 @@ const navigateToFeesReceipt = (event, student) => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-success btn-sm"
-                                onClick={(event) => navigateToFeesReceipt(event, student)}
+                              <Link
+                                className="btn btn-soft-success btn-sm"
+                                onClick={(event) =>
+                                  navigateToFeesReceipt(event, student)
+                                }
                               >
                                 <iconify-icon
                                   icon="solar:download-minimalistic-broken"
@@ -342,10 +374,14 @@ const navigateToFeesReceipt = (event, student) => {
                     {pagesToShow.map((page) => (
                       <li
                         key={page}
-                        className={`page-item ${currentPage === page ? "active" : ""}`}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
                       >
                         <button
-                          className={`page-link pagination-button ${currentPage === page ? "active" : ""}`}
+                          className={`page-link pagination-button ${
+                            currentPage === page ? "active" : ""
+                          }`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}

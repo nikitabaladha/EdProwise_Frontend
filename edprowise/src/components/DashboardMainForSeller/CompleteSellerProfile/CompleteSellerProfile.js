@@ -260,9 +260,9 @@ const CompleteSellerProfile = () => {
     e.preventDefault();
     const data = new FormData();
 
-    // if (!isVerificationSuccessful) {
-    //   return toast.error("Email verification not done");
-    // }
+    if (!isVerificationSuccessful) {
+      return toast.error("Email verification not done");
+    }
 
     Object.keys(formData).forEach((key) => {
       if (!["isCustomCountry", "isCustomState", "isCustomCity"].includes(key)) {
@@ -889,7 +889,7 @@ const CompleteSellerProfile = () => {
                             placeholder="Example : example@gmail.com"
                           />
 
-                          {/* <div
+                          <div
                             className="form-label"
                             style={{
                               position: "absolute",
@@ -935,7 +935,7 @@ const CompleteSellerProfile = () => {
                                 "Verify"
                               )}
                             </div>
-                          </div> */}
+                          </div>
                         </span>
                       </div>
                     </div>
