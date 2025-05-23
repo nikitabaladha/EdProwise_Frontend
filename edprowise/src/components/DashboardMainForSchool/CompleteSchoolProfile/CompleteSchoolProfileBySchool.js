@@ -276,9 +276,9 @@ const CompleteSchoolProfile = () => {
       }
     }
 
-    if (!isVerificationSuccessful) {
-      return toast.error("Email verification not done");
-    }
+    // if (!isVerificationSuccessful) {
+    //   return toast.error("Email verification not done");
+    // }
 
     setSending(true);
 
@@ -338,7 +338,9 @@ const CompleteSchoolProfile = () => {
         });
 
         toast.success("School Profile successfully created!");
-        navigate("/school-dashboard");
+        // navigate("/school-dashboard");
+        navigate("/school/go-to-dashboard");
+        //
       } else {
         toast.error("Failed to update School.");
       }
@@ -511,7 +513,7 @@ const CompleteSchoolProfile = () => {
                             placeholder="Example : example@gmail.com"
                           />
 
-                          <div
+                          {/* <div
                             className="form-label"
                             style={{
                               position: "absolute",
@@ -557,7 +559,7 @@ const CompleteSchoolProfile = () => {
                                 "Verify"
                               )}
                             </div>
-                          </div>
+                          </div> */}
                         </span>
                       </div>
                     </div>

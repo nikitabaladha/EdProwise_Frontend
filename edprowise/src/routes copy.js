@@ -672,7 +672,6 @@ const AppRoutes = () => {
           <Route path="add-goods-services" element={<AddSubCategory />} />
           <Route path="update-goods-services" element={<UpdateSubCategory />} />
         </Route>
-
         <Route
           path="procurement-services/bank-details"
           element={<BankDetailsTable />}

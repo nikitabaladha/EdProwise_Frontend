@@ -260,7 +260,7 @@ const CompleteSchoolProfile = () => {
         panFileRef.current.value = "";
 
         toast.success("School Profile successfully updated!");
-        navigate("/school-dashboard");
+        navigate("/school/go-to-dashboard");
       } else {
         toast.error("Failed to update School.");
       }
