@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import ConfirmationDialog from "../../../../../ConfirmationDialog";
 import getAPI from '../../../../../../api/getAPI';
 import { toast } from "react-toastify";
+import ExcelSheetModal from './ExcelSheetModal'; 
 
 const BoardExamFeesList = () => {
   const navigate = useNavigate();
-
   const [boardFees, setBoardFees] = useState([]);
   const [classMap, setClassMap] = useState({});
   const [sectionMap, setSectionMap] = useState({});
@@ -19,6 +19,7 @@ const BoardExamFeesList = () => {
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false); 
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -29,6 +30,7 @@ const BoardExamFeesList = () => {
         const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
         setAcademicYears(response.data.data || []);
       } catch (err) {
+        toast.error("Error fetching academic years.");
         console.error(err);
       } finally {
         setLoadingYears(false);
@@ -79,6 +81,16 @@ const BoardExamFeesList = () => {
     fetchData();
   }, [schoolId, selectedYear]);
 
+  
+  const handleImportSuccess = async () => {
+    try {
+      const feesRes = await getAPI(`/get-board-exam-fees/${schoolId}/${selectedYear}`, {}, true);
+      setBoardFees(feesRes?.data?.data || []);
+    } catch (error) {
+      toast.error("Error refreshing board exam fees.");
+    }
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = boardFees.slice(indexOfFirstItem, indexOfLastItem);
@@ -114,9 +126,12 @@ const BoardExamFeesList = () => {
           >
             Create Board Exam Fees
           </Link>
-          <Link className="btn btn-sm btn-secondary">
-            Export
-          </Link>
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={() => setShowImportModal(true)}
+          >
+            Import
+          </button>
         </div>
         <div className="row">
           <div className="col-xl-12">
@@ -229,6 +244,14 @@ const BoardExamFeesList = () => {
           </div>
         </div>
       </div>
+
+      <ExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        academicYear={selectedYear}
+        onImportSuccess={handleImportSuccess}
+      />
 
       {isDeleteDialogOpen && (
         <ConfirmationDialog

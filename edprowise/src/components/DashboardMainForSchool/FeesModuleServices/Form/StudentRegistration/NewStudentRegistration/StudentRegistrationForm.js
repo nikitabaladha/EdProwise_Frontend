@@ -76,7 +76,7 @@ const StudentRegistrationForm = () => {
                         id="studentPhoto"
                         name="studentPhoto"
                         className="d-none"
-                        accept="image/*"
+                        accept=".jpg,.jpeg" 
                         onChange={handlePhotoUpload}
                         required
                       />
@@ -223,7 +223,7 @@ const StudentRegistrationForm = () => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="masterDefineClass" className="form-label">
-                        Master Define Class <span className="text-danger">*</span>
+                       Class <span className="text-danger">*</span>
                       </label>
                       <select
                         id="masterDefineClass"
@@ -247,7 +247,7 @@ const StudentRegistrationForm = () => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="masterDefineShift" className="form-label">
-                        Master Define Shift <span className="text-danger">*</span>
+                        Shift <span className="text-danger">*</span>
                       </label>
                       <select
                         id="masterDefineShift"
@@ -507,7 +507,7 @@ const StudentRegistrationForm = () => {
                               id="previousSchoolResult"
                               name="previousSchoolResult"
                               className="form-control"
-                              accept="image/*,application/pdf"
+                               accept=".jpg,.jpeg,.pdf"
                               onChange={handleChange}
                               required
                             />
@@ -527,7 +527,7 @@ const StudentRegistrationForm = () => {
                               id="tcCertificate"
                               name="tcCertificate"
                               className="form-control"
-                              accept="image/*,application/pdf"
+                              accept=".jpg,.jpeg,.pdf"
                               onChange={handleChange}
                               required
                             />
@@ -579,7 +579,7 @@ const StudentRegistrationForm = () => {
                           id="castCertificate"
                           name="castCertificate"
                           className="form-control"
-                          accept="image/*,application/pdf"
+                          accept=".jpg,.jpeg,.pdf"
                           onChange={handleChange}
                           required
                         />
@@ -600,7 +600,7 @@ const StudentRegistrationForm = () => {
                         id="aadharPassportFile"
                         name="aadharPassportFile"
                         className="form-control"
-                        accept="image/*,application/pdf"
+                         accept=".jpg,.jpeg,.pdf"
                         onChange={handleChange}
                         required
                       />

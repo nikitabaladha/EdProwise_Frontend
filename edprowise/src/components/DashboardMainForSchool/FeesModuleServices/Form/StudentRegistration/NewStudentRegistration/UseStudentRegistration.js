@@ -311,17 +311,20 @@ const useStudentRegistration = () => {
         return;
       }
       toast.success("Student registered successfully");
-      navigate(`/school-dashboard/fees-module/form/registration-form/sucess`, {
-        state: {
-          student: response.data?.student || response.student,
-          feeTypeName:
-            availableFeeTypes.find((fee) => fee.id === selectedFeeType)?.name ||
-            "",
-          className:
-            classes.find((c) => c._id === formData.masterDefineClass)
-              ?.className || "",
-        },
-      });
+      navigate(
+        `/school-dashboard/fees-module/form/registration-form/receipts`,
+        {
+          state: {
+            student: response.data?.student || response.student,
+            feeTypeName:
+              availableFeeTypes.find((fee) => fee.id === selectedFeeType)
+                ?.name || "",
+            className:
+              classes.find((c) => c._id === formData.masterDefineClass)
+                ?.className || "",
+          },
+        }
+      );
     } catch (error) {
       console.error("Submission error:", error);
       toast.error(

@@ -120,7 +120,7 @@ const SchoolPrefixes = () => {
                     {currentPrefixes.length > 0 ? currentPrefixes.map((item, index) => (
                       <tr key={index}>
                         <td>{indexOfFirst + index + 1}</td>
-                        <td>{item.type}</td>
+                       <td>{item.type.charAt(0).toUpperCase() + item.type.slice(1)}</td>
                         <td>{item.type === 'numeric' ? item.value : '-'}</td>
                         <td>{item.type === 'alphanumeric' ? item.prefix : '-'}</td>
                         <td>{item.type === 'alphanumeric' ? item.number : '-'}</td>

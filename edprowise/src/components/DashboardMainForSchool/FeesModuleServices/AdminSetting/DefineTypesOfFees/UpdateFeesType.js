@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const UpdateFeesType = () => {
   const navigate = useNavigate();
   const location = useLocation();
+    const [loading, setLoading] = useState(false);
 
   const [feeName, setFeeName] = useState("");
   const [groupOfFees, setGroupOfFees] = useState("School Fees");
@@ -27,6 +28,7 @@ const UpdateFeesType = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!feeName.trim()) {
       toast.error("Fees Type name is required.");
@@ -63,6 +65,8 @@ const UpdateFeesType = () => {
         error.response?.data?.message ||
         "An error occurred while updating the Fees Type.";
       toast.error(errMsg);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -102,8 +106,11 @@ const UpdateFeesType = () => {
                 </div>
 
                 <div className="text-end">
-                  <button type="submit" className="btn btn-primary">
-                    Update Fees Type
+                  <button type="submit" 
+                  className="btn btn-primary"
+                  disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Update"}
                   </button>
                 </div>
               </form>

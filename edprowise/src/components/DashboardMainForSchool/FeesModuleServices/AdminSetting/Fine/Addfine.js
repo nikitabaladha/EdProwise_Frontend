@@ -6,39 +6,40 @@ import { useNavigate } from 'react-router-dom';
 const AddFine = () => {
   const navigate = useNavigate();
 
-  const [feeType, setFeeType] = useState('fixed'); 
+  const [feeType, setFeeType] = useState('fixed');
   const [frequency, setFrequency] = useState('');
   const [amountOrPercentage, setAmountOrPercentage] = useState('');
   const [maxCapFee, setMaxCapFee] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    setLoading(true);
     if (!amountOrPercentage) {
       toast.error("Please enter a value for amount or percentage.");
       return;
     }
-  
+
     if (!frequency) {
       toast.error("Please select a frequency.");
       return;
     }
-  
-  
+
+
     const maxCapFeeValue = maxCapFee ? parseFloat(maxCapFee) : null;
-    const academicYear = localStorage.getItem('selectedAcademicYear'); 
-  
+    const academicYear = localStorage.getItem('selectedAcademicYear');
+
     const payload = {
       feeType,
       frequency,
       value: parseFloat(amountOrPercentage),
-      maxCapFee: maxCapFeeValue, 
+      maxCapFee: maxCapFeeValue,
       academicYear,
     };
-  
+
     try {
       const response = await postAPI("/create-fine", payload, {}, true);
-  
+
       if (!response.hasError) {
         toast.success("Fine saved successfully!");
         navigate(-1);
@@ -48,9 +49,11 @@ const AddFine = () => {
     } catch (err) {
       const errorMessage = err?.response?.data?.message || "An error occurred while saving fine.";
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
-  
+
   return (
     <div className="container mt-4">
       <div className="card">
@@ -60,7 +63,7 @@ const AddFine = () => {
         <div className="card-body">
           <form onSubmit={handleSubmit} className="mt-3 row">
 
-      
+
             <div className="mb-3 col-md-6">
               <label className="form-label">Fine Type</label><br />
               <div className="form-check form-check-inline">
@@ -147,8 +150,11 @@ const AddFine = () => {
 
 
             <div className="text-end">
-              <button type="submit" className="btn btn-primary">
-                Submit
+              <button type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {loading ? "Submitting..." : "Submit"}
               </button>
             </div>
 

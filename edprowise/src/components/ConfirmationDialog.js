@@ -94,6 +94,12 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete fees structure.",
     idKey: "_id",
   },
+  onetimesfees: {
+    getEndpoint: (id) => `/delete-one-time-fees/${id}`,
+    successMessage: "One time fees successfully deleted!",
+    errorMessage: "Failed to delete one time fees.",
+    idKey: "_id",
+  },
   prefix: {
     getEndpoint: (id) => `/delete-prefix/${id}`,
     successMessage: "Prefix successfully deleted!",
@@ -134,6 +140,18 @@ const DELETE_CONFIG = {
     getEndpoint: (id) => `/delete-concession-form/${id}`,
     successMessage: "Concession form successfully deleted!",
     errorMessage: "Failed to delete Concession form .",
+    idKey: "_id",
+  },
+  boardregistrationfees: {
+    getEndpoint: (id) => `/delete-board-registration-fees/${id}`,
+    successMessage: "Board registartion fees successfully deleted!",
+    errorMessage: "Failed to delete board registartion fees .",
+    idKey: "_id",
+  },
+  boardexamfees: {
+    getEndpoint: (id) => `/delete-board-exam-fees/${id}`,
+    successMessage: "Board exam fees successfully deleted!",
+    errorMessage: "Failed to delete board exam fees.",
     idKey: "_id",
   },
 };

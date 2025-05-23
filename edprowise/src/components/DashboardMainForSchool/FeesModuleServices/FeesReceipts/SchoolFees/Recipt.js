@@ -230,7 +230,7 @@ const FeesReceipt = () => {
                     <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
                       Date of Payment:
                     </span>
-                    <span>{receipt.date}</span>
+                    <span>{receipt.paymentDate}</span>
                   </div>
                 </div>
                 <div className="col-md-6">

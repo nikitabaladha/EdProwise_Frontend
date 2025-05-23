@@ -143,10 +143,12 @@ const FeesReceipt = () => {
               <span className="fw-bold me-2" style={{ minWidth: '150px' }}>Date of Payment:</span>
               <span>{new Date(student.paymentDate).toLocaleDateString('en-GB')}</span>
             </div>
+            {student.paymentMode!== 'Cash' && (
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: '150px' }}>Transaction/Cheque No:</span>
               <span>{student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ''}</span>
             </div>
+            )}
           </div>
           <div className="col-md-6">
             <div className="p-3 text-center" style={{ height: '100%' }}>

@@ -7,7 +7,7 @@ const UpdateShift = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state?.shift;
-
+   const [loading, setLoading] = useState(false);
   const [shift, setShift] = useState({
     shiftName: '',
     startTime: '',
@@ -34,7 +34,7 @@ const UpdateShift = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     if (!shift.shiftName || !shift.startTime || !shift.endTime) {
       toast.error("Please fill in all fields before submitting.");
       return;
@@ -58,6 +58,8 @@ const UpdateShift = () => {
     } catch (err) {
       const errorText = err.response?.data?.message || err.message || 'Something went wrong!';
       toast.error(errorText);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -112,8 +114,9 @@ const UpdateShift = () => {
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={loading}
                   >
-                    Update Shift
+                    {loading ? "Updating..." : "Update"}
                   </button>
                 </div>
               </form>

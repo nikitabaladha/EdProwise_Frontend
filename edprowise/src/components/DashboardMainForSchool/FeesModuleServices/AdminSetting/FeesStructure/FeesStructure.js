@@ -1,13 +1,16 @@
+
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import { useNavigate } from "react-router-dom";
+import { FaTrash } from "react-icons/fa";
 
 const ADDFeesStructure = () => {
   const [schoolId, setSchoolId] = useState("");
   const [classData, setClassData] = useState([]);
   const [feesTypesList, setFeesTypesList] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [forms, setForms] = useState([
     {
@@ -40,7 +43,7 @@ const ADDFeesStructure = () => {
       }
 
       try {
-        const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`);
+        const feesTypeRes = await getAPI(`/getall-fees-type/${schoolId}`);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
           const SchoolFees = feesTypeRes.data.data.filter(
             (fee) => fee.groupOfFees === "School Fees"
@@ -66,46 +69,41 @@ const ADDFeesStructure = () => {
   const handleInstallmentChange = (formIndex, installmentIndex, field, value) => {
     const newForms = [...forms];
     newForms[formIndex].installments[installmentIndex][field] = value;
-    
-    // If due date of first installment is changed, update subsequent installments
-    if (field === 'dueDate' && installmentIndex === 0) {
+
+    if (field === "dueDate" && installmentIndex === 0) {
       const firstDueDate = new Date(value);
       if (!isNaN(firstDueDate.getTime())) {
         for (let i = 1; i < newForms[formIndex].installments.length; i++) {
           const newDate = new Date(firstDueDate);
           newDate.setMonth(newDate.getMonth() + i);
-          newForms[formIndex].installments[i].dueDate = newDate.toISOString().split('T')[0];
+          newForms[formIndex].installments[i].dueDate = newDate.toISOString().split("T")[0];
         }
       }
     }
-    
+
     setForms(newForms);
   };
 
   const handleAddInstallmentField = (formIndex, instIndex) => {
     const newForms = [...forms];
     const newFeeDetail = { feesType: "", amount: "" };
-    
-    // Add to the specified installment
+
     newForms[formIndex].installments[instIndex].feesDetails.push(newFeeDetail);
-    
-    // If adding to first installment, add to all other installments
+
     if (instIndex === 0) {
       for (let i = 1; i < newForms[formIndex].installments.length; i++) {
-        newForms[formIndex].installments[i].feesDetails.push({...newFeeDetail});
+        newForms[formIndex].installments[i].feesDetails.push({ ...newFeeDetail });
       }
     }
-    
+
     setForms(newForms);
   };
 
   const handleRemoveInstallmentField = (formIndex, instIndex, feeIndex) => {
     const newForms = [...forms];
-    
-    // Remove from the specified installment
+
     newForms[formIndex].installments[instIndex].feesDetails.splice(feeIndex, 1);
-    
-    // If removing from first installment, remove from all other installments at same index
+
     if (instIndex === 0) {
       for (let i = 1; i < newForms[formIndex].installments.length; i++) {
         if (newForms[formIndex].installments[i].feesDetails.length > feeIndex) {
@@ -113,24 +111,22 @@ const ADDFeesStructure = () => {
         }
       }
     }
-    
+
     setForms(newForms);
   };
 
   const handleInstallmentFeeChange = (formIndex, instIndex, feeIndex, field, value) => {
     const newForms = [...forms];
     newForms[formIndex].installments[instIndex].feesDetails[feeIndex][field] = value;
-    
-    // If changing first installment, copy to subsequent installments
+
     if (instIndex === 0) {
       for (let i = 1; i < newForms[formIndex].installments.length; i++) {
-        // Only update if the fee detail exists at this index
         if (newForms[formIndex].installments[i].feesDetails[feeIndex]) {
           newForms[formIndex].installments[i].feesDetails[feeIndex][field] = value;
         }
       }
     }
-    
+
     setForms(newForms);
   };
 
@@ -144,21 +140,22 @@ const ADDFeesStructure = () => {
     const num = parseInt(value);
     if (isNaN(num) || num <= 0) return;
 
-    // Get the first installment's feesDetails if they exist
     const firstInstallmentFees = newForms[index].installments[0]?.feesDetails || [
-      { feesType: "", amount: "" }
+      { feesType: "", amount: "" },
     ];
 
-    const firstDueDate = newForms[index].installments[0]?.dueDate 
+    const firstDueDate = newForms[index].installments[0]?.dueDate
       ? new Date(newForms[index].installments[0].dueDate)
       : null;
 
     const newInstallments = Array.from({ length: num }, (_, i) => ({
       name: `Installment ${i + 1}`,
-      dueDate: firstDueDate 
-        ? new Date(new Date(firstDueDate).setMonth(firstDueDate.getMonth() + i)).toISOString().split('T')[0]
+      dueDate: firstDueDate
+        ? new Date(new Date(firstDueDate).setMonth(firstDueDate.getMonth() + i))
+            .toISOString()
+            .split("T")[0]
         : "",
-      feesDetails: firstInstallmentFees.map(fee => ({ ...fee }))
+      feesDetails: firstInstallmentFees.map((fee) => ({ ...fee })),
     }));
 
     updateForm(index, { installments: newInstallments });
@@ -166,13 +163,17 @@ const ADDFeesStructure = () => {
 
   const handleSubmitAll = async (e) => {
     e.preventDefault();
-    const academicYear = localStorage.getItem('selectedAcademicYear'); 
+    setLoading(true);
+    const academicYear = localStorage.getItem("selectedAcademicYear");
 
-    const combos = forms.map((f) => `${f.selectedClassId}-${f.selectedSections.sort().join(",")}`);
+    const combos = forms.map(
+      (f) => `${f.selectedClassId}-${f.selectedSections.sort().join(",")}`
+    );
     const seen = new Set();
     for (let i = 0; i < combos.length; i++) {
       if (seen.has(combos[i])) {
         toast.error(`Duplicate class and section(s) found in form ${i + 1}. Please correct it.`);
+        setLoading(false);
         return;
       }
       seen.add(combos[i]);
@@ -183,7 +184,7 @@ const ADDFeesStructure = () => {
     for (let i = 0; i < forms.length; i++) {
       const form = forms[i];
       const payload = {
-        academicYear:academicYear ,
+        academicYear: academicYear,
         classId: form.selectedClassId,
         sectionIds: form.selectedSections,
         installments: form.installments.map((inst) => ({
@@ -210,6 +211,7 @@ const ADDFeesStructure = () => {
       }
     }
 
+    setLoading(false);
     if (allSuccess) {
       navigate(-1);
     }
@@ -229,6 +231,12 @@ const ADDFeesStructure = () => {
     ]);
   };
 
+  const handleRemoveForm = (index) => {
+    if (forms.length <= 1) return;
+    const newForms = forms.filter((_, i) => i !== index);
+    setForms(newForms);
+  };
+
   return (
     <div className="container">
       <div className="row">
@@ -240,8 +248,19 @@ const ADDFeesStructure = () => {
                 {forms.map((form, index) => {
                   const selectedClass = getClassById(form.selectedClassId);
                   return (
-                    <div key={index} className="border rounded p-3 my-3">
+                    <div key={index} className="border rounded p-3 my-3 position-relative">
                       <h5>Form {index + 1}</h5>
+                      {forms.length > 1 && (
+                        <button
+                          type="button"
+                          className="btn btn-danger btn-sm position-absolute"
+                          style={{ top: "10px", right: "10px" }}
+                          onClick={() => handleRemoveForm(index)}
+                          title="Remove Form"
+                        >
+                        {/* <FaTrash  /> */}Remove
+                        </button>
+                      )}
                       <div className="row">
                         <div className="col-md-4">
                           <label>Class</label>
@@ -416,8 +435,8 @@ const ADDFeesStructure = () => {
                   <button type="button" className="btn btn-primary" onClick={handleAddNewForm}>
                     Add New Form
                   </button>
-                  <button type="submit" className="btn btn-success">
-                    Create Fees Structure
+                  <button type="submit" className="btn btn-success" disabled={loading}>
+                    {loading ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </form>

@@ -175,10 +175,7 @@ const FeesReceipt = () => {
   const location = useLocation();
   const { student, feeTypeName, className, sectionName } = location.state || {};
   
-  useEffect(() => {
-    console.log("Section Name:", sectionName);
-    console.log("Fee Type Name:", feeTypeName);
-  }, []);
+
 
   const printReceipt = () => {
     window.print();

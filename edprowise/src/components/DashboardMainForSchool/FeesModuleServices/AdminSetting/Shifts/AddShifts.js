@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import postAPI from '../../../../../api/postAPI';
-import { toast} from "react-toastify";
+import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 
 
 
 const AddShifts = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [shifts, setShifts] = useState([
     { shiftName: '', startTime: '', endTime: '' },
   ]);
@@ -28,26 +29,27 @@ const AddShifts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    setLoading(true);
+
     for (const shift of shifts) {
       if (!shift.shiftName || !shift.startTime || !shift.endTime) {
         toast.error("Please fill in all fields before submitting.");
         return;
       }
     }
-  
+
     let allSuccessful = true;
-  
+
     for (const shift of shifts) {
       const payload = {
         masterDefineShiftName: shift.shiftName,
         startTime: shift.startTime,
         endTime: shift.endTime,
       };
-  
+
       try {
         const response = await postAPI('/master-define-shift', payload, {}, true);
-  
+
         if (response.hasError) {
           allSuccessful = false;
           toast.error(response.message || 'Failed to create shift');
@@ -56,15 +58,17 @@ const AddShifts = () => {
         allSuccessful = false;
         const errorText = err.response?.data?.message || err.message || 'Something went wrong!';
         toast.error(errorText);
+      } finally {
+        setLoading(false);
       }
     }
-  
+
     if (allSuccessful) {
       toast.success("shifts created successfully!");
       navigate(-1);
     }
   };
-  
+
 
   return (
     <div className="container">
@@ -100,7 +104,7 @@ const AddShifts = () => {
                         value={shift.startTime}
                         onChange={(e) => handleInputChange(index, 'startTime', e.target.value)}
                       />
-                     
+
                     </div>
                     <div className="col-md-3">
                       <label className="form-label">End Time</label>
@@ -138,8 +142,9 @@ const AddShifts = () => {
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
+                    disabled={loading}
                   >
-                    Create Shift
+                    {loading ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </form>

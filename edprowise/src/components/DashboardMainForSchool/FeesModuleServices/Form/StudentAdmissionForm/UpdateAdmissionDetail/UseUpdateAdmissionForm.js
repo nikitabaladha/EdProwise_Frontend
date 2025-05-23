@@ -19,8 +19,10 @@ const UseUpdateAdmissionForm = () => {
   const [sections, setSections] = useState([]);
   const location = useLocation();
   const student = location.state?.student;
+  const academicYear = localStorage.getItem("selectedAcademicYear");
 
   const [formData, setFormData] = useState({
+    academicYear: academicYear,
     studentPhoto: null,
     registrationNumber: "",
     firstName: "",
@@ -90,6 +92,7 @@ const UseUpdateAdmissionForm = () => {
   useEffect(() => {
     if (student) {
       setFormData({
+        academicYear: student.academicYear || null,
         studentPhoto: student.studentPhoto || null,
         registrationNumber: student.registrationNumber,
         firstName: student.firstName,

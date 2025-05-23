@@ -193,7 +193,7 @@ const StudentRegistrationForm = () => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="masterDefineClass" className="form-label">
-                        Master Define Class
+                       Class
                       </label>
                       <select
                         id="masterDefineClass"
@@ -216,7 +216,7 @@ const StudentRegistrationForm = () => {
                   <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="masterDefineShift" className="form-label">
-                        Master Define Shift
+                        Shift
                       </label>
                       <select
                         id="masterDefineShift"

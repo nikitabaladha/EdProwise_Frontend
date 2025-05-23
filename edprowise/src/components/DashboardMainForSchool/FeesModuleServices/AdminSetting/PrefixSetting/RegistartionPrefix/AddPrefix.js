@@ -9,6 +9,7 @@ const AddShifts = () => {
   const [numericValue, setNumericValue] = useState('');
   const [alphaPrefix, setAlphaPrefix] = useState('');
   const [alphaNumber, setAlphaNumber] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleCheckboxChange = (value) => {
     setType(prev => prev === value ? '' : value);
@@ -19,6 +20,7 @@ const AddShifts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (type === 'numeric' && !numericValue) {
       toast.error("Please enter a numeric value.");
@@ -46,6 +48,8 @@ const AddShifts = () => {
     } catch (err) {
       const errorMessage = err?.response?.data?.message || "An error occurred while saving prefix.";
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,8 +151,11 @@ const AddShifts = () => {
 
 
             <div className="text-end">
-              <button type="submit" className="btn btn-primary">
-                Submit Prefix
+              <button type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {loading ? "Submitting..." : "Submit"}
               </button>
             </div>
           </form>

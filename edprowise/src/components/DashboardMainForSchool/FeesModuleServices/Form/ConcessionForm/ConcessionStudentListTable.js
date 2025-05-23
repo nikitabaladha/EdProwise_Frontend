@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-
-
+import ExcelSheetModal from "./ExcelSheetModal"; 
 
 const ConcessionStudentListTable = () => {
   const navigate = useNavigate();
@@ -18,9 +17,7 @@ const ConcessionStudentListTable = () => {
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
-
-
-
+  const [showImportModal, setShowImportModal] = useState(false); 
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -40,7 +37,6 @@ const ConcessionStudentListTable = () => {
     fetchAcademicYears();
   }, []);
 
-
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
     setIsDeleteDialogOpen(true);
@@ -50,13 +46,12 @@ const ConcessionStudentListTable = () => {
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
   };
+
   const handleDeleteConfirmed = (_id) => {
     setStudentData((prevRequests) =>
       prevRequests.filter((request) => request._id !== _id)
     );
   };
-
-
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -69,7 +64,6 @@ const ConcessionStudentListTable = () => {
 
     setSchoolId(id);
   }, []);
-
 
   useEffect(() => {
     if (!schoolId || !selectedYear) return;
@@ -122,7 +116,26 @@ const ConcessionStudentListTable = () => {
     return section?.name || "N/A";
   };
 
+  const [feeTypes, setFeeTypes] = useState([]);
 
+  useEffect(() => {
+    const fetchFeeTypes = async () => {
+      try {
+        if (!schoolId) return;
+        const response = await getAPI(`/getall-fess-type/${schoolId}`);
+        if (!response.hasError) {
+          setFeeTypes(response.data.data || []);
+        } else {
+          toast.error("Failed to fetch fee types.");
+        }
+      } catch (error) {
+        toast.error('Error fetching fee types.');
+        console.error("Fee Types Fetch Error:", error);
+      }
+    };
+
+    fetchFeeTypes();
+  }, [schoolId]);
 
   const navigateToConcessionForm = (event) => {
     event.preventDefault();
@@ -141,13 +154,34 @@ const ConcessionStudentListTable = () => {
     navigate(`/school-dashboard/fees-module/form/update-concession-form`, {
       state: { student },
     });
-  }
+  };
+
+  const navigateToDownloadConcessionReceipt = (event, student) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/fees-module/form/concession-form-details`, {
+      state: {
+        formData: student,
+        className: getClassName(student.masterDefineClass),
+        sectionName: getSectionName(student.masterDefineClass, student.section),
+        feeTypes,
+        receiptNumber: student.receiptNumber,
+      },
+    });
+  };
+
+  const handleImportSuccess = () => {
+    if (schoolId && selectedYear) {
+      getAPI(`/get-concession-form/${schoolId}/${selectedYear}`).then((response) => {
+        if (!response.hasError) {
+          setStudentData(Array.isArray(response.data.forms) ? response.data.forms : []);
+        }
+      });
+    }
+    setShowImportModal(false);
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
-
-
-
 
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
@@ -174,29 +208,23 @@ const ConcessionStudentListTable = () => {
 
   return (
     <>
-      {" "}
       <div className="container-fluid">
         <div className="d-flex justify-content-end mb-2 gap-2">
-          <Link
-
-            onClick={(event) => navigateToConcessionForm(event)}
-            className="btn btn-sm btn-primary"
-          >
+          <Link onClick={(event) => navigateToConcessionForm(event)} className="btn btn-sm btn-primary">
             Concession Form
           </Link>
-          <Link className="btn btn-sm btn-secondary">
+          <button className="btn btn-sm btn-secondary" onClick={() => setShowImportModal(true)}>
+            Import
+          </button>
+          {/* <Link className="btn btn-sm btn-secondary">
             Export
-          </Link>
+          </Link> */}
         </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">
-                  Concession List
-                </h4>
-
-
+                <h4 className="card-title flex-grow-1">Concession List</h4>
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}
@@ -212,7 +240,6 @@ const ConcessionStudentListTable = () => {
                       {year.academicYear}
                     </option>
                   ))}
-
                 </select>
               </div>
               <div>
@@ -222,15 +249,8 @@ const ConcessionStudentListTable = () => {
                       <tr>
                         <th style={{ width: 20 }}>
                           <div className="form-check ms-1">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                              id="customCheck1"
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="customCheck1"
-                            />
+                            <input type="checkbox" className="form-check-input" id="customCheck1" />
+                            <label className="form-check-label" htmlFor="customCheck1" />
                           </div>
                         </th>
                         <th>Admission No.</th>
@@ -246,17 +266,8 @@ const ConcessionStudentListTable = () => {
                         <tr key={index}>
                           <td>
                             <div className="form-check ms-1">
-                              <input
-                                type="checkbox"
-                                className="form-check-input"
-                                id="customCheck2"
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="customCheck2"
-                              >
-                                &nbsp;
-                              </label>
+                              <input type="checkbox" className="form-check-input" id="customCheck2" />
+                              <label className="form-check-label" htmlFor="customCheck2"> </label>
                             </div>
                           </td>
                           <td>{student.AdmissionNumber}</td>
@@ -266,28 +277,29 @@ const ConcessionStudentListTable = () => {
                           <td>{student.concessionType}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Link className="btn btn-light btn-sm"
+                              <Link
+                                className="btn btn-light btn-sm"
                                 onClick={(event) => navigateToViewConcessionInfo(event, student)}
                               >
-                                <iconify-icon
-                                  icon="solar:eye-broken"
-                                  className="align-middle fs-18"
-                                />
+                                <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
                               </Link>
-                              <Link className="btn btn-soft-primary btn-sm"
+                              <Link
+                                className="btn btn-soft-primary btn-sm"
                                 onClick={(event) => navigateToUpdateConcessionForm(event, student)}
                               >
-                                <iconify-icon
-                                  icon="solar:pen-2-broken"
-                                  className="align-middle fs-18"
-                                />
+                                <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
                               </Link>
-                              <Link className="btn btn-soft-danger btn-sm"
-                                onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}>
-                                <iconify-icon
-                                  icon="solar:trash-bin-minimalistic-2-broken"
-                                  className="align-middle fs-18"
-                                />
+                              <Link
+                                className="btn btn-soft-danger btn-sm"
+                                onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}
+                              >
+                                <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
+                              </Link>
+                              <Link
+                                className="btn btn-soft-success btn-sm"
+                                onClick={(event) => navigateToDownloadConcessionReceipt(event, student)}
+                              >
+                                <iconify-icon icon="solar:download-minimalistic-broken" className="align-middle fs-18" />
                               </Link>
                             </div>
                           </td>
@@ -301,23 +313,14 @@ const ConcessionStudentListTable = () => {
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
                     <li className="page-item">
-                      <button
-                        className="page-link"
-                        onClick={handlePreviousPage}
-                        disabled={currentPage === 1}
-                      >
+                      <button className="page-link" onClick={handlePreviousPage} disabled={currentPage === 1}>
                         Previous
                       </button>
                     </li>
                     {pagesToShow.map((page) => (
-                      <li
-                        key={page}
-                        className={`page-item ${currentPage === page ? "active" : ""
-                          }`}
-                      >
+                      <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
                         <button
-                          className={`page-link pagination-button ${currentPage === page ? "active" : ""
-                            }`}
+                          className={`page-link pagination-button ${currentPage === page ? "active" : ""}`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -325,11 +328,7 @@ const ConcessionStudentListTable = () => {
                       </li>
                     ))}
                     <li className="page-item">
-                      <button
-                        className="page-link"
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                      >
+                      <button className="page-link" onClick={handleNextPage} disabled={currentPage === totalPages}>
                         Next
                       </button>
                     </li>
@@ -348,11 +347,16 @@ const ConcessionStudentListTable = () => {
           onDeleted={() => handleDeleteConfirmed(selectedRequest._id)}
         />
       )}
+      <ExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        academicYear={selectedYear}
+        onImportSuccess={handleImportSuccess}
+        classes={classes}
+      />
     </>
   );
 };
 
 export default ConcessionStudentListTable;
-
-
-

@@ -10,6 +10,7 @@ const CreateClassAndSection = () => {
   const [sections, setSections] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [schoolId, setSchoolId] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,8 +61,9 @@ const CreateClassAndSection = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-  
-    
+    setLoading(true);
+
+
     if (!className.trim()) {
       toast.error("Class name is required.");
       return;
@@ -70,27 +72,29 @@ const CreateClassAndSection = () => {
       toast.error("All sections must have a name and shift selected.");
       return;
     }
-  
+
     try {
       const payload = {
         className,
         sections,
       };
-  
-      const response = await postAPI("/create-class-and-section", payload,{},true);
-  
+
+      const response = await postAPI("/create-class-and-section", payload, {}, true);
+
       if (!response.hasError) {
         toast.success("Class and sections saved successfully!");
-        navigate(-1); 
+        navigate(-1);
       } else {
         toast.error(response.message || "Failed to save class.");
       }
     } catch (err) {
-      const errorMessage =err?.response?.data?.message || "An error occurred while saving class and sections.";
-    toast.error(errorMessage);
+      const errorMessage = err?.response?.data?.message || "An error occurred while saving class and sections.";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
-  
+
 
   return (
     <div className="container">
@@ -127,7 +131,7 @@ const CreateClassAndSection = () => {
                   </div>
                 </div>
                 <div className="text-end">
-                  <button type="submit" className="btn btn-primary">Generate Class & Section</button>
+                  <button type="submit" className="btn btn-primary">Submit</button>
                 </div>
               </form>
 
@@ -167,7 +171,12 @@ const CreateClassAndSection = () => {
                       </div>
                     ))}
                     <div className="text-end">
-                      <button type="submit" className="btn btn-success">Save Sections</button>
+                      <button type="submit"
+                        className="btn btn-success"
+                        disabled={loading}
+                      >
+                        {loading ? "Submitting..." : "Submit"}
+                      </button>
                     </div>
                   </form>
                 </div>

@@ -282,7 +282,7 @@ const UpdateOneTimeFees = () => {
                     className="btn btn-success"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Submitting..." : "Update One-Time Fees"}
+                    {isSubmitting ? "Updating..." : "Update"}
                   </button>
                 </div>
               </form>

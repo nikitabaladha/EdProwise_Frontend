@@ -173,7 +173,7 @@ const FeesReceipt = () => {
               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
                 Receipt No:
               </span>
-              <span>{currentStudent.receiptNumber || "N/A"}</span>
+              <span>{currentStudent.receiptNumberBef || "N/A"}</span>
             </div>
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
