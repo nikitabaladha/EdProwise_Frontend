@@ -1,6 +1,6 @@
 import React from "react";
 import Slider from "react-slick";
-
+import { FaEye } from "react-icons/fa";
 const VisionMissionSection = () => {
   const data = [
     {
@@ -19,6 +19,7 @@ const VisionMissionSection = () => {
     },
     {
       id: 2,
+      // <div className="cart-vm-icon">👁️</div>
       className: "visionn",
       icon: <div className="cart-vm-icon">👁️</div>,
       title: "Vision",

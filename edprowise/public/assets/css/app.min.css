@@ -209,9 +209,6 @@ change the card-title font-size 2rem and fw-bold
   border-bottom: 1px solid #ddd;
 }
 
-
-
-
 /* Color picker styles */
 .ql-color .ql-picker-options [data-value="custom"] {
   display: none;
@@ -343,7 +340,6 @@ change the card-title font-size 2rem and fw-bold
 .box-border {
   border: 2px solid black;
 }
-
 
 .salary-slip-box {
   border: 4px solid #04d3d3;

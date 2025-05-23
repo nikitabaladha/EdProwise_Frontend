@@ -1243,7 +1243,6 @@ const removeAttachment = (index) => {
   true // <- this must be the fourth argument
 );
 
-
     if (response.hasError) {
         toast.error(response.message || "Failed to send email.");
       } else {
@@ -1287,7 +1286,7 @@ const removeAttachment = (index) => {
              <div className="card-body custom-heading-padding">
                <div className="container">
                  <div className="card-header mb-2">
-                   <h4 className="card-title text-center custom-heading-font">
+                   <h4 className="card-title text-center">
                      Email Details
                    </h4>
                  </div>
@@ -1350,27 +1349,7 @@ const removeAttachment = (index) => {
                  />
                      </div>
                    </div>
-                   <div className="col-md-3 align-content-center">
-                    <label className="form-label">Add Attachments</label>
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => attachmentFileInputRef.current.click()}
-                        className="btn btn-secondary"
-                      >
-                        Attach Files
-                      </button>
-                      <input
-                        type="file"
-                        ref={attachmentFileInputRef}
-                        onChange={handleAttachmentChange}
-                        multiple
-                        name="attachments"
-                        accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        className="d-none"
-                      />
-                    </div>
-                  </div>
+                  
                  </div>
                  <div className="row mt-3">
                    <div className="col-md-6">
@@ -1394,10 +1373,30 @@ const removeAttachment = (index) => {
 
                  <div className="row">
                    <div className="container">
-                     <div className="card-header mb-2">
+                     <div className="card-header d-flex justify-content-between align-items-center gap-1">
                        <h4 className="card-title text-center custom-heading-font">
                          Email Message
                        </h4>
+                        <div className="align-content-center">
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => attachmentFileInputRef.current.click()}
+                        className="btn btn-secondary"
+                      >
+                        Attach Files
+                      </button>
+                      <input
+                        type="file"
+                        ref={attachmentFileInputRef}
+                        onChange={handleAttachmentChange}
+                        multiple
+                        name="attachments"
+                        accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        className="d-none"
+                      />
+                    </div>
+                  </div>
                      </div>
                    </div>
 
