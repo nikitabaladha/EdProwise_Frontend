@@ -17,6 +17,7 @@ const StudentRegisterListTable = () => {
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+   const [shifts, setShifts] = useState([]);
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -88,7 +89,15 @@ const StudentRegisterListTable = () => {
         if (!classRes.hasError) {
           setClassList(classRes.data.data);
         }
-
+         const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
+        if (!shiftResponse.hasError) {
+          const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
+          setShifts(shiftArray);
+        } else {
+          toast.error(shiftResponse.message || 'Failed to fetch shifts.');
+          setShifts([]);
+        }
+    
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.students) ? response.data.students : [];
           setStudentData(studentArray);
@@ -107,6 +116,11 @@ const StudentRegisterListTable = () => {
   const getClassNameById = (id) => {
     const found = classList.find((cls) => cls._id === id);
     return found ? found.className : "N/A";
+  };
+
+   const getShiftName = (shiftId) => {
+    const shift = shifts.find((s) => s._id === shiftId);
+    return shift ? shift.masterDefineShiftName : 'N/A';
   };
 
   const navigateToRegisterStudent = (event) => {
@@ -225,9 +239,10 @@ const StudentRegisterListTable = () => {
                           </div>
                         </th>
                         <th>Registration No.</th>
-                        <th>Student First Name</th>
-                        <th>Student Last Name</th>
+                        <th>Student  Name</th>
+                        <th>Gender</th>
                         <th>Class</th>
+                        <th>Shift</th>
                         <th>Contact No</th>
                         <th>Action</th>
                       </tr>
@@ -251,9 +266,10 @@ const StudentRegisterListTable = () => {
                             </div>
                           </td>
                           <td>{student.registrationNumber}</td>
-                          <td>{student.firstName}</td>
-                          <td>{student.lastName}</td>
+                          <td>{student.firstName} {student.lastName}</td>
+                          <td>{student.gender}</td>
                           <td>{getClassNameById(student.masterDefineClass)}</td>
+                          <td>{getShiftName(student.masterDefineShift)}</td>
                           <td>{student.fatherContactNo}</td>
                           <td>
                             <div className="d-flex gap-2">

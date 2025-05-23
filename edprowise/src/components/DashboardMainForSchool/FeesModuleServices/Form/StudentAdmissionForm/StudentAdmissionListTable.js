@@ -18,6 +18,7 @@ const StudentAdmissionListTable = () => {
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+     const [shifts, setShifts] = useState([]);
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -75,6 +76,14 @@ const StudentAdmissionListTable = () => {
         if (!classRes.hasError) {
           setClassList(classRes.data.data);
         }
+          const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
+        if (!shiftResponse.hasError) {
+          const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
+          setShifts(shiftArray);
+        } else {
+          toast.error(shiftResponse.message || 'Failed to fetch shifts.');
+          setShifts([]);
+        }
 
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
@@ -105,6 +114,11 @@ const StudentAdmissionListTable = () => {
   const section = found?.sections?.find((sec) => sec._id === sectionId);
   return section ? section.name : "N/A";
 };
+
+ const getShiftName = (shiftId) => {
+    const shift = shifts.find((s) => s._id === shiftId);
+    return shift ? shift.masterDefineShiftName : 'N/A';
+  };
 
   const navigateToAdmission = (event) => {
     event.preventDefault();
@@ -247,10 +261,10 @@ const navigateToFeesReceipt = (event, student) => {
                           </div>
                         </th>
                         <th>Admission No.</th>
-                        <th>Student First Name</th>
-                        <th>Student Last Name</th>
+                        <th>Student Name</th>
                         <th>Class</th>
                         <th>Section</th>
+                        <th>Shift</th>
                         <th>Contact No</th>
                         <th>Action</th>
                       </tr>
@@ -274,10 +288,10 @@ const navigateToFeesReceipt = (event, student) => {
                             </div>
                           </td>
                           <td>{student.AdmissionNumber}</td>
-                          <td>{student.firstName}</td>
-                          <td>{student.lastName}</td>
+                          <td>{student.firstName} {student.lastName}</td>
                           <td>{getClassNameById(student.masterDefineClass)}</td>
                           <td>{getSectionNameById(student.section)}</td>
+                              <td>{getShiftName(student.masterDefineShift)}</td>
                           <td>{student.fatherContactNo}</td>
                           <td>
                             <div className="d-flex gap-2">

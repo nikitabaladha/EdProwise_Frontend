@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import ConfirmationDialog from '../../../../ConfirmationDialog';
 import getAPI from '../../../../../api/getAPI';
 import { toast } from 'react-toastify';
-import ExcelSheetModal from './ExcelSheetModal'; 
+import ExcelSheetModal from './ExcelSheetModal';
+import { exportToExcel } from '../../../../export-excel'; 
 
 const ClassAndSection = () => {
   const navigate = useNavigate();
@@ -63,6 +64,23 @@ const ClassAndSection = () => {
     }
   };
 
+  const handleExport = () => {
+    const exportData = requests.flatMap((classandsection) =>
+      classandsection.sections.map((section) => ({
+        Class: classandsection.className,
+        Section: section.name,
+        Shift: getShiftName(section.shiftId),
+      }))
+    );
+
+    if (!exportData.length) {
+      toast.error('No data to export');
+      return;
+    }
+
+    exportToExcel(exportData, 'ClassAndSectionData', 'ClassAndSection');
+    toast.success('Data exported successfully!');
+  };
 
   const indexOfLastRequest = currentPage * requestPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
@@ -108,6 +126,11 @@ const ClassAndSection = () => {
     navigate(`/school-dashboard/fees-module/admin-setting/grade/class-section/create-class-section`);
   };
 
+  const getShiftName = (shiftId) => {
+    const shift = shifts.find((s) => s._id === shiftId);
+    return shift ? shift.masterDefineShiftName : 'N/A';
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -123,12 +146,19 @@ const ClassAndSection = () => {
                   Create Class & Section
                 </Link>
                 <div className="text-end">
-                  <button
-                    className="btn btn-sm btn-outline-light"
+                     <button
+                    className="btn btn-sm btn-outline-light me-2"
                     onClick={() => setShowImportModal(true)}
                   >
                     Import
                   </button>
+                  <button
+                    className="btn btn-sm btn-outline-success"
+                    onClick={handleExport}
+                  >
+                    Export
+                  </button>
+               
                 </div>
               </div>
 
@@ -144,6 +174,7 @@ const ClassAndSection = () => {
                       </th>
                       <th>Class</th>
                       <th>Section</th>
+                      <th>Shift</th>
                       <th className="text-start">Action</th>
                     </tr>
                   </thead>
@@ -157,6 +188,12 @@ const ClassAndSection = () => {
                         </td>
                         <td>{classandsection.className}</td>
                         <td>{classandsection.sections.map((section) => section.name).join(', ')}</td>
+                        <td>
+                          {classandsection.sections
+                            .map((section) => getShiftName(section.shiftId))
+                            .filter((name, idx, arr) => arr.indexOf(name) === idx)
+                            .join(', ')}
+                        </td>
                         <td>
                           <div className="d-flex gap-2">
                             <button
@@ -229,8 +266,7 @@ const ClassAndSection = () => {
                         className={`page-item ${currentPage === page ? 'active' : ''}`}
                       >
                         <button
-                          className={`page-link pagination-button ${currentPage === page ? 'active' : ''
-                            }`}
+                          className={`page-link pagination-button ${currentPage === page ? 'active' : ''}`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}

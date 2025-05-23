@@ -3,6 +3,20 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 
 const PreviewModal = ({ show, onClose, previewData, validatedData }) => {
+  const validatedMap = validatedData.reduce((acc, item) => {
+    acc[item.className] = item.sections.map((section) => section.name);
+    return acc;
+  }, {});
+
+  const flattenedPreviewData = previewData.flatMap((row, index) => {
+    const sectionNames = row.Section ? String(row.Section).split(',').map((s) => s.trim()).filter((s) => s) : [];
+    return sectionNames.map((section) => ({
+      ...row,
+      Section: section,
+      originalIndex: index + 1,
+    }));
+  });
+
   return (
     <>
       <style>
@@ -57,7 +71,7 @@ const PreviewModal = ({ show, onClose, previewData, validatedData }) => {
           <Modal.Title>Excel Data Preview</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {previewData.length === 0 ? (
+          {flattenedPreviewData.length === 0 ? (
             <p>No data to display. Please check the file and try again.</p>
           ) : (
             <div className="table-responsive">
@@ -72,11 +86,13 @@ const PreviewModal = ({ show, onClose, previewData, validatedData }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {previewData.map((row, index) => {
-                    const isValid = validatedData[index] !== undefined;
+                  {flattenedPreviewData.map((row, index) => {
+                    const isValid =
+                      validatedMap[row.Class] &&
+                      validatedMap[row.Class].includes(row.Section);
                     return (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
+                      <tr key={`${row.originalIndex}-${row.Section}`}>
+                        <td>{row.originalIndex}</td>
                         <td>{row.Class || '-'}</td>
                         <td>{row.Section || '-'}</td>
                         <td>{row.Shift || '-'}</td>
