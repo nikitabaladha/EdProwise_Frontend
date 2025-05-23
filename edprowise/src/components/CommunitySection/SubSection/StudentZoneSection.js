@@ -7,14 +7,14 @@ const StudentZoneSection = () => {
       author: "Anne William",
       title: "Proposed Exam Reforms by CBSE: A Step Towards Reducing Academic Stress and Improving Learning Outcomes",
       image: "/assets/website-images/blog-details/CBSE-exam-reform.jpg",
-      link: "/community-connect/student-zone/proposed-exam-reforms-by-CBSE"
+      link: "/community-connect/student-zone/proposed-exam-reforms-by-cbse"
     },
     {
       date: "26 Sep 2023",
       author: "Robert Fox",
       title: "How to Be Successful in the CBSE Board Exam: Tips and Strategies for Students",
       image: "/assets/website-images/blog-details/howtosuccessfulstudent.jpg",
-      link:"/community-connect/student-zone/how-to-be-successful"
+      link:"/community-connect/student-zone/how-to-be-successful-in-the-cbse-board-exam"
     },
     // {
     //   date: "28 Sep 2023",
@@ -31,7 +31,9 @@ const StudentZoneSection = () => {
         <div className="wpo-blog-items">
     <div className="row-web">
       {blogPosts.map((post, index) => (
+        
         <div key={index} className="col col-lg-4 col-md-6 col-6 ">
+          <Link to={post.link}>
           <div className="wpo-blog-item mb-lg-3 blog-item-custom">
             <div className="wpo-blog-img">
               <img src={post.image} alt={post.title} />
@@ -51,7 +53,9 @@ const StudentZoneSection = () => {
               </Link>
             </div>
           </div>
+          </Link>
         </div>
+
       ))}
     </div>
     </div>

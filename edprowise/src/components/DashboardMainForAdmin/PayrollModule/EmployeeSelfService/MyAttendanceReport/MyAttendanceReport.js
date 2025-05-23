@@ -108,7 +108,7 @@ const MyAttendanceReport = () => {
 
                                     <div className="col-md-6 border border-dark">
                                         <p className='text-dark payroll-box-text my-2'>
-                                            <strong>By Custom :</strong>
+                                            <strong>By Date :</strong>
                                         </p>
 
                                         <p className='text-dark my-2'>

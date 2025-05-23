@@ -98,6 +98,278 @@ Version:        1.0.0
 }
   */
 
+
+
+  /*============================================= Umesh CSS============================================ */
+
+
+  /* Nikita Css Starts */
+/* Tabs.css */
+/* Target the placeholder */
+/* Main container */
+/* Color picker fixes */
+.ql-color .ql-picker-options,
+.ql-background .ql-picker-options {
+  width: 150px;
+  z-index: 1000;
+}
+
+.ql-color .ql-picker-label,
+.ql-background .ql-picker-label {
+  padding: 2px 5px;
+}
+
+/* Link dialog styling */
+.ql-tooltip {
+  z-index: 1001;
+}
+
+/* Image and attachment buttons */
+.ql-image,
+.ql-attachment {
+  padding: 3px 5px;
+}
+
+/* Fix for overlapping toolbar items */
+.ql-toolbar button {
+  margin: 0 2px;
+}
+
+/* Ensure proper spacing in toolbar */
+.ql-toolbar .ql-formats {
+  margin-right: 10px;
+}
+.email-editor-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Card styling */
+.email-editor-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+}
+
+/* Header styling */
+.email-editor-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.email-editor-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Form group styling */
+.email-editor-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Label styling */
+.email-editor-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #444;
+}
+
+.required-asterisk {
+  color: #dc3545;
+}
+
+/* Recipient controls */
+.email-recipient-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.email-recipient-select {
+  flex-grow: 1;
+}
+
+/* Input styling */
+.email-subject-input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.email-subject-input:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Quill editor styling */
+.quill-editor-wrapper {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.quill-editor-custom .ql-toolbar {
+  border-radius: 4px 4px 0 0;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.quill-editor-custom .ql-container {
+  border-radius: 0 0 4px 4px;
+  font-family: inherit;
+  height: calc(100% - 42px);
+}
+
+.quill-editor-custom .ql-editor {
+  font-size: 16px;
+  min-height: 300px;
+  padding: 15px;
+}
+
+/* Custom button for attachments */
+.ql-attachment {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z"/><path d="M4.5 10.5A.5.5 0 0 1 5 10h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 24px;
+  height: 24px;
+}
+
+/* Color picker styles */
+.ql-color .ql-picker-options [data-value="custom"] {
+  display: none;
+}
+
+.ql-color .ql-picker-label::before {
+  content: "Text Color";
+}
+
+.ql-background .ql-picker-label::before {
+  content: "Background";
+}
+
+.ql-highlight .ql-picker-label::before {
+  content: "Highlight";
+}
+
+/* Button styling */
+.email-import-button,
+.email-send-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.email-import-button {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
+.email-import-button:hover {
+  background-color: #e9ecef;
+}
+
+.email-send-button {
+  background-color: #0d6efd;
+  border: 1px solid #0d6efd;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.email-send-button:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.email-send-button:disabled {
+  background-color: #86b7fe;
+  border-color: #86b7fe;
+  cursor: not-allowed;
+}
+
+/* Hidden file input */
+.hidden-file-input {
+  display: none;
+}
+
+/* Email count indicator */
+.email-count-indicator {
+  font-size: 14px;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
+/* Attachments styling */
+.email-attachments-container {
+  margin-top: 15px;
+}
+
+.attachments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+.attachment-name {
+  flex-grow: 1;
+  font-size: 14px;
+  color: #212529;
+}
+
+.attachment-size {
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.attachment-remove-button {
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+.attachment-remove-button:hover {
+  color: #bb2d3b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .email-recipient-controls {
+    flex-direction: column;
+  }
+
+  .quill-editor-custom {
+    height: 300px;
+  }
+}
+
+/* =========================Umesh CSS End */
+
 /* Nikita Css Starts */
 /* Tabs.css */
 /* Target the placeholder */

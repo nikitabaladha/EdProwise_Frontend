@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const DefineCtcComponents = () => {
-  
+
   const [rows, setRows] = useState([
     { id: 1, CTCComponentsName: "" },
     { id: 2, CTCComponentsName: "" },
@@ -21,7 +21,7 @@ const DefineCtcComponents = () => {
     setRows([...rows, { id: rows.length + 1, CTCComponentsName: "" }]);
   };
 
-  
+
   const deleteRow = (index) => {
     if (rows.length > 3) {
       setRows(rows.filter((_, i) => i !== index));
@@ -33,19 +33,28 @@ const DefineCtcComponents = () => {
       <div className="row">
         <div className="col-xl-12">
           <div className="card m-2">
-            <div className="card-body">
+            <div className="card-body custom-heading-padding">
               <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
+                <div className="card-header mb-2 d-flex align-items-center">
+                  <h4 className="card-title flex-grow-1 text-center">
                     Define CTC Components
                   </h4>
+                  <div>
+                    <select id="yearSelect" className="custom-select payroll-table-body" aria-label="Select Year">
+                      <option selected>2025-26</option>
+                      <option>2026-27</option>
+                      <option>2027-28</option>
+                      <option>2028-29</option>
+                      <option>2029-30</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               <form>
-                <div className="table-responsive">
+                <div className="table-responsive px-lg-6 px-md-5">
                   <table className="table align-middle mb-0 table-hover table-centered text-center">
                     <thead className="bg-light-subtle">
-                      <tr>
+                      <tr className='payroll-table-header'>
                         <th style={{ width: 20 }}>
                           <div className="form-check ms-1">
                             <input type="checkbox" className="form-check-input" id="customCheck1" />
@@ -58,7 +67,7 @@ const DefineCtcComponents = () => {
                     </thead>
                     <tbody>
                       {rows.map((row, index) => (
-                        <tr key={row.id}>
+                        <tr key={row.id} className='payroll-table-body'>
                           <td>
                             <div className="form-check ms-1">
                               <input type="checkbox" className="form-check-input" id={`customCheck${row.id}`} />
@@ -70,7 +79,7 @@ const DefineCtcComponents = () => {
                               type="text"
                               id={`CTCComponentsName${row.id}`}
                               name="CTCComponentsName"
-                              className="form-control"
+                              className="form-control payroll-table-body payroll-input-border"
                               value={row.CTCComponentsName}
                               onChange={(e) => handleInputChange(index, e.target.value)}
                               required

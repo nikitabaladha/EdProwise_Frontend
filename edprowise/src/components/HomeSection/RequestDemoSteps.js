@@ -110,7 +110,6 @@ const RequestDemoSteps = () => {
                             setCycleCount((prevCycle) => prevCycle + 1);
                             setIsRocketVisible(true);
                         }, 2000);
-
                         return 0;
                     }
                 });
@@ -134,7 +133,7 @@ const RequestDemoSteps = () => {
                             const isActive = index <= progress;
                             return (
                                 <line
-                                    key={index}
+                                key={index}
                                     x1={`${prevStep.x}%`}
                                     y1={`${100 - prevStep.y}%`}
                                     x2={`${step.x}%`}

@@ -162,6 +162,370 @@ input[type="file"]:valid {
 /* Custom css End */
 
 /* ================Umesh CSS===================*/
+/* Color picker fixes */
+.email-editor-container .ql-toolbar {
+  border-radius: 4px 4px 0 0;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+.email-editor-container .ql-container {
+  border-radius: 0 0 4px 4px;
+  border: 1px solid #ccc;
+  border-top: none;
+  min-height: 200px;
+}
+
+.email-editor-container .ql-formats {
+  margin-right: 15px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.email-editor-container .ql-formats:last-child {
+  margin-right: 0;
+}
+
+.email-editor-container button.ql-active {
+  background: #e0e0e0;
+}
+
+.email-editor-container select.ql-color,
+.email-editor-container select.ql-background,
+.email-editor-container select.ql-align {
+  width: 100px;
+  margin-right: 8px;
+}
+
+.email-editor-container select.ql-size {
+  width: 100px;
+}
+
+.email-editor-container .ql-color .ql-picker-label,
+.email-editor-container .ql-background .ql-picker-label {
+  padding: 2px 5px;
+}
+
+.email-editor-container .ql-snow .ql-picker {
+  height: 28px;
+}
+
+.email-editor-container .ql-snow .ql-picker-options {
+  padding: 4px;
+}
+
+.email-editor-container .ql-snow .ql-picker.ql-header {
+  width: 100px;
+}
+
+.ql-snow .ql-color-picker {
+  width: 100px !important;
+}
+
+.ql-color-picker .ql-picker-label {
+  display: flex !important;
+}
+
+.ql-highlight .ql-picker-label {
+  width: 100px !important;
+}
+
+.ql-snow .ql-attachment::before {
+  content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>');
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+
+.ql-snow .ql-undo::before {
+  content: "↩";
+}
+
+.ql-snow .ql-redo::before {
+  content: "↪";
+}
+
+
+
+/* .ql-color .ql-picker-options,
+.ql-background .ql-picker-options {
+  width: 150px;
+  z-index: 1000;
+}
+
+.ql-color .ql-picker-label,
+.ql-background .ql-picker-label {
+  padding: 2px 5px;
+} */
+
+/* .ql-tooltip {
+  z-index: 1001;
+} */
+
+/* Image and attachment buttons */
+/* .ql-image, .ql-attachment {
+  padding: 3px 5px;
+} */
+
+/* Fix for overlapping toolbar items */
+/* .ql-toolbar button {
+  margin: 0 2px;
+} */
+
+/* Ensure proper spacing in toolbar */
+/* .ql-toolbar .ql-formats {
+  margin-right: 10px;
+} */
+/* Main container */
+.email-editor-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Card styling */
+.email-editor-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+}
+
+/* Header styling */
+.email-editor-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.email-editor-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Form group styling */
+.email-editor-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Label styling */
+.email-editor-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #444;
+}
+
+.required-asterisk {
+  color: #dc3545;
+}
+
+/* Recipient controls */
+.email-recipient-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.email-recipient-select {
+  flex-grow: 1;
+}
+
+/* Input styling */
+.email-subject-input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.email-subject-input:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Quill editor styling */
+.quill-editor-wrapper {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+
+.quill-editor-custom .ql-toolbar {
+  border-radius: 4px 4px 0 0;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Color picker styles */
+.ql-color .ql-picker-options [data-value="custom"] {
+  display: none;
+}
+
+.ql-color .ql-picker-label::before {
+  content: 'Text Color';
+}
+
+.ql-background .ql-picker-label::before {
+  content: 'Background';
+}
+
+.ql-highlight .ql-picker-label::before {
+  content: 'Highlight';
+}
+
+/* Button styling */
+.email-import-button,
+.email-send-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.email-import-button {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
+.email-import-button:hover {
+  background-color: #e9ecef;
+}
+
+.email-send-button {
+  background-color: #0d6efd;
+  border: 1px solid #0d6efd;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.email-send-button:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.email-send-button:disabled {
+  background-color: #86b7fe;
+  border-color: #86b7fe;
+  cursor: not-allowed;
+}
+
+/* Hidden file input */
+.hidden-file-input {
+  display: none;
+}
+
+/* Email count indicator */
+.email-count-indicator {
+  font-size: 14px;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
+/* Attachments styling */
+.email-attachments-container {
+  margin-top: 15px;
+}
+
+.attachments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+.attachment-name {
+  flex-grow: 1;
+  font-size: 14px;
+  color: #212529;
+}
+
+.attachment-size {
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.attachment-remove-button {
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+.attachment-remove-button:hover {
+  color: #bb2d3b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .email-recipient-controls {
+    flex-direction: column;
+  }
+
+  .quill-editor-custom {
+    height: 300px;
+  }
+}
+
+.box-border {
+  border: 2px solid black;
+}
+
+.salary-slip-box {
+  border: 4px solid #04d3d3;
+}
+
+.payroll-box-line {
+  border-top: 2px solid black;
+}
+
+.payroll-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.payroll-table-header {
+  font-size: 1.3rem;
+  background: #a8fffe;
+}
+
+.payroll-input-border {
+  border-color: #f2be00 !important;
+}
+
+.payroll-box-text {
+  font-size: 1.3rem;
+}
+
+.payroll-table-body {
+  font-size: 1.2rem !important;
+}
+
+.it-declaration-section-bg {
+  background: #e7e6e6;
+}
+
+
 .salary-slip-box {
   border: 2px solid black;
 }
@@ -11803,6 +12167,16 @@ fieldset:disabled .btn {
   padding: 4.5rem !important;
 }
 
+.px-6 {
+  padding-right: 6.5rem !important;
+  padding-left: 6.5rem !important;
+}
+
+.px-7 {
+  padding-right: 9rem !important;
+  padding-left: 9rem !important;
+}
+
 .px-0 {
   padding-right: 0 !important;
   padding-left: 0 !important;
@@ -14418,6 +14792,17 @@ fieldset:disabled .btn {
   .p-md-5 {
     padding: 4.5rem !important;
   }
+
+  .px-md-6 {
+    padding-right: 6.5rem !important;
+    padding-left: 6.5rem !important;
+  }
+
+  .px-md-7 {
+    padding-right: 9rem !important;
+    padding-left: 9rem !important;
+  }
+
   .px-md-0 {
     padding-right: 0 !important;
     padding-left: 0 !important;
@@ -15177,6 +15562,17 @@ fieldset:disabled .btn {
   .p-lg-5 {
     padding: 4.5rem !important;
   }
+
+  .px-lg-6 {
+    padding-right: 6.5rem !important;
+    padding-left: 6.5rem !important;
+  }
+
+  .px-lg-7 {
+    padding-right: 9rem !important;
+    padding-left: 9rem !important;
+  }
+
   .px-lg-0 {
     padding-right: 0 !important;
     padding-left: 0 !important;
@@ -19299,9 +19695,10 @@ html[data-bs-theme="dark"] .btn-dark {
   }
 }
 
+
 .card-title {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: bold;
   margin: 0;
 }
 

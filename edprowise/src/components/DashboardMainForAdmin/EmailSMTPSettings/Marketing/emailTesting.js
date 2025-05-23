@@ -1,0 +1,1990 @@
+// import React, { useState, useEffect, useRef } from "react";
+
+// import { toast } from "react-toastify";
+
+// import getAPI from "../../../../api/getAPI";
+
+// import postAPI from "../../../../api/postAPI";
+
+// import CreatableSelect from "react-select/creatable";
+
+// import ReactQuill from "react-quill-new";
+
+// import "react-quill-new/dist/quill.snow.css";
+
+// const MarketingEmail = () => {
+
+//   const [formData, setFormData] = useState({
+//     mailTo: [],
+//     subject: "",
+//     content: "",
+//   });
+
+//   const [emailOptions, setEmailOptions] = useState([]);
+//   const fileInputRef = useRef(null);
+//   useEffect(() => {
+//     const fetchInitialData = async () => {
+//       try {
+//         const emailResponse = await getAPI("/get-all-emails", {}, true);
+//         if (!emailResponse.hasError) {
+//           const options = emailResponse.data.data.map((email) => ({
+//             label: email,
+//             value: email,
+//           }));
+//           setEmailOptions(options);
+//         }
+//       } catch (err) {
+//         toast.error("Initialization error: " + err.message);
+//       }
+//     };
+//     fetchInitialData();
+//   }, []);
+
+//   const handleFileImport = (event) => {
+
+//     const file = event.target.files[0];
+
+//     if (!file) return;
+
+//     if (!file.name.endsWith('.csv')) {
+
+//       toast.error("Please upload a CSV file.");
+
+//       return;
+
+//     }
+
+//     const reader = new FileReader();
+
+//     reader.onload = (e) => {
+
+//       try {
+
+//         const text = e.target.result;
+
+//         const emails = parseCSV(text);
+
+//         const validEmails = emails.filter(isValidEmail);
+
+//         if (validEmails.length === 0) {
+
+//           toast.warning("No valid email addresses found in the file.");
+
+//           return;
+
+//         }
+
+//         const newOptions = validEmails.map((email) => ({
+
+//           label: email,
+
+//           value: email,
+
+//         }));
+
+//         setEmailOptions((prevOptions) => {
+
+//           const existingEmails = new Set(prevOptions.map((opt) => opt.value));
+
+//           const uniqueNewOptions = newOptions.filter(
+
+//             (opt) => !existingEmails.has(opt.value)
+
+//           );
+
+//           return [...prevOptions, ...uniqueNewOptions];
+
+//         });
+
+//         setFormData((prevData) => {
+
+//           const existingEmails = new Set(prevData.mailTo);
+
+//           const uniqueNewEmails = validEmails.filter(
+
+//             (email) => !existingEmails.has(email)
+
+//           );
+
+//           return {
+
+//             ...prevData,
+
+//             mailTo: [...prevData.mailTo, ...uniqueNewEmails],
+
+//           };
+
+//         });
+
+//         toast.success(`${validEmails.length} email(s) imported and selected.`);
+
+//       } catch (err) {
+
+//         toast.error("Error processing file: " + err.message);
+
+//       }
+
+//     };
+
+//     reader.readAsText(file);
+
+//     event.target.value = null;
+
+//   };
+
+//   const parseCSV = (text) => {
+
+//     const lines = text.split('\n').map((line) => line.trim()).filter((line) => line);
+
+//     if (lines.length === 0) return [];
+
+//     const firstLine = lines[0].toLowerCase();
+
+//     const hasHeader = firstLine.includes('email');
+
+//     const startIndex = hasHeader ? 1 : 0;
+
+//     return lines.slice(startIndex).map((line) => {
+
+//       const columns = line.split(',').map((col) => col.trim());
+
+//       return columns[0] || '';
+
+//     }).filter((email) => email);
+
+//   };
+
+//   const isValidEmail = (email) => {
+
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+//     return emailRegex.test(email);
+
+//   };
+
+//   const triggerFileInput = () => {
+
+//     fileInputRef.current.click();
+
+//   };
+
+//   const handleChange = (e) => {
+
+//     const { name, value } = e.target;
+
+//     setFormData((prevData) => ({
+
+//       ...prevData,
+
+//       [name]: value,
+
+//     }));
+
+//   };
+
+//   const handleContentChange = (value) => {
+
+//     setFormData((prevData) => ({
+
+//       ...prevData,
+
+//       content: value,
+
+//     }));
+
+//   };
+
+//   const handleEmailChange = (selectedOptions) => {
+
+//     const selectedEmails = selectedOptions
+
+//       ? selectedOptions.map((opt) => opt.value)
+
+//       : [];
+
+//     setFormData((prevData) => ({
+
+//       ...prevData,
+
+//       mailTo: selectedEmails,
+
+//     }));
+
+//   };
+
+//   const handleSubmit = async (e) => {
+
+//     e.preventDefault();
+
+//     if (formData.mailTo.length === 0) {
+
+//       toast.warning("Please select at least one recipient.");
+
+//       return;
+
+//     }
+
+//     if (!formData.content || formData.content === "<p><br></p>") {
+
+//       toast.warning("Email content cannot be empty.");
+
+//       return;
+
+//     }
+
+//     try {
+
+//       const response = await postAPI("/send-email", formData, true);
+
+//       if (response.hasError) {
+
+//         toast.error(response.message || "Failed to send email.");
+
+//       } else {
+
+//         toast.success(response.message || "Email sent successfully!");
+
+//         setFormData({
+
+//           mailTo: [],
+
+//           subject: "",
+
+//           content: "",
+
+//         });
+
+//       }
+
+//     } catch (err) {
+
+//       toast.error("Something went wrong: " + err.message);
+
+//     }
+
+//   };
+
+//   return (
+//     <div className="container mx-auto p-4">
+//       <div className="flex flex-col">
+//         <div className="w-full">
+//           <div className="bg-white shadow-md rounded-lg m-2">
+//             <div className="p-6">
+//               <div className="container mx-auto">
+//                 <div className="mb-4 text-center">
+//                   <h4 className="text-2xl font-bold">
+
+//                     Email Details
+//                   </h4>
+//                 </div>
+//               </div>
+
+//               <form onSubmit={handleSubmit}>
+//                 <div className="flex flex-col space-y-4">
+//                   <div className="w-full">
+//                     <div className="mb-3">
+//                       <label htmlFor="emailTo" className="block text-sm font-medium text-gray-700 mb-1">
+
+//                         To
+//                       </label>
+//                       <div className="flex items-center space-x-2">
+//                         <CreatableSelect
+
+//                           options={emailOptions}
+
+//                           isMulti
+
+//                           isClearable
+
+//                           onChange={handleEmailChange}
+
+//                           value={formData.mailTo.map((email) => ({
+
+//                             label: email,
+
+//                             value: email,
+
+//                           }))}
+
+//                           placeholder="Select or enter email(s)"
+
+//                           className="flex-1"
+
+//                         />
+//                         <button
+
+//                           type="button"
+
+//                           onClick={triggerFileInput}
+
+//                           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+//                         >
+
+//                           Import
+//                         </button>
+//                         <input
+
+//                           type="file"
+
+//                           ref={fileInputRef}
+
+//                           onChange={handleFileImport}
+
+//                           accept=".csv"
+
+//                           className="hidden"
+
+//                         />
+//                       </div>
+//                     </div>
+//                   </div>
+//                   <div className="w-full">
+//                     <div className="mb-3">
+//                       <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+
+//                         Subject
+//                       </label>
+//                       <input
+
+//                         type="text"
+
+//                         id="subject"
+
+//                         name="subject"
+
+//                         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+//                         value={formData.subject}
+
+//                         onChange={handleChange}
+
+//                         required
+
+//                       />
+//                     </div>
+//                   </div>
+
+//                   <div className="w-full">
+//                     <div className="bg-white shadow-md rounded-lg m-2">
+//                       <div className="p-6">
+//                         <div className="container mx-auto">
+//                           <div className="mb-4 text-center">
+//                             <h4 className="text-2xl font-bold">
+
+//                               Email Message
+//                             </h4>
+//                           </div>
+//                         </div>
+
+//                         <div className="mb-3">
+//                           <ReactQuill
+
+//                             theme="snow"
+
+//                             value={formData.content}
+
+//                             onChange={handleContentChange}
+
+//                             required
+
+//                           />
+//                         </div>
+
+//                         <div className="flex justify-end">
+//                           <button
+
+//                             type="submit"
+
+//                             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+//                           >
+
+//                             Send
+//                           </button>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </form>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+
+//   );
+// };
+
+// export default MarketingEmail;
+
+
+// MY NEW AND WORKING CODDE IN THAT ONLY THAT MUCH WHICH I USE BEFORE KUNAL SIR SAID
+// import React, { useState, useEffect, useRef } from "react";
+// import { toast } from "react-toastify";
+// import getAPI from "../../../../api/getAPI";
+// import postAPI from "../../../../api/postAPI";
+// import CreatableSelect from "react-select/creatable";
+// import ReactQuill from "react-quill-new";
+// import "react-quill-new/dist/quill.snow.css";
+// import * as XLSX from "xlsx";
+// const MarketingEmail = () => {
+//   const [formData, setFormData] = useState({
+//     mailTo: [],
+//     subject: "",
+//     content: "",
+//   });
+
+//  const [sending, setSending] = useState(false);
+
+//  const [emailOptions, setEmailOptions] = useState([]);
+//   const fileInputRef = useRef(null);
+//   // Fetch settings and template
+//   useEffect(() => {
+//     const fetchInitialData = async () => {
+//       try {
+//         const emailResponse = await getAPI("/get-all-emails", {}, true);
+//         if (!emailResponse.hasError) {
+//           const options = emailResponse.data.data.map((email) => ({
+//             label: email,
+//             value: email,
+//           }));
+//           setEmailOptions(options);
+//         }
+//       } catch (err) {
+//         toast.error("Initialization error: " + err.message);
+//       }
+//     };
+
+//     fetchInitialData();
+//   }, []);
+
+//   // Input handler
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+//   };
+
+//   // const handleFileImport = (event) => {
+//   //   const file = event.target.files[0];
+//   //   if (!file) return;
+//   //   if (!file.name.endsWith('.csv')) {
+//   //     toast.error("Please upload a CSV file.");
+//   //     return;
+//   //   }
+
+//   //   const reader = new FileReader();
+//   //   reader.onload = (e) => {
+//   //     try {
+//   //       const text = e.target.result;
+//   //       const emails = parseCSV(text);
+//   //       const validEmails = emails.filter(isValidEmail);
+//   //       if (validEmails.length === 0) {
+//   //         toast.warning("No valid email Found in File.");
+//   //         return;
+//   //       }
+
+//   //       const newOptions = validEmails.map((email) => ({
+//   //         label: email,
+//   //         value: email,
+//   //       }));
+
+//   //       setEmailOptions((prevOptions) => {
+//   //         const existingEmails = new Set(prevOptions.map((opt) => opt.value));
+//   //         const uniqueNewOptions = newOptions.filter(
+//   //           (opt) => !existingEmails.has(opt.value)
+//   //         );
+//   //         return [...prevOptions, ...uniqueNewOptions];
+//   //       });
+
+//   //       setFormData((prevData) => {
+//   //         const existingEmails = new Set(prevData.mailTo);
+//   //         const uniqueNewEmails = validEmails.filter(
+//   //           (email) => !existingEmails.has(email)
+//   //         );
+//   //         return {
+//   //           ...prevData,
+//   //           mailTo: [...prevData.mailTo, ...uniqueNewEmails],
+//   //         };
+//   //       });
+//   //       toast.success(`${validEmails.length} email imported and selected.`);
+//   //     } catch (err) {
+//   //       toast.error("Error processing file: " + err.message);
+//   //     }
+//   //   };
+
+//   //   reader.readAsText(file);
+//   //   event.target.value = null;
+//   // };
+
+
+//   const handleFileImport = (event) => {
+//   const file = event.target.files[0];
+//   if (!file) return;
+
+//   const reader = new FileReader();
+//   const isCSV = file.name.endsWith(".csv");
+//   const isExcel = file.name.endsWith(".xls") || file.name.endsWith(".xlsx");
+
+//   reader.onload = (e) => {
+//     try {
+//       let emails = [];
+
+//       if (isCSV) {
+//         const text = e.target.result;
+//         emails = parseCSV(text);
+//       } else if (isExcel) {
+//         const data = new Uint8Array(e.target.result);
+//         const workbook = XLSX.read(data, { type: "array" });
+//         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+//         const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+//         // Extract email from first column
+//         const hasHeader = rows[0][0]?.toString().toLowerCase().includes("email");
+//         const startIndex = hasHeader ? 1 : 0;
+
+//         emails = rows.slice(startIndex).map((row) => row[0]).filter(Boolean);
+//       }
+
+//       const validEmails = emails.filter(isValidEmail);
+//       if (validEmails.length === 0) {
+//         toast.warning("No valid email found in file.");
+//         return;
+//       }
+
+//       const newOptions = validEmails.map((email) => ({
+//         label: email,
+//         value: email,
+//       }));
+
+//       setEmailOptions((prevOptions) => {
+//         const existing = new Set(prevOptions.map((opt) => opt.value));
+//         const uniqueNew = newOptions.filter((opt) => !existing.has(opt.value));
+//         return [...prevOptions, ...uniqueNew];
+//       });
+
+//       setFormData((prevData) => {
+//         const existing = new Set(prevData.mailTo);
+//         const uniqueNew = validEmails.filter((email) => !existing.has(email));
+//         return {
+//           ...prevData,
+//           mailTo: [...prevData.mailTo, ...uniqueNew],
+//         };
+//       });
+
+//       toast.success(`${validEmails.length} email imported and selected.`);
+//     } catch (err) {
+//       toast.error("Error processing file: " + err.message);
+//     }
+//   };
+
+//   if (isCSV) {
+//     reader.readAsText(file);
+//   } else if (isExcel) {
+//     reader.readAsArrayBuffer(file);
+//   } else {
+//     toast.error("Unsupported file format.");
+//   }
+
+//   event.target.value = null;
+// };
+
+//   const parseCSV = (text) => {
+//     const lines = text.split('\n').map((line) => line.trim()).filter((line) => line);
+//     if (lines.length === 0) return [];
+//     const firstLine = lines[0].toLowerCase();
+//     const hasHeader = firstLine.includes('email');
+//     const startIndex = hasHeader ? 1 : 0;
+//     return lines.slice(startIndex).map((line) => {
+//       const columns = line.split(',').map((col) => col.trim());
+//       return columns[0] || '';
+//     }).filter((email) => email);
+//   };
+
+//   const triggerFileInput = () => {
+//     fileInputRef.current.click();
+//   };
+
+//   const isValidEmail = (email) => {
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     return emailRegex.test(email);
+//   };
+
+//   // Email content handler
+//   const handleContentChange = (value) => {
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       content: value,
+//     }));
+//   };
+
+//   const handleEmailChange = (selectedOptions) => {
+//     const selectedEmails = selectedOptions
+//       ? selectedOptions.map((opt) => opt.value)
+//       : [];
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       mailTo: selectedEmails,
+//     }));
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (formData.mailTo.length === 0) {
+//       toast.warning("Please select at least one recipient.");
+//       return;
+//     }
+//     if (!formData.content || formData.content === "<p><br></p>") {
+//       toast.warning("Email content cannot be empty.");
+//       return;
+//     }
+// setSending(true);
+//     try {
+//       const response = await postAPI("/send-email", formData, true);
+
+//       if (response.hasError) {
+//         toast.error(response.message || "Failed to send email.");
+//       } else {
+//         toast.success(response.message || "Email sent successfully!");
+//         setFormData({
+//           mailTo: [],
+//           subject: "",
+//           content: "",
+//         });
+//       }
+//     } catch (err) {
+//       toast.error("Something went wrong: " + err.message);
+//     } finally {
+//       setSending(false);
+//     }
+//   };
+
+//   return (
+//     <div className="container">
+//       <div className="row">
+//         <div className="col-xl-12">
+//           <div className="card m-2">
+//             <div className="card-body custom-heading-padding">
+//               <div className="container">
+//                 <div className="card-header mb-2">
+//                   <h4 className="card-title text-center custom-heading-font">
+//                     Email Details
+//                   </h4>
+//                 </div>
+//               </div>
+
+//               <form onSubmit={handleSubmit}>
+//                 <div className="row">
+//                   <div className="col-md-6">
+//                     <div className="mb-3">
+//                       <label htmlFor="emailTo" className="form-label">
+//                         To <span className="text-danger">*</span>
+//                       </label>
+//                       <CreatableSelect
+//                         options={emailOptions}
+//                         isMulti
+//                         isClearable
+//                         onChange={handleEmailChange}
+//                         value={formData.mailTo.map((email) => ({
+//                           label: email,
+//                           value: email,
+//                         }))}
+//                         placeholder="Select or enter email"
+//                       />
+//                     </div>
+//                   </div>
+//                   <div className="col-md-3 align-content-center">
+//                     <div className="">
+//                       <button
+//                         type="button"
+//                         onClick={triggerFileInput}
+//                         className="btn btn-primary custom-submit-button align-content-center"
+//                       >
+//                         Import
+//                       </button>
+//                       <input
+//                         type="file"
+//                         ref={fileInputRef}
+//                         onChange={handleFileImport}
+//                         // accept=".csv"
+//                         accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+//                         className="hidden"
+//                       />
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <div className="row">
+//                   <div className="col-md-6">
+//                     <div className="mb-3">
+//                       <label htmlFor="subject" className="form-label">
+//                         Subject <span className="text-danger">*</span>
+//                       </label>
+//                       <input
+//                         type="text"
+//                         id="subject"
+//                         name="subject"
+//                         className="form-control"
+//                         value={formData.subject}
+//                         onChange={handleChange}
+//                         required
+//                         placeholder="Enter Email Subject"
+//                       />
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 <div className="row">
+//                   <div className="col-xl-12">
+//                     <div className="card m-2">
+//                       <div className="card-body custom-heading-padding">
+//                         <div className="container">
+//                           <div className="card-header mb-2">
+//                             <h4 className="card-title text-center custom-heading-font">
+//                               Email Message
+//                             </h4>
+//                           </div>
+//                         </div>
+
+//                         <div className="row">
+//                           <div className="col-md-12">
+//                             <div className="mb-3">
+//                               <ReactQuill
+//                                 theme="snow"
+//                                 value={formData.content}
+//                                 onChange={handleContentChange}
+//                                 className="quill-editor-custom"
+//                                 required
+//                               />
+//                             </div>
+//                           </div>
+//                         </div>
+
+//                         <div className="d-flex justify-content-end">
+//                           <button
+//                             type="submit"
+//                             className="btn btn-primary custom-submit-button"
+//                           disabled={sending}
+//                     >
+//                       {sending ? "sending..." : "Send"}
+
+//                           </button>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </form>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MarketingEmail;
+
+import React, { useState, useEffect, useRef } from "react";
+import { toast } from "react-toastify";
+import getAPI from "../../../../api/getAPI";
+import postAPI from "../../../../api/postAPI";
+import CreatableSelect from "react-select/creatable";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+import * as XLSX from "xlsx";
+import { components } from "react-select";
+
+const MarketingEmail = () => {
+  const [formData, setFormData] = useState({
+    mailTo: [],
+    subject: "",
+    content: "",
+  });
+
+  const [sending, setSending] = useState(false);
+  const [emailOptions, setEmailOptions] = useState([]);
+  const fileInputRef = useRef(null);
+
+  // Fetch settings and template
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const emailResponse = await getAPI("/get-all-emails", {}, true);
+        if (!emailResponse.hasError) {
+          const options = emailResponse.data.data.map((email) => ({
+            label: email,
+            value: email,
+          }));
+          setEmailOptions(options);
+        }
+      } catch (err) {
+        toast.error("Initialization error: " + err.message);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
+  // Input handler
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleFileImport = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    const isCSV = file.name.endsWith(".csv");
+    const isExcel = file.name.endsWith(".xls") || file.name.endsWith(".xlsx");
+
+    reader.onload = (e) => {
+      try {
+        let emails = [];
+
+        if (isCSV) {
+          const text = e.target.result;
+          emails = parseCSV(text);
+        } else if (isExcel) {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+          const hasHeader = rows[0][0]?.toString().toLowerCase().includes("email");
+          const startIndex = hasHeader ? 1 : 0;
+
+          emails = rows.slice(startIndex).map((row) => row[0]).filter(Boolean);
+        }
+
+        const validEmails = emails.filter(isValidEmail);
+        if (validEmails.length === 0) {
+          toast.warning("No valid email found in file.");
+          return;
+        }
+
+        const newOptions = validEmails.map((email) => ({
+          label: email,
+          value: email,
+        }));
+
+        setEmailOptions((prevOptions) => {
+          const existing = new Set(prevOptions.map((opt) => opt.value));
+          const uniqueNew = newOptions.filter((opt) => !existing.has(opt.value));
+          return [...prevOptions, ...uniqueNew];
+        });
+
+        setFormData((prevData) => {
+          const existing = new Set(prevData.mailTo);
+          const uniqueNew = validEmails.filter((email) => !existing.has(email));
+          return {
+            ...prevData,
+            mailTo: [...prevData.mailTo, ...uniqueNew],
+          };
+        });
+
+        toast.success(`${validEmails.length} email imported and selected.`);
+      } catch (err) {
+        toast.error("Error processing file: " + err.message);
+      }
+    };
+
+    if (isCSV) {
+      reader.readAsText(file);
+    } else if (isExcel) {
+      reader.readAsArrayBuffer(file);
+    } else {
+      toast.error("Unsupported file format.");
+    }
+
+    event.target.value = null;
+  };
+
+  const parseCSV = (text) => {
+    const lines = text.split('\n').map((line) => line.trim()).filter((line) => line);
+    if (lines.length === 0) return [];
+    const firstLine = lines[0].toLowerCase();
+    const hasHeader = firstLine.includes('email');
+    const startIndex = hasHeader ? 1 : 0;
+    return lines.slice(startIndex).map((line) => {
+      const columns = line.split(',').map((col) => col.trim());
+      return columns[0] || '';
+    }).filter((email) => email);
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Email content handler
+  const handleContentChange = (value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      content: value,
+    }));
+  };
+
+  const handleEmailChange = (selectedOptions) => {
+    const selectedEmails = selectedOptions
+      ? selectedOptions.map((opt) => opt.value)
+      : [];
+    setFormData((prevData) => ({
+      ...prevData,
+      mailTo: selectedEmails,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.mailTo.length === 0) {
+      toast.warning("Please select at least one recipient.");
+      return;
+    }
+    if (!formData.content || formData.content === "<p><br></p>") {
+      toast.warning("Email content cannot be empty.");
+      return;
+    }
+
+    setSending(true);
+    try {
+      const response = await postAPI("/send-email", formData, true);
+
+      if (response.hasError) {
+        toast.error(response.message || "Failed to send email.");
+      } else {
+        toast.success(response.message || "Email sent successfully!");
+        setFormData({
+          mailTo: [],
+          subject: "",
+          content: "",
+        });
+      }
+    } catch (err) {
+      toast.error("Something went wrong: " + err.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const MultiValueContainer = ({ children, ...props }) => {
+    if (props.data.__index >= 6) {
+      return null;
+    }
+    return (
+      <components.MultiValueContainer {...props}>
+        {children}
+      </components.MultiValueContainer>
+    );
+  };
+
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-xl-12">
+          <div className="card m-2">
+            <div className="card-body custom-heading-padding">
+              <div className="container">
+                <div className="card-header mb-2">
+                  <h4 className="card-title text-center custom-heading-font">
+                    Email Details
+                  </h4>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="emailTo" className="form-label">
+                        To <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        options={emailOptions}
+                        isMulti
+                        isClearable
+                        onChange={handleEmailChange}
+                        value={formData.mailTo.map((email, index) => ({
+                          label: email,
+                          value: email,
+                          __index: index // Add index for tracking
+                        }))}
+                        placeholder="Select or enter email"
+                        formatOptionLabel={({ value, label }, { context }) => {
+                          // For the dropdown options
+                          if (context === 'menu') {
+                            return label;
+                          }
+
+                          // For the selected values display
+                          const selectedCount = formData.mailTo.length;
+                          if (selectedCount <= 6) {
+                            return label;
+                          }
+
+                          const index = formData.mailTo.indexOf(value);
+                          if (index < 5) {
+                            return label;
+                          }
+                          if (index === 5) {
+                            return `+${selectedCount - 5} more`;
+                          }
+                          return null;
+                        }}
+                        components={{ MultiValueContainer }}
+                      />
+                      {formData.mailTo.length > 5 && (
+                        <div className="text-muted small mt-1">
+                          {formData.mailTo.length} emails selected
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-md-3 align-content-center">
+                    <div style={{ marginTop: "0.4rem" }}>
+                      <button
+                        type="button"
+                        onClick={triggerFileInput}
+                        className="btn btn-primary custom-submit-button align-content-center"
+                      >
+                        Import
+                      </button>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileImport}
+                        accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row mt-3">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="subject" className="form-label">
+                        Subject <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        className="form-control"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter Email Subject"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="container">
+                    <div className="card-header mb-2">
+                      <h4 className="card-title text-center custom-heading-font">
+                        Email Message
+                      </h4>
+                    </div>
+                  </div>
+
+                    <div className="col-md-12">
+                      <div className="mb-3">
+                        <ReactQuill
+                          theme="snow"
+                          value={formData.content}
+                          onChange={handleContentChange}
+                          className="quill-editor-custom"
+                          required
+                        />
+                      </div>
+                    </div>
+                  
+                  <div className="d-flex justify-content-end">
+                    <button
+                      type="submit"
+                      className="btn btn-primary custom-submit-button"
+                      disabled={sending}
+                    >
+                      {sending ? "Sending..." : "Send"}
+                    </button>
+                  </div>
+
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MarketingEmail;
+
+// // import React, { useState, useEffect, useRef } from "react";
+// // import { toast } from "react-toastify";
+// // import getAPI from "../../../../api/getAPI";
+// // import postAPI from "../../../../api/postAPI";
+// // import CreatableSelect from "react-select/creatable";
+// // import ReactQuill from "react-quill-new";
+// // import "react-quill-new/dist/quill.snow.css";
+// // import * as XLSX from "xlsx";
+// // const MarketingEmail = () => {
+// //   const [formData, setFormData] = useState({
+// //     mailTo: [],
+// //     subject: "",
+// //     content: "",
+// //   });
+
+// //  const [sending, setSending] = useState(false);
+
+// //  const [emailOptions, setEmailOptions] = useState([]);
+// //   const fileInputRef = useRef(null);
+// //   // Fetch settings and template
+// //   useEffect(() => {
+// //     const fetchInitialData = async () => {
+// //       try {
+// //         const emailResponse = await getAPI("/get-all-emails", {}, true);
+// //         if (!emailResponse.hasError) {
+// //           const options = emailResponse.data.data.map((email) => ({
+// //             label: email,
+// //             value: email,
+// //           }));
+// //           setEmailOptions(options);
+// //         }
+// //       } catch (err) {
+// //         toast.error("Initialization error: " + err.message);
+// //       }
+// //     };
+
+// //     fetchInitialData();
+// //   }, []);
+
+// //   // Input handler
+// //   const handleChange = (e) => {
+// //     const { name, value } = e.target;
+// //     setFormData((prevData) => ({
+// //       ...prevData,
+// //       [name]: value,
+// //     }));
+// //   };
+
+// //   // const handleFileImport = (event) => {
+// //   //   const file = event.target.files[0];
+// //   //   if (!file) return;
+// //   //   if (!file.name.endsWith('.csv')) {
+// //   //     toast.error("Please upload a CSV file.");
+// //   //     return;
+// //   //   }
+
+// //   //   const reader = new FileReader();
+// //   //   reader.onload = (e) => {
+// //   //     try {
+// //   //       const text = e.target.result;
+// //   //       const emails = parseCSV(text);
+// //   //       const validEmails = emails.filter(isValidEmail);
+// //   //       if (validEmails.length === 0) {
+// //   //         toast.warning("No valid email Found in File.");
+// //   //         return;
+// //   //       }
+
+// //   //       const newOptions = validEmails.map((email) => ({
+// //   //         label: email,
+// //   //         value: email,
+// //   //       }));
+
+// //   //       setEmailOptions((prevOptions) => {
+// //   //         const existingEmails = new Set(prevOptions.map((opt) => opt.value));
+// //   //         const uniqueNewOptions = newOptions.filter(
+// //   //           (opt) => !existingEmails.has(opt.value)
+// //   //         );
+// //   //         return [...prevOptions, ...uniqueNewOptions];
+// //   //       });
+
+// //   //       setFormData((prevData) => {
+// //   //         const existingEmails = new Set(prevData.mailTo);
+// //   //         const uniqueNewEmails = validEmails.filter(
+// //   //           (email) => !existingEmails.has(email)
+// //   //         );
+// //   //         return {
+// //   //           ...prevData,
+// //   //           mailTo: [...prevData.mailTo, ...uniqueNewEmails],
+// //   //         };
+// //   //       });
+// //   //       toast.success(`${validEmails.length} email imported and selected.`);
+// //   //     } catch (err) {
+// //   //       toast.error("Error processing file: " + err.message);
+// //   //     }
+// //   //   };
+
+// //   //   reader.readAsText(file);
+// //   //   event.target.value = null;
+// //   // };
+
+
+// //   const handleFileImport = (event) => {
+// //   const file = event.target.files[0];
+// //   if (!file) return;
+
+// //   const reader = new FileReader();
+// //   const isCSV = file.name.endsWith(".csv");
+// //   const isExcel = file.name.endsWith(".xls") || file.name.endsWith(".xlsx");
+
+// //   reader.onload = (e) => {
+// //     try {
+// //       let emails = [];
+
+// //       if (isCSV) {
+// //         const text = e.target.result;
+// //         emails = parseCSV(text);
+// //       } else if (isExcel) {
+// //         const data = new Uint8Array(e.target.result);
+// //         const workbook = XLSX.read(data, { type: "array" });
+// //         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+// //         const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+// //         // Extract email from first column
+// //         const hasHeader = rows[0][0]?.toString().toLowerCase().includes("email");
+// //         const startIndex = hasHeader ? 1 : 0;
+
+// //         emails = rows.slice(startIndex).map((row) => row[0]).filter(Boolean);
+// //       }
+
+// //       const validEmails = emails.filter(isValidEmail);
+// //       if (validEmails.length === 0) {
+// //         toast.warning("No valid email found in file.");
+// //         return;
+// //       }
+
+// //       const newOptions = validEmails.map((email) => ({
+// //         label: email,
+// //         value: email,
+// //       }));
+
+// //       setEmailOptions((prevOptions) => {
+// //         const existing = new Set(prevOptions.map((opt) => opt.value));
+// //         const uniqueNew = newOptions.filter((opt) => !existing.has(opt.value));
+// //         return [...prevOptions, ...uniqueNew];
+// //       });
+
+// //       setFormData((prevData) => {
+// //         const existing = new Set(prevData.mailTo);
+// //         const uniqueNew = validEmails.filter((email) => !existing.has(email));
+// //         return {
+// //           ...prevData,
+// //           mailTo: [...prevData.mailTo, ...uniqueNew],
+// //         };
+// //       });
+
+// //       toast.success(`${validEmails.length} email imported and selected.`);
+// //     } catch (err) {
+// //       toast.error("Error processing file: " + err.message);
+// //     }
+// //   };
+
+// //   if (isCSV) {
+// //     reader.readAsText(file);
+// //   } else if (isExcel) {
+// //     reader.readAsArrayBuffer(file);
+// //   } else {
+// //     toast.error("Unsupported file format.");
+// //   }
+
+// //   event.target.value = null;
+// // };
+
+// //   const parseCSV = (text) => {
+// //     const lines = text.split('\n').map((line) => line.trim()).filter((line) => line);
+// //     if (lines.length === 0) return [];
+// //     const firstLine = lines[0].toLowerCase();
+// //     const hasHeader = firstLine.includes('email');
+// //     const startIndex = hasHeader ? 1 : 0;
+// //     return lines.slice(startIndex).map((line) => {
+// //       const columns = line.split(',').map((col) => col.trim());
+// //       return columns[0] || '';
+// //     }).filter((email) => email);
+// //   };
+
+// //   const triggerFileInput = () => {
+// //     fileInputRef.current.click();
+// //   };
+
+// //   const isValidEmail = (email) => {
+// //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// //     return emailRegex.test(email);
+// //   };
+
+// //   // Email content handler
+// //   const handleContentChange = (value) => {
+// //     setFormData((prevData) => ({
+// //       ...prevData,
+// //       content: value,
+// //     }));
+// //   };
+
+// //   const handleEmailChange = (selectedOptions) => {
+// //     const selectedEmails = selectedOptions
+// //       ? selectedOptions.map((opt) => opt.value)
+// //       : [];
+// //     setFormData((prevData) => ({
+// //       ...prevData,
+// //       mailTo: selectedEmails,
+// //     }));
+// //   };
+
+// //   const handleSubmit = async (e) => {
+// //     e.preventDefault();
+
+// //     if (formData.mailTo.length === 0) {
+// //       toast.warning("Please select at least one recipient.");
+// //       return;
+// //     }
+// //     if (!formData.content || formData.content === "<p><br></p>") {
+// //       toast.warning("Email content cannot be empty.");
+// //       return;
+// //     }
+// // setSending(true);
+// //     try {
+// //       const response = await postAPI("/send-email", formData, true);
+
+// //       if (response.hasError) {
+// //         toast.error(response.message || "Failed to send email.");
+// //       } else {
+// //         toast.success(response.message || "Email sent successfully!");
+// //         setFormData({
+// //           mailTo: [],
+// //           subject: "",
+// //           content: "",
+// //         });
+// //       }
+// //     } catch (err) {
+// //       toast.error("Something went wrong: " + err.message);
+// //     } finally {
+// //       setSending(false);
+// //     }
+// //   };
+
+// //   return (
+// //     <div className="container">
+// //       <div className="row">
+// //         <div className="col-xl-12">
+// //           <div className="card m-2">
+// //             <div className="card-body custom-heading-padding">
+// //               <div className="container">
+// //                 <div className="card-header mb-2">
+// //                   <h4 className="card-title text-center custom-heading-font">
+// //                     Email Details
+// //                   </h4>
+// //                 </div>
+// //               </div>
+
+// //               <form onSubmit={handleSubmit}>
+// //                 <div className="row">
+// //                   <div className="col-md-6">
+// //                     <div className="mb-3">
+// //                       <label htmlFor="emailTo" className="form-label">
+// //                         To <span className="text-danger">*</span>
+// //                       </label>
+// //                       <CreatableSelect
+// //                         options={emailOptions}
+// //                         isMulti
+// //                         isClearable
+// //                         onChange={handleEmailChange}
+// //                         value={formData.mailTo.map((email) => ({
+// //                           label: email,
+// //                           value: email,
+// //                         }))}
+// //                         placeholder="Select or enter email"
+// //                       />
+// //                     </div>
+// //                   </div>
+// //                   <div className="col-md-3 align-content-center">
+// //                     <div className="">
+// //                       <button
+// //                         type="button"
+// //                         onClick={triggerFileInput}
+// //                         className="btn btn-primary custom-submit-button align-content-center"
+// //                       >
+// //                         Import
+// //                       </button>
+// //                       <input
+// //                         type="file"
+// //                         ref={fileInputRef}
+// //                         onChange={handleFileImport}
+// //                         // accept=".csv"
+// //                         accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+// //                         className="hidden"
+// //                       />
+// //                     </div>
+// //                   </div>
+// //                 </div>
+// //                 <div className="row">
+// //                   <div className="col-md-6">
+// //                     <div className="mb-3">
+// //                       <label htmlFor="subject" className="form-label">
+// //                         Subject <span className="text-danger">*</span>
+// //                       </label>
+// //                       <input
+// //                         type="text"
+// //                         id="subject"
+// //                         name="subject"
+// //                         className="form-control"
+// //                         value={formData.subject}
+// //                         onChange={handleChange}
+// //                         required
+// //                         placeholder="Enter Email Subject"
+// //                       />
+// //                     </div>
+// //                   </div>
+// //                 </div>
+
+// //                 <div className="row">
+// //                   <div className="col-xl-12">
+// //                     <div className="card m-2">
+// //                       <div className="card-body custom-heading-padding">
+// //                         <div className="container">
+// //                           <div className="card-header mb-2">
+// //                             <h4 className="card-title text-center custom-heading-font">
+// //                               Email Message
+// //                             </h4>
+// //                           </div>
+// //                         </div>
+
+// //                         <div className="row">
+// //                           <div className="col-md-12">
+// //                             <div className="mb-3">
+// //                               <ReactQuill
+// //                                 theme="snow"
+// //                                 value={formData.content}
+// //                                 onChange={handleContentChange}
+// //                                 className="quill-editor-custom"
+// //                                 required
+// //                               />
+// //                             </div>
+// //                           </div>
+// //                         </div>
+
+// //                         <div className="d-flex justify-content-end">
+// //                           <button
+// //                             type="submit"
+// //                             className="btn btn-primary custom-submit-button"
+// //                           disabled={sending}
+// //                     >
+// //                       {sending ? "sending..." : "Send"}
+
+// //                           </button>
+// //                         </div>
+// //                       </div>
+// //                     </div>
+// //                   </div>
+// //                 </div>
+// //               </form>
+// //             </div>
+// //           </div>
+// //         </div>
+// //       </div>
+// //     </div>
+// //   );
+// // };
+
+// // export default MarketingEmail;
+
+// import React, { useState, useEffect, useRef } from "react";
+// import { toast } from "react-toastify";
+// import getAPI from "../../../../api/getAPI";
+// import postAPI from "../../../../api/postAPI";
+// import CreatableSelect from "react-select/creatable";
+// import ReactQuill from "react-quill-new";
+// import "react-quill-new/dist/quill.snow.css";
+// import * as XLSX from "xlsx";
+// import { components } from "react-select";
+
+// const MarketingEmail = () => {
+//   const [formData, setFormData] = useState({
+//     mailTo: [],
+//     subject: "",
+//     content: "",
+//   });
+
+//   const [sending, setSending] = useState(false);
+//   const [emailOptions, setEmailOptions] = useState([]);
+//   const fileInputRef = useRef(null);
+
+//   // Fetch settings and template
+//   useEffect(() => {
+//     const fetchInitialData = async () => {
+//       try {
+//         const emailResponse = await getAPI("/get-all-emails", {}, true);
+//         if (!emailResponse.hasError) {
+//           const options = emailResponse.data.data.map((email) => ({
+//             label: email,
+//             value: email,
+//           }));
+//           setEmailOptions(options);
+//         }
+//       } catch (err) {
+//         toast.error("Initialization error: " + err.message);
+//       }
+//     };
+
+//     fetchInitialData();
+//   }, []);
+
+//   // Input handler
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       [name]: value,
+//     }));
+//   };
+
+//   const handleFileImport = (event) => {
+//     const file = event.target.files[0];
+//     if (!file) return;
+
+//     const reader = new FileReader();
+//     const isCSV = file.name.endsWith(".csv");
+//     const isExcel = file.name.endsWith(".xls") || file.name.endsWith(".xlsx");
+
+//     reader.onload = (e) => {
+//       try {
+//         let emails = [];
+
+//         if (isCSV) {
+//           const text = e.target.result;
+//           emails = parseCSV(text);
+//         } else if (isExcel) {
+//           const data = new Uint8Array(e.target.result);
+//           const workbook = XLSX.read(data, { type: "array" });
+//           const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+//           const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+//           const hasHeader = rows[0][0]?.toString().toLowerCase().includes("email");
+//           const startIndex = hasHeader ? 1 : 0;
+
+//           emails = rows.slice(startIndex).map((row) => row[0]).filter(Boolean);
+//         }
+
+//         const validEmails = emails.filter(isValidEmail);
+//         if (validEmails.length === 0) {
+//           toast.warning("No valid email found in file.");
+//           return;
+//         }
+
+//         const newOptions = validEmails.map((email) => ({
+//           label: email,
+//           value: email,
+//         }));
+
+//         setEmailOptions((prevOptions) => {
+//           const existing = new Set(prevOptions.map((opt) => opt.value));
+//           const uniqueNew = newOptions.filter((opt) => !existing.has(opt.value));
+//           return [...prevOptions, ...uniqueNew];
+//         });
+
+//         setFormData((prevData) => {
+//           const existing = new Set(prevData.mailTo);
+//           const uniqueNew = validEmails.filter((email) => !existing.has(email));
+//           return {
+//             ...prevData,
+//             mailTo: [...prevData.mailTo, ...uniqueNew],
+//           };
+//         });
+
+//         toast.success(`${validEmails.length} email imported and selected.`);
+//       } catch (err) {
+//         toast.error("Error processing file: " + err.message);
+//       }
+//     };
+
+//     if (isCSV) {
+//       reader.readAsText(file);
+//     } else if (isExcel) {
+//       reader.readAsArrayBuffer(file);
+//     } else {
+//       toast.error("Unsupported file format.");
+//     }
+
+//     event.target.value = null;
+//   };
+
+//   const parseCSV = (text) => {
+//     const lines = text.split('\n').map((line) => line.trim()).filter((line) => line);
+//     if (lines.length === 0) return [];
+//     const firstLine = lines[0].toLowerCase();
+//     const hasHeader = firstLine.includes('email');
+//     const startIndex = hasHeader ? 1 : 0;
+//     return lines.slice(startIndex).map((line) => {
+//       const columns = line.split(',').map((col) => col.trim());
+//       return columns[0] || '';
+//     }).filter((email) => email);
+//   };
+
+//   const triggerFileInput = () => {
+//     fileInputRef.current.click();
+//   };
+
+//   const isValidEmail = (email) => {
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     return emailRegex.test(email);
+//   };
+
+//   // Email content handler
+//   const handleContentChange = (value) => {
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       content: value,
+//     }));
+//   };
+
+//   const handleEmailChange = (selectedOptions) => {
+//     const selectedEmails = selectedOptions
+//       ? selectedOptions.map((opt) => opt.value)
+//       : [];
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       mailTo: selectedEmails,
+//     }));
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (formData.mailTo.length === 0) {
+//       toast.warning("Please select at least one recipient.");
+//       return;
+//     }
+//     if (!formData.content || formData.content === "<p><br></p>") {
+//       toast.warning("Email content cannot be empty.");
+//       return;
+//     }
+
+//     setSending(true);
+//     try {
+//       const response = await postAPI("/send-email", formData, true);
+
+//       if (response.hasError) {
+//         toast.error(response.message || "Failed to send email.");
+//       } else {
+//         toast.success(response.message || "Email sent successfully!");
+//         setFormData({
+//           mailTo: [],
+//           subject: "",
+//           content: "",
+//         });
+//       }
+//     } catch (err) {
+//       toast.error("Something went wrong: " + err.message);
+//     } finally {
+//       setSending(false);
+//     }
+//   };
+
+//   const MultiValueContainer = ({ children, ...props }) => {
+//     if (props.data.__index >= 6) {
+//       return null;
+//     }
+//     return (
+//       <components.MultiValueContainer {...props}>
+//         {children}
+//       </components.MultiValueContainer>
+//     );
+//   };
+
+
+//   return (
+//     <div className="container">
+//       <div className="row">
+//         <div className="col-xl-12">
+//           <div className="card m-2">
+//             <div className="card-body custom-heading-padding">
+//               <div className="container">
+//                 <div className="card-header mb-2">
+//                   <h4 className="card-title text-center custom-heading-font">
+//                     Email Details
+//                   </h4>
+//                 </div>
+//               </div>
+
+//               <form onSubmit={handleSubmit}>
+//                 <div className="row">
+//                   <div className="col-md-6">
+//                     <div className="mb-3">
+//                       <label htmlFor="emailTo" className="form-label">
+//                         To <span className="text-danger">*</span>
+//                       </label>
+//                       <CreatableSelect
+//                         options={emailOptions}
+//                         isMulti
+//                         isClearable
+//                         onChange={handleEmailChange}
+//                         value={formData.mailTo.map((email, index) => ({
+//                           label: email,
+//                           value: email,
+//                           __index: index // Add index for tracking
+//                         }))}
+//                         placeholder="Select or enter email"
+//                         formatOptionLabel={({ value, label }, { context }) => {
+//                           // For the dropdown options
+//                           if (context === 'menu') {
+//                             return label;
+//                           }
+
+//                           // For the selected values display
+//                           const selectedCount = formData.mailTo.length;
+//                           if (selectedCount <= 6) {
+//                             return label;
+//                           }
+
+//                           const index = formData.mailTo.indexOf(value);
+//                           if (index < 5) {
+//                             return label;
+//                           }
+//                           if (index === 5) {
+//                             return `+${selectedCount - 5} more`;
+//                           }
+//                           return null;
+//                         }}
+//                         components={{ MultiValueContainer }}
+//                       />
+//                       
+//                     </div>
+//                   </div>
+//                   <div className="col-md-3 align-content-center">
+//                     <div style={{ marginTop: "0.4rem" }}>
+//                       <button
+//                         type="button"
+//                         onClick={triggerFileInput}
+//                         className="btn btn-primary custom-submit-button align-content-center"
+//                       >
+//                         Import
+//                       </button>
+//                       <input
+//                         type="file"
+//                         ref={fileInputRef}
+//                         onChange={handleFileImport}
+//                         accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+//                         className="hidden"
+//                       />
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <div className="row mt-3">
+//                   <div className="col-md-6">
+//                     <div className="mb-3">
+//                       <label htmlFor="subject" className="form-label">
+//                         Subject <span className="text-danger">*</span>
+//                       </label>
+//                       <input
+//                         type="text"
+//                         id="subject"
+//                         name="subject"
+//                         className="form-control"
+//                         value={formData.subject}
+//                         onChange={handleChange}
+//                         required
+//                         placeholder="Enter Email Subject"
+//                       />
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 <div className="row">
+//                   <div className="container">
+//                     <div className="card-header mb-2">
+//                       <h4 className="card-title text-center custom-heading-font">
+//                         Email Message
+//                       </h4>
+//                     </div>
+//                   </div>
+
+//                     <div className="col-md-12">
+//                       <div className="mb-3">
+//                         <ReactQuill
+//                           theme="snow"
+//                           value={formData.content}
+//                           onChange={handleContentChange}
+//                           className="quill-editor-custom"
+//                           required
+//                         />
+//                       </div>
+//                     </div>
+                  
+//                   <div className="d-flex justify-content-end">
+//                     <button
+//                       type="submit"
+//                       className="btn btn-primary custom-submit-button"
+//                       disabled={sending}
+//                     >
+//                       {sending ? "Sending..." : "Send"}
+//                     </button>
+//                   </div>
+
+//                 </div>
+//               </form>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MarketingEmail;
+
+
+    // <div className="email-editor-container">
+    //   <div className="email-editor-card">
+    //     <div className="email-editor-header">
+    //       <h4 className="email-editor-title">Compose Email</h4>
+    //     </div>
+
+    //     <form onSubmit={handleSubmit}>
+    //       <div className="email-editor-form-group">
+    //         <div className="email-recipient-container">
+    //           <label className="email-editor-label">
+    //             To <span className="required-asterisk">*</span>
+    //           </label>
+    //           <div className="email-recipient-controls">
+    //             <CreatableSelect
+    //               className="email-recipient-select"
+    //               options={emailOptions}
+    //               isMulti
+    //               isClearable
+    //               onChange={handleEmailChange}
+    //               value={formData.mailTo.map((email, index) => ({
+    //                 label: email,
+    //                 value: email,
+    //                 __index: index
+    //               }))}
+    //               placeholder="Select or enter email addresses"
+    //               formatOptionLabel={({ value, label }, { context }) => {
+    //                       if (context === 'menu') {
+    //                         return label;
+    //                       }
+    //                       const selectedCount = formData.mailTo.length;
+    //                       if (selectedCount <= 6) {
+    //                         return label;
+    //                       }
+
+    //                       const index = formData.mailTo.indexOf(value);
+    //                       if (index < 5) {
+    //                         return label;
+    //                       }
+    //                       if (index === 5) {
+    //                         return `+${selectedCount - 5} more`;
+    //                       }
+    //                       return null;
+    //                     }}
+    //               components={{ MultiValueContainer }}
+    //             />
+                
+    //             <button
+    //               type="button"
+    //               onClick={triggerFileInput}
+    //               className="btn btn-primary custom-submit-button align-content-center"
+    //             >
+    //               Import
+    //             </button>
+    //             <input
+    //               type="file"
+    //               ref={fileInputRef}
+    //               onChange={handleFileImport}
+    //               accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    //               className="hidden-file-input"
+    //               style={{ display: 'none' }} // Hide the actual input
+    //             />
+    //           </div>
+    //         </div>
+
+    //         <div className="email-subject-container">
+    //           <label className="email-editor-label">
+    //             Subject <span className="required-asterisk">*</span>
+    //           </label>
+    //           <input
+    //             type="text"
+    //             name="subject"
+    //             className="email-subject-input"
+    //             value={formData.subject}
+    //             onChange={handleChange}
+    //             required
+    //             placeholder="Enter email subject"
+    //           />
+    //         </div>
+
+    //         <div className="email-content-container">
+    //           <label className="email-editor-label">
+    //             Message <span className="required-asterisk">*</span>
+    //           </label>
+    //           <div className="quill-editor-wrapper">
+    //             <ReactQuill
+    //               ref={quillRef}
+    //               theme="snow"
+    //               value={formData.content}
+    //               onChange={handleContentChange}
+    //               modules={modules}
+    //               formats={formats}
+    //               placeholder="Compose your email here..."
+    //               className="quill-editor-custom"
+    //             />
+    //           </div>
+    //         </div>
+
+    //         {formData.attachments.length > 0 && (
+    //           <div className="email-attachments-container">
+    //             <label className="email-editor-label">Attachments</label>
+    //             <div className="attachments-list">
+    //               {formData.attachments.map((file, index) => (
+    //                 <div key={index} className="attachment-item">
+    //                   <span className="attachment-name">{file.name}</span>
+    //                   <span className="attachment-size">
+    //                     {formatFileSize(file.size)}
+    //                   </span>
+    //                   <button
+    //                     type="button"
+    //                     onClick={() => removeAttachment(index)}
+    //                     className="attachment-remove-button"
+    //                   >
+    //                     ×
+    //                   </button>
+    //                 </div>
+    //               ))}
+    //             </div>
+    //           </div>
+    //         )}
+
+    //         <div className="email-editor-actions">
+    //           <button
+    //             type="submit"
+    //             className="email-send-button"
+    //             disabled={sending}
+    //           >
+    //             {sending ? (
+    //               <>
+    //                 <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    //                 Sending...
+    //               </>
+    //             ) : (
+    //               "Send Email"
+    //             )}
+    //           </button>
+    //         </div>
+    //       </div>
+    //     </form>
+    //   </div>
+    // </div>

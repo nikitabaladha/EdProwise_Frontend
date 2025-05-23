@@ -155,6 +155,7 @@ const Sidebar = () => {
               {
                 id: "incomeTax",
                 label: "Income Tax",
+                // icon: "bx-cog",
                 children: [
                   {
                     label: "IT Declaration",
@@ -175,6 +176,10 @@ const Sidebar = () => {
                 ],
               },
               {
+                label: "Request for Loan",
+                link: "/admin-dashboard/payroll-module/employee-services/request-for-loan",
+              },
+              {
                 label: "My Loan Statement",
                 link: "/admin-dashboard/payroll-module/employee-services/loan-summary",
               },
@@ -190,6 +195,7 @@ const Sidebar = () => {
               {
                 id: "exit",
                 label: "Exit",
+                // icon: "bx-cog",
                 children: [
                   {
                     label: "Employee Resignation",
@@ -199,15 +205,19 @@ const Sidebar = () => {
                     label: "Exit Interview",
                     link: "/admin-dashboard/payroll-module/employee-services/exit/exit-interview",
                   },
-                  // {
-                  //   label: "Form 16",
-                  //   link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
-                  // },
-                  // {
-                  //   label: "Previous Employment Income",
-                  //   link: "/admin-dashboard/payroll-module/employee-services/income-tax/previous-employment-income",
-                  // },
                 ],
+              },
+              {
+                label: "Letter & Documents",
+                link: "/admin-dashboard/payroll-module/employee-services/letter-documents",
+              },
+              {
+                label: "Awards & Achievement",
+                link: "/admin-dashboard/payroll-module/employee-services/award-achievement",
+              },
+              {
+                label: "Promotion Nomination",
+                link: "/admin-dashboard/payroll-module/employee-services/promotion-nomination",
               },
             ],
           },
@@ -227,7 +237,7 @@ const Sidebar = () => {
               },
               {
                 label: "CTC Update",
-                link: "/admin-dashboard/payroll-module/employer/CTC-update",
+                link: "/admin-dashboard/payroll-module/employer/ctc-update",
               },
               {
                 label: "Process Payroll",
@@ -237,23 +247,23 @@ const Sidebar = () => {
               {
                 id: "salaryIncrement",
                 label: "Salary Increment",
-                icon: "bx-cog",
+                // icon: "bx-cog",
                 children: [
                   {
                     label: "Bulk Employee Increment",
-                    link: "/school-dashboard/fees-module/admin-setting/prefix-setting/registartion-prefix",
+                    link: "/admin-dashboard/payroll-module/employer/salary-increment/bulk-employee-increment",
                     // icon: "bx-hash",
                   },
                   {
                     label: "Single Employee Increment",
-                    link: "/school-dashboard/fees-module/admin-setting/prefix-setting/admission-prefix",
+                    link: "/admin-dashboard/payroll-module/employer/salary-increment/single-employee-increment",
                     // icon: "bx-hash",
                   },
                 ],
               },
 
               {
-                label: "Generate Appointment/CTC Letter",
+                label: "Generate Appointment",
                 link: "/admin-dashboard/payroll-module/employer/generate-appointment-ctc-letter",
               },
               {
@@ -261,13 +271,13 @@ const Sidebar = () => {
                 link: "/admin-dashboard/payroll-module/employer/form-16-list",
               },
               {
-                label: "Check Supporting Submitted for Tax",
-                link: "/admin-dashboard/payroll-module/employer/check-supporting-submitted-for-Tax",
+                label: "Supporting Submitted for Tax",
+                link: "/admin-dashboard/payroll-module/employer/supporting-tax-submitted",
               },
               {
                 id: "loanToEmployees",
                 label: "Loan To Employees",
-                icon: "bx-cog",
+                // icon: "bx-cog",
                 children: [
                   {
                     label: "Pay Loan",
@@ -290,11 +300,7 @@ const Sidebar = () => {
               },
               {
                 label: "Resignation Approval",
-                // link: "/admin-dashboard/payroll-module/employer/resignation-Approval",
-              },
-              {
-                label: "Resignation Report",
-                link: "/admin-dashboard/payroll-module/employer/resignation-list",
+                link: "/admin-dashboard/payroll-module/employer/resignation",
               },
             ],
           },
@@ -305,28 +311,31 @@ const Sidebar = () => {
             children: [
               {
                 label: "Freeze IT Declaration",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+                link: "/admin-dashboard/payroll-module/admin-setting/freeze-it-declaration",
               },
               {
                 label: "Annual Leave Update",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+                link: "/admin-dashboard/payroll-module/admin-setting/annual-leave-update",
               },
               {
                 label: "Overtime Allowance Rate",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+                link: "/admin-dashboard/payroll-module/admin-setting/overtime-allowance-rate",
               },
               {
                 label: "CTC Components",
-                link: "/admin-dashboard/payroll-module/admin-setting/define-ctc-components-list",
-                // icon: "solar:users-group-rounded-bold-duotone",
+                link: "/admin-dashboard/payroll-module/admin-setting/ctc-components",
               },
               {
                 label: "Grade",
-                // link: ""
+                link: "/admin-dashboard/payroll-module/admin-setting/define-grade",
               },
               {
                 label: "Job Designation",
-                // link: ""
+                link: "/admin-dashboard/payroll-module/admin-setting/define-job-designation",
+              },
+              {
+                label: "Category",
+                link: "/admin-dashboard/payroll-module/admin-setting/define-category",
               },
               {
                 label: "School Details",

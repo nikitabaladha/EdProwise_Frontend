@@ -1,17 +1,27 @@
 import React from 'react'
-
+import { useNavigate } from 'react-router-dom'
 const AddEmployeeRegistration = () => {
+
+  const navigate = useNavigate();
+
   return (
     <div className="container">
       <div className="row">
         <div className="col-xl-12">
           <div className="card m-2">
-            <div className="card-body">
+            <div className="card-body custom-heading-padding">
               <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="payroll-title mb-0 text-center">
+                <div className="card-header mb-2 d-flex align-items-center">
+                  <h4 className="card-title flex-grow-1 text-center">
                     Registration Form
-                  </h4>
+                  </h4> 
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={() => navigate(-1)}
+                  >
+                    Back
+                  </button>
                 </div>
               </div>
               <form onSubmit="">
@@ -113,7 +123,7 @@ const AddEmployeeRegistration = () => {
                       </select>
                     </div>
                   </div>
-                
+
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label
