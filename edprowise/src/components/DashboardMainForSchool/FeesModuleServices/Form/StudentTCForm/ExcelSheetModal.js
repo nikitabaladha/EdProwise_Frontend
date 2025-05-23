@@ -104,8 +104,14 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
       reader.onload = async (e) => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
+          const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+          if (!sheetName) {
+            toast.error('No "Data" sheet found in the Excel file.');
+            resolve({ jsonData: [], validatedData: [] });
+            return;
+          }
+          const sheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
           return row.AdmissionNumber?.toString().trim();
         });
 
@@ -146,7 +152,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
           payload.motherName = row.motherName?.toString().trim() || student.motherName;
           payload.dateOfAdmission = row.dateOfAdmission?.toString().trim() || (student.applicationDate ? student.applicationDate.split('T')[0] : '');
 
-          // Validate className
+  
           const className = row.className?.toString().trim();
           const classObj = classes.find(c => c.className.toLowerCase() === className?.toLowerCase());
           if (!classObj) {
@@ -154,7 +160,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
             hasError = true;
             continue;
           }
-          payload.masterDefineClass = classObj._id; // Store class ID in payload for database
+          payload.masterDefineClass = classObj._id; 
 
           const feeTypeName = row.selectedFeeType?.toString().trim();
           const feeTypes = feeTypesCache[classObj._id] || [];
@@ -165,7 +171,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
             continue;
           }
 
-          // Rest of the validation logic remains the same
+          
           const tcFees = Number(row.TCfees) || 0;
           if (tcFees <= 0 || tcFees !== feeType.amount) {
             toast.error(`Row ${index + 1}: TC Fees must match the fee type amount (${feeType.amount}).`);
@@ -394,51 +400,54 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
   };
 
   const handleDownloadDemo = () => {
-    if (students.length === 0 || classes.length === 0) {
-      toast.error('No students or classes available to include in demo sheet.');
-      return;
-    }
+  if (students.length === 0 || classes.length === 0) {
+    toast.error('No students or classes available to include in demo sheet.');
+    return;
+  }
 
-    const note = [
-      '📌 Import Guidelines:',
-      '• Required Fields: AdmissionNumber, firstName, lastName, dateOfBirth, fatherName, motherName, dateOfIssue, dateOfAdmission, masterDefineClass, percentageObtainInLastExam, qualifiedPromotionInHigherClass, whetherFaildInAnyClass, anyOutstandingDues, moralBehaviour, dateOfLastAttendanceAtSchool, selectedFeeType, TCfees, finalAmount, name, paymentMode, agreementChecked.',
-      '• Conditional Fields: chequeNumber and bankName are required if paymentMode is Cheque.',
-      '• Optional Fields: middleName, nationality, reasonForLeaving, anyRemarks, concessionAmount.',
-      '• Formats: Dates must be YYYY-MM-DD. agreementChecked must be true/false. paymentMode must be Cash/Cheque/Online. nationality must be India/International/SAARC Countries.',
-      '• TCfees must match the selectedFeeType amount. finalAmount = TCfees - concessionAmount.',
-      '• selectedFeeType is required for validation and must match an existing feeType in the OneTimeFees collection.',
-      '• Do not change column headers; they must remain exactly as provided.',
-      '• Remove the "Import Guidelines:" lines from the file before importing.',
-      '•  If the payment mode is "Cash" or "Online", leave the Cheque Number and Bank Name fields blank.'
-      `• Available Classes: ${classes.map(c => c.className).join(', ')}.`,
-      `• Sample Admission Numbers: ${students.slice(0, 5).map(s => s.AdmissionNumber).join(', ')}.`,
-    ];
+  const guidelines = [
+    ['📌 Import Guidelines:'],
+    ['• Required Fields: AdmissionNumber, firstName, lastName, dateOfBirth, fatherName, motherName, dateOfIssue, dateOfAdmission, masterDefineClass, percentageObtainInLastExam, qualifiedPromotionInHigherClass, whetherFaildInAnyClass, anyOutstandingDues, moralBehaviour, dateOfLastAttendanceAtSchool, selectedFeeType, TCfees, finalAmount, name, paymentMode, agreementChecked.'],
+    ['• Conditional Fields: chequeNumber and bankName are required if paymentMode is Cheque.'],
+    ['• Optional Fields: middleName, nationality, reasonForLeaving, anyRemarks, concessionAmount.'],
+    ['• Formats: Dates must be YYYY-MM-DD. agreementChecked must be true/false. paymentMode must be Cash/Cheque/Online. nationality must be India/International/SAARC Countries.'],
+    ['• TCfees must match the selectedFeeType amount. finalAmount = TCfees - concessionAmount.'],
+    ['• selectedFeeType is required for validation and must match an existing feeType in the OneTimeFees collection.'],
+    ['• Do not change column headers; they must remain exactly as provided.'],
+    ['• If the payment mode is "Cash" or "Online", leave the Cheque Number and Bank Name fields blank.'],
+    ['• Use the "Data" sheet to enter your data.'],
+    [`• Available Classes: ${classes.map(c => c.className).join(', ')}.`],
+    [`• Sample Admission Numbers: ${students.slice(0, 5).map(s => s.AdmissionNumber).join(', ')}.`],
+  ];
 
-    const wsData = [
-      ...note.map((line) => [line]),
-      [],
-      [
-        'AdmissionNumber', 'firstName', 'middleName', 'lastName', 'dateOfBirth', 'nationality',
-        'fatherName', 'motherName', 'dateOfIssue', 'dateOfAdmission', 'className',
-        'percentageObtainInLastExam', 'qualifiedPromotionInHigherClass', 'whetherFaildInAnyClass',
-        'anyOutstandingDues', 'moralBehaviour', 'dateOfLastAttendanceAtSchool', 'reasonForLeaving',
-        'anyRemarks', 'selectedFeeType', 'TCfees', 'concessionAmount', 'finalAmount', 'name',
-        'paymentMode', 'chequeNumber', 'bankName', 'agreementChecked'
-      ],
-      [
-        students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', '2010-05-15', 'India',
-        'James Doe', 'Jane Doe', '2025-05-20', '2020-04-01', 'Grade 10',
-        '85%', 'Yes', 'No', 'No', 'Good', '2025-05-15', 'Relocation',
-        'Excellent student', 'TC Fee', '500', '100', '400', 'Admin User',
-        'Cheque', '123456', 'State Bank', 'true'
-      ],
-    ];
+  const wsData = [
+    [
+      'AdmissionNumber', 'firstName', 'middleName', 'lastName', 'dateOfBirth', 'nationality',
+      'fatherName', 'motherName', 'dateOfIssue', 'dateOfAdmission', 'className',
+      'percentageObtainInLastExam', 'qualifiedPromotionInHigherClass', 'whetherFaildInAnyClass',
+      'anyOutstandingDues', 'moralBehaviour', 'dateOfLastAttendanceAtSchool', 'reasonForLeaving',
+      'anyRemarks', 'selectedFeeType', 'TCfees', 'concessionAmount', 'finalAmount', 'name',
+      'paymentMode', 'chequeNumber', 'bankName', 'agreementChecked'
+    ],
+    [
+      students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', '2010-05-15', 'India',
+      'James Doe', 'Jane Doe', '2025-05-20', '2020-04-01', 'Grade 10',
+      '85%', 'Yes', 'No', 'No', 'Good', '2025-05-15', 'Relocation',
+      'Excellent student', 'TC Fee', '500', '100', '400', 'Admin User',
+      'Cheque', '123456', 'State Bank', 'true'
+    ],
+  ];
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Demo');
-    XLSX.writeFile(wb, 'demo_tc_form.xlsx');
-  };
+  const wb = XLSX.utils.book_new();
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+
+  const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
+  XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
+
+  XLSX.writeFile(wb, 'tc_form.xlsx');
+};
 
   return (
     <>

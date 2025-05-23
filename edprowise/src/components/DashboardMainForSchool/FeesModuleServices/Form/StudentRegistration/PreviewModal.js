@@ -1,53 +1,43 @@
-
 import React from 'react';
 import { Modal, Button, Table, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 
-const AdmissionPreviewModal = ({ show, onClose, previewData, validatedData, classes, shifts, feeTypesByClass }) => {
+const RegistrationPreviewModal = ({ show, onClose, previewData, validatedData, classes, shifts, feeTypesByClass }) => {
   const headers = [
     'Row',
-    'registrationNumber', 'firstName', 'middleName', 'lastName', 'dateOfBirth', 'age', 'nationality',
-    'gender', 'bloodGroup', 'className', 'Shift', 'section', 'currentAddress', 'country', 'state', 'city',
-    'pincode', 'parentContactNumber', 'motherTongue', 'previousSchoolName', 'addressOfPreviousSchool',
-    'previousSchoolBoard', 'aadharPassportNumber', 'studentCategory', 'siblingInfoChecked',
-    'relationType', 'siblingName', 'parentalStatus', 'fatherName', 'fatherContactNo',
-    'fatherQualification', 'fatherProfession', 'motherName', 'motherContactNo', 'motherQualification',
-    'motherProfession', 'agreementChecked', 'selectedFeeType', 'admissionFees', 'concessionAmount',
-    'finalAmount', 'name', 'paymentMode', 'chequeNumber', 'bankName', 'Valid'
+    'firstName', 'middleName', 'lastName', 'dateOfBirth', 'age', 'nationality',
+    'gender', 'className', 'shift', 'fatherName', 'fatherContactNo', 'motherName',
+    'motherContactNo', 'currentAddress', 'country', 'state', 'city', 'pincode',
+    'previousSchoolName', 'addressOfpreviousSchool', 'previousSchoolBoard',
+    'studentCategory', 'howReachUs', 'aadharPassportNumber', 'agreementChecked',
+    'selectedFeeType', 'registrationFee', 'concessionAmount', 'finalAmount',
+    'name', 'paymentMode', 'chequeNumber', 'bankName', 'Valid'
   ];
 
   const isRowValid = (row, index) => {
-    // Normalize input fields
     const firstName = row.firstName?.toString().trim() || '';
     const lastName = row.lastName?.toString().trim() || '';
     const className = row.className?.toString().trim() || '';
-    const shiftName = row.Shift?.toString().trim() || '';
-    const sectionName = row.section?.toString().trim() || '';
+    const shiftName = row.shift?.toString().trim() || ''; 
     const feeTypeName = row.selectedFeeType?.toString().trim() || '';
-    const admissionFees = Number(row.admissionFees) || 0;
+    const registrationFee = Number(row.registrationFee) || 0;
     const finalAmount = Number(row.finalAmount) || 0;
-
 
     const classObj = classes.find(c => c.className.toLowerCase() === className.toLowerCase());
     const shiftObj = shifts.find(s => s.masterDefineShiftName.toLowerCase() === shiftName.toLowerCase());
-    const sectionObj = classObj?.sections.find(s => s.name.toLowerCase() === sectionName.toLowerCase() && s.shiftId === shiftObj?._id);
-    const feeType = classObj && sectionObj && feeTypesByClass[`${classObj._id}_${sectionObj._id}`]?.find(
+
+  
+    const feeType = classObj && feeTypesByClass[classObj._id]?.find(
       ft => ft.name.toLowerCase() === feeTypeName.toLowerCase()
     );
 
-
-    if (!classObj || !shiftObj || !sectionObj || !feeType) {
-      console.log(`Row ${index + 1} lookup failed:`, {
-        className: className || 'missing',
-        shiftName: shiftName || 'missing',
-        sectionName: sectionName || 'missing',
-        feeTypeName: feeTypeName || 'missing',
-        classObj: classObj || 'not found',
-        shiftObj: shiftObj || 'not found',
-        sectionObj: sectionObj || 'not found',
-        feeType: feeType || 'not found',
-      });
-      return { valid: false, errors: [`Invalid ${!classObj ? 'class' : !shiftObj ? 'shift' : !sectionObj ? 'section' : 'fee type'}`] };
+    
+    if (!classObj || !shiftObj || !feeType) {
+      const errors = [];
+      if (!classObj) errors.push(`Invalid class "${className}"`);
+      if (!shiftObj) errors.push(`Invalid shift "${shiftName}"`);
+      if (!feeType) errors.push(`Invalid fee type "${feeTypeName}"`);
+      return { valid: false, errors };
     }
 
 
@@ -57,29 +47,15 @@ const AdmissionPreviewModal = ({ show, onClose, previewData, validatedData, clas
         (vd.lastName || '').toString().trim() === lastName &&
         vd.masterDefineClass === classObj._id &&
         vd.masterDefineShift === shiftObj._id &&
-        vd.section === sectionObj._id &&
-        vd.selectedFeeType === feeType.id &&
-        Number(vd.admissionFees || 0) === admissionFees &&
+        Number(vd.registrationFee || 0) === registrationFee &&
         Number(vd.finalAmount || 0) === finalAmount
       );
-      if (!isMatch) {
-        toast.error(`Row ${index + 1} validation failed:`, {
-          firstName: { preview: firstName, validated: vd.firstName },
-          lastName: { preview: lastName, validated: vd.lastName },
-          masterDefineClass: { preview: classObj._id, validated: vd.masterDefineClass },
-          masterDefineShift: { preview: shiftObj._id, validated: vd.masterDefineShift },
-          section: { preview: sectionObj._id, validated: vd.section },
-          selectedFeeType: { preview: feeType.id, validated: vd.selectedFeeType },
-          admissionFees: { preview: admissionFees, validated: Number(vd.admissionFees || 0) },
-          finalAmount: { preview: finalAmount, validated: Number(vd.finalAmount || 0) },
-        });
-      }
       return isMatch;
     });
 
     return {
       valid: !!match,
-      errors: match ? [] : row.errors || ['Row data does not match validated data']
+      errors: match ? [] : ['Row data does not match validated data']
     };
   };
 
@@ -88,16 +64,11 @@ const AdmissionPreviewModal = ({ show, onClose, previewData, validatedData, clas
       const classObj = classes.find(c => c._id === row.masterDefineClass);
       return classObj ? classObj.className : row.className || '-';
     }
-    if (header === 'Shift') {
+    if (header === 'shift') { 
       const shiftObj = shifts.find(s => s._id === row.masterDefineShift);
-      return shiftObj ? shiftObj.masterDefineShiftName : row.Shift || '-';
+      return shiftObj ? shiftObj.masterDefineShiftName : row.shift || '-';
     }
-    if (header === 'section') {
-      const classObj = classes.find(c => c._id === row.masterDefineClass);
-      const sectionObj = classObj?.sections.find(s => s._id === row.section);
-      return sectionObj ? sectionObj.name : row.section || '-';
-    }
-    if (header === 'siblingInfoChecked' || header === 'agreementChecked') {
+    if (header === 'agreementChecked') {
       return row[header]?.toString().toLowerCase() === 'true' ? 'Yes' : 'No';
     }
     return row[header] !== undefined && row[header] !== '' ? row[header] : '-';
@@ -248,4 +219,4 @@ const AdmissionPreviewModal = ({ show, onClose, previewData, validatedData, clas
   );
 };
 
-export default AdmissionPreviewModal;
+export default RegistrationPreviewModal;

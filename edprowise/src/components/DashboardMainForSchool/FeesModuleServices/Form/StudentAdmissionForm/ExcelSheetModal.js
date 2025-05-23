@@ -113,7 +113,14 @@ const AdmissionExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImp
       reader.onload = async (e) => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+          if (!sheetName) {
+            toast.error('No "Data" sheet found in the Excel file.');
+            resolve({ jsonData: [], validatedData: [] });
+            return;
+          }
+
+          const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
           return row.firstName?.toString().trim() && row.lastName?.toString().trim();
         });
@@ -513,58 +520,61 @@ const AdmissionExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImp
     setShowMainModal(true);
   };
 
-  const handleDownloadDemo = () => {
-    if (classes.length === 0 || shifts.length === 0) {
-      toast.error('No classes or shifts available to include in demo sheet.');
-      return;
-    }
+ const handleDownloadDemo = () => {
+  if (classes.length === 0 || shifts.length === 0) {
+    toast.error('No classes or shifts available to include in demo sheet.');
+    return;
+  }
 
-    const note = [
-      ['📌 Import Guidelines:'],
-      ['Required Fields: registrationNumber, firstName, lastName, dateOfBirth, age, nationality, gender, bloodGroup, className, Shift, section, currentAddress, country, state, city, pincode, parentContactNumber, motherTongue, aadharPassportNumber, studentCategory, parentalStatus, agreementChecked, selectedFeeType, admissionFees, finalAmount, name, paymentMode.'],
-      ['Conditional Fields: previousSchoolName, addressOfPreviousSchool, previousSchoolBoard required if className is not Nursery. fatherName, fatherContactNo, fatherProfession required if parentalStatus is not Single Mother. motherName, motherContactNo, motherProfession required if parentalStatus is not Single Father. relationType, siblingName required if siblingInfoChecked is false. castCertificate required if studentCategory is not General. chequeNumber, bankName required if paymentMode is Cheque.'],
-      ['Optional Fields: middleName, concessionAmount, fatherQualification, motherQualification.'],
-      ['Formats: Dates must be YYYY-MM-DD. agreementChecked, siblingInfoChecked must be true/false. paymentMode must be Cash/Cheque/Online. nationality must be India/International/SAARC Countries. gender must be Male/Female. bloodGroup must be AB-/AB+/O-/O+/B-/B+/A-/A+. studentCategory must be General/OBC/ST/SC. parentalStatus must be Single Father/Single Mother/Parents. relationType must be Brother/Sister.'],
-      ['admissionFees must match the selectedFeeType amount. finalAmount = admissionFees - concessionAmount.'],
-      ['File Fields: studentPhoto, previousSchoolResult, tcCertificate, proofOfResidence, aadharPassportFile, castCertificate, idCardFile are optional and can be uploaded later via the update form.'],
-      ['selectedFeeType` is required for validation and must match an existing feeType in the OneTimeFees collection.'],
-      ['Do not change column headers; they must remain exactly as provided.'],
-      ['Remove the "Import Guidelines:" lines from the file before importing.'],
-      ['If the payment mode is "Cash" or "Online", leave the Cheque Number and Bank Name fields blank.'],
-      [`Available Classes: ${classes.map(c => c.className).join(', ')}.`],
-      [`Available Shifts: ${shifts.map(s => s.masterDefineShiftName).join(', ')}.`],
-      [`Available Sections: Vary by class and shift; check system for valid combinations.`],
-    ];
+  const guidelines = [
+    ['📌 Import Guidelines:'],
+    ['Required Fields: registrationNumber, firstName, lastName, dateOfBirth, age, nationality, gender, bloodGroup, className, Shift, section, currentAddress, country, state, city, pincode, parentContactNumber, motherTongue, aadharPassportNumber, studentCategory, parentalStatus, agreementChecked, selectedFeeType, admissionFees, finalAmount, name, paymentMode.'],
+    ['Conditional Fields: chequeNumber and bankName are required if paymentMode is Cheque. previousSchoolName, addressOfPreviousSchool, previousSchoolBoard required if className is not Nursery. fatherName, fatherContactNo, fatherProfession required if parentalStatus is not Single Mother. motherName, motherContactNo, motherProfession required if parentalStatus is not Single Father. relationType, siblingName required if siblingInfoChecked is false. castCertificate required if studentCategory is not General.'],
+    ['Optional Fields: middleName, concessionAmount, fatherQualification, motherQualification.'],
+    ['Formats: Dates must be YYYY-MM-DD. agreementChecked, siblingInfoChecked must be true/false. paymentMode must be Cash/Cheque/Online. nationality must be India/International/SAARC Countries. gender must be Male/Female. bloodGroup must be AB-/AB+/O-/O+/B-/B+/A-/A+. studentCategory must be General/OBC/ST/SC. parentalStatus must be Single Father/Single Mother/Parents. relationType must be Brother/Sister.'],
+    ['admissionFees must match the selectedFeeType amount. finalAmount = admissionFees - concessionAmount.'],
+    ['File Fields: studentPhoto, previousSchoolResult, tcCertificate, proofOfResidence, aadharPassportFile, castCertificate, idCardFile are optional and can be uploaded later via the update form.'],
+    ['selectedFeeType is required for validation and must match an existing feeType in the OneTimeFees collection.'],
+    ['Do not change column headers; they must remain exactly as provided.'],
+    ['If the payment mode is "Cash" or "Online", leave the Cheque Number and Bank Name fields blank.'],
+    ['Use the "Data" sheet to enter your data.'],
+    [`Available Classes: ${classes.map(c => c.className).join(', ')}.`],
+    [`Available Shifts: ${shifts.map(s => s.masterDefineShiftName).join(', ')}.`],
+    [`Available Sections: Vary by class and shift; check system for valid combinations.`],
+  ];
 
-    const wsData = [
-      ...note,
-      [],
-      [
-        'registrationNumber', 'firstName', 'middleName', 'lastName', 'dateOfBirth', 'age', 'nationality',
-        'gender', 'bloodGroup', 'className', 'Shift', 'section', 'currentAddress', 'country', 'state', 'city',
-        'pincode', 'parentContactNumber', 'motherTongue', 'previousSchoolName', 'addressOfPreviousSchool',
-        'previousSchoolBoard', 'aadharPassportNumber', 'studentCategory', 'siblingInfoChecked',
-        'relationType', 'siblingName', 'parentalStatus', 'fatherName', 'fatherContactNo',
-        'fatherQualification', 'fatherProfession', 'motherName', 'motherContactNo', 'motherQualification',
-        'motherProfession', 'agreementChecked', 'selectedFeeType', 'admissionFees', 'concessionAmount',
-        'finalAmount', 'name', 'paymentMode', 'chequeNumber', 'bankName'
-      ],
-      [
-        'ABC10001', 'John', '', 'Doe', '2010-05-15', '15', 'India', 'Male', 'A+',
-        classes[0]?.className || 'Grade 10', shifts[0]?.masterDefineShiftName || 'Morning',
-        classes[0]?.sections[0]?.name || 'A', '123 Main St', 'India', 'Delhi', 'New Delhi',
-        '110001', '1234567890', 'English', 'Previous School', '456 Old St', 'CBSE',
-        '123456789012', 'General', 'false', 'Brother', 'James Doe', 'Parents',
-        'John Sr.', '9876543210', 'MBA', 'Engineer', 'Jane Doe', '8765432109', 'MA', 'Teacher',
-        'true', 'Admission Fee', '1000', '100', '900', 'Admin User', 'Cheque', '123456', 'State Bank'
-      ],
-    ];
+  const wsData = [
+    [
+      'registrationNumber', 'firstName', 'middleName', 'lastName', 'dateOfBirth', 'age', 'nationality',
+      'gender', 'bloodGroup', 'className', 'Shift', 'section', 'currentAddress', 'country', 'state', 'city',
+      'pincode', 'parentContactNumber', 'motherTongue', 'previousSchoolName', 'addressOfPreviousSchool',
+      'previousSchoolBoard', 'aadharPassportNumber', 'studentCategory', 'siblingInfoChecked',
+      'relationType', 'siblingName', 'parentalStatus', 'fatherName', 'fatherContactNo',
+      'fatherQualification', 'fatherProfession', 'motherName', 'motherContactNo', 'motherQualification',
+      'motherProfession', 'agreementChecked', 'selectedFeeType', 'admissionFees', 'concessionAmount',
+      'finalAmount', 'name', 'paymentMode', 'chequeNumber', 'bankName'
+    ],
+    [
+      'ABC10001', 'John', '', 'Doe', '2010-05-15', '15', 'India', 'Male', 'A+',
+      classes[0]?.className || 'Grade 10', shifts[0]?.masterDefineShiftName || 'Morning',
+      classes[0]?.sections[0]?.name || 'A', '123 Main St', 'India', 'Delhi', 'New Delhi',
+      '110001', '1234567890', 'English', 'Previous School', '456 Old St', 'CBSE',
+      '123456789012', 'General', 'false', 'Brother', 'James Doe', 'Parents',
+      'John Sr.', '9876543210', 'MBA', 'Engineer', 'Jane Doe', '8765432109', 'MA', 'Teacher',
+      'true', 'Admission Fee', '1000', '100', '900', 'Admin User', 'Cheque', '123456', 'State Bank'
+    ],
+  ];
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Demo');
-    XLSX.writeFile(wb, 'demo_admission_form.xlsx');
-  };
+  const wb = XLSX.utils.book_new();
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+
+  const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
+  XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
+
+  XLSX.writeFile(wb, 'admission_form.xlsx');
+};
 
   return (
     <>
