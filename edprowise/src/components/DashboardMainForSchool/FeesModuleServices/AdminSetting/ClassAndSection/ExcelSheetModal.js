@@ -42,7 +42,7 @@ const ExcelSheetModal = ({ show, onClose, shifts, onImportSuccess }) => {
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-             const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+          const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
           if (!sheetName) {
             toast.error('No "Data" sheet found in the Excel file.');
             resolve({ jsonData: [], validatedData: [] });

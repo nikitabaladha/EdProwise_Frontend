@@ -92,7 +92,14 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
         reader.onload = async (e) => {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+          if (!sheetName) {
+            toast.error('No "Data" sheet found in the Excel file.');
+            resolve({ jsonData: [], validatedData: [] });
+            return;
+          }
+
+          const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
             return row.AdmissionNumber?.toString().trim();
           });
@@ -356,62 +363,63 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
     setShowMainModal(true);
   };
 
-  const handleDownloadDemo = () => {
-    if (students.length === 0 || classes.length === 0) {
-      toast.error('No students or classes available to include in demo sheet.');
-      return;
-    }
+ const handleDownloadDemo = () => {
+  if (students.length === 0 || classes.length === 0) {
+    toast.error('No students or classes available to include in demo sheet.');
+    return;
+  }
 
-    const note = [
-      '📌 Import Guidelines:',
-      '• Required Fields: AdmissionNumber, firstName, lastName, className, section, concessionType, installmentName, selectedFeeType, totalFees, concessionPercentage, concessionAmount, balancePayable.',
-      '• Optional Fields: middleName.',
-      '• Formats: concessionType must be EWS/SC/ST/OBC/Staff Children/Other. concessionPercentage must be 0-100. concessionAmount = totalFees * concessionPercentage / 100. balancePayable = totalFees - concessionAmount.',
-      // '• selectedFeeType is used for validation but not stored in the database.',
-      '• Each installment should be a separate row with the same AdmissionNumber, className, section, etc.',
-      '• Do not change column headers; they must remain exactly as provided.',
-      '• Remove the "Import Guidelines:" lines from the file before importing.',
-      `• Available Classes: ${classes.map(c => c.className).join(', ')}.`,
-      `• Sample Admission Numbers: ${students.slice(0, 5).map(s => s.AdmissionNumber).join(', ')}.`,
-    ];
+  const guidelines = [
+    ['📌 Import Guidelines:'],
+    ['• Required Fields: AdmissionNumber, firstName, lastName, className, section, concessionType, installmentName, selectedFeeType, totalFees, concessionPercentage, concessionAmount, balancePayable.'],
+    ['• Optional Fields: middleName.'],
+    ['• Formats: concessionType must be EWS/SC/ST/OBC/Staff Children/Other. concessionPercentage must be 0-100. concessionAmount = totalFees * concessionPercentage / 100. balancePayable = totalFees - concessionAmount.'],
+    ['• Each installment should be a separate row with the same AdmissionNumber, className, section, etc.'],
+    ['• Do not change column headers; they must remain exactly as provided.'],
+    ['• Use the "Data" sheet to enter your data.'],
+    [`• Available Classes: ${classes.map(c => c.className).join(', ')}.`],
+    [`• Sample Admission Numbers: ${students.slice(0, 5).map(s => s.AdmissionNumber).join(', ')}.`],
+  ];
 
-    const wsData = [
-      ...note.map((line) => [line]),
-      [],
-      [
-        'AdmissionNumber',
-        'firstName',
-        'middleName',
-        'lastName',
-        'className',
-        'section',
-        'concessionType',
-        'installmentName',
-        'selectedFeeType',
-        'totalFees',
-        'concessionPercentage',
-        'concessionAmount',
-        'balancePayable',
-      ],
-      [
-        students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', classes[0]?.className || 'Grade 10', 'A', 'EWS', 'Term 1', 'Tuition Fee', '1000', '10', '100', '900',
-      ],
-      [
-        students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', classes[0]?.className || 'Grade 10', 'A', 'EWS', 'Term 2', 'Tuition Fee', '1000', '10', '100', '900',
-      ],
-      [
-        students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', classes[0]?.className || 'Grade 10', 'A', 'EWS', 'Term 3', 'Tuition Fee', '1000', '10', '100', '900',
-      ],
-      [
-        students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', classes[0]?.className || 'Grade 10', 'A', 'EWS', 'Term 4', 'Tuition Fee', '1000', '10', '100', '900',
-      ],
-    ];
+  const wsData = [
+    [
+      'AdmissionNumber',
+      'firstName',
+      'middleName',
+      'lastName',
+      'className',
+      'section',
+      'concessionType',
+      'installmentName',
+      'selectedFeeType',
+      'totalFees',
+      'concessionPercentage',
+      'concessionAmount',
+      'balancePayable',
+    ],
+    [
+      students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', classes[0]?.className || 'Grade 10', 'A', 'EWS', 'Term 1', 'Tuition Fee', '1000', '10', '100', '900',
+    ],
+    [
+      students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', classes[0]?.className || 'Grade 10', 'A', 'EWS', 'Term 2', 'Tuition Fee', '1000', '10', '100', '900',
+    ],
+    [
+      students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', classes[0]?.className || 'Grade 10', 'A', 'EWS', 'Term 3', 'Tuition Fee', '1000', '10', '100', '900',
+    ],
+    [
+      students[0]?.AdmissionNumber || 'ADM001', 'John', '', 'Doe', classes[0]?.className || 'Grade 10', 'A', 'EWS', 'Term 4', 'Tuition Fee', '1000', '10', '100', '900',
+    ],
+  ];
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Demo');
-    XLSX.writeFile(wb, 'demo_concession_form.xlsx');
-  };
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+
+  const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
+  XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
+
+  XLSX.writeFile(wb, 'concession_form.xlsx');
+};
 
   return (
     <>

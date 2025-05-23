@@ -80,7 +80,13 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+              const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+          if (!sheetName) {
+            toast.error('No "Data" sheet found in the Excel file.');
+            resolve({ jsonData: [], validatedData: [] });
+            return;
+          }
+          const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
             return (
               row.Class?.toString().trim() &&
@@ -252,37 +258,42 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
   };
 
   const handleDownloadDemo = () => {
-    if (classes.length === 0 || feesTypes.length === 0) {
-      toast.error('No classes or fees types available to include in demo sheet.');
-      return;
-    }
+  if (classes.length === 0 || feesTypes.length === 0) {
+    toast.error('No classes or fees types available to include in demo sheet.');
+    return;
+  }
 
-    const note = [
-      '📌 Import Guidelines:',
-      '• Class: Enter the class name (e.g., Grade 1, Class 10).',
-      '• Sections: Enter section names separated by commas (e.g., A,B,C).',
-      '• FeesTypeName: Enter the fees type name (must match existing one-time fees types).',
-      '• Amount: Enter the fee amount (positive number).',
-      '• Ensure all fields are filled and valid.',
-      '• Do not change the column headers; they must remain exactly as provided.',
-      '• Make sure to remove the "Import Guidelines:" line from the file before importing.',
-      `• Available Classes: ${classes.map(c => c.className).join(', ')}.`,
-      `• Available Fees Types: ${feesTypes.map(f => f.feesTypeName).join(', ')}.`,
-    ];
 
-    const wsData = [
-      ...note.map((line) => [line]),
-      [],
-      ['Class', 'Sections', 'FeesTypeName', 'Amount'],
-      ['Grade 1', 'A,B', 'Admission Fee', 5000],
-      ['Grade 1', 'A,B', 'Registration Fee', 2000],
-    ];
+  const guidelines = [
+    ['📌 Import Guidelines:'],
+    ['• Class: Enter the class name (e.g., Grade 1, Class 10).'],
+    ['• Sections: Enter section names separated by commas (e.g., A,B,C).'],
+    ['• FeesTypeName: Enter the fees type name (must match existing one-time fees types).'],
+    ['• Amount: Enter the fee amount (positive number).'],
+    ['• Ensure all fields are filled and valid.'],
+    ['• Do not change the column headers; they must remain exactly as provided.'],
+    ['• Use the "Data" sheet to enter your data.'],
+    [`• Available Classes: ${classes.map(c => c.className).join(', ')}.`],
+    [`• Available Fees Types: ${feesTypes.map(f => f.feesTypeName).join(', ')}.`],
+  ];
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Demo');
-    XLSX.writeFile(wb, 'demo_one_time_fees.xlsx');
-  };
+ 
+  const wsData = [
+    ['Class', 'Sections', 'FeesTypeName', 'Amount'],
+    ['Grade 1', 'A,B', 'Admission Fee', 5000],
+    ['Grade 1', 'A,B', 'Registration Fee', 2000],
+  ];
+
+  const wb = XLSX.utils.book_new();
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+
+  const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
+  XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
+
+  XLSX.writeFile(wb, 'one_time_fees.xlsx');
+};
 
   return (
     <>

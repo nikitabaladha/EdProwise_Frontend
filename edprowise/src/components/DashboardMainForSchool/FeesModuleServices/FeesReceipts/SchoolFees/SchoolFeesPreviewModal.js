@@ -136,12 +136,12 @@ const SchoolFeesPreviewModal = ({
             vertical-align: middle;
             border-right: 1px solid #dee2e6;
           }
-          .invalid-row {
-            background-color: #fff3f3 !important;
-          }
-          .valid-row {
-            background-color: #f0fff4 !important;
-          }
+          // .invalid-row {
+          //   background-color: #fff3f3 !important;
+          // }
+          // .valid-row {
+          //   background-color: #f0fff4 !important;
+          // }
           @media (max-width: 576px) {
             .custom-modal .modal-dialog {
               max-width: 98vw;

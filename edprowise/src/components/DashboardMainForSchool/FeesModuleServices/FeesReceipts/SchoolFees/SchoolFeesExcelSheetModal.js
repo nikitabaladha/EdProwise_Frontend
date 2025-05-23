@@ -59,7 +59,14 @@ const SchoolFeesExcelSheetModal = ({
         reader.onload = async (e) => {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+          if (!sheetName) {
+            toast.error('No "Data" sheet found in the Excel file.');
+            resolve({ jsonData: [], validatedData: [] });
+            return;
+          }
+
+          const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter(
             (row) => row.AdmissionNumber?.toString().trim()
           );
@@ -459,62 +466,65 @@ const SchoolFeesExcelSheetModal = ({
     setShowMainModal(true);
   };
 
-  const handleDownloadDemo = () => {
-    if (classes.length === 0 || feeTypes.length === 0) {
-      toast.error('No classes or fee types available to include in demo sheet.');
-      return;
-    }
+ const handleDownloadDemo = () => {
+  if (classes.length === 0 || feeTypes.length === 0) {
+    toast.error('No classes or fee types available to include in demo sheet.');
+    return;
+  }
 
-    const note = [
-      ['📌 Import Guidelines:'],
-      ['Required Fields: AdmissionNumber, className, section, paymentMode, name, academicYear, installmentNumber, feeTypeName, paidAmount, paymentDate.'],
-      ['Conditional Fields: chequeNumber, bankName required if paymentMode is Cheque.'],
-      ['Formats: paymentMode must be Cash/Cheque/Online Transfer. academicYear must be in format YYYY-YYYY (e.g., 2023-2024). installmentNumber must be a positive integer. paidAmount must be a positive number not exceeding the payable amount. paymentDate must be in format YYYY-MM-DD (e.g., 2023-10-15).'],
-      ['AdmissionNumber must match an existing student. className and section must match the student’s data. feeTypeName must exist and be valid for the installment and academic year.'],
-      ['Do not change column headers; they must remain exactly as provided.'],
-      ['Remove the "Import Guidelines:" lines from the file before importing.'],
-      [`Available Classes: ${classes.map((c) => c.className).join(', ')}.`],
-      [`Available Fee Types: ${feeTypes.map((ft) => ft.feesTypeName).join(', ')}.`],
-    ];
+  const guidelines = [
+    ['📌 Import Guidelines:'],
+    ['Required Fields: AdmissionNumber, className, section, paymentMode, name, academicYear, installmentNumber, feeTypeName, paidAmount, paymentDate.'],
+    ['Conditional Fields: chequeNumber, bankName required if paymentMode is Cheque.'],
+    ['Formats: paymentMode must be Cash/Cheque/Online Transfer. academicYear must be in format YYYY-YYYY (e.g., 2023-2024). installmentNumber must be a positive integer. paidAmount must be a positive number not exceeding the payable amount. paymentDate must be in format YYYY-MM-DD (e.g., 2023-10-15).'],
+    ['AdmissionNumber must match an existing student. className and section must match the student’s data. feeTypeName must exist and be valid for the installment and academic year.'],
+    ['Do not change column headers; they must remain exactly as provided.'],
+    ['Use the "Data" sheet to enter your data.'],
+    [`Available Classes: ${classes.map((c) => c.className).join(', ')}.`],
+    [`Available Fee Types: ${feeTypes.map((ft) => ft.feesTypeName).join(', ')}.`],
+  ];
 
-    const wsData = [
-      ...note,
-      [],
-      [
-        'AdmissionNumber',
-        'className',
-        'section',
-        'paymentMode',
-        'name',
-        'chequeNumber',
-        'bankName',
-        'academicYear',
-        'installmentNumber',
-        'feeTypeName',
-        'paidAmount',
-        'paymentDate', 
-      ],
-      [
-        existingStudents[0]?.AdmissionNumber || 'ABC10001',
-        classes[0]?.className || 'Grade 10',
-        classes[0]?.sections[0]?.name || 'A',
-        'Cheque',
-        'Admin User',
-        '123456',
-        'State Bank',
-        '2023-2024',
-        '1',
-        feeTypes[0]?.feesTypeName || 'Tuition Fee',
-        '5000',
-        '2023-10-15', 
-      ],
-    ];
+  const wsData = [
+    [
+      'AdmissionNumber',
+      'className',
+      'section',
+      'paymentMode',
+      'name',
+      'chequeNumber',
+      'bankName',
+      'academicYear',
+      'installmentNumber',
+      'feeTypeName',
+      'paidAmount',
+      'paymentDate',
+    ],
+    [
+      existingStudents[0]?.AdmissionNumber || 'ABC10001',
+      classes[0]?.className || 'Grade 10',
+      classes[0]?.sections[0]?.name || 'A',
+      'Cheque',
+      'Admin User',
+      '123456',
+      'State Bank',
+      '2023-2024',
+      '1',
+      feeTypes[0]?.feesTypeName || 'Tuition Fee',
+      '5000',
+      '2023-10-15',
+    ],
+  ];
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Demo');
-    XLSX.writeFile(wb, 'demo_school_fees_receipt.xlsx');
-  };
+  const wb = XLSX.utils.book_new();
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+
+  const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
+  XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
+
+  XLSX.writeFile(wb, 'school_fees_receipt.xlsx');
+};
 
   return (
     <>

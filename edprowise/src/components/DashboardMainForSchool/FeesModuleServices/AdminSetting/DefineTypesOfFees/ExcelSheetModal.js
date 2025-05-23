@@ -38,7 +38,14 @@ const ExcelSheetModal = ({ show, onClose, schoolId, onImportSuccess }) => {
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+          if (!sheetName) {
+            toast.error('No "Data" sheet found in the Excel file.');
+            resolve({ jsonData: [], validatedData: [] });
+            return;
+          }
+          
+          const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
             return row.FeesTypeName?.toString().trim() && row.GroupOfFees?.toString().trim();
           });
@@ -160,28 +167,32 @@ const ExcelSheetModal = ({ show, onClose, schoolId, onImportSuccess }) => {
   };
 
   const handleDownloadDemo = () => {
-    const note = [
-      '📌 Import Guidelines:',
-      '• FeesTypeName: Enter the fees type name (e.g., Tuition Fee, Admission Fee).',
-      '• GroupOfFees: Must be one of: School Fees, One Time Fees.',
-      '• Ensure all fields are filled and valid.',
-      '• Do not change the column headers; they must remain exactly as provided.',
-      '• Make sure to remove the "Import Guidelines:" line from the file before importing.',
-    ];
+  // Guidelines for the separate sheet
+  const guidelines = [
+    ['📌 Import Guidelines:'],
+    ['• FeesTypeName: Enter the fees type name (e.g., Tuition Fee, Admission Fee).'],
+    ['• GroupOfFees: Must be one of: School Fees, One Time Fees.'],
+    ['• Ensure all fields are filled and valid.'],
+    ['• Do not change the column headers; they must remain exactly as provided.'],
+    ['• Use the "Data" sheet to enter your data.'],
+  ];
 
-    const wsData = [
-      ...note.map((line) => [line]),
-      [],
-      ['FeesTypeName', 'GroupOfFees'],
-      ['Tuition Fee', 'School Fees'],
-      ['Admission Fee', 'One Time Fees'],
-    ];
+  const wsData = [
+    ['FeesTypeName', 'GroupOfFees'],
+    ['Tuition Fee', 'School Fees'],
+    ['Admission Fee', 'One Time Fees'],
+  ];
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Demo');
-    XLSX.writeFile(wb, 'demo_fees_type.xlsx');
-  };
+  const wb = XLSX.utils.book_new();
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+
+  const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
+  XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
+
+  XLSX.writeFile(wb, 'fees_type.xlsx');
+};
 
   return (
     <>

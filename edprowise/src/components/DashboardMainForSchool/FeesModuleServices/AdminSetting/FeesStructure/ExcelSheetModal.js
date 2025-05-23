@@ -26,11 +26,11 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
 
     const fetchData = async () => {
       try {
-      
+
         const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
         setClasses(classRes?.data?.data || []);
 
-     
+
         const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`, {}, true);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
           const schoolFees = feesTypeRes.data.data.filter(
@@ -75,13 +75,20 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
   };
 
   const processExcelData = () => {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       try {
         const reader = new FileReader();
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+          if (!sheetName) {
+            toast.error('No "Data" sheet found in the Excel file.');
+            resolve({ jsonData: [], validatedData: [] });
+            return;
+          }
+
+          const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
             return (
               row.Class?.toString().trim() &&
@@ -102,7 +109,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
           const tempValidatedData = [];
           let hasError = false;
 
-        
+
           const groupedData = {};
           jsonData.forEach((row, index) => {
             const className = row.Class ? String(row.Class).trim() : '';
@@ -112,7 +119,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
             const feesTypeName = row.FeesTypeName ? String(row.FeesTypeName).trim() : '';
             const amount = row.Amount ? Number(row.Amount) : 0;
 
-       
+
             const classObj = classes.find(
               (c) => c.className.toLowerCase() === className.toLowerCase()
             );
@@ -137,7 +144,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
               classObj.sections.find((sec) => sec.name.toLowerCase() === s.toLowerCase())._id
             );
 
-      
+
             const parsedDueDate = new Date(dueDate);
             if (isNaN(parsedDueDate.getTime())) {
               toast.error(`Row ${index + 1}: Invalid due date "${dueDate}". Use YYYY-MM-DD format.`);
@@ -145,7 +152,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
               return;
             }
 
-        
+
             const feesType = feesTypes.find(
               (f) => f.feesTypeName.toLowerCase() === feesTypeName.toLowerCase()
             );
@@ -155,14 +162,14 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
               return;
             }
 
-    
+
             if (!amount || amount <= 0) {
               toast.error(`Row ${index + 1}: Amount must be a positive number.`);
               hasError = true;
               return;
             }
 
-      
+
             const key = `${classObj._id}-${sectionIds.sort().join(',')}`;
             if (!groupedData[key]) {
               groupedData[key] = {
@@ -172,7 +179,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
               };
             }
 
-   
+
             let installment = groupedData[key].installments.find(
               (inst) => inst.name.toLowerCase() === installmentName.toLowerCase()
             );
@@ -195,7 +202,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
             toast.error('Some rows contain errors. Review the preview and correct the file.');
           }
 
-  
+
           Object.values(groupedData).forEach((group) => {
             tempValidatedData.push({
               academicYear,
@@ -288,24 +295,22 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
       return;
     }
 
-    const note = [
-      '📌 Import Guidelines:',
-      '• Class: Enter the class name (e.g., Grade 1, Class 10).',
-      '• Sections: Enter section names separated by commas (e.g., A,B,C).',
-      '• InstallmentName: Enter the installment name (e.g., Installment 1).',
-      '• DueDate: Enter the due date in YYYY-MM-DD format (e.g., 2025-06-01).',
-      '• FeesTypeName: Enter the fees type name (must match existing school fees types).',
-      '• Amount: Enter the fee amount (positive number).',
-      '• Ensure all fields are filled and valid.',
-      '• Do not change the column headers; they must remain exactly as provided.',
-      '• Make sure to remove the "Import Guidelines:" line from the file before importing.',
-      `• Available Classes: ${classes.map(c => c.className).join(', ')}.`,
-      `• Available Fees Types: ${feesTypes.map(f => f.feesTypeName).join(', ')}.`,
+    const guidelines = [
+      ['📌 Import Guidelines:'],
+      ['• Class: Enter the class name (e.g., Grade 1, Class 10).'],
+      ['• Sections: Enter section names separated by commas (e.g., A,B,C).'],
+      ['• InstallmentName: Enter the installment name (e.g., Installment 1).'],
+      ['• DueDate: Enter the due date in YYYY-MM-DD format (e.g., 2025-06-01).'],
+      ['• FeesTypeName: Enter the fees type name (must match existing school fees types).'],
+      ['• Amount: Enter the fee amount (positive number).'],
+      ['• Ensure all fields are filled and valid.'],
+      ['• Do not change the column headers; they must remain exactly as provided.'],
+      ['• Use the "Data" sheet to enter your data.'],
+      [`• Available Classes: ${classes.map(c => c.className).join(', ')}.`],
+      [`• Available Fees Types: ${feesTypes.map(f => f.feesTypeName).join(', ')}.`],
     ];
 
     const wsData = [
-      ...note.map((line) => [line]),
-      [],
       ['Class', 'Sections', 'InstallmentName', 'DueDate', 'FeesTypeName', 'Amount'],
       ['Grade 1', 'A,B', 'Installment 1', '2025-06-01', 'Tuition Fee', 10000],
       ['Grade 1', 'A,B', 'Installment 1', '2025-06-01', 'Library Fee', 2000],
@@ -313,10 +318,16 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
       ['Grade 1', 'A,B', 'Installment 2', '2025-07-01', 'Library Fee', 2000],
     ];
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Demo');
-    XLSX.writeFile(wb, 'demo_school_fees.xlsx');
+
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+
+    const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
+    XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
+
+    XLSX.writeFile(wb, 'school_fees.xlsx');
   };
 
   return (
