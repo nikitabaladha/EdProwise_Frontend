@@ -120,12 +120,6 @@ const SchoolShifts = () => {
                 >
                   Add Shift
                 </Link>
-
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">
-                    Export
-                  </Link>
-                </div>
               </div>
 
               <div className="table-responsive">

@@ -276,9 +276,9 @@ const CompleteSchoolProfile = () => {
       }
     }
 
-    // if (!isVerificationSuccessful) {
-    //   return toast.error("Email verification not done");
-    // }
+    if (!isVerificationSuccessful) {
+      return toast.error("Email verification not done");
+    }
 
     setSending(true);
 
@@ -513,7 +513,7 @@ const CompleteSchoolProfile = () => {
                             placeholder="Example : example@gmail.com"
                           />
 
-                          {/* <div
+                          <div
                             className="form-label"
                             style={{
                               position: "absolute",
@@ -559,7 +559,7 @@ const CompleteSchoolProfile = () => {
                                 "Verify"
                               )}
                             </div>
-                          </div> */}
+                          </div>
                         </span>
                       </div>
                     </div>

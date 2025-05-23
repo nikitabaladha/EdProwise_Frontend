@@ -158,22 +158,40 @@ const ViewCart = () => {
   return (
     <>
       <div className="container">
-        <div className="card-header d-flex justify-content-between align-items-center gap-1 mb-3 ps-3 pe-3">
-          <h3 className="card-title flex-grow-1">Cart List</h3>
-          <button
-            className="btn btn-soft-danger btn-sm d-flex align-items-center gap-2"
-            onClick={handleOpenOrderPlaceModal}
-          >
-            <iconify-icon
-              icon="solar:cart-check-broken"
-              className="align-middle fs-18"
-            />
-            <span>Place Order</span>
-          </button>
-        </div>
+        <>
+          <div className="row">
+            <div className="col-xl-12">
+              <div className="card">
+                <div className="card-header d-flex justify-content-between align-items-center gap-1">
+                  <h4 className="card-title flex-grow-1">Cart List</h4>{" "}
+                  <button
+                    className="btn btn-soft-danger btn-sm d-flex align-items-center gap-2"
+                    onClick={handleOpenOrderPlaceModal}
+                  >
+                    <iconify-icon
+                      icon="solar:cart-check-broken"
+                      className="align-middle fs-18"
+                    />
+                    <span>Place Order</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
 
         {carts && Object.keys(carts).length === 0 ? (
-          <p>No cart data available.</p>
+          <div className="row">
+            <div className="col-xl-12">
+              <div className="card">
+                <div className="card-body d-flex justify-content-center align-items-center">
+                  <p className="card-title text-center mb-0 fs-3 text-muted">
+                    No Cart Data Found
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         ) : (
           Object.entries(carts).map(([companyName, items]) => (
             <div className="row">
@@ -295,26 +313,6 @@ const ViewCart = () => {
                                     </div>
                                   </td>
                                   <td>{index + 1}</td>
-                                  {/* <td>
-                                    <div className="d-flex align-items-center gap-2">
-                                      {item.cartImage && (
-                                        <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                          <img
-                                            className="avatar-md"
-                                            alt={item.subcategoryName}
-                                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${item.cartImage}`}
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() =>
-                                              handleImageClick(
-                                                `${process.env.REACT_APP_API_URL_FOR_IMAGE}${item.cartImage}`
-                                              )
-                                            }
-                                          />
-                                        </div>
-                                      )}
-                                      <span>{item.subcategoryName}</span>
-                                    </div>
-                                  </td> */}
                                   <td>
                                     <div className="d-flex align-items-center gap-2">
                                       {imageUrl && (

@@ -246,101 +246,78 @@ const TrackOrderHistoryTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentOrderDetails.map((order) => (
-                        <tr key={order.id}>
-                          <td>
-                            <div className="form-check ms-1">
-                              <input
-                                type="checkbox"
-                                className="form-check-input"
-                                id={`customCheck${order.id}`}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor={`customCheck${order.id}`}
-                              >
-                                &nbsp;
-                              </label>
-                            </div>
-                          </td>
-                          <td>{order.orderNumber}</td>
-                          <td>{order.enquiryNumber}</td>
-                          <td>{order.companyName}</td>
-                          <td>{formatDate(order.expectedDeliveryDate)}</td>
-                          <td>
-                            {order.actualDeliveryDate
-                              ? formatDate(order.actualDeliveryDate)
-                              : "Not Provided"}
-                          </td>
-                          <td>{formatCost(order?.totalAmount)}</td>
-                          <td>{order.buyerStatus}</td>
-                          <td>
-                            <div className="d-flex gap-2">
-                              <Link
-                                onClick={(event) =>
-                                  navigateToViewOrder(
-                                    event,
-                                    order,
-                                    order.orderNumber,
-                                    order.enquiryNumber
-                                  )
-                                }
-                                className="btn btn-light btn-sm"
-                              >
-                                <iconify-icon
-                                  icon="solar:eye-broken"
-                                  className="align-middle fs-18"
+                      {currentOrderDetails.length > 0 ? (
+                        currentOrderDetails.map((order) => (
+                          <tr key={order.id}>
+                            <td>
+                              <div className="form-check ms-1">
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id={`customCheck${order.id}`}
                                 />
-                              </Link>
-
-                              {order.buyerStatus === "Order Placed" &&
-                                canCancelOrder(order.updatedAt) && (
-                                  <button
-                                    className="btn btn-danger btn-sm"
-                                    title="Cancel Order"
-                                    data-bs-toggle="popover"
-                                    data-bs-trigger="hover"
-                                    onClick={() =>
-                                      handleCancelOrder(
-                                        order.enquiryNumber,
-                                        order.sellerId,
-                                        order.schoolId,
-                                        "Cancelled by Buyer"
-                                      )
-                                    }
-                                  >
-                                    Cancel Order
-                                  </button>
-                                )}
-
-                              {order.buyerStatus === "Work In Progress" && (
-                                <button
-                                  className="btn btn-info btn-sm"
-                                  title="Request For Cancel Order"
-                                  data-bs-toggle="popover"
-                                  data-bs-trigger="hover"
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`customCheck${order.id}`}
+                                >
+                                  &nbsp;
+                                </label>
+                              </div>
+                            </td>
+                            <td>{order.orderNumber}</td>
+                            <td>{order.enquiryNumber}</td>
+                            <td>{order.companyName}</td>
+                            <td>{formatDate(order.expectedDeliveryDate)}</td>
+                            <td>
+                              {order.actualDeliveryDate
+                                ? formatDate(order.actualDeliveryDate)
+                                : "Not Provided"}
+                            </td>
+                            <td>{formatCost(order?.totalAmount)}</td>
+                            <td>{order.buyerStatus}</td>
+                            <td>
+                              <div className="d-flex gap-2">
+                                <Link
                                   onClick={(event) =>
-                                    handleOpenModal(
+                                    navigateToViewOrder(
                                       event,
-                                      order?.enquiryNumber,
-                                      order?.sellerId,
-                                      order?.schoolId
+                                      order,
+                                      order.orderNumber,
+                                      order.enquiryNumber
                                     )
                                   }
+                                  className="btn btn-light btn-sm"
                                 >
-                                  Request For Cancel
-                                </button>
-                              )}
+                                  <iconify-icon
+                                    icon="solar:eye-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
 
-                              {order.buyerStatus === "Delivered" &&
-                                (!order.rating || order.rating === 0) && (
+                                {order.buyerStatus === "Order Placed" &&
+                                  canCancelOrder(order.updatedAt) && (
+                                    <button
+                                      className="btn btn-danger btn-sm"
+                                      title="Cancel Order"
+                                      onClick={() =>
+                                        handleCancelOrder(
+                                          order.enquiryNumber,
+                                          order.sellerId,
+                                          order.schoolId,
+                                          "Cancelled by Buyer"
+                                        )
+                                      }
+                                    >
+                                      Cancel Order
+                                    </button>
+                                  )}
+
+                                {order.buyerStatus === "Work In Progress" && (
                                   <button
                                     className="btn btn-info btn-sm"
-                                    title="Give Ratings"
-                                    data-bs-toggle="popover"
-                                    data-bs-trigger="hover"
+                                    title="Request For Cancel Order"
                                     onClick={(event) =>
-                                      handleOpenRatingModal(
+                                      handleOpenModal(
                                         event,
                                         order?.enquiryNumber,
                                         order?.sellerId,
@@ -348,13 +325,41 @@ const TrackOrderHistoryTable = () => {
                                       )
                                     }
                                   >
-                                    Give Ratings
+                                    Request For Cancel
                                   </button>
                                 )}
-                            </div>
+
+                                {order.buyerStatus === "Delivered" &&
+                                  (!order.rating || order.rating === 0) && (
+                                    <button
+                                      className="btn btn-info btn-sm"
+                                      title="Give Ratings"
+                                      onClick={(event) =>
+                                        handleOpenRatingModal(
+                                          event,
+                                          order?.enquiryNumber,
+                                          order?.sellerId,
+                                          order?.schoolId
+                                        )
+                                      }
+                                    >
+                                      Give Ratings
+                                    </button>
+                                  )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan="9"
+                            className="text-center py-4 text-muted"
+                          >
+                            No Order Found
                           </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                 </div>

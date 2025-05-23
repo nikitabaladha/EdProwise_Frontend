@@ -1,29 +1,22 @@
-import React from "react";
-
-const notifications = [
-  { label: "Review system logs for any reported errors", checked: false },
-  { label: "Conduct user testing to identify potential bugs", checked: false },
-  { label: "Gather feedback from stakeholders", checked: false },
-  { label: "Review system logs for any reported errors", checked: false },
-  { label: "Conduct user testing to identify potential bugs", checked: false },
-  { label: "Gather feedback from stakeholders", checked: false },
-  { label: "Review system logs for any reported errors", checked: false },
-  { label: "Conduct user testing to identify potential bugs", checked: false },
-  { label: "Gather feedback from stakeholders", checked: false },
-  { label: "Review system logs for any reported errors", checked: false },
-  { label: "Conduct user testing to identify potential bugs", checked: false },
-  { label: "Gather feedback from stakeholders", checked: false },
-];
+import { useEffect } from "react";
+import { useNotifications } from "../../NotificationProviderForEdprowise.js";
 
 const DashboardConversions = () => {
+  const { notifications, fetchNotifications } = useNotifications();
+
+  console.log("notifications", notifications);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
   return (
     <>
       <div className="col-xl-4">
         <div className="card">
           <div className="card-header d-flex justify-content-between align-items-center">
             <h4 className="card-title">Recent Notification</h4>
-          </div>{" "}
-          {/* end card-header*/}
+          </div>
           <div className="card-body p-0 pb-3">
             <div
               className="p-3"
@@ -46,29 +39,40 @@ const DashboardConversions = () => {
                       aria-label="scrollable content"
                       style={{ height: "auto", overflow: "hidden scroll" }}
                     >
-                      <div
-                        className="simplebar-content"
-                        style={{ padding: 24 }}
-                      >
-                        {notifications.map((notification, index) => (
-                          <div
-                            key={index}
-                            className="form-check form-todo py-1 my-2 ps-4"
-                          >
-                            <input
-                              type="checkbox"
-                              className="form-check-input rounded-circle mt-0 fs-18"
-                              defaultChecked={notification.checked}
-                              id={`customCheck${index + 1}`}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor={`customCheck${index + 1}`}
+                      <div className="simplebar-content">
+                        {notifications.length > 0 ? (
+                          notifications.map((notification) => (
+                            <div
+                              key={notification._id}
+                              className="form-check form-todo py-2 my-2 ps-3 border-bottom"
                             >
-                              {notification.label}
-                            </label>
+                              <div className="d-flex align-items-center">
+                                <div className="avatar-sm me-3 flex-shrink-0">
+                                  <span className="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
+                                    <iconify-icon icon="solar:bell-bing-bold-duotone" />
+                                  </span>
+                                </div>
+                                <div className="flex-grow-1">
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor={`notification-${notification._id}`}
+                                  >
+                                    {notification.message}
+                                  </label>
+                                  <div className="text-muted small mt-1">
+                                    {new Date(
+                                      notification.createdAt
+                                    ).toLocaleString()}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center py-3">
+                            No notifications found
                           </div>
-                        ))}
+                        )}
                       </div>
                     </div>
                   </div>
@@ -105,10 +109,8 @@ const DashboardConversions = () => {
                 />
               </div>
             </div>
-          </div>{" "}
-          {/* end card body */}
-        </div>{" "}
-        {/* end card*/}
+          </div>
+        </div>
       </div>
     </>
   );

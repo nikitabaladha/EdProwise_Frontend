@@ -35,89 +35,103 @@ const ExcelSheetModal = ({ show, onClose, shifts, onImportSuccess }) => {
     setShowConfirmModal(true);
   };
 
-  const processExcelData = () => {
-    return new Promise((resolve, reject) => {
-      try {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
-          if (!sheetName) {
-            toast.error('No "Data" sheet found in the Excel file.');
-            resolve({ jsonData: [], validatedData: [] });
+const processExcelData = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+        if (!sheetName) {
+          toast.error('No "Data" sheet found in the Excel file.');
+          resolve({ jsonData: [], validatedData: [] });
+          return;
+        }
+
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
+          return row.Class?.toString().trim() && row.Section?.toString().trim() && row.Shift?.toString().trim();
+        });
+
+        if (jsonData.length === 0) {
+          toast.error('No valid data rows found in the Excel file.');
+          resolve({ jsonData: [], validatedData: [] });
+          return;
+        }
+
+      
+        const groupedData = {};
+        let hasError = false;
+
+        jsonData.forEach((row, index) => {
+          const shiftValue = row.Shift ? String(row.Shift).trim() : '';
+          const className = row.Class ? String(row.Class).trim() : '';
+          const sectionNames = row.Section ? String(row.Section).split(',').map((s) => s.trim()).filter((s) => s) : [];
+
+          if (!shiftValue) {
+            toast.error(`Row ${index + 1}: Shift is missing or empty.`);
+            hasError = true;
             return;
           }
-          
-          const sheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
-            return row.Class?.toString().trim() && row.Section?.toString().trim() && row.Shift?.toString().trim();
-          });
 
-          if (jsonData.length === 0) {
-            toast.error('No valid data rows found in the Excel file.');
-            resolve({ jsonData: [], validatedData: [] });
-            return;
-          }
-
-          const tempValidatedData = [];
-          let hasError = false;
-
-          jsonData.forEach((row, index) => {
-            const shiftValue = row.Shift ? String(row.Shift).trim() : '';
-            const className = row.Class ? String(row.Class).trim() : '';
-            const sectionName = row.Section ? String(row.Section).trim() : '';
-
-            if (!shiftValue) {
-              toast.error(`Row ${index + 1}: Shift is missing or empty.`);
-              hasError = true;
-              return;
-            }
-
-            const shift = shifts.find(
-              (s) => s.masterDefineShiftName.toLowerCase() === shiftValue.toLowerCase()
+          const shift = shifts.find(
+            (s) => s.masterDefineShiftName.toLowerCase() === shiftValue.toLowerCase()
+          );
+          if (!shift) {
+            toast.error(
+              `Row ${index + 1}: Invalid shift "${shiftValue}". Available shifts: ${shifts
+                .map((s) => s.masterDefineShiftName)
+                .join(', ')}.`
             );
-            if (!shift) {
-              toast.error(
-                `Row ${index + 1}: Invalid shift "${shiftValue}". Available shifts: ${shifts
-                  .map((s) => s.masterDefineShiftName)
-                  .join(', ')}.`
-              );
-              hasError = true;
-              return;
-            }
-
-            if (!className || !sectionName) {
-              toast.error(`Row ${index + 1}: Class or Section is missing.`);
-              hasError = true;
-              return;
-            }
-
-            tempValidatedData.push({
-              className,
-              sections: [
-                {
-                  name: sectionName,
-                  shiftId: shift._id,
-                },
-              ],
-            });
-          });
-
-          if (hasError) {
-            toast.error('Some rows contain errors. Review the preview and correct the file.');
+            hasError = true;
+            return;
           }
 
-          resolve({ jsonData, validatedData: tempValidatedData });
-        };
-        reader.readAsArrayBuffer(file);
-      } catch (error) {
-        toast.error('Error processing Excel file: ' + error.message);
-        console.error('Process Error:', error);
-        reject(error);
-      }
-    });
-  };
+          if (!className || sectionNames.length === 0) {
+            toast.error(`Row ${index + 1}: Class or Section is missing.`);
+            hasError = true;
+            return;
+          }
+
+       
+          if (!groupedData[className]) {
+            groupedData[className] = {
+              className,
+              sections: [],
+            };
+          }
+
+       
+          sectionNames.forEach((sectionName) => {
+            if (!groupedData[className].sections.some((s) => s.name === sectionName)) {
+              groupedData[className].sections.push({
+                name: sectionName,
+                shiftId: shift._id,
+              });
+            } else {
+              toast.warn(`Row ${index + 1}: Duplicate section "${sectionName}" for class "${className}" ignored.`);
+            }
+          });
+        });
+
+        if (hasError) {
+          toast.error('Some rows contain errors. Review the preview and correct the file.');
+        }
+
+     
+        const validatedData = Object.values(groupedData);
+
+        resolve({ jsonData, validatedData });
+      };
+      reader.readAsArrayBuffer(file);
+    } catch (error) {
+      toast.error('Error processing Excel file: ' + error.message);
+      console.error('Process Error:', error);
+      reject(error);
+    }
+  });
+};
 
   const handleViewExcelSheet = async () => {
     if (!file) {
@@ -186,36 +200,42 @@ const ExcelSheetModal = ({ show, onClose, shifts, onImportSuccess }) => {
   };
 
   const handleDownloadDemo = () => {
-    if (shifts.length === 0) {
-      toast.error('No shifts available to include in demo sheet.');
-      return;
-    }
+  if (shifts.length === 0) {
+    toast.error('No shifts available to include in demo sheet.');
+    return;
+  }
 
   const guidelines = [
     ['📌 Import Guidelines:'],
-    ['• Class: Enter the class name (e.g., Grade 1, Class 10 or 10).'],
-    ['• Section: Enter the section name (e.g., A, B).'],
+    ['• Class: Enter the class name (e.g., Grade 1, Class 10, or 10).'],
+    ['• Section: Enter section names, separated by commas for multiple sections (e.g., A or A,B,C).'],
     [`• Shift: Must match one of the following available shifts: ${shifts
       .map((s) => s.masterDefineShiftName)
       .join(', ')}.`],
     ['• Ensure all fields are filled and valid.'],
     ['• Do not change the column headers; they must remain exactly as provided.'],
     ['• Use the "Data" sheet to enter your data.'],
-  ]
+    ['• Example: For class UKG with sections A, B, and C, enter "A,B,C" in the Section column.'],
+  ];
 
-   const wsData = [['Class', 'Section', 'Shift']];
+  const wsData = [
+    ['Class', 'Section', 'Shift'],
+    ['Nursery', 'A,B', 'Morning'],
+    ['LKG', 'A', 'Morning'],
+    ['UKG', 'A,B,C', 'Morning'],
+    ['Nursery', 'C', 'Afternoon'],
+  ];
 
-   const wb = XLSX.utils.book_new();
+  const wb = XLSX.utils.book_new();
 
   const ws = XLSX.utils.aoa_to_sheet(wsData);
   XLSX.utils.book_append_sheet(wb, ws, 'Data');
-
 
   const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
   XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
 
   XLSX.writeFile(wb, 'class_section.xlsx');
-  };
+};
 
   return (
     <>

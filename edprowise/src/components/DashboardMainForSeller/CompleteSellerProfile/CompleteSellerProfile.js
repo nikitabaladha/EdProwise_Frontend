@@ -438,8 +438,6 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           value={formData.gstin}
                           onChange={handleChange}
-                          // here i want to allow only capital letter if any alfabet
-                          // required
                           placeholder="Example : 22AAAAA0000A1Z5"
                         />
                       </div>

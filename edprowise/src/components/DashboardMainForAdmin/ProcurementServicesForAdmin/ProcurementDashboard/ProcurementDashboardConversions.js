@@ -39,32 +39,32 @@ const DashboardConversions = () => {
                       aria-label="scrollable content"
                       style={{ height: "auto", overflow: "hidden scroll" }}
                     >
-                      <div
-                        className="simplebar-content"
-                        style={{ padding: 24 }}
-                      >
+                      <div className="simplebar-content">
                         {notifications.length > 0 ? (
                           notifications.map((notification) => (
                             <div
                               key={notification._id}
-                              className="form-check form-todo py-1 my-2 ps-4"
+                              className="form-check form-todo py-2 my-2 ps-3 border-bottom"
                             >
-                              <input
-                                type="checkbox"
-                                className="form-check-input rounded-circle mt-0 fs-18"
-                                defaultChecked={false}
-                                id={`notification-${notification._id}`}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor={`notification-${notification._id}`}
-                              >
-                                {notification.message}
-                              </label>
-                              <div className="text-muted small mt-1">
-                                {new Date(
-                                  notification.createdAt
-                                ).toLocaleString()}
+                              <div className="d-flex align-items-center">
+                                <div className="avatar-sm me-3 flex-shrink-0">
+                                  <span className="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
+                                    <iconify-icon icon="solar:bell-bing-bold-duotone" />
+                                  </span>
+                                </div>
+                                <div className="flex-grow-1">
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor={`notification-${notification._id}`}
+                                  >
+                                    {notification.message}
+                                  </label>
+                                  <div className="text-muted small mt-1">
+                                    {new Date(
+                                      notification.createdAt
+                                    ).toLocaleString()}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           ))
