@@ -88,7 +88,25 @@ export const getModules = (handlers ={}) => ({
       ['clean'],
     ],
     handlers: {
-
+link: function(value) {
+        if (value) {
+          const url = prompt('Enter the URL:');
+          if (url) {
+            const text = prompt('Enter link text:', '');
+            const quill = this.quill;
+            const range = quill.getSelection();
+            if (range) {
+              if (text) {
+                quill.insertText(range.index, text, 'link', url);
+              } else {
+                quill.format('link', url);
+              }
+            }
+          }
+        } else {
+          this.quill.format('link', false);
+        }
+      }
     }
   },
   clipboard: {
