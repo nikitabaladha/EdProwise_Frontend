@@ -210,10 +210,6 @@ Version:        1.0.0
   border: 1px solid #ddd;
 }
 
-.quill-editor-custom {
-  height: 400px;
-}
-
 .quill-editor-custom .ql-toolbar {
   border-radius: 4px 4px 0 0;
   background-color: #f8f9fa;

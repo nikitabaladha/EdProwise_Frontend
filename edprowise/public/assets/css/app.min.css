@@ -202,9 +202,6 @@ change the card-title font-size 2rem and fw-bold
   border: 1px solid #ddd;
 }
 
-.quill-editor-custom {
-  height: 400px;
-}
 
 .quill-editor-custom .ql-toolbar {
   border-radius: 4px 4px 0 0;
@@ -212,11 +209,6 @@ change the card-title font-size 2rem and fw-bold
   border-bottom: 1px solid #ddd;
 }
 
-.quill-editor-custom .ql-container {
-  border-radius: 0 0 4px 4px;
-  font-family: inherit;
-  height: calc(100% - 42px);
-}
 
 
 

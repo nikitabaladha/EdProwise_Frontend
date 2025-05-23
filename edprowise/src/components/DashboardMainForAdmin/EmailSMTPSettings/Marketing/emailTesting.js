@@ -1762,11 +1762,7 @@ export default MarketingEmail;
 //                         }}
 //                         components={{ MultiValueContainer }}
 //                       />
-//                       {formData.mailTo.length > 5 && (
-//                         <div className="text-muted small mt-1">
-//                           {formData.mailTo.length} emails selected
-//                         </div>
-//                       )}
+//                       
 //                     </div>
 //                   </div>
 //                   <div className="col-md-3 align-content-center">
@@ -1850,3 +1846,145 @@ export default MarketingEmail;
 // };
 
 // export default MarketingEmail;
+
+
+    // <div className="email-editor-container">
+    //   <div className="email-editor-card">
+    //     <div className="email-editor-header">
+    //       <h4 className="email-editor-title">Compose Email</h4>
+    //     </div>
+
+    //     <form onSubmit={handleSubmit}>
+    //       <div className="email-editor-form-group">
+    //         <div className="email-recipient-container">
+    //           <label className="email-editor-label">
+    //             To <span className="required-asterisk">*</span>
+    //           </label>
+    //           <div className="email-recipient-controls">
+    //             <CreatableSelect
+    //               className="email-recipient-select"
+    //               options={emailOptions}
+    //               isMulti
+    //               isClearable
+    //               onChange={handleEmailChange}
+    //               value={formData.mailTo.map((email, index) => ({
+    //                 label: email,
+    //                 value: email,
+    //                 __index: index
+    //               }))}
+    //               placeholder="Select or enter email addresses"
+    //               formatOptionLabel={({ value, label }, { context }) => {
+    //                       if (context === 'menu') {
+    //                         return label;
+    //                       }
+    //                       const selectedCount = formData.mailTo.length;
+    //                       if (selectedCount <= 6) {
+    //                         return label;
+    //                       }
+
+    //                       const index = formData.mailTo.indexOf(value);
+    //                       if (index < 5) {
+    //                         return label;
+    //                       }
+    //                       if (index === 5) {
+    //                         return `+${selectedCount - 5} more`;
+    //                       }
+    //                       return null;
+    //                     }}
+    //               components={{ MultiValueContainer }}
+    //             />
+                
+    //             <button
+    //               type="button"
+    //               onClick={triggerFileInput}
+    //               className="btn btn-primary custom-submit-button align-content-center"
+    //             >
+    //               Import
+    //             </button>
+    //             <input
+    //               type="file"
+    //               ref={fileInputRef}
+    //               onChange={handleFileImport}
+    //               accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    //               className="hidden-file-input"
+    //               style={{ display: 'none' }} // Hide the actual input
+    //             />
+    //           </div>
+    //         </div>
+
+    //         <div className="email-subject-container">
+    //           <label className="email-editor-label">
+    //             Subject <span className="required-asterisk">*</span>
+    //           </label>
+    //           <input
+    //             type="text"
+    //             name="subject"
+    //             className="email-subject-input"
+    //             value={formData.subject}
+    //             onChange={handleChange}
+    //             required
+    //             placeholder="Enter email subject"
+    //           />
+    //         </div>
+
+    //         <div className="email-content-container">
+    //           <label className="email-editor-label">
+    //             Message <span className="required-asterisk">*</span>
+    //           </label>
+    //           <div className="quill-editor-wrapper">
+    //             <ReactQuill
+    //               ref={quillRef}
+    //               theme="snow"
+    //               value={formData.content}
+    //               onChange={handleContentChange}
+    //               modules={modules}
+    //               formats={formats}
+    //               placeholder="Compose your email here..."
+    //               className="quill-editor-custom"
+    //             />
+    //           </div>
+    //         </div>
+
+    //         {formData.attachments.length > 0 && (
+    //           <div className="email-attachments-container">
+    //             <label className="email-editor-label">Attachments</label>
+    //             <div className="attachments-list">
+    //               {formData.attachments.map((file, index) => (
+    //                 <div key={index} className="attachment-item">
+    //                   <span className="attachment-name">{file.name}</span>
+    //                   <span className="attachment-size">
+    //                     {formatFileSize(file.size)}
+    //                   </span>
+    //                   <button
+    //                     type="button"
+    //                     onClick={() => removeAttachment(index)}
+    //                     className="attachment-remove-button"
+    //                   >
+    //                     ×
+    //                   </button>
+    //                 </div>
+    //               ))}
+    //             </div>
+    //           </div>
+    //         )}
+
+    //         <div className="email-editor-actions">
+    //           <button
+    //             type="submit"
+    //             className="email-send-button"
+    //             disabled={sending}
+    //           >
+    //             {sending ? (
+    //               <>
+    //                 <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    //                 Sending...
+    //               </>
+    //             ) : (
+    //               "Send Email"
+    //             )}
+    //           </button>
+    //         </div>
+    //       </div>
+    //     </form>
+    //   </div>
+    // </div>

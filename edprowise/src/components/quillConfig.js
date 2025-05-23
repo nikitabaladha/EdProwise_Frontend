@@ -5,6 +5,9 @@ import Quill from 'quill';
 const FontStyle = Quill.import('attributors/style/font');
 const Size = Quill.import('attributors/style/size');
 const AlignStyle = Quill.import('attributors/style/align');
+// --- Custom Indent using style (instead of class) ---
+const Parchment = Quill.import('parchment');
+
 // Define which fonts you want to allow
 const fontMap = [
   { name: 'sans-serif', value: 'sans-serif' },
@@ -24,40 +27,51 @@ const fontMap = [
   { name: 'monospace', value: 'monospace' }
 ];
 
+class IndentAttributor extends Parchment.StyleAttributor {
+  add(node, value) {
+    const intValue = parseInt(value, 10);
+    if (isNaN(intValue) || intValue < 0 || intValue > 8) {
+      return false; // reject invalid or out-of-bound values
+    }
+
+    if (intValue === 0) {
+      this.remove(node);
+      return true;
+    }
+
+    return super.add(node, `${intValue * 3}em`);
+  }
+
+  value(node) {
+    const val = super.value(node);
+    if (!val) return 0;
+
+    const px = parseFloat(val);
+    const level = Math.round(px / 3);
+
+    if (isNaN(level) || level < 0) return 0;
+    return Math.min(level, 8); // cap value to 8
+  }
+}
+
+const IndentStyle = new IndentAttributor('indent', 'padding-left', {
+  scope: Parchment.Scope.BLOCK,
+});
+Quill.register(IndentStyle, true);
+
 // Configure FontStyle whitelist with just the simple names
 FontStyle.whitelist = fontMap.map(font => font.value);
 Quill.register(FontStyle, true);
-
-// Font.whitelist = [
-//   'sans-serif',
-//   'arial', 
-//   'calibri',
-//   'comic-sans-ms',
-//   'courier-new', 
-//   'georgia',
-//   'helvetica',
-//   'impact', 
-//   'lucida-console',
-//   'tahoma',
-//   'times-new-roman', 
-//   'trebuchet-ms',
-//   'verdana',
-//   'serif',
-//   'monospace'
-// ];
-
-// Register the font module with Quill
-// Quill.register(Font, true);
 
 Size.whitelist = ['12px', '14px', '16px', '18px', '20px', '22px', '24px', '28px', '36px', '48px', '72px',];
 Quill.register(Size, true);
 
 AlignStyle.whitelist = ['right', 'center', 'justify']; 
-
 Quill.register(AlignStyle, true);
 
+
 // ===== TOOLBAR CONFIGURATION =====
-export const getModules = (handlers) => ({
+export const getModules = (handlers ={}) => ({
   toolbar: {
     container: [
       [{ 
@@ -70,18 +84,17 @@ export const getModules = (handlers) => ({
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       [{ 'align': AlignStyle.whitelist.concat(['']) }],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-      ['link', 'image', 'video', 'attachment'],
+      ['link',],
+       ['customImage', 'customFile'],
       ['clean'],
-      ['undo', 'redo']
     ],
     handlers: {
-      image: handlers?.image || (() => {}),
-      attachment: handlers?.attachment || (() => {})
+
     }
   },
   clipboard: {
-    matchVisual: false
-  }
+    matchVisual: true
+  },
 });
 
 const FontFormat = {
@@ -96,6 +109,7 @@ const FontFormat = {
   }
 };
 
+
 Quill.register(FontFormat, true);
 
 // ===== FORMATS SUPPORTED =====
@@ -108,8 +122,7 @@ export const formats = [
   'script',
   'list', 'bullet', 'indent',
   'align',
-  'link', 'image', 'video',
-  
+  'link',  
 ];
 
 // ===== CSS STYLES FOR FONTS =====
@@ -122,3 +135,7 @@ export const fontStyles = `
   content: "Normal" ;
 }
 `;
+
+
+
+//  'image', 'video', 'attachment'

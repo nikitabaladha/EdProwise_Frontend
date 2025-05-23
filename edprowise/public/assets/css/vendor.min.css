@@ -7184,7 +7184,8 @@ body.swal2-toast-shown .swal2-container.swal2-bottom-right {
 
 /* end */
 /* Font Previews Umesh Added*/
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Arial, sans-serif"]::before {
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Arial, sans-serif"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='Arial, sans-serif']::before {
   font-family: Arial, sans-serif;
 }
 
