@@ -196,7 +196,10 @@ const SellerDashboardHeader = () => {
           }
         );
       }
-      if (notification.entityType === "QuoteProposal") {
+      if (
+        notification.entityType === "QuoteProposal" ||
+        notification.entityType === "QuoteProposal Reject"
+      ) {
         navigate(
           "/seller-dashboard/procurement-services/view-requested-quote",
           {
