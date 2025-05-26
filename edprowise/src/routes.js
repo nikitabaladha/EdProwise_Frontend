@@ -5,6 +5,7 @@ import PagenotFound404 from "./404page.js";
 import UnauthorizedAccess from "./UnauthorizedPage.js";
 import { ThemeProvider } from "./components/ThemeProvider";
 import RemoveThemeAttribute from './RemoveThemeAttribute';
+import Test from "../src/components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/test.js"
 
 
 
@@ -906,6 +907,13 @@ const AppRoutes = () => {
           path="fees-module/fees-receipts/school-fees"
           element={<SchoolFeesReceipts />}
         />
+
+         <Route
+          path="fees-module/fees-receipts/test"
+          element={<  Test/>}
+        />
+
+      
 
         <Route
           path="fees-module/fees-receipts/school-fees/student-receipts"

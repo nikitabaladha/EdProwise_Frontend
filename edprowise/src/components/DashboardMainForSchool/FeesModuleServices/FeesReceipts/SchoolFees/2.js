@@ -3,7 +3,6 @@ import useSchoolFeesReceipts from "../SchoolFees/SchoolFeesReceiptsdata";
 import SchoolFeesExcelSheetModal from './SchoolFeesExcelSheetModal';
 import { useNavigate } from "react-router-dom";
 
-
 const SchoolFeesReceipts = () => {
   const {
     formData,
@@ -34,46 +33,8 @@ const SchoolFeesReceipts = () => {
     handleSelectAllYears,
     schoolId,
     feeTypes,
-    handleFineAmountChange
   } = useSchoolFeesReceipts();
   const navigate = useNavigate();
-
-const handleOnClick = (e,item, year, concessionItem) => {
-     e.preventDefault();
-  const receiptDetails = {
-    receiptNumber: item.receiptNumber,
-    studentName: `${formData.firstName} ${formData.lastName}`,
-    studentAdmissionNumber: formData.AdmissionNumber,
-    className: classes.find(c => c._id === formData.masterDefineClass)?.className || '',
-    section: sections.find(s => s._id === formData.section)?.name || '',
-    paymentDate: new Date(item.paymentDate).toISOString().split('T')[0],
-    date: new Date(item.paymentDate).toISOString().split('T')[0],
-    paymentMode: item.paymentMode,
-    collectorName: item.collectorName || formData.name,
-    bankName: item.bankName || formData.bankName,
-    academicYear: year.academicYear,
-    installments: [{
-      number: item.installmentNumber,
-      feeItems: [{
-        feeTypeId: item.feesTypeId._id,
-        type: getFeeTypeName(item.feesTypeId._id),
-        amount: item.amount,
-        concession: concessionItem?.concessionAmount || 0,
-        fineAmount: item.fineAmount || 0,
-        payable: item.amount - (concessionItem?.concessionAmount || 0) + (item.fineAmount || 0),
-        paid: item.paidAmount || 0,
-        balance: item.balance || 0,
-        academicYear: year.academicYear
-      }]
-    }]
-  };
-
-  navigate('/school-dashboard/fees-module/fees-receipts/school-fees/student-receipts', {
-    state: receiptDetails
-  });
-};
-
-
 
   const [showImportModal, setShowImportModal] = useState(false);
 
@@ -88,9 +49,11 @@ const handleOnClick = (e,item, year, concessionItem) => {
                   <div className="card-header">
                     <div className="row align-items-center">
                       <div className="col-4"></div>
+
                       <div className="col-4 text-center">
                         <h4 className="card-title custom-heading-font mb-0">School Fees</h4>
                       </div>
+
                       <div className="col-4 d-flex justify-content-end gap-2">
                         <button
                           type="button"
@@ -99,16 +62,18 @@ const handleOnClick = (e,item, year, concessionItem) => {
                         >
                           Import
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-primary custom-submit-button"
-                          onClick={() => navigate("/school-dashboard/fees-module/fees-receipts/school-fees/fees-receipts")}
-                        >
-                          Fee Receipts
-                        </button>
+                      <button
+                      type="button" // Change to type="button" to prevent form submission
+                      className="btn btn-primary custom-submit-button"
+                      onClick={() => navigate("/school-dashboard/fees-module/fees-receipts/school-fees/fees-receipts")}
+                    >
+                      Fee Receipts
+                    </button> 
                       </div>
                     </div>
                   </div>
+
+
                 </div>
                 <form onSubmit={handleAdmissionSubmit}>
                   <div className="row">
@@ -144,8 +109,16 @@ const handleOnClick = (e,item, year, concessionItem) => {
                         <button type="submit" className="btn btn-primary custom-submit-button">
                           Submit
                         </button>
+                        {/* <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() => setShowImportModal(true)}
+                        >
+                          Import
+                        </button> */}
                       </div>
                     </div>
+
                   </div>
                 </form>
               </div>
@@ -155,7 +128,7 @@ const handleOnClick = (e,item, year, concessionItem) => {
         <SchoolFeesExcelSheetModal
           show={showImportModal}
           onClose={() => setShowImportModal(false)}
-          schoolId={schoolId}
+          schoolId={schoolId} // Use schoolId from hook
           existingStudents={existingStudents}
           classes={classes}
           feeTypes={feeTypes}
@@ -285,8 +258,8 @@ const handleOnClick = (e,item, year, concessionItem) => {
                                 <td>{yearData.totals.totalFeesAmount}</td>
                                 <td>{yearData.totals.totalConcession}</td>
                                 <td>{yearData.totals.totalFine}</td>
-                                <td>{yearData.totals.totalPaidAmount}</td>
-                                <td>{yearData.totals.totalRemainingAmount}</td>
+                                <td>{yearData.totals.totalFeesPayable}</td>
+                                <td>{yearData.totals.totalFeesPayable}</td>
                               </tr>
                             );
                           })
@@ -343,81 +316,33 @@ const handleOnClick = (e,item, year, concessionItem) => {
                       <tbody>
                         {Array.isArray(feeData) && feeData.length > 0 ? (
                           feeData
-                            .filter(
-                              (year) =>
-                                selectAllYears || selectedAcademicYears.includes(year.academicYear)
-                            )
-                            .flatMap((year) => {
-                              if (!Array.isArray(year.installmentsPresent)) return [];
+                            .filter(year => selectAllYears || selectedAcademicYears.includes(year.academicYear))
+                            .flatMap(year => {
+                              if (!Array.isArray(year.installmentsPresent)) return null;
 
-                              return year.installmentsPresent.map((installmentNum) => {
+                              return year.installmentsPresent.map(installmentNum => {
                                 const installmentData = year.feeInstallments
-                                  ?.filter((item) =>
-                                    item.installmentName.includes(`Installment ${installmentNum}`)
-                                  )
-                                  ?.filter((item) => item.balanceAmount > 0);
+                                  ?.filter(item => item.installmentName.includes(`Installment ${installmentNum}`))
+                                  ?.filter(item => item.balanceAmount > 0);
 
                                 if (!installmentData?.length) return null;
-
-                                const totals = installmentData.reduce(
-                                  (acc, item) => {
-                                    const concessionItem =
-                                      year.concession?.concessionDetails?.find(
-                                        (cd) =>
-                                          cd.installmentName === item.installmentName &&
-                                          cd.feesType === item.feesTypeId._id
-                                      );
-                                    const concessionAmount = concessionItem?.concessionAmount || 0;
-                                    const fineAmount = item.fineAmount || 0;
-                                    const payableAmount = item.amount - concessionAmount + fineAmount;
-                                    const paidKey = `${year.academicYear}-${installmentNum}-${item.feesTypeId._id}`;
-                                    // const currentPaidAmount = 0;
-                                    const currentPaidAmount =
-                                      paidAmounts[paidKey] !== undefined
-                                        ? paidAmounts[paidKey]
-                                        : item.paidAmount || 0;
-                                    const balance = item.balanceAmount;
-
-                                    return {
-                                      totalFeesAmount: acc.totalFeesAmount + item.amount,
-                                      totalFine: acc.totalFine + fineAmount,
-                                      totalConcession: acc.totalConcession + concessionAmount,
-                                      totalPayable: acc.totalPayable + payableAmount,
-                                      totalPaid: acc.totalPaid + currentPaidAmount,
-                                      totalBalance: acc.totalBalance + balance,
-                                    };
-                                  },
-                                  {
-                                    totalFeesAmount: 0,
-                                    totalFine: 0,
-                                    totalConcession: 0,
-                                    totalPayable: 0,
-                                    totalPaid: 0,
-                                    totalBalance: 0,
-                                  }
-                                );
 
                                 return (
                                   <React.Fragment key={`${year.academicYear}-${installmentNum}`}>
                                     {installmentData.map((item, index) => {
-                                      const concessionItem =
-                                        year.concession?.concessionDetails?.find(
-                                          (cd) =>
-                                            cd.installmentName === item.installmentName &&
-                                            cd.feesType === item.feesTypeId._id
-                                        );
+                                      const concessionItem = year.concession?.concessionDetails?.find(
+                                        cd => cd.installmentName === item.installmentName &&
+                                          cd.feesType === item.feesTypeId._id
+                                      );
+
                                       const concessionAmount = concessionItem?.concessionAmount || 0;
+                                      const payableAmount = item.amount - concessionAmount;
                                       const fineAmount = item.fineAmount || 0;
-                                      const payableAmount =
-                                        item.amount - concessionAmount + fineAmount;
+                                      const totalPayable = payableAmount + fineAmount;
                                       const paidKey = `${year.academicYear}-${installmentNum}-${item.feesTypeId._id}`;
-                                      const currentPaidAmount =
-                                        paidAmounts[paidKey] !== undefined
-                                          ? paidAmounts[paidKey]
-                                          : item.paidAmount || 0;
-
-
-                                    //  const balance = payableAmount - currentPaidAmount;
+                                      const existingPaidAmount = item.paidAmount || 0;
+                                      const currentPaidAmount = paidAmounts[paidKey] !== undefined ? paidAmounts[paidKey] : existingPaidAmount;
+                                      const balance = totalPayable - currentPaidAmount;
 
                                       return (
                                         <tr key={`${year.academicYear}-${installmentNum}-${index}`}>
@@ -427,236 +352,54 @@ const handleOnClick = (e,item, year, concessionItem) => {
                                                 <input
                                                   type="checkbox"
                                                   className="form-check-input"
-                                                  checked={
-                                                    (selectedInstallments[year.academicYear] || []).includes(
-                                                      installmentNum
-                                                    )
-                                                  }
-                                                  onChange={() =>
-                                                    handleInstallmentSelection(
-                                                      installmentNum,
-                                                      year.academicYear
-                                                    )
-                                                  }
+                                                  checked={(selectedInstallments[year.academicYear] || []).includes(installmentNum)}
+                                                  onChange={() => handleInstallmentSelection(installmentNum, year.academicYear)}
                                                 />
                                               </td>
-                                              <td rowSpan={installmentData.length}>{year.academicYear}</td>
+                                              <td rowSpan={installmentData.length}>
+                                                {year.academicYear}
+                                              </td>
                                               <td rowSpan={installmentData.length}>
                                                 Installment {installmentNum}
                                               </td>
                                             </>
                                           )}
-                                          <td
-                                            style={{
-                                              verticalAlign: "middle",
-                                              textAlign: "left",
-                                              whiteSpace: "nowrap",
-                                            }}
-                                          >
+                                          <td style={{ verticalAlign: 'middle', textAlign: 'left', whiteSpace: 'nowrap' }}>
                                             <input
                                               type="checkbox"
                                               className="form-check-input"
-                                              checked={
-                                                (
-                                                  selectedFeeTypesByInstallment[year.academicYear]?.[
-                                                  installmentNum
-                                                  ] || []
-                                                ).includes(item.feesTypeId._id)
-                                              }
-                                              onChange={() =>
-                                                handleFeeTypeSelection(
-                                                  installmentNum,
-                                                  item.feesTypeId._id,
-                                                  year.academicYear
-                                                )
-                                              }
+                                              checked={(selectedFeeTypesByInstallment[year.academicYear]?.[installmentNum] || []).includes(item.feesTypeId._id)}
+                                              onChange={() => handleFeeTypeSelection(installmentNum, item.feesTypeId._id, year.academicYear)}
                                             />
-                                            <span style={{ marginLeft: "10px" }}>
-                                              {getFeeTypeName(item.feesTypeId._id) || "Fee Type Not Found"}
+                                            <span style={{ marginLeft: '10px' }}>
+                                              {getFeeTypeName(item.feesTypeId._id) || 'Fee Type Not Found'}
                                             </span>
                                           </td>
                                           <td>{new Date(item.dueDate).toLocaleDateString()}</td>
                                           <td>{item.amount}</td>
-                                          <td>
-                                            <input
-                                              type="number"
-                                              className="form-control form-control-sm"
-                                              value={fineAmount}
-                                              onChange={(e) =>
-                                                handleFineAmountChange(
-                                                  installmentNum,
-                                                  item.feesTypeId._id,
-                                                  e.target.value,
-                                                  year.academicYear
-                                                )
-                                              }
-                                              min="0"
-                                              style={{ width: "100px", margin: "0 auto" }}
-                                            />
-                                          </td>
+                                          <td>{fineAmount}</td>
                                           <td>{concessionAmount}</td>
-                                          <td>{payableAmount}</td>
+                                          <td>{totalPayable}</td>
                                           <td>
                                             <input
-                                              // type="number"
                                               className="form-control form-control-sm"
                                               value={currentPaidAmount}
                                               onChange={(e) =>
                                                 handlePaidAmountChange(
                                                   installmentNum,
                                                   item.feesTypeId._id,
-                                                  Math.max(
-                                                    0,
-                                                    Math.min(payableAmount, Number(e.target.value))
-                                                  ),
+                                                  Math.max(0, Math.min(totalPayable, Number(e.target.value))),
                                                   year.academicYear
                                                 )
                                               }
                                               min="0"
-                                              max={payableAmount}
-                                              style={{ width: "100px", margin: "0 auto" }}
+                                              max={totalPayable}
                                             />
                                           </td>
-                                          <td>{item.balanceAmount}</td>
+                                          <td>{balance}</td>
                                         </tr>
                                       );
                                     })}
-                                    <tr className="table-info">
-                                      <td colSpan={3}></td>
-                                      <td>
-                                        <strong>Total</strong>
-                                      </td>
-                                      <td></td>
-                                      <td>
-                                        <strong>{totals.totalFeesAmount}</strong>
-                                      </td>
-                                      <td>
-                                        <strong>{totals.totalFine}</strong>
-                                      </td>
-                                      <td>
-                                        <strong>{totals.totalConcession}</strong>
-                                      </td>
-                                      <td>
-                                        <strong>{totals.totalPayable}</strong>
-                                      </td>
-                                      <td>
-                                        <strong>{totals.totalPaid}</strong>
-                                      </td>
-                                      <td>
-                                        <strong>{totals.totalBalance}</strong>
-                                      </td>
-                                    </tr>
-
-                                    {year.paidInstallments && year.paidInstallments.length > 0 && (() => {
-                                      const filteredInstallments = year.paidInstallments.filter(
-                                        (item) => item.installmentNumber === installmentNum
-                                      );
-
-                                      if (filteredInstallments.length === 0) return null;
-
-                                      let totalFeesAmount = 0;
-                                      let totalFine = 0;
-                                      let totalConcession = 0;
-                                      let totalPayable = 0;
-                                      let totalPaid = 0;
-                                      let totalBalance = 0;
-
-                                      const rows = filteredInstallments.map((item, index) => {
-                                        const concessionItem = year.concession?.concessionDetails?.find(
-                                          (cd) =>
-                                            cd.installmentName === `Installment ${item.installmentNumber}` &&
-                                            cd.feesType === item.feesTypeId._id
-                                        );
-                                        const concessionAmount = concessionItem?.concessionAmount || 0;
-                                        const fineAmount = item.fineAmount || 0;
-                                        const feesAmount = item.amount || 0;
-                                        const payableAmount = feesAmount - concessionAmount + fineAmount;
-                                        const paidAmount = item.paidAmount || 0;
-                                        const balance = item.balance;
-
-                                        totalFeesAmount += feesAmount;
-                                        totalFine += fineAmount;
-                                        totalConcession += concessionAmount;
-                                        totalPayable += payableAmount;
-                                        totalPaid += paidAmount;
-                                        totalBalance += balance;
-
-
-
-                                        return (
-                                          <tr key={`${year.academicYear}-${installmentNum}-paid-${index}`}>
-                                            <td>{getFeeTypeName(item.feesTypeId._id)}</td>
-                                            <td>{feesAmount}</td>
-                                            <td>{fineAmount}</td>
-                                            <td>{concessionAmount}</td>
-                                            <td>{payableAmount}</td>
-                                            <td>{paidAmount}</td>
-                                            <td>{balance}</td>
-                                            <td>{item.receiptNumber}</td>
-                                            <td>{new Date(item.paymentDate).toLocaleDateString()}</td>
-                                            <td>{item.collectorName}</td>
-                                            <td>{item.paymentMode}</td>
-                                            <td>
-                                             <button
-  className="btn btn-primary btn-sm"
-  onClick={() => handleOnClick( year, concessionItem)}
->
-  View
-</button>
-                                            </td>
-                                          </tr>
-                                        );
-                                      });
-
-                                      return (
-                                        <tr>
-                                          <td colSpan="12">
-                                            <div className="mt-2">
-                                              <h6 className="text-start">
-                                                Paid Fee Types for Installment {installmentNum}
-                                              </h6>
-                                              <table className="table table-bordered table-sm">
-                                                <thead className="bg-light">
-                                                  <tr>
-                                                    <th>Type of Fees</th>
-                                                    <th>Fees Amount</th>
-                                                    <th>Fine</th>
-                                                    <th>Concession</th>
-                                                    <th>Fees Payable</th>
-                                                    <th>Paid Amount</th>
-                                                    <th>Balance</th>
-                                                    <th>Receipt Number</th>
-                                                    <th>Payment Date</th>
-                                                    <th>Collector Name</th>
-                                                    <th>Payment Mode</th>
-                                                    <th>Action</th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody>
-                                                  {rows}
-                                                  <tr className="fw-bold bg-light">
-                                                    <td colSpan="1" className="text-end">
-                                                      Total
-                                                    </td>
-                                                    <td>{totalFeesAmount}</td>
-                                                    <td>{totalFine}</td>
-                                                    <td>{totalConcession}</td>
-                                                    <td>{totalPayable}</td>
-                                                    <td>{totalPaid}</td>
-                                                    <td>{totalBalance}</td>
-                                                    <td colSpan="5"></td>
-                                                  </tr>
-                                                </tbody>
-                                              </table>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      );
-                                    })()}
-
-
-
-
                                   </React.Fragment>
                                 );
                               });
@@ -669,7 +412,6 @@ const handleOnClick = (e,item, year, concessionItem) => {
                           </tr>
                         )}
                       </tbody>
-
                     </table>
                     <div className="text-end my-3">
                       {!showProcessedData && (

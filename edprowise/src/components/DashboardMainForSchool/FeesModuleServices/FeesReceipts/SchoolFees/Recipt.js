@@ -5,11 +5,11 @@ import html2pdf from "html2pdf.js";
 
 const FeesReceipt = () => {
   const location = useLocation();
-  const receiptDetails = location.state;
+  const receiptDetails = location?.state;
 
-  useEffect(() => {
-    console.log("receiptDetails", receiptDetails);
-  }, [receiptDetails]);
+  // useEffect(() => {
+  //   console.log("receiptDetails", receiptDetails);
+  // }, [receiptDetails]);
 
   if (!receiptDetails || !Array.isArray(receiptDetails) || receiptDetails.length === 0) {
     return <div className="container my-4">No receipt data found</div>;

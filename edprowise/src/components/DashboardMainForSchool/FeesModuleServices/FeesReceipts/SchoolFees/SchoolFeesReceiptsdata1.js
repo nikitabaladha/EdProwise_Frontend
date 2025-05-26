@@ -182,7 +182,7 @@ const useSchoolFeesReceipts = () => {
             .find(y => y.academicYear === academicYear)
             ?.concession?.concessionDetails
             ?.find(cd =>
-              cd.installmentName === `Installment ${installmentNumber}` &&
+              cd.installmentName === `installmentName  ${installmentNumber}` &&
               cd.feesType === item.feesTypeId._id
             );
           
@@ -417,6 +417,7 @@ const useSchoolFeesReceipts = () => {
       studentAdmissionNumber: formData.AdmissionNumber,
       className: classes.find(c => c._id === formData.masterDefineClass)?.className || '',
       section: sections.find(s => s._id === formData.section)?.name || '',
+      paymentDate: new Date().toISOString().split('T')[0],
       date: new Date().toISOString().split('T')[0],
       paymentMode: formData.paymentMode,
       collectorName: formData.name,
@@ -437,6 +438,8 @@ const useSchoolFeesReceipts = () => {
         transactionNumber: formData.paymentMode === 'Online Transfer'
           ? generateTransactionNumber()
           : formData.chequeNumber,
+        chequeNumber:formData.chequeNumber,
+        bankName:formData.bankName,
         academicYear,
         installments: []
       };
