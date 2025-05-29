@@ -131,7 +131,6 @@ import MarketingEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings
 
 // ====================================Payroll===============================================
 
-// ===================================PayRoll===========================
 import EmployeeRegistrationList from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationList.js";
 import AddEmployeeRegistration from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/AddEmployeeRegistration.js";
 import UpdateEmployeeRegistrationForm from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/UpdateEmployeeRegistrationForm.js";
