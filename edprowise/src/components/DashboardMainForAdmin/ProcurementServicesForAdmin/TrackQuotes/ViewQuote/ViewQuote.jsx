@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 import { exportToExcel } from "../../../../export-excel.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import autoTable from "jspdf-autotable";
-import jsPDF from "jspdf";
 
 import ViewPrepareQuoteListFromSeller from "./ViewPrepareQuoteListFromSeller";
 import UpdateSubmittedQuoteModal from "./UpdateSubmittedQuoteModal";
