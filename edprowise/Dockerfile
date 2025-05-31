@@ -20,14 +20,14 @@ RUN npm run build
 # Use the official Nginx image
 FROM nginx:alpine
 
+# Copy built files from the builder stage
+COPY --from=builder /app/build /usr/share/nginx/html
+
 # Set working directory inside the container
 WORKDIR /usr/share/nginx/html
 
 # Remove default nginx static assets
 RUN rm -rf ./*
-
-# Copy the local React build to nginx html directory
-COPY build/ .
 
 # Copy a custom nginx config file
 COPY nginx.conf /etc/nginx/conf.d/default.conf
