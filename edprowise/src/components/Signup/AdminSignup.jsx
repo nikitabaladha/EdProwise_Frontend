@@ -192,7 +192,7 @@ const Signup = () => {
                           position: "absolute",
                           right: "60px",
                           top: "50%",
-                          transform: "translateY(80%)",
+                          transform: "translateY(-80%)",
                           cursor: "pointer",
                         }}
                       />

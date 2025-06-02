@@ -27,7 +27,6 @@ const CompleteEdprowiseProfile = () => {
     contactNo: "",
     alternateContactNo: "",
     emailId: "",
-    // insuranceCharges: "",
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
@@ -120,7 +119,6 @@ const CompleteEdprowiseProfile = () => {
           contactNo: "",
           alternateContactNo: "",
           emailId: "",
-          // insuranceCharges: "",
           isCustomCountry: false,
           isCustomState: false,
           isCustomCity: false,
@@ -298,28 +296,6 @@ const CompleteEdprowiseProfile = () => {
                       </div>
                     </div>
                   </div>
-                  {/* <div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label
-                          htmlFor="insuranceCharges"
-                          className="form-label"
-                        >
-                          Insurance Charges{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="number"
-                          id="insuranceCharges"
-                          name="insuranceCharges"
-                          className="form-control"
-                          value={formData.insuranceCharges}
-                          onChange={handleChange}
-                          placeholder="Example : 1%"
-                        />
-                      </div>
-                    </div>
-                  </div> */}
 
                   <h4 className="card-title text-center custo m-heading-font">
                     Address Details

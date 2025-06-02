@@ -447,6 +447,7 @@ const AdminDashboardHeader = () => {
                   aria-expanded="false"
                 >
                   <span className="d-flex align-items-center">
+                    {/* here i want to show image  */}
                     <img
                       src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${adminProfile?.edprowiseProfile}`}
                       className="rounded-circle"
@@ -465,6 +466,7 @@ const AdminDashboardHeader = () => {
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
                     <span className="align-middle">
                       {userDetails?.firstName} {userDetails?.lastName}
+                      {adminProfile?.edprowiseProfile}
                     </span>
                   </Link>
 

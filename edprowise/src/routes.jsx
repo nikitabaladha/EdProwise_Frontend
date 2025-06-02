@@ -354,23 +354,49 @@ const PrivateRoute = ({ allowedRoles, requiredSubscription, children }) => {
 };
 
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, role } = useAuth();
+  const { isAuthenticated, role, userDetails } = useAuth();
 
   if (isAuthenticated) {
-    return (
-      <Navigate
-        to={
-          role === "Admin"
-            ? "/admin-dashboard"
-            : role === "School"
-            ? "/school/go-to-dashboard"
-            : role === "Seller"
-            ? "/seller-dashboard"
-            : "/"
-        }
-        replace
-      />
-    );
+    if (role === "Admin") {
+      return (
+        <Navigate
+          to={
+            userDetails?.status === "Pending"
+              ? "/complete-admin-profile"
+              : "/admin-dashboard"
+          }
+          replace
+        />
+      );
+    }
+
+    if (role === "School") {
+      return (
+        <Navigate
+          to={
+            userDetails?.status === "Pending"
+              ? "/complete-school-profile"
+              : "/school/go-to-dashboard"
+          }
+          replace
+        />
+      );
+    }
+
+    if (role === "Seller") {
+      return (
+        <Navigate
+          to={
+            userDetails?.status === "Pending"
+              ? "/complete-seller-profile"
+              : "/seller-dashboard"
+          }
+          replace
+        />
+      );
+    }
+
+    return <Navigate to="/" replace />;
   }
 
   return children;
