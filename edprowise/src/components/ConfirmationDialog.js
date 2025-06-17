@@ -57,6 +57,7 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete Bank Detail.",
     idKey: "bankDetailId",
   },
+  // Umesh
   requestdemo: {
     getEndpoint: (id) => `/delete-request/${id}`,
     successMessage: "Demo request successfully deleted!",
@@ -69,6 +70,45 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete enquiry request.",
     idKey: "_id",
   },
+
+  // Umesh Added
+  blogCategory: {
+    getEndpoint: (id) => `/delete-blog-category/${id}`,
+    successMessage: "Blog category has been deleted!",
+    errorMessage: "Failed to delete category.",
+    idKey: "_id",
+  },
+  tag: {
+    getEndpoint: (id) => `/delete-blog-tags/${id}`,
+    successMessage: "Blog tag has been deleted!",
+    errorMessage: "Failed to delete tag.",
+    idKey: "_id",
+  },
+  blog:{
+    getEndpoint: (id) => `/delete-blog/${id}`,
+    successMessage: "Blog has been deleted!",
+    errorMessage: "Failed to delete Blog.",
+    idKey: "_id",
+  },
+  employeeCategory:{
+    getEndpoint: (id) => `/delete-employee-category/${id}`,
+    successMessage: "Employee category has been deleted!",
+    errorMessage: "Failed to delete Employee Category.",
+    idKey: "_id",
+  },
+  employeeJobDesignation:{
+    getEndpoint: (id) => `/delete-employee-job-designation/${id}`,
+    successMessage: "Employee Job Designation has been deleted!",
+    errorMessage: "Failed to delete Employee Job Designation.",
+    idKey: "_id",
+  },
+  employeeGrade:{
+    getEndpoint: (id) => `/delete-employee-grade/${id}`,
+    successMessage: "Employee Grade has been deleted!",
+    errorMessage: "Failed to delete Employee Grade.",
+    idKey: "_id",
+  },
+
   // =======Shantanu=====
   feesType: {
     getEndpoint: (id) => `/delete-fees-type/${id}`,

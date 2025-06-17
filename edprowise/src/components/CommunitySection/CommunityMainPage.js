@@ -15,6 +15,9 @@ const CommunityMainPage = () => {
   const isEducatorZoneRoute =
     location.pathname === "/community-connect/educator-zone";
 
+  const isCategoryAndTagsBlogRoute =
+    location.pathname === "/community-connect/student-zone/category-wise-blogs";
+
   return (
     <>
       {isGalleryRoute ? (
@@ -37,7 +40,13 @@ const CommunityMainPage = () => {
           <CommonHeader />
           <CommunityMainSection />
         </>
-      ) : null}
+      ) : isCategoryAndTagsBlogRoute?(
+        <>
+          <CommonHeader />
+          <CommunityMainSection />
+        </>
+      ):
+       null}
     </>
   );
 };

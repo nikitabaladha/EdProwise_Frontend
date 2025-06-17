@@ -385,9 +385,7 @@ const MarketingEmail = () => {
                         </button>
                       </div>
                     </div>
-
                   </div>
-
 
                   {/* Editor Area */}
                   <div className="col-md-12">

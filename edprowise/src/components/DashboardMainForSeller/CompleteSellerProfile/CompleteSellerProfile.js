@@ -1152,6 +1152,7 @@ const CompleteSellerProfile = () => {
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
+    acceptTermsAndConditions: false,
   });
 
   // Get countries from countryData keys
@@ -1408,6 +1409,7 @@ const CompleteSellerProfile = () => {
           tanFile: null,
           cinFile: null,
           gstFile: null,
+          acceptTermsAndConditions: false,
         });
         setDealingProducts([]);
         const updatedUserResponse = await getAPI(`/get-seller-by-id/${userId}`);
@@ -2459,6 +2461,25 @@ const CompleteSellerProfile = () => {
                   >
                     Add Another Product
                   </button>
+
+                   <div className="d-flex align-items-center gap-1">
+                    <div className="form-check ms-1">
+                      <input
+                        type="checkbox"
+                        className="form-check-input align-content-center mt-0"
+                        id="acceptTermsAndConditions"
+                        name="acceptTermsAndConditions"
+                        checked={formData.acceptTermsAndConditions}
+                        onChange={handleChange}
+                      />{" "}
+
+                    </div>
+                    <p className="mb-0">i accept and agree to the <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => window.open('/terms-condition-for-seller', '_blank')}>
+                      Terms and Conditions
+                    </span> and <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => window.open('/privacy-policy', '_blank')}>
+                      Privacy & Policy
+                    </span></p>
+                  </div>
 
                   <div className="text-end">
                     <button

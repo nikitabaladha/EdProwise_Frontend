@@ -8,6 +8,51 @@ After merged changes
 change the card-title font-size 2rem and fw-bold
 */
 
+/* umesh add changes  */
+/* 
+.nav-tabs comment the border-bottom
+width add in .w-20... in all sm, md,lg xl
+.payroll-input-border .css-13cymwt-control{
+  border-color: #f2be00 !important;
+}
+
+.payroll-input-border .css-t3ipsp-control:hover{
+  border-color: #f2be00 !important;
+}
+
+.payroll-input-border .css-t3ipsp-control{
+  border-color: #f2be00 !important;
+  box-shadow: none !important;
+}
+
+
+*/
+/* umesh custom css for fin */
+.create-alter{
+  font-size: 1.5rem;
+}
+
+.create-alter-head{
+  font-size: 2rem;
+   background: #a8fffe;
+}
+
+.create-alter-header {
+  font-size: 2.5rem;
+}
+
+.fianance-setting-icons svg{
+  font-size: 1.5rem;
+}
+
+.fianance-filtter-icons svg{
+  font-size: 17px;
+}
+
+.fianance-input-border {
+  border-color: #bfbfbf !important;
+}
+
 /*  */
 /* Color picker fixes */
 .email-editor-container .ql-toolbar {
@@ -16,6 +61,8 @@ change the card-title font-size 2rem and fw-bold
   border: 1px solid #ccc;
   padding: 8px;
 }
+
+
 
 .email-editor-container .ql-container {
   border-radius: 0 0 4px 4px;
@@ -363,6 +410,19 @@ change the card-title font-size 2rem and fw-bold
   border-color: #f2be00 !important;
 }
 
+.payroll-input-border .css-13cymwt-control{
+  border-color: #f2be00 !important;
+}
+
+.payroll-input-border .css-t3ipsp-control:hover{
+  border-color: #f2be00 !important;
+}
+
+.payroll-input-border .css-t3ipsp-control{
+  border-color: #f2be00 !important;
+  box-shadow: none !important;
+}
+
 .payroll-box-text {
   font-size: 1.3rem;
 }
@@ -372,7 +432,7 @@ change the card-title font-size 2rem and fw-bold
 }
 
 .it-declaration-section-bg {
-  background: #e7e6e6;
+  background: #e7e6e6 !important;
 }
 
 /*  */
@@ -477,7 +537,7 @@ input[type="file"]:valid {
 }
 
 .custom-font-size {
-  font-size: 1rem !important;
+  font-size: 1.2rem !important;
 }
 
 .pagination .page-link.pagination-button-border {
@@ -6299,7 +6359,7 @@ fieldset:disabled .btn {
 
 .nav-tabs {
   --bs-nav-tabs-border-width: var(--bs-border-width);
-  --bs-nav-tabs-border-color: var(--bs-border-color);
+  /* --bs-nav-tabs-border-color: var(--bs-border-color); */
   --bs-nav-tabs-border-radius: var(--bs-border-radius);
   --bs-nav-tabs-link-hover-border-color: var(--bs-secondary-bg) var(--bs-secondary-bg) var(--bs-border-color);
   --bs-nav-tabs-link-active-color: var(--bs-primary);
@@ -11624,12 +11684,32 @@ fieldset:disabled .btn {
   --bs-border-opacity: 1;
 }
 
+.w-20 {
+  width: 20% !important;
+}
+
 .w-25 {
   width: 25% !important;
 }
 
+.w-30 {
+  width: 30% !important;
+}
+
+.w-35 {
+  width: 35% !important;
+}
+
+.w-40 {
+  width: 40% !important;
+}
+
 .w-50 {
   width: 50% !important;
+}
+
+.w-60 {
+  width: 60% !important;
 }
 
 .w-75 {
@@ -14535,6 +14615,50 @@ fieldset:disabled .btn {
   .text-sm-center {
     text-align: center !important;
   }
+
+  /* umesh add */
+
+  .w-sm-20 {
+    width: 20% !important;
+  }
+  
+  .w-sm-25 {
+    width: 25% !important;
+  }
+  
+  .w-sm-30 {
+    width: 30% !important;
+  }
+  
+  .w-sm-35 {
+    width: 35% !important;
+  }
+  
+  .w-sm-40 {
+    width: 40% !important;
+  }
+  
+  .w-sm-50 {
+    width: 50% !important;
+  }
+  
+  .w-sm-60 {
+    width: 60% !important;
+  }
+  
+  .w-sm-75 {
+    width: 75% !important;
+  }
+  
+  .w-sm-100 {
+    width: 100% !important;
+  }
+
+.w-sm-auto {
+  width: auto !important;
+}
+
+  /* end */
 }
 
 @media (min-width: 768px) {
@@ -15512,6 +15636,49 @@ fieldset:disabled .btn {
   .text-md-center {
     text-align: center !important;
   }
+
+    /* umesh add */
+
+  .w-md-20 {
+    width: 20% !important;
+  }
+  
+  .w-md-25 {
+    width: 25% !important;
+  }
+  
+  .w-md-30 {
+    width: 30% !important;
+  }
+  
+  .w-md-35 {
+    width: 35% !important;
+  }
+  
+  .w-md-40 {
+    width: 40% !important;
+  }
+  
+  .w-md-50 {
+    width: 50% !important;
+  }
+  
+  .w-md-60 {
+    width: 60% !important;
+  }
+  
+  .w-md-75 {
+    width: 75% !important;
+  }
+  
+  .w-md-100 {
+    width: 100% !important;
+  }
+
+  .w-md-auto {
+    width: auto !important;
+  }
+  /* end */
 }
 
 @media (min-width: 992px) {
@@ -16489,6 +16656,50 @@ fieldset:disabled .btn {
   .text-lg-center {
     text-align: center !important;
   }
+
+    /* umesh add */
+
+  .w-lg-20 {
+    width: 20% !important;
+  }
+  
+  .w-lg-25 {
+    width: 25% !important;
+  }
+  
+  .w-lg-30 {
+    width: 30% !important;
+  }
+  
+  .w-lg-35 {
+    width: 35% !important;
+  }
+  
+  .w-lg-40 {
+    width: 40% !important;
+  }
+  
+  .w-lg-50 {
+    width: 50% !important;
+  }
+  
+  .w-lg-60 {
+    width: 60% !important;
+  }
+  
+  .w-lg-75 {
+    width: 75% !important;
+  }
+  
+  .w-lg-100 {
+    width: 100% !important;
+  }
+
+  .w-lg-auto {
+  width: auto !important;
+}
+
+  /* end */
 }
 
 @media (min-width: 1200px) {
@@ -17457,6 +17668,49 @@ fieldset:disabled .btn {
   .text-xl-center {
     text-align: center !important;
   }
+  /* umesh add */
+
+  .w-xl-20 {
+    width: 20% !important;
+  }
+  
+  .w-xl-25 {
+    width: 25% !important;
+  }
+  
+  .w-xl-30 {
+    width: 30% !important;
+  }
+  
+  .w-xl-35 {
+    width: 35% !important;
+  }
+  
+  .w-xl-40 {
+    width: 40% !important;
+  }
+  
+  .w-xl-50 {
+    width: 50% !important;
+  }
+  
+  .w-xl-60 {
+    width: 60% !important;
+  }
+  
+  .w-xl-75 {
+    width: 75% !important;
+  }
+  
+  .w-xl-100 {
+    width: 100% !important;
+  }
+
+.w-xl-auto {
+  width: auto !important;
+}
+
+  /* end */
 }
 
 @media (min-width: 1400px) {

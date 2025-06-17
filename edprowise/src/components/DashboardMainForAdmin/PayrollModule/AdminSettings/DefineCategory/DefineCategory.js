@@ -7,8 +7,7 @@ const DefineCategory = () => {
       ]);
       
       const [editId, setEditId] = useState(null);
-      
-    
+  
       const handleAddRow = () => {
         const newEntry = {
           id: Date.now(),
@@ -48,7 +47,7 @@ const DefineCategory = () => {
                       Define Category
                     </h4>
                     <div>
-                      <select id="yearSelect" className="custom-select payroll-table-body border border-dark" aria-label="Select Year">
+                      <select id="yearSelect" className="custom-select border border-dark" aria-label="Select Year">
                         <option selected>2025-26</option>
                         <option>2026-27</option>
                         <option>2027-28</option>

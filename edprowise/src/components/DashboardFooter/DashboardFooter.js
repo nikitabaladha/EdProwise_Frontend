@@ -39,7 +39,8 @@ const Footer = () => {
     {
       name: "Community Connect",
       link: "/community-connect/gallery",
-    },
+    }, 
+    // { name: "seller Terms", link: "/terms-condition-for-seller" }
   ];
 
   const useLinks = [

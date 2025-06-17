@@ -268,6 +268,8 @@ import AddAdmissionPrefix from "./components/DashboardMainForSchool/FeesModuleSe
 import Fine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/FineTable.js";
 import AddFine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/Addfine.js";
 
+///////////////////////////////// Payroll Module ///////////////////////////////////////
+import DefineEmployeeCategory from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/DefineCategory/DefineEmployeeCategory.js";
 
 // ======================Seller Routes==========================Seller Routes=====================Seller Routes=======================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
@@ -298,7 +300,94 @@ import NewPassword from "./components/ForgotPasswordorUserId/NewPassword.js";
 
 import Page404ForWebsite from "./components/Pages404/Page404ForWebsite.js";
 import Page404ForDashboard from "./components/Pages404/Page404ForDashboard.js";
-
+import RelievingAndExperienceLetter from "./components/DashboardMainForAdmin/PayrollModule/Employer/RelievingAndExperienceLetter/RelievingAndExperienceLetter.js";
+import EmployeeRelievingAndExperienceLetter from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/EmployeeRelievingAndExperienceLetter/EmployeeRelievingAndExperienceLetter.js";
+import EmployerAwadsAndAchievement from "./components/DashboardMainForAdmin/PayrollModule/Employer/AwardsAndAchievement/EmployerAwardsAndAchievement.js";
+import AwardsAndAchievementCertificate from "./components/DashboardMainForAdmin/PayrollModule/Employer/AwardsAndAchievement/AwardsAndAchievementCertificate.js";
+import PromotionNominationTable from "./components/DashboardMainForAdmin/PayrollModule/Employer/PromotionNomination/PromotionNominationTable.js";
+import ViewPromotionNominationDetail from "./components/DashboardMainForAdmin/PayrollModule/Employer/PromotionNomination/ViewPromotionNominationDetail.js";
+import ViewPromotionNomination from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/PromotionNomination/ViewPromotionNomination.js";
+import UpdatePromotionNomination from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/PromotionNomination/UpdatePromotionNomination.js";
+import Blogs from "./components/DashboardMainForAdmin/Blogs/Blogs.js";
+import AddNewBlog from "./components/DashboardMainForAdmin/Blogs/AddNewBlog/AddNewBlog.js";
+import UpdateBlog from "./components/DashboardMainForAdmin/Blogs/UpdateBlog/UpdateBlog.js";
+import BlogsInfoTable from "./components/DashboardMainForAdmin/Blogs/BlogsInfoTable.js";
+import PaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/PaymentEntry.js";
+import Receipts from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/Receipts.js";
+import Contra from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/Contra.js";
+import Journal from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/Journal.jsx";
+import LedgerBook from "./components/DashboardMainForAdmin/FinanceModule/Display/LedgerBook/LedgerBook.js";
+import PaymentLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/PaymentLedger/PaymentLedger.js";
+import ReceiptsLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/ReceiptsLedger/ReceiptsLedger.js";
+import ContraLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/ContraLedger/ContraLedger.js";
+import JournalLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/JournalLedger/JournalLedger.js";
+import TrailBalance from "./components/DashboardMainForAdmin/FinanceModule/Display/TrailBalance/TrailBalance.js";
+import CashBookReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/CashBook/CashBookReport.jsx";
+import BankBookReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/BankBook/BankBookReport.jsx";
+import IncomeLedgerReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/IncomeLedger/IncomeLedgerReport.jsx";
+import ExpensesLedgerReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/ExpensesLedger/ExpensesLedgerReport.jsx";
+import JournalLedgerReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/JournalLedger/JournalLedgerReport.jsx";
+import TDSReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/TDSReport/TDSReport.jsx";
+import AnalysisofPandL from "./components/DashboardMainForAdmin/FinanceModule/MIS Reporting/AnalysisofP&L/AnalysisofPandL.jsx";
+import RatioAnalysis from "./components/DashboardMainForAdmin/FinanceModule/MIS Reporting/RatioAnalysis/RatioAnalysis.jsx";
+import VerificationofPaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofPaymentEntry/VerificationofPaymentEntry.jsx";
+import VerificationofReceiptEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofReceiptEntry/VerificationofReceiptEntry.jsx";
+import VerificationofContraEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofContraEntry/VerificationofContraEntry.jsx";
+import VerificationofJournalEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofJournalEntry/VerificationofJournalEntry.jsx";
+import AuditorRemarks from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/AuditorRemarks/AuditorRemarks.jsx";
+import UploadDocumentforAuditor from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/UploadDocumentforAuditor/UploadDocumentforAuditor.jsx";
+import BalanceSheet from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/BalanceSheet/BalanceSheet.jsx";
+import IncomeAndExpenditureAccount from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/Income&ExpenditureAccount/IncomeAndExpenditureAccount.jsx";
+import ScheduleToIncome from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoIncome/ScheduleToIncome.jsx";
+import ScheduleToExpenditure from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoExpenditure/ScheduleToExpenditure.jsx";
+import ScheduleToAssets from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoAssets/ScheduleToAssets.jsx";
+import ScheduleToLiabilities from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoLiabilities/ScheduleToLiabilities.jsx";
+import FixedAssetsSchedule from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/FixedAssetsSchedule/FixedAssetsSchedule.jsx";
+import DocumentForAuditor from "./components/DashboardMainForAdmin/FinanceModule/AuditPack/DocumentForAuditor/DocumentForAuditor.jsx";
+import DepreciationMaster from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/DepreciationMaster/DepreciationMaster.jsx";
+import CreateVendor from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateVendor/CreateVendor.jsx";
+import VendorMaster from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/VendorMaster/VendorMaster.jsx";
+import TDSRateChart from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/TDSRateChart/TDSRateChart.jsx";
+import LedgerMaster from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/LedgerMaster/LedgerMaster.jsx";
+import CreateAndAlterLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateAndAlterLedger.jsx";
+import AddNewVendor from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateVendor/AddNewVendor.jsx";
+import CreateLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateLedger.jsx";
+import CreateGroupLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateGroupLedger.jsx";
+import CreateBAndSLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateBAndSLedger.jsx";
+import CreateBlogCategory from "./components/DashboardMainForAdmin/Blogs/BlogSetting/CreateBlogCategory/CreateBlogCategory.jsx";
+import CreateBlogTags from "./components/DashboardMainForAdmin/Blogs/BlogSetting/CreateBlogTags/CreateBlogTags.jsx";
+import BlogsStatus from "./components/DashboardMainForAdmin/Blogs/BlogSetting/BlogStatus/BlogsStatus.jsx";
+import UpdateLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateLedger.jsx";
+import UpdateGroupLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateGroupLedger.jsx";
+import UpdateBAndSLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateBAndSLedger.jsx";
+import DeleteLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteLedger.jsx";
+import DeleteGroupLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteGroupLedger.jsx";
+import DeleteBAndSLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteBAndSLedger.jsx";
+import CreateHeadOfLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateHeadOfLedger.jsx";
+import UpdateHeadOfLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateHeadOfLedger.jsx";
+import DeleteHeadOfLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteHeadOfLedger.jsx";
+import ContraTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/ContraTable.js";
+import ViewContra from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/ViewContra.js";
+import UpdateContra from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/UpdateContra.js";
+import PaymentEntryTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/PaymentEntryTable.jsx";
+import ViewPaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/ViewPaymentEntry.jsx";
+import UpdatePaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/UpdatePaymentEntry.jsx";
+import ReceiptsTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/ReceiptsTable.jsx";
+import ViewReceipts from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/ViewReceipts.jsx";
+import UpdateReceipts from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/UpdateReceipts.jsx";
+import JournalTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/JournalTable.jsx";
+import ViewJournal from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/ViewJournal.jsx";
+import UpdateJournal from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/UpdateJournal.jsx";
+import TermsAndConditionForSeller from "./components/PrivacyPage/TermsAndConditionForSeller.jsx";
+import ViewBlog from "./components/DashboardMainForAdmin/Blogs/ViewBlog/ViewBlog.js";
+import EducatorZoneBlog from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog.jsx";
+import StudentZoneBlog from "./components/CommunitySection/SubSection/StudentZoneBlog/StudentZoneBlog.jsx";
+import CategoryAndTagRelatedBlog from "./components/CommunitySection/SubSection/CategoryAndTagRelatedBlog.jsx";
+import EducatorCategoryAndTagRelatedBlog from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorCategoryAndTagRelatedBlog.jsx";
+import DefineEmployeeJobDesignation from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/JobDesignation/DefineEmployeeJobDesignation.js";
+import DefinePayrollGrade from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/Grade/DefinePayrollGrade.js";
+import EmployeeIdSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdSettings.js";
+import EmployeeIdPrefixTable from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdPrefixTable.jsx";
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -440,6 +529,7 @@ const AppRoutes = () => {
         <Route path="career" element={<CareerPage />} />
         <Route path="career/:jobName" element={<CareerForm />} />
         <Route path="request-demo" element={<RequestDemoForm />} />
+        <Route path="terms-condition-for-seller" element={<TermsAndConditionForSeller/>}/>
         <Route
           path="services/digital-services/school-fees-management"
           element={<ServiceFess />}
@@ -488,6 +578,26 @@ const AppRoutes = () => {
         <Route
           path="community-connect/educator-zone/teacher-well-being-and-work-life-balance"
           element={<EducatorZoneBlog3 />}
+        />
+
+        <Route
+          path="community-connect/student-zone/:slug"
+          element={<StudentZoneBlog />}
+        />
+
+        <Route
+          path="community-connect/educator-zone/:slug"
+          element={<EducatorZoneBlog />}
+        />
+
+        <Route
+          path="community-connect/student-zone/category-tag-related-blogs"
+          element={<CategoryAndTagRelatedBlog />}
+        />
+
+         <Route
+          path="community-connect/educator-zone/category-tag-related-blogs"
+          element={<EducatorCategoryAndTagRelatedBlog />}
         />
 
         <Route
@@ -633,7 +743,7 @@ const AppRoutes = () => {
           element={<DefineGrade />}
         />
 
-         <Route
+        <Route
           path="payroll-module/admin-setting/define-category"
           element={<DefineCategory />}
         />
@@ -771,7 +881,23 @@ const AppRoutes = () => {
           element={<PromotionNomination />}
         />
 
+        <Route
+          path="payroll-module/employee-services/promotion-nomination/view-promotion-nomination"
+          element={<ViewPromotionNomination />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/promotion-nomination/update-promotion-nomination"
+          element={<UpdatePromotionNomination />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/exit/relieving-and-experience-letter"
+          element={<EmployeeRelievingAndExperienceLetter />}
+        />
+
         {/* ************Employer************  */}
+
         <Route
           path="payroll-module/employer/registration"
           element={<EmployeeRegistrationList />}
@@ -888,25 +1014,353 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="payroll-module/employer/resignation"
+          path="payroll-module/employer/resign/resignation"
           element={<ResignationReport />}
         />
 
         <Route
-          path="payroll-module/employer/resignation/resignation-approval-form"
+          path="payroll-module/employer/resign/resignation/resignation-approval-form"
           element={<EmployerResignationApproval />}
         />
 
         <Route
-          path="payroll-module/employer/resignation/view-employee-resignation-detail"
+          path="payroll-module/employer/resign/resignation/view-employee-resignation-detail"
           element={<ViewEmployeeResignationDetail />}
         />
 
         <Route
-          path="payroll-module/employer/resignation/view-employee-exit-interview"
+          path="payroll-module/employer/resign/resignation/view-employee-exit-interview"
           element={<ViewEmployeeExitInterview />}
         />
 
+        <Route
+          path="payroll-module/employer/resign/resignation/relieving-and-experience-letter"
+          element={<RelievingAndExperienceLetter />}
+        />
+
+        <Route
+          path="payroll-module/employer/awards-and-achievement"
+          element={<EmployerAwadsAndAchievement />}
+        />
+
+        <Route
+          path="payroll-module/employer/awards-and-achievement/awards-and-achievement-certificate"
+          element={<AwardsAndAchievementCertificate />}
+        />
+
+        <Route
+          path="payroll-module/employer/promotion-nomination"
+          element={<PromotionNominationTable />}
+        />
+
+        <Route
+          path="payroll-module/employer/promotion-nomination/view-promotion-nomination-detail"
+          element={<ViewPromotionNominationDetail />}
+        />
+
+        {/* *****************************Finance Module********************* */}
+
+        <Route
+          path="finance-module/account-entry/payment-entry"
+          element={<PaymentEntryTable />}
+        />
+
+        <Route
+          path="finance-module/account-entry/payment-entry/payment-entry-form"
+          element={<PaymentEntry />}
+        />
+
+        <Route
+          path="finance-module/account-entry/payment-entry/view-payment-entry"
+          element={<ViewPaymentEntry />}
+        />
+
+        <Route
+          path="finance-module/account-entry/payment-entry/update-payment-entry"
+          element={<UpdatePaymentEntry />}
+        />
+
+        <Route
+          path="finance-module/account-entry/receipts"
+          element={<ReceiptsTable />}
+        />
+
+        <Route
+          path="finance-module/account-entry/receipts/receipts-entry"
+          element={<Receipts />}
+        />
+
+        <Route
+          path="finance-module/account-entry/receipts/view-receipts-entry"
+          element={<ViewReceipts />}
+        />
+
+        <Route
+          path="finance-module/account-entry/receipts/update-receipts-entry"
+          element={<UpdateReceipts />}
+        />
+
+        <Route
+          path="finance-module/account-entry/contra"
+          element={<ContraTable />}
+        />
+
+        <Route
+          path="finance-module/account-entry/contra/contra-form"
+          element={<Contra />}
+        />
+
+        <Route
+          path="finance-module/account-entry/contra/view-contra-form"
+          element={<ViewContra />}
+        />
+
+        <Route
+          path="finance-module/account-entry/contra/update-contra-form"
+          element={<UpdateContra />}
+        />
+
+        <Route
+          path="finance-module/account-entry/journal"
+          element={<JournalTable />}
+        />
+
+        <Route
+          path="finance-module/account-entry/journal/journal-entry"
+          element={<Journal />}
+        />
+
+        <Route
+          path="finance-module/account-entry/journal/view-journal-entry"
+          element={<ViewJournal />}
+        />
+
+        <Route
+         path="finance-module/account-entry/journal/update-journal-entry"
+          element={<UpdateJournal />}
+        />
+
+        <Route
+          path="finance-module/display/ledger-book"
+          element={<LedgerBook />}
+        />
+
+        <Route
+          path="finance-module/display/payment-ledger"
+          element={<PaymentLedger />}
+        />
+
+        <Route
+          path="finance-module/display/receipts-ledger"
+          element={<ReceiptsLedger />}
+        />
+
+        <Route
+          path="finance-module/display/contra-ledger"
+          element={<ContraLedger />}
+        />
+
+        <Route
+          path="finance-module/display/journal-ledger"
+          element={<JournalLedger />}
+        />
+
+        <Route
+          path="finance-module/display/trail-balance"
+          element={<TrailBalance />}
+        />
+
+        <Route
+          path="finance-module/reports/cash-book"
+          element={<CashBookReport />}
+        />
+
+        <Route
+          path="finance-module/reports/bank-book"
+          element={<BankBookReport />}
+        />
+
+        <Route
+          path="finance-module/reports/income-ledger"
+          element={<IncomeLedgerReport />}
+        />
+
+        <Route
+          path="finance-module/reports/expenses-ledger"
+          element={<ExpensesLedgerReport />}
+        />
+
+        <Route
+          path="finance-module/reports/journal-ledger"
+          element={<JournalLedgerReport />}
+        />
+
+        <Route
+          path="finance-module/reports/tds-report"
+          element={<TDSReport />}
+        />
+
+        <Route
+          path="finance-module/msi-reports/analysis-of-p-and-l"
+          element={<AnalysisofPandL />}
+        />
+
+        <Route
+          path="finance-module/msi-reports/ratio-analysis"
+          element={<RatioAnalysis />}
+        />
+
+        <Route
+          path="finance-module/audit-and-documentation/verification-of-payment-entry"
+          element={<VerificationofPaymentEntry />}
+        />
+        <Route
+          path="finance-module/audit-and-documentation/verification-of-receipt-entry"
+          element={<VerificationofReceiptEntry />}
+        />
+        <Route
+          path="finance-module/audit-and-documentation/verification-of-contra-entry"
+          element={<VerificationofContraEntry />}
+        />
+        <Route
+          path="finance-module/audit-and-documentation/verification-of-journal-entry"
+          element={<VerificationofJournalEntry />}
+        />
+        <Route
+          path="finance-module/audit-and-documentation/auditor-remarks"
+          element={<AuditorRemarks />}
+        />
+        <Route
+          path="finance-module/audit-and-documentation/upload-document-for-auditor"
+          element={<UploadDocumentforAuditor />}
+        />
+
+        <Route
+          path="finance-module/financial-statement/balance-sheet"
+          element={<BalanceSheet />}
+        />
+
+        <Route
+          path="finance-module/financial-statement/income-and-expenditure-account"
+          element={<IncomeAndExpenditureAccount />}
+        />
+
+        <Route
+          path="finance-module/financial-statement/schedule-to-income"
+          element={<ScheduleToIncome />}
+        />
+
+        <Route
+          path="finance-module/financial-statement/schedule-to-expenditure"
+          element={<ScheduleToExpenditure />}
+        />
+
+        <Route
+          path="finance-module/financial-statement/schedule-to-liabilities"
+          element={<ScheduleToLiabilities />}
+        />
+
+        <Route
+          path="finance-module/financial-statement/schedule-to-assets"
+          element={<ScheduleToAssets />}
+        />
+
+        <Route
+          path="finance-module/financial-statement/fixed-assets-schedule"
+          element={<FixedAssetsSchedule />}
+        />
+
+        <Route
+          path="finance-module/audit-pack/document-for-auditor"
+          element={<DocumentForAuditor />}
+        />
+
+        <Route
+          path="finance-module/master/depreciation-master"
+          element={<DepreciationMaster />}
+        />
+        <Route
+          path="finance-module/master/vendor-master"
+          element={<VendorMaster />}
+        />
+        <Route
+          path="finance-module/master/vendor"
+          element={<CreateVendor />}
+        />
+        <Route
+          path="finance-module/master/vendor/add-vendor-form"
+          element={<AddNewVendor />}
+        />
+        <Route
+          path="finance-module/master/tds-rate-chart"
+          element={<TDSRateChart />}
+        />
+        <Route
+          path="finance-module/master/ledger-master"
+          element={<LedgerMaster />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger"
+          element={<CreateAndAlterLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/create-head-of-ledger"
+          element={<CreateHeadOfLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/create-ledger"
+          element={<CreateLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/create-group-ledger"
+          element={<CreateGroupLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/create-bs-ledger"
+          element={<CreateBAndSLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/update-head-of-ledger"
+          element={<UpdateHeadOfLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/update-ledger"
+          element={<UpdateLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/update-group-ledger"
+          element={<UpdateGroupLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/update-bs-ledger"
+          element={<UpdateBAndSLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/delete-head-of-ledger"
+          element={<DeleteHeadOfLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/delete-ledger"
+          element={<DeleteLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/delete-group-ledger"
+          element={<DeleteGroupLedger />}
+        />
+        <Route
+          path="finance-module/master/create-and-alter-ledger/delete-bs-ledger"
+          element={<DeleteBAndSLedger />}
+        />
+
+        {/* **************************************Blog************************************ */}
+        <Route path="blog" element={<BlogsInfoTable />} />
+        <Route path="blog/add-new-blog" element={<AddNewBlog />} />
+        <Route path="blog/update-blog" element={<UpdateBlog />} />
+        <Route path="blog/view-blog/:slug" element={<ViewBlog/>}/>
+
+        <Route path="blog/blog-setting/category" element={<CreateBlogCategory />} />
+        <Route path="blog/blog-setting/tags" element={<CreateBlogTags />} />
+        <Route path="blog/blog-setting/blogs-status" element={<BlogsStatus />} />
 
 
         <Route path="*" element={<Page404ForDashboard />} />
@@ -1154,6 +1608,59 @@ const AppRoutes = () => {
         <Route
           path="fees-module/fees-receipts/school-fees/student-receipts"
           element={<StudentReceipts />}
+        />
+
+
+        {/* *****************************Payroll Module ***************************************** */}
+
+        {/* ===========================Admin Settings=================== */}
+        <Route
+          path="payroll-module/admin-setting/freeze-it-declaration"
+          element={<FreezeITDeclaration />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/ctc-components"
+          element={<DefineCtcComponentsList />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/ctc-components/define-ctc-components"
+          element={<DefineCtcCOmponents />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-grade"
+          element={<DefinePayrollGrade />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-category"
+          element={<DefineEmployeeCategory />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/annual-leave-update"
+          element={<AnnualLeaveUpdate />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/overtime-allowance-rate"
+          element={<OvertimeAllowanceRate />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/employee-id-setting"
+          element={<EmployeeIdPrefixTable />}
+        />
+        <Route
+          path="payroll-module/admin-setting/employee-id-setting/add-setting"
+          element={<EmployeeIdSettings />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-job-designation"
+          element={<DefineEmployeeJobDesignation />}
         />
 
         <Route path="*" element={<Page404ForDashboard />} />
