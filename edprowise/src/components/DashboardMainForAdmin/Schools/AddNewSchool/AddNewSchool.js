@@ -26,6 +26,7 @@ const AddNewSchool = () => {
     isCustomCountry: false,
     isCustomState: false,
     isCustomCity: false,
+    acceptTermsAndConditions: false,
   });
 
   const navigate = useNavigate();
@@ -54,21 +55,33 @@ const AddNewSchool = () => {
         }))
       : [];
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
+  // const handleChange = (e) => {
+  //   const { name, value, files, type, checked } = e.target;
+  //   if (files) {
+  //     setFormData((prevState) => ({
+  //       ...prevState,
+  //       [name]: files[0],
+  //     }));
+  //   } else {
+  //     setFormData((prevState) => ({
+  //       ...prevState,
+  //       [name]: value,
+  //     }));
+  //   }
+  // };
 
-    if (files) {
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: files[0],
-      }));
-    } else {
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
+  const handleChange = (e) => {
+    const { name, value, files, type, checked } = e.target;
+
+    const newFormData = {
+      ...formData,
+      [name]: type === "checkbox" ? checked : files ? files[0] : value
+    };
+
+    setFormData(newFormData);
+    // saveFormDataToLocalStorage(newFormData);
   };
+
 
   const [sending, setSending] = useState(false);
 
@@ -114,6 +127,7 @@ const AddNewSchool = () => {
           isCustomCountry: false,
           isCustomState: false,
           isCustomCity: false,
+          acceptTermsAndConditions: false,
         });
         // Reset file inputs
         ["profileImage", "affiliationCertificate", "panFile"].forEach((id) => {
@@ -523,7 +537,24 @@ const AddNewSchool = () => {
                       </div>
                     </div>
                   </div>
+<div className="d-flex align-items-center gap-1">
+                    <div className="form-check ms-1">
+                      <input
+                        type="checkbox"
+                        className="form-check-input align-content-center mt-0"
+                        id="acceptTermsAndConditions"
+                        name="acceptTermsAndConditions"
+                        checked={formData.acceptTermsAndConditions}
+                        onChange={handleChange}
+                      />{" "}
 
+                    </div>
+                    <p className="mb-0">i accept and agree to the <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => window.open('/terms-condition-for-seller', '_blank')}>
+                      Terms and Conditions
+                    </span> and <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => window.open('/privacy-policy', '_blank')}>
+                      Privacy & Policy
+                    </span></p>
+                  </div>
                   {/* Rest of your form fields */}
                   <div className="row">
                     <div className="col-md-12 text-end">

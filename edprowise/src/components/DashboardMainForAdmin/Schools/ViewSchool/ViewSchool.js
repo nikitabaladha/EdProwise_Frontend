@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import getAPI from "../../../../api/getAPI";
 import { Link } from "react-router-dom";
-
+import putAPI from "../../../../api/putAPI";
+import postAPI from "../../../../api/postAPI";
 import AddConfirmationDialog from "../AddConfirmationDialog";
 import ConfirmationDialog from "../../../ConfirmationDialog";
+import { toast } from "react-toastify";
 
 const ViewSchool = () => {
   const location = useLocation();
@@ -18,13 +20,104 @@ const ViewSchool = () => {
   const [selectedSubscription, setSelectedsubscription] = useState(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isSubscriptionDeleteDialogOpen, setIsSubscriptionDeleteDialogOpen] =
-    useState(false);
+  const [isSubscriptionDeleteDialogOpen, setIsSubscriptionDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [subscription, setSubscription] = useState([]);
 
+  const [schoolRoles, setSchoolRoles] = useState([]);
   const schoolId = location.state?.schoolId;
   const [school, setSchool] = useState(null);
+  const [isAdding, setIsAdding] = useState(false);
+  const [newRoleInput, setNewRoleInput] = useState("");
+  const [editRoleId, setEditRoleId] = useState(null);
+  const [editInputValue, setEditInputValue] = useState("");
+  const [error, setError] = useState("");
+  const [selectedSchoolRole, setSelectedSchoolRole] = useState(null);
+  const [isSchoolRoleDeleteDialogOpen, setIsSchoolRoleDeleteDialogOpen] = useState(false);
+  
+
+  const handleAddClick = () => {
+    if (!isAdding && !editRoleId) {
+      setIsAdding(true);
+      setNewRoleInput("");
+      setError("");
+    }
+  };
+
+  const handleAddSave = async () => {
+    if (newRoleInput.trim() === "") {
+      setError("Role name cannot be empty.");
+      return;
+    }
+
+    const newRole = {
+      name: newRoleInput.trim(),
+      schoolId: schoolId,
+    };
+
+    try {
+      const response = await postAPI(`/add-school-roles`, newRole, true);
+      if (!response.hasError && response.data && response.data.data) {
+        setSchoolRoles([...schoolRoles, response.data.data]);
+        setNewRoleInput("");
+        setIsAdding(false);
+        toast.success("School role added!");
+      } else {
+       toast.error("Failed to add role. Please try again.");
+      }
+    } catch (err) {
+      toast.error("Error in adding role. Please try again.");
+    }
+  };
+
+  const handleAddRoleCancel = () => {
+    setIsAdding(false);
+    setNewRoleInput("");
+    setError("");
+  };
+
+  const handleEditClick = (role) => {
+    if (!isAdding && !editRoleId) {
+      setEditRoleId(role._id);
+      setEditInputValue(role.name);
+      setError("");
+    }
+  };
+
+  const handleEditSave = async (id) => {
+    if (editInputValue.trim() === "") {
+      setError("Role name cannot be empty.");
+      return;
+    }
+
+    const updatedRole = {
+      name: editInputValue.trim(),
+    };
+
+    try {
+      const response = await putAPI(`/put-school-roles/${id}`, updatedRole, true);
+      if (!response.hasError && response.data && response.data.data) {
+        const updatedRoles = schoolRoles.map((role) =>
+          role._id === id ? { ...role, name: editInputValue.trim() } : role
+        );
+        setSchoolRoles(updatedRoles);
+        setEditRoleId(null);
+        setEditInputValue("");
+       toast.success("School role updated!");
+      } else {
+        toast.error("Failed to update role. Please try again.");
+      }
+    } catch (err) {
+      toast.error("Error updating role. Please try again.");
+    }
+  };
+
+  const handleEditCancel = () => {
+    setEditRoleId(null);
+    setEditInputValue("");
+    setError("");
+  };
+
 
   const fetchSchoolData = async () => {
     try {
@@ -78,11 +171,30 @@ const ViewSchool = () => {
     }
   };
 
+  const fetchSchoolRolesData = async () => {
+    try {
+      const response = await getAPI(`/get-school-roles/${schoolId}`, {}, true);
+      if (
+        !response.hasError &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
+        setSchoolRoles(response.data.data);
+        
+      } else {
+        console.error("Invalid response format or error in response");
+      }
+    } catch (err) {
+      console.error("Error fetching User:", err);
+    }
+  };
+
   useEffect(() => {
     if (schoolId) {
       fetchSchoolData();
       fetchUserData();
       fetchSubscriptionData();
+      fetchSchoolRolesData();
     } else {
       console.error("No school ID provided");
     }
@@ -150,6 +262,13 @@ const ViewSchool = () => {
     });
   };
 
+  const navigateToSchoolEmployeeList = (event, schoolId) => {
+    event.preventDefault();
+    navigate(`/admin-dashboard/schools/view-school/school-employee`, {
+      state: { schoolId },
+    });
+  };
+// schools/view-school/school-employee
   const openDeleteSubscriptionDialog = (subscription) => {
     setSelectedsubscription(subscription);
     setIsSubscriptionDeleteDialogOpen(true);
@@ -165,6 +284,23 @@ const ViewSchool = () => {
   const handleDeleteSubscriptionCancel = () => {
     setIsSubscriptionDeleteDialogOpen(false);
     setSelectedsubscription(null);
+  };
+
+  const openDeleteSchoolRoleDialog = (role) => {
+    setSelectedSchoolRole(role);
+    setIsSchoolRoleDeleteDialogOpen(true);
+    setDeleteType("schoolRole");
+  };
+
+  const handleDeleteSchoolRoleConfirmed = (_id) => {
+    setSchoolRoles((prevSchoolRole) =>
+      prevSchoolRole.filter((role) => role._id !== _id)
+    );
+  };
+
+  const handleDeleteSchoolRoleCancel = () => {
+    setIsSchoolRoleDeleteDialogOpen(false);
+    setSelectedSchoolRole(null);
   };
 
   return (
@@ -605,6 +741,190 @@ const ViewSchool = () => {
         ) : (
           <div className="row"></div>
         )}
+
+        <div className="row p-2">
+          <div className="col-xl-12">
+            <div className="card">
+              <div className="card-header d-flex justify-content-between align-items-center gap-1">
+                <h4 className="card-title flex-grow-1">
+                  All School Role
+                </h4>
+                <button
+                  onClick={handleAddClick}
+                  disabled={isAdding || editRoleId}
+                  className="btn btn-sm btn-primary"
+                >
+                  Add Role
+                </button>
+              </div>
+              <div>
+                <div className="table-responsive">
+                  <table className="table align-middle mb-0 table-hover table-centered text-center">
+                    <thead className="bg-light-subtle">
+                      <tr>
+                        <th style={{ width: 20 }}>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id="customCheck1"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="customCheck1"
+                            />
+                          </div>
+                        </th>
+                        <th>Role</th>
+                        <th className="text-start">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {schoolRoles?.map((role) => (
+                        <tr key={role._id}>
+                          <td>
+                            <div className="form-check ms-1">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="customCheck2"
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="customCheck2"
+                              >
+                                &nbsp;
+                              </label>
+                            </div>
+                          </td>
+                          <td>
+                            {editRoleId === role._id ? (
+                              <>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  value={editInputValue}
+                                  onChange={(e) => setEditInputValue(e.target.value)}
+                                  placeholder="Enter role name"
+                                />
+                                {error && (
+                                  <div
+                                    className="text-danger mt-1"
+                                    style={{ fontSize: "13px" }}
+                                  >
+                                    {error}
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              role.name
+                            )}
+                          </td>
+                          <td>
+                            {editRoleId === role._id ? (
+                              <div className="d-flex gap-2">
+                                <button
+                                  className="btn btn-success btn-sm"
+                                  onClick={() => handleEditSave(role._id)}
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={handleEditCancel}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="d-flex gap-2">
+                                <Link className="btn btn-light btn-sm"
+                                onClick={(event) =>
+                                    navigateToSchoolEmployeeList(
+                                      event,
+                                      schoolId
+                                    )
+                                  }
+                                >
+                                  <iconify-icon
+                                    icon="solar:eye-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                                <button
+                                  className="btn btn-soft-primary btn-sm"
+                                  onClick={() => handleEditClick(role)}
+                                  disabled={isAdding || editRoleId}
+                                >
+                                  <iconify-icon
+                                    icon="solar:pen-2-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </button>
+                                <Link className="btn btn-soft-danger btn-sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    openDeleteSchoolRoleDialog(role);
+                                  }}
+                                >
+                                  <iconify-icon
+                                    icon="solar:trash-bin-minimalistic-2-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                              </div>
+                            )}
+
+                          </td>
+                        </tr>
+                      ))}
+                      {isAdding && (
+                        <tr>
+                          <td></td>
+                          <td>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={newRoleInput}
+                              onChange={(e) => setNewRoleInput(e.target.value)}
+                              placeholder="Enter role name"
+                            />
+                            {error && (
+                              <div
+                                className="text-danger mt-1"
+                                style={{ fontSize: "13px" }}
+                              >
+                                {error}
+                              </div>
+                            )}
+                          </td>
+                          <td>
+                            <div className="d-flex gap-2">
+                              <button
+                                className="btn btn-success btn-sm"
+                                onClick={handleAddSave}
+                              >
+                                Save
+                              </button>
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={handleAddRoleCancel}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
 
       {isAddDialogOpen && (
@@ -631,6 +951,17 @@ const ViewSchool = () => {
           id={selectedSubscription.id}
           onDeleted={() =>
             handleDeleteSubscriptionConfirmed(selectedSubscription.id)
+          }
+        />
+      )}
+
+      {isSchoolRoleDeleteDialogOpen && (
+        <ConfirmationDialog
+          onClose={handleDeleteSchoolRoleCancel}
+          deleteType={deleteType}
+          id={selectedSchoolRole._id}
+          onDeleted={() =>
+            handleDeleteSchoolRoleConfirmed(selectedSchoolRole._id)
           }
         />
       )}

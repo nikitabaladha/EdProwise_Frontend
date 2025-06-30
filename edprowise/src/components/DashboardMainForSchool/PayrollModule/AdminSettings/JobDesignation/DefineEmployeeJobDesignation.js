@@ -9,9 +9,9 @@ const DefineEmployeeJobDesignation = () => {
   const [designation, setDesignation] = useState([]);
   const [schoolId, setSchoolId] = useState(null);
   const [academicYear, setAcademicYear] = useState("2025-26");
-const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [deleteType, setDeleteType] = useState("");
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [deleteType, setDeleteType] = useState("");
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -105,8 +105,8 @@ const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     }
   };
 
-  
-    const openDeleteDialog = (comp) => {
+
+  const openDeleteDialog = (comp) => {
     setSelectedCategory(comp);
     setDeleteType("employeeJobDesignation");
     setIsDeleteDialogOpen(true);
@@ -116,11 +116,11 @@ const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     setIsDeleteDialogOpen(false);
     setSelectedCategory(null);
   };
-    const handleDeleteConfirmed = (id) => {
-        setDesignation(prevCat =>
-            prevCat.filter(desig => desig.id !== id)
-        );
-    };
+  const handleDeleteConfirmed = (id) => {
+    setDesignation(prevCat =>
+      prevCat.filter(desig => desig.id !== id)
+    );
+  };
 
 
   return (
@@ -131,7 +131,7 @@ const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
             <div className="card m-2">
               <div className="card-body custom-heading-padding">
                 <div className="container">
-                  <div className="card-header mb-2 d-flex align-items-center">
+                  <div className="card-header border border-0 mb-2 d-flex align-items-center">
                     <h4 className="card-title flex-grow-1 text-center">
                       Job Designation
                     </h4>
@@ -150,6 +150,13 @@ const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
                         <option>2029-30</option>
                       </select>
                     </div>
+                    <button
+                      type="button"
+                      className="btn btn-primary ms-2"
+                      onClick={handleAddRow}
+                    >
+                      Add Row
+                    </button>
                   </div>
                 </div>
 
@@ -233,15 +240,7 @@ const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
                     </tbody>
                   </table>
 
-                  <div className="mt-3 text-center">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={handleAddRow}
-                    >
-                      Add Row
-                    </button>
-                  </div>
+                  
                 </div>
 
                 <div className="card-footer border-top">

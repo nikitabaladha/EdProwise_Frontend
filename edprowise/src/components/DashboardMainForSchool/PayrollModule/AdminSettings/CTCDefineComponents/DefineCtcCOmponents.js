@@ -16,7 +16,7 @@ const DefineCtcComponents = () => {
     setRows(updatedRows);
   };
 
-  // Add a new row
+  // Add  a new row
   const addRow = () => {
     setRows([...rows, { id: rows.length + 1, CTCComponentsName: "" }]);
   };
@@ -37,7 +37,7 @@ const DefineCtcComponents = () => {
               <div className="container">
                 <div className="card-header mb-2 d-flex align-items-center">
                   <h4 className="card-title flex-grow-1 text-center">
-                    Define CTC Components
+                    Define CTC Components 11
                   </h4>
                   <div>
                     <select id="yearSelect" className="custom-select payroll-table-body" aria-label="Select Year">

@@ -34,6 +34,10 @@ const EmployeeResignationForm = () => {
         { label: 'Role clarity', value: 'Role clarity' },
         { label: 'Starting own Venture', value: 'Starting own Venture' },
         { label: 'Worklife Balance', value: 'Worklife Balance ' },
+        { label: 'Retirement', value: 'Retirement' },
+    ];
+
+    const reasonForLeavingg = [
     ];
 
     const countryOptions = Object.keys(countryData).map((country) => ({

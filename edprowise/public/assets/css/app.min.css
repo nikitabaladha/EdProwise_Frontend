@@ -28,6 +28,55 @@ width add in .w-20... in all sm, md,lg xl
 
 */
 /* umesh custom css for fin */
+/* Modal styles */
+/* Day cell wrapper customization */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-box h3 {
+  margin-bottom: 10px;
+}
+
+.modal-box p {
+  margin-bottom: 20px;
+}
+
+/*  */
+
+.present {
+  background-color: #28a745;
+  color: white;
+}
+
+.leave {
+  background-color: #ffc107;
+  color: black;
+}
+
+.cancel {
+  background-color: #dc3545;
+  color: white;
+}
+/*  */
+
 .create-alter{
   font-size: 1.5rem;
 }

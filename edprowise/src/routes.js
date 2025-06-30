@@ -193,6 +193,74 @@ import ViewLetterAndDocuments from "./components/DashboardMainForAdmin/PayrollMo
 import UpdateLetterAndDocuments from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LetterAndDocuments/UpdateLetterAndDocuments.js";
 import UpdateAwardsAndAchievement from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/AwardsAndAchievement/UpdateAwardsAndAchievement.js";
 
+
+// FinanceModule //
+import PaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/PaymentEntry.js";
+import Receipts from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/Receipts.js";
+import Contra from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/Contra.js";
+import Journal from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/Journal.jsx";
+import LedgerBook from "./components/DashboardMainForAdmin/FinanceModule/Display/LedgerBook/LedgerBook.js";
+import PaymentLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/PaymentLedger/PaymentLedger.js";
+import ReceiptsLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/ReceiptsLedger/ReceiptsLedger.js";
+import ContraLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/ContraLedger/ContraLedger.js";
+import JournalLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/JournalLedger/JournalLedger.js";
+import TrailBalance from "./components/DashboardMainForAdmin/FinanceModule/Display/TrailBalance/TrailBalance.js";
+import CashBookReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/CashBook/CashBookReport.jsx";
+import BankBookReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/BankBook/BankBookReport.jsx";
+import IncomeLedgerReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/IncomeLedger/IncomeLedgerReport.jsx";
+import ExpensesLedgerReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/ExpensesLedger/ExpensesLedgerReport.jsx";
+import JournalLedgerReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/JournalLedger/JournalLedgerReport.jsx";
+import TDSReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/TDSReport/TDSReport.jsx";
+import AnalysisofPandL from "./components/DashboardMainForAdmin/FinanceModule/MIS Reporting/AnalysisofP&L/AnalysisofPandL.jsx";
+import RatioAnalysis from "./components/DashboardMainForAdmin/FinanceModule/MIS Reporting/RatioAnalysis/RatioAnalysis.jsx";
+import VerificationofPaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofPaymentEntry/VerificationofPaymentEntry.jsx";
+import VerificationofReceiptEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofReceiptEntry/VerificationofReceiptEntry.jsx";
+import VerificationofContraEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofContraEntry/VerificationofContraEntry.jsx";
+import VerificationofJournalEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofJournalEntry/VerificationofJournalEntry.jsx";
+import AuditorRemarks from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/AuditorRemarks/AuditorRemarks.jsx";
+import UploadDocumentforAuditor from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/UploadDocumentforAuditor/UploadDocumentforAuditor.jsx";
+import BalanceSheet from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/BalanceSheet/BalanceSheet.jsx";
+import IncomeAndExpenditureAccount from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/Income&ExpenditureAccount/IncomeAndExpenditureAccount.jsx";
+import ScheduleToIncome from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoIncome/ScheduleToIncome.jsx";
+import ScheduleToExpenditure from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoExpenditure/ScheduleToExpenditure.jsx";
+import ScheduleToAssets from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoAssets/ScheduleToAssets.jsx";
+import ScheduleToLiabilities from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoLiabilities/ScheduleToLiabilities.jsx";
+import FixedAssetsSchedule from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/FixedAssetsSchedule/FixedAssetsSchedule.jsx";
+import DocumentForAuditor from "./components/DashboardMainForAdmin/FinanceModule/AuditPack/DocumentForAuditor/DocumentForAuditor.jsx";
+import DepreciationMaster from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/DepreciationMaster/DepreciationMaster.jsx";
+import CreateVendor from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateVendor/CreateVendor.jsx";
+import VendorMaster from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/VendorMaster/VendorMaster.jsx";
+import TDSRateChart from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/TDSRateChart/TDSRateChart.jsx";
+import LedgerMaster from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/LedgerMaster/LedgerMaster.jsx";
+import CreateAndAlterLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateAndAlterLedger.jsx";
+import AddNewVendor from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateVendor/AddNewVendor.jsx";
+import CreateLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateLedger.jsx";
+import CreateGroupLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateGroupLedger.jsx";
+import CreateBAndSLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateBAndSLedger.jsx";
+import UpdateLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateLedger.jsx";
+import UpdateGroupLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateGroupLedger.jsx";
+import UpdateBAndSLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateBAndSLedger.jsx";
+import DeleteLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteLedger.jsx";
+import DeleteGroupLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteGroupLedger.jsx";
+import DeleteBAndSLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteBAndSLedger.jsx";
+import CreateHeadOfLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateHeadOfLedger.jsx";
+import UpdateHeadOfLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateHeadOfLedger.jsx";
+import DeleteHeadOfLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteHeadOfLedger.jsx";
+import ContraTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/ContraTable.js";
+import ViewContra from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/ViewContra.js";
+import UpdateContra from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/UpdateContra.js";
+import PaymentEntryTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/PaymentEntryTable.jsx";
+import ViewPaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/ViewPaymentEntry.jsx";
+import UpdatePaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/UpdatePaymentEntry.jsx";
+import ReceiptsTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/ReceiptsTable.jsx";
+import ViewReceipts from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/ViewReceipts.jsx";
+import UpdateReceipts from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/UpdateReceipts.jsx";
+import JournalTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/JournalTable.jsx";
+import ViewJournal from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/ViewJournal.jsx";
+import UpdateJournal from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/UpdateJournal.jsx";
+
+// END of FinanceModule //
+
 // ================School Routes=============School Routes============School Routes===========================
 
 import CompleteSchoolProfile from "./components/DashboardMainForSchool/CompleteSchoolProfile/CompleteSchoolProfile";
@@ -312,72 +380,12 @@ import Blogs from "./components/DashboardMainForAdmin/Blogs/Blogs.js";
 import AddNewBlog from "./components/DashboardMainForAdmin/Blogs/AddNewBlog/AddNewBlog.js";
 import UpdateBlog from "./components/DashboardMainForAdmin/Blogs/UpdateBlog/UpdateBlog.js";
 import BlogsInfoTable from "./components/DashboardMainForAdmin/Blogs/BlogsInfoTable.js";
-import PaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/PaymentEntry.js";
-import Receipts from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/Receipts.js";
-import Contra from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/Contra.js";
-import Journal from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/Journal.jsx";
-import LedgerBook from "./components/DashboardMainForAdmin/FinanceModule/Display/LedgerBook/LedgerBook.js";
-import PaymentLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/PaymentLedger/PaymentLedger.js";
-import ReceiptsLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/ReceiptsLedger/ReceiptsLedger.js";
-import ContraLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/ContraLedger/ContraLedger.js";
-import JournalLedger from "./components/DashboardMainForAdmin/FinanceModule/Display/JournalLedger/JournalLedger.js";
-import TrailBalance from "./components/DashboardMainForAdmin/FinanceModule/Display/TrailBalance/TrailBalance.js";
-import CashBookReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/CashBook/CashBookReport.jsx";
-import BankBookReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/BankBook/BankBookReport.jsx";
-import IncomeLedgerReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/IncomeLedger/IncomeLedgerReport.jsx";
-import ExpensesLedgerReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/ExpensesLedger/ExpensesLedgerReport.jsx";
-import JournalLedgerReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/JournalLedger/JournalLedgerReport.jsx";
-import TDSReport from "./components/DashboardMainForAdmin/FinanceModule/Reports/TDSReport/TDSReport.jsx";
-import AnalysisofPandL from "./components/DashboardMainForAdmin/FinanceModule/MIS Reporting/AnalysisofP&L/AnalysisofPandL.jsx";
-import RatioAnalysis from "./components/DashboardMainForAdmin/FinanceModule/MIS Reporting/RatioAnalysis/RatioAnalysis.jsx";
-import VerificationofPaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofPaymentEntry/VerificationofPaymentEntry.jsx";
-import VerificationofReceiptEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofReceiptEntry/VerificationofReceiptEntry.jsx";
-import VerificationofContraEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofContraEntry/VerificationofContraEntry.jsx";
-import VerificationofJournalEntry from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/VerificationofJournalEntry/VerificationofJournalEntry.jsx";
-import AuditorRemarks from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/AuditorRemarks/AuditorRemarks.jsx";
-import UploadDocumentforAuditor from "./components/DashboardMainForAdmin/FinanceModule/Audit&Documentation/UploadDocumentforAuditor/UploadDocumentforAuditor.jsx";
-import BalanceSheet from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/BalanceSheet/BalanceSheet.jsx";
-import IncomeAndExpenditureAccount from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/Income&ExpenditureAccount/IncomeAndExpenditureAccount.jsx";
-import ScheduleToIncome from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoIncome/ScheduleToIncome.jsx";
-import ScheduleToExpenditure from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoExpenditure/ScheduleToExpenditure.jsx";
-import ScheduleToAssets from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoAssets/ScheduleToAssets.jsx";
-import ScheduleToLiabilities from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/ScheduletoLiabilities/ScheduleToLiabilities.jsx";
-import FixedAssetsSchedule from "./components/DashboardMainForAdmin/FinanceModule/FinancialStatement/FixedAssetsSchedule/FixedAssetsSchedule.jsx";
-import DocumentForAuditor from "./components/DashboardMainForAdmin/FinanceModule/AuditPack/DocumentForAuditor/DocumentForAuditor.jsx";
-import DepreciationMaster from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/DepreciationMaster/DepreciationMaster.jsx";
-import CreateVendor from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateVendor/CreateVendor.jsx";
-import VendorMaster from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/VendorMaster/VendorMaster.jsx";
-import TDSRateChart from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/TDSRateChart/TDSRateChart.jsx";
-import LedgerMaster from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/LedgerMaster/LedgerMaster.jsx";
-import CreateAndAlterLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateAndAlterLedger.jsx";
-import AddNewVendor from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateVendor/AddNewVendor.jsx";
-import CreateLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateLedger.jsx";
-import CreateGroupLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateGroupLedger.jsx";
-import CreateBAndSLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateBAndSLedger.jsx";
 import CreateBlogCategory from "./components/DashboardMainForAdmin/Blogs/BlogSetting/CreateBlogCategory/CreateBlogCategory.jsx";
 import CreateBlogTags from "./components/DashboardMainForAdmin/Blogs/BlogSetting/CreateBlogTags/CreateBlogTags.jsx";
 import BlogsStatus from "./components/DashboardMainForAdmin/Blogs/BlogSetting/BlogStatus/BlogsStatus.jsx";
-import UpdateLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateLedger.jsx";
-import UpdateGroupLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateGroupLedger.jsx";
-import UpdateBAndSLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateBAndSLedger.jsx";
-import DeleteLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteLedger.jsx";
-import DeleteGroupLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteGroupLedger.jsx";
-import DeleteBAndSLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteBAndSLedger.jsx";
-import CreateHeadOfLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/CreateHeadOfLedger.jsx";
-import UpdateHeadOfLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Update/UpdateHeadOfLedger.jsx";
-import DeleteHeadOfLedger from "./components/DashboardMainForAdmin/FinanceModule/CreateAndMaster/CreateAndAlterLedger/Delete/DeleteHeadOfLedger.jsx";
-import ContraTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/ContraTable.js";
-import ViewContra from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/ViewContra.js";
-import UpdateContra from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Contra/UpdateContra.js";
-import PaymentEntryTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/PaymentEntryTable.jsx";
-import ViewPaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/ViewPaymentEntry.jsx";
-import UpdatePaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/UpdatePaymentEntry.jsx";
-import ReceiptsTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/ReceiptsTable.jsx";
-import ViewReceipts from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/ViewReceipts.jsx";
-import UpdateReceipts from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Receipts/UpdateReceipts.jsx";
-import JournalTable from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/JournalTable.jsx";
-import ViewJournal from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/ViewJournal.jsx";
-import UpdateJournal from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Journal/UpdateJournal.jsx";
+
+
+
 import TermsAndConditionForSeller from "./components/PrivacyPage/TermsAndConditionForSeller.jsx";
 import ViewBlog from "./components/DashboardMainForAdmin/Blogs/ViewBlog/ViewBlog.js";
 import EducatorZoneBlog from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog.jsx";
@@ -388,6 +396,39 @@ import DefineEmployeeJobDesignation from "./components/DashboardMainForSchool/Pa
 import DefinePayrollGrade from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/Grade/DefinePayrollGrade.js";
 import EmployeeIdSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdSettings.js";
 import EmployeeIdPrefixTable from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdPrefixTable.jsx";
+import UpdateEmployeeIdSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/UpdateEmployeeIdSettings.jsx";
+import ViewEmployeeResignationDetails from "./components/DashboardMainForAdmin/PayrollModule/Employer/ResignationReport/ViewEmployeeResignationDetails.js";
+import EmployeeRegistrationFormList from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationFormList.jsx";
+import AddEmployeeRegistrationForm from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/AddEmployeeRegistrationForm.jsx";
+import UpdateEmployeeRegistration from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/UpdateEmployeeRegistration.jsx";
+import ViewEmployeeRegistrationFormDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/ViewEmployeeRegistrationFormDetails.jsx";
+import PayrollSMTPSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/PayrollSMTPEmailSettings/PayrollSMTPSettings.jsx";
+// employee
+import UpdatePayrollEmployeeDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeDetails/UpdatePayrollEmployeeDetails.jsx";
+import EmployeeDashboardMain from "./components/DashboardMainForEmployee/EmployeeDashboardMain.js";
+import SchoolEmployeeListForAdmin from "./components/DashboardMainForAdmin/Schools/AddEmployeeFromSchool/SchoolEmployeeListForAdmin.jsx";
+import AddEmployeeFromAdminForm from "./components/DashboardMainForAdmin/Schools/AddEmployeeFromSchool/AddEmployeeFromAdminForm.jsx";
+import UpdateEmployeeFromAdmin from "./components/DashboardMainForAdmin/Schools/AddEmployeeFromSchool/UpdateEmployeeFromAdmin.jsx";
+import ViewEmployeeFromAdminFormDetails from "./components/DashboardMainForAdmin/Schools/AddEmployeeFromSchool/ViewEmployeeFromAdminFormDetails.jsx";
+import SchoolDefineCtcComponentsList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCDefineComponents/SchoolDefineCtcComponentsList.jsx";
+import EmployerCTCUpdate from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/EmployerCTCUpdate.js";
+import CTCUpdatedEmployeeTable from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/CTCUpdatedEmployeeTable.js";
+import ViewEmployeeCTCDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/ViewEmployeeCTCDetails.js";
+import EmploerUpdateEmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/UpdateDetails/EmploerUpdateEmployeeDetails.js";
+import UpdateEmployeeCTCDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/UpdateEmployeeCTCDetails.jsx";
+import PayrollCTCMaster from "./components/DashboardMainForSchool/PayrollModule/Employer/CTCMaster/PayrollCTCMaster.jsx";
+import SingleEmployeeSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/Employer/SalaryIncrement/SingleEmployeeIncrement/SingleEmployeeSalaryIncrement.jsx";
+import BulkEmployeeSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/Employer/SalaryIncrement/BulkEmployeeIncrement/BulkEmployeeSalaryIncrement.jsx";
+import AnnualLeaveAdminSetting from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/AnnualLeaveUpdate/AnnualLeaveAdminSetting.jsx";
+import MarkAttendance from "./components/DashboardMainForSchool/PayrollModule/EmployeeSelfService/Attendance/MarkAttendance/MarkAttendance.jsx";
+import EmployeeApplyForLeave from "./components/DashboardMainForSchool/PayrollModule/EmployeeSelfService/ApplyForLeave/EmployeeApplyForLeave.jsx";
+import EmployeeMarkAttendance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/MarkAttendance/EmployeeMarkAttendance.jsx";
+import EmployeeLeaveDetailsAndApply from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/ApplyForLeave/EmployeeLeaveDetailsAndApply.jsx";
+import EmployeeAttendanceReport from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/AttendanceReport/EmployeeAttendanceReport.jsx";
+import LeaveApplyEmployeeList from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeApplyForLeave/LeaveApplyEmployeeList.jsx";
+import ViewEmployeeAttendanceReports from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeAttendenceReport/ViewEmployeeAttendanceReports.jsx";
+
+
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -638,6 +679,12 @@ const AppRoutes = () => {
           <Route path="view-school" element={<ViewSchool />} />
           <Route path="update-school" element={<UpdateSchool />} />
         </Route>
+        {/* Umesh Added */}
+        <Route path="schools/view-school/school-employee" element={<SchoolEmployeeListForAdmin/>}/>
+        <Route path="schools/view-school/school-employee/add-employee" element={<AddEmployeeFromAdminForm/>}/>
+        <Route path="schools/view-school/school-employee/update-employee" element={<UpdateEmployeeFromAdmin/>}/>
+        <Route path="schools/view-school/school-employee/view-employee-details" element={<ViewEmployeeFromAdminFormDetails/>}/>
+        {/* Umesh End */}
         {/* Subscriptions Table page and it's Add, View, Update Routes */}
         <Route path="subscriptions" element={<Subscriptions />}>
           <Route
@@ -1621,7 +1668,7 @@ const AppRoutes = () => {
 
         <Route
           path="payroll-module/admin-setting/ctc-components"
-          element={<DefineCtcComponentsList />}
+          element={<SchoolDefineCtcComponentsList />}
         />
 
         <Route
@@ -1641,7 +1688,7 @@ const AppRoutes = () => {
 
         <Route
           path="payroll-module/admin-setting/annual-leave-update"
-          element={<AnnualLeaveUpdate />}
+          element={<AnnualLeaveAdminSetting />}
         />
 
         <Route
@@ -1658,10 +1705,109 @@ const AppRoutes = () => {
           element={<EmployeeIdSettings />}
         />
 
+         <Route
+          path="payroll-module/admin-setting/employee-id-setting/edit-setting"
+          element={<UpdateEmployeeIdSettings />}
+        />
+
         <Route
           path="payroll-module/admin-setting/define-job-designation"
           element={<DefineEmployeeJobDesignation />}
         />
+        <Route
+          path="payroll-module/admin-setting/payroll-smtp-setting"
+          element={<PayrollSMTPSettings />}
+        />
+
+        {/* Employer */}
+        <Route
+          path="payroll-module/employer/employee-registration"
+          element={<EmployeeRegistrationFormList />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-registration/new-employee-registration"
+          element={<AddEmployeeRegistrationForm />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-registration/update-employee-registration"
+          element={<UpdateEmployeeRegistration />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-registration/view-employee-registration"
+          element={<ViewEmployeeRegistrationFormDetails />}
+        />
+        
+        <Route
+          path="payroll-module/employer/registration/update-registration-form"
+          element={<UpdateEmployeeRegistrationForm />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-ctc"
+          element={<CTCUpdatedEmployeeTable />}
+        />
+        <Route
+          path="payroll-module/employer/employee-ctc/ctc-update"
+          element={<EmployerCTCUpdate />}
+        />
+        <Route
+          path="payroll-module/employer/employee-ctc/view-ctc-details"
+          element={<ViewEmployeeCTCDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-ctc/update-ctc-details"
+          element={<UpdateEmployeeCTCDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/update-employee-details"
+          element={<EmploerUpdateEmployeeDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/ctc-master"
+          element={<PayrollCTCMaster />}
+        />
+        <Route
+          path="payroll-module/employer/salary-increment/single-employee-increment"
+          element={<SingleEmployeeSalaryIncrement />}
+        />
+        <Route
+          path="payroll-module/employer/salary-increment/bulk-employee-increment"
+          element={<BulkEmployeeSalaryIncrement />}
+        />
+
+        <Route
+          path="payroll-module/employer/attendance/leave-records"
+          element={<LeaveApplyEmployeeList />}
+        />
+
+        <Route
+          path="payroll-module/employer/attendance/attendance-report"
+          element={<ViewEmployeeAttendanceReports />}
+        />
+        
+
+        <Route
+          path="payroll-module/employee-services/attendance/mark-attendance"
+          element={<MarkAttendance />}
+        />
+
+        
+        <Route
+          path="payroll-module/employee-services/attendance/apply-for-leave"
+          element={<EmployeeApplyForLeave />}
+        />
+
+        
+
+
+
+        
 
         <Route path="*" element={<Page404ForDashboard />} />
       </Route>
@@ -1733,8 +1879,57 @@ const AppRoutes = () => {
           element={<QuoteProposalForAll />}
         />
       </Route>
-
       <Route path="*" element={<Page404ForDashboard />} />
+
+      {/* ======================================= Employee Routes ================================ */}
+        <Route
+        path="/employee-dashboard"
+        element={
+          <PrivateRoute>
+            <EmployeeDashboardMain />
+          </PrivateRoute>
+        }
+      >
+        <Route index element={<SchoolProcurementDashboard />} />
+        {/*School Dashboard Route */}
+        <Route path="view-school-profile" element={<ViewSchoolProfile />} />
+        <Route path="update-school-profile" element={<UpdateSchoolProfile />} />
+        <Route
+          path="change-school-admin-password"
+          element={<ChangePasswordForSchoolAdmin />}
+        />
+
+        <Route index element={<SchoolDashboard />} />
+
+        {/* *****************************Payroll Module ***************************************** */}
+
+        {/* ===========================Admin Settings=================== */}
+        
+
+        {/* Employee Self Service */}
+
+        <Route
+          path="payroll-module/employee-services/update-details"
+          element={<UpdatePayrollEmployeeDetails />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/attendance/mark-attendance"
+          element={<EmployeeMarkAttendance />}
+        />
+        <Route
+          path="payroll-module/employee-services/attendance/apply-for-leave"
+          element={<EmployeeLeaveDetailsAndApply />}
+        />
+        <Route
+          path="payroll-module/employee-services/attendance/my-attendance-report"
+          element={<EmployeeAttendanceReport />}
+        />
+
+        <Route path="*" element={<Page404ForDashboard />} />
+      </Route>
+
+
     </Routes>
   );
 };

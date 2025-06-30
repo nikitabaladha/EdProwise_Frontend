@@ -60,6 +60,11 @@ const DefineCtcComponentsList = () => {
                         <option>2029-30</option>
                       </select>
                     </div>
+                    <button type="button" className="btn btn-primary ms-2"
+                      onClick={handleAddRow}
+                    >
+                      Add Row
+                    </button>
                   </div>
                 </div>
                 <div className="table-responsive px-lg-7 px-md-5">
@@ -150,13 +155,7 @@ const DefineCtcComponentsList = () => {
                       ))}
                     </tbody>
                   </table>
-                  <div className="mt-3 text-center">
-                    <button type="button" className="btn btn-primary"
-                      onClick={handleAddRow}
-                    >
-                      Add Row
-                    </button>
-                  </div>
+                  
                 </div>
                 <div className="card-footer border-top">
                   <nav aria-label="Page navigation example">

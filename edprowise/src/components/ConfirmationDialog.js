@@ -57,6 +57,7 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete Bank Detail.",
     idKey: "bankDetailId",
   },
+  
   // Umesh
   requestdemo: {
     getEndpoint: (id) => `/delete-request/${id}`,
@@ -108,6 +109,37 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete Employee Grade.",
     idKey: "_id",
   },
+  ctcComponents:{
+    getEndpoint: (id) => `/delete-payroll-ctc-component/${id}`,
+    successMessage: "CTC Components has been deleted!",
+    errorMessage: "Failed to delete CTC Components.",
+    idKey: "_id",
+  },
+  employeeIdSetting:{
+    getEndpoint: (id) => `/delete-employee-id-prefix/${id}`,
+    successMessage: "Employee employeeid prefix setting has been deleted!",
+    errorMessage: "Failed to delete employeeid prefix setting",
+    idKey: "_id",
+  },
+  employee:{
+    getEndpoint: (id) => `/delete-employee-registration/${id}`,
+    successMessage: "Employee employeeid prefix setting has been deleted!",
+    errorMessage: "Failed to delete employeeid prefix setting",
+    idKey: "_id",
+  },
+  schoolRole: {
+    getEndpoint: (id) => `/delete-school-roles/${id}`,
+    successMessage: "School role has been deleted!",
+    errorMessage: "Failed to delete school role",
+    idKey: "_id",
+  },
+  employeeCTC: {
+    getEndpoint: (id) => `/delete-employee-ctc-details/${id}`,
+    successMessage: "CTC details has been deleted!",
+    errorMessage: "Failed to delete CTC details",
+    idKey: "_id",
+  },
+
 
   // =======Shantanu=====
   feesType: {

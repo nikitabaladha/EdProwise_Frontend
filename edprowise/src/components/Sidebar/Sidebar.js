@@ -1581,7 +1581,7 @@ const Sidebar = () => {
             children: [
               {
                 label: "Update Details",
-                // link: "/admin-dashboard/payroll-module/employee-services/update-details",
+                link: "/school-dashboard/payroll-module/employee-services/update-details",
               },
               {
                 label: "Salary Slip",
@@ -1619,14 +1619,27 @@ const Sidebar = () => {
                 // link: "/admin-dashboard/payroll-module/employee-services/loan-summary",
               },
 
+              
               {
-                label: "My Attendance Report",
-                // link: "/admin-dashboard/payroll-module/employee-services/my-attendance-report",
+                id: "attendance",
+                label: "Attendance",
+                children: [
+                  {
+                    label: "Mark Attendance",
+                    link: "/school-dashboard/payroll-module/employee-services/attendance/mark-attendance",
+                  },
+                  {
+                    label: "Apply for Leave",
+                    link: "/school-dashboard/payroll-module/employee-services/attendance/apply-for-leave",
+                  },
+                  {
+                    label: "My Attendance Report",
+                    // link: "/admin-dashboard/payroll-module/employee-services/my-attendance-report",
+                  },
+                ],
               },
-              {
-                label: "Apply for Leave",
-                // link: "/admin-dashboard/payroll-module/employee-services/apply-for-leave",
-              },
+
+              
               {
                 id: "exit",
                 label: "Exit",
@@ -1667,16 +1680,20 @@ const Sidebar = () => {
             children: [
               {
                 label: "Employee Registration",
-                // link: "/admin-dashboard/payroll-module/employer/registration",
+                link: "/school-dashboard/payroll-module/employer/employee-registration",
               },
               {
                 // LWD Details
                 label: "Employee Update",
-                // link: "/admin-dashboard/payroll-module/employer/update-employee-details",
+                link: "/school-dashboard/payroll-module/employer/update-employee-details",
               },
               {
                 label: "CTC Update",
-                // link: "/admin-dashboard/payroll-module/employer/ctc-update",
+                link: "/school-dashboard/payroll-module/employer/employee-ctc",
+              },
+              {
+                label: "CTC Master",
+                link: "/school-dashboard/payroll-module/employer/ctc-master",
               },
               {
                 label: "Process Payroll",
@@ -1686,18 +1703,31 @@ const Sidebar = () => {
               {
                 id: "salaryIncrement",
                 label: "Salary Increment",
-                // icon: "bx-cog",
                 children: [
                   {
                     label: "Bulk Employee Increment",
-                    // link: "/admin-dashboard/payroll-module/employer/salary-increment/bulk-employee-increment",
-                    // icon: "bx-hash",
+                    link: "/school-dashboard/payroll-module/employer/salary-increment/bulk-employee-increment",
+                    
                   },
                   {
                     label: "Single Employee Increment",
-                    // link: "/admin-dashboard/payroll-module/employer/salary-increment/single-employee-increment",
-                    // icon: "bx-hash",
+                    link: "/school-dashboard/payroll-module/employer/salary-increment/single-employee-increment",
                   },
+                ],
+              },
+              {
+                id: "attendance",
+                label: "Attendance",
+                children: [
+                  {
+                    label: "Leave Records",
+                    link: "/school-dashboard/payroll-module/employer/attendance/leave-records",
+                  },
+                  {
+                    label: "Attendance Report",
+                    link: "/school-dashboard/payroll-module/employer/attendance/attendance-report",
+                  },
+                  
                 ],
               },
 
@@ -1740,7 +1770,8 @@ const Sidebar = () => {
               {
                 label: "Awards and Achievement",
                 link: "/admin-dashboard/payroll-module/employer/awards-and-achievement",
-              }, {
+              },
+              {
                 id: "resignation",
                 label: "Resignation",
                 children: [
@@ -1799,8 +1830,12 @@ const Sidebar = () => {
                 link: "/school-dashboard/payroll-module/admin-setting/employee-id-setting",
               },
               {
+                label: "SMTP Email Setting",
+                link: "/school-dashboard/payroll-module/admin-setting/payroll-smtp-setting",
+              },
+              {
                 label: "School Details",
-                // link: ""
+                // link: "payroll-module/admin-setting/payroll-smtp-setting"
               },
             ],
           },
@@ -1903,6 +1938,124 @@ const Sidebar = () => {
             link: "/seller-dashboard/procurement-services/pay-to-edprowise",
             icon: "solar:users-group-rounded-bold-duotone",
           },
+        ],
+      },
+    ],
+
+    Employee: [     
+        {
+        id: "payrollModule",
+        label: "Payroll Module",
+        icon: "solar:wallet-money-bold",
+        children: [
+          {
+            id: "employeeSelfService",
+            label: "Employee Self Service",
+            icon: "solar:book-bookmark-bold-duotone",
+            children: [
+              {
+                label: "Update Details",
+                link: "/employee-dashboard/payroll-module/employee-services/update-details",
+              },
+              
+              {
+                label: "Salary Slip",
+                // link: "/admin-dashboard/payroll-module/employee-services/salary-slip",
+              },
+              {
+                id: "incomeTax",
+                label: "Income Tax",
+                // icon: "bx-cog",
+                children: [
+                  {
+                    label: "IT Declaration",
+                    // link: "/admin-dashboard/payroll-module/employee-services/income-tax/it-declaration",
+                  },
+                  {
+                    label: "Income Tax Computation Sheet",
+                    // link: "/admin-dashboard/payroll-module/employee-services/income-tax/income-tax-computation-sheet",
+                  },
+                  {
+                    label: "Form 16",
+                    // link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
+                  },
+                  {
+                    label: "Previous Employment Income",
+                    // link: "/admin-dashboard/payroll-module/employee-services/income-tax/previous-employment-income",
+                  },
+                ],
+              },
+
+               {
+                id: "attendance",
+                label: "Attendance",
+                children: [
+                  {
+                    label: "Mark Attendance",
+                    link: "/employee-dashboard/payroll-module/employee-services/attendance/mark-attendance",
+                  },
+                  {
+                    label: "Apply for Leave",
+                    link: "/employee-dashboard/payroll-module/employee-services/attendance/apply-for-leave",
+                  },
+                  {
+                    label: "My Attendance Report",
+                    link: "/employee-dashboard/payroll-module/employee-services/attendance/my-attendance-report",
+                  },
+                ],
+              },
+
+              {
+                label: "Request for Loan",
+                // link: "/admin-dashboard/payroll-module/employee-services/request-for-loan",
+              },
+              {
+                label: "My Loan Statement",
+                // link: "/admin-dashboard/payroll-module/employee-services/loan-summary",
+              },
+
+              {
+                label: "My Attendance Report",
+                // link: "/admin-dashboard/payroll-module/employee-services/my-attendance-report",
+              },
+              {
+                label: "Apply for Leave",
+                // link: "/admin-dashboard/payroll-module/employee-services/apply-for-leave",
+              },
+              {
+                id: "exit",
+                label: "Exit",
+                // icon: "bx-cog",
+                children: [
+                  {
+                    label: "Employee Resignation",
+                    // link: "/admin-dashboard/payroll-module/employee-services/exit/employee-resignation-form",
+                  },
+                  {
+                    label: "Exit Interview",
+                    // link: "/admin-dashboard/payroll-module/employee-services/exit/exit-interview",
+                  },
+                  {
+                    label: "Relieving Letter",
+                    // link: "/admin-dashboard/payroll-module/employee-services/exit/relieving-and-experience-letter",
+                  },
+                ],
+              },
+              {
+                label: "Letter & Documents",
+                // link: "/admin-dashboard/payroll-module/employee-services/letter-documents",
+              },
+              {
+                label: "Awards & Achievement",
+                // link: "/admin-dashboard/payroll-module/employee-services/award-achievement",
+              },
+              {
+                label: "Promotion Nomination",
+                // link: "/admin-dashboard/payroll-module/employee-services/promotion-nomination",
+              },
+            ],
+          },
+          
         ],
       },
     ],
