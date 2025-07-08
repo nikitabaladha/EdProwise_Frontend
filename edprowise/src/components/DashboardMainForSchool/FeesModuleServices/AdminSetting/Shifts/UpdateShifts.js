@@ -7,7 +7,7 @@ const UpdateShift = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state?.shift;
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [shift, setShift] = useState({
     shiftName: '',
     startTime: '',
@@ -18,7 +18,7 @@ const UpdateShift = () => {
     if (data) {
       const extractTime = (isoTime) =>
         isoTime ? new Date(isoTime).toISOString().substring(11, 16) : '';
-  
+
       setShift({
         shiftName: data.masterDefineShiftName || '',
         startTime: extractTime(data.startTime),
@@ -26,7 +26,7 @@ const UpdateShift = () => {
       });
     }
   }, [data]);
-  
+
 
   const handleInputChange = (field, value) => {
     setShift((prev) => ({ ...prev, [field]: value }));
@@ -35,6 +35,21 @@ const UpdateShift = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+
+    if (!academicYear) {
+      toast.error("Academic year is missing. Please select an academic year.");
+      setLoading(false);
+      return;
+    }
+
+
+    if (!/^\d{4}-\d{4}$/.test(academicYear)) {
+      toast.error("Invalid academic year format. Please use YYYY-YYYY (e.g., 2025-2026).");
+      setLoading(false);
+      return;
+    }
     if (!shift.shiftName || !shift.startTime || !shift.endTime) {
       toast.error("Please fill in all fields before submitting.");
       return;
@@ -44,6 +59,7 @@ const UpdateShift = () => {
       masterDefineShiftName: shift.shiftName,
       startTime: shift.startTime,
       endTime: shift.endTime,
+      academicYear
     };
 
     try {
@@ -58,7 +74,7 @@ const UpdateShift = () => {
     } catch (err) {
       const errorText = err.response?.data?.message || err.message || 'Something went wrong!';
       toast.error(errorText);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };

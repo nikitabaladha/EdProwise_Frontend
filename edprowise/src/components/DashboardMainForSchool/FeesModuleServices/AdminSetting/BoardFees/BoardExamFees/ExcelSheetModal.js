@@ -25,7 +25,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
 
     const fetchData = async () => {
       try {
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const classRes = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClasses(classRes?.data?.data || []);
       } catch (error) {
         toast.error("Error fetching data.");
@@ -235,11 +235,6 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
   };
 
    const handleDownloadDemo = () => {
-    if (classes.length === 0) {
-      toast.error('No classes available to include in demo sheet.');
-      return;
-    }
-  
     const guidelines = [
       ['📌 Import Guidelines:'],
       ['• Class: Enter the class name (e.g., Grade 1, Class 10).'],

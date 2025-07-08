@@ -92,7 +92,7 @@ const ConcessionStudentListTable = () => {
     const fetchData = async () => {
       try {
         if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${selectedYear}`, {}, true);
         console.log("Class and Section API Response:", response?.data?.data);
         setClasses(response?.data?.data || []);
       } catch (error) {
@@ -244,7 +244,7 @@ const ConcessionStudentListTable = () => {
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered text-center">
+                  <table className="table align-middle mb-0  table-centered text-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>

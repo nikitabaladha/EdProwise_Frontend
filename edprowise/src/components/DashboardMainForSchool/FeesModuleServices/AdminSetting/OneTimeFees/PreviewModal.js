@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 
-const PreviewModal = ({ show, onClose, previewData, validatedData,classes }) => {
+const PreviewModal = ({ show, onClose, previewData, validatedData, classes, feesTypes }) => {
   return (
     <>
       <style>
@@ -74,12 +74,46 @@ const PreviewModal = ({ show, onClose, previewData, validatedData,classes }) => 
                 </thead>
                 <tbody>
                   {previewData.map((row, index) => {
-                    const isValid = validatedData.some((vd) =>
-                      vd.oneTimeFees.some((otf) =>
-                        otf.amount === Number(row.Amount) &&
-                        vd.classId === classes.find(c => c.className.toLowerCase() === String(row.Class).trim().toLowerCase())?._id
-                      )
-                    );
+                    const isValid = validatedData.some((vd) => {
+                      // Find the class object for the row's Class
+                      const classObj = classes.find(
+                        (c) => c.className.toLowerCase() === String(row.Class).trim().toLowerCase()
+                      );
+                      if (!classObj) return false;
+
+                      // Check sections
+                      const sections = row.Sections
+                        ? String(row.Sections).trim().split(',').map(s => s.trim())
+                        : [];
+                      const validSections = sections.every((s) =>
+                        classObj.sections.some((sec) => sec.name.toLowerCase() === s.toLowerCase())
+                      );
+                      if (!validSections) return false;
+
+                      // Check fees type
+                      const feesType = feesTypes.find(
+                        (f) => f.feesTypeName.toLowerCase() === String(row.FeesTypeName).trim().toLowerCase()
+                      );
+                      if (!feesType) return false;
+
+                      // Check amount
+                      const amount = Number(row.Amount);
+                      if (!amount || amount <= 0) return false;
+
+                      // Check if validatedData contains an entry matching all criteria
+                      return vd.oneTimeFees.some(
+                        (otf) =>
+                          otf.amount === amount &&
+                          otf.feesTypeId === feesType._id &&
+                          vd.classId === classObj._id &&
+                          sections.every((s) =>
+                            vd.sectionIds.includes(
+                              classObj.sections.find((sec) => sec.name.toLowerCase() === s.toLowerCase())?._id
+                            )
+                          )
+                      );
+                    });
+
                     return (
                       <tr key={index}>
                         <td>{index + 1}</td>

@@ -14,9 +14,6 @@ export const useConcessionForm = () => {
     const [schoolId, setSchoolId] = useState('');
     const [sections, setSections] = useState([]);
     const [feeTypes, setFeeTypes] = useState([]);
-       const [academicYears, setAcademicYears] = useState([]);
-    const [selectedYears, setSelectedYears] = useState([]);
-    const [loadingYears, setLoadingYears] = useState(false);
     const academicYear = localStorage.getItem('selectedAcademicYear');
 
     const [formData, setFormData] = useState({
@@ -41,23 +38,6 @@ export const useConcessionForm = () => {
         })
     });
 
-      useEffect(() => {
-        const fetchAcademicYears = async () => {
-          try {
-            setLoadingYears(true);
-            const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-            const schoolId = userDetails?.schoolId;
-            const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
-            setAcademicYears(response.data.data || []);
-          } catch (err) {
-            console.error(err);
-          } finally {
-            setLoadingYears(false);
-          }
-        };
-    
-        fetchAcademicYears();
-      }, []);
 
     useEffect(() => {
         const userDetails = JSON.parse(localStorage.getItem('userDetails'));
@@ -98,7 +78,7 @@ export const useConcessionForm = () => {
         const fetchData = async () => {
             if (!schoolId) return;
             try {
-                const res = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+                const res = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
                 setClasses(res?.data?.data || []);
             } catch (err) {
                 toast.error('Error fetching class and section data.');
@@ -111,7 +91,7 @@ export const useConcessionForm = () => {
         const fetchFeeTypes = async () => {
             if (!schoolId) return;
             try {
-                const res = await getAPI(`/getall-fess-type/${schoolId}`);
+                const res = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`);
                 if (!res.hasError) {
                     setFeeTypes(res.data.data || []);
                 }
@@ -181,8 +161,8 @@ export const useConcessionForm = () => {
             const concessionAmount = (totalFees * percentage) / 100;
             const balancePayable = totalFees - concessionAmount;
 
-            updatedDetails[index].concessionAmount = concessionAmount.toFixed(2);
-            updatedDetails[index].balancePayable = balancePayable.toFixed(2);
+            updatedDetails[index].concessionAmount = concessionAmount;
+            updatedDetails[index].balancePayable = balancePayable;
         }
 
         setFormData(prev => ({
@@ -310,6 +290,7 @@ export const useConcessionForm = () => {
         getFileNameFromPath,
         generateAcademicYears,
         handlePhotoUpload,
-        academicYears
+        // academicYears,
+        schoolId
     };
 };

@@ -249,40 +249,46 @@ const Sidebar = () => {
             icon: "solar:chart-bold-duotone",
             children: [
               {
+                label: "Student Ledger",
+                link: "/school-dashboard/fees-module/reports/student-ledger",
+                icon: "solar:document-text-bold-duotone",
+
+              },
+              {
                 label: "Daily Collection Report",
                 icon: "solar:calendar-bold-duotone",
                 children: [
                   {
-                    label: "Student Ledger",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/student-ledger",
-                    icon: "solar:document-text-bold-duotone",
-                  },
-                  {
-                    label: "Daily Collection - School Fees",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/school-fees",
+                    label: "Datewise Collection",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/datewise-collection",
                     icon: "solar:bill-list-bold-duotone",
                   },
                   {
-                    label: "Daily Collection - One Time Fees",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/one-time-fees",
+                    label: "Studentwise Collection",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/studentwise-collection",
                     icon: "solar:bill-list-bold-duotone",
+                  },
+                  {
+                    label: "School Fees",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/school-fee",
+                    icon: "solar:profile-circle-bold-duotone",
                   },
                   {
                     label: "Registration Fee",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/registration-fee",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/registration-fees",
                     icon: "solar:profile-circle-bold-duotone",
                   },
                   {
                     label: "Admission Fee",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/admission-fee",
-                    icon: "solar:profile-circle-bold-duotone",
-                  },
-                  {
-                    label: "TC Fees Report",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/tc-fee",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/admission-fees",
                     icon: "solar:document-text-bold-duotone",
                   },
                   {
+                    label: "TC Fees Report",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/tc-reports",
+                    icon: "solar:document-bold-duotone",
+                  },
+                   {
                     label: "Board Registration Fees",
                     link: "/school-dashboard/fees-module/reports/daily-collection/board-registration",
                     icon: "solar:document-bold-duotone",
@@ -367,7 +373,7 @@ const Sidebar = () => {
               },
               {
                 label: "Fees Concession Report",
-                 icon: "solar:file-text-bold",
+                icon: "solar:file-text-bold",
                 children: [
                   {
                     label: "Fees Concession Report",
@@ -375,8 +381,8 @@ const Sidebar = () => {
                     icon: "solar:discount-bold-duotone",
                   },
                   {
-                    label: "Fees Concession Report (Head Wise)",
-                    link: "/school-dashboard/fees-module/reports/concession/head-wise",
+                    label: "Fees Concession Report",
+                    link: "/school-dashboard/fees-module/reports/concession/student-wise",
                     icon: "solar:chart-pie-bold-duotone",
                   },
                   {
@@ -474,7 +480,7 @@ const Sidebar = () => {
                     icon: "bx-clipboard",
                     children: [
                       {
-                        label: "Registartion",
+                        label: "Registration",
                         link: "/school-dashboard/fees-module/admin-setting/board-fees/registration-fees",
                         icon: "bx-alarm"
                       },
@@ -491,6 +497,12 @@ const Sidebar = () => {
                     icon: "bx-money"
                   },
                 ]
+              },
+              {
+                label: "Promotion",
+                icon: "bx-trending-up",
+                link: "/school-dashboard/fees-module/admin-setting/promotion/student-promotion",
+
               },
 
 

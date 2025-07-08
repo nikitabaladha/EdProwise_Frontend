@@ -1,5 +1,7 @@
 import React from 'react';
 import { useConcessionForm } from '../UpdateConcessionForm/useConcessionForm';
+import { generateTCPDF } from "./generateStudentPDF";
+import { toast } from 'react-toastify';
 
 
 const ConcessionForm = () => {
@@ -15,8 +17,38 @@ const ConcessionForm = () => {
         cancelSubmittingForm,
         toggleRowSelection,
         getFileNameFromPath,
-        academicYears
+        academicYears,
+        schoolId
     } = useConcessionForm();
+
+      const renderFileViewButton = (filePath, altText) => {
+    if (!filePath) return <div className="text-secondary small mt-1">No file</div>;
+
+    const fileUrl = `${process.env.REACT_APP_API_URL_FOR_IMAGE}${filePath}`;
+
+    return (
+      <div className="mt-1">
+        <a
+          href={fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-sm btn-primary"
+        >
+          View {altText}
+        </a>
+      </div>
+    );
+  };
+
+    const handleDownloadPDF = async () => {
+        console.log("SchoolId",schoolId)
+        try {
+            await generateTCPDF(schoolId,formData, classes, sections, feeTypes, getFileNameFromPath);
+            toast.success("TC PDF downloaded successfully.");
+        } catch (error) {
+            toast.error("Failed to generate PDF. Please try again.");
+        }
+    };
 
     return (
         <div className="container">
@@ -25,10 +57,17 @@ const ConcessionForm = () => {
                     <div className="card m-2">
                         <div className="card-body custom-heading-padding">
                             <div className="container">
-                                <div className="card-header mb-2">
+                                <div className="card-header mb-2 d-flex justify-content-between align-items-center">
                                     <h4 className="card-title text-center custom-heading-font">
                                         View Concession Form
                                     </h4>
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={handleDownloadPDF}
+                                        title="Download TC Form as PDF"
+                                    >
+                                        Download PDF
+                                    </button>
                                 </div>
                             </div>
                             <form onSubmit={handleSubmit}>
@@ -185,35 +224,16 @@ const ConcessionForm = () => {
                                             <label htmlFor="castOrIncomeCertificate" className="form-label">
                                                 Caste/Income Certificate<span className="text-danger">*</span>
                                             </label>
-                                            {typeof formData.castOrIncomeCertificate === 'string' && (
-                                                <div className="mt-2">
-
-                                                    {formData.castOrIncomeCertificate.match(/\.(jpeg|jpg|png|gif)$/i) ? (
-                                                        <img
-                                                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.castOrIncomeCertificate}`}
-                                                            alt="ID Card"
-                                                            style={{ maxWidth: '200px', borderRadius: '8px', marginTop: '5px' }}
-                                                        />
-                                                    ) : formData.castOrIncomeCertificate.match(/\.pdf$/i) ? (
-                                                        <iframe
-                                                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.castOrIncomeCertificate}`}
-                                                            title="ID Card PDF Preview"
-                                                            style={{ border: '1px solid #ccc', marginTop: '5px' }}
-                                                        // width="100%"
-                                                        // height="400px"
-                                                        ></iframe>
-                                                    ) : (
-                                                        <div className="text-muted small mt-1">
-                                                            {getFileNameFromPath(formData.castOrIncomeCertificate)}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
+                                           {typeof formData.castOrIncomeCertificate === 'string' && (
+                            <div className="mt-2">
+                              {renderFileViewButton(formData.castOrIncomeCertificate, " Caste/Income Certificate")}
+                            </div>
+                          )}
 
                                         </div>
                                     </div>
 
-                                    <div className="col-md-4">
+                                    {/* <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="academicYear" className="form-label">
                                                 Applicable Academic Year <span className="text-danger">*</span>
@@ -236,7 +256,7 @@ const ConcessionForm = () => {
                                             </select>
 
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
 
 
@@ -312,7 +332,7 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="number"
+                                                              
                                                                 name="totalFees"
                                                                 className="form-control text-end"
                                                                 value={detail.totalFees}
@@ -325,7 +345,7 @@ const ConcessionForm = () => {
                                                         <td>
                                                             <div className="input-group">
                                                                 <input
-                                                                    type="number"
+                                                                  
                                                                     name="concessionPercentage"
                                                                     className="form-control text-end"
                                                                     value={detail.concessionPercentage}
@@ -340,7 +360,7 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="number"
+                                                              
                                                                 name="concessionAmount"
                                                                 className="form-control text-end"
                                                                 value={detail.concessionAmount}
@@ -350,7 +370,7 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="number"
+                                                              
                                                                 name="balancePayable"
                                                                 className="form-control text-end"
                                                                 value={detail.balancePayable}

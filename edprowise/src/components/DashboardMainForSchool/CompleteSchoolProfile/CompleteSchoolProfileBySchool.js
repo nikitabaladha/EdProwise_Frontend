@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import getAPI from "../../../api/getAPI";
-import postAPI from "../../../api/postAPI";
+import getAPI from "../../../api/getAPI.js";
+import postAPI from "../../../api/postAPI.js";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 
 import CountryStateCityData from "../../CityData.json";
 import CreatableSelect from "react-select/creatable";
+
+
 const countryData = CountryStateCityData;
 
 const CompleteSchoolProfile = () => {
@@ -48,6 +50,116 @@ const CompleteSchoolProfile = () => {
     isCustomDeliveryState: false,
     isCustomDeliveryCity: false,
   });
+
+  const [timer, setTimer] = useState(0);
+
+  const [isVerificationSuccessful, setIsVerificationSuccessful] =
+    useState(false);
+
+  const [emailVerificationState, setEmailVerificationState] =
+    useState("unverified"); // 'unverified', 'pending', 'verified'
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [verifyingOTP, setVerifyingOTP] = useState(false); // For verifying OTP
+
+  const [otpData, setOtpData] = useState({
+    email: "",
+
+    otp: "",
+  });
+
+  useEffect(() => {
+    let interval;
+
+    if (emailVerificationState === "pending" && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [emailVerificationState, timer]);
+
+  const handleSendOTP = async () => {
+    if (
+      !formData.schoolEmail.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
+    ) {
+      toast.error("Please enter a valid email address");
+
+      return;
+    }
+
+    setSending(true);
+
+    try {
+      const response = await postAPI("/send-otp-email-verification", {
+        email: formData.schoolEmail,
+      });
+
+      setSending(true);
+
+      if (!response.data.hasError) {
+        setEmailVerificationState("pending");
+
+        setOtpData((prev) => ({ ...prev, email: formData.schoolEmail }));
+
+        setIsModalOpen(true);
+
+        setTimer(60);
+
+        toast.success("OTP sent to your email!");
+      } else {
+        toast.error("Failed to send OTP");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to send OTP");
+    } finally {
+      setSending(false); // Ensure state is reset no matter what
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    try {
+      setVerifyingOTP(true);
+
+      const response = await postAPI("/verify-email-code", {
+        email: otpData.email,
+
+        verificationCode: otpData.otp,
+      });
+
+      if (!response.data.hasError) {
+        setEmailVerificationState("verified");
+
+        setIsVerificationSuccessful(true);
+
+        setIsModalOpen(false);
+
+        setTimer(0);
+
+        toast.success("Email verified successfully!");
+      } else {
+        toast.error("Invalid OTP");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Verification failed");
+    } finally {
+      setVerifyingOTP(false); // Ensure state is reset no matter what
+    }
+  };
+
+  const handleResendOTP = async () => {
+    await handleSendOTP();
+  };
+
+  const handleOTPChange = (e) => {
+    setOtpData((prev) => ({
+      ...prev,
+
+      otp: e.target.value,
+    }));
+  };
 
   const profileImageRef = useRef(null);
   const affiliationCertificateRef = useRef(null);
@@ -164,6 +276,8 @@ const CompleteSchoolProfile = () => {
       }
     }
 
+   
+
     setSending(true);
 
     try {
@@ -222,7 +336,9 @@ const CompleteSchoolProfile = () => {
         });
 
         toast.success("School Profile successfully created!");
-        navigate("/school-dashboard");
+        // navigate("/school-dashboard");
+        navigate("/school/go-to-dashboard");
+        //
       } else {
         toast.error("Failed to update School.");
       }
@@ -374,16 +490,75 @@ const CompleteSchoolProfile = () => {
                         <label htmlFor="email" className="form-label">
                           School Email <span className="text-danger">*</span>
                         </label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="schoolEmail"
-                          className="form-control"
-                          value={formData.schoolEmail}
-                          onChange={handleChange}
-                          required
-                          placeholder="Example : example@gmail.com"
-                        />
+                        <span
+                          style={{
+                            display: "flex",
+
+                            alignItems: "center",
+
+                            justifyContent: "end",
+                          }}
+                        >
+                          <input
+                            type="email"
+                            id="email"
+                            name="schoolEmail"
+                            className="form-control position-relative"
+                            value={formData.schoolEmail}
+                            onChange={handleChange}
+                            required
+                            // disabled={emailVerificationState === "verified"}
+                            placeholder="Example : example@gmail.com"
+                          />
+
+                          {/* <div
+                            className="form-label"
+                            style={{
+                              position: "absolute",
+
+                              margin: "0 0.9rem 0 0",
+                            }}
+                          >
+                            <div
+                              className={`d-inline-block px-2 py-1 rounded ${
+                                emailVerificationState === "verified"
+                                  ? "text-success"
+                                  : "text-black"
+                              } ${!formData.schoolEmail ? "text-muted" : ""}`}
+                              style={{
+                                cursor:
+                                  emailVerificationState === "verified" ||
+                                  !formData.schoolEmail
+                                    ? "default"
+                                    : "pointer",
+
+                                opacity:
+                                  emailVerificationState === "verified" ||
+                                  !formData.schoolEmail
+                                    ? 0.7
+                                    : 1,
+                              }}
+                              onClick={async () => {
+                                if (
+                                  emailVerificationState !== "verified" &&
+                                  formData.schoolEmail
+                                ) {
+                                  await handleSendOTP();
+                                }
+                              }}
+                            >
+                              {emailVerificationState === "verified" ? (
+                                <>
+                                  <i className="fas fa-check-circle me-1"></i>
+                                </>
+                              ) : sending ? (
+                                "Verifying..."
+                              ) : (
+                                "Verify"
+                              )}
+                            </div>
+                          </div> */}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -1126,6 +1301,9 @@ const CompleteSchoolProfile = () => {
           </div>
         </div>
       </div>
+
+
+      
     </>
   );
 };

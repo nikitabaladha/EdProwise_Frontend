@@ -30,6 +30,14 @@ const UpdateFeesType = () => {
     e.preventDefault();
     setLoading(true);
 
+       const academicYear = localStorage.getItem("selectedAcademicYear");
+   
+     if (!academicYear) {
+       toast.error("Academic year is missing. Please select an academic year.");
+       setLoading(false);
+       return;
+     }
+
     if (!feeName.trim()) {
       toast.error("Fees Type name is required.");
       return;
@@ -55,6 +63,7 @@ const UpdateFeesType = () => {
           feesTypeName: feeName.trim(),
           groupOfFees,
           schoolId,
+          academicYear
         },
         true
       );

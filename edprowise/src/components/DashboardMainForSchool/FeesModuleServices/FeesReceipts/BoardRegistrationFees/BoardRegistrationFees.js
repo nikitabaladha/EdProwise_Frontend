@@ -4,7 +4,7 @@ import getAPI from '../../../../../api/getAPI';
 import postAPI from '../../../../../api/postAPI';
 import { useNavigate } from 'react-router-dom';
 
-const BoardFeeRegistration = () => {
+const BoardRegistrationFeeCollection = () => {
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
   const [selectedClass, setSelectedClass] = useState('');
@@ -16,7 +16,7 @@ const BoardFeeRegistration = () => {
   const [feesLoading, setFeesLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [schoolId, setSchoolId] = useState('');
-  const [boardFees, setBoardFees] = useState({});
+  const [boardRegistrationFees, setBoardRegistrationFees] = useState({});
   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
   const navigate = useNavigate();
 
@@ -32,7 +32,7 @@ const BoardFeeRegistration = () => {
     setSchoolId(id);
   }, []);
 
-  const academicYear = localStorage.getItem('selectedAcademicYear') || '2024-2025';
+  const academicYear = localStorage.getItem('selectedAcademicYear');
 
   useEffect(() => {
     if (!schoolId) return;
@@ -40,9 +40,7 @@ const BoardFeeRegistration = () => {
     const fetchClasses = async () => {
       setClassesLoading(true);
       try {
-        const classResponse = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
-        console.log('Class API Response:', classResponse); // Debug log
-
+        const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         const classData = classResponse?.data?.data || [];
         if (Array.isArray(classData) && classData.length > 0) {
           setClasses(classData);
@@ -51,7 +49,6 @@ const BoardFeeRegistration = () => {
           setClasses([]);
         }
       } catch (error) {
-        console.error('Error fetching classes:', error);
         toast.error('Failed to fetch classes. Please try again.');
         setClasses([]);
       } finally {
@@ -60,8 +57,7 @@ const BoardFeeRegistration = () => {
     };
 
     fetchClasses();
-  }, [schoolId]);
-
+  }, [schoolId, academicYear]);
 
   useEffect(() => {
     if (!schoolId || !selectedClass || !academicYear) return;
@@ -70,35 +66,32 @@ const BoardFeeRegistration = () => {
       setFeesLoading(true);
       try {
         const feesResponse = await getAPI(
-          `/get-board-registration-fees-byIds/${schoolId}/${academicYear}/${selectedClass}/${selectedSection || ''}`,
+          `/get-board-registration-fees-byIds/${schoolId}/${academicYear}/${selectedClass}/${selectedSection}`,
           {},
           true
         );
-
-
         const feesData = feesResponse?.data?.data || [];
         if (Array.isArray(feesData)) {
           const feesMap = {};
           feesData.forEach((fee) => {
             feesMap[fee.classId] = fee.amount;
           });
-          setBoardFees(feesMap);
+          setBoardRegistrationFees(feesMap);
         } else {
           toast.info('No board registration fees found for the selected class/section.');
-          setBoardFees({});
+          setBoardRegistrationFees({});
         }
       } catch (error) {
-        console.error('Error fetching fees:', error);
         toast.error('Failed to fetch board registration fees.');
-        setBoardFees({});
-      } finally {
+        setBoardRegistrationFees({});
+        }
+      finally {
         setFeesLoading(false);
       }
     };
 
     fetchFees();
   }, [schoolId, academicYear, selectedClass, selectedSection]);
-
 
   useEffect(() => {
     if (selectedClass) {
@@ -112,7 +105,6 @@ const BoardFeeRegistration = () => {
     }
   }, [selectedClass, classes]);
 
-
   const fetchStudents = async () => {
     if (!selectedClass || !selectedSection) {
       toast.warning('Please select both class and section.');
@@ -125,34 +117,37 @@ const BoardFeeRegistration = () => {
         {},
         true
       );
-      console.log('Students API Response:', response); // Debug log
 
       const selectedClassData = classes.find((c) => c._id === selectedClass);
       const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
-      const feeAmount = boardFees[selectedClass] || 0;
+      const feeAmount = boardRegistrationFees[selectedClass] || 0;
 
       const studentData = response?.data?.data || [];
       if (Array.isArray(studentData)) {
         setStudents(
-          studentData.map((student) => ({
-            ...student,
-            feesAmt: feeAmount,
-            paymentStatus: student.boardRegistrationStatus || 'Pending',
-            paymentMode:
-              student.boardRegistrationStatus === 'Paid'
-                ? student.paymentMode === 'N/A' ? '' : student.paymentMode
-                : 'Cash',
-            chequeNumber:
-              student.paymentMode === 'Cheque' && student.chequeNumber !== 'N/A'
-                ? student.chequeNumber
-                : '',
-            bankName:
-              student.paymentMode === 'Cheque' && student.bankName !== 'N/A'
-                ? student.bankName
-                : '',
-            className: student.masterDefineClass?.className || '',
-            sectionName: selectedSectionData?.name || student.sectionName || '',
-          }))
+          studentData.map((student) => {
+            const studentClassData = classes.find((c) => c._id === student.className);
+            const studentSectionData = studentClassData?.sections?.find((s) => s._id === student.sectionName);
+            return {
+              ...student,
+              feesAmt: feeAmount,
+              paymentStatus: student.boardRegistrationStatus || 'Pending',
+              paymentMode:
+                student.boardRegistrationStatus === 'Paid'
+                  ? student.paymentMode === 'N/A' ? '' : student.paymentMode
+                  : 'Cash',
+              chequeNumber:
+                student.paymentMode === 'Cheque' && student.chequeNumber !== 'N/A'
+                  ? student.chequeNumber
+                  : '',
+              bankName:
+                student.paymentMode === 'Cheque' && student.bankName !== 'N/A'
+                  ? student.bankName
+                  : '',
+              className: studentClassData?.className || selectedClassData?.className || 'Unknown Class',
+              sectionName: studentSectionData?.name || selectedSectionData?.name || 'Unknown Section',
+            };
+          })
         );
         setShowTable(true);
         setSelectedStudentIds([]);
@@ -162,7 +157,6 @@ const BoardFeeRegistration = () => {
         setShowTable(false);
       }
     } catch (error) {
-      console.error('Error fetching students:', error);
       toast.error('Failed to fetch student data.');
       setShowTable(false);
     } finally {
@@ -170,17 +164,16 @@ const BoardFeeRegistration = () => {
     }
   };
 
-
   const handlePaymentModeChange = (id, mode) => {
     setStudents((prevStudents) =>
       prevStudents.map((student) =>
         student._id === id
           ? {
-            ...student,
-            paymentMode: mode,
-            chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
-            bankName: mode === 'Cheque' ? student.bankName : '',
-          }
+              ...student,
+              paymentMode: mode,
+              chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
+              bankName: mode === 'Cheque' ? student.bankName : '',
+            }
           : student
       )
     );
@@ -193,7 +186,6 @@ const BoardFeeRegistration = () => {
       )
     );
   };
-
 
   const handlePaidClick = async (event, student) => {
     event.preventDefault();
@@ -209,14 +201,17 @@ const BoardFeeRegistration = () => {
 
     setSubmitLoading(true);
     try {
+      const selectedClassData = classes.find((c) => c._id === selectedClass);
+      const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+
       const payment = {
         studentId: student._id,
         admissionNumber: student.AdmissionNumber,
         studentName: `${student.firstName} ${student.lastName}`,
         classId: selectedClass,
         sectionId: selectedSection,
-        className: student.className,
-        sectionName: student.sectionName,
+        className: selectedClassData?.className || 'Unknown Class',
+        sectionName: selectedSectionData?.name || 'Unknown Section',
         amount: student.feesAmt,
         paymentMode: student.paymentMode,
         chequeNumber: student.chequeNumber || '',
@@ -238,14 +233,16 @@ const BoardFeeRegistration = () => {
         applicationDate: new Date().toISOString(),
         paymentDate: new Date().toISOString(),
         transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
+        className: selectedClassData?.className || 'Unknown Class',
+        sectionName: selectedSectionData?.name || 'Unknown Section',
       };
 
       navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
         state: {
           student: receiptData,
           feeTypeName: 'Board Registration Fee',
-          className: student.className,
-          sectionName: student.sectionName,
+          className: selectedClassData?.className || 'Unknown Class',
+          sectionName: selectedSectionData?.name || 'Unknown Section',
         },
       });
 
@@ -257,16 +254,6 @@ const BoardFeeRegistration = () => {
       setSubmitLoading(false);
     }
   };
-
-
-  const handleCheckboxChange = (studentId) => {
-    setSelectedStudentIds((prev) =>
-      prev.includes(studentId)
-        ? prev.filter((id) => id !== studentId)
-        : [...prev, studentId]
-    );
-  };
-
 
   const handleSubmitPayments = async (event) => {
     event.preventDefault();
@@ -297,6 +284,9 @@ const BoardFeeRegistration = () => {
 
     setSubmitLoading(true);
     try {
+      const selectedClassData = classes.find((c) => c._id === selectedClass);
+      const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+
       const payments = selectedStudents
         .filter((student) => student.paymentStatus !== 'Paid')
         .map((student) => ({
@@ -305,8 +295,8 @@ const BoardFeeRegistration = () => {
           studentName: `${student.firstName} ${student.lastName}`,
           classId: selectedClass,
           sectionId: selectedSection,
-          className: student.className,
-          sectionName: student.sectionName,
+          className: selectedClassData?.className || 'Unknown Class',
+          sectionName: selectedSectionData?.name || 'Unknown Section',
           amount: student.feesAmt,
           paymentMode: student.paymentMode || 'Cash',
           chequeNumber: student.chequeNumber || '',
@@ -322,14 +312,14 @@ const BoardFeeRegistration = () => {
         return;
       }
 
-      const response= await postAPI('/submit-board-registration-fees-payment', { payments }, true);
+      const response = await postAPI('/submit-board-registration-fees-payment', { payments }, true);
       toast.success('Selected payments submitted successfully.');
 
       const receiptStudents = selectedStudents
         .filter((student) => student.paymentStatus !== 'Paid')
-        .map((student,index) => ({
+        .map((student, index) => ({
           ...student,
-           receiptNumberBrf:
+          receiptNumberBrf:
             response?.data?.data?.[index]?.receiptNumberBrf || `REC-${student._id}-${Date.now()}`,
           admissionFees: student.feesAmt,
           concessionAmount: 0,
@@ -337,6 +327,8 @@ const BoardFeeRegistration = () => {
           applicationDate: new Date().toISOString(),
           paymentDate: new Date().toISOString(),
           transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
+          className: selectedClassData?.className || 'Unknown Class',
+          sectionName: selectedSectionData?.name || 'Unknown Section',
         }));
 
       if (receiptStudents.length > 0) {
@@ -344,8 +336,8 @@ const BoardFeeRegistration = () => {
           state: {
             students: receiptStudents,
             feeTypeName: 'Board Registration Fee',
-            className: receiptStudents[0].className,
-            sectionName: receiptStudents[0].sectionName,
+            className: selectedClassData?.className || 'Unknown Class',
+            sectionName: selectedSectionData?.name || 'Unknown Section',
           },
         });
 
@@ -365,31 +357,43 @@ const BoardFeeRegistration = () => {
     }
   };
 
-  const hasChequePayment = students.some((student) => student.paymentMode === 'Cheque');
-  const allPaid = students.every((student) => student.paymentStatus === 'Paid');
+  const handleCheckboxChange = (studentId) => {
+    setSelectedStudentIds((prev) =>
+      prev.includes(studentId)
+        ? prev.filter((id) => id !== studentId)
+        : [...prev, studentId]
+    );
+  };
 
   const handleViewReceipt = (student) => {
+    const selectedClassData = classes.find((c) => c._id === selectedClass);
+    const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+
     const receiptData = {
       ...student,
-      receiptNumber: student.receiptNumber || `REC-${student._id}-${Date.now()}`,
+      receiptNumberBrf: student.receiptNumberBrf || `REC-${student._id}-${Date.now()}`,
       admissionFees: student.feesAmt,
       concessionAmount: 0,
       finalAmount: student.feesAmt,
       applicationDate: student.paymentDate || new Date().toISOString(),
       paymentDate: student.paymentDate || new Date().toISOString(),
       transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
+      className: selectedClassData?.className || 'Unknown Class',
+      sectionName: selectedSectionData?.name || 'Unknown Section',
     };
 
     navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
       state: {
         student: receiptData,
         feeTypeName: 'Board Registration Fee',
-        className: student.className,
-        sectionName: student.sectionName,
+        className: selectedClassData?.className || 'Unknown Class',
+        sectionName: selectedSectionData?.name || 'Unknown Section',
       },
     });
   };
 
+  const hasChequePayment = students.some((student) => student.paymentMode === 'Cheque');
+  const allPaid = students.every((student) => student.paymentStatus === 'Paid');
 
   return (
     <div className="container-fluid">
@@ -417,10 +421,6 @@ const BoardFeeRegistration = () => {
                     </option>
                   ))}
                 </select>
-                {/* {classesLoading && <small className="text-muted">Loading classes...</small>}
-                {!classesLoading && classes.length === 0 && (
-                  <small className="text-danger">No classes available.</small>
-                )} */}
               </div>
 
               <div className="col-md-6">
@@ -441,9 +441,6 @@ const BoardFeeRegistration = () => {
                     </option>
                   ))}
                 </select>
-                {/* {selectedClass && sections.length === 0 && (
-                  <small className="text-danger">No sections available for this class.</small>
-                )} */}
               </div>
             </div>
 
@@ -453,10 +450,11 @@ const BoardFeeRegistration = () => {
                   type="button"
                   onClick={fetchStudents}
                   disabled={!selectedClass || !selectedSection || loading || feesLoading}
-                  className={`btn ${!selectedClass || !selectedSection || loading || feesLoading
+                  className={`btn ${
+                    !selectedClass || !selectedSection || loading || feesLoading
                       ? 'btn-secondary disabled'
                       : 'btn-primary'
-                    }`}
+                  }`}
                 >
                   {loading ? (
                     <>
@@ -476,10 +474,10 @@ const BoardFeeRegistration = () => {
           <div className="card shadow-sm rounded">
             <div className="card-body p-2">
               <div className="table-responsive p-2">
-                <table className="table table-hover mb-1 text-nowrap">
+                <table className="table mb-1 text-nowrap">
                   <thead className="table-light">
                     <tr>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
+                      <th>
                         <input
                           type="checkbox"
                           checked={selectedStudentIds.length === students.length && students.length > 0}
@@ -493,40 +491,20 @@ const BoardFeeRegistration = () => {
                           disabled={students.length === 0}
                         />
                       </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Adm. No.
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Student Name
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Class
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Section
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Board Reg. Fees (₹)
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Mode of Payment
-                      </th>
+                      <th>Adm. No.</th>
+                      <th>Student Name</th>
+                      <th>Class</th>
+                      <th>Section</th>
+                      <th>Board Registration Fees (₹)</th>
+                      <th>Mode of Payment</th>
                       {hasChequePayment && (
                         <>
-                          <th scope="col" className="text-uppercase small fw-semibold m-2">
-                            Cheque No.
-                          </th>
-                          <th scope="col" className="text-uppercase small fw-semibold m-2">
-                            Bank Name
-                          </th>
+                          <th>Cheque No.</th>
+                          <th>Bank Name</th>
                         </>
                       )}
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Status
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Pay
-                      </th>
+                      <th>Status</th>
+                      <th>Pay</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -605,8 +583,9 @@ const BoardFeeRegistration = () => {
                         )}
                         <td>
                           <span
-                            className={`badge ${student.paymentStatus === 'Paid' ? 'bg-success' : 'bg-warning text-dark'
-                              }`}
+                            className={`badge ${
+                              student.paymentStatus === 'Paid' ? 'bg-success' : 'bg-warning text-dark'
+                            }`}
                           >
                             {student.paymentStatus}
                           </span>
@@ -682,4 +661,4 @@ const BoardFeeRegistration = () => {
   );
 };
 
-export default BoardFeeRegistration;
+export default BoardRegistrationFeeCollection;

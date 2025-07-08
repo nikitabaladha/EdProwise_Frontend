@@ -13,6 +13,7 @@ const UpdateFeeStructure = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [forms, setForms] = useState([]);
+  const academicYear = localStorage.getItem("selectedAcademicYear");
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -29,14 +30,14 @@ const UpdateFeeStructure = () => {
 
     const fetchData = async () => {
       try {
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const classRes = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClassData(classRes?.data?.data || []);
       } catch (error) {
         toast.error("Error fetching class and section data.");
       }
 
       try {
-        const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`);
+        const feesTypeRes = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
           const SchoolFees = feesTypeRes.data.data.filter(
             (fee) => fee.groupOfFees === "School Fees"

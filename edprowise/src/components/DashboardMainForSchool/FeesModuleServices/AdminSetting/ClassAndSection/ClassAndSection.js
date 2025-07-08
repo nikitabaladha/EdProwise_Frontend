@@ -4,7 +4,7 @@ import ConfirmationDialog from '../../../../ConfirmationDialog';
 import getAPI from '../../../../../api/getAPI';
 import { toast } from 'react-toastify';
 import ExcelSheetModal from './ExcelSheetModal';
-import { exportToExcel } from '../../../../export-excel'; 
+import { exportToExcel } from '../../../../export-excel';
 
 const ClassAndSection = () => {
   const navigate = useNavigate();
@@ -17,28 +17,47 @@ const ClassAndSection = () => {
   const [schoolId, setSchoolId] = useState('');
   const [shifts, setShifts] = useState([]);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
 
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-    const id = userDetails?.schoolId;
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
 
+    fetchAcademicYears();
+  }, []);
+
+  useEffect(() => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const id = userDetails?.schoolId;
     if (!id) {
-      toast.error('School ID not found. Please log in again.');
+      toast.error("School ID not found. Please log in again.");
       return;
     }
-
     setSchoolId(id);
   }, []);
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchData = async () => {
       try {
-        const classResponse = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${selectedYear}`, {}, true);
         setRequests(classResponse?.data?.data || []);
 
-        const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
+        const shiftResponse = await getAPI(`/master-define-shift-year/${schoolId}/year/${selectedYear}`);
         if (!shiftResponse.hasError) {
           const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
           setShifts(shiftArray);
@@ -53,11 +72,33 @@ const ClassAndSection = () => {
     };
 
     fetchData();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
+
+  const handleOpenImportModal = async () => {
+    if (!schoolId || !selectedYear) {
+      toast.error("Please select a school and academic year.");
+      return;
+    }
+
+    try {
+      const shiftResponse = await getAPI(`/master-define-shift-year/${schoolId}/year/${selectedYear}`);
+      if (!shiftResponse.hasError) {
+        const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
+        setShifts(shiftArray);
+      } else {
+        toast.error(shiftResponse.message || 'Failed to fetch shifts.');
+        setShifts([]);
+      }
+    } catch (error) {
+      toast.error('Error fetching shifts.');
+      console.error('Fetch Error:', error);
+    }
+    setShowImportModal(true);
+  };
 
   const handleImportSuccess = async () => {
     try {
-      const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+      const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${selectedYear}`, {}, true);
       setRequests(response?.data?.data || []);
     } catch (error) {
       toast.error('Error refreshing class and section data.');
@@ -136,6 +177,21 @@ const ClassAndSection = () => {
       <div className="container-fluid">
         <div className="row">
           <div className="col-xl-12">
+            <div className="d-flex justify-content-end mb-2 gap-2">
+              <button
+                className="btn btn-sm btn-primary"
+                onClick={handleOpenImportModal} 
+              >
+                Import
+              </button>
+              <button
+                className="btn btn-sm btn-secondary"
+                onClick={handleExport}
+              >
+                Export
+              </button>
+            </div>
+
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">All Class & Section</h4>
@@ -146,24 +202,27 @@ const ClassAndSection = () => {
                   Create Class & Section
                 </Link>
                 <div className="text-end">
-                     <button
-                    className="btn btn-sm btn-outline-light me-2"
-                    onClick={() => setShowImportModal(true)}
+                  <select
+                    className="form-select"
+                    value={selectedYear}
+                    onChange={(e) => {
+                      setSelectedYear(e.target.value);
+                      localStorage.setItem("selectedAcademicYear", e.target.value);
+                    }}
+                    disabled={loadingYears}
                   >
-                    Import
-                  </button>
-                  <button
-                    className="btn btn-sm btn-outline-success"
-                    onClick={handleExport}
-                  >
-                    Export
-                  </button>
-               
+                    <option value="" disabled>Select Year</option>
+                    {academicYears.map((year) => (
+                      <option key={year._id} value={year.academicYear}>
+                        {year.academicYear}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered text-center">
+                <table className="table align-middle mb-0 table-centered text-center">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th style={{ width: 20 }}>

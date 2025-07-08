@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
 import { toast } from 'react-toastify';
+import { generateTCPDF } from "./generateStudentPDF";
 
 
 const UpdateTCForm = () => {
@@ -103,12 +104,21 @@ const UpdateTCForm = () => {
         transactionNumber: student.transactionNumber || '',
         receiptNumber: student.receiptNumber || '',
         certificateNumber: student.certificateNumber || '',
+          chequeNumber: student. chequeNumber ||'',
+        bankName: student.bankName ||''
       });
     }
   }, [student]);
 
   
-
+const handleDownloadPDF = async () => {
+    try {
+      await generateTCPDF(formData, student, classes, schoolId);
+      toast.success("TC PDF downloaded successfully.");
+    } catch (error) {
+      toast.error("Failed to generate PDF. Please try again.");
+    }
+  };
 
   return (
     <div className="container">
@@ -117,10 +127,17 @@ const UpdateTCForm = () => {
           <div className="card m-2">
             <div className="card-body custom-heading-padding">
               <div className="container">
-                <div className="card-header mb-2">
+               <div className="card-header mb-2 d-flex justify-content-between align-items-center">
                   <h4 className="card-title text-center custom-heading-font">
-                    Transfer Certificate Form
+                    View Transfer Certificate Form
                   </h4>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleDownloadPDF}
+                    title="Download TC Form as PDF"
+                  >
+                    Download PDF
+                  </button>
                 </div>
               </div>
               <form onSubmit={""}>

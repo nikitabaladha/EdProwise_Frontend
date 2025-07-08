@@ -2,7 +2,31 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 
+const excelSerialToDate = (serial) => {
+  if (typeof serial !== 'number' || isNaN(serial) || serial < 1) {
+    return null; 
+  }
+  const excelEpoch = new Date(1900, 0, 1); 
+  const daysSinceEpoch = serial - 1; 
+  const date = new Date(excelEpoch.getTime() + daysSinceEpoch * 24 * 60 * 60 * 1000);
+  if (serial <= 60) {
+    date.setDate(date.getDate() - 1); 
+  }
+  return date;
+};
+
 const PreviewModal = ({ show, onClose, previewData, validatedData, classes, feesTypes }) => {
+  const formatDate = (dueDate) => {
+    if (typeof dueDate === 'number') {
+      const parsedDate = excelSerialToDate(dueDate);
+      if (parsedDate && !isNaN(parsedDate.getTime())) {
+        return parsedDate.toISOString().split('T')[0]; 
+      }
+      return 'Invalid Date';
+    }
+    return String(dueDate || '-');
+  };
+
   return (
     <>
       <style>
@@ -92,16 +116,19 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, classes, fees
                       if (vdSections.join(',') !== rowSections.join(',')) {
                         return false;
                       }
-                      return vd.installments.some((inst) =>
-                        inst.name.toLowerCase() === String(row.InstallmentName).trim().toLowerCase() &&
-                        inst.dueDate === String(row.DueDate).trim() &&
-                        inst.fees.some(
-                          (fee) =>
-                            fee.amount === Number(row.Amount) &&
-                            feesTypes.find((ft) => ft._id === fee.feesTypeId)?.feesTypeName.toLowerCase() ===
-                              String(row.FeesTypeName).trim().toLowerCase()
-                        )
-                      );
+                      return vd.installments.some((inst) => {
+                        const rowDueDate = formatDate(row.DueDate);
+                        return (
+                          inst.name.toLowerCase() === String(row.InstallmentName).trim().toLowerCase() &&
+                          inst.dueDate === rowDueDate &&
+                          inst.fees.some(
+                            (fee) =>
+                              fee.amount === Number(row.Amount) &&
+                              feesTypes.find((ft) => ft._id === fee.feesTypeId)?.feesTypeName.toLowerCase() ===
+                                String(row.FeesTypeName).trim().toLowerCase()
+                          )
+                        );
+                      });
                     });
                     return (
                       <tr key={index}>
@@ -109,7 +136,7 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, classes, fees
                         <td>{row.Class || '-'}</td>
                         <td>{row.Sections || '-'}</td>
                         <td>{row.InstallmentName || '-'}</td>
-                        <td>{row.DueDate || '-'}</td>
+                        <td>{formatDate(row.DueDate)}</td>
                         <td>{row.FeesTypeName || '-'}</td>
                         <td>{row.Amount || '-'}</td>
                         <td style={{ color: isValid ? 'green' : 'red' }}>

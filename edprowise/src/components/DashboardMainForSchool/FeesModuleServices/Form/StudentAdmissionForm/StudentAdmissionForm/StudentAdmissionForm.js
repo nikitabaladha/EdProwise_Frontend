@@ -25,10 +25,10 @@ const StudentAdmissionForm = () => {
   const [concessionAmount, setConcessionAmount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
   const [admissionFees, setAdmissionFees] = useState(0);
-  const academicYear = localStorage.getItem('selectedAcademicYear'); 
+  const academicYear = localStorage.getItem('selectedAcademicYear');
 
   const [formData, setFormData] = useState({
-    academicYear:academicYear,
+    academicYear: academicYear,
     studentPhoto: null,
     registrationNumber: '',
     firstName: '',
@@ -43,9 +43,9 @@ const StudentAdmissionForm = () => {
     section: '',
     masterDefineShift: '',
     currentAddress: '',
-    country: '', 
-    state: '',  
-    city: '', 
+    country: '',
+    state: '',
+    city: '',
     pincode: '',
     parentContactNumber: '',
     motherTongue: '',
@@ -120,27 +120,24 @@ const StudentAdmissionForm = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-        try {
-            if (!schoolId) return;
-            const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
-            setClasses(response?.data?.data || []);
-        } catch (error) {
-            toast.error('Error fetching class and section data.');
-        }
+      try {
+        if (!schoolId) return;
+        const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
+        setClasses(response?.data?.data || []);
+      } catch (error) {
+        toast.error('Error fetching class and section data.');
+      }
     };
 
     fetchData();
-}, [schoolId]);
-
-
-
+  }, [schoolId]);
 
   useEffect(() => {
     if (!schoolId) return;
 
     const fetchShifts = async () => {
       try {
-        const response = await getAPI(`/master-define-shift/${schoolId}`);
+        const response = await getAPI(`/master-define-shift-year/${schoolId}/year/${academicYear}`);
         if (!response.hasError) {
           const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
           setShifts(shiftArray);
@@ -159,12 +156,12 @@ const StudentAdmissionForm = () => {
   const fetchClassRelatedFeeTypes = async (classId, sectionId) => {
     try {
       if (!schoolId || !classId || !sectionId) return;
-      
+
       const response = await getAPI(`/get-one-time-feesBysectionIds/${schoolId}/${classId}/${sectionId}/${academicYear}`, {}, true);
       if (response?.data?.data) {
         setOneTimeFeesList(response.data.data);
-        
-        const feeTypes = response.data.data.flatMap(feeItem => 
+
+        const feeTypes = response.data.data.flatMap(feeItem =>
           feeItem.oneTimeFees.map(fee => ({
             id: fee.feesTypeId._id,
             name: fee.feesTypeId.feesTypeName,
@@ -188,7 +185,7 @@ const StudentAdmissionForm = () => {
   const handleFeeTypeChange = (e) => {
     const feeTypeId = e.target.value;
     setSelectedFeeType(feeTypeId);
-    
+
     const selectedFee = availableFeeTypes.find(fee => fee.id === feeTypeId);
     if (selectedFee) {
       setAdmissionFees(selectedFee.amount);
@@ -198,7 +195,7 @@ const StudentAdmissionForm = () => {
       setFinalAmount(0);
     }
   };
-  
+
   const handleConcessionChange = (e) => {
     const concession = Number(e.target.value);
     setConcessionAmount(concession);
@@ -208,16 +205,16 @@ const StudentAdmissionForm = () => {
   const handleClassChange = (e) => {
     const classId = e.target.value;
     const selectedClass = classes.find(c => c._id === classId);
-  
+
     let filteredSections = selectedClass?.sections || [];
     if (formData.masterDefineShift) {
       filteredSections = filteredSections.filter(
         section => section.shiftId === formData.masterDefineShift
       );
     }
-  
+
     setSections(filteredSections);
-  
+
     setFormData({
       ...formData,
       masterDefineClass: classId,
@@ -227,7 +224,7 @@ const StudentAdmissionForm = () => {
 
   const handleShiftChange = (e) => {
     const shiftId = e.target.value;
-    
+
     if (formData.masterDefineClass) {
       const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
       const filteredSections = selectedClass?.sections.filter(
@@ -235,11 +232,11 @@ const StudentAdmissionForm = () => {
       ) || [];
       setSections(filteredSections);
     }
-  
+
     setFormData({
       ...formData,
       masterDefineShift: shiftId,
-      section: '' 
+      section: ''
     });
   };
   useEffect(() => {
@@ -249,7 +246,7 @@ const StudentAdmissionForm = () => {
         section => section.shiftId === formData.masterDefineShift
       ) || [];
       setSections(filteredSections);
-      
+
       if (formData.section && !filteredSections.some(s => s._id === formData.section)) {
         setFormData(prev => ({ ...prev, section: '' }));
       }
@@ -335,41 +332,53 @@ const StudentAdmissionForm = () => {
     }
     if (student) {
       setSelectedStudent(student);
-     
+
       setFormData(prev => ({
         ...prev,
         studentPhoto: student.studentPhoto || null,
-        firstName: student.firstName,
-        middleName: student.middleName,
-        lastName: student.lastName,
+        registrationNumber: student.registrationNumber || '',
+        firstName: student.firstName || '',
+        middleName: student.middleName || '',
+        lastName: student.lastName || '',
         dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
-        nationality: student.nationality,
-        gender: student.gender,
+        age: student.age || '',
+        nationality: student.nationality || '',
+        gender: student.gender || '',
+        bloodGroup: student.bloodGroup || '',
         masterDefineClass: student?.masterDefineClass?._id || student?.masterDefineClass || '',
         masterDefineShift: student?.masterDefineShift?._id || student?.masterDefineShift || '',
-        currentAddress: student.currentAddress||'',
-        country: student?.country||'', 
-        state:student?.state|| '',  
-        city:student?.city|| '', 
-        pincode: student.pincode||'',
+        currentAddress: student.currentAddress || '',
+        country: student?.country || '',
+        state: student?.state || '',
+        city: student?.city || '',
+        pincode: student.pincode || '',
         parentContactNumber: student.fatherContactNo || student.motherContactNo || '',
+        motherTongue: student.motherTongue || '',
         previousSchoolName: student.previousSchoolName || '',
-        addressOfPreviousSchool: student.addressOfpreviousSchool || '',
+        addressOfPreviousSchool: student.addressOfPreviousSchool || '',
         previousSchoolBoard: student.previousSchoolBoard || '',
         previousSchoolResult: student?.previousSchoolResult || null,
         tcCertificate: student?.tcCertificate || null,
-        aadharPassportNumber: student.aadharPassportNumber,
-        castCertificate: student?.castCertificate || null,
+        proofOfResidence: student?.proofOfResidence || null,
+        aadharPassportNumber: student.aadharPassportNumber || '',
         aadharPassportFile: student.aadharPassportFile || null,
-        studentCategory: student.studentCategory,
-        siblingInfoChecked: false,
-        relationType: null,
-        fatherName: student.fatherName,
-        fatherContactNo: student.fatherContactNo,
-        motherName: student.motherName,
-        motherContactNo: student.motherContactNo,
-        name: student.name,
-        paymentMode: student.paymentMode,
+        studentCategory: student.studentCategory || '',
+        castCertificate: student?.castCertificate || null,
+        siblingInfoChecked: student.siblingInfoChecked || false,
+        relationType: student.relationType || null,
+        siblingName: student.siblingName || '',
+        idCardFile: student.idCardFile || null,
+        parentalStatus: student.parentalStatus || 'Parents',
+        fatherName: student.fatherName || '',
+        fatherContactNo: student.fatherContactNo || '',
+        fatherQualification: student.fatherQualification || '',
+        fatherProfession: student.fatherProfession || '',
+        motherName: student.motherName || '',
+        motherContactNo: student.motherContactNo || '',
+        motherQualification: student.motherQualification || '',
+        motherProfession: student.motherProfession || '',
+        agreementChecked: student.agreementChecked || false,
+        name: student.name || ''
       }));
 
       if (student?.masterDefineClass?._id || student?.masterDefineClass) {
@@ -377,13 +386,13 @@ const StudentAdmissionForm = () => {
         const selectedClass = classes.find(c => c._id === classId);
         setSections(selectedClass?.sections || []);
       }
-  
+
     }
 
     setShowFullForm(true);
   };
 
-  
+
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -438,7 +447,7 @@ const StudentAdmissionForm = () => {
     const formDataObj = new FormData();
 
     const fileFields = [
-       'studentPhoto',
+      'studentPhoto',
       'previousSchoolResult',
       'tcCertificate',
       'proofOfResidence',
@@ -480,13 +489,13 @@ const StudentAdmissionForm = () => {
         toast.success('Admission Form Submitted successfully');
         const studentData = response.data?.student || response.student;
 
-        const selectedClass = classes.find(c => c._id === response.data.admission.masterDefineClass);
-        
+       const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
+
         navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
           state: {
             student: response.data?.admission,
             className: selectedClass?.className || '',
-            sectionName: sections.find(s => s._id === formData.section)?.name|| '',
+            sectionName: sections.find(s => s._id === formData.section)?.name || '',
             feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || ''
           },
         });
@@ -510,86 +519,86 @@ const StudentAdmissionForm = () => {
   }));
   const stateOptions = formData.country && countryData[formData.country]
     ? Object.keys(countryData[formData.country]).map(state => ({
-        value: state,
-        label: state
-      }))
+      value: state,
+      label: state
+    }))
     : [];
-  
+
   const cityOptions = formData.state && formData.country && countryData[formData.country]?.[formData.state]
     ? countryData[formData.country][formData.state].map(city => ({
-        value: city,
-        label: city
-      }))
+      value: city,
+      label: city
+    }))
     : [];
-  
-  
-    const handleCountryChange = (selectedOption, actionMeta) => {
-      if (actionMeta.action === 'create-option') {
-        setFormData(prev => ({
-          ...prev,
-          country: selectedOption.value,
-          state: '',
-          city: '' 
-        }));
-      } else if (actionMeta.action === 'select-option') {
-   
-        setFormData(prev => ({
-          ...prev,
-          country: selectedOption ? selectedOption.value : '',
-          state: '', 
-          city: ''   
-        }));
-      } else if (actionMeta.action === 'clear') {
-     
-        setFormData(prev => ({
-          ...prev,
-          country: '',
-          state: '',
-          city: ''
-        }));
-      }
-    };
-    
-    const handleStateChange = (selectedOption, actionMeta) => {
-      if (actionMeta.action === 'create-option') {
-        setFormData(prev => ({
-          ...prev,
-          state: selectedOption.value,
-          city: '' 
-        }));
-      } else if (actionMeta.action === 'select-option') {
-        setFormData(prev => ({
-          ...prev,
-          state: selectedOption ? selectedOption.value : '',
-          city: '' 
-        }));
-      } else if (actionMeta.action === 'clear') {
-        setFormData(prev => ({
-          ...prev,
-          state: '',
-          city: ''
-        }));
-      }
-    };
-    
-    const handleCityChange = (selectedOption, actionMeta) => {
-      if (actionMeta.action === 'create-option') {
-        setFormData(prev => ({
-          ...prev,
-          city: selectedOption.value
-        }));
-      } else if (actionMeta.action === 'select-option') {
-        setFormData(prev => ({
-          ...prev,
-          city: selectedOption ? selectedOption.value : ''
-        }));
-      } else if (actionMeta.action === 'clear') {
-        setFormData(prev => ({
-          ...prev,
-          city: ''
-        }));
-      }
-    };
+
+
+  const handleCountryChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === 'create-option') {
+      setFormData(prev => ({
+        ...prev,
+        country: selectedOption.value,
+        state: '',
+        city: ''
+      }));
+    } else if (actionMeta.action === 'select-option') {
+
+      setFormData(prev => ({
+        ...prev,
+        country: selectedOption ? selectedOption.value : '',
+        state: '',
+        city: ''
+      }));
+    } else if (actionMeta.action === 'clear') {
+
+      setFormData(prev => ({
+        ...prev,
+        country: '',
+        state: '',
+        city: ''
+      }));
+    }
+  };
+
+  const handleStateChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === 'create-option') {
+      setFormData(prev => ({
+        ...prev,
+        state: selectedOption.value,
+        city: ''
+      }));
+    } else if (actionMeta.action === 'select-option') {
+      setFormData(prev => ({
+        ...prev,
+        state: selectedOption ? selectedOption.value : '',
+        city: ''
+      }));
+    } else if (actionMeta.action === 'clear') {
+      setFormData(prev => ({
+        ...prev,
+        state: '',
+        city: ''
+      }));
+    }
+  };
+
+  const handleCityChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === 'create-option') {
+      setFormData(prev => ({
+        ...prev,
+        city: selectedOption.value
+      }));
+    } else if (actionMeta.action === 'select-option') {
+      setFormData(prev => ({
+        ...prev,
+        city: selectedOption ? selectedOption.value : ''
+      }));
+    } else if (actionMeta.action === 'clear') {
+      setFormData(prev => ({
+        ...prev,
+        city: ''
+      }));
+    }
+  };
 
   const isNurseryClass = (classId) => {
     const selectedClass = classes.find(c => c._id === classId);
@@ -656,7 +665,7 @@ const StudentAdmissionForm = () => {
                 handleCountryChange={handleCountryChange}
                 handleStateChange={handleStateChange}
                 handleCityChange={handleCityChange}
-              
+
               />
             </div>
           </div>

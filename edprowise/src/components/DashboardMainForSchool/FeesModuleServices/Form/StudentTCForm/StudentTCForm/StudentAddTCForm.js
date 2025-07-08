@@ -95,7 +95,7 @@ const StudentAddTCForm = () => {
     const fetchData = async () => {
       try {
         if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClasses(response?.data?.data || []);
       } catch (error) {
         toast.error('Error fetching class and section data.');

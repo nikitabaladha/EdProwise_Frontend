@@ -18,24 +18,45 @@ const SchoolShifts = () => {
   const [shifts, setShifts] = useState([]);
   const [schoolId, setSchoolId] = useState(null);
 
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+   useEffect(() => {
+      const fetchAcademicYears = async () => {
+        try {
+          setLoadingYears(true);
+          const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+          const schoolId = userDetails?.schoolId; 
+          const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+          setAcademicYears(response.data.data || []);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setLoadingYears(false);
+        }
+      };
+  
+      fetchAcademicYears();
+    }, []);
+
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
-
     if (!id) {
       toast.error("School ID not found. Please log in again.");
       return;
     }
-
     setSchoolId(id);
   }, []);
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchShifts = async () => {
       try {
-        const response = await getAPI(`/master-define-shift/${schoolId}`);
+        const response = await getAPI(`/master-define-shift-year/${schoolId}/year/${selectedYear}`);
         console.log("Fetched Shifts:", response);
         if (!response.hasError) {
           const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
@@ -50,7 +71,7 @@ const SchoolShifts = () => {
     };
 
     fetchShifts();
-  }, [schoolId]);
+  }, [schoolId,selectedYear]);
 
 
   const indexOfLastRequest = currentPage * requestPerPage;
@@ -120,10 +141,29 @@ const SchoolShifts = () => {
                 >
                   Add Shift
                 </Link>
+                  <div className="d-flex align-items-center gap-2">
+                 <select
+                    className="form-select form-select-sm w-auto"
+                    value={selectedYear}
+                    onChange={(e) => {
+                      setSelectedYear(e.target.value);
+                      localStorage.setItem("selectedAcademicYear", e.target.value);
+                    }}
+                    disabled={loadingYears}
+                  >
+                    <option value="" disabled>Select Year</option>
+                    {academicYears.map((year) => (
+                      <option key={year._id} value={year.academicYear}>
+                        {year.academicYear}
+                      </option>
+                    ))}
+
+                  </select>
+                </div>
               </div>
 
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered text-center">
+                <table className="table align-middle mb-0  table-centered text-center">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th style={{ width: 20 }}>

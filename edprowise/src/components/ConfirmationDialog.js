@@ -159,6 +159,12 @@ const DELETE_CONFIG = {
   errorMessage: "Failed to delete board exam fees.",
   idKey: "_id",
 },
+promotion:{
+    getEndpoint: (id) => `/delete-promotion/${id}`,
+  successMessage: "Student promotion successfully deleted!",
+  errorMessage: "Failed to delete Student promotion .",
+  idKey: "_id",
+}
 
 };
 

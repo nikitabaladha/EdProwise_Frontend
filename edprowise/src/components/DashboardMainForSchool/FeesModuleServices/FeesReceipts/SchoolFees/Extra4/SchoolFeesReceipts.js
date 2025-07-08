@@ -1,0 +1,899 @@
+import React, { useState } from 'react';
+import useSchoolFeesReceipts from '../SchoolFees/SchoolFeesReceiptsdata';
+import SchoolFeesExcelSheetModal from './SchoolFeesExcelSheetModal';
+import FeeTypeModal from './FeeTypeModal';
+import { useNavigate } from 'react-router-dom';
+import { FaEye } from "react-icons/fa";
+
+const SchoolFeesReceipts = () => {
+  const {
+    formData,
+    handleChange,
+    handleAdmissionSubmit,
+    existingStudents,
+    classes,
+    sections,
+    feeData,
+    initialFeeData,
+    selectedAcademicYears,
+    selectAllYears,
+    selectAllInstallments,
+    setCurrentInstallment,
+    selectedInstallments,
+    getFeeTypeName,
+    handleInstallmentSelection,
+    handleSelectAllInstallments,
+    handleFinalSubmit,
+    isGenerating,
+    showFullForm,
+    showSecondTable,
+    setShowSecondTable,
+    showProcessedData,
+    setShowProcessedData,
+    selectedFeeTypesByInstallment,
+    paidAmounts,
+    handleAcademicYearSelect,
+    handleSelectAllYears,
+    schoolId,
+    feeTypes,
+    actionSelections,
+    handleActionSelection,
+    modalData,
+    openFeeTypeModal,
+    handleModalPaidAmountChange,
+    closeFeeTypeModal,
+    handleFineAmountChange,
+  } = useSchoolFeesReceipts();
+  const navigate = useNavigate();
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [visibleReceipts, setVisibleReceipts] = useState({});
+
+  const handleViewReceipt = (receipt) => {
+    navigate('/school-dashboard/fees-module/fees-receipts/school-fees/student-receipts', {
+      state: [receipt],
+    });
+  };
+
+  const toggleReceiptsTable = (academicYear, installmentName) => {
+    const key = `${academicYear}-${installmentName}`;
+    setVisibleReceipts((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const handleInstallmentCheckbox = (installmentName, academicYear) => {
+    handleInstallmentSelection(installmentName, academicYear);
+  };
+
+  const formatAcademicYear = (year) => {
+    const [start, end] = year.split("-");
+    return `${start}-${end.slice(2)}`;
+  };
+
+  if (!showFullForm) {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-xl-12">
+            <div className="card m-2">
+              <div className="card-body custom-heading-padding">
+                <div className="container">
+                  <div className="card-header">
+                    <div className="row align-items-center">
+                      <div className="col-4"></div>
+                      <div className="col-4 text-center">
+                        <h4 className="card-title custom-heading-font mb-0">School Fees</h4>
+                      </div>
+                      <div className="col-4 d-flex justify-content-end gap-2">
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() => setShowImportModal(true)}
+                        >
+                          Import
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary custom-submit-button"
+                          onClick={() => navigate('/school-dashboard/fees-module/fees-receipts/school-fees/fees-receipts')}
+                        >
+                          Fee Receipts
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <form onSubmit={handleAdmissionSubmit}>
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="AdmissionNumber" className="form-label">
+                          Enter Admission Number
+                        </label>
+                        <div className="input-group">
+                          <input
+                            type="text"
+                            id="AdmissionNumber"
+                            name="AdmissionNumber"
+                            className="form-control"
+                            list="AdmissionNumbers"
+                            value={formData.AdmissionNumber}
+                            onChange={handleChange}
+                            required
+                            placeholder="Search or select admission number"
+                          />
+                        </div>
+                        <datalist id="AdmissionNumbers">
+                          {existingStudents.map((student, index) => (
+                            <option key={index} value={student.AdmissionNumber}>
+                              {student.AdmissionNumber} - {student.firstName} {student.lastName}
+                            </option>
+                          ))}
+                        </datalist>
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mt-3 d-flex justify-content-between">
+                        <button type="submit" className="btn btn-primary custom-submit-button">
+                          Submit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <SchoolFeesExcelSheetModal
+          show={showImportModal}
+          onClose={() => setShowImportModal(false)}
+          schoolId={schoolId}
+          existingStudents={existingStudents}
+          classes={classes}
+          feeTypes={feeTypes}
+          handleFinalSubmit={handleFinalSubmit}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-xl-12">
+          <div className="card m-2">
+            <div className="card-body">
+              <h4 className="card-title text-center">School Fees Receipts</h4>
+              <form>
+                <>
+                  <div className="row mt-3">
+                    <div className="col-md-3">
+                      <label className="form-label">Admission No.</label>
+                      <p className="form-control">{formData.AdmissionNumber}</p>
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label">Student Name</label>
+                      <p className="form-control">{formData.firstName} {formData.lastName}</p>
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label">Class</label>
+                      <select
+                        id="masterDefineClass"
+                        name="masterDefineClass"
+                        className="form-control"
+                        value={formData.masterDefineClass}
+                        required
+                        disabled
+                      >
+                        <option value="">Select Class</option>
+                        {classes.map((classItem) => (
+                          <option key={classItem._id} value={classItem._id}>
+                            {classItem.className}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label">Section</label>
+                      <select
+                        id="section"
+                        name="section"
+                        className="form-control"
+                        value={formData.section}
+                        onChange={handleChange}
+                        required
+                        disabled
+                      >
+                        <option value="">Select Section</option>
+                        {sections.map((section) => (
+                          <option key={section._id} value={section._id}>
+                            {section.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <hr />
+                  <div className="table-responsive mt-3">
+                    <table className="table align-middle mb-0 table-centered text-center text-nowrap">
+                      <thead>
+                        <tr style={{ backgroundColor: '#a8fffe' }}>
+                          <th>
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              checked={selectAllYears}
+                              onChange={handleSelectAllYears}
+                            />
+                          </th>
+                          <th>Academic Year</th>
+                          <th>Remaining Installments</th>
+                          <th>Fees Amount</th>
+                          <th>Concession</th>
+                          <th>Paid Fees</th>
+                          <th>Balance</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Array.isArray(initialFeeData) && initialFeeData.length > 0 ? (
+                          initialFeeData.map((yearData, index) => {
+                            const hasUnpaidInstallments = yearData.feeInstallments?.some(
+                              (item) => item.balanceAmount > 0
+                            );
+
+                            if (!hasUnpaidInstallments) return null;
+
+                            const isYearSelected = selectedAcademicYears.includes(yearData.academicYear);
+
+                            return (
+                              <tr
+                                key={index}
+                                className={isYearSelected ? 'table-primary' : ''}
+                                style={{ cursor: 'pointer' }}
+                              >
+                                <td style={{ backgroundColor: "white" }}>
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    checked={selectAllYears || isYearSelected}
+                                    onChange={() => handleAcademicYearSelect(yearData.academicYear)}
+                                  />
+                                </td>
+                                <td style={{ backgroundColor: "white" }}>{formatAcademicYear(yearData.academicYear)}</td>
+                                <td style={{ backgroundColor: "white" }}>
+                                  {yearData.installmentsPresent?.filter((instName) => {
+                                    const installmentData = yearData.feeInstallments?.filter(
+                                      (item) => item.installmentName === instName
+                                    );
+                                    return installmentData?.some((item) => item.balanceAmount > 0);
+                                  }).length || 0}
+                                </td>
+                                <td style={{ backgroundColor: "white" }}>{yearData.totals.totalFeesAmount}</td>
+                                <td style={{ backgroundColor: "white" }}>{yearData.totals.totalConcession}</td>
+                                <td style={{ backgroundColor: "white" }}>{yearData.totals.totalPaidAmount}</td>
+                                <td style={{ backgroundColor: "white" }}>{yearData.totals.totalRemainingAmount}</td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr>
+                            <td colSpan="6" className="text-center">
+                              {initialFeeData?.message || 'No outstanding fees found for any academic year'}
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="text-end mt-3">
+                    {!showSecondTable && (
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => {
+                          setShowSecondTable(true);
+                          setCurrentInstallment('Installment 1');
+                        }}
+                        disabled={!selectAllYears && selectedAcademicYears.length === 0}
+                      >
+                        Proceed
+                      </button>
+                    )}
+                  </div>
+                </>
+                {showSecondTable && (
+                  <>
+                    <h4 className="card-title text-start mt-3">
+                      Installments {selectAllYears ? '(All Years)' : selectedAcademicYears.length > 0 ? `(${selectedAcademicYears.join(', ')})` : ''}
+                    </h4>
+                    <div className="table-responsive mt-2">
+                      <table className="table align-middle mb-0 table-centered text-center text-nowrap">
+                        <thead className="bg-light-subtle">
+                          <tr style={{ backgroundColor: '#a8fffe' }}>
+                            <th>
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                checked={selectAllInstallments}
+                                onChange={handleSelectAllInstallments}
+                              />
+                            </th>
+                            <th>Academic Year</th>
+                            <th>Installment</th>
+                            <th>Due Date</th>
+                            <th>Fees</th>
+                            <th>Fine</th>
+                            <th>Concession</th>
+                            <th>Total Payable</th>
+                            <th>Amount Paid</th>
+                            <th>Balance Payable</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                            <th>Fees Type</th>
+                            <th>Receipts</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+  {Array.isArray(feeData) && feeData.length > 0 ? (
+    feeData
+      .filter(
+        (year) =>
+          selectAllYears || selectedAcademicYears.includes(year.academicYear)
+      )
+      .flatMap((year) => {
+        if (!Array.isArray(year.installmentsPresent)) return [];
+
+        return year.installmentsPresent.map((installmentName) => {
+          const installmentData = year.feeInstallments?.filter(
+            (item) => item.installmentName === installmentName
+          );
+
+          if (!installmentData?.length || !installmentData.some((item) => item.balanceAmount > 0)) return null;
+
+          // Calculate totals for the installment
+          const totals = installmentData.reduce(
+            (acc, item, index) => {
+              const concessionItem = year.concession?.concessionDetails?.find(
+                (cd) =>
+                  cd.installmentName === item.installmentName &&
+                  cd.feesType === item.feesTypeId._id
+              );
+              const concessionAmount = concessionItem?.concessionAmount || 0;
+              const fineAmount = index === 0 ? item.fineAmount || 0 : 0; // Add fine only once
+              const payableAmount = item.amount - concessionAmount;
+              const paidKey = `${year.academicYear}-${installmentName}-${item.feesTypeId._id}`;
+              const finePaidKey = `${year.academicYear}-${installmentName}-fine`;
+              const excessPaidKey = `${year.academicYear}-${installmentName}-excess`;
+              const currentPaidAmount = paidAmounts[paidKey] !== undefined ? Number(paidAmounts[paidKey] || 0) : 0;
+              const finePaidAmount = index === 0 && paidAmounts[finePaidKey] !== undefined ? Number(paidAmounts[finePaidKey] || 0) : 0;
+              const excessPaidAmount = index === 0 && paidAmounts[excessPaidKey] !== undefined ? Number(paidAmounts[excessPaidKey] || 0) : 0;
+              const balance = item.balanceAmount; // Use balanceAmount directly
+              const amountPaid = currentPaidAmount + finePaidAmount + excessPaidAmount;
+              const remainingAmount = item.amount - concessionAmount - item.balanceAmount;
+
+              return {
+                totalFeesAmount: acc.totalFeesAmount + item.amount,
+                totalFine: acc.totalFine + fineAmount,
+                totalConcession: acc.totalConcession + concessionAmount,
+                totalPayable: acc.totalPayable + payableAmount + fineAmount,
+                totalPaid: acc.totalPaid + amountPaid,
+                totalBalance: acc.totalBalance + balance + fineAmount,
+                totalPaidAmount: acc.totalPaidAmount + remainingAmount,
+                excessPaidAmount: acc.excessPaidAmount + excessPaidAmount,
+              };
+            },
+            {
+              totalFeesAmount: 0,
+              totalFine: 0,
+              totalConcession: 0,
+              totalPayable: 0,
+              totalPaid: 0,
+              totalBalance: 0,
+              totalPaidAmount: 0,
+              excessPaidAmount: 0,
+            }
+          );
+
+          const isInstallmentSelected = selectedInstallments[year.academicYear]?.includes(installmentName);
+          const receiptsTableKey = `${year.academicYear}-${installmentName}`;
+          const showReceiptsTable = visibleReceipts[receiptsTableKey];
+
+          return (
+            <React.Fragment key={`${year.academicYear}-${installmentName}`}>
+              <tr>
+                <td>
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    checked={isInstallmentSelected}
+                    onChange={() => handleInstallmentCheckbox(installmentName, year.academicYear)}
+                  />
+                </td>
+                <td>{formatAcademicYear(year.academicYear)}</td>
+                <td>{installmentName}</td>
+                <td>{new Date(installmentData[0].dueDate).toLocaleDateString()}</td>
+                <td>{totals.totalFeesAmount}</td>
+                <td>
+                  <input
+                    // type="number"
+                    className="form-control form-control-sm"
+                    value={installmentData[0]?.fineAmount || 0}
+                    onChange={(e) => handleFineAmountChange(installmentName, null, e.target.value, year.academicYear)}
+                    min="0"
+                    style={{ width: '60px', border: '1px solid #f2be00', textAlign: 'right', fontSize: '1.2rem' }}
+                  />
+                </td>
+                <td>{totals.totalConcession}</td>
+                <td>{totals.totalPayable}</td>
+                <td>{totals.totalPaidAmount}</td>
+                <td>{totals.totalBalance}</td>
+                <td>{totals.totalPaid}</td>
+                <td>
+                  <select
+                    style={{ width: '120px', border: '1px solid #f2be00', fontSize: '1.0rem' }}
+                    className="form-select form-control-sm"
+                    value={actionSelections[`${year.academicYear}-${installmentName}`] || ''}
+                    onChange={(e) =>
+                      handleActionSelection(installmentName, year.academicYear, e.target.value)
+                    }
+                  >
+                    <option value="">Select Fees</option>
+                    <option value="Part Fees">Part Fees</option>
+                    <option value="Full Fees">Full Fees</option>
+                  </select>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-primary"
+                    onClick={() => openFeeTypeModal(installmentName, year.academicYear)}
+                  >
+                    <FaEye />
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-primary"
+                    onClick={() => toggleReceiptsTable(year.academicYear, installmentName)}
+                  >
+                    <FaEye />
+                  </button>
+                </td>
+              </tr>
+            
+              {showReceiptsTable && year.paidInstallments && year.paidInstallments.length > 0 && (() => {
+                const filteredInstallments = year.paidInstallments.filter(
+                  (item) => item.installmentName === installmentName
+                );
+
+                if (filteredInstallments.length === 0) return null;
+
+                let totalFeesAmount = 0;
+                let totalFine = 0;
+                let totalConcession = 0;
+                let totalPayable = 0;
+                let totalPaid = 0;
+                let totalBalance = 0;
+
+                const groupedByReceipt = filteredInstallments.reduce((acc, item) => {
+                  const receiptNumber = item.receiptNumber?.toString() || '';
+                  if (!receiptNumber) return acc;
+
+                  if (!acc[receiptNumber]) {
+                    acc[receiptNumber] = {
+                      items: [],
+                      paymentDate: item.paymentDate,
+                      collectorName: item.collectorName,
+                      paymentMode: item.paymentMode,
+                      transactionNumber: item.transactionNumber || '',
+                      bankName: item.bankName || '',
+                    };
+                  }
+
+                  const concessionItem = year.concession?.concessionDetails?.find(
+                    (cd) =>
+                      cd.installmentName === item.installmentName &&
+                      cd.feesType === item.feesTypeId?._id
+                  );
+                  const concessionAmount = concessionItem?.concessionAmount || 0;
+                  const fineAmount = item.fineAmount || 0;
+                  const feesAmount = item.amount || 0;
+                  const payableAmount = feesAmount - concessionAmount + fineAmount;
+                  const paidAmount = item.paidAmount || 0;
+                  const balance = item.balance || 0;
+
+                  totalFeesAmount += feesAmount;
+                  totalFine += fineAmount;
+                  totalConcession += concessionAmount;
+                  totalPayable += payableAmount;
+                  totalPaid += paidAmount;
+                  totalBalance += balance;
+
+                  acc[receiptNumber].items.push({
+                    feesType: getFeeTypeName(item.feesTypeId?._id) || 'Unknown Fee Type',
+                    feesAmount,
+                    fineAmount,
+                    concessionAmount,
+                    payableAmount,
+                    paidAmount,
+                    balance,
+                  });
+
+                  return acc;
+                }, {});
+
+                const sortedReceiptNumbers = Object.keys(groupedByReceipt).sort((a, b) => {
+                  const numA = parseFloat(a);
+                  const numB = parseFloat(b);
+                  if (!isNaN(numA) && !isNaN(numB)) {
+                    return numA - numB;
+                  }
+                  return a.localeCompare(b);
+                });
+
+                const receiptData = (receiptNumber, group) => ({
+                  receiptNumber,
+                  studentName: `${formData.firstName} ${formData.lastName}`,
+                  studentAdmissionNumber: formData.AdmissionNumber,
+                  date: group.paymentDate ? new Date(group.paymentDate).toLocaleDateString() : '',
+                  academicYear: year.academicYear,
+                  className: classes.find(c => c._id === formData.masterDefineClass)?.className || '',
+                  section: sections.find(s => s._id === formData.section)?.name || '',
+                  paymentMode: group.paymentMode || '',
+                  transactionNumber: group.transactionNumber || '',
+                  bankName: group.bankName || '',
+                  paymentDate: group.paymentDate ? new Date(group.paymentDate).toLocaleDateString() : '',
+                  collectorName: group.collectorName || '',
+                  installments: [
+                    {
+                      number: parseInt(installmentName.split(' ')[1] || 0),
+                      installmentName,
+                      feeItems: group.items.map(item => ({
+                        type: item.feesType,
+                        amount: item.feesAmount,
+                        concession: item.concessionAmount,
+                        fineAmount: item.fineAmount,
+                        payable: item.payableAmount,
+                        paid: item.paidAmount,
+                        balance: item.balance,
+                      })),
+                    },
+                  ],
+                });
+
+                return (
+                  <tr>
+                    <td colSpan="13">
+                      <div className="mt-2">
+                        <h6 className="text-start">
+                          Paid Fee Types for {installmentName}
+                        </h6>
+                        <table className="table table-bordered table-sm">
+                          <thead className="bg-light">
+                            <tr>
+                              <th>Receipt Number</th>
+                              <th>Type of Fees</th>
+                              <th>Fees Amount</th>
+                              <th>Fine</th>
+                              <th>Concession</th>
+                              <th>Fees Payable</th>
+                              <th>Paid Amount</th>
+                              <th>Balance</th>
+                              <th>Payment Date</th>
+                              <th>Collector Name</th>
+                              <th>Payment Mode</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {sortedReceiptNumbers.map((receiptNumber, index) => {
+                              const group = groupedByReceipt[receiptNumber];
+                              if (!group || !group.items) return null;
+
+                              return (
+                                <React.Fragment key={`${year.academicYear}-${installmentName}-paid-${receiptNumber}`}>
+                                  {group.items.map((item, itemIndex) => (
+                                    <tr key={`${year.academicYear}-${installmentName}-paid-${receiptNumber}-${itemIndex}`}>
+                                      {itemIndex === 0 && (
+                                        <td rowSpan={group.items.length}>{receiptNumber}</td>
+                                      )}
+                                      <td>{item.feesType}</td>
+                                      <td>{item.feesAmount}</td>
+                                      <td>{item.fineAmount}</td>
+                                      <td>{item.concessionAmount}</td>
+                                      <td>{item.payableAmount}</td>
+                                      <td>{item.paidAmount}</td>
+                                      <td>{item.balance}</td>
+                                      {itemIndex === 0 && (
+                                        <>
+                                          <td rowSpan={group.items.length}>
+                                            {group.paymentDate ? new Date(group.paymentDate).toLocaleDateString() : ''}
+                                          </td>
+                                          <td rowSpan={group.items.length}>{group.collectorName || ''}</td>
+                                          <td rowSpan={group.items.length}>{group.paymentMode || ''}</td>
+                                          <td rowSpan={group.items.length}>
+                                            <button
+                                              type="button"
+                                              className="btn btn-sm btn-primary"
+                                              onClick={() => handleViewReceipt(receiptData(receiptNumber, group))}
+                                            >
+                                              View
+                                            </button>
+                                          </td>
+                                        </>
+                                      )}
+                                    </tr>
+                                  ))}
+                                </React.Fragment>
+                              );
+                            })}
+                            {sortedReceiptNumbers.length > 0 && (
+                              <tr style={{ borderTop: "black" }} className="fw-bold bg-light">
+                                <td colSpan="1" className="text-end">Total</td>
+                                <td></td>
+                                <td>{totalFeesAmount}</td>
+                                <td>{totalFine}</td>
+                                <td>{totalConcession}</td>
+                                <td>{totalPayable}</td>
+                                <td>{totalPaid}</td>
+                                <td>{totalBalance}</td>
+                                <td colSpan="4"></td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })()}
+            </React.Fragment>
+          );
+        }).filter(Boolean);
+      })
+  ) : (
+    <tr>
+      <td colSpan="13" className="text-center">
+        No unpaid installments found
+      </td>
+    </tr>
+  )}
+  {Array.isArray(feeData) && feeData.length > 0 && (
+    <tr style={{ borderColor: "black" }} className="table-info">
+      <td colSpan="4" className="text-end"><strong>Total</strong></td>
+      <td><strong>
+        {feeData
+          .filter((year) => selectAllYears || selectedAcademicYears.includes(year.academicYear))
+          .reduce((sum, year) => {
+            const yearTotal = year.feeInstallments
+              ?.filter((item) => item.balanceAmount > 0)
+              ?.reduce((acc, item) => acc + item.amount, 0) || 0;
+            return sum + yearTotal;
+          }, 0)}
+      </strong></td>
+      <td><strong>
+        {feeData
+          .filter((year) => selectAllYears || selectedAcademicYears.includes(year.academicYear))
+          .reduce((sum, year) => {
+            const yearTotal = year.feeInstallments
+              ?.filter((item) => item.balanceAmount > 0)
+              ?.reduce((acc, item, index) => acc + (index === 0 ? item.fineAmount || 0 : 0), 0) || 0;
+            return sum + yearTotal;
+          }, 0)}
+      </strong></td>
+      <td><strong>
+        {feeData
+          .filter((year) => selectAllYears || selectedAcademicYears.includes(year.academicYear))
+          .reduce((sum, year) => {
+            const yearTotal = year.concession?.concessionDetails
+              ?.reduce((acc, cd) => acc + (cd.concessionAmount || 0), 0) || 0;
+            return sum + yearTotal;
+          }, 0)}
+      </strong></td>
+      <td><strong>
+        {feeData
+          .filter((year) => selectAllYears || selectedAcademicYears.includes(year.academicYear))
+          .reduce((sum, year) => {
+            const yearTotal = year.feeInstallments
+              ?.filter((item) => item.balanceAmount > 0)
+              ?.reduce((acc, item, index) => {
+                const concessionItem = year.concession?.concessionDetails?.find(
+                  (cd) => cd.installmentName === item.installmentName && cd.feesType === item.feesTypeId._id
+                );
+                const concessionAmount = concessionItem?.concessionAmount || 0;
+                const fineAmount = index === 0 ? item.fineAmount || 0 : 0;
+                const payableAmount = item.amount - concessionAmount + fineAmount;
+                return acc + payableAmount;
+              }, 0) || 0;
+            return sum + yearTotal;
+          }, 0)}
+      </strong></td>
+      <td><strong>
+        {feeData
+          .filter((year) => selectAllYears || selectedAcademicYears.includes(year.academicYear))
+          .reduce((sum, year) => {
+            const yearTotal = year.feeInstallments
+              ?.filter((item) => item.balanceAmount > 0)
+              ?.reduce((acc, item) => {
+                const concessionItem = year.concession?.concessionDetails?.find(
+                  (cd) => cd.installmentName === item.installmentName && cd.feesType === item.feesTypeId._id
+                );
+                const concessionAmount = concessionItem?.concessionAmount || 0;
+                const payableAmount = item.amount - concessionAmount;
+                const amountPaid = payableAmount - item.balanceAmount;
+                return acc + amountPaid;
+              }, 0) || 0;
+            return sum + yearTotal;
+          }, 0)}
+      </strong></td>
+      <td><strong>
+        {feeData
+          .filter((year) => selectAllYears || selectedAcademicYears.includes(year.academicYear))
+          .reduce((sum, year) => {
+            const yearTotal = year.feeInstallments
+              ?.filter((item) => item.balanceAmount > 0)
+              ?.reduce((acc, item, index) => {
+                const fineAmount = index === 0 ? item.fineAmount || 0 : 0;
+                return acc + item.balanceAmount + fineAmount;
+              }, 0) || 0;
+            return sum + yearTotal; // Fixed: Use yearTotal instead of fineAmount
+          }, 0)}
+      </strong></td>
+      <td><strong>
+        {feeData
+          .filter((year) => selectAllYears || selectedAcademicYears.includes(year.academicYear))
+          .reduce((sum, year) => {
+            const seenInstallments = new Set();
+            const yearTotal = year.feeInstallments
+              ?.filter((item) => item.balanceAmount > 0)
+              ?.reduce((acc, item, index) => {
+                const installmentKey = item.installmentName;
+                const paidKey = `${year.academicYear}-${item.installmentName}-${item.feesTypeId._id}`;
+                const finePaidKey = `${year.academicYear}-${item.installmentName}-fine`;
+                const excessPaidKey = `${year.academicYear}-${item.installmentName}-excess`;
+                let currentPaidAmount = paidAmounts[paidKey] !== undefined ? Number(paidAmounts[paidKey] || 0) : 0;
+                if (index === 0 && !seenInstallments.has(installmentKey)) {
+                  currentPaidAmount += paidAmounts[finePaidKey] !== undefined ? Number(paidAmounts[finePaidKey] || 0) : 0;
+                  currentPaidAmount += paidAmounts[excessPaidKey] !== undefined ? Number(paidAmounts[excessPaidKey] || 0) : 0;
+                  seenInstallments.add(installmentKey);
+                }
+                return acc + currentPaidAmount;
+              }, 0) || 0;
+            return sum + yearTotal;
+          }, 0)}
+      </strong></td>
+      <td colSpan="3"></td>
+    </tr>
+  )}
+</tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
+                {showSecondTable && (
+                  <div className="text-end my-3">
+                    {!showProcessedData ? (
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => setShowProcessedData(!showProcessedData)}
+                        disabled={
+                          Object.values(selectedInstallments).flat().length === 0 &&
+                          Object.keys(selectedFeeTypesByInstallment).length === 0
+                        }
+                      >
+                        Proceed
+                      </button>
+                    ) : (
+                      <>
+                        <div className="mt-4">
+                          <h4 className="card-title text-start">Payment Details</h4>
+                          <div className="row">
+                            <div className="col-md-6">
+                              <label className="form-label text-start">Payment Mode</label>
+                              <select
+                                name="paymentMode"
+                                className="form-select"
+                                value={formData.paymentMode}
+                                onChange={handleChange}
+                                required
+                              >
+                                <option value="">Select Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Online Transfer">Online Transfer</option>
+                              </select>
+                            </div>
+                            <div className="col-md-6">
+                              <label className="form-label">Collector Name</label>
+                              <input
+                                type="text"
+                                name="name"
+                                className="form-control"
+                                value={formData.name}
+                                onChange={handleChange}
+                                placeholder="Enter Collector Name"
+                                required
+                              />
+                            </div>
+                            {formData.paymentMode === 'Cheque' && (
+                              <>
+                                <div className="col-md-6">
+                                  <label className="form-label">Cheque Number</label>
+                                  <input
+                                    type="text"
+                                    name="chequeNumber"
+                                    className="form-control"
+                                    value={formData.chequeNumber}
+                                    onChange={handleChange}
+                                    placeholder="Enter Cheque Number"
+                                  />
+                                </div>
+                                <div className="col-md-6">
+                                  <label className="form-label">Bank Name</label>
+                                  <input
+                                    type="text"
+                                    name="bankName"
+                                    className="form-control"
+                                    value={formData.bankName}
+                                    onChange={handleChange}
+                                    placeholder="Enter Bank Name"
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-end mt-3">
+                          <button
+                            type="button"
+                            className="btn btn-secondary me-2"
+                            onClick={() => setShowProcessedData(false)}
+                          >
+                            Back
+                          </button>
+                          <button
+                            type="submit"
+                            className="btn btn-primary"
+                            onClick={handleFinalSubmit}
+                            disabled={isGenerating}
+                          >
+                            {isGenerating ? 'Generating...' : 'Generate Receipt'}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <FeeTypeModal
+        show={!!modalData}
+        onClose={closeFeeTypeModal}
+        modalData={modalData}
+        handleModalPaidAmountChange={handleModalPaidAmountChange}
+        feeTypes={feeTypes}
+        getFeeTypeName={getFeeTypeName}
+        actionSelections={actionSelections}
+      />
+      <SchoolFeesExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        existingStudents={existingStudents}
+        classes={classes}
+        feeTypes={feeTypes}
+        handleFinalSubmit={handleFinalSubmit}
+      />
+    </div>
+  );
+};
+
+export default SchoolFeesReceipts;

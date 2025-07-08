@@ -21,7 +21,7 @@ const ImportModal = ({ show, onClose, handleFileChange, handleImportClick, handl
           />
         </div>
         <Button variant="secondary" onClick={handleDownloadDemo}>
-          Download Demo Excel Sheet
+          Download Import Excel Sheet
         </Button>
       </Modal.Body>
       <Modal.Footer>

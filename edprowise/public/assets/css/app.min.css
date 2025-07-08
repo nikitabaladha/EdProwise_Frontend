@@ -101,7 +101,7 @@ input[type="file"]:valid {
 }
 
 .custom-font-size {
-  font-size: 1rem !important;
+  font-size: 1.3rem !important;
 }
 
 .pagination .page-link.pagination-button-border {
@@ -758,6 +758,12 @@ th {
   border-color: inherit;
   border-style: solid;
   border-width: 0;
+
+}
+
+/* changes Made by shantanu */
+th{
+  background-color: #a8fffe !important;
 }
 
 label {
@@ -2942,7 +2948,7 @@ progress {
   --bs-table-bg-state: initial;
   --bs-table-color: var(--bs-body-color);
   --bs-table-bg: transparent;
-  --bs-table-border-color: var(--bs-border-color);
+  /* --bs-table-border-color: var(--bs-border-color); */
   --bs-table-accent-bg: transparent;
   --bs-table-striped-color: var(--bs-body-color);
   --bs-table-striped-bg: rgba(var(--bs-black-rgb), 0.02);
@@ -2953,7 +2959,8 @@ progress {
   width: 100%;
   margin-bottom: 1.5rem;
   vertical-align: top;
-  border-color: var(--bs-table-border-color);
+  /* border-color: var(--bs-table-border-color); */
+    border-color: 1px solid black !important;
 }
 
 .table > :not(caption) > * > * {
@@ -2962,7 +2969,8 @@ progress {
     --bs-table-color-state,
     var(--bs-table-color-type, var(--bs-table-color))
   );
-  background-color: var(--bs-table-bg);
+  /* background-color: var(--bs-table-bg); */
+  /* changes */
   border-bottom-width: var(--bs-border-width);
   -webkit-box-shadow: inset 0 0 0 9999px
     var(--bs-table-bg-state, var(--bs-table-bg-type, var(--bs-table-accent-bg)));
@@ -3180,8 +3188,9 @@ progress {
 
 .form-label {
   margin-bottom: 0.4rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: bold;
+  /* Changes */
   color: var(--bs-body-color);
 }
 
@@ -3217,7 +3226,8 @@ progress {
   display: block;
   width: 100%;
   padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
+  /* changes */
   font-weight: 400;
   line-height: 1.5;
   color: var(--bs-body-color);
@@ -3300,6 +3310,7 @@ progress {
 .form-control:disabled {
   background-color: var(--bs-body-bg);
   opacity: 1;
+  color: black !important;
 }
 
 .form-control::-webkit-file-upload-button {
@@ -19259,8 +19270,9 @@ html[data-bs-theme="dark"] .btn-dark {
 }
 
 .card-title {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: bold;
+  /* chnages */
   margin: 0;
 }
 
@@ -24782,4 +24794,9 @@ p.no-span::after {
     border-radius: 20px;
     margin: 10px !important;
   }
+}
+
+/* custom Css */
+.payroll-input-border {
+  border-color: #f2be00 !important;
 }

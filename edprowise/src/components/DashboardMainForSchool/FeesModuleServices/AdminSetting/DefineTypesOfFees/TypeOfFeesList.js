@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
-import ExcelSheetModal from './ExcelSheetModal'; 
+import ExcelSheetModal from './ExcelSheetModal';
 
 const TypeOfFeesList = () => {
   const navigate = useNavigate();
@@ -13,27 +13,47 @@ const TypeOfFeesList = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [deleteType, setDeleteType] = useState("feesType");
-  const [showImportModal, setShowImportModal] = useState(false); 
-  const [schoolId, setSchoolId] = useState(''); 
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [schoolId, setSchoolId] = useState('');
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
-
     if (!id) {
       toast.error("School ID not found. Please log in again.");
       return;
     }
-
     setSchoolId(id);
   }, []);
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchFeesTypes = async () => {
       try {
-        const data = await getAPI(`/getall-fess-type/${schoolId}`);
+        const data = await getAPI(`/getall-fess-type-year/${schoolId}/year/${selectedYear}`);
         if (!data.hasError && Array.isArray(data.data.data)) {
           setFeesTypes(data.data.data);
         } else {
@@ -46,12 +66,12 @@ const TypeOfFeesList = () => {
     };
 
     fetchFeesTypes();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
 
-  // Handle import success to refresh the fees types list
+
   const handleImportSuccess = async () => {
     try {
-      const data = await getAPI(`/getall-fess-type/${schoolId}`);
+      const data = await getAPI(`/getall-fess-type-year/${schoolId}/year/${selectedYear}`);
       if (!data.hasError && Array.isArray(data.data.data)) {
         setFeesTypes(data.data.data);
       } else {
@@ -107,8 +127,17 @@ const TypeOfFeesList = () => {
   return (
     <>
       <div className="container-fluid">
+
         <div className="row">
           <div className="col-xl-12">
+            <div className="d-flex justify-content-end mb-2 gap-2">
+              <button
+                className="btn btn-sm btn-primary"
+                onClick={() => setShowImportModal(true)}
+              >
+                Import
+              </button>
+            </div>
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">List Of Fees</h4>
@@ -116,22 +145,35 @@ const TypeOfFeesList = () => {
                   Add Type Of Fees
                 </button>
                 <div className="text-end">
-                  <button
-                    className="btn btn-sm btn-outline-light"
-                    onClick={() => setShowImportModal(true)} 
+
+                  <select
+                    className="form-select form-select-sm w-auto"
+                    value={selectedYear}
+                    onChange={(e) => {
+                      setSelectedYear(e.target.value);
+                      localStorage.setItem("selectedAcademicYear", e.target.value);
+                    }}
+                    disabled={loadingYears}
                   >
-                    Import
-                  </button>
+                    <option value="" disabled>Select Year</option>
+                    {academicYears.map((year) => (
+                      <option key={year._id} value={year.academicYear}>
+                        {year.academicYear}
+                      </option>
+                    ))}
+
+                  </select>
                 </div>
               </div>
 
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered text-center">
+                <table className="table align-middle mb-0  table-centered text-center">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th>#</th>
-                      <th>Type Of Fees</th>
-                      <th>Group Of Fees</th>
+                      <th>Type of Fees</th>
+                      <th>Group of Fees</th>
+
                       <th className="text-start">Action</th>
                     </tr>
                   </thead>

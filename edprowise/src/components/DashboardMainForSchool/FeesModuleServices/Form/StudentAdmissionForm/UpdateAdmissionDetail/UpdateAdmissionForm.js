@@ -455,7 +455,7 @@ const UpdateAdmissionForm = () => {
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="previousSchoolName" className="form-label">
-                            Previous School Name<span className="text-danger">*</span>
+                            Previous School Name
                           </label>
                           <input
                             type="text"
@@ -470,7 +470,7 @@ const UpdateAdmissionForm = () => {
                       <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="addressOfPreviousSchool" className="form-label">
-                            Address Of Previous School<span className="text-danger">*</span>
+                            Address Of Previous School
                           </label>
                           <input
                             type="text"
@@ -485,7 +485,7 @@ const UpdateAdmissionForm = () => {
                       <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="previousSchoolBoard" className="form-label">
-                            Previous School Board<span className="text-danger">*</span>
+                            Previous School Board
                           </label>
                           <input
                             type="text"
@@ -504,7 +504,7 @@ const UpdateAdmissionForm = () => {
                             htmlFor="previousSchoolResult"
                             className="form-label"
                           >
-                            Result Of Previous School<span className="text-danger">*</span>
+                            Result Of Previous School
                           </label>
                           <input
                             type="file"
@@ -533,7 +533,7 @@ const UpdateAdmissionForm = () => {
                             htmlFor="tcCertificate"
                             className="form-label"
                           >
-                            TC Certificate<span className="text-danger">*</span>
+                            TC Certificate
                           </label>
                           <input
                             type="file"

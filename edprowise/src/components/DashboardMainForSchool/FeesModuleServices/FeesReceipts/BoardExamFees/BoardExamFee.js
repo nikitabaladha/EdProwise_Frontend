@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import getAPI from '../../../../../api/getAPI';
@@ -21,10 +20,10 @@ const BoardExamFeeRegistration = () => {
   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     const id = userDetails?.schoolId;
+   
 
     if (!id) {
       toast.error('School ID not found. Please log in again.');
@@ -34,18 +33,15 @@ const BoardExamFeeRegistration = () => {
     setSchoolId(id);
   }, []);
 
-  const academicYear = localStorage.getItem('selectedAcademicYear') || '2024-2025';
+  const academicYear = localStorage.getItem('selectedAcademicYear');
 
-  
   useEffect(() => {
     if (!schoolId) return;
 
     const fetchClasses = async () => {
       setClassesLoading(true);
       try {
-        const classResponse = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
-      
-
+        const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         const classData = classResponse?.data?.data || [];
         if (Array.isArray(classData) && classData.length > 0) {
           setClasses(classData);
@@ -54,7 +50,6 @@ const BoardExamFeeRegistration = () => {
           setClasses([]);
         }
       } catch (error) {
-        console.error('Error fetching classes:', error);
         toast.error('Failed to fetch classes. Please try again.');
         setClasses([]);
       } finally {
@@ -63,9 +58,8 @@ const BoardExamFeeRegistration = () => {
     };
 
     fetchClasses();
-  }, [schoolId]);
+  }, [schoolId, academicYear]);
 
-  
   useEffect(() => {
     if (!schoolId || !selectedClass || !academicYear) return;
 
@@ -77,8 +71,6 @@ const BoardExamFeeRegistration = () => {
           {},
           true
         );
-        console.log('Fees API Response:', feesResponse);
-
         const feesData = feesResponse?.data?.data || [];
         if (Array.isArray(feesData)) {
           const feesMap = {};
@@ -91,7 +83,6 @@ const BoardExamFeeRegistration = () => {
           setBoardExamFees({});
         }
       } catch (error) {
-        console.error('Error fetching fees:', error);
         toast.error('Failed to fetch board exam fees.');
         setBoardExamFees({});
       } finally {
@@ -101,7 +92,6 @@ const BoardExamFeeRegistration = () => {
 
     fetchFees();
   }, [schoolId, academicYear, selectedClass, selectedSection]);
-
 
   useEffect(() => {
     if (selectedClass) {
@@ -115,7 +105,6 @@ const BoardExamFeeRegistration = () => {
     }
   }, [selectedClass, classes]);
 
- 
   const fetchStudents = async () => {
     if (!selectedClass || !selectedSection) {
       toast.warning('Please select both class and section.');
@@ -128,7 +117,6 @@ const BoardExamFeeRegistration = () => {
         {},
         true
       );
-     
 
       const selectedClassData = classes.find((c) => c._id === selectedClass);
       const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
@@ -137,25 +125,29 @@ const BoardExamFeeRegistration = () => {
       const studentData = response?.data?.data || [];
       if (Array.isArray(studentData)) {
         setStudents(
-          studentData.map((student) => ({
-            ...student,
-            feesAmt: feeAmount,
-            paymentStatus: student.boardExamStatus || 'Pending',
-            paymentMode:
-              student.boardExamStatus === 'Paid'
-                ? student.paymentMode === 'N/A' ? '' : student.paymentMode
-                : 'Cash',
-            chequeNumber:
-              student.paymentMode === 'Cheque' && student.chequeNumber !== 'N/A'
-                ? student.chequeNumber
-                : '',
-            bankName:
-              student.paymentMode === 'Cheque' && student.bankName !== 'N/A'
-                ? student.bankName
-                : '',
-            className: student.masterDefineClass?.className || '',
-            sectionName: selectedSectionData?.name || student.sectionName || '',
-          }))
+          studentData.map((student) => {
+            const studentClassData = classes.find((c) => c._id === student.className);
+            const studentSectionData = studentClassData?.sections?.find((s) => s._id === student.sectionName);
+            return {
+              ...student,
+              feesAmt: feeAmount,
+              paymentStatus: student.boardExamStatus || 'Pending',
+              paymentMode:
+                student.boardExamStatus === 'Paid'
+                  ? student.paymentMode === 'N/A' ? '' : student.paymentMode
+                  : 'Cash',
+              chequeNumber:
+                student.paymentMode === 'Cheque' && student.chequeNumber !== 'N/A'
+                  ? student.chequeNumber
+                  : '',
+              bankName:
+                student.paymentMode === 'Cheque' && student.bankName !== 'N/A'
+                  ? student.bankName
+                  : '',
+              className: studentClassData?.className || selectedClassData?.className || 'Unknown Class',
+              sectionName: studentSectionData?.name || selectedSectionData?.name || 'Unknown Section',
+            };
+          })
         );
         setShowTable(true);
         setSelectedStudentIds([]);
@@ -165,7 +157,6 @@ const BoardExamFeeRegistration = () => {
         setShowTable(false);
       }
     } catch (error) {
-      console.error('Error fetching students:', error);
       toast.error('Failed to fetch student data.');
       setShowTable(false);
     } finally {
@@ -173,7 +164,6 @@ const BoardExamFeeRegistration = () => {
     }
   };
 
-  
   const handlePaymentModeChange = (id, mode) => {
     setStudents((prevStudents) =>
       prevStudents.map((student) =>
@@ -189,7 +179,6 @@ const BoardExamFeeRegistration = () => {
     );
   };
 
-
   const handleChequeFieldChange = (id, field, value) => {
     setStudents((prevStudents) =>
       prevStudents.map((student) =>
@@ -197,7 +186,6 @@ const BoardExamFeeRegistration = () => {
       )
     );
   };
-
 
   const handlePaidClick = async (event, student) => {
     event.preventDefault();
@@ -213,14 +201,17 @@ const BoardExamFeeRegistration = () => {
 
     setSubmitLoading(true);
     try {
+      const selectedClassData = classes.find((c) => c._id === selectedClass);
+      const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+
       const payment = {
         studentId: student._id,
         admissionNumber: student.AdmissionNumber,
         studentName: `${student.firstName} ${student.lastName}`,
         classId: selectedClass,
         sectionId: selectedSection,
-        className: student.className,
-        sectionName: student.sectionName,
+        className: selectedClassData?.className || 'Unknown Class',
+        sectionName: selectedSectionData?.name || 'Unknown Section',
         amount: student.feesAmt,
         paymentMode: student.paymentMode,
         chequeNumber: student.chequeNumber || '',
@@ -242,14 +233,16 @@ const BoardExamFeeRegistration = () => {
         applicationDate: new Date().toISOString(),
         paymentDate: new Date().toISOString(),
         transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
+        className: selectedClassData?.className || 'Unknown Class',
+        sectionName: selectedSectionData?.name || 'Unknown Section', 
       };
 
       navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
         state: {
           student: receiptData,
           feeTypeName: 'Board Exam Fee',
-          className: student.className,
-          sectionName: student.sectionName,
+          className: selectedClassData?.className || 'Unknown Class',
+          sectionName: selectedSectionData?.name || 'Unknown Section',
         },
       });
 
@@ -262,16 +255,6 @@ const BoardExamFeeRegistration = () => {
     }
   };
 
-
-  const handleCheckboxChange = (studentId) => {
-    setSelectedStudentIds((prev) =>
-      prev.includes(studentId)
-        ? prev.filter((id) => id !== studentId)
-        : [...prev, studentId]
-    );
-  };
-
- 
   const handleSubmitPayments = async (event) => {
     event.preventDefault();
 
@@ -301,6 +284,9 @@ const BoardExamFeeRegistration = () => {
 
     setSubmitLoading(true);
     try {
+      const selectedClassData = classes.find((c) => c._id === selectedClass);
+      const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+
       const payments = selectedStudents
         .filter((student) => student.paymentStatus !== 'Paid')
         .map((student) => ({
@@ -309,8 +295,8 @@ const BoardExamFeeRegistration = () => {
           studentName: `${student.firstName} ${student.lastName}`,
           classId: selectedClass,
           sectionId: selectedSection,
-          className: student.className,
-          sectionName: student.sectionName,
+          className: selectedClassData?.className || 'Unknown Class',
+          sectionName: selectedSectionData?.name || 'Unknown Section',
           amount: student.feesAmt,
           paymentMode: student.paymentMode || 'Cash',
           chequeNumber: student.chequeNumber || '',
@@ -341,6 +327,8 @@ const BoardExamFeeRegistration = () => {
           applicationDate: new Date().toISOString(),
           paymentDate: new Date().toISOString(),
           transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
+          className: selectedClassData?.className || 'Unknown Class',
+          sectionName: selectedSectionData?.name || 'Unknown Section',
         }));
 
       if (receiptStudents.length > 0) {
@@ -348,8 +336,8 @@ const BoardExamFeeRegistration = () => {
           state: {
             students: receiptStudents,
             feeTypeName: 'Board Exam Fee',
-            className: receiptStudents[0].className,
-            sectionName: receiptStudents[0].sectionName,
+            className: selectedClassData?.className || 'Unknown Class',
+            sectionName: selectedSectionData?.name || 'Unknown Section',
           },
         });
 
@@ -369,10 +357,18 @@ const BoardExamFeeRegistration = () => {
     }
   };
 
-  const hasChequePayment = students.some((student) => student.paymentMode === 'Cheque');
-  const allPaid = students.every((student) => student.paymentStatus === 'Paid');
+  const handleCheckboxChange = (studentId) => {
+    setSelectedStudentIds((prev) =>
+      prev.includes(studentId)
+        ? prev.filter((id) => id !== studentId)
+        : [...prev, studentId]
+    );
+  };
 
-   const handleViewReceipt = (student) => {
+  const handleViewReceipt = (student) => {
+    const selectedClassData = classes.find((c) => c._id === selectedClass);
+    const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+
     const receiptData = {
       ...student,
       receiptNumberBef: student.receiptNumberBef || `REC-${student._id}-${Date.now()}`,
@@ -382,17 +378,22 @@ const BoardExamFeeRegistration = () => {
       applicationDate: student.paymentDate || new Date().toISOString(),
       paymentDate: student.paymentDate || new Date().toISOString(),
       transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
+      className: selectedClassData?.className || 'Unknown Class',
+      sectionName: selectedSectionData?.name || 'Unknown Section',
     };
 
     navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
       state: {
         student: receiptData,
         feeTypeName: 'Board Exam Fee',
-        className: student.className,
-        sectionName: student.sectionName,
+        className: selectedClassData?.className || 'Unknown Class',
+        sectionName: selectedSectionData?.name || 'Unknown Section',
       },
     });
   };
+
+  const hasChequePayment = students.some((student) => student.paymentMode === 'Cheque');
+  const allPaid = students.every((student) => student.paymentStatus === 'Paid');
 
   return (
     <div className="container-fluid">
@@ -420,10 +421,6 @@ const BoardExamFeeRegistration = () => {
                     </option>
                   ))}
                 </select>
-                {/* {classesLoading && <small className="text-muted">Loading classes...</small>}
-                {!classesLoading && classes.length === 0 && (
-                  <small className="text-danger">No classes available.</small>
-                )} */}
               </div>
 
               <div className="col-md-6">
@@ -444,9 +441,6 @@ const BoardExamFeeRegistration = () => {
                     </option>
                   ))}
                 </select>
-                {/* {selectedClass && sections.length === 0 && (
-                  <small className="text-danger">No sections available for this class.</small>
-                )} */}
               </div>
             </div>
 
@@ -480,10 +474,10 @@ const BoardExamFeeRegistration = () => {
           <div className="card shadow-sm rounded">
             <div className="card-body p-2">
               <div className="table-responsive p-2">
-                <table className="table table-hover mb-1 text-nowrap">
+                <table className="table mb-1 text-nowrap">
                   <thead className="table-light">
                     <tr>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
+                      <th>
                         <input
                           type="checkbox"
                           checked={selectedStudentIds.length === students.length && students.length > 0}
@@ -497,40 +491,20 @@ const BoardExamFeeRegistration = () => {
                           disabled={students.length === 0}
                         />
                       </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Adm. No.
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Student Name
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Class
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Section
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Board Exam Fees (₹)
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Mode of Payment
-                      </th>
+                      <th>Adm. No.</th>
+                      <th>Student Name</th>
+                      <th>Class</th>
+                      <th>Section</th>
+                      <th>Board Exam Fees (₹)</th>
+                      <th>Mode of Payment</th>
                       {hasChequePayment && (
                         <>
-                          <th scope="col" className="text-uppercase small fw-semibold m-2">
-                            Cheque No.
-                          </th>
-                          <th scope="col" className="text-uppercase small fw-semibold m-2">
-                            Bank Name
-                          </th>
+                          <th>Cheque No.</th>
+                          <th>Bank Name</th>
                         </>
                       )}
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Status
-                      </th>
-                      <th scope="col" className="text-uppercase small fw-semibold m-2">
-                        Pay
-                      </th>
+                      <th>Status</th>
+                      <th>Pay</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -616,7 +590,7 @@ const BoardExamFeeRegistration = () => {
                             {student.paymentStatus}
                           </span>
                         </td>
-                          <td>
+                        <td>
                           {student.paymentStatus !== 'Paid' ? (
                             <button
                               type="button"

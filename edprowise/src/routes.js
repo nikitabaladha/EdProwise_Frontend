@@ -192,6 +192,7 @@ import AddShifts from "./components/DashboardMainForSchool/FeesModuleServices/Ad
 import UpdateShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/UpdateShifts.js"
 import FeesStructureListTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructureListTable.js";
 import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
+import SchoolFeesReceiptsView from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/ViewRecipt.js"
 import StudentReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/Recipt.js"
 import FeeReceiptsSchoolFees from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/FeeReceiptsForm.js"
 import BoardRegistrationFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationFees.js";
@@ -222,6 +223,23 @@ import AddBoardExamFees from "./components/DashboardMainForSchool/FeesModuleServ
 import UpdateBoardExamFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/UpdateBoardExamFees.js";
 import ViewBoardExamFees from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/ViewBoardExamFees.js";
 import BoardExamFeesList from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/BoardFees/BoardExamFees/BoardExamFeesTable.js";
+
+import StudentPromotionTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Promotion/StudentPromotionTable.js"
+import PromoteStudent from './components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Promotion/PromoteStudent.js'
+
+            // =====================================Reports==============================================//
+import StudentLedger from "./components/DashboardMainForSchool/FeesModuleServices/Reports/StudentLedger/studentledger.js"
+import DailyCollectionRegistartionFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/RegistartionFees/RegistartionFees.js"
+import DailyCollectionAdmissionFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/AdmissionFees/AdmissionFees.js"
+import DailyCollectionTCFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/TCReport/TCFees.js"
+import DailyCollectionBoardRegistration from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/BoardRegistrationFees/BoardRegistrationFees.js"
+import DailyCollectionBoardExam from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/BoardExamFees/BoardExamFees.js"
+import DailyCollectionDatsewiseCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/DateWiseCollection/DateWiseCollection.js"
+import DailyCollectionStudentwiseCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/StudentWiseCollection/StudentWiseCollection.js"
+import DailyCollectionSchoolFees  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/SchoolFees/SchoolFees.js"
+import DailyCollectionLateFees  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/LateandExcessFees/LateandExcessFee.js"
+import ConcessionReportDatewise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportDatewise/FeesConcessionReportDatewise.js";
+import ConcessionReportStudentwise  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportStudentwise/FeesConcessionReportStudentWise.js"
 
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
@@ -900,6 +918,17 @@ const AppRoutes = () => {
           element={<ViewBoardExamFees />}
         />
 
+        {/*--------------------------------------- Promotion-------------------------------- */}
+       <Route
+          path="fees-module/admin-setting/promotion/student-promotion"
+          element={<StudentPromotionTable />}
+        />
+         <Route
+          path="fees-module/admin-setting/promotion/student-promotion/PromoteStudent"
+          element={<PromoteStudent />}
+        />
+
+    
 
         {/* --------------------------------------------Fees Receipts------------------------------------------------------- */}
 
@@ -923,7 +952,11 @@ const AppRoutes = () => {
           path="fees-module/fees-receipts/school-fees/fees-receipts"
           element={<FeeReceiptsSchoolFees />}
         />
-
+         <Route
+          path="fees-module/fees-receipts/school-fees/fees-receipts-view"
+          element={<SchoolFeesReceiptsView />}
+        />
+    
         
 
         <Route
@@ -945,11 +978,79 @@ const AppRoutes = () => {
           path="fees-module/fees-receipts/board-exam-fees/receipts"
           element={<BoardExamFeeReceipts/>}
         />
+        
+                {/* --------------------------------------------Reports------------------------------------------------------- */}
+     
+          <Route
+          path="fees-module/reports/student-ledger"
+          element={<StudentLedger/>}
+         />
 
-  
+           <Route
+          path="fees-module/reports/daily-collection/registration-fees"
+          element={<DailyCollectionRegistartionFees />}
+         />
+
+           <Route
+          path="fees-module/reports/daily-collection/admission-fees"
+          element={<DailyCollectionAdmissionFees />}
+         />
+
+         
+           <Route
+          path="fees-module/reports/daily-collection/tc-reports"
+          element={<DailyCollectionTCFees />}
+         />
+
+            <Route
+          path="fees-module/reports/daily-collection/board-registration"
+          element={<DailyCollectionBoardRegistration />}
+         />
+
+          <Route
+          path="fees-module/reports/daily-collection/board-exam"
+          element={<DailyCollectionBoardExam />}
+         />
+          <Route
+          path="fees-module/reports/daily-collection/board-exam"
+          element={<DailyCollectionBoardExam />}
+         />
+
+            <Route
+          path="fees-module/reports/daily-collection/datewise-collection"
+          element={<DailyCollectionDatsewiseCollection />}
+         />
+
+         
+            <Route
+          path="fees-module/reports/daily-collection/studentwise-collection"
+          element={<DailyCollectionStudentwiseCollection />}
+         />
+
+         
+            <Route
+          path="fees-module/reports/daily-collection/school-fee"
+          element={<DailyCollectionSchoolFees />}
+         />
+               <Route
+          path="fees-module/reports/daily-collection/late-fees-excess"
+          element={<DailyCollectionLateFees />}
+         />
 
 
+        <Route
+          path="fees-module/reports/concession/date-wise"
+          element={<ConcessionReportDatewise />}
+         />
 
+           <Route
+          path="fees-module/reports/concession/student-wise"
+          element={<ConcessionReportStudentwise />}
+         />
+
+   
+
+         
       </Route>
 
       {/* =========================================Seller Routes============================================= */}

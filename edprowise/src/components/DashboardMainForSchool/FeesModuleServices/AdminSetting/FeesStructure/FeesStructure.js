@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import { useNavigate } from "react-router-dom";
-import { FaTrash } from "react-icons/fa";
 
 const ADDFeesStructure = () => {
   const [schoolId, setSchoolId] = useState("");
@@ -12,6 +11,7 @@ const ADDFeesStructure = () => {
   const [feesTypesList, setFeesTypesList] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const academicYear = localStorage.getItem("selectedAcademicYear");
   const [forms, setForms] = useState([
     {
       selectedClassId: "",
@@ -36,14 +36,14 @@ const ADDFeesStructure = () => {
 
     const fetchData = async () => {
       try {
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const classRes = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClassData(classRes?.data?.data || []);
       } catch (error) {
         toast.error("Error fetching class and section data.");
       }
 
       try {
-        const feesTypeRes = await getAPI(`/getall-fees-type/${schoolId}`);
+        const feesTypeRes = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
           const SchoolFees = feesTypeRes.data.data.filter(
             (fee) => fee.groupOfFees === "School Fees"

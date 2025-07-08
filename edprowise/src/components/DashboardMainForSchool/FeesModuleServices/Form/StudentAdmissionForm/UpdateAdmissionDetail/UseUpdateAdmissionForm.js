@@ -159,7 +159,7 @@ const UseUpdateAdmissionForm = () => {
     const fetchData = async () => {
       try {
         if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClasses(response?.data?.data || []);
       } catch (error) {
         toast.error("Error fetching class and section data.");
@@ -174,7 +174,7 @@ const UseUpdateAdmissionForm = () => {
 
     const fetchShifts = async () => {
       try {
-        const response = await getAPI(`/master-define-shift/${schoolId}`);
+        const response = await getAPI(`/master-define-shift-year/${schoolId}/year/${academicYear}`);
         if (!response.hasError) {
           const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
           setShifts(shiftArray);
@@ -589,6 +589,8 @@ const UseUpdateAdmissionForm = () => {
     handleCountryChange,
     handleStateChange,
     handleCityChange,
+    schoolId,
+    
 
   };
 };

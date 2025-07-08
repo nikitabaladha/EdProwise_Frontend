@@ -32,6 +32,16 @@ const AddFeesType = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
    setLoading(true);
+   
+     const academicYear = localStorage.getItem("selectedAcademicYear");
+   
+     if (!academicYear) {
+       toast.error("Academic year is missing. Please select an academic year.");
+       setLoading(false);
+       return;
+     }
+   
+
     const hasEmpty = fees.some((f) => f.name.trim() === "");
     if (hasEmpty) {
       toast.error("Fees Name fields are required.");
@@ -54,6 +64,7 @@ const AddFeesType = () => {
             feesTypeName: fee.name.trim(),
             groupOfFees: fee.group,
             schoolId,
+            academicYear
           },
           true
         );

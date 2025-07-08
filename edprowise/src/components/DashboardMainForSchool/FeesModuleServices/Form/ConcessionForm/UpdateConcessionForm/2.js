@@ -14,8 +14,13 @@ export const useConcessionForm = () => {
     const [schoolId, setSchoolId] = useState('');
     const [sections, setSections] = useState([]);
     const [feeTypes, setFeeTypes] = useState([]);
+       const [academicYears, setAcademicYears] = useState([]);
+    const [selectedYears, setSelectedYears] = useState([]);
+    const [loadingYears, setLoadingYears] = useState(false);
+    const academicYear = localStorage.getItem('selectedAcademicYear');
 
     const [formData, setFormData] = useState({
+        academicYear: academicYear || '',
         studentPhoto: null,
         AdmissionNumber: '',
         firstName: '',
@@ -26,7 +31,6 @@ export const useConcessionForm = () => {
         concessionType: '',
         castOrIncomeCertificate: null,
         existingCertificateUrl: '',
-        applicableAcademicYear: '',
         concessionDetails: Array(4).fill({
             installmentName: '',
             feesType: '',
@@ -36,6 +40,24 @@ export const useConcessionForm = () => {
             balancePayable: ''
         })
     });
+
+      useEffect(() => {
+        const fetchAcademicYears = async () => {
+          try {
+            setLoadingYears(true);
+            const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+            const schoolId = userDetails?.schoolId;
+            const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+            setAcademicYears(response.data.data || []);
+          } catch (err) {
+            console.error(err);
+          } finally {
+            setLoadingYears(false);
+          }
+        };
+    
+        fetchAcademicYears();
+      }, []);
 
     useEffect(() => {
         const userDetails = JSON.parse(localStorage.getItem('userDetails'));
@@ -50,6 +72,7 @@ export const useConcessionForm = () => {
     useEffect(() => {
         if (student) {
             setFormData({
+                academicYear: student.academicYear,
                 studentPhoto: student.studentPhoto || null,
                 AdmissionNumber: student.AdmissionNumber,
                 firstName: student.firstName,
@@ -59,10 +82,9 @@ export const useConcessionForm = () => {
                 section: student?.section?._id || student?.section || '',
                 concessionType: student.concessionType,
                 castOrIncomeCertificate: student.castOrIncomeCertificate || null,
-                applicableAcademicYear: student.applicableAcademicYear,
                 concessionDetails: student.concessionDetails.map(detail => ({
                     installmentName: detail.installmentName,
-                    feesType: detail.feesType || detail.feesType,
+                    feesType: detail.feesType._id || detail.feesType,
                     totalFees: detail.totalFees.toString(),
                     concessionPercentage: detail.concessionPercentage.toString(),
                     concessionAmount: detail.concessionAmount.toString(),
@@ -76,7 +98,7 @@ export const useConcessionForm = () => {
         const fetchData = async () => {
             if (!schoolId) return;
             try {
-                const res = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+                const res = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
                 setClasses(res?.data?.data || []);
             } catch (err) {
                 toast.error('Error fetching class and section data.');
@@ -85,7 +107,20 @@ export const useConcessionForm = () => {
         fetchData();
     }, [schoolId]);
 
-   
+    useEffect(() => {
+        const fetchFeeTypes = async () => {
+            if (!schoolId) return;
+            try {
+                const res = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`);
+                if (!res.hasError) {
+                    setFeeTypes(res.data.data || []);
+                }
+            } catch (err) {
+                toast.error('Error fetching fee types.');
+            }
+        };
+        fetchFeeTypes();
+    }, [schoolId]);
 
     useEffect(() => {
         if (student?.masterDefineClass?._id || student?.masterDefineClass) {
@@ -157,7 +192,7 @@ export const useConcessionForm = () => {
     };
 
     const validateForm = () => {
-        if (!formData.concessionType || !formData.applicableAcademicYear) {
+        if (!formData.concessionType || !formData.academicYear) {
             toast.error('Please fill all required fields');
             return false;
         }
@@ -210,8 +245,14 @@ export const useConcessionForm = () => {
             } else {
                 toast.error(response.message || 'Update failed');
             }
-        } catch (err) {
-            toast.error(err.response?.data?.message || 'An error occurred');
+        } catch (error) {
+            const backendMessage = error?.response?.data?.message;
+
+            if (backendMessage) {
+                toast.error(backendMessage);
+            } else {
+                toast.error('An error occurred during registration');
+            }
         }
     };
 
@@ -220,13 +261,13 @@ export const useConcessionForm = () => {
     const toggleRowSelection = (index, formData, setFormData) => {
         const updated = [...formData.concessionDetails];
         updated[index].selected = !updated[index].selected;
-    
+
         setFormData(prev => ({
             ...prev,
             concessionDetails: updated
         }));
     };
-    
+
     const generateAcademicYears = (startYear, endYear) => {
         const years = [];
         for (let year = startYear; year < endYear; year++) {
@@ -235,22 +276,23 @@ export const useConcessionForm = () => {
         return years;
     };
 
+
     const handlePhotoUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-          setFormData(prev => ({
-            ...prev,
-            studentPhoto: file
-          }));
+            setFormData(prev => ({
+                ...prev,
+                studentPhoto: file
+            }));
         }
-      };
+    };
 
 
- const getFileNameFromPath = (path) => {
+    const getFileNameFromPath = (path) => {
         if (!path) return '';
         return path.split('/').pop();
     };
-    
+
 
     return {
         formData,
@@ -267,6 +309,7 @@ export const useConcessionForm = () => {
         toggleRowSelection,
         getFileNameFromPath,
         generateAcademicYears,
-        handlePhotoUpload
+        handlePhotoUpload,
+        academicYears
     };
 };

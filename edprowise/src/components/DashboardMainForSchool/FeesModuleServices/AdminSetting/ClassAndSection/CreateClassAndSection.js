@@ -12,6 +12,7 @@ const CreateClassAndSection = () => {
   const [schoolId, setSchoolId] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const academicYear = localStorage.getItem("selectedAcademicYear");
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -30,7 +31,7 @@ const CreateClassAndSection = () => {
 
     const fetchShifts = async () => {
       try {
-        const response = await getAPI(`/master-define-shift/${schoolId}`);
+        const response = await getAPI(`/master-define-shift-year/${schoolId}/year/${academicYear}`);
         console.log("Fetched Shifts:", response);
         if (!response.hasError) {
           const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
@@ -64,6 +65,21 @@ const CreateClassAndSection = () => {
     setLoading(true);
 
 
+    if (!academicYear) {
+      toast.error("Academic year is missing. Please select an academic year.");
+      setLoading(false);
+      return;
+    }
+
+    if (!/^\d{4}-\d{4}$/.test(academicYear)) {
+      toast.error("Invalid academic year format. Please use YYYY-YYYY (e.g., 2025-2026).");
+      setLoading(false);
+      return;
+    }
+
+
+
+
     if (!className.trim()) {
       toast.error("Class name is required.");
       return;
@@ -77,6 +93,7 @@ const CreateClassAndSection = () => {
       const payload = {
         className,
         sections,
+        academicYear
       };
 
       const response = await postAPI("/create-class-and-section", payload, {}, true);

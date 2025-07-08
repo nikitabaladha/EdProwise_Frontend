@@ -26,11 +26,10 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
 
     const fetchData = async () => {
       try {
-
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const classRes = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClasses(classRes?.data?.data || []);
 
-        const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`, {}, true);
+        const feesTypeRes = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`, {}, true);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
           const oneTimeFees = feesTypeRes.data.data.filter(
             (fee) => fee.groupOfFees === "One Time Fees"
@@ -46,7 +45,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
     };
 
     fetchData();
-  }, [schoolId]);
+  }, [schoolId, academicYear]);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -80,7 +79,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-              const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
+          const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
           if (!sheetName) {
             toast.error('No "Data" sheet found in the Excel file.');
             resolve({ jsonData: [], validatedData: [] });
@@ -203,7 +202,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
       setValidatedData(validatedData);
       setShowFullPreviewModal(true);
     } catch (error) {
-      // Error 
+     
     }
   };
 
@@ -258,42 +257,32 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
   };
 
   const handleDownloadDemo = () => {
-  if (classes.length === 0 || feesTypes.length === 0) {
-    toast.error('No classes or fees types available to include in demo sheet.');
-    return;
-  }
+    const guidelines = [
+      ['📌 Import Guidelines:'],
+      ['• Class: Enter the class name (e.g., Grade 1, Class 10).'],
+      ['• Sections: Enter section names separated by commas (e.g., A,B,C).'],
+      ['• FeesTypeName: Enter the fees type name (must match existing one-time fees types).'],
+      ['• Amount: Enter the fee amount (positive number).'],
+      ['• Ensure all fields are filled and valid.'],
+      ['• Do not change the column headers; they must remain exactly as provided.'],
+      ['• Use the "Data" sheet to enter your data.'],
+      [`• Available Classes: ${classes.map(c => c.className).join(', ')}.`],
+      [`• Available Fees Types: ${feesTypes.map(f => f.feesTypeName).join(', ')}.`],
+    ];
 
+    const wsData = [
+      ['Class', 'Sections', 'FeesTypeName', 'Amount'],
+      ['Grade 1', 'A,B', 'Admission Fee', 5000],
+      ['Grade 1', 'A,B', 'Registration Fee', 2000],
+    ];
 
-  const guidelines = [
-    ['📌 Import Guidelines:'],
-    ['• Class: Enter the class name (e.g., Grade 1, Class 10).'],
-    ['• Sections: Enter section names separated by commas (e.g., A,B,C).'],
-    ['• FeesTypeName: Enter the fees type name (must match existing one-time fees types).'],
-    ['• Amount: Enter the fee amount (positive number).'],
-    ['• Ensure all fields are filled and valid.'],
-    ['• Do not change the column headers; they must remain exactly as provided.'],
-    ['• Use the "Data" sheet to enter your data.'],
-    [`• Available Classes: ${classes.map(c => c.className).join(', ')}.`],
-    [`• Available Fees Types: ${feesTypes.map(f => f.feesTypeName).join(', ')}.`],
-  ];
-
- 
-  const wsData = [
-    ['Class', 'Sections', 'FeesTypeName', 'Amount'],
-    ['Grade 1', 'A,B', 'Admission Fee', 5000],
-    ['Grade 1', 'A,B', 'Registration Fee', 2000],
-  ];
-
-  const wb = XLSX.utils.book_new();
-
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-  XLSX.utils.book_append_sheet(wb, ws, 'Data');
-
-  const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
-  XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
-
-  XLSX.writeFile(wb, 'one_time_fees.xlsx');
-};
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
+    XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
+    XLSX.writeFile(wb, 'one_time_fees_structure.xlsx');
+  };
 
   return (
     <>
@@ -344,6 +333,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
         previewData={previewData}
         validatedData={validatedData}
         classes={classes}
+        feesTypes={feesTypes} 
       />
     </>
   );

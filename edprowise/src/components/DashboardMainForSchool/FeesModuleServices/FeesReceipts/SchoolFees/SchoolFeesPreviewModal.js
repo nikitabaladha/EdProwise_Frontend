@@ -1,5 +1,18 @@
 import { Modal, Button, Table, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
+const excelSerialToDate = (serial) => {
+  if (typeof serial !== 'number' || isNaN(serial) || serial < 1) {
+    return null;
+  }
+  const excelEpoch = new Date(1900, 0, 1);
+  const daysSinceEpoch = serial - 1;
+  const date = new Date(excelEpoch.getTime() + daysSinceEpoch * 24 * 60 * 60 * 1000);
+  if (serial <= 60) {
+    date.setDate(date.getDate() - 1);
+  }
+  return date;
+};
+
 const SchoolFeesPreviewModal = ({
   show,
   onClose,
@@ -19,42 +32,70 @@ const SchoolFeesPreviewModal = ({
     'chequeNumber',
     'bankName',
     'academicYear',
-    'installmentNumber',
+    'installmentName',
     'feeTypeName',
     'paidAmount',
-    'paymentDate', // Add paymentDate
+    'excessAmount',
+    'fineAmount',
+    'paymentDate',
     'Valid',
   ];
 
   const isRowValid = (row) => {
-    const admissionNumber = row.AdmissionNumber?.toString().trim();
-    const className = row.className?.toString().trim();
-    const sectionName = row.section?.toString().trim();
-    const feeTypeName = row.feeTypeName?.toString().trim();
-    const academicYear = row.academicYear?.toString().trim();
-    const installmentNumber = row.installmentNumber?.toString().trim();
-    const paymentDate = row.paymentDate?.toString().trim();
+    const admissionNumber = row.AdmissionNumber?.toString().trim() || '';
+    const className = row.className?.toString().trim() || '';
+    const sectionName = row.section?.toString().trim() || '';
+    const feeTypeName = row.feeTypeName?.toString().trim() || '';
+    const academicYear = row.academicYear?.toString().trim() || '';
+    const installmentName = row.installmentName?.toString().trim() || '';
+    const paymentMode = row.paymentMode?.toString().trim() || '';
+    const chequeNumber = row.chequeNumber?.toString().trim() || '';
+    const bankName = row.bankName?.toString().trim() || '';
+    let paymentDate = row.paymentDate?.toString().trim() || '';
+
+    if (typeof row.paymentDate === 'number') {
+      const parsedDate = excelSerialToDate(row.paymentDate);
+      if (parsedDate && !isNaN(parsedDate.getTime())) {
+        paymentDate = parsedDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      } else {
+        return false;
+      }
+    } else if (paymentDate.includes('-') && paymentDate.split('-')[0].length === 2) {
+      const [day, month, year] = paymentDate.split('-');
+      paymentDate = `${year}-${month}-${day}`;
+    }
 
     return validatedData.some((vd) => {
       const classObj = classes.find(
         (c) => c.className.toLowerCase() === className?.toLowerCase()
       );
-      const sectionObj = classObj?.sections.find(
+      const sectionObj = sectionsByClass[classObj?._id]?.find(
         (s) => s.name.toLowerCase() === sectionName?.toLowerCase()
       );
       const feeType = feeTypes.find(
-        (ft) => ft.feesTypeName.toLowerCase() === feeTypeName?.toLowerCase()
+        (ft) =>
+          ft.feesTypeName.toLowerCase() === feeTypeName?.toLowerCase() &&
+          ft.academicYear === academicYear
       );
 
+      const vdPaymentDate = vd.paymentDate instanceof Date
+        ? vd.paymentDate.toISOString().split('T')[0]
+        : vd.paymentDate;
+
       return (
-        vd.AdmissionNumber === admissionNumber &&
+        vd.AdmissionNumber?.trim() === admissionNumber &&
         vd.masterDefineClass === classObj?._id &&
         vd.section === sectionObj?._id &&
-        vd.feesTypeId === feeType?._id &&
+        (vd.feesTypeId === feeType?._id || (!feeTypeName && !vd.feesTypeId)) &&
         vd.academicYear === academicYear &&
-        vd.installmentNumber === installmentNumber &&
-        Number(vd.paidAmount) === Number(row.paidAmount) &&
-        new Date(vd.paymentDate).toISOString().split('T')[0] === paymentDate // Validate paymentDate
+        vd.installmentName.toLowerCase() === installmentName?.toLowerCase() &&
+        vd.paymentMode === paymentMode &&
+        vd.chequeNumber === chequeNumber &&
+        vd.bankName === bankName &&
+        Number(vd.paidAmount) === Number(row.paidAmount || 0) &&
+        Number(vd.excessAmount) === Number(row.excessAmount || 0) &&
+        Number(vd.fineAmount) === Number(row.fineAmount || 0) &&
+        vdPaymentDate === paymentDate
       );
     });
   };
@@ -66,15 +107,28 @@ const SchoolFeesPreviewModal = ({
     }
     if (header === 'section') {
       const classObj = classes.find((c) => c._id === row.masterDefineClass);
-      const sectionObj = classObj?.sections.find((s) => s._id === row.section);
+      const sectionObj = sectionsByClass[classObj?._id]?.find((s) => s._id === row.section);
       return sectionObj ? sectionObj.name : row.section || '-';
     }
     if (header === 'feeTypeName') {
-      const feeType = feeTypes.find((ft) => ft._id === row.feesTypeId);
+      const feeType = feeTypes.find(
+        (ft) => ft._id === row.feesTypeId && ft.academicYear === row.academicYear
+      );
       return feeType ? feeType.feesTypeName : row.feeTypeName || '-';
     }
     if (header === 'paymentDate') {
-      return row.paymentDate || '-';
+      if (typeof row.paymentDate === 'number') {
+        const parsedDate = excelSerialToDate(row.paymentDate);
+        return parsedDate && !isNaN(parsedDate.getTime())
+          ? parsedDate.toISOString().split('T')[0]
+          : 'Invalid Date';
+      }
+      let displayDate = row.paymentDate || '-';
+      if (displayDate.includes('-') && displayDate.split('-')[0].length === 2) {
+        const [day, month, year] = displayDate.split('-');
+        displayDate = `${year}-${month}-${day}`;
+      }
+      return displayDate;
     }
     return row[header] !== undefined && row[header] !== '' ? row[header] : '-';
   };
@@ -136,12 +190,6 @@ const SchoolFeesPreviewModal = ({
             vertical-align: middle;
             border-right: 1px solid #dee2e6;
           }
-          // .invalid-row {
-          //   background-color: #fff3f3 !important;
-          // }
-          // .valid-row {
-          //   background-color: #f0fff4 !important;
-          // }
           @media (max-width: 576px) {
             .custom-modal .modal-dialog {
               max-width: 98vw;

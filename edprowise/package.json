@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@hello-pangea/dnd": "^18.0.1",
     "@iconify/react": "^5.1.0",
     "@react-pdf-viewer/core": "^3.12.0",
     "apexcharts": "^4.3.0",
@@ -12,6 +13,7 @@
     "cra-template": "1.2.0",
     "date-fns": "^4.1.0",
     "edprowise": "file:",
+    "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "framer-motion": "^12.9.7",
     "html2canvas": "^1.4.1",
@@ -23,9 +25,11 @@
     "lightbox2": "^2.11.5",
     "react": "^19.0.0",
     "react-apexcharts": "^1.7.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.10.7",
     "react-cookie": "^7.2.2",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
     "react-icons": "^5.4.0",
     "react-quill-new": "^3.4.6",
     "react-router-dom": "^7.0.2",
@@ -37,7 +41,8 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.17",
     "web-vitals": "^4.2.4",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "xlsx-style": "^0.8.13"
   },
   "scripts": {
     "start": "react-scripts start",

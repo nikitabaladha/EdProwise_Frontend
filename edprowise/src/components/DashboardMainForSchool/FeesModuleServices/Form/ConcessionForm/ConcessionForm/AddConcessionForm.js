@@ -131,7 +131,7 @@ const ConcessionForm = () => {
                                                 id="studentPhoto"
                                                 name="studentPhoto"
                                                 className="d-none"
-                                                 accept=".jpg,.jpeg"
+                                                accept=".jpg,.jpeg"
                                                 onChange={handlePhotoUpload}
                                             />
                                             <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
@@ -291,7 +291,7 @@ const ConcessionForm = () => {
                                                 id="castOrIncomeCertificate"
                                                 name="castOrIncomeCertificate"
                                                 className="form-control"
-                                                 accept=".jpg,.jpeg,.pdf"
+                                                accept=".jpg,.jpeg,.pdf"
                                                 onChange={handleChange}
                                                 ref={fileInputRef}
                                                 required
@@ -299,7 +299,7 @@ const ConcessionForm = () => {
                                         </div>
                                     </div>
 
-                                    <div className="col-md-4">
+                                    {/* <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="academicYear" className="form-label">
                                                 Applicable Academic Year(s) <span className="text-danger">*</span>
@@ -319,7 +319,7 @@ const ConcessionForm = () => {
                                             />
 
                                         </div>
-                                    </div>
+                                    </div> */}
 
                                 </div>
                                 <div className='row'>
@@ -397,7 +397,7 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="number"
+                                                              
                                                                 name="totalFees"
                                                                 className="form-control text-end"
                                                                 value={detail.totalFees}
@@ -410,7 +410,7 @@ const ConcessionForm = () => {
                                                         <td>
                                                             <div className="input-group">
                                                                 <input
-                                                                    type="number"
+                                                                
                                                                     name="concessionPercentage"
                                                                     className="form-control text-end"
                                                                     value={detail.concessionPercentage}
@@ -425,7 +425,7 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="number"
+                                                              
                                                                 name="concessionAmount"
                                                                 className="form-control text-end"
                                                                 value={detail.concessionAmount}
@@ -435,7 +435,7 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="number"
+                                                              
                                                                 name="balancePayable"
                                                                 className="form-control text-end"
                                                                 value={detail.balancePayable}

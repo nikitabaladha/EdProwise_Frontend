@@ -9,6 +9,7 @@ const AddBoardExamFees = () => {
   const [classData, setClassData] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+    const academicYear = localStorage.getItem("selectedAcademicYear");
   const [entries, setEntries] = useState([
     {
       selectedClassId: "",
@@ -32,7 +33,7 @@ const AddBoardExamFees = () => {
 
     const fetchData = async () => {
       try {
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const classRes = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClassData(classRes?.data?.data || []);
       } catch (error) {
         toast.error("Error fetching class and section data.");

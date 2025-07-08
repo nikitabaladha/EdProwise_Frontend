@@ -28,46 +28,63 @@ const AddShifts = () => {
 
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    for (const shift of shifts) {
-      if (!shift.shiftName || !shift.startTime || !shift.endTime) {
-        toast.error("Please fill in all fields before submitting.");
-        return;
-      }
+  const academicYear = localStorage.getItem("selectedAcademicYear");
+
+  if (!academicYear) {
+    toast.error("Academic year is missing. Please select an academic year.");
+    setLoading(false);
+    return;
+  }
+
+
+  if (!/^\d{4}-\d{4}$/.test(academicYear)) {
+    toast.error("Invalid academic year format. Please use YYYY-YYYY (e.g., 2025-2026).");
+    setLoading(false);
+    return;
+  }
+
+  for (const shift of shifts) {
+    if (!shift.shiftName || !shift.startTime || !shift.endTime) {
+      toast.error("Please fill in all fields before submitting.");
+      setLoading(false);
+      return;
     }
+  }
 
-    let allSuccessful = true;
+  let allSuccessful = true;
 
-    for (const shift of shifts) {
-      const payload = {
-        masterDefineShiftName: shift.shiftName,
-        startTime: shift.startTime,
-        endTime: shift.endTime,
-      };
+  for (const shift of shifts) {
+    const payload = {
+      masterDefineShiftName: shift.shiftName,
+      startTime: shift.startTime,
+      endTime: shift.endTime,
+      academicYear,
+    };
 
-      try {
-        const response = await postAPI('/master-define-shift', payload, {}, true);
+    try {
+      const response = await postAPI('/master-define-shift', payload, {}, true);
 
-        if (response.hasError) {
-          allSuccessful = false;
-          toast.error(response.message || 'Failed to create shift');
-        }
-      } catch (err) {
+      if (response.hasError) {
         allSuccessful = false;
-        const errorText = err.response?.data?.message || err.message || 'Something went wrong!';
-        toast.error(errorText);
-      } finally {
-        setLoading(false);
+        toast.error(response.message || 'Failed to create shift');
       }
+    } catch (err) {
+      allSuccessful = false;
+      const errorText = err.response?.data?.message || err.message || 'Something went wrong!';
+      toast.error(errorText);
     }
+  }
 
-    if (allSuccessful) {
-      toast.success("shifts created successfully!");
-      navigate(-1);
-    }
-  };
+  setLoading(false);
+
+  if (allSuccessful) {
+    toast.success("Shifts created successfully!");
+    navigate(-1);
+  }
+};
 
 
   return (

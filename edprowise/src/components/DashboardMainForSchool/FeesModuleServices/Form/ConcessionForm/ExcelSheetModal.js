@@ -43,7 +43,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
 
   const fetchFeeTypes = async (classId) => {
     try {
-      const response = await getAPI(`/getall-fess-type/${schoolId}`);
+      const response = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`);
       if (!response.hasError) {
         const feeTypes = response.data.data.map((fee) => ({
           id: fee._id,
@@ -364,10 +364,10 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
   };
 
  const handleDownloadDemo = () => {
-  if (students.length === 0 || classes.length === 0) {
-    toast.error('No students or classes available to include in demo sheet.');
-    return;
-  }
+  // if (students.length === 0 || classes.length === 0) {
+  //   toast.error('No students or classes available to include in demo sheet.');
+  //   return;
+  // }
 
   const guidelines = [
     ['📌 Import Guidelines:'],

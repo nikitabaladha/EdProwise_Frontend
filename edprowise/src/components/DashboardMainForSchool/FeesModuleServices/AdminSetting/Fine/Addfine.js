@@ -103,6 +103,7 @@ const AddFine = () => {
                 <option value="">Select Frequency</option>
                 <option value="Fixed">Fixed</option>
                 <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
                 <option value="Monthly">Monthly</option>
                 <option value="Annually">Annually</option>
               </select>

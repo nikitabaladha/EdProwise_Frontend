@@ -12,6 +12,7 @@ const UpdateOneTimeFees = () => {
   const [feesTypesList, setFeesTypesList] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const academicYear = localStorage.getItem("selectedAcademicYear");
 
 
   const [forms, setForms] = useState([
@@ -45,14 +46,14 @@ const UpdateOneTimeFees = () => {
 
     const fetchData = async () => {
       try {
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const classRes = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClassData(classRes?.data?.data || []);
       } catch {
         toast.error("Error fetching class and section data.");
       }
 
       try {
-        const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`);
+        const feesTypeRes = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
           const oneTimeFees = feesTypeRes.data.data.filter(
             (fee) => fee.groupOfFees === "One Time Fees"

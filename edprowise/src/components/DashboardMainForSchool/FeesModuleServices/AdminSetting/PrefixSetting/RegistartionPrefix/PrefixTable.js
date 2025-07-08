@@ -15,6 +15,29 @@ const SchoolPrefixes = () => {
   const [deleteType, setDeleteType] = useState("prefix");
   const [selectedPrefix, setSelectedPrefix] = useState(null);
 
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+   useEffect(() => {
+      const fetchAcademicYears = async () => {
+        try {
+          setLoadingYears(true);
+          const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+          const schoolId = userDetails?.schoolId; 
+          const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+          setAcademicYears(response.data.data || []);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setLoadingYears(false);
+        }
+      };
+  
+      fetchAcademicYears();
+    }, []);
+
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
@@ -26,11 +49,11 @@ const SchoolPrefixes = () => {
   }, []);
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchPrefixes = async () => {
       try {
-        const response = await getAPI(`/get-prefix/${schoolId}`);
+        const response = await getAPI(`/get-prefix/${schoolId}/year/${selectedYear}`);
         if (!response.hasError) {
           const prefixArray = Array.isArray(response.data?.data) ? response.data.data : [];
           setPrefixes(prefixArray);
@@ -44,7 +67,7 @@ const SchoolPrefixes = () => {
     };
 
     fetchPrefixes();
-  }, [schoolId]);
+  }, [schoolId,selectedYear]);
 
 
   const indexOfLast = currentPage * prefixesPerPage;
@@ -99,13 +122,29 @@ const SchoolPrefixes = () => {
                     Add Prefix
                   </Link>
                 )}
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
+                <div className="d-flex align-items-center gap-2">
+                 <select
+                    className="form-select form-select-sm w-auto"
+                    value={selectedYear}
+                    onChange={(e) => {
+                      setSelectedYear(e.target.value);
+                      localStorage.setItem("selectedAcademicYear", e.target.value);
+                    }}
+                    disabled={loadingYears}
+                  >
+                    <option value="" disabled>Select Year</option>
+                    {academicYears.map((year) => (
+                      <option key={year._id} value={year.academicYear}>
+                        {year.academicYear}
+                      </option>
+                    ))}
+
+                  </select>
                 </div>
               </div>
 
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered text-center">
+                <table className="table align-middle mb-0  table-centered text-center">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th>#</th>

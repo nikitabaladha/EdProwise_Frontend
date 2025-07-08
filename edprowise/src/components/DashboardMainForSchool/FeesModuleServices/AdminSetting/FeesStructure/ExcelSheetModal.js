@@ -1,11 +1,24 @@
 import { useState, useEffect } from 'react';
-import * as XLSX from 'xlsx';
+import { read, utils, writeFile } from 'xlsx'; 
 import { toast } from 'react-toastify';
 import postAPI from '../../../../../api/postAPI';
 import getAPI from '../../../../../api/getAPI';
 import ImportModal from './ImportModal';
 import ConfirmModal from '../../../../ConfirmModalImportExcel';
 import PreviewModal from './PreviewModal';
+
+const excelSerialToDate = (serial) => {
+  if (typeof serial !== 'number' || isNaN(serial) || serial < 1) {
+    return null; 
+  }
+  const excelEpoch = new Date(1900, 0, 1); 
+  const daysSinceEpoch = serial - 1; 
+  const date = new Date(excelEpoch.getTime() + daysSinceEpoch * 24 * 60 * 60 * 1000);
+  if (serial <= 60) {
+    date.setDate(date.getDate() - 1); 
+  }
+  return date;
+};
 
 const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSuccess }) => {
   const [file, setFile] = useState(null);
@@ -26,12 +39,10 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
 
     const fetchData = async () => {
       try {
-
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const classRes = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClasses(classRes?.data?.data || []);
 
-
-        const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`, {}, true);
+        const feesTypeRes = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`, {}, true);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
           const schoolFees = feesTypeRes.data.data.filter(
             (fee) => fee.groupOfFees === "School Fees"
@@ -47,7 +58,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
     };
 
     fetchData();
-  }, [schoolId]);
+  }, [schoolId, academicYear]);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -80,7 +91,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
         const reader = new FileReader();
         reader.onload = (e) => {
           const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
+          const workbook = read(data, { type: 'array', dateNF: 'yyyy-mm-dd' });
           const sheetName = workbook.SheetNames.find((name) => name.toLowerCase() === 'data');
           if (!sheetName) {
             toast.error('No "Data" sheet found in the Excel file.');
@@ -89,12 +100,12 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
           }
 
           const sheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
+          const jsonData = utils.sheet_to_json(sheet, { defval: '', dateNF: 'yyyy-mm-dd' }).filter((row) => {
             return (
               row.Class?.toString().trim() &&
               row.Sections?.toString().trim() &&
               row.InstallmentName?.toString().trim() &&
-              row.DueDate?.toString().trim() &&
+              row.DueDate &&
               row.FeesTypeName?.toString().trim() &&
               row.Amount?.toString().trim()
             );
@@ -108,17 +119,29 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
 
           const tempValidatedData = [];
           let hasError = false;
-
-
           const groupedData = {};
+
           jsonData.forEach((row, index) => {
             const className = row.Class ? String(row.Class).trim() : '';
             const sections = row.Sections ? String(row.Sections).trim().split(',').map(s => s.trim()) : [];
             const installmentName = row.InstallmentName ? String(row.InstallmentName).trim() : '';
-            const dueDate = row.DueDate ? String(row.DueDate).trim() : '';
+            let dueDate = row.DueDate;
+
+            if (typeof dueDate === 'number') {
+              const parsedDate = excelSerialToDate(dueDate);
+              if (parsedDate && !isNaN(parsedDate.getTime())) {
+                dueDate = parsedDate.toISOString().split('T')[0];
+              } else {
+                toast.error(`Row ${index + 1}: Invalid Excel serial date "${dueDate}".`);
+                hasError = true;
+                return;
+              }
+            } else {
+              dueDate = String(dueDate).trim();
+            }
+
             const feesTypeName = row.FeesTypeName ? String(row.FeesTypeName).trim() : '';
             const amount = row.Amount ? Number(row.Amount) : 0;
-
 
             const classObj = classes.find(
               (c) => c.className.toLowerCase() === className.toLowerCase()
@@ -144,14 +167,12 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
               classObj.sections.find((sec) => sec.name.toLowerCase() === s.toLowerCase())._id
             );
 
-
             const parsedDueDate = new Date(dueDate);
             if (isNaN(parsedDueDate.getTime())) {
               toast.error(`Row ${index + 1}: Invalid due date "${dueDate}". Use YYYY-MM-DD format.`);
               hasError = true;
               return;
             }
-
 
             const feesType = feesTypes.find(
               (f) => f.feesTypeName.toLowerCase() === feesTypeName.toLowerCase()
@@ -162,13 +183,11 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
               return;
             }
 
-
             if (!amount || amount <= 0) {
               toast.error(`Row ${index + 1}: Amount must be a positive number.`);
               hasError = true;
               return;
             }
-
 
             const key = `${classObj._id}-${sectionIds.sort().join(',')}`;
             if (!groupedData[key]) {
@@ -178,7 +197,6 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
                 installments: [],
               };
             }
-
 
             let installment = groupedData[key].installments.find(
               (inst) => inst.name.toLowerCase() === installmentName.toLowerCase()
@@ -201,7 +219,6 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
           if (hasError) {
             toast.error('Some rows contain errors. Review the preview and correct the file.');
           }
-
 
           Object.values(groupedData).forEach((group) => {
             tempValidatedData.push({
@@ -290,10 +307,10 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
   };
 
   const handleDownloadDemo = () => {
-    if (classes.length === 0 || feesTypes.length === 0) {
-      toast.error('No classes or fees types available to include in demo sheet.');
-      return;
-    }
+    // if (classes.length === 0 || feesTypes.length === 0) {
+    //   toast.error('No classes or fees types available to include in demo sheet.');
+    //   return;
+    // }
 
     const guidelines = [
       ['📌 Import Guidelines:'],
@@ -318,16 +335,14 @@ const ExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImportSucces
       ['Grade 1', 'A,B', 'Installment 2', '2025-07-01', 'Library Fee', 2000],
     ];
 
+    const wb = utils.book_new();
+    const ws = utils.aoa_to_sheet(wsData);
+    utils.book_append_sheet(wb, ws, 'Data');
 
-    const wb = XLSX.utils.book_new();
+    const wsGuidelines = utils.aoa_to_sheet(guidelines);
+    utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    XLSX.utils.book_append_sheet(wb, ws, 'Data');
-
-    const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
-    XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
-
-    XLSX.writeFile(wb, 'school_fees.xlsx');
+    writeFile(wb, 'school_fees_structure.xlsx');
   };
 
   return (

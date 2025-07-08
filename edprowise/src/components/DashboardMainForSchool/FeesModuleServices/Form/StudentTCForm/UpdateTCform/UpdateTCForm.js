@@ -64,7 +64,7 @@ const UpdateTCForm = () => {
     const fetchData = async () => {
       try {
         if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClasses(response?.data?.data || []);
       } catch (error) {
         toast.error('Error fetching class and section data.');
@@ -77,7 +77,7 @@ const UpdateTCForm = () => {
   useEffect(() => {
     if (student) {
       setFormData({
-              academicYear: student.academicYear|| null,
+        academicYear: student.academicYear|| null,
         studentPhoto: student.studentPhoto || null,
         AdmissionNumber: student.AdmissionNumber || '',
         firstName: student.firstName || '',
@@ -109,6 +109,8 @@ const UpdateTCForm = () => {
         transactionNumber: student.transactionNumber || '',
         receiptNumber: student.receiptNumber || '',
         certificateNumber: student.certificateNumber || '',
+        chequeNumber: student. chequeNumber ||'',
+        bankName: student.bankName ||''
       });
     }
   }, [student]);

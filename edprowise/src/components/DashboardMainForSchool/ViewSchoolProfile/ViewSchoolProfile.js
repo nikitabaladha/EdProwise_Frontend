@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import getAPI from "../../../api/getAPI";
+import getAPI from "../../../api/getAPI.js";
 
 import { Link } from "react-router-dom";
 
@@ -27,11 +27,6 @@ const ViewSchoolProfile = () => {
 
       if (!response.hasError && response.data && response.data.data) {
         setSchool(response.data.data);
-
-        console.log(
-          "school data from view school profile page",
-          response.data.data
-        );
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -53,7 +48,6 @@ const ViewSchoolProfile = () => {
         Array.isArray(response.data.data)
       ) {
         setUsers(response.data.data);
-        console.log("all users", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -71,7 +65,6 @@ const ViewSchoolProfile = () => {
         Array.isArray(response.data.data)
       ) {
         setSubscription(response.data.data);
-        console.log("All setSubscriptions", response.data.data);
       } else {
         console.error("Invalid response format or error in response");
       }
@@ -134,7 +127,7 @@ const ViewSchoolProfile = () => {
 
                   <div className="row">
                     <div className="col-md-4">
-                      <div className="d-flex align-items-center">
+                      <div className="mb-3 d-flex justify-content-center">
                         <div className="rounded bg-light d-flex align-items-center justify-content-center">
                           <img
                             src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.profileImage}`}
@@ -172,23 +165,6 @@ const ViewSchoolProfile = () => {
                         </label>
                         <p className="form-control">{school.schoolMobileNo}</p>
                       </div>
-                      <div className="mb-3">
-                        <label htmlFor="schoolEmail" className="form-label">
-                          School Email
-                        </label>
-                        <p className="form-control">{school.schoolEmail}</p>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="numberOfStudents"
-                          className="form-label"
-                        >
-                          Number Of Students
-                        </label>
-                        <p className="form-control">
-                          {school.numberOfStudents || "Not Provided"}
-                        </p>
-                      </div>
                     </div>
 
                     <div className="col-md-4">
@@ -216,6 +192,31 @@ const ViewSchoolProfile = () => {
                           {school.contactPersonName || "Not Provided"}
                         </p>
                       </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="schoolEmail" className="form-label">
+                          School Email
+                        </label>
+                        <p className="form-control">{school.schoolEmail}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label
+                          htmlFor="numberOfStudents"
+                          className="form-label"
+                        >
+                          Number Of Students
+                        </label>
+                        <p className="form-control">
+                          {school.numberOfStudents || "Not Provided"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
                       <div className="mb-3">
                         <label
                           htmlFor="schoolAlternateContactNo"
@@ -236,23 +237,44 @@ const ViewSchoolProfile = () => {
                   <hr></hr>
 
                   <div className="row">
-                    <div className="mb-3">
-                      <label htmlFor="schoolAddress" className="form-label">
-                        School Address
-                      </label>
-                      <p className="form-control">{school.schoolAddress}</p>
+                    <div className="col-md-12">
+                      <div className="mb-3">
+                        <label htmlFor="schoolAddress" className="form-label">
+                          School Address
+                        </label>
+                        <p className="form-control">{school.schoolAddress}</p>
+                      </div>
                     </div>
                   </div>
+
                   <div className="row">
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label htmlFor="schoolLocation" className="form-label">
-                          City-State-Country
+                        <label htmlFor="country" className="form-label">
+                          Country
                         </label>
-                        <p className="form-control">{school.schoolLocation}</p>
+                        <p className="form-control">{school.country}</p>
                       </div>
                     </div>
                     <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="state" className="form-label">
+                          State
+                        </label>
+                        <p className="form-control">{school.state}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="city" className="form-label">
+                          City
+                        </label>
+                        <p className="form-control">{school.city}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="landMark" className="form-label">
                           School Land Mark
@@ -260,7 +282,7 @@ const ViewSchoolProfile = () => {
                         <p className="form-control">{school.landMark}</p>
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="schoolPincode" className="form-label">
                           School Pin Code
@@ -274,6 +296,7 @@ const ViewSchoolProfile = () => {
                     Delivery Address Details
                   </h4>
                   <hr></hr>
+
                   <div className="row">
                     <div className="mb-3">
                       <label htmlFor="deliveryAddress" className="form-label">
@@ -282,22 +305,35 @@ const ViewSchoolProfile = () => {
                       <p className="form-control">{school.deliveryAddress}</p>
                     </div>
                   </div>
-
                   <div className="row">
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label
-                          htmlFor="deliveryLocation"
-                          className="form-label"
-                        >
-                          School Delivery Location
+                        <label htmlFor="deliveryCountry" className="form-label">
+                          Delivery Country
                         </label>
-                        <p className="form-control">
-                          {school.deliveryLocation}
-                        </p>
+                        <p className="form-control">{school.deliveryCountry}</p>
                       </div>
                     </div>
                     <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryState" className="form-label">
+                          Delivery State
+                        </label>
+                        <p className="form-control">{school.deliveryState}</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryCity" className="form-label">
+                          Delivery City
+                        </label>
+                        <p className="form-control">{school.deliveryCity}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label
                           htmlFor="deliveryLandMark"
@@ -310,7 +346,7 @@ const ViewSchoolProfile = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="deliveryPincode" className="form-label">
                           Delivery Pin Code
@@ -366,18 +402,20 @@ const ViewSchoolProfile = () => {
                               </div>
                             </Worker>
                           ) : (
-                            <div
-                              style={{
-                                border: "1px solid #ccc",
-                                borderRadius: "10px",
-                                overflow: "hidden",
-                              }}
-                            >
-                              <img
-                                src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
-                                alt="Affiliation Certificate"
-                                style={{ width: "100%", height: "auto" }}
-                              />
+                            <div className="mb-3 d-flex justify-content-center">
+                              <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                                <img
+                                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.affiliationCertificate}`}
+                                  alt="Affiliation Certificate"
+                                  className="avatar-md"
+                                  style={{
+                                    objectFit: "cover",
+                                    width: "200px",
+                                    height: "200px",
+                                    borderRadius: "10px",
+                                  }}
+                                />
+                              </div>
                             </div>
                           )
                         ) : (
@@ -388,7 +426,7 @@ const ViewSchoolProfile = () => {
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label htmlFor="panFile" className="form-lsabel">
+                        <label htmlFor="panFile" className="form-label">
                           PAN File
                         </label>
                         {school.panFile ? (
@@ -408,18 +446,20 @@ const ViewSchoolProfile = () => {
                               </div>
                             </Worker>
                           ) : (
-                            <div
-                              style={{
-                                border: "1px solid #ccc",
-                                borderRadius: "10px",
-                                overflow: "hidden",
-                              }}
-                            >
-                              <img
-                                src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
-                                alt="Affiliation Certificate"
-                                style={{ width: "100%", height: "auto" }}
-                              />
+                            <div className="mb-3 d-flex justify-content-center">
+                              <div className="rounded bg-light d-flex align-items-center justify-content-center">
+                                <img
+                                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${school.panFile}`}
+                                  alt="Pan File"
+                                  className="avatar-md"
+                                  style={{
+                                    objectFit: "cover",
+                                    width: "200px",
+                                    height: "200px",
+                                    borderRadius: "10px",
+                                  }}
+                                />
+                              </div>
                             </div>
                           )
                         ) : (

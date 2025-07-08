@@ -74,7 +74,7 @@ const OneTimeFeesTable = () => {
         setClassMap(classMap);
         setSectionMap(sectionMap);
 
-        const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`, {}, true);
+        const feesTypeRes = await getAPI(`/getall-fess-type-year/${schoolId}/year/${selectedYear}`, {}, true);
         const feesMap = {};
         feesTypeRes?.data?.data?.forEach(ft => {
           feesMap[ft._id] = ft.feesTypeName;
@@ -167,7 +167,7 @@ const OneTimeFeesTable = () => {
               </div>
 
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered text-center">
+                <table className="table align-middle mb-0  table-centered text-center">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th style={{ width: 20 }}>

@@ -154,7 +154,7 @@ const StudentRegisterListTable = () => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [studentListPerPage] = useState(5);
+  const [studentListPerPage] = useState(10);
 
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
@@ -222,7 +222,7 @@ const StudentRegisterListTable = () => {
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0 table-hover table-centered text-center">
+                  <table className="table align-middle mb-0  table-centered text-center">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>

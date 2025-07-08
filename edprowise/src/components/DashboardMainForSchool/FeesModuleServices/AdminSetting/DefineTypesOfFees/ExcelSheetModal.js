@@ -13,6 +13,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, onImportSuccess }) => {
   const [showFullPreviewModal, setShowFullPreviewModal] = useState(false);
   const [previewData, setPreviewData] = useState([]);
   const [validatedData, setValidatedData] = useState([]);
+  const academicYear = localStorage.getItem("selectedAcademicYear");
 
   useEffect(() => {
     setShowMainModal(show);
@@ -25,6 +26,10 @@ const ExcelSheetModal = ({ show, onClose, schoolId, onImportSuccess }) => {
   const handleImportClick = () => {
     if (!file) {
       toast.error('Please select a file to import.');
+      return;
+    }
+    if (!academicYear) {
+      toast.error('No academic year selected. Please select an academic year.');
       return;
     }
     setShowMainModal(false);
@@ -44,7 +49,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, onImportSuccess }) => {
             resolve({ jsonData: [], validatedData: [] });
             return;
           }
-          
+
           const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' }).filter((row) => {
             return row.FeesTypeName?.toString().trim() && row.GroupOfFees?.toString().trim();
@@ -82,6 +87,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, onImportSuccess }) => {
               feesTypeName,
               groupOfFees,
               schoolId,
+              academicYear,
             });
           });
 
@@ -112,7 +118,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, onImportSuccess }) => {
       setValidatedData(validatedData);
       setShowFullPreviewModal(true);
     } catch (error) {
-      // Error 
+      // Error already handled in processExcelData
     }
   };
 
@@ -142,7 +148,7 @@ const ExcelSheetModal = ({ show, onClose, schoolId, onImportSuccess }) => {
       try {
         const response = await postAPI('/create-fess-type', payload, true);
         if (!response.hasError) {
-          toast.success(`Fees Type ${payload.feesTypeName} imported successfully!`);
+          toast.success(`Fees Type ${payload.feesTypeName} (Academic Year: ${payload.academicYear}) imported successfully!`);
         } else {
           toast.error(
             response.message || `Failed to import fees type ${payload.feesTypeName} (Row ${index + 1}).`
@@ -167,32 +173,31 @@ const ExcelSheetModal = ({ show, onClose, schoolId, onImportSuccess }) => {
   };
 
   const handleDownloadDemo = () => {
-  // Guidelines for the separate sheet
-  const guidelines = [
-    ['📌 Import Guidelines:'],
-    ['• FeesTypeName: Enter the fees type name (e.g., Tuition Fee, Admission Fee).'],
-    ['• GroupOfFees: Must be one of: School Fees, One Time Fees.'],
-    ['• Ensure all fields are filled and valid.'],
-    ['• Do not change the column headers; they must remain exactly as provided.'],
-    ['• Use the "Data" sheet to enter your data.'],
-  ];
+    const guidelines = [
+      ['📌 Import Guidelines:'],
+      ['• FeesTypeName: Enter the fees type name (e.g., Tuition Fee, Admission Fee).'],
+      ['• GroupOfFees: Must be one of: School Fees, One Time Fees.'],
+      ['• Ensure all fields are filled and valid.'],
+      ['• Do not change the column headers; they must remain exactly as provided.'],
+      ['• Use the "Data" sheet to enter your data.'],
+    ];
 
-  const wsData = [
-    ['FeesTypeName', 'GroupOfFees'],
-    ['Tuition Fee', 'School Fees'],
-    ['Admission Fee', 'One Time Fees'],
-  ];
+    const wsData = [
+      ['FeesTypeName', 'GroupOfFees'],
+      ['Tuition Fee', 'School Fees'],
+      ['Admission Fee', 'One Time Fees'],
+    ];
 
-  const wb = XLSX.utils.book_new();
+    const wb = XLSX.utils.book_new();
 
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
 
-  const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
-  XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
+    const wsGuidelines = XLSX.utils.aoa_to_sheet(guidelines);
+    XLSX.utils.book_append_sheet(wb, wsGuidelines, 'Guidelines');
 
-  XLSX.writeFile(wb, 'fees_type.xlsx');
-};
+    XLSX.writeFile(wb, 'fees_type.xlsx');
+  };
 
   return (
     <>
