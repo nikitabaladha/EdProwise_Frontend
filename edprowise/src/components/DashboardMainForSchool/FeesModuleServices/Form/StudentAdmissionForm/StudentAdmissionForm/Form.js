@@ -1008,7 +1008,7 @@ const Form = ({
               </label>
             </div>
 
-            <div className="col-md-3">
+            <div className="col-md-6">
               <div className="mb-3">
                 <label htmlFor="selectedFeeType" className="form-label">
                   Fee Type <span className="text-danger">*</span>
@@ -1031,7 +1031,30 @@ const Form = ({
               </div>
             </div>
 
-            <div className="col-md-3">
+              <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="concessionType" className="form-label">
+                          Concession Type
+                        </label>
+                        <select
+                          id="concessionType"
+                          name="concessionType"
+                          className="form-control"
+                          value={formData.concessionType}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select</option>
+                          <option value="EWS">EWS</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                          <option value="Staff Children">Staff Children</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+
+            <div className="col-md-4">
               <div className="mb-3">
                 <label htmlFor="admissionFees" className="form-label">
                   Admission Fees <span className="text-danger">*</span>
@@ -1048,7 +1071,7 @@ const Form = ({
               </div>
             </div>
 
-            <div className="col-md-3">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label htmlFor="concessionAmount" className="form-label">
                   Concession
@@ -1066,7 +1089,7 @@ const Form = ({
               </div>
             </div>
 
-            <div className="col-md-3">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label htmlFor="finalamount" className="form-label">
                   Final Amount <span className="text-danger">*</span>

@@ -1,174 +1,21 @@
-// import React, { useEffect } from "react";
-// import { useLocation } from "react-router-dom";
-// import { FaPrint, FaDownload } from "react-icons/fa";
-// import html2pdf from "html2pdf.js";
-
-// const FeesReceipt = () => {
-//   const location = useLocation();
-//   const { data, feeTypeName, className } = location.state || {};
-
-
-//   const student = data?.form || {};
-
-//   const printReceipt = () => {
-//     window.print();
-//   };
-
-//   const downloadReceiptAsPDF = () => {
-//     const element = document.getElementById("receipt-content");
-
-//     const options = {
-//       filename: "fees_receipt.pdf",
-//       image: { type: "jpeg", quality: 0.98 },
-//       html2canvas: { scale: 2 },
-//       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-//     };
-
-//     html2pdf().from(element).set(options).save();
-//   };
-
-//   return (
-//     <div className="container my-4 text-dark" style={{ padding: 16 }}>
-//       <h6>
-//         <strong>Fees Receipts</strong>
-//       </h6>
-//       <div className="text-end mb-3">
-//         <button onClick={printReceipt} className="btn btn-light me-2">
-//           <FaPrint /> Print
-//         </button>
-//         <button onClick={downloadReceiptAsPDF} className="btn btn-light">
-//           <FaDownload /> Download PDF
-//         </button>
-//       </div>
-
-//       <div id="receipt-content" className="border border-dark p-3">
-//         <div className="text-center mb-3">
-//           <h6>
-//             <strong>[From Letter Head]</strong>
-//           </h6>
-//         </div>
-//         <h6 className="text-center bg-light py-1">
-//           <strong>Admission Fees Receipts</strong>
-//         </h6>
-//         <div className="row mb-2">
-//           <div className="col-4">
-//             <p style={{ color: 'black' }}>
-//               <strong>Receipts No :</strong> {student.receiptNumber}
-//             </p>
-//             <p style={{ color: 'black' }}>
-//               <strong>Student Name :</strong>{student.firstName}{student.lastName}
-//             </p>
-//             <p style={{ color: 'black' }}>
-//               <strong>Admission No :</strong> {student.AdmissionNumber}
-//             </p>
-//           </div>
-//           <div className="col-4">
-//             <p style={{ color: 'black' }}>&nbsp;</p>
-//             <p style={{ color: 'black' }}>
-//               <strong>Class :</strong> {className}
-//             </p>
-//           </div>
-//           <div className="col-4">
-//             <p style={{ color: 'black' }}>
-//               <strong>Date :</strong>{' '}
-//               {new Date(student.ApplicationReceivedOn).toLocaleDateString('en-GB')}
-//             </p>
-//             <p style={{ color: 'black' }}>
-//               <strong>Academic Year :</strong>{' '}
-//               {(() => {
-//                 const year = new Date(student.dateOfAdmission).getFullYear();
-//                 return `${year}-${year + 1}`;
-//               })()}
-
-//             </p>
-//           </div>
-//         </div>
-
-//         <div className="row pt-3 mb-2" style={{ borderTop: "2px solid black" }} />
-
-//         <div className="mb-4">
-//           <table className="table mb-4" style={{ border: "1px solid black", color: "black" }}>
-//             <thead>
-//               <tr>
-//                 <th className="text-center p-2" style={{ border: "1px solid black" }}>
-//                   Type of Fees
-//                 </th>
-//                 <th className="text-center p-2" style={{ border: "1px solid black" }}>
-//                   TC Fees
-//                 </th>
-//                 <th className="text-center p-2" style={{ border: "1px solid black" }}>
-//                   Concession
-//                 </th>
-//                 <th className="text-center p-2" style={{ border: "1px solid black" }}>
-//                   Final Amount
-//                 </th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               <tr>
-//                 <td className="text-center p-2" style={{ border: "1px solid black" }}>
-//                   {feeTypeName}
-//                 </td>
-//                 <td className="text-center p-2" style={{ border: "1px solid black" }}>
-//                   {student.TCfees}
-//                 </td>
-//                 <td className="text-center p-2" style={{ border: "1px solid black" }}>
-//                   {student.concessionAmount}
-//                 </td>
-//                 <td className="text-center p-2" style={{ border: "1px solid black" }}>
-//                   {student.finalAmount}
-//                 </td>
-//               </tr>
-//             </tbody>
-//           </table>
-//         </div>
-
-
-//         <div className="row text-dark">
-//           <div className="col-6">
-//             <p style={{ color: 'black' }}>
-//               <strong>Payment Mode:</strong> {student.paymentMode}
-//             </p>
-//             <p style={{ color: 'black' }}>
-//               <strong>Date of Payment:</strong>{new Date(student.paymentDate).toLocaleDateString('en-GB')}
-//             </p>
-//             <p style={{ color: 'black' }}>
-//               <strong>Transaction No./Cheque No.:</strong> {student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ''}
-//             </p>
-//           </div>
-//           <div className="col-4 text-end">
-//             <p>
-//               &nbsp;&nbsp;&nbsp;
-//             </p>
-
-//             <p style={{ color: 'black' }}>
-//               <strong>Signature of Collector</strong>
-//             </p>
-//             <p style={{ color: 'black' }}>
-//               <strong>Name:</strong> {student.name}
-//             </p>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default FeesReceipt;
-
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { FaPrint, FaDownload } from "react-icons/fa";
+import { FaPrint, FaDownload, FaTimes } from "react-icons/fa";
 import { toast } from "react-toastify";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { fetchSchoolData, generateHeader, generateFooter } from "../../../PdfUtlis";
+import getAPI from "../../../../../../api/getAPI";
+import CancelReceiptModal from "../CancelReceiptModal";
 
 const FeesReceipt = () => {
   const location = useLocation();
   const { data, feeTypeName, className } = location.state || {};
   const student = data?.form || {};
+  const [students, setStudent] = useState(student);
   const [schoolData, setSchoolData] = useState({ school: null, logoSrc: '' });
+  const [isCancelledOrReturned, setIsCancelledOrReturned] = useState(['Cancelled', 'Cheque Return'].includes(students?.status));
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -188,6 +35,33 @@ const FeesReceipt = () => {
       loadSchoolData();
     }
   }, []);
+
+  const fetchStudentStatus = async () => {
+    try {
+      const response = await getAPI(`/get-tc-status/${student._id}`, true);
+      console.log("API Response:", response);
+
+      if (!response.hasError && response.data && response.data.student) {
+        setStudent(prev => ({ ...prev, ...response.data.student }));
+        console.log("Updated student data:", response.data.student);
+        setIsCancelledOrReturned(['Cancelled', 'Cheque Return'].includes(response.data.student.status));
+        toast.success(`Student status fetched: ${response.data.student.status}`);
+      } else {
+        toast.error(response.message || "Failed to fetch student status.");
+      }
+    } catch (error) {
+      toast.error("Error fetching student status. Please try again.");
+    }
+  };
+
+  const handleModalClose = async (updatedStudent) => {
+    setShowModal(false);
+    if (updatedStudent) {
+      setTimeout(async () => {
+        await fetchStudentStatus();
+      }, 500);
+    }
+  };
 
   const printReceipt = () => {
     window.print();
@@ -274,6 +148,16 @@ const FeesReceipt = () => {
     document.body.removeChild(wrapper);
   };
 
+  const handleCancelClick = () => {
+    if (isCancelledOrReturned) {
+      toast.info(`Receipt is already ${student.status.toLowerCase()}.`);
+      return;
+    }
+    setShowModal(true);
+  };
+
+
+
   return (
     <div className="container my-4" style={{ maxWidth: "800px" }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -281,6 +165,14 @@ const FeesReceipt = () => {
           <strong>TC Fees Receipt</strong>
         </h4>
         <div>
+          <button
+            onClick={handleCancelClick}
+            className="btn btn-outline-danger me-2"
+            style={{ borderRadius: "20px" }}
+            disabled={isCancelledOrReturned }
+          >
+            <FaTimes className="me-1" /> Cancel/Return
+          </button>
           <button
             onClick={printReceipt}
             className="btn btn-outline-primary me-2"
@@ -303,13 +195,38 @@ const FeesReceipt = () => {
         className="p-4 shadow-sm"
         style={{ backgroundColor: "#ffffff", position: "relative", minHeight: "297mm" }}
       >
+        {['Cancelled', 'Cheque Return'].includes(students?.status) && (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              opacity: 0.2,
+              pointerEvents: "none",
+              zIndex: 99,
+              width: "80%",
+              maxWidth: "500px",
+            }}
+          >
+            <img
+              src={students.status === 'Cheque Return' ? "/assets/images/StatusReturned.png" : "/assets/images/StatusCancelled.png"}
+              alt={students.status === 'Cheque Return' ? "Returned Watermark" : "Cancelled Watermark"}
+              style={{
+                width: "100%",
+                height: "auto",
+              }}
+            />
+          </div>
+        )}
+
         <div className="header-class" dangerouslySetInnerHTML={{ __html: generateHeader(schoolData.school, schoolData.logoSrc) }} />
 
-        <h3 className="text-center text-uppercase mb-3" style={{ color: "#0d6efd" }}>
+        <h3 className="text-center text-uppercase mb-3" style={{ color: "#0d6efd", zIndex: 1, position: "relative" }}>
           <strong>TC Fees Receipt</strong>
         </h3>
 
-        <div className="row mb-4 text-black">
+        <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
           <div className="col-md-6">
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
@@ -340,8 +257,8 @@ const FeesReceipt = () => {
                 Date:
               </span>
               <span>
-                {student?.ApplicationReceivedOn
-                  ? new Date(student.ApplicationReceivedOn).toLocaleDateString("en-GB")
+                {student?.applicationDate
+                  ? new Date(student.applicationDate).toLocaleDateString("en-GB")
                   : "N/A"}
               </span>
             </div>
@@ -350,12 +267,7 @@ const FeesReceipt = () => {
                 Academic Year:
               </span>
               <span>
-                {student?.dateOfAdmission
-                  ? (() => {
-                      const year = new Date(student.dateOfAdmission).getFullYear();
-                      return `${year}-${year + 1}`;
-                    })()
-                  : "N/A"}
+                {student?.academicYear || ""}
               </span>
             </div>
             <div className="d-flex mb-2">
@@ -367,7 +279,7 @@ const FeesReceipt = () => {
           </div>
         </div>
 
-        <div className="table-responsive mb-4">
+        <div className="table-responsive mb-4" style={{ zIndex: 1, position: "relative" }}>
           <table className="table table-bordered">
             <thead className="table-primary">
               <tr>
@@ -381,7 +293,7 @@ const FeesReceipt = () => {
               <tr>
                 <td className="text-center">{feeTypeName || "N/A"}</td>
                 <td className="text-center">{student?.TCfees || "0"}</td>
-                <td className="text-center text-danger">{student?.concessionAmount || "0"}</td>
+                <td className="text-center">{student?.concessionAmount || "0"}</td>
                 <td className="text-center fw-bold">{student?.finalAmount || "0"}</td>
               </tr>
               <tr className="table-active">
@@ -392,7 +304,7 @@ const FeesReceipt = () => {
           </table>
         </div>
 
-        <div className="row mb-4 text-black">
+        <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
           <div className="col-md-6">
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
@@ -422,9 +334,19 @@ const FeesReceipt = () => {
                 </span>
               </div>
             )}
+              {['Cancelled', 'Cheque Return'].includes(students?.status) && (
+              <>
+                <div className="d-flex mb-2">
+                  <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
+                    Cancel Reason:
+                  </span>
+                  <span>{students?.cancelReason || ""}</span>
+                </div>
+              </>
+            )}
           </div>
           <div className="col-md-6">
-            <div className="plegs-3 text-center" style={{ height: "100%" }}>
+            <div className="p-3 text-center" style={{ height: "100%" }}>
               <p className="mb-4">Authorized Signature</p>
               <div className="mt-4 pt-3" style={{ borderTop: "1px solid #dee2e6" }}>
                 <p className="mb-0 fw-bold">{schoolData.school?.schoolName || "School Administrator"}</p>
@@ -444,10 +366,18 @@ const FeesReceipt = () => {
             textAlign: "center",
             width: "100%",
             boxSizing: "border-box",
+            zIndex: 1,
           }}
           dangerouslySetInnerHTML={{ __html: generateFooter(schoolData.school) }}
         />
       </div>
+      <CancelReceiptModal
+        show={showModal}
+        onClose={handleModalClose}
+        student={student}
+        setIsCancelled={setIsCancelledOrReturned}
+        fetchStudentStatus={fetchStudentStatus}
+      />
     </div>
   );
 };

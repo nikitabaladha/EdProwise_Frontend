@@ -944,7 +944,7 @@ const StudentRegistrationForm = () => {
                    <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="concessionType" className="form-label">
-                          Concession Type<span className="text-danger">*</span>
+                          Concession Type
                         </label>
                         <select
                           id="concessionType"

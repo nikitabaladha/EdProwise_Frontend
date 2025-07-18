@@ -563,7 +563,6 @@ const RegistrationPreviewModal = ({
 
   const isRowValid = (row, index) => {
     const firstName = row.firstName?.toString().trim() || '';
-    const middleName = row.middleName?.toString().trim() || '';
     const lastName = row.lastName?.toString().trim() || '';
     const dateOfBirth = row.dateOfBirth?.toString().trim() || '';
     const age = row.age?.toString().trim() || '';
@@ -576,20 +575,15 @@ const RegistrationPreviewModal = ({
     const shiftName = row.shift?.toString().trim() || '';
     const fatherName = row.fatherName?.toString().trim() || '';
     const fatherContactNo = row.fatherContactNo?.toString().trim() || '';
-    const fatherQualification = row.fatherQualification?.toString().trim() || '';
     const fatherProfession = row.fatherProfession?.toString().trim() || '';
     const motherName = row.motherName?.toString().trim() || '';
     const motherContactNo = row.motherContactNo?.toString().trim() || '';
-    const motherQualification = row.motherQualification?.toString().trim() || '';
     const motherProfession = row.motherProfession?.toString().trim() || '';
     const currentAddress = row.currentAddress?.toString().trim() || '';
     const country = row.country?.toString().trim() || '';
     const state = row.state?.toString().trim() || '';
     const city = row.city?.toString().trim() || '';
     const pincode = row.pincode?.toString().trim() || '';
-    const previousSchoolName = row.previousSchoolName?.toString().trim() || '';
-    const addressOfPreviousSchool = row.addressOfPreviousSchool?.toString().trim() || '';
-    const previousSchoolBoard = row.previousSchoolBoard?.toString().trim() || '';
     const studentCategory = row.studentCategory?.toString().trim() || '';
     const siblingInfoChecked = row.siblingInfoChecked?.toString().trim().toLowerCase() === 'true';
     const relationType = row.relationType?.toString().trim() || '';
@@ -838,6 +832,104 @@ const RegistrationPreviewModal = ({
   };
 
   return (
+    <>
+      <style jsx>
+        {`
+          .custom-modal .modal-dialog {
+            max-width: 95vw;
+            margin: auto;
+          }
+          .custom-modal .modal-content {
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          }
+          .custom-modal .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+          }
+          .custom-modal .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+          }
+          .custom-modal .table-responsive {
+            max-height: 60vh;
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+          }
+          .custom-modal .table {
+            margin-bottom: 0;
+            white-space: nowrap;
+            font-size: 0.9rem;
+          }
+          .custom-modal .table thead th {
+            position: sticky;
+            top: 0;
+            background: #e9ecef;
+            z-index: 1;
+            padding: 8px;
+            font-weight: 600;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 2px solid #dee2e6;
+            min-width: 100px;
+          }
+          .custom-modal .table tbody td {
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+            border-top: 1px solid #dee2e6;
+          }
+          .custom-modal .table tbody tr:hover {
+            background-color: #f1f3f5;
+          }
+          .valid-cell {
+            color: #28a745 !important; /* Bootstrap success green */
+            font-weight: 600;
+          }
+          .invalid-cell {
+            color: #dc3545 !important; /* Bootstrap danger red */
+            font-weight: 600;
+          }
+          .remark-cell {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .remark-cell:hover {
+            overflow: visible;
+            white-space: normal;
+            background: #fff;
+            z-index: 10;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          }
+          @media (max-width: 576px) {
+            .custom-modal .modal-dialog {
+              max-width: 98vw;
+            }
+            .custom-modal .modal-body {
+              max-height: 80vh;
+              padding: 1rem;
+            }
+            .custom-modal .table-responsive {
+              max-height: 70vh;
+            }
+            .custom-modal .table thead th,
+            .custom-modal .table tbody td {
+              font-size: 0.8rem;
+              padding: 6px;
+              min-width: 80px;
+            }
+            .remark-cell {
+              max-width: 100px;
+            }
+          }
+        `}
+      </style>
     <Modal
       show={show}
       onHide={onClose}
@@ -897,6 +989,7 @@ const RegistrationPreviewModal = ({
         </Button>
       </Modal.Footer>
     </Modal>
+    </>
   );
 };
 

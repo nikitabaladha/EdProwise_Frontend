@@ -68,6 +68,7 @@ const UseUpdateAdmissionForm = () => {
     motherProfession: '',
     agreementChecked: false,
     admissionFees: '',
+    concessionType: '',
     concessionAmount: ''||0,
     finalAmount: '',
     name: '',
@@ -91,6 +92,7 @@ const UseUpdateAdmissionForm = () => {
 
   useEffect(() => {
     if (student) {
+      console.log("Concession Type:", student.concessionType);
       setFormData({  
         academicYear:student.academicYear||null,
         studentPhoto: student.studentPhoto || null,
@@ -138,6 +140,7 @@ const UseUpdateAdmissionForm = () => {
         motherProfession: student.motherProfession || '',
         agreementChecked: student.agreementChecked || false,
         admissionFees: student.admissionFees || '',
+        concessionType:student.concessionType || '',
         concessionAmount: student.concessionAmount || '',
         finalAmount: student.finalAmount|| '',
         name: student.name || '',
@@ -366,6 +369,7 @@ const UseUpdateAdmissionForm = () => {
         motherName: student.motherName,
         motherContactNo: student.motherContactNo,
         admissionFees: student.admissionFees, 
+        concessionType:student.concessionType,
         concessionAmount: student.concessionAmount ,
         finalAmount: student.finalAmount,
         name: student.name,

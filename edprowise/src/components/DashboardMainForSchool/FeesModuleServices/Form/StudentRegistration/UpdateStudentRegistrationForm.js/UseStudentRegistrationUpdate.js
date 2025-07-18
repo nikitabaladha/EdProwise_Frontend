@@ -63,7 +63,7 @@ const UseStudentRegistrationUpdate = () => {
     howReachUs: student?.howReachUs || '',
     agreementChecked: student?.agreementChecked || false,
     registrationFee: student?.registrationFee || 0,
-    concessionType: student?.concessionType || 0||'',
+    concessionType: student?.concessionType ||'',
     concessionAmount: student?.concessionAmount || 0,
     finalAmount: student?.finalAmount || 0,
     name: student?.name || '',

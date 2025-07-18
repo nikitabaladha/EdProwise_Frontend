@@ -73,6 +73,7 @@ const StudentAdmissionForm = () => {
     motherQualification: '',
     motherProfession: '',
     agreementChecked: false,
+    concessionType: null,
     name: '',
     paymentMode: '',
     chequeNumber: '',

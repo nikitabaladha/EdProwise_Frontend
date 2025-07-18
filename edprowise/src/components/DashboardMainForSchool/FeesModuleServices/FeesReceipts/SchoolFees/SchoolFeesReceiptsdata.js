@@ -1252,6 +1252,7 @@ const handleFinalSubmit = async (e, frontendReceiptDetails = null, isImport = fa
 
         receiptDetailsToProcess.push({
           ...receiptDetails,
+          _id: response.data.receipt._id,
           receiptNumber: response.data.receipt.receiptNumber,
           bankName: formData.paymentMode === 'Cheque' ? formData.bankName : undefined,
           installments: receiptDetails.installments.map((inst) => ({

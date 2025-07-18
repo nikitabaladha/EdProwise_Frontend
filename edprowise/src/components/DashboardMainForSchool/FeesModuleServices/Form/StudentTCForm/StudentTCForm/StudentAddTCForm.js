@@ -48,6 +48,7 @@ const StudentAddTCForm = () => {
     anyRemarks: '',
     agreementChecked: false,
     TCfees: '',
+    concessionType:null,
     concessionAmount: '',
     finalAmount: '',
     name: '',
@@ -330,67 +331,72 @@ const StudentAddTCForm = () => {
   };
 
   const handleFinalSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!formData.agreementChecked) {
-      toast.error("You must agree to the certificate purpose statement");
-      return;
-    }
+  if (!formData.agreementChecked) {
+    toast.error("You must agree to the certificate purpose statement");
+    return;
+  }
 
-    if (!formData.name || formData.name.trim() === '') {
-      toast.error("Please enter your name");
-      return;
-    }
+  if (!formData.name || formData.name.trim() === '') {
+    toast.error("Please enter your name");
+    return;
+  }
 
-    if (!formData.paymentMode) {
-      toast.error("Please select a payment option");
-      return;
-    }
+  if (!formData.paymentMode) {
+    toast.error("Please select a payment option");
+    return;
+  }
 
-    if (
-      formData.paymentMode === 'Cheque' &&
-      (!formData.chequeNumber || !formData.bankName)
-    ) {
-      toast.error("Please provide cheque number and bank name");
-      return;
-    }
+  if (
+    formData.paymentMode === 'Cheque' &&
+    (!formData.chequeNumber || !formData.bankName)
+  ) {
+    toast.error("Please provide cheque number and bank name");
+    return;
+  }
 
-    const payload = new FormData();
-    payload.append('schoolId', schoolId);
+  const payload = new FormData();
+  payload.append('schoolId', schoolId);
 
-    for (const key in formData) {
-      if (formData.hasOwnProperty(key)) {
-        payload.append(key, formData[key]);
+  for (const key in formData) {
+    if (formData.hasOwnProperty(key)) {
+      if (key === 'concessionType' && (!formData[key] || formData[key] === '')) {
+        continue;
       }
+      payload.append(key, formData[key]);
     }
+  }
 
-    try {
-      const response = await postAPI('/create-TC-form', payload, {
-        'Content-Type': 'multipart/form-data',
+  try {
+    const response = await postAPI('/create-TC-form', payload, {
+      'Content-Type': 'multipart/form-data',
+    });
+
+    if (!response.hasError) {
+      toast.success("Transfer Certificate submitted successfully!");
+      const stateData = {
+        data: response.data || response.student,
+        feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || '',
+        className: classes.find(c => c._id === formData.masterDefineClass)?.className || ''
+      };
+
+      console.log("State data being passed:", stateData);
+      navigate('/school-dashboard/fees-module/form/trasfer-certificate-form-details', {
+        state: stateData
       });
-
-      if (!response.hasError) {
-        toast.success("Transfer Certificate submitted successfully!");
-        const stateData = {
-          data: response.data || response.student,
-          feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || '',
-          className: classes.find(c => c._id === formData.masterDefineClass)?.className || ''
-        };
-
-        console.log("State data being passed:", stateData);
-        navigate(`/school-dashboard/fees-module/form/trasfer-certificate-list`);
-      } else {
-        toast.error(response.message || "Something went wrong");
-      }
-    } catch (error) {
-      const backendMessage = error?.response?.data?.message;
-      if (backendMessage) {
-        toast.error(backendMessage);
-      } else {
-        toast.error('An error occurred during registration');
-      }
+    } else {
+      toast.error(response.message || "Something went wrong");
     }
-  };
+  } catch (error) {
+    const backendMessage = error?.response?.data?.message;
+    if (backendMessage) {
+      toast.error(backendMessage);
+    } else {
+      toast.error('An error occurred during registration');
+    }
+  }
+};
 
   const handleRefreshFeeTypes = () => {
     if (formData.masterDefineClass) {
@@ -874,7 +880,7 @@ const StudentAddTCForm = () => {
                           The certificate is issued for the purpose of admission to another School.
                         </label>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="selectedFeeType" className="form-label">
                             Fee Type <span className="text-danger">*</span>
@@ -904,13 +910,34 @@ const StudentAddTCForm = () => {
                           </button>
                         </div>
                       </div>
-                      <div className="col-md-3">
+                        <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="concessionType" className="form-label">
+                          Concession Type
+                        </label>
+                        <select
+                          id="concessionType"
+                          name="concessionType"
+                          className="form-control"
+                          value={formData.concessionType}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select</option>
+                          <option value="EWS">EWS</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                          <option value="Staff Children">Staff Children</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="TCfees" className="form-label">
                             TC Fees <span className="text-danger">*</span>
                           </label>
                           <input
-                            type="number"
                             id="TCfees"
                             name="TCfees"
                             className="form-control"
@@ -920,13 +947,12 @@ const StudentAddTCForm = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="concessionAmount" className="form-label">
                             Concession
                           </label>
                           <input
-                            type="number"
                             id="concessionAmount"
                             name="concessionAmount"
                             className="form-control"
@@ -936,7 +962,7 @@ const StudentAddTCForm = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="finalAmount" className="form-label">
                             Final Amount <span className="text-danger">*</span>

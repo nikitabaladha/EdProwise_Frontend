@@ -266,6 +266,7 @@ const navigateToFeesReceipt = (event, student) => {
                         <th>Section</th>
                         <th>Shift</th>
                         <th>Contact No</th>
+                         <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -292,7 +293,15 @@ const navigateToFeesReceipt = (event, student) => {
                           <td>{getClassNameById(student.masterDefineClass)}</td>
                           <td>{getSectionNameById(student.section)}</td>
                               <td>{getShiftName(student.masterDefineShift)}</td>
-                          <td>{student.fatherContactNo}</td>
+                              <td>{student.parentContactNumber}</td>
+                           <td>
+                            <button
+                              className={`btn btn-sm ${student.status === 'Paid' ? 'btn-success' : 'btn-danger'
+                                }`}
+                            >
+                              {student.status}
+                            </button>
+                          </td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link

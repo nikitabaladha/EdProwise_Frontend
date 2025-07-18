@@ -84,7 +84,7 @@ const BoardRegistrationFeeCollection = () => {
       } catch (error) {
         toast.error('Failed to fetch board registration fees.');
         setBoardRegistrationFees({});
-        }
+      }
       finally {
         setFeesLoading(false);
       }
@@ -169,11 +169,11 @@ const BoardRegistrationFeeCollection = () => {
       prevStudents.map((student) =>
         student._id === id
           ? {
-              ...student,
-              paymentMode: mode,
-              chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
-              bankName: mode === 'Cheque' ? student.bankName : '',
-            }
+            ...student,
+            paymentMode: mode,
+            chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
+            bankName: mode === 'Cheque' ? student.bankName : '',
+          }
           : student
       )
     );
@@ -450,11 +450,10 @@ const BoardRegistrationFeeCollection = () => {
                   type="button"
                   onClick={fetchStudents}
                   disabled={!selectedClass || !selectedSection || loading || feesLoading}
-                  className={`btn ${
-                    !selectedClass || !selectedSection || loading || feesLoading
+                  className={`btn ${!selectedClass || !selectedSection || loading || feesLoading
                       ? 'btn-secondary disabled'
                       : 'btn-primary'
-                  }`}
+                    }`}
                 >
                   {loading ? (
                     <>
@@ -583,15 +582,20 @@ const BoardRegistrationFeeCollection = () => {
                         )}
                         <td>
                           <span
-                            className={`badge ${
-                              student.paymentStatus === 'Paid' ? 'bg-success' : 'bg-warning text-dark'
-                            }`}
+                            className={`badge ${student.paymentStatus === 'Paid'
+                              ? 'bg-success text-white'
+                              : student.paymentStatus === 'Cancelled'
+                                ? 'bg-danger text-white'
+                                :student.paymentStatus === 'Cheque Return'
+                                 ? 'bg-danger text-white'
+                                : 'bg-warning text-dark'
+                              }`}
                           >
                             {student.paymentStatus}
                           </span>
                         </td>
                         <td>
-                          {student.paymentStatus !== 'Paid' ? (
+                          {student.paymentStatus !== 'Paid' && student.paymentStatus !== 'Cancelled' && student.paymentStatus !== 'Cheque Return' ? (
                             <button
                               type="button"
                               className="btn btn-success btn-sm"
@@ -621,6 +625,7 @@ const BoardRegistrationFeeCollection = () => {
                             </button>
                           )}
                         </td>
+
                       </tr>
                     ))}
                   </tbody>

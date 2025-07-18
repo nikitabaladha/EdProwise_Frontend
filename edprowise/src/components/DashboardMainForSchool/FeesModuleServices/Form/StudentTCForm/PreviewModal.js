@@ -12,6 +12,7 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, students, cla
     'selectedFeeType',
     'TCfees',
     'concessionAmount',
+    'concessionType',
     'finalAmount',
     'name',
     'paymentMode',
@@ -22,7 +23,8 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, students, cla
   ];
 
   const getDisplayValue = (row, header) => {
-    return row[header] !== undefined && row[header] !== '' ? row[header] : '-';
+    const value = row[header];
+    return value !== undefined && value !== '' && value !== '-' ? value : '-';
   };
 
   const isRowValid = (row, index) => {
@@ -32,98 +34,109 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, students, cla
     const lastName = row.lastName?.toString().trim() || '';
     const className = row.className?.toString().trim() || '';
     const selectedFeeType = row.selectedFeeType?.toString().trim() || '';
-    const TCfees = Number(row.TCfees) || 0;
+    const tcFees = Number(row.TCfees) || 0;
     const concessionAmount = Number(row.concessionAmount) || 0;
+    const concessionType = row.concessionType?.toString().trim() || '';
     const finalAmount = Number(row.finalAmount) || 0;
     const name = row.name?.toString().trim() || '';
     const paymentMode = row.paymentMode?.toString().trim() || '';
     const chequeNumber = row.chequeNumber?.toString().trim() || '';
     const bankName = row.bankName?.toString().trim() || '';
 
-    // Validate required fields
+    // Required field checks
     const requiredFields = [
       { key: 'AdmissionNumber', value: admissionNumber, label: 'Admission Number' },
       { key: 'firstName', value: firstName, label: 'First Name' },
       { key: 'lastName', value: lastName, label: 'Last Name' },
       { key: 'className', value: className, label: 'Class Name' },
       { key: 'selectedFeeType', value: selectedFeeType, label: 'Fee Type' },
-      { key: 'TCfees', value: TCfees, label: 'TC Fees' },
+      { key: 'TCfees', value: tcFees, label: 'TC Fees' },
       { key: 'finalAmount', value: finalAmount, label: 'Final Amount' },
       { key: 'name', value: name, label: 'Name of Person Filling the Form' },
       { key: 'paymentMode', value: paymentMode, label: 'Payment Mode' },
     ];
 
     requiredFields.forEach((field) => {
-      if (!field.value) {
+      if (!field.value || field.value === '-') {
         errors.push(`${field.label} is required`);
       }
     });
 
-    // Validate student
+    // Validate AdmissionNumber
     const student = students.find(s => s.AdmissionNumber?.trim() === admissionNumber);
     if (!student) {
       errors.push(`Invalid Admission Number "${admissionNumber}"`);
     }
 
-    // Validate class
+    // Validate className
     const classObj = classes.find(c => c.className.toLowerCase() === className?.toLowerCase());
     if (!classObj) {
       errors.push(`Invalid class "${className}"`);
     }
 
-    // Validate fee type
+    // Validate feeType
     const feeType = classObj && feeTypesByClass[classObj._id]?.find(ft => ft.name.toLowerCase() === selectedFeeType?.toLowerCase());
     if (!feeType) {
       errors.push(`Invalid fee type "${selectedFeeType}"`);
     }
 
-    // Validate numeric fields
-    if (TCfees <= 0 || (feeType && TCfees !== feeType.amount)) {
+    // Validate TCfees
+    if (tcFees <= 0 || (feeType && tcFees !== feeType.amount)) {
       errors.push(`TC Fees must match the fee type amount (${feeType ? feeType.amount : 'unknown'})`);
     }
-    if (concessionAmount < 0 || concessionAmount > TCfees) {
-      errors.push(`Concession Amount must be between 0 and TC Fees (${TCfees})`);
+
+    // Validate concessionAmount and concessionType
+    if (concessionAmount < 0 || concessionAmount > tcFees) {
+      errors.push(`Concession Amount must be between 0 and TC Fees (${tcFees})`);
     }
-    if (finalAmount !== TCfees - concessionAmount) {
-      errors.push(`Final Amount must be TC Fees (${TCfees}) minus Concession (${concessionAmount})`);
+    const validConcessionTypes = ['EWS', 'SC', 'ST', 'OBC', 'Staff Children', 'Other'];
+    if (concessionAmount > 0 && (!concessionType || !validConcessionTypes.includes(concessionType))) {
+      errors.push(`Concession Type is required when Concession Amount is greater than 0 and must be one of: ${validConcessionTypes.join(', ')}`);
+    }
+    if (concessionAmount === 0 && concessionType !== '' && concessionType !== '-') {
+      errors.push('Concession Type must be empty when Concession Amount is 0');
     }
 
-    // Validate payment mode
+    // Validate finalAmount
+    if (finalAmount !== tcFees - concessionAmount) {
+      errors.push(`Final Amount must be TC Fees (${tcFees}) minus Concession (${concessionAmount})`);
+    }
+
+    // Validate paymentMode
     if (!['Cash', 'Cheque', 'Online'].includes(paymentMode)) {
       errors.push(`Invalid Payment Mode "${paymentMode}". Must be one of: Cash, Cheque, Online`);
     }
 
-    // Validate cheque fields if payment mode is Cheque
+    // Validate cheque fields
     if (paymentMode === 'Cheque') {
-      if (!chequeNumber) errors.push('Cheque Number is required for Cheque payment mode');
-      if (!bankName) errors.push('Bank Name is required for Cheque payment mode');
+      if (!chequeNumber || chequeNumber === '-') errors.push('Cheque Number is required for Cheque payment mode');
+      if (!bankName || bankName === '-') errors.push('Bank Name is required for Cheque payment mode');
     }
 
-    // Validate against validatedData with debugging
+    // Compare with validatedData
     const match = validatedData.find((vd) => {
       const mismatches = [];
       const studentFirstName = student?.firstName?.trim() || '';
       const studentLastName = student?.lastName?.trim() || '';
       const expectedFirstName = firstName || studentFirstName;
       const expectedLastName = lastName || studentLastName;
+      const expectedConcessionType = concessionAmount > 0 ? concessionType : '';
+      const expectedChequeNumber = paymentMode === 'Cheque' ? chequeNumber : '';
+      const expectedBankName = paymentMode === 'Cheque' ? bankName : '';
 
       if (vd.AdmissionNumber !== admissionNumber) mismatches.push(`AdmissionNumber: ${vd.AdmissionNumber} !== ${admissionNumber}`);
       if (vd.masterDefineClass !== classObj?._id) mismatches.push(`masterDefineClass: ${vd.masterDefineClass} !== ${classObj?._id}`);
-      if (Number(vd.TCfees) !== TCfees) mismatches.push(`TCfees: ${Number(vd.TCfees)} !== ${TCfees}`);
+      if (Number(vd.TCfees) !== tcFees) mismatches.push(`TCfees: ${Number(vd.TCfees)} !== ${tcFees}`);
       if (Number(vd.concessionAmount) !== concessionAmount) mismatches.push(`concessionAmount: ${Number(vd.concessionAmount)} !== ${concessionAmount}`);
+      if (vd.concessionType !== expectedConcessionType) mismatches.push(`concessionType: ${vd.concessionType} !== ${expectedConcessionType}`);
       if (Number(vd.finalAmount) !== finalAmount) mismatches.push(`finalAmount: ${Number(vd.finalAmount)} !== ${finalAmount}`);
       if (vd.firstName !== expectedFirstName) mismatches.push(`firstName: ${vd.firstName} !== ${expectedFirstName}`);
       if (vd.lastName !== expectedLastName) mismatches.push(`lastName: ${vd.lastName} !== ${expectedLastName}`);
       if (vd.paymentMode !== paymentMode) mismatches.push(`paymentMode: ${vd.paymentMode} !== ${paymentMode}`);
       if (vd.name !== name) mismatches.push(`name: ${vd.name} !== ${name}`);
       if (vd.agreementChecked !== true) mismatches.push(`agreementChecked: ${vd.agreementChecked} !== true`);
-      if (paymentMode === 'Cheque') {
-        if (vd.chequeNumber !== chequeNumber) mismatches.push(`chequeNumber: ${vd.chequeNumber} !== ${chequeNumber}`);
-        if (vd.bankName !== bankName) mismatches.push(`bankName: ${vd.bankName} !== ${bankName}`);
-      } else {
-        if (vd.chequeNumber !== '') mismatches.push(`chequeNumber: ${vd.chequeNumber} !== ''`);
-        if (vd.bankName !== '') mismatches.push(`bankName: ${vd.bankName} !== ''`);
-      }
+      if (vd.chequeNumber !== expectedChequeNumber) mismatches.push(`chequeNumber: ${vd.chequeNumber} !== ${expectedChequeNumber}`);
+      if (vd.bankName !== expectedBankName) mismatches.push(`bankName: ${vd.bankName} !== ${expectedBankName}`);
 
       const matches = mismatches.length === 0;
       if (!matches) {
@@ -198,11 +211,11 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, students, cla
             background-color: #f1f3f5;
           }
           .valid-cell {
-            color: #28a745 !important; /* Bootstrap success green */
+            color: #28a745 !important;
             font-weight: 600;
           }
           .invalid-cell {
-            color: #dc3545 !important; /* Bootstrap danger red */
+            color: #dc3545 !important;
             font-weight: 600;
           }
           .remark-cell {

@@ -164,6 +164,12 @@ promotion:{
   successMessage: "Student promotion successfully deleted!",
   errorMessage: "Failed to delete Student promotion .",
   idKey: "_id",
+},
+refund:{
+  getEndpoint: (id) => `/delete-refund-fees/${id}`,
+  successMessage: "Student refund amount deleted!",
+  errorMessage: "Failed to delete student refund amount .",
+  idKey: "_id",
 }
 
 };

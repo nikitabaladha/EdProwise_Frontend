@@ -242,6 +242,11 @@ const Sidebar = () => {
                 link: "/school-dashboard/fees-module/fees-receipts/board-exam-fees",
                 icon: "solar:users-group-rounded-bold-duotone",
               },
+              {
+                label: "Fees Refund",
+                link: "/school-dashboard/fees-module/fees-receipts/fees-refund",
+                icon: "solar:users-group-rounded-bold-duotone",
+              },
             ],
           },
           {
@@ -288,7 +293,7 @@ const Sidebar = () => {
                     link: "/school-dashboard/fees-module/reports/daily-collection/tc-reports",
                     icon: "solar:document-bold-duotone",
                   },
-                   {
+                  {
                     label: "Board Registration Fees",
                     link: "/school-dashboard/fees-module/reports/daily-collection/board-registration",
                     icon: "solar:document-bold-duotone",
@@ -302,6 +307,21 @@ const Sidebar = () => {
                     label: "Lates Fees & Excess",
                     link: "/school-dashboard/fees-module/reports/daily-collection/late-fees-excess",
                     icon: "solar:warning-bold-duotone",
+                  },
+                  {
+                    label: "Fees Refund",
+                    icon: "solar:document-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/fees-refund",
+                  },
+                  {
+                    label: "Fees Cancelled",
+                    icon: "solar:document-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/fees-cancelled",
+                  },
+                   {
+                    label: "Fees Cheque Retuen",
+                    icon: "solar:document-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/fees-cheque-return",
                   },
                 ],
               },
@@ -391,7 +411,8 @@ const Sidebar = () => {
                     icon: "solar:calendar-bold-duotone",
                   },
                 ],
-              }, {
+              },
+              {
                 label: "Audit Documentation",
                 icon: "solar:document-bold-duotone",
                 children: [
@@ -417,6 +438,7 @@ const Sidebar = () => {
                   },
                 ],
               },
+
             ],
           },
           {

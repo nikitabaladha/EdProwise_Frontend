@@ -258,6 +258,7 @@ const ConcessionStudentListTable = () => {
                         <th>Class</th>
                         <th>Section</th>
                         <th>Concession Type</th>
+                         <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -275,6 +276,14 @@ const ConcessionStudentListTable = () => {
                           <td>{getClassName(student.masterDefineClass)}</td>
                           <td>{getSectionName(student.masterDefineClass, student.section)}</td>
                           <td>{student.concessionType}</td>
+                            <td>
+                            <button
+                              className={`btn btn-sm ${student.status === 'Paid' ? 'btn-success' : 'btn-danger'
+                                }`}
+                            >
+                              {student.status}
+                            </button>
+                          </td>
                           <td>
                             <div className="d-flex gap-2">
                               <Link

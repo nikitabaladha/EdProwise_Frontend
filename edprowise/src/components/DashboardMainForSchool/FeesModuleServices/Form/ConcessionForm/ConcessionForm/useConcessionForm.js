@@ -721,12 +721,13 @@ const useConcessionForm = () => {
             });
 
             if (!response.hasError && response.data) {
-                const { receiptNumber } = response.data.form;
+                const { receiptNumber, _id } = response.data.form;
 
                 toast.success('Concession application submitted successfully!');
 
                 navigate(`/school-dashboard/fees-module/form/concession-form-details`, {
                     state: {
+                          formId: _id,
                         formData: {
                             ...formData,
                             concessionDetails: formData.concessionDetails.map(detail => ({

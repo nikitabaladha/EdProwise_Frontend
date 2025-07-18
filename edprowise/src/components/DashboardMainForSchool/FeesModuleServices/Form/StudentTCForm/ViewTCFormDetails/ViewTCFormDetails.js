@@ -35,6 +35,7 @@ const UpdateTCForm = () => {
     agreementChecked: false,
     TCfees: '',
     concessionAmount: '',
+    concessionType:'',
     finalAmount: '',
     name: '',
     paymentMode: '',
@@ -96,6 +97,7 @@ const UpdateTCForm = () => {
         reasonForLeaving: student.reasonForLeaving || '',
         anyRemarks: student.anyRemarks || '',
         TCfees: student.TCfees || 0,
+        concessionType:student.concessionType ||'',
         concessionAmount: student.concessionAmount || 0,
         finalAmount: student.finalAmount || 0,
         name: student.name || '',
@@ -533,7 +535,7 @@ const handleDownloadPDF = async () => {
                     </label>
                   </div>
 
-                  <div className="col-md-4">
+                  <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="TCfees" className="form-label">
                           TC Fees <span className="text-danger">*</span>
@@ -548,7 +550,29 @@ const handleDownloadPDF = async () => {
                         />
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="concessionType" className="form-label">
+                          Concession Type
+                        </label>
+                        <select
+                          id="concessionType"
+                          name="concessionType"
+                          className="form-control"
+                          value={formData.concessionType}
+                          disabled
+                        >
+                          <option value="">Select</option>
+                          <option value="EWS">EWS</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                          <option value="Staff Children">Staff Children</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="concessionamount" className="form-label">
                           Concession
@@ -564,7 +588,7 @@ const handleDownloadPDF = async () => {
                         />
                       </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="finalamount" className="form-label">
                           Final Amount <span className="text-danger">*</span>

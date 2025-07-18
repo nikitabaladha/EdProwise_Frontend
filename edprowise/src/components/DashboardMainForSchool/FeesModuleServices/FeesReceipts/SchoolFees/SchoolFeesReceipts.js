@@ -73,230 +73,224 @@ const SchoolFeesReceipts = () => {
     return `${start}-${end.slice(2)}`;
   };
 
-  const renderReceiptsTable = () => {
-    const receiptsToShow = feeData
-      .filter((year) => selectAllYears || selectedAcademicYears.includes(year.academicYear))
-      .flatMap((year) => {
-        if (!Array.isArray(year.installmentsPresent) || !Array.isArray(year.paidInstallments)) return [];
+ const renderReceiptsTable = () => {
+  const receiptsToShow = feeData
+    .filter((year) => selectAllYears || selectedAcademicYears.includes(year.academicYear))
+    .flatMap((year) => {
+      if (!Array.isArray(year.installmentsPresent) || !Array.isArray(year.paidInstallments)) return [];
 
-        return year.installmentsPresent
-          .filter((installmentName) => {
-            const key = `${year.academicYear}-${installmentName}`;
-            return visibleReceipts[key];
-          })
-          .map((installmentName) => {
-            const getInstallmentNumber = (name, installmentsPresent) => {
-              const index = installmentsPresent.indexOf(name);
-              return index !== -1 ? index + 1 : 1;
-            };
+      return year.installmentsPresent
+        .filter((installmentName) => {
+          const key = `${year.academicYear}-${installmentName}`;
+          return visibleReceipts[key];
+        })
+        .map((installmentName) => {
+          const filteredInstallments = year.paidInstallments.filter(
+            (item) => item.installmentName === installmentName
+          );
 
-            const targetInstallmentNumber = getInstallmentNumber(installmentName, year.installmentsPresent);
-
-            const filteredInstallments = year.paidInstallments.filter(
-              (item) => item.installmentNumber === targetInstallmentNumber
-            );
-
-            if (filteredInstallments.length === 0) {
-              return {
-                academicYear: year.academicYear,
-                installmentName,
-                rows: [
-                  {
-                    isEmpty: true,
-                    message: `No receipts available for ${installmentName}`,
-                  },
-                ],
-              };
-            }
-
-            let totalFeesAmount = 0;
-            let totalConcession = 0;
-            let totalPayable = 0;
-            let totalPaid = 0;
-            let totalBalance = 0;
-            let totalFine = 0;
-            let totalExcess = 0;
-
-            const groupedByReceipt = filteredInstallments.reduce((acc, item) => {
-              const receiptNumber = item.receiptNumber?.toString() || '';
-              if (!receiptNumber) return acc;
-
-              if (!acc[receiptNumber]) {
-                acc[receiptNumber] = {
-                  items: [],
-                  paymentDate: item.paymentDate,
-                  collectorName: item.collectorName,
-                  paymentMode: item.paymentMode,
-                  transactionNumber: item.transactionNumber || '',
-                  bankName: item.bankName || '',
-                  chequeNumber: item.chequeNumber || '',
-                  fineAmount: 0,
-                  excessAmount: 0,
-                };
-              }
-
-              const concessionAmount = item.concession || 0;
-              const fineAmount = item.paidFine || 0;
-              const excessAmount = item.excessAmount || 0;
-              const feesAmount = item.amount || 0;
-              const payableAmount = feesAmount - concessionAmount;
-              const paidAmount = item.paidAmount || 0;
-              const balance = item.balance || 0;
-
-              totalFeesAmount += feesAmount;
-              totalConcession += concessionAmount;
-              totalPayable += payableAmount;
-              totalPaid += paidAmount;
-              totalBalance += balance;
-              totalFine += fineAmount;
-              totalExcess += excessAmount;
-              acc[receiptNumber].fineAmount = fineAmount;
-              acc[receiptNumber].excessAmount = excessAmount;
-
-              const existingItem = acc[receiptNumber].items.find(
-                (i) => i.feesType === getFeeTypeName(item.feesTypeId?._id)
-              );
-              if (!existingItem) {
-                acc[receiptNumber].items.push({
-                  feesType: getFeeTypeName(item.feesTypeId?._id) || 'Unknown Fee Type',
-                  feesAmount,
-                  fineAmount,
-                  excessAmount,
-                  concessionAmount,
-                  payableAmount,
-                  paidAmount,
-                  balance,
-                });
-              }
-
-              return acc;
-            }, {});
-
-            const sortedReceiptNumbers = Object.keys(groupedByReceipt).sort((a, b) => {
-              const numA = parseFloat(a);
-              const numB = parseFloat(b);
-              if (!isNaN(numA) && !isNaN(numB)) {
-                return numA - numB;
-              }
-              return a.localeCompare(b);
-            });
-
-            const receiptData = (receiptNumber, group) => ({
-              receiptNumber,
-              studentName: `${formData.firstName} ${formData.lastName}`,
-              studentAdmissionNumber: formData.AdmissionNumber,
-              date: group.paymentDate ? new Date(group.paymentDate).toLocaleDateString() : '',
-              academicYear: year.academicYear,
-              className: formData.masterDefineClass,
-              section: formData.section,
-              paymentMode: group.paymentMode || '',
-              transactionNumber: group.transactionNumber || '',
-              bankName: group.bankName || '',
-              chequeNumber: group.chequeNumber || '',
-              paymentDate: group.paymentDate ? new Date(group.paymentDate).toLocaleDateString() : '',
-              collectorName: group.collectorName || '',
-              fineAmount: group.fineAmount,
-              excessAmount: group.excessAmount,
-              installments: [
-                {
-                  number: targetInstallmentNumber,
-                  installmentName,
-                  feeItems: group.items.map((item) => ({
-                    type: item.feesType,
-                    amount: item.feesAmount,
-                    concession: item.concessionAmount,
-                    payable: item.payableAmount,
-                    paid: item.paidAmount,
-                    balance: item.balance,
-                  })),
-                },
-              ],
-            });
-
-            const rows = sortedReceiptNumbers.map((receiptNumber) => {
-              const group = groupedByReceipt[receiptNumber];
-              if (!group || !group.items) return null;
-
-              return {
-                receiptNumber,
-                paymentDate: group.paymentDate ? new Date(group.paymentDate).toLocaleDateString() : '',
-                collectorName: group.collectorName || '',
-                paymentMode: group.paymentMode || '',
-                receiptData: receiptData(receiptNumber, group),
-              };
-            }).filter(Boolean);
-
+          if (filteredInstallments.length === 0) {
             return {
               academicYear: year.academicYear,
               installmentName,
-              rows,
-              totals: {
-                totalFeesAmount,
-                totalConcession,
-                totalPayable,
-                totalPaid,
-                totalBalance,
+              rows: [
+                {
+                  isEmpty: true,
+                  message: `No receipts available for ${installmentName}`,
+                },
+              ],
+            };
+          }
+
+          let totalFeesAmount = 0;
+          let totalConcession = 0;
+          let totalPayable = 0;
+          let totalPaid = 0;
+          let totalBalance = 0;
+          let totalFine = 0;
+          let totalExcess = 0;
+
+          const groupedByReceipt = filteredInstallments.reduce((acc, item) => {
+            const receiptNumber = item.receiptNumber?.toString() || '';
+            if (!receiptNumber) return acc;
+
+            if (!acc[receiptNumber]) {
+              acc[receiptNumber] = {
+                items: [],
+                paymentDate: item.paymentDate,
+                collectorName: item.collectorName,
+                paymentMode: item.paymentMode,
+                transactionNumber: item.transactionNumber || '',
+                bankName: item.bankName || '',
+                chequeNumber: item.chequeNumber || '',
+                fineAmount: 0,
+                excessAmount: 0,
+                  installmentId: item._id,
+              };
+            }
+
+            const concessionAmount = item.concession || 0;
+            const fineAmount = item.paidFine || 0;
+            const excessAmount = item.excessAmount || 0;
+            const feesAmount = item.amount || 0;
+            const payableAmount = feesAmount - concessionAmount;
+            const paidAmount = item.paidAmount || 0;
+            const balance = item.balance || 0;
+
+            totalFeesAmount += feesAmount;
+            totalConcession += concessionAmount;
+            totalPayable += payableAmount;
+            totalPaid += paidAmount;
+            totalBalance += balance;
+            totalFine += fineAmount;
+            totalExcess += excessAmount;
+            acc[receiptNumber].fineAmount = fineAmount;
+            acc[receiptNumber].excessAmount = excessAmount;
+
+            const existingItem = acc[receiptNumber].items.find(
+              (i) => i.feesType === getFeeTypeName(item.feesTypeId?._id)
+            );
+            if (!existingItem) {
+              acc[receiptNumber].items.push({
+                feesType: getFeeTypeName(item.feesTypeId?._id) || 'Unknown Fee Type',
+                feesAmount,
+                fineAmount,
+                excessAmount,
+                concessionAmount,
+                payableAmount,
+                paidAmount,
+                balance,
+              });
+            }
+
+            return acc;
+          }, {});
+
+          const sortedReceiptNumbers = Object.keys(groupedByReceipt).sort((a, b) => {
+            const numA = parseFloat(a.replace('REC-', ''));
+            const numB = parseFloat(b.replace('REC-', ''));
+            if (!isNaN(numA) && !isNaN(numB)) {
+              return numA - numB;
+            }
+            return a.localeCompare(b);
+          });
+
+          const receiptData = (receiptNumber, group) => ({
+            receiptNumber,
+            studentName: `${formData.firstName} ${formData.lastName}`,
+            studentAdmissionNumber: formData.AdmissionNumber,
+            date: group.paymentDate ? new Date(group.paymentDate).toLocaleDateString() : '',
+            academicYear: year.academicYear,
+            className: formData.masterDefineClass,
+            section: formData.section,
+            paymentMode: group.paymentMode || '',
+            transactionNumber: group.transactionNumber || '',
+            bankName: group.bankName || '',
+            chequeNumber: group.chequeNumber || '',
+            paymentDate: group.paymentDate ? new Date(group.paymentDate).toLocaleDateString() : '',
+            collectorName: group.collectorName || '',
+            fineAmount: group.fineAmount,
+            excessAmount: group.excessAmount,
+                installmentId: group.installmentId,
+            installments: [
+              {
+                installmentName, // Use installmentName directly
+                feeItems: group.items.map((item) => ({
+                  type: item.feesType,
+                  amount: item.feesAmount,
+                  concession: item.concessionAmount,
+                  payable: item.payableAmount,
+                  paid: item.paidAmount,
+                  balance: item.balance,
+                })),
               },
+            ],
+          });
+
+          const rows = sortedReceiptNumbers.map((receiptNumber) => {
+            const group = groupedByReceipt[receiptNumber];
+            if (!group || !group.items) return null;
+
+            return {
+              receiptNumber,
+              paymentDate: group.paymentDate ? new Date(group.paymentDate).toLocaleDateString() : '',
+              collectorName: group.collectorName || '',
+              paymentMode: group.paymentMode || '',
+              receiptData: receiptData(receiptNumber, group),
             };
           }).filter(Boolean);
-      });
 
-    if (receiptsToShow.length === 0) {
-      return null;
-    }
+          return {
+            academicYear: year.academicYear,
+            installmentName,
+            rows,
+            totals: {
+              totalFeesAmount,
+              totalConcession,
+              totalPayable,
+              totalPaid,
+              totalBalance,
+            },
+          };
+        }).filter(Boolean);
+    });
 
-    return (
-      <div className="mt-4">
-        <h4 className="card-title text-start">Receipts for  Installments</h4>
-        {receiptsToShow.map(({ academicYear, installmentName, rows, totals }, index) => (
-          <div key={`${academicYear}-${installmentName}-${index}`} className="mt-3">
-            <h4 className="text-start">
-              Paid Fee Types for {installmentName} ({formatAcademicYear(academicYear)})
-            </h4>
-            <table className="table table-bordered table-sm">
-              <thead className="bg-light">
-                <tr>
-                  <th>Receipt Number</th>
-                  <th>Payment Date</th>
-                  <th>Collector Name</th>
-                  <th>Payment Mode</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.length > 0 && !rows[0].isEmpty ? (
-                  rows.map((row, rowIndex) => (
-                    <tr key={`${academicYear}-${installmentName}-paid-${row.receiptNumber}-${rowIndex}`}>
-                      <td>{row.receiptNumber}</td>
-                      <td>{row.paymentDate}</td>
-                      <td>{row.collectorName}</td>
-                      <td>{row.paymentMode}</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-info ms-2"
-                          onClick={() => handleViewReceipt(row.receiptData)}
-                          aria-label={`View details for receipt ${row.receiptNumber}`}
-                        >
-                          <FaEye />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="text-center">
-                      {rows[0]?.message || 'No receipt data available'}
+  if (receiptsToShow.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-4">
+      <h4 className="card-title text-start">Receipts for Installments</h4>
+      {receiptsToShow.map(({ academicYear, installmentName, rows, totals }, index) => (
+        <div key={`${academicYear}-${installmentName}-${index}`} className="mt-3">
+          <h4 className="text-start">
+            Paid Fee Types for {installmentName} ({formatAcademicYear(academicYear)})
+          </h4>
+          <table className="table table-bordered table-sm">
+            <thead className="bg-light">
+              <tr>
+                <th>Receipt Number</th>
+                <th>Payment Date</th>
+                <th>Collector Name</th>
+                <th>Payment Mode</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.length > 0 && !rows[0].isEmpty ? (
+                rows.map((row, rowIndex) => (
+                  <tr key={`${academicYear}-${installmentName}-paid-${row.receiptNumber}-${rowIndex}`}>
+                    <td>{row.receiptNumber}</td>
+                    <td>{row.paymentDate}</td>
+                    <td>{row.collectorName}</td>
+                    <td>{row.paymentMode}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-info ms-2"
+                        onClick={() => handleViewReceipt(row.receiptData)}
+                        aria-label={`View details for receipt ${row.receiptNumber}`}
+                      >
+                        <FaEye />
+                      </button>
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        ))}
-      </div>
-    );
-  };
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center">
+                    {rows[0]?.message || 'No receipt data available'}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ))}
+    </div>
+  );
+};
 
   if (!showFullForm) {
     return (

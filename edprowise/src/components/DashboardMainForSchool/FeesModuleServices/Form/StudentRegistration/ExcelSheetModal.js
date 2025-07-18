@@ -1217,7 +1217,7 @@ const RegistrationExcelSheetModal = ({ show, onClose, schoolId, academicYear, on
                 continue;
               }
             } else {
-              payload.concessionType = ''; // Set to empty if no concession
+              payload.concessionType = ''; 
             }
 
             const finalAmount = Number(row.finalAmount) || 0;

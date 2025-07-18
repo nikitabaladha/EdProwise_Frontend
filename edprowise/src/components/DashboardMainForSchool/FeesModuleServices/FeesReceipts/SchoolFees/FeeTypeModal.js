@@ -6,7 +6,6 @@ const FeeTypeModal = ({
   onClose,
   modalData,
   handleModalPaidAmountChange,
-  feeTypes,
   getFeeTypeName,
   actionSelections,
   handleFineAmountChange,

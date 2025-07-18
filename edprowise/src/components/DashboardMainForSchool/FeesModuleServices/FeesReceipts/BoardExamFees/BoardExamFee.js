@@ -23,7 +23,7 @@ const BoardExamFeeRegistration = () => {
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     const id = userDetails?.schoolId;
-   
+
 
     if (!id) {
       toast.error('School ID not found. Please log in again.');
@@ -169,11 +169,11 @@ const BoardExamFeeRegistration = () => {
       prevStudents.map((student) =>
         student._id === id
           ? {
-              ...student,
-              paymentMode: mode,
-              chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
-              bankName: mode === 'Cheque' ? student.bankName : '',
-            }
+            ...student,
+            paymentMode: mode,
+            chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
+            bankName: mode === 'Cheque' ? student.bankName : '',
+          }
           : student
       )
     );
@@ -234,7 +234,7 @@ const BoardExamFeeRegistration = () => {
         paymentDate: new Date().toISOString(),
         transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
         className: selectedClassData?.className || 'Unknown Class',
-        sectionName: selectedSectionData?.name || 'Unknown Section', 
+        sectionName: selectedSectionData?.name || 'Unknown Section',
       };
 
       navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
@@ -450,11 +450,10 @@ const BoardExamFeeRegistration = () => {
                   type="button"
                   onClick={fetchStudents}
                   disabled={!selectedClass || !selectedSection || loading || feesLoading}
-                  className={`btn ${
-                    !selectedClass || !selectedSection || loading || feesLoading
+                  className={`btn ${!selectedClass || !selectedSection || loading || feesLoading
                       ? 'btn-secondary disabled'
                       : 'btn-primary'
-                  }`}
+                    }`}
                 >
                   {loading ? (
                     <>
@@ -582,16 +581,21 @@ const BoardExamFeeRegistration = () => {
                           </>
                         )}
                         <td>
-                          <span
-                            className={`badge ${
-                              student.paymentStatus === 'Paid' ? 'bg-success' : 'bg-warning text-dark'
-                            }`}
+                           <span
+                            className={`badge ${student.paymentStatus === 'Paid'
+                              ? 'bg-success text-white'
+                              : student.paymentStatus === 'Cancelled'
+                                ? 'bg-danger text-white'
+                                :student.paymentStatus === 'Cheque Return'
+                                 ? 'bg-danger text-white'
+                                : 'bg-warning text-dark'
+                              }`}
                           >
                             {student.paymentStatus}
                           </span>
                         </td>
                         <td>
-                          {student.paymentStatus !== 'Paid' ? (
+                          {student.paymentStatus !== 'Paid' && student.paymentStatus !== 'Cancelled' && student.paymentStatus !== 'Cheque Return' ? (
                             <button
                               type="button"
                               className="btn btn-success btn-sm"

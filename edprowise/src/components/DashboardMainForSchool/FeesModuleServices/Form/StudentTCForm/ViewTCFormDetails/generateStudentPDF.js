@@ -101,6 +101,7 @@ export const generateTCPDF = async (formData, student, classes, schoolId) => {
       anyRemarks: capitalizeWords(formData.anyRemarks) || "",
       agreementChecked: formData.agreementChecked || false,
       TCfees: formData.TCfees || "0",
+       concessionType: formData.concessionType || "",
       concessionAmount: formData.concessionAmount || "0",
       finalAmount: formData.finalAmount || "0",
       name: capitalizeWords(formData.name) || "",
@@ -382,19 +383,25 @@ export const generateTCPDF = async (formData, student, classes, schoolId) => {
             </span>
           </div>
           <div class="pdf-row">
-            <div class="pdf-col-3">
+            <div class="pdf-col-4">
               <div class="pdf-field">
                 <label class="pdf-label">TC Fees</label>
                 <div class="pdf-value">₹${mockFormData.TCfees}</div>
               </div>
             </div>
-            <div class="pdf-col-3">
+               <div class="pdf-col-4">
+              <div class="pdf-field">
+                <label class="pdf-label">Concession Type</label>
+                <div class="pdf-value">${mockFormData.concessionType}</div>
+              </div>
+            </div>
+            <div class="pdf-col-4">
               <div class="pdf-field">
                 <label class="pdf-label">Concession</label>
                 <div class="pdf-value">₹${mockFormData.concessionAmount}</div>
               </div>
             </div>
-            <div class="pdf-col-3">
+            <div class="pdf-col-4">
               <div class="pdf-field">
                 <label class="pdf-label">Final Amount</label>
                 <div class="pdf-value">₹${mockFormData.finalAmount}</div>

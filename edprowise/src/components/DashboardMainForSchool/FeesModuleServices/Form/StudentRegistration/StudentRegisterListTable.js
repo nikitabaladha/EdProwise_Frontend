@@ -17,7 +17,7 @@ const StudentRegisterListTable = () => {
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
-   const [shifts, setShifts] = useState([]);
+  const [shifts, setShifts] = useState([]);
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -89,7 +89,7 @@ const StudentRegisterListTable = () => {
         if (!classRes.hasError) {
           setClassList(classRes.data.data);
         }
-         const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
+        const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
         if (!shiftResponse.hasError) {
           const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
           setShifts(shiftArray);
@@ -97,7 +97,7 @@ const StudentRegisterListTable = () => {
           toast.error(shiftResponse.message || 'Failed to fetch shifts.');
           setShifts([]);
         }
-    
+
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.students) ? response.data.students : [];
           setStudentData(studentArray);
@@ -118,7 +118,7 @@ const StudentRegisterListTable = () => {
     return found ? found.className : "N/A";
   };
 
-   const getShiftName = (shiftId) => {
+  const getShiftName = (shiftId) => {
     const shift = shifts.find((s) => s._id === shiftId);
     return shift ? shift.masterDefineShiftName : 'N/A';
   };
@@ -244,6 +244,7 @@ const StudentRegisterListTable = () => {
                         <th>Class</th>
                         <th>Shift</th>
                         <th>Contact No</th>
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -261,7 +262,7 @@ const StudentRegisterListTable = () => {
                                 className="form-check-label"
                                 htmlFor="customCheck2"
                               >
-                                 
+
                               </label>
                             </div>
                           </td>
@@ -270,7 +271,16 @@ const StudentRegisterListTable = () => {
                           <td>{student.gender}</td>
                           <td>{getClassNameById(student.masterDefineClass)}</td>
                           <td>{getShiftName(student.masterDefineShift)}</td>
-                          <td>{student.fatherContactNo}</td>
+                          <td>{student.parentContactNumber}</td>
+                          <td>
+                            <button
+                              className={`btn btn-sm ${student.status === 'Paid' ? 'btn-success' : 'btn-danger'
+                                }`}
+                            >
+                              {student.status}
+                            </button>
+                          </td>
+
                           <td>
                             <div className="d-flex gap-2">
                               <Link className="btn btn-light btn-sm"

@@ -975,7 +975,7 @@ const UpdateAdmissionForm = () => {
 
 
 
-                      <div className="col-md-4">
+                      <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="admissionFees" className="form-label">
                             Admission Fees <span className="text-danger">*</span>
@@ -992,7 +992,30 @@ const UpdateAdmissionForm = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-4">
+                       <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="concessionType" className="form-label">
+                          Concession Type<span className="text-danger"></span>
+                        </label>
+                        <select
+                          id="concessionType"
+                          name="concessionType"
+                          className="form-control"
+                          value={formData.concessionType}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select</option>
+                          <option value="EWS">EWS</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                          <option value="Staff Children">Staff Children</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+
+                      <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="concessionamount" className="form-label">
                             Concession
@@ -1009,7 +1032,7 @@ const UpdateAdmissionForm = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-4">
+                      <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="finalamount" className="form-label">
                             Final Amount <span className="text-danger">*</span>

@@ -59,6 +59,7 @@ export const generatePDF = async (formData, student, classes, shifts, sections, 
     motherProfession: capitalizeWords(formData.motherProfession) || "",
     agreementChecked: formData.agreementChecked || true,
     admissionFees: formData.admissionFees|| "",
+      concessionType: formData.concessionType || "",
     concessionAmount: formData.concessionAmount || "",
     finalAmount: formData.finalAmount || "",
     name: capitalizeWords(formData.name) || "",
@@ -641,19 +642,25 @@ export const generatePDF = async (formData, student, classes, shifts, sections, 
             <span style="color: #000000; text-transform: capitalize;">I Understand And Agree That The Registration Of My Ward Does Not Guarantee Admission To The School And The Registration Fee Is Neither Transferable Nor Refundable.</span>
           </div>
           <div class="pdf-row">
-            <div class="pdf-col-3">
+            <div class="pdf-col-4">
               <div class="pdf-field">
                 <label class="pdf-label">Registration Fees</label>
                 <div class="pdf-value">₹${mockFormData.admissionFees}</div>
               </div>
             </div>
-            <div class="pdf-col-3">
+               <div class="pdf-col-4">
+              <div class="pdf-field">
+                <label class="pdf-label">Concession Type</label>
+                <div class="pdf-value">${mockFormData.concessionType}</div>
+              </div>
+            </div>
+            <div class="pdf-col-4">
               <div class="pdf-field">
                 <label class="pdf-label">Concession</label>
                 <div class="pdf-value">₹${mockFormData.concessionAmount}</div>
               </div>
             </div>
-            <div class="pdf-col-3">
+            <div class="pdf-col-4">
               <div class="pdf-field">
                 <label class="pdf-label">Final Amount</label>
                 <div class="pdf-value">₹${mockFormData.finalAmount}</div>

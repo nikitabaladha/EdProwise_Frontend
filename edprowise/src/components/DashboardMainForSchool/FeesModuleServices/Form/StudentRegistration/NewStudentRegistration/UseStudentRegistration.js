@@ -505,7 +505,7 @@ const useStudentRegistration = () => {
     parentalStatus: '',
     howReachUs: '',
     agreementChecked: false,
-    concessionType: '',
+    concessionType: null,
     registrationFee: '',
     concessionAmount: '',
     finalAmount: '',

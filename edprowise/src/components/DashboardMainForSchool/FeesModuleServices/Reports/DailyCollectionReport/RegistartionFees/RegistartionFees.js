@@ -1,9 +1,11 @@
-// import React, { useState, useEffect } from 'react';
-// import { FaFilter } from 'react-icons/fa';
+// import React, { useState, useEffect, useRef } from 'react';
+// import { FaFilter, FaDownload } from 'react-icons/fa';
 // import { toast } from 'react-toastify';
 // import CreatableSelect from 'react-select/creatable';
 // import getAPI from '../../../../../../api/getAPI';
 // import { Link } from 'react-router-dom';
+// import { exportToExcel, exportToPDF } from './ExportModal';
+// import { fetchSchoolData } from '../../../PdfUtlisReport';
 
 // const RegistrationFees = () => {
 //   const headerMapping = {
@@ -21,9 +23,12 @@
 //   };
 
 //   const [showFilterPanel, setShowFilterPanel] = useState(false);
+//   const [showExportDropdown, setShowExportDropdown] = useState(false);
 //   const [activeTab, setActiveTab] = useState('Date');
 //   const [searchTerm, setSearchTerm] = useState('');
 //   const [schoolId, setSchoolId] = useState('');
+//   const [school, setSchool] = useState(null);
+//   const [logoSrc, setLogoSrc] = useState('');
 //   const [paymentModes, setPaymentModes] = useState([]);
 //   const [feeData, setFeeData] = useState([]);
 //   const [tableFields] = useState(
@@ -42,6 +47,8 @@
 //   const [selectedClasses, setSelectedClasses] = useState([]);
 //   const [startDate, setStartDate] = useState('');
 //   const [endDate, setEndDate] = useState('');
+//   const [isExporting, setIsExporting] = useState(false);
+//   const dropdownRef = useRef(null);
 //   const tabs = ['Date', 'Payment Mode', 'Class', 'Academic Year'];
 
 //   const formatAcademicYear = (year) => {
@@ -49,7 +56,6 @@
 //     const [startYear, endYear] = year.split('-');
 //     return `${startYear}-${endYear.slice(2)}`;
 //   };
-
 
 //   useEffect(() => {
 //     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
@@ -59,7 +65,6 @@
 //     }
 //     setSchoolId(userDetails.schoolId);
 //   }, []);
-
 
 //   useEffect(() => {
 //     const fetchAcademicYears = async () => {
@@ -94,7 +99,6 @@
 //     }
 //   }, [schoolId]);
 
-
 //   useEffect(() => {
 //     if (!schoolId || !selectedAcademicYear) return;
 
@@ -128,7 +132,6 @@
 
 //         setFeeData(unifiedData);
 
-
 //         const modes = new Set();
 //         unifiedData.forEach((record) => {
 //           if (record.student?.regFeesPaymentMode) modes.add(record.student.regFeesPaymentMode);
@@ -138,7 +141,6 @@
 //             .filter((mode) => mode && mode !== '-')
 //             .map((mode) => ({ value: mode, label: mode }))
 //         );
-
 
 //         const classes = new Set(unifiedData.map((record) => record.className).filter((cls) => cls && cls !== '-'));
 //         setClassOptions(
@@ -157,6 +159,33 @@
 //     fetchInitialData();
 //   }, [schoolId, selectedAcademicYear]);
 
+//   useEffect(() => {
+//     const loadSchoolData = async () => {
+//       try {
+//         const { school, logoSrc } = await fetchSchoolData(schoolId);
+//         setSchool(school);
+//         setLogoSrc(logoSrc);
+//       } catch (error) {
+//         console.error('Failed to fetch school data:', error);
+//       }
+//     };
+//     if (schoolId) {
+//       loadSchoolData();
+//     }
+//   }, [schoolId]);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//         setShowExportDropdown(false);
+//       }
+//     };
+//     document.addEventListener('mousedown', handleClickOutside);
+//     return () => {
+//       document.removeEventListener('mousedown', handleClickOutside);
+//     };
+//   }, []);
+
 //   const handleSelectChange = (selectedOptions, { name }) => {
 //     if (name === 'academicYear') {
 //       const selectedYear = selectedOptions?.value || '';
@@ -170,20 +199,26 @@
 //   };
 
 //   const resetFilters = () => {
-//       setSelectedAcademicYear('');
-//       setSelectedPaymentModes([]);
-//       setSelectedClasses([]);
-//       setStartDate('');
-//       setEndDate('');
-//       setSearchTerm('');
-//        const storedYear = localStorage.getItem('selectedAcademicYear');
-//   if (storedYear) {
-//     setSelectedAcademicYear(storedYear);
-//   }
-//     };
+//     setSelectedAcademicYear('');
+//     setSelectedPaymentModes([]);
+//     setSelectedClasses([]);
+//     setStartDate('');
+//     setEndDate('');
+//     setSearchTerm('');
+//     const storedYear = localStorage.getItem('selectedAcademicYear');
+//     if (storedYear) {
+//       setSelectedAcademicYear(storedYear);
+//     }
+//   };
 
 //   const toggleFilterPanel = () => {
 //     setShowFilterPanel(!showFilterPanel);
+//     setShowExportDropdown(false);
+//   };
+
+//   const toggleExportDropdown = () => {
+//     setShowExportDropdown(!showExportDropdown);
+//     setShowFilterPanel(false);
 //   };
 
 //   const getFieldValue = (record, field) => {
@@ -206,21 +241,20 @@
 //     return (due - concession - paid);
 //   };
 
-
 //   const filteredData = feeData.filter((record) => {
 //     const matchesAcademicYear = record.academicYear === selectedAcademicYear;
 
 //     const matchesSearchTerm = searchTerm
 //       ? Object.values(record).some((value) =>
-//           value &&
-//           typeof value === 'string' &&
-//           value.toLowerCase().includes(searchTerm.toLowerCase())
-//         ) ||
-//         Object.values(record.student || {}).some((value) =>
-//           value &&
-//           typeof value === 'string' &&
-//           value.toLowerCase().includes(searchTerm.toLowerCase())
-//         )
+//         value &&
+//         typeof value === 'string' &&
+//         value.toLowerCase().includes(searchTerm.toLowerCase())
+//       ) ||
+//       Object.values(record.student || {}).some((value) =>
+//         value &&
+//         typeof value === 'string' &&
+//         value.toLowerCase().includes(searchTerm.toLowerCase())
+//       )
 //       : true;
 
 //     const matchesPaymentMode =
@@ -286,11 +320,89 @@
 //                   <div className="col-md-2"></div>
 //                   <div className="col-md-5 px-0 d-flex align-content-center justify-content-end">
 //                     <div
-//                       className="py-1 px-2 mr-2 border border-dark finance-filter-icon"
+//                       className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
 //                       style={{ cursor: 'pointer' }}
 //                       onClick={toggleFilterPanel}
 //                     >
 //                       <FaFilter />
+//                     </div>
+//                     <div className="position-relative" ref={dropdownRef}>
+//                       <div
+//                         className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
+//                         style={{ cursor: 'pointer' }}
+//                         onClick={toggleExportDropdown}
+//                         title="Download"
+//                       >
+//                         <FaDownload />
+//                       </div>
+//                       {showExportDropdown && (
+//                         <div
+//                           className="position-absolute bg-white border mr-2 mt-2 border-dark rounded shadow"
+//                           style={{
+//                             top: '100%',
+//                             right: 0,
+//                             zIndex: 1000,
+//                             minWidth: '150px',
+//                           }}
+//                         >
+//                           <button
+//                             className="btn btn-light w-100 text-left py-2 px-3"
+//                             disabled={isExporting}
+//                             onClick={async () => {
+//                               setIsExporting(true);
+//                               try {
+//                                 await exportToExcel(
+//                                   filteredData,
+//                                   tableFields,
+//                                   headerMapping,
+//                                   getFieldValue,
+//                                   calculateBalance,
+//                                   totals,
+//                                   formatAcademicYear,
+//                                   selectedAcademicYear
+//                                 );
+//                               } catch (err) {
+//                                 toast.error("Export to Excel failed.");
+//                               } finally {
+//                                 setIsExporting(false);
+//                                 setShowExportDropdown(false);
+//                               }
+//                             }}
+//                           >
+//                             {isExporting ? 'Exporting...' : 'Export to Excel'}
+//                           </button>
+
+//                           <button
+//                             className="btn btn-light w-100 text-left py-2 px-3"
+//                             disabled={isExporting}
+//                             onClick={async () => {
+//                               setIsExporting(true);
+//                               try {
+//                                 await exportToPDF(
+//                                   filteredData,
+//                                   tableFields,
+//                                   headerMapping,
+//                                   getFieldValue,
+//                                   calculateBalance,
+//                                   totals,
+//                                   formatAcademicYear,
+//                                   selectedAcademicYear,
+//                                   school,
+//                                   logoSrc
+//                                 );
+//                               } catch (err) {
+//                                 toast.error("Export to PDF failed.");
+//                               } finally {
+//                                 setIsExporting(false);
+//                                 setShowExportDropdown(false);
+//                               }
+//                             }}
+//                           >
+//                             {isExporting ? 'Exporting...' : 'Export to PDF'}
+//                           </button>
+
+//                         </div>
+//                       )}
 //                     </div>
 //                   </div>
 //                 </div>
@@ -459,11 +571,11 @@
 // };
 
 // export default RegistrationFees;
-
 import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import getAPI from '../../../../../../api/getAPI';
 import { Link } from 'react-router-dom';
 import { exportToExcel, exportToPDF } from './ExportModal';
@@ -476,6 +588,7 @@ const RegistrationFees = () => {
     regNo: 'Reg No.',
     studentName: 'Name',
     class: 'Class',
+    reportStatus: 'Status',
     regFeesPaymentMode: 'Payment Mode',
     regFeesTransactionNo: 'Cheque No./Transaction No.',
     regFeesReceiptNo: 'Receipts No.',
@@ -510,8 +623,16 @@ const RegistrationFees = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const dropdownRef = useRef(null);
   const tabs = ['Date', 'Payment Mode', 'Class', 'Academic Year'];
+  const pageShowOptions = [
+    { value: 10, label: '10' },
+    { value: 15, label: '15' },
+    { value: 20, label: '20' },
+    { value: 30, label: '30' },
+  ];
 
   const formatAcademicYear = (year) => {
     if (!year) return '-';
@@ -576,10 +697,16 @@ const RegistrationFees = () => {
             const regNo = record.student.regNo;
             const key = `${regNo}_${selectedAcademicYear}`;
             if (!processedKeys.has(key)) {
-              unifiedData.push({
-                ...record,
-                academicYear: selectedAcademicYear,
-                className: record.className || '-',
+              (record.student.regFeesStatus || ['Paid']).forEach((status) => {
+                unifiedData.push({
+                  ...record,
+                  academicYear: selectedAcademicYear,
+                  className: record.className || '-',
+                  student: {
+                    ...record.student,
+                    reportStatus: status,
+                  },
+                });
               });
               processedKeys.add(key);
             }
@@ -589,6 +716,14 @@ const RegistrationFees = () => {
         unifiedData.sort((a, b) => {
           const regNoA = a.student.regNo || '-';
           const regNoB = b.student.regNo || '-';
+          const dateA = a.student.reportStatus === 'Paid' ? a.student.regFeesDate : a.student.regFeesCancelledDate || '-';
+          const dateB = b.student.reportStatus === 'Paid' ? b.student.regFeesDate : b.student.regFeesCancelledDate || '-';
+          const statusA = a.student.reportStatus;
+          const statusB = b.student.reportStatus;
+
+          if (dateA !== dateB) return dateA.localeCompare(dateB);
+          if (statusA === 'Paid' && statusB !== 'Paid') return -1;
+          if (statusB === 'Paid' && statusA !== 'Paid') return 1;
           return regNoA.localeCompare(regNoB);
         });
 
@@ -653,10 +788,16 @@ const RegistrationFees = () => {
       const selectedYear = selectedOptions?.value || '';
       setSelectedAcademicYear(selectedYear);
       setFeeData([]);
+      setCurrentPage(1);
     } else if (name === 'paymentMode') {
       setSelectedPaymentModes(selectedOptions || []);
+      setCurrentPage(1);
     } else if (name === 'class') {
       setSelectedClasses(selectedOptions || []);
+      setCurrentPage(1);
+    } else if (name === 'rowsPerPage') {
+      setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      setCurrentPage(1);
     }
   };
 
@@ -667,6 +808,7 @@ const RegistrationFees = () => {
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
+    setCurrentPage(1);
     const storedYear = localStorage.getItem('selectedAcademicYear');
     if (storedYear) {
       setSelectedAcademicYear(storedYear);
@@ -683,40 +825,58 @@ const RegistrationFees = () => {
     setShowFilterPanel(false);
   };
 
-  const getFieldValue = (record, field) => {
-    const fieldId = field.id;
-    if (fieldId === 'academicYear') {
-      return formatAcademicYear(record[fieldId]) || '-';
-    } else if (fieldId === 'studentName') {
-      return record.student?.studentName || '-';
-    } else if (fieldId === 'class') {
-      return record.className || '-';
-    } else {
-      return record.student?.[fieldId] || record[fieldId] || '-';
-    }
-  };
+ const getFieldValue = (record, field) => {
+  const fieldId = field.id;
+  const isCancelledOrChequeReturn = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus);
 
-  const calculateBalance = (record) => {
-    const due = parseFloat(record.student?.regFeesDue || 0);
-    const concession = parseFloat(record.student?.regFeesConcession || 0);
-    const paid = parseFloat(record.student?.regFeesPaid || 0);
-    return (due - concession - paid);
-  };
+  if (fieldId === 'academicYear') {
+    return formatAcademicYear(record[fieldId]) || '-';
+  } else if (fieldId === 'studentName') {
+    return record.student?.studentName || '-';
+  } else if (fieldId === 'class') {
+    return record.className || '-';
+  } else if (fieldId === 'regFeesDate') {
+    if (isCancelledOrChequeReturn) {
+      const cancelledDate = record.student?.regFeesCancelledDate;
+      if (cancelledDate && /^\d{2}-\d{2}-\d{4}$/.test(cancelledDate)) {
+        return cancelledDate;
+      }
+      return '-';
+    }
+    return record.student?.regFeesDate || '-';
+  } else if (fieldId === 'reportStatus') {
+    return record.student?.reportStatus || '-';
+  } else if (['regFeesDue', 'regFeesPaid', 'regFeesConcession'].includes(fieldId)) {
+    const value = parseInt(record.student?.[fieldId] || 0, 10);
+    if (value === 0) return '0'; // Show '0' without negative sign
+    return isCancelledOrChequeReturn ? `-${value}` : value.toString();
+  } else {
+    return record.student?.[fieldId] || record[fieldId] || '-';
+  }
+};
+
+const calculateBalance = (record) => {
+  const due = parseInt(record.student?.regFeesDue || 0, 10);
+  const concession = parseInt(record.student?.regFeesConcession || 0, 10);
+  const paid = parseInt(record.student?.regFeesPaid || 0, 10);
+  const balance = due - concession - paid;
+  const isCancelledOrChequeReturn = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus);
+  if (balance === 0) return '0'; // Show '0' without negative sign
+  return isCancelledOrChequeReturn ? `-${balance}` : balance.toString();
+};
+
+
 
   const filteredData = feeData.filter((record) => {
     const matchesAcademicYear = record.academicYear === selectedAcademicYear;
 
     const matchesSearchTerm = searchTerm
       ? Object.values(record).some((value) =>
-        value &&
-        typeof value === 'string' &&
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-      ) ||
-      Object.values(record.student || {}).some((value) =>
-        value &&
-        typeof value === 'string' &&
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+          value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
+        ) ||
+        Object.values(record.student || {}).some((value) =>
+          value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
+        )
       : true;
 
     const matchesPaymentMode =
@@ -729,38 +889,103 @@ const RegistrationFees = () => {
 
     const matchesDate =
       (!startDate && !endDate) ||
-      (record.student?.regFeesDate !== '-' &&
+      ((record.student?.regFeesDate !== '-' || record.student?.regFeesCancelledDate !== '-') &&
         (() => {
-          const recordDate = new Date(record.student.regFeesDate.split('-').reverse().join('-'));
+          const dateString = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus)
+            ? record.student.regFeesCancelledDate
+            : record.student.regFeesDate;
+          if (!dateString || !/^\d{2}-\d{2}-\d{4}$/.test(dateString)) return false;
+          const [day, month, year] = dateString.split('-');
+          const recordDate = new Date(`${year}-${month}-${day}`);
+          if (isNaN(recordDate.getTime())) return false;
           const start = startDate ? new Date(startDate) : null;
           const end = endDate ? new Date(endDate) : null;
           return (!start || recordDate >= start) && (!end || recordDate <= end);
         })());
 
-    return (
-      matchesAcademicYear &&
-      matchesSearchTerm &&
-      matchesPaymentMode &&
-      matchesClass &&
-      matchesDate
-    );
+    return matchesAcademicYear && matchesSearchTerm && matchesPaymentMode && matchesClass && matchesDate;
   });
 
-  const totals = filteredData.reduce(
-    (acc, record) => {
-      const due = parseFloat(record.student?.regFeesDue || 0);
-      const paid = parseFloat(record.student?.regFeesPaid || 0);
-      const concession = parseFloat(record.student?.regFeesConcession || 0);
-      const balance = due - concession - paid;
-      return {
-        feesDue: acc.feesDue + due,
-        feesPaid: acc.feesPaid + paid,
-        concession: acc.concession + concession,
-        balance: acc.balance + balance,
-      };
-    },
-    { feesDue: 0, feesPaid: 0, concession: 0, balance: 0 }
-  );
+  const groupedByDate = filteredData.reduce((acc, record) => {
+    const date = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus)
+      ? record.student.regFeesCancelledDate
+      : record.student.regFeesDate;
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(record);
+    return acc;
+  }, {});
+
+ 
+
+ const totals = filteredData.reduce(
+  (acc, record) => {
+    const due = parseInt(record.student?.regFeesDue || 0, 10);
+    const paid = parseInt(record.student?.regFeesPaid || 0, 10);
+    const concession = parseInt(record.student?.regFeesConcession || 0, 10);
+    const balance = due - concession - paid;
+    const isCancelledOrChequeReturn = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus);
+    const multiplier = isCancelledOrChequeReturn ? -1 : 1;
+    return {
+      feesDue: acc.feesDue + (due !== 0 ? due * multiplier : due),
+      feesPaid: acc.feesPaid + (paid !== 0 ? paid * multiplier : paid),
+      concession: acc.concession + (concession !== 0 ? concession * multiplier : concession),
+      balance: acc.balance + (balance !== 0 ? balance * multiplier : balance),
+    };
+  },
+  { feesDue: 0, feesPaid: 0, concession: 0, balance: 0 }
+);
+
+
+  const totalRecords = Object.keys(groupedByDate).reduce((sum, date) => sum + groupedByDate[date].length, 0);
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+
+  const maxPagesToShow = 5;
+  const pagesToShow = [];
+  const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+  for (let i = startPage; i <= endPage; i++) {
+    pagesToShow.push(i);
+  }
+
+  const paginatedData = () => {
+    const sortedDates = Object.keys(groupedByDate).sort();
+    let currentCount = 0;
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const paginated = [];
+
+    for (const date of sortedDates) {
+      const records = groupedByDate[date];
+      for (const record of records) {
+        if (currentCount >= startIndex && currentCount < endIndex) {
+          paginated.push({ date, record });
+        }
+        currentCount++;
+        if (currentCount >= endIndex) break;
+      }
+      if (currentCount >= endIndex) break;
+    }
+
+    return paginated;
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <div className="container">
@@ -781,6 +1006,15 @@ const RegistrationFees = () => {
                   </div>
                   <div className="col-md-2"></div>
                   <div className="col-md-5 px-0 d-flex align-content-center justify-content-end">
+                    <Select
+                      isClearable
+                      name="rowsPerPage"
+                      placeholder="Show"
+                      options={pageShowOptions}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      onChange={(selected, action) => handleSelectChange(selected, action)}
+                      className="email-select border border-dark me-lg-2"
+                    />
                     <div
                       className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
@@ -833,7 +1067,6 @@ const RegistrationFees = () => {
                           >
                             {isExporting ? 'Exporting...' : 'Export to Excel'}
                           </button>
-
                           <button
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
@@ -862,7 +1095,6 @@ const RegistrationFees = () => {
                           >
                             {isExporting ? 'Exporting...' : 'Export to PDF'}
                           </button>
-
                         </div>
                       )}
                     </div>
@@ -963,7 +1195,7 @@ const RegistrationFees = () => {
               </div>
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Registration Fees Report</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">RegistrationFeesReport</h2>
                 </div>
               </div>
               {isLoading || loadingYears ? (
@@ -974,51 +1206,108 @@ const RegistrationFees = () => {
                   <p>Loading data...</p>
                 </div>
               ) : tableFields.length > 0 ? (
-                <div className="table-responsive pb-4 mt-3">
-                  <table className="table text-dark border border-secondary mb-1">
-                    <thead>
-                      <tr className="payroll-table-header">
-                        {tableFields.map((field) => (
-                          <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                            {headerMapping[field.id] || field.label}
-                          </th>
-                        ))}
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Balance</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredData.length > 0 ? (
-                        filteredData.map((record, index) => (
-                          <tr key={`${record.student.regNo}_${record.academicYear}_${index}`} className="payroll-table-row">
-                            {tableFields.map((field) => (
-                              <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {getFieldValue(record, field)}
+                <>
+                  <div className="table-responsive pb-4 mt-3">
+                    <table className="table text-dark border border-secondary mb-1">
+                      <thead>
+                        <tr className="payroll-table-header">
+                          {tableFields.map((field) => (
+                            <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {headerMapping[field.id] || field.label}
+                            </th>
+                          ))}
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Balance</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {paginatedData().length > 0 ? (
+                          paginatedData().map(({ date, record }, index) => (
+                            <tr
+                              key={`${record.student.regNo}_${record.academicYear}_${record.student.reportStatus}_${index}`}
+                              className="payroll-table-row"
+                            >
+                              {tableFields.map((field) => (
+                                <td
+                                  key={field.id}
+                                  className="text-center align-middle border border-secondary text-nowrap p-2"
+                                >
+                                  {getFieldValue(record, field)}
+                                </td>
+                              ))}
+                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                {calculateBalance(record)}
                               </td>
-                            ))}
-                            <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                              {calculateBalance(record)}
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={tableFields.length + 1} className="text-center">
+                              No data matches the selected filters for {formatAcademicYear(selectedAcademicYear)}.
                             </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={tableFields.length + 1} className="text-center">
-                            No data matches the selected filters for {formatAcademicYear(selectedAcademicYear)}.
+                        )}
+                      </tbody>
+                      <tfoot>
+                        <tr className="payroll-table-footer">
+                          <td colSpan={tableFields.length - 3} className="text-right border border-secondary p-2">
+                            <strong>Total</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.feesDue}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.feesPaid}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.concession}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.balance}</strong>
                           </td>
                         </tr>
-                      )}
-                    </tbody>
-                    <tfoot>
-                      <tr className="payroll-table-footer">
-                        <td colSpan={tableFields.length - 3} className="text-right border border-secondary p-2"><strong>Total</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.feesDue}</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.feesPaid}</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.concession}</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.balance}</strong></td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
+                      </tfoot>
+                    </table>
+                  </div>
+                  {totalRecords > 0 && (
+                    <div className="card-footer border-top">
+                      <nav aria-label="Page navigation example">
+                        <ul className="pagination justify-content-end mb-0">
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handlePreviousPage}
+                              disabled={currentPage === 1}
+                            >
+                              Previous
+                            </button>
+                          </li>
+                          {pagesToShow.map((page) => (
+                            <li
+                              key={page}
+                              className={`page-item ${currentPage === page ? 'active' : ''}`}
+                            >
+                              <button
+                                className={`page-link pagination-button ${currentPage === page ? 'active' : ''}`}
+                                onClick={() => handlePageClick(page)}
+                              >
+                                {page}
+                              </button>
+                            </li>
+                          ))}
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handleNextPage}
+                              disabled={currentPage === totalPages}
+                            >
+                              Next
+                            </button>
+                          </li>
+                        </ul>
+                      </nav>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center mt-3">
                   <p>No table fields available. Please configure in settings.</p>

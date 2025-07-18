@@ -18,7 +18,7 @@ export const exportToExcel = async (
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Concession Report');
 
-
+    // Add headers
     const headers = tableFields.map((field) => headerMapping[field.id] || field.label);
     const headerRow = worksheet.addRow(headers);
 
@@ -28,19 +28,18 @@ export const exportToExcel = async (
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'FFFFFFFF' }
-
+        fgColor: { argb: 'FFFFFFFF' },
       };
     });
 
-    // Add data rows
+
     studentDataArray.forEach((student) => {
       student.transactions
         .filter((record) => record.installmentName !== 'Total')
         .forEach((record) => {
           const row = tableFields.map((field) => {
             const value = getFieldValue(record, field, student);
-            return isNaN(value) ? value : Number(value);
+            return isNaN(value) || value === '-' ? value : Number(value);
           });
           worksheet.addRow(row);
         });
@@ -58,28 +57,43 @@ export const exportToExcel = async (
         field.id === 'sectionName' ||
         field.id === 'concessionType'
       ) {
-        acc[field.id] = '';
+        acc[field.id] = '-'; 
       } else {
         const sum = studentDataArray
           .flatMap((student) => student.transactions)
           .filter((record) => record.installmentName !== 'Total')
-          .reduce((sum, record) => sum + (Number(record[field.id]) || 0));
+          .reduce((sum, record) => sum + (Number(record[field.id]) || 0), 0);
         acc[field.id] = sum || '-';
       }
       return acc;
     }, {});
-    
+
+
     const totalRow = tableFields.map((field) => {
       const value = totals[field.id];
-      return isNaN(value) ? value : Number(value);
+      return value === '-' || isNaN(value) ? value : Number(value);
     });
     const addedTotalRow = worksheet.addRow(totalRow);
 
 
-    addedTotalRow.font = { bold: true, size: 12 };
-    addedTotalRow.alignment = { horizontal: 'center', vertical: 'middle' };
+    addedTotalRow.eachCell((cell, colNumber) => {
+      cell.font = { bold: true, size: 12 };
+      cell.alignment = { horizontal: 'center', vertical: 'middle' };
 
+      if (
+        tableFields[colNumber - 1].id === 'academicYear' ||
+        tableFields[colNumber - 1].id === 'admissionNumber' ||
+        tableFields[colNumber - 1].id === 'studentName' ||
+        tableFields[colNumber - 1].id === 'className' ||
+        tableFields[colNumber - 1].id === 'sectionName' ||
+        tableFields[colNumber - 1].id === 'concessionType' ||
+        tableFields[colNumber - 1].id === 'installmentName'
+      ) {
+        cell.numFmt = '@'; 
+      }
+    });
 
+ 
     worksheet.columns.forEach((column) => {
       let maxLength = 10;
       column.eachCell({ includeEmpty: true }, (cell) => {
@@ -107,7 +121,9 @@ export const exportToExcel = async (
       }
     }
 
+   
     worksheet.views = [{ state: 'frozen', ySplit: 1 }];
+
 
     const fileName = `Concession_Report_StudentWise${school?.schoolName?.replace(/\s+/g, '_') || 'School'}_${new Date().toISOString().split('T')[0]}.xlsx`;
     const buffer = await workbook.xlsx.writeBuffer();

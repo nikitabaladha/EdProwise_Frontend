@@ -226,6 +226,9 @@ import BoardExamFeesList from "./components/DashboardMainForSchool/FeesModuleSer
 
 import StudentPromotionTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Promotion/StudentPromotionTable.js"
 import PromoteStudent from './components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Promotion/PromoteStudent.js'
+import FeesRefund from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/Feesrefund.js"
+import CreateFeesRefund from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/CreateFeesreFund.js'
+import Refundreceipt from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/RefundReceipt.js'
 
             // =====================================Reports==============================================//
 import StudentLedger from "./components/DashboardMainForSchool/FeesModuleServices/Reports/StudentLedger/studentledger.js"
@@ -239,7 +242,10 @@ import DailyCollectionStudentwiseCollection from "./components/DashboardMainForS
 import DailyCollectionSchoolFees  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/SchoolFees/SchoolFees.js"
 import DailyCollectionLateFees  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/LateandExcessFees/LateandExcessFee.js"
 import ConcessionReportDatewise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportDatewise/FeesConcessionReportDatewise.js";
-import ConcessionReportStudentwise  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportStudentwise/FeesConcessionReportStudentWise.js"
+import ConcessionReportStudentwise  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportStudentwise/FeesConcessionReportStudentWise.js";
+import FeesReundReport  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRefund/FeesRefund.js";
+import FeesReundCancelled from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/FeesCancelled/FeesCancelled.js";
+import FeesChequeReturn from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/ChequeReturn/FeesChequeReturn.js"
 
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
@@ -938,11 +944,19 @@ const AppRoutes = () => {
         />
 
          <Route
-          path="fees-module/fees-receipts/test"
-          element={<  Test/>}
+          path="fees-module/fees-receipts/fees-refund"
+          element={< FeesRefund/>}
         />
 
-      
+         <Route
+          path="fees-module/fees-receipts/fees-refund/create-refund"
+          element={<CreateFeesRefund/>}
+        />
+       
+         <Route
+          path="fees-module/fees-receipts/fees-refund/refund-receipt"
+          element={< Refundreceipt/>}
+        />
 
         <Route
           path="fees-module/fees-receipts/school-fees/student-receipts"
@@ -1047,8 +1061,19 @@ const AppRoutes = () => {
           path="fees-module/reports/concession/student-wise"
           element={<ConcessionReportStudentwise />}
          />
-
-   
+       
+         <Route
+          path="fees-module/reports/daily-collection/fees-refund"
+          element={<FeesReundReport />}
+         />
+        <Route
+          path="fees-module/reports/daily-collection/fees-cancelled"
+          element={<FeesReundCancelled />}
+         />
+         <Route
+          path="fees-module/reports/daily-collection/fees-cheque-return"
+          element={<FeesChequeReturn />}
+         />
 
          
       </Route>
