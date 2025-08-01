@@ -38,7 +38,7 @@ const ConcessionForm = () => {
                                 <div className="container">
                                     <div className="card-header mb-2">
                                         <h4 className="card-title text-center custom-heading-font">
-                                            Student Admission Form
+                                            Student Concession Form
                                         </h4>
                                     </div>
                                 </div>
@@ -334,15 +334,8 @@ const ConcessionForm = () => {
                                                 <tr>
                                                     <th style={{ width: 20 }}>
                                                         <div className="form-check ms-1">
-                                                            <input
-                                                                type="checkbox"
-                                                                className="form-check-input"
-                                                                id="customCheck1"
-                                                            />
-                                                            <label
-                                                                className="form-check-label"
-                                                                htmlFor="customCheck1"
-                                                            />
+                                                            <input type="checkbox" className="form-check-input" id="customCheck1" />
+                                                            <label className="form-check-label" htmlFor="customCheck1" />
                                                         </div>
                                                     </th>
                                                     <th>Installment</th>
@@ -351,7 +344,6 @@ const ConcessionForm = () => {
                                                     <th>Concession %</th>
                                                     <th>Concession Amt.</th>
                                                     <th>Balance Payable</th>
-                                                    {/* <th>Action</th> */}
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -393,11 +385,9 @@ const ConcessionForm = () => {
                                                                     </option>
                                                                 ))}
                                                             </select>
-
                                                         </td>
                                                         <td>
                                                             <input
-                                                              
                                                                 name="totalFees"
                                                                 className="form-control text-end"
                                                                 value={detail.totalFees}
@@ -410,7 +400,6 @@ const ConcessionForm = () => {
                                                         <td>
                                                             <div className="input-group">
                                                                 <input
-                                                                
                                                                     name="concessionPercentage"
                                                                     className="form-control text-end"
                                                                     value={detail.concessionPercentage}
@@ -425,7 +414,6 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                              
                                                                 name="concessionAmount"
                                                                 className="form-control text-end"
                                                                 value={detail.concessionAmount}
@@ -435,7 +423,6 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                              
                                                                 name="balancePayable"
                                                                 className="form-control text-end"
                                                                 value={detail.balancePayable}
@@ -446,10 +433,40 @@ const ConcessionForm = () => {
                                                     </tr>
                                                 ))}
                                             </tbody>
+                                            <tfoot className="bg-light-subtle">
+                                                <tr>
+                                                    <td colSpan="3" className="fw-bold">Totals</td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.totalFees || 0), 0)
+                                                            }
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails.length > 0
+                                                            ? (
+                                                                formData.concessionDetails.reduce(
+                                                                    (sum, detail) => sum + Number(detail.concessionPercentage || 0),
+                                                                    0
+                                                                ) / formData.concessionDetails.length
+                                                            )
+                                                            : "0"}%
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.concessionAmount || 0), 0)
+                                                            }
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.balancePayable || 0), 0)
+                                                            }
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
-                                <div className="d-flex justify-content-end">
+                                <div className="d-flex justify-content-end mt-3">
                                     <div className="mr-2">
                                         <button
                                             type="submit"

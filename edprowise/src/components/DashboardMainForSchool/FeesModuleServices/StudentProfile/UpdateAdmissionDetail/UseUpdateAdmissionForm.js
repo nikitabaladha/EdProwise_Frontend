@@ -1,11 +1,9 @@
-
-
 import React, { useState, useEffect } from 'react';
-import countryData from "../../../../../CityData.json";
+import countryData from "../../../../CityData.json";
 import { useNavigate, useLocation } from 'react-router-dom';
-import getAPI from '../../../../../../api/getAPI';
+import getAPI from '../../../../../api/getAPI';
 import { toast } from 'react-toastify';
-import putAPI from '../../../../../../api/putAPI';
+import putAPI from '../../../../../api/putAPI';
 import { validateFullForm } from '../FormValidation/UpdateFormValidation';
 
 const UseUpdateAdmissionForm = () => {
@@ -21,10 +19,11 @@ const UseUpdateAdmissionForm = () => {
   const [sections, setSections] = useState([]);
   const location = useLocation();
   const student = location.state?.student;
-   const academicYear = localStorage.getItem('selectedAcademicYear');
+  const academicYear = localStorage.getItem('selectedAcademicYear');
+  console.log("Student",student)
 
   const [formData, setFormData] = useState({
-    academicYear:academicYear,
+    academicYear:student?.academicHistoryYear||academicYear,
     studentPhoto: null,
     registrationNumber: '',
     firstName: '',
@@ -94,8 +93,9 @@ const UseUpdateAdmissionForm = () => {
 
   useEffect(() => {
     if (student) {
+      console.log("Concession Type:", student.concessionType);
       setFormData({  
-        academicYear:student.academicYear||null,
+        academicYear:student.academicHistoryYear||null,
         studentPhoto: student.studentPhoto || null,
         registrationNumber: student.registrationNumber,
         firstName: student.firstName,
@@ -161,25 +161,25 @@ const UseUpdateAdmissionForm = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(student.academicHistoryYear)
       try {
         if (!schoolId) return;
-        const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
+        const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${student?.academicHistoryYear}`, {}, true);
         setClasses(response?.data?.data || []);
-        console.log('Fetched classes:', response?.data?.data);
       } catch (error) {
         toast.error("Error fetching class and section data.");
       }
     };
 
     fetchData();
-  }, [schoolId]);
+  }, [schoolId,student?.academicHistoryYear]);
 
   useEffect(() => {
     if (!schoolId) return;
 
     const fetchShifts = async () => {
       try {
-        const response = await getAPI(`/master-define-shift-year/${schoolId}/year/${academicYear}`);
+        const response = await getAPI(`/master-define-shift-year/${schoolId}/year/${student?.academicHistoryYear}`);
         if (!response.hasError) {
           const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
           setShifts(shiftArray);
@@ -193,51 +193,30 @@ const UseUpdateAdmissionForm = () => {
     };
 
     fetchShifts();
-  }, [schoolId]);
+  }, [schoolId,student?.academicHistoryYear]);
 
-  // const handleClassChange = (e) => {
-  //   const classId = e.target.value;
-  //   const selectedClass = classes.find(c => c._id === classId);
+  const handleClassChange = (e) => {
+    const classId = e.target.value;
+    const selectedClass = classes.find(c => c._id === classId);
 
-  //   let filteredSections = selectedClass?.sections || [];
-  //   if (formData.masterDefineShift) {
-  //     filteredSections = filteredSections.filter(
-  //       section => section.shiftId === formData.masterDefineShift
-  //     );
-  //   }
+    let filteredSections = selectedClass?.sections || [];
+    if (formData.masterDefineShift) {
+      filteredSections = filteredSections.filter(
+        section => section.shiftId === formData.masterDefineShift
+      );
+    }
 
-  //   setSections(filteredSections);
 
-  //   setFormData({
-  //     ...formData,
-  //     masterDefineClass: classId,
-  //     section: ''
-  //   });
-  // };
+    setSections(filteredSections);
 
-const handleClassChange = (e) => {
-
-  const classId = e.target.value;
-  const selectedClass = classes.find(c => c._id === classId);
-  let filteredSections = selectedClass?.sections || [];
-  if (formData.masterDefineShift) {
-    filteredSections = filteredSections.filter(
-      section => section.shiftId === formData.masterDefineShift
-    );
-  }
-  
-  console.log('Selected class ID:', classId, 'Class name:', selectedClass?.className);
-  console.log('Filtered sections:', filteredSections);
-  setSections(filteredSections);
-  setFormData({
-    ...formData,
-    masterDefineClass: classId,
-    section: '',
-  });
-};
+    setFormData({
+      ...formData,
+      masterDefineClass: classId,
+      section: ''
+    });
+  };
 
   const handleShiftChange = (e) => {
-   
     const shiftId = e.target.value;
     let filteredSections = [];
 
@@ -270,7 +249,6 @@ const handleClassChange = (e) => {
 
 
   useEffect(() => {
-   
     if (formData.masterDefineClass && formData.masterDefineShift && classes.length > 0) {
       const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
       if (selectedClass) {
@@ -351,10 +329,10 @@ const handleClassChange = (e) => {
 
   const handleRegistrationSubmit = (e) => {
     e.preventDefault();
-    // if (!formData.registrationNumber) {
-    //   toast.error("Please select a registration number");
-    //   return;
-    // }
+    if (!formData.registrationNumber) {
+      toast.error("Please select a registration number");
+      return;
+    }
 
     const student = existingStudents.find(
       s => s.registrationNumber === formData.registrationNumber
@@ -405,23 +383,32 @@ const handleClassChange = (e) => {
     setShowFullForm(true);
   };
 
-  const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData(prev => ({
-        ...prev,
-        studentPhoto: file
-      }));
-    }
-  };
+const handlePhotoUpload = (e) => {
+  const file = e.target.files[0];
 
+  if (!file) return;
+
+  const maxSize = 300 * 1024; 
+
+  if (file.size > maxSize) {
+    toast.error("Image size should not exceed 300KB.");
+    e.target.value = null;
+    return;
+  }
+
+  setFormData(prev => ({
+    ...prev,
+    studentPhoto: file
+  }));
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("handleSubmit triggered", formData);
     setIsSubmitting(true);
 
-
-    const error = validateFullForm(formData);
+    const isNursery = isNurseryClass(formData.masterDefineClass);
+    const error = validateFullForm(formData, isNursery);
 
     if (error) {
       toast.error(error);
@@ -460,8 +447,12 @@ const handleClassChange = (e) => {
 
     formDataObj.append('schoolId', schoolId);
 
+    for (let [key, value] of formDataObj.entries()) {
+    console.log(`${key}: ${value instanceof File ? value.name : value}`);
+  }
+
     try {
-      const response = await putAPI(`/update-admission-form/${student._id}`, formDataObj, {
+      const response = await putAPI(`/update-admission-formby-acdemichistory/${student._id}`, formDataObj, {
         'Content-Type': 'multipart/form-data',
       });
 
@@ -470,15 +461,8 @@ const handleClassChange = (e) => {
       if (response?.hasError) {
         toast.error(response.message || 'Something went wrong');
       } else {
-        toast.success(student ? 'Admission Form Updated successfully' : 'Admission Form Submitted successfully');
-        const studentData = response.data?.student || response.student;
+        toast.success( 'Admission Form Updated successfully');
         navigate(-1)
-        // console.log("Student data to send in navigate state:", studentData);
-        // navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
-        //   state: {
-        //     student: response.data?.admission || response.data?.student,
-        //   },
-        // });
       }
     } catch (error) {
       const backendMessage = error?.response?.data?.message;
@@ -579,9 +563,12 @@ const handleClassChange = (e) => {
       }
     };
 
+  const isNurseryClass = (classId) => {
+    const selectedClass = classes.find(c => c._id === classId);
+    return selectedClass?.className === "Nursery";
+  };
 
-
-
+  const isNursery = isNurseryClass(formData.masterDefineClass);
 
   const getFileNameFromPath = (path) => {
     if (!path) return '';
@@ -609,6 +596,7 @@ const handleClassChange = (e) => {
     countryOptions,
     stateOptions,
     getFileNameFromPath,
+    isNursery,
     cityOptions,
     student,
     handleCountryChange,
@@ -621,3 +609,4 @@ const handleClassChange = (e) => {
 };
 
 export default UseUpdateAdmissionForm;
+

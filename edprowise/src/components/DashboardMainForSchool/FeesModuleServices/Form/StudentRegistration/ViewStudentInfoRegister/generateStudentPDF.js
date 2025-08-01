@@ -10,11 +10,22 @@ export const generatePDF = async (formData, student, classes, shifts, existingFi
       .join(" ");
   };
 
-  const mockFormData = {
+   const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "";
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+ const mockFormData = {
     firstName: capitalizeWords(formData.firstName) || "",
     middleName: capitalizeWords(formData.middleName) || "",
     lastName: capitalizeWords(formData.lastName) || "",
-    dateOfBirth: formData.dateOfBirth ? formData.dateOfBirth.substring(0, 10) : "",
+    dateOfBirth: formatDate(formData.dateOfBirth),
     age: formData.age || "",
     nationality: capitalizeWords(formData.nationality) || "",
     gender: capitalizeWords(formData.gender) || "",
@@ -59,6 +70,8 @@ export const generatePDF = async (formData, student, classes, shifts, existingFi
     paymentMode: capitalizeWords(formData.paymentMode) || "",
     chequeNumber: formData.chequeNumber || "",
     bankName: capitalizeWords(formData.bankName) || "",
+    createdAt: formatDate(student?.createdAt),
+    paymentDate: formatDate(student?.paymentDate),
   };
 
   const getImageDataUrl = async (url) => {
@@ -88,8 +101,10 @@ export const generatePDF = async (formData, student, classes, shifts, existingFi
     if (formData.studentPhoto || existingFiles?.studentPhoto) {
       if (typeof formData.studentPhoto === "string") {
         photoSrc = await getImageDataUrl(formData.studentPhoto);
+           console.log("photosrc",photoSrc)
       } else if (formData.studentPhoto) {
         blobUrl = URL.createObjectURL(formData.studentPhoto);
+        console.log("blob url",blobUrl)
         photoSrc = blobUrl;
       } else {
         photoSrc = await getImageDataUrl(`${process.env.REACT_APP_API_URL_FOR_IMAGE}${existingFiles.studentPhoto}`);
@@ -377,19 +392,14 @@ export const generatePDF = async (formData, student, classes, shifts, existingFi
             </div>
           </div>
           <div class="pdf-row">
-            <div class="pdf-col-3">
+            <div class="pdf-col-6">
               <div class="pdf-field">
                 <label class="pdf-label">School Board</label>
                 <div class="pdf-value">${mockFormData.previousSchoolBoard}</div>
               </div>
             </div>
-            <div class="pdf-col-3">
-              <div class="pdf-field">
-                <label class="pdf-label">Category</label>
-                <div class="pdf-value">${mockFormData.studentCategory}</div>
-              </div>
-            </div>
-            <div class="pdf-col-3">
+           
+            <div class="pdf-col-6">
               <div class="pdf-field">
                 <label class="pdf-label">How Did You Reach Us</label>
                 <div class="pdf-value">${mockFormData.howReachUs}</div>
@@ -402,6 +412,12 @@ export const generatePDF = async (formData, student, classes, shifts, existingFi
         <div class="pdf-section">
           <div class="pdf-section-title">Document Information</div>
           <div class="pdf-row">
+           <div class="pdf-col-6">
+              <div class="pdf-field">
+                <label class="pdf-label">Category</label>
+                <div class="pdf-value">${mockFormData.studentCategory}</div>
+              </div>
+            </div>
             <div class="pdf-col-6">
               <div class="pdf-field">
                 <label class="pdf-label">Aadhar/Passport Number</label>
@@ -508,37 +524,37 @@ export const generatePDF = async (formData, student, classes, shifts, existingFi
           }
         }
       </style>
-      <div class="pdf-container">
-        <!-- Sibling Information -->
-        <div class="pdf-section">
-          <div class="pdf-section-title">Sibling Information Study In Same School</div>
-          ${mockFormData.siblingInfoChecked
+     <div class="pdf-container">
+    <!-- Sibling Information -->
+    <div class="pdf-section">
+      <div class="pdf-section-title">Sibling Information Study In Same School</div>
+      ${mockFormData.siblingInfoChecked
         ? '<div class="pdf-value">No Sibling Information Provided</div>'
         : `<div class="pdf-row">
-                <div class="pdf-col-6">
-                  <div class="pdf-field">
-                    <label class="pdf-label">Relation Type</label>
-                    <div class="pdf-value">${mockFormData.relationType}</div>
-                  </div>
+              <div class="pdf-col-6">
+                <div class="pdf-field">
+                  <label class="pdf-label">Relation Type</label>
+                  <div class="pdf-value">${mockFormData.relationType}</div>
                 </div>
-                <div class="pdf-col-6">
-                  <div class="pdf-field">
-                    <label class="pdf-label">Sibling Name</label>
-                    <div class="pdf-value">${mockFormData.siblingName}</div>
-                  </div>
+              </div>
+              <div class="pdf-col-6">
+                <div class="pdf-field">
+                  <label class="pdf-label">Sibling Name</label>
+                  <div class="pdf-value">${mockFormData.siblingName}</div>
                 </div>
-              </div>`
+              </div>
+            </div>`
       }
-        </div>
+    </div>
 
-        <!-- Family Information -->
-        <div class="pdf-section">
-          <div class="pdf-section-title">Family Information</div>
-          <div class="pdf-field">
-            <label class="pdf-label">Parental Status</label>
-            <div class="pdf-value">${mockFormData.parentalStatus}</div>
-          </div>
-          ${mockFormData.parentalStatus !== "Single Mother"
+    <!-- Family Information -->
+    <div class="pdf-section">
+      <div class="pdf-section-title">Family Information</div>
+      <div class="pdf-field">
+        <label class="pdf-label">Parental Status</label>
+        <div class="pdf-value">${mockFormData.parentalStatus}</div>
+      </div>
+      ${mockFormData.parentalStatus !== "Single Mother"
         ? `
           <div class="pdf-row">
             <div class="pdf-col-4">
@@ -569,7 +585,7 @@ export const generatePDF = async (formData, student, classes, shifts, existingFi
           `
         : ""
       }
-          ${mockFormData.parentalStatus !== "Single Father"
+      ${mockFormData.parentalStatus !== "Single Father"
         ? `
           <div class="pdf-row">
             <div class="pdf-col-4">
@@ -600,56 +616,56 @@ export const generatePDF = async (formData, student, classes, shifts, existingFi
           `
         : ""
       }
-        </div>
+    </div>
 
-        <!-- Understanding & Payment -->
-        <div class="pdf-section">
-          <div class="pdf-section-title">Understanding And Payment</div>
-          <div class="pdf-checkbox">
-            <div class="pdf-checkbox-box">${mockFormData.agreementChecked ? "✓" : ""}</div>
-            <span style="color: #000000; text-transform: capitalize;">I Understand And Agree That The Registration Of My Ward Does Not Guarantee Admission To The School And The Registration Fee Is Neither Transferable Nor Refundable.</span>
+    <!-- Understanding & Payment -->
+    <div class="pdf-section">
+      <div class="pdf-section-title">Understanding And Payment</div>
+      <div class="pdf-checkbox">
+        <div class="pdf-checkbox-box">${mockFormData.agreementChecked ? "✓" : ""}</div>
+        <span style="color: #000000; text-transform: capitalize;">I Understand And Agree That The Registration Of My Ward Does Not Guarantee Admission To The School And The Registration Fee Is Neither Transferable Nor Refundable.</span>
+      </div>
+      <div class="pdf-row">
+        <div class="pdf-col-4">
+          <div class="pdf-field">
+            <label class="pdf-label">Registration Fees</label>
+            <div class="pdf-value">₹${mockFormData.registrationFee}</div>
           </div>
-          <div class="pdf-row">
-            <div class="pdf-col-4">
-              <div class="pdf-field">
-                <label class="pdf-label">Registration Fees</label>
-                <div class="pdf-value">₹${mockFormData.registrationFee}</div>
-              </div>
-            </div>
-            <div class="pdf-col-4">
-              <div class="pdf-field">
-                <label class="pdf-label">Concession Type</label>
-                <div class="pdf-value">${mockFormData.concessionType}</div>
-              </div>
-            </div>
-            <div class="pdf-col-4">
-              <div class="pdf-field">
-                <label class="pdf-label">Concession</label>
-                <div class="pdf-value">₹${mockFormData.concessionAmount}</div>
-              </div>
-            </div>
-            <div class="pdf-col-4">
-              <div class="pdf-field">
-                <label class="pdf-label">Final Amount</label>
-                <div class="pdf-value">₹${mockFormData.finalAmount}</div>
-              </div>
-            </div>
+        </div>
+        <div class="pdf-col-4">
+          <div class="pdf-field">
+            <label class="pdf-label">Concession Type</label>
+            <div class="pdf-value">${mockFormData.concessionType}</div>
           </div>
-          <div class="pdf-row">
-            <div class="pdf-col-6">
-              <div class="pdf-field">
-                <label class="pdf-label">Name Of Person Filling Form</label>
-                <div class="pdf-value">${mockFormData.name}</div>
-              </div>
-            </div>
-            <div class="pdf-col-6">
-              <div class="pdf-field">
-                <label class="pdf-label">Payment Mode</label>
-                <div class="pdf-value">${mockFormData.paymentMode}</div>
-              </div>
-            </div>
+        </div>
+        <div class="pdf-col-4">
+          <div class="pdf-field">
+            <label class="pdf-label">Concession</label>
+            <div class="pdf-value">₹${mockFormData.concessionAmount}</div>
           </div>
-          ${mockFormData.paymentMode === "Cheque"
+        </div>
+        <div class="pdf-col-4">
+          <div class="pdf-field">
+            <label class="pdf-label">Final Amount</label>
+            <div class="pdf-value">₹${mockFormData.finalAmount}</div>
+          </div>
+        </div>
+      </div>
+      <div class="pdf-row">
+        <div class="pdf-col-6">
+          <div class="pdf-field">
+            <label class="pdf-label">Name Of Person Filling Form</label>
+            <div class="pdf-value">${mockFormData.name}</div>
+          </div>
+        </div>
+        <div class="pdf-col-6">
+          <div class="pdf-field">
+            <label class="pdf-label">Payment Mode</label>
+            <div class="pdf-value">${mockFormData.paymentMode}</div>
+          </div>
+        </div>
+      </div>
+      ${mockFormData.paymentMode === "Cheque"
         ? `
           <div class="pdf-row">
             <div class="pdf-col-6">
@@ -667,10 +683,54 @@ export const generatePDF = async (formData, student, classes, shifts, existingFi
           </div>`
         : ""
       }
+    </div>
+
+    <!-- For Official Use Only -->
+    <div class="pdf-section">
+      <div class="pdf-section-title">For Official Use Only</div>
+      <div class="pdf-row">
+        <div class="pdf-col-3">
+          <div class="pdf-field">
+            <label class="pdf-label">Application Received On</label>
+            <div class="pdf-value">${student?.paymentDate ? student.paymentDate.substring(0, 10) : ""}</div>
+          </div>
+        </div>
+        <div class="pdf-col-3">
+          <div class="pdf-field">
+            <label class="pdf-label">Receipt No.</label>
+            <div class="pdf-value">${student?.receiptNumber || ""}</div>
+          </div>
+        </div>
+        <div class="pdf-col-3">
+          <div class="pdf-field">
+            <label class="pdf-label">Registration No.</label>
+            <div class="pdf-value">${student?.registrationNumber || ""}</div>
+          </div>
         </div>
       </div>
-    `;
-
+      <div class="pdf-row">
+        <div class="pdf-col-3">
+          <div class="pdf-field">
+            <label class="pdf-label">Payment Mode</label>
+            <div class="pdf-value">${mockFormData.paymentMode}</div>
+          </div>
+        </div>
+        <div class="pdf-col-3">
+          <div class="pdf-field">
+            <label class="pdf-label">Payment Date</label>
+            <div class="pdf-value">${student?.paymentDate ? new Date(student.paymentDate).toLocaleDateString("en-GB") : ""}</div>
+          </div>
+        </div>
+        <div class="pdf-col-3">
+          <div class="pdf-field">
+            <label class="pdf-label">Transaction/Cheque No.</label>
+            <div class="pdf-value">${student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ""}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
     page1Container.innerHTML = generateHeader(school, logoSrc) + createPDFContent() + generateFooter(school);
     page2Container.innerHTML = generateHeader(school, logoSrc) + createPage2Content() + generateFooter(school);
 

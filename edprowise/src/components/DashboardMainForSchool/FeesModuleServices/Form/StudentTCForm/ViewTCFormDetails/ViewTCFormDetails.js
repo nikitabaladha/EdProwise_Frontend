@@ -129,17 +129,17 @@ const handleDownloadPDF = async () => {
           <div className="card m-2">
             <div className="card-body custom-heading-padding">
               <div className="container">
-               <div className="card-header mb-2 d-flex justify-content-between align-items-center">
+               <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
                     View Transfer Certificate Form
                   </h4>
-                  <button
+                  {/* <button
                     className="btn btn-primary"
                     onClick={handleDownloadPDF}
                     title="Download TC Form as PDF"
                   >
                     Download PDF
-                  </button>
+                  </button> */}
                 </div>
               </div>
               <form onSubmit={""}>
@@ -684,19 +684,15 @@ const handleDownloadPDF = async () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfApplicationReceived"
-                        className="form-label"
-                      >
-                        Application Received On
+                      <label htmlFor="receivedBy" className="form-label">
+                       Application Received On
                       </label>
                       <input
-                        type="date"
-                        id="dateOfApplicationReceived"
-                        name="dateOfApplicationReceived"
+                        type="text"
+                        id="receivedBy"
+                        name="receivedBy"
                         className="form-control"
-                        value={formData.ApplicationReceivedOn}
-                        required
+                        value={student?.paymentDate ? new Date(student.paymentDate).toLocaleDateString('en-GB') : ''}
                         disabled
                       />
                     </div>

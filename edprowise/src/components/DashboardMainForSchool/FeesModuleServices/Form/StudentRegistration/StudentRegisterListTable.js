@@ -4,6 +4,8 @@ import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import RegistrationExcelSheetModal from "./ExcelSheetModal";
+import * as XLSX from "xlsx";
+import { generatePDF } from "./generateStudentPDF";
 
 const StudentRegisterListTable = () => {
   const navigate = useNavigate();
@@ -18,6 +20,9 @@ const StudentRegisterListTable = () => {
   const [loadingYears, setLoadingYears] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [shifts, setShifts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [openDropdownId, setOpenDropdownId] = useState(null); 
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -42,13 +47,77 @@ const StudentRegisterListTable = () => {
       const response = await getAPI(`/get-registartion-form/${schoolId}/${selectedYear}`);
       if (!response.hasError) {
         const studentArray = Array.isArray(response.data.students) ? response.data.students : [];
-        setStudentData(studentArray);
+        setStudentData(studentArray.sort((a, b) => new Date(b.createdAt || b.paymentDate) - new Date(a.createdAt || a.paymentDate)));
       } else {
         toast.error(response.message || "Failed to fetch student list.");
       }
     } catch (err) {
       toast.error("Error refreshing student data.");
     }
+  };
+
+  const handleExport = () => {
+    const exportData = studentData.map((student) => ({
+      "Date of Receipts": student.paymentDate
+        ? new Date(student.paymentDate).toLocaleDateString("en-GB")
+        : "",
+      "Registration No.": student.registrationNumber || "",
+      "First Name": student.firstName || "",
+      "Middle Name": student.middleName || "",
+      "Last Name": student.lastName || "",
+      "Date of Birth": student.dateOfBirth
+        ? new Date(student.dateOfBirth).toLocaleDateString("en-GB")
+        : "",
+      Age: student.age || "",
+      Nationality: student.nationality || "",
+      Gender: student.gender || "",
+      "Blood Group": student.bloodGroup || "",
+      "Mother Tongue": student.motherTongue || "",
+      Class: getClassNameById(student.masterDefineClass),
+      Shift: getShiftName(student.masterDefineShift),
+      "Parental Status": student.parentalStatus || "",
+      "Father Name": student.fatherName || "",
+      "Father Contact No": student.fatherContactNo || "",
+      "Father Qualification": student.fatherQualification || "",
+      "Father Profession": student.fatherProfession || "",
+      "Mother Name": student.motherName || "",
+      "Mother Contact No": student.motherContactNo || "",
+      "Mother Qualification": student.motherQualification || "",
+      "Mother Profession": student.motherProfession || "",
+      "Current Address": student.currentAddress || "",
+      Country: student.country || "",
+      State: student.state || "",
+      City: student.city || "",
+      Pincode: student.pincode || "",
+      "Parent Contact Number": student.parentContactNumber || "",
+      "Previous School Name": student.previousSchoolName || "",
+      "Previous School Board": student.previousSchoolBoard || "",
+      "Address of Previous School": student.addressOfPreviousSchool || "",
+      "Aadhar/Passport Number": student.aadharPassportNumber || "",
+      "Student Category": student.studentCategory || "",
+      "Relation Type": student.relationType || "",
+      "Sibling Name": student.siblingName || "",
+      "How Reach Us": student.howReachUs || "",
+      "Registration Fee": student.registrationFee || "",
+      "Concession Type": student.concessionType || "",
+      "Concession Amount": student.concessionAmount || "",
+      "Final Amount": student.finalAmount || "",
+      "Payment Mode": student.paymentMode && student.paymentMode !== "null" ? student.paymentMode : "",
+      "Cheque Number": student.chequeNumber || "",
+      "Bank Name": student.bankName || "",
+      Status: student.status || "",
+      "Transaction Number": student.transactionNumber || "",
+      "Receipt Number": student.receiptNumber || "",
+      "Payment Date": student.paymentDate
+        ? new Date(student.paymentDate).toLocaleDateString("en-GB")
+        : "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+
+    XLSX.writeFile(workbook, `Registered_Student_List_${selectedYear}.xlsx`);
   };
 
   const openDeleteDialog = (request) => {
@@ -100,7 +169,7 @@ const StudentRegisterListTable = () => {
 
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.students) ? response.data.students : [];
-          setStudentData(studentArray);
+        setStudentData(studentArray.sort((a, b) => new Date(b.createdAt || b.paymentDate) - new Date(a.createdAt || a.paymentDate)));
         } else {
           toast.error(response.message || "Failed to fetch student list.");
         }
@@ -153,14 +222,46 @@ const StudentRegisterListTable = () => {
     });
   };
 
+  const handleDownloadPDF = async (student) => {
+    setIsGenerating(true);
+    try {
+      await generatePDF(schoolId,student, getClassNameById,getShiftName,);
+      console.log(schoolId)
+    } catch (error) {
+      toast.error("Failed to generate PDF.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const toggleDropdown = (studentId) => {
+    setOpenDropdownId(openDropdownId === studentId ? null : studentId);
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(10);
 
+  const filteredStudents = studentData.filter(student => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      (student.paymentDate
+        ? new Date(student.paymentDate).toLocaleDateString('en-GB').replace(/\//g, '-')
+        : '').toLowerCase().includes(searchLower) ||
+      student.registrationNumber.toLowerCase().includes(searchLower) ||
+      `${student.firstName} ${student.lastName}`.toLowerCase().includes(searchLower) ||
+      (student.gender || '').toLowerCase().includes(searchLower) ||
+      getClassNameById(student.masterDefineClass).toLowerCase().includes(searchLower) ||
+      getShiftName(student.masterDefineShift).toLowerCase().includes(searchLower) ||
+      (student.parentContactNumber || '').toLowerCase().includes(searchLower) ||
+      (student.status || '').toLowerCase().includes(searchLower)
+    );
+  });
+
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
+  const currentStudent = filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent);
 
-  const totalPages = Math.ceil(studentData.length / studentListPerPage);
+  const totalPages = Math.ceil(filteredStudents.length / studentListPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -182,7 +283,7 @@ const StudentRegisterListTable = () => {
   return (
     <>
       <div className="container-fluid">
-        <div className="d-flex justify-content-end mb-2 gap-2">
+        <div className="d-flex justify-content-end mb-2 gap-2 align-items-center">
           <Link
             onClick={(event) => navigateToRegisterStudent(event)}
             className="btn btn-sm btn-primary"
@@ -195,6 +296,12 @@ const StudentRegisterListTable = () => {
           >
             Import
           </button>
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={handleExport}
+          >
+            Export
+          </button>
         </div>
         <div className="row">
           <div className="col-xl-12">
@@ -203,6 +310,16 @@ const StudentRegisterListTable = () => {
                 <h4 className="card-title flex-grow-1">
                   Registered Student List
                 </h4>
+                <div className="d-none d-md-block">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    placeholder="Search by any field "
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ width: '200px' }}
+                  />
+                </div>
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}
@@ -222,7 +339,7 @@ const StudentRegisterListTable = () => {
               </div>
               <div>
                 <div className="table-responsive">
-                  <table className="table align-middle mb-0  table-centered text-center">
+                  <table className="table align-middle mb-0 table-centered text-center text-nowrap">
                     <thead className="bg-light-subtle">
                       <tr>
                         <th style={{ width: 20 }}>
@@ -238,8 +355,9 @@ const StudentRegisterListTable = () => {
                             />
                           </div>
                         </th>
+                        <th>Date of Receipts</th>
                         <th>Registration No.</th>
-                        <th>Student  Name</th>
+                        <th>Student Name</th>
                         <th>Gender</th>
                         <th>Class</th>
                         <th>Shift</th>
@@ -256,15 +374,18 @@ const StudentRegisterListTable = () => {
                               <input
                                 type="checkbox"
                                 className="form-check-input"
-                                id="customCheck2"
+                                id={`customCheck${index + 2}`}
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor="customCheck2"
-                              >
-
-                              </label>
+                                htmlFor={`customCheck${index + 2}`}
+                              />
                             </div>
+                          </td>
+                          <td>
+                            {student.paymentDate
+                              ? new Date(student.paymentDate).toLocaleDateString('en-GB').replace(/\//g, '-')
+                              : ''}
                           </td>
                           <td>{student.registrationNumber}</td>
                           <td>{student.firstName} {student.lastName}</td>
@@ -274,13 +395,11 @@ const StudentRegisterListTable = () => {
                           <td>{student.parentContactNumber}</td>
                           <td>
                             <button
-                              className={`btn btn-sm ${student.status === 'Paid' ? 'btn-success' : 'btn-danger'
-                                }`}
+                              className={`btn btn-sm ${student.status === 'Paid' ? 'btn-success' : 'btn-danger'}`}
                             >
                               {student.status}
                             </button>
                           </td>
-
                           <td>
                             <div className="d-flex gap-2">
                               <Link className="btn btn-light btn-sm"
@@ -300,20 +419,47 @@ const StudentRegisterListTable = () => {
                                 />
                               </Link>
                               <Link className="btn btn-soft-danger btn-sm"
-                                onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}>
+                                onClick={(e) => { e.preventDefault(); openDeleteDialog(student); }}
+                              >
                                 <iconify-icon
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-success btn-sm"
-                                onClick={(event) => navigateToFeesReceipt(event, student)}
-                              >
-                                <iconify-icon
-                                  icon="solar:download-minimalistic-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
+                              <div className="dropdown">
+                                <Link
+                                  className="btn btn-soft-success btn-sm"
+                                  onClick={() => toggleDropdown(student._id)}
+                                >
+                                  <iconify-icon
+                                    icon="solar:download-minimalistic-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                                {openDropdownId === student._id && (
+                                  <div className="dropdown-menu dropdown-menu-end show" style={{ position: 'absolute', zIndex: 1000 }}>
+                                    <button
+                                      className="dropdown-item"
+                                      onClick={(event) => {
+                                        navigateToFeesReceipt(event, student);
+                                        setOpenDropdownId(null);
+                                      }}
+                                    >
+                                      Download Receipt
+                                    </button>
+                                    <button
+                                      className="dropdown-item"
+                                      onClick={() => {
+                                        handleDownloadPDF(student);
+                                        setOpenDropdownId(null);
+                                      }}
+                                      disabled={isGenerating}
+                                    >
+                                      {isGenerating ? "Generating..." : "Download Form PDF"}
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </td>
                         </tr>

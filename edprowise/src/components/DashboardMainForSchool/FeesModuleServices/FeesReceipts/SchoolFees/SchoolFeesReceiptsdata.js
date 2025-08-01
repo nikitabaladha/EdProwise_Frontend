@@ -1170,7 +1170,7 @@ const handleFinalSubmit = async (e, frontendReceiptDetails = null, isImport = fa
         const receiptDetails = {
           ...baseReceiptDetails,
           transactionNumber:
-            formData.paymentMode === 'Online Transfer' ? generateTransactionNumber() : formData.chequeNumber,
+            formData.paymentMode === 'Online' ? generateTransactionNumber() : formData.chequeNumber,
           academicYear,
           installments: [],
         };
@@ -1329,6 +1329,7 @@ const handleFinalSubmit = async (e, frontendReceiptDetails = null, isImport = fa
     openFeeTypeModal,
     handleModalPaidAmountChange,
     closeFeeTypeModal,
+    
   };
 };
 

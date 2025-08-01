@@ -4,10 +4,6 @@
 import CreatableSelect from 'react-select/creatable';
 import useStudentRegistration from "./UseStudentRegistration";
 
-const getFileNameFromPath = (path) => {
-  if (!path) return '';
-  return path.split('/').pop();
-};
 
 const StudentRegistrationForm = () => {
   const {
@@ -32,6 +28,8 @@ const StudentRegistrationForm = () => {
     handleStateChange,
     handleCityChange,
   } = useStudentRegistration();
+
+  
 
   return (
     <div className="container">

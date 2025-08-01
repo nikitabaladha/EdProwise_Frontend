@@ -167,12 +167,12 @@ const FeesReceipt = () => {
         console.log("API Response:", response);
 
         if (!response.hasError && response.data && response.data.schoolFees) {
-         setStudent(prev => ({
-        ...prev,
-        status: response.data.schoolFees.status,
-        cancelReason: response.data.schoolFees.cancelReason, 
-      
-      }));;
+          setStudent(prev => ({
+            ...prev,
+            status: response.data.schoolFees.status,
+            cancelReason: response.data.schoolFees.cancelReason,
+
+          }));;
           setIsCancelledOrReturned(['Cancelled', 'Cheque Return'].includes(response.data.schoolFees.status));
 
         } else {
@@ -184,7 +184,7 @@ const FeesReceipt = () => {
       }
     };
     fetchStudentStatus();
-  }, [ receiptDetails]);
+  }, [receiptDetails]);
 
   const handleModalClose = async (updatedStudent) => {
     setShowModal(false);
@@ -439,7 +439,7 @@ const FeesReceipt = () => {
                 <div class="pdf-field"><span class="pdf-label">Bank Name:</span><span class="pdf-value">${receipt.bankName || "N/A"}</span></div>
               `
         : ""}
-            <div class="pdf-field"><span class="pdf-label">Date of Payment:</span><span class="pdf-value">${receipt.paymentDate?.split("T")[0] || "N/A"}</span></div>
+            // <div class="pdf-field"><span class="pdf-label">Date of Payment:</span><span class="pdf-value">${receipt.paymentDate?.split("T")[0] || "N/A"}</span></div>
           ${['Cancelled', 'Cheque Return'].includes(student?.status) ? `
             <div class="pdf-field"><span class="pdf-label">Cancel Reason:</span><span class="pdf-value">${student?.cancelReason || "N/A"}</span></div>
           ` : ""}
@@ -658,7 +658,11 @@ const FeesReceipt = () => {
                         <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
                           Date:
                         </span>
-                        <span>{receipt.paymentDate?.split("T")[0] || "N/A"}</span>
+                        <span>
+                          {receipt.paymentDate
+                            ? new Date(receipt.paymentDate).toLocaleDateString("en-GB")
+                            : "N/A"}
+                        </span>
                       </div>
                       <div className="d-flex mb-2">
                         <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
@@ -843,12 +847,12 @@ const FeesReceipt = () => {
                           </div>
                         </>
                       )}
-                      <div className="d-flex mb-2">
+                      {/* <div className="d-flex mb-2">
                         <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
                           Date of Payment:
                         </span>
                         <span>{receipt.paymentDate?.split("T")[0] || "N/A"}</span>
-                      </div>
+                      </div> */}
                       {['Cancelled', 'Cheque Return'].includes(student?.status) && (
                         <>
                           <div className="d-flex mb-2">

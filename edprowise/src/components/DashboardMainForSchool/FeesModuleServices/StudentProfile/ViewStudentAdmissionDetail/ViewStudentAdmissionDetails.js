@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import CreatableSelect from 'react-select/creatable';
 import UseUpdateAdmissionForm from "../UpdateAdmissionDetail/UseUpdateAdmissionForm";
-import { generatePDF } from "./generateStudentPDF";
 
 const ViewAdmissionForm = () => {
   const {
@@ -21,7 +20,6 @@ const ViewAdmissionForm = () => {
   } = UseUpdateAdmissionForm();
 
   const formRef = useRef(null);
-  const [isGenerating, setIsGenerating] = useState(false);
 
   const renderFileViewButton = (filePath, altText) => {
     if (!filePath) return <div className="text-secondary small mt-1">No file</div>;
@@ -42,17 +40,7 @@ const ViewAdmissionForm = () => {
     );
   };
 
-  const handleDownloadPDF = async () => {
-    console.log("handleDownloadPDF - schoolId:", schoolId);
-    setIsGenerating(true);
-    try {
-      await generatePDF(formData, student, classes, shifts, sections,schoolId);
-    } catch (error) {
-      console.error("PDF generation failed:", error);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+
 
   return (
     <div className="container">
@@ -65,15 +53,6 @@ const ViewAdmissionForm = () => {
                   <h4 className="card-title text-center custom-heading-font">
                     Student Admission Form
                   </h4>
-                
-                  {/* <button
-                    className="btn btn-primary download-pdf-btn"
-                    onClick={handleDownloadPDF}
-                    disabled={isGenerating}
-                    style={{ marginLeft: "auto" }}
-                  >
-                    {isGenerating ? "Generating PDF..." : "Download PDF"}
-                  </button> */}
                 </div>
               </div>
               <div ref={formRef}>

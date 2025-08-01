@@ -784,20 +784,15 @@ const UpdateTCForm = () => {
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label
-                        htmlFor="dateOfApplicationReceived"
-                        className="form-label"
-                      >
-                        Application Received On
+                     <label htmlFor="receivedBy" className="form-label">
+                       Application Received On
                       </label>
                       <input
-                        type="date"
-                        id="dateOfApplicationReceived"
-                        name="dateOfApplicationReceived"
+                        type="text"
+                        id="receivedBy"
+                        name="receivedBy"
                         className="form-control"
-                        value={formData.ApplicationReceivedOn}
-                        onChange={handleChange}
-                        required
+                        value={student?.paymentDate ? new Date(student.paymentDate).toLocaleDateString('en-GB') : ''}
                         disabled
                       />
                     </div>

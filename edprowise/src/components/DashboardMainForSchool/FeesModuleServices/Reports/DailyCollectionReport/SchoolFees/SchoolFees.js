@@ -1,15 +1,20 @@
-// import React, { useState, useEffect } from 'react';
-// import { FaFilter } from 'react-icons/fa';
+// import React, { useState, useEffect, useRef } from 'react';
+// import { FaFilter, FaDownload } from 'react-icons/fa';
 // import { toast } from 'react-toastify';
 // import CreatableSelect from 'react-select/creatable';
 // import { Link } from 'react-router-dom';
 // import getAPI from '../../../../../../api/getAPI';
+// import { exportToExcel, exportToPDF } from './SchoolFeesReport';
+// import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-// const StudentWiseFeesDueReport = () => {
+// const SchoolFeesReport= () => {
 //   const [showFilterPanel, setShowFilterPanel] = useState(false);
+//   const [showExportDropdown, setShowExportDropdown] = useState(false);
 //   const [activeTab, setActiveTab] = useState('Date');
 //   const [searchTerm, setSearchTerm] = useState('');
 //   const [schoolId, setSchoolId] = useState('');
+//   const [school, setSchool] = useState(null);
+//   const [logoSrc, setLogoSrc] = useState('');
 //   const [feeData, setFeeData] = useState([]);
 //   const [feeTypes, setFeeTypes] = useState([]);
 //   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +25,6 @@
 //   const [installmentOptions, setInstallmentOptions] = useState([]);
 //   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
 //   const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
-  
 //   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
 //   const [selectedClasses, setSelectedClasses] = useState([]);
 //   const [selectedSections, setSelectedSections] = useState([]);
@@ -29,6 +33,8 @@
 //   const [selectedInstallments, setSelectedInstallments] = useState([]);
 //   const [startDate, setStartDate] = useState('');
 //   const [endDate, setEndDate] = useState('');
+//   const [isExporting, setIsExporting] = useState(false);
+//   const dropdownRef = useRef(null);
 
 //   const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment'];
 
@@ -51,6 +57,33 @@
 //       return;
 //     }
 //     setSchoolId(userDetails.schoolId);
+//   }, []);
+
+//   useEffect(() => {
+//     const loadSchoolData = async () => {
+//       try {
+//         const { school, logoSrc } = await fetchSchoolData(schoolId);
+//         setSchool(school);
+//         setLogoSrc(logoSrc);
+//       } catch (error) {
+//         console.error('Failed to fetch school data:', error);
+//       }
+//     };
+//     if (schoolId) {
+//       loadSchoolData();
+//     }
+//   }, [schoolId]);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//         setShowExportDropdown(false);
+//       }
+//     };
+//     document.addEventListener('mousedown', handleClickOutside);
+//     return () => {
+//       document.removeEventListener('mousedown', handleClickOutside);
+//     };
 //   }, []);
 
 //   useEffect(() => {
@@ -180,6 +213,12 @@
 
 //   const toggleFilter = () => {
 //     setShowFilterPanel(!showFilterPanel);
+//     setShowExportDropdown(false);
+//   };
+
+//   const toggleExportDropdown = () => {
+//     setShowExportDropdown(!showExportDropdown);
+//     setShowFilterPanel(false);
 //   };
 
 //   const filteredData = feeData
@@ -296,6 +335,40 @@
 //     return acc;
 //   }, { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 });
 
+//   const headerMapping = {
+//     paymentDate: 'Date',
+//     academicYear: 'Academic Year',
+//     admissionNumber: 'Admission No.',
+//     studentName: 'Name',
+//     className: 'Class',
+//     sectionName: 'Section',
+//     installmentName: 'Installment',
+//     feesDue: 'Fees Due',
+//     feesPaid: 'Fees Paid',
+//     concession: 'Concession',
+//     balance: 'Balance',
+//   };
+
+//   const tableFields = Object.keys(headerMapping).map((key) => ({
+//     id: key,
+//     label: headerMapping[key],
+//   }));
+
+//   const getFieldValue = (record, field) => {
+//     const fieldId = field.id;
+//     if (fieldId === 'paymentDate') {
+//       return formatDate(record[fieldId]) || '-';
+//     } else if (fieldId === 'academicYear') {
+//       return formatAcademicYear(record[fieldId]) || '-';
+//     } else if (fieldId === 'admissionNumber' || fieldId === 'studentName' ||
+//                fieldId === 'className' || fieldId === 'sectionName' ||
+//                fieldId === 'installmentName') {
+//       return record[fieldId] || '-';
+//     } else {
+//       return (record[fieldId] || 0);
+//     }
+//   };
+
 //   return (
 //     <div className="container">
 //       <div className="row">
@@ -321,6 +394,86 @@
 //                       onClick={toggleFilter}
 //                     >
 //                       <FaFilter />
+//                     </div>
+//                     <div className="position-relative" ref={dropdownRef}>
+//                       <div
+//                         className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
+//                         style={{ cursor: 'pointer' }}
+//                         onClick={toggleExportDropdown}
+//                         title="Download"
+//                       >
+//                         <FaDownload />
+//                       </div>
+//                       {showExportDropdown && (
+//                         <div
+//                           className="position-absolute bg-white border mr-2 mt-2 border-dark rounded shadow"
+//                           style={{
+//                             top: '100%',
+//                             right: 0,
+//                             zIndex: 1000,
+//                             minWidth: '150px',
+//                           }}
+//                         >
+//                        <button
+//   className="btn btn-light w-100 text-left py-2 px-3"
+//   disabled={isExporting}
+//   onClick={async () => {
+//     setIsExporting(true);
+//     try {
+//       await exportToExcel(
+//         filteredData,
+//         tableFields,
+//         headerMapping,
+//         getFieldValue,
+//         grandTotals,
+//         formatAcademicYear,
+//         selectedYears.length > 0
+//           ? selectedYears.map((y) => y.value).join(',')
+//           : selectedAcademicYear
+//       );
+//     } catch (err) {
+//       toast.error("Export to Excel failed.");
+//     } finally {
+//       setIsExporting(false);
+//       setShowExportDropdown(false);
+//     }
+//   }}
+// >
+//   {isExporting ? 'Exporting...' : 'Export to Excel'}
+// </button>
+
+// <button
+//   className="btn btn-light w-100 text-left py-2 px-3"
+//   disabled={isExporting}
+//   onClick={async () => {
+//     setIsExporting(true);
+//     try {
+//       await exportToPDF(
+//         filteredData,
+//         tableFields,
+//         headerMapping,
+//         getFieldValue,
+//         grandTotals,
+//         formatAcademicYear,
+//         selectedYears.length > 0
+//           ? selectedYears.map((y) => y.value).join(',')
+//           : selectedAcademicYear,
+//         school,
+//         logoSrc
+//       );
+//     } catch (err) {
+//       toast.error("Export to PDF failed.");
+//     } finally {
+//       setIsExporting(false);
+//       setShowExportDropdown(false);
+//     }
+//   }}
+// >
+//   {isExporting ? 'Exporting...' : 'Export to PDF'}
+// </button>
+
+//                         </div>
+//                       )}
 //                     </div>
 //                   </div>
 //                 </div>
@@ -530,16 +683,16 @@
 //                                   {record.installmentName || '-'}
 //                                 </td>
 //                                 <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                   {record.feesDue || 0}
+//                                   {(record.feesDue || 0)}
 //                                 </td>
 //                                 <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                   {record.feesPaid || 0}
+//                                   {(record.feesPaid || 0)}
 //                                 </td>
 //                                 <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                   {record.concession || 0}
+//                                   {(record.concession || 0)}
 //                                 </td>
 //                                 <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                   {record.balance || 0}
+//                                   {(record.balance || 0)}
 //                                 </td>
 //                               </tr>
 //                             ))}
@@ -548,16 +701,16 @@
 //                                 <strong>Total</strong>
 //                               </td>
 //                               <td className="text-center border border-secondary p-2">
-//                                 <strong>{studentTotals.totalFeesDue || 0}</strong>
+//                                 <strong>{studentTotals.totalFeesDue}</strong>
 //                               </td>
 //                               <td className="text-center border border-secondary p-2">
-//                                 <strong>{studentTotals.totalFeesPaid || 0}</strong>
+//                                 <strong>{studentTotals.totalFeesPaid}</strong>
 //                               </td>
 //                               <td className="text-center border border-secondary p-2">
-//                                 <strong>{studentTotals.totalConcession || 0}</strong>
+//                                 <strong>{studentTotals.totalConcession}</strong>
 //                               </td>
 //                               <td className="text-center border border-secondary p-2">
-//                                 <strong>{studentTotals.totalBalance || 0}</strong>
+//                                 <strong>{studentTotals.totalBalance}</strong>
 //                               </td>
 //                             </tr>
 //                           </React.Fragment>
@@ -568,16 +721,16 @@
 //                           <strong>Grand Total</strong>
 //                         </td>
 //                         <td className="text-center border border-secondary p-2">
-//                           <strong>{grandTotals.totalFeesDue || 0}</strong>
+//                           <strong>{grandTotals.totalFeesDue}</strong>
 //                         </td>
 //                         <td className="text-center border border-secondary p-2">
-//                           <strong>{grandTotals.totalFeesPaid || 0}</strong>
+//                           <strong>{grandTotals.totalFeesPaid}</strong>
 //                         </td>
 //                         <td className="text-center border border-secondary p-2">
-//                           <strong>{grandTotals.totalConcession || 0}</strong>
+//                           <strong>{grandTotals.totalConcession}</strong>
 //                         </td>
 //                         <td className="text-center border border-secondary p-2">
-//                           <strong>{grandTotals.totalBalance || 0}</strong>
+//                           <strong>{grandTotals.totalBalance}</strong>
 //                         </td>
 //                       </tr>
 //                     </tbody>
@@ -600,19 +753,19 @@
 //   );
 // };
 
-// export default StudentWiseFeesDueReport;
-
+// export default SchoolFeesReport;
 
 import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
 import { exportToExcel, exportToPDF } from './SchoolFeesReport';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const SchoolFeesReport= () => {
+const SchoolFeesReport = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
@@ -639,9 +792,18 @@ const SchoolFeesReport= () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const dropdownRef = useRef(null);
 
   const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment'];
+
+  const pageShowOptions = [
+    { value: 10, label: '10' },
+    { value: 15, label: '15' },
+    { value: 20, label: '20' },
+    { value: 30, label: '30' },
+  ];
 
   const formatAcademicYear = (year) => {
     if (!year) return '-';
@@ -781,16 +943,25 @@ const SchoolFeesReport= () => {
     const selected = selectedOptions || [];
     if (name === 'academicYear') {
       setSelectedYears(selected);
+      setCurrentPage(1);
     } else if (name === 'paymentMode') {
       setSelectedPaymentModes(selected);
+      setCurrentPage(1);
     } else if (name === 'class') {
       setSelectedClasses(selected);
+      setCurrentPage(1);
     } else if (name === 'section') {
       setSelectedSections(selected);
+      setCurrentPage(1);
     } else if (name === 'feeType') {
       setSelectedFeeTypes(selected);
+      setCurrentPage(1);
     } else if (name === 'installment') {
       setSelectedInstallments(selected);
+      setCurrentPage(1);
+    } else if (name === 'rowsPerPage') {
+      setRowsPerPage(selected ? selected.value : 10);
+      setCurrentPage(1);
     }
   };
 
@@ -812,6 +983,7 @@ const SchoolFeesReport= () => {
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
+    setCurrentPage(1);
     setShowFilterPanel(false);
     fetchFeeData([selectedAcademicYear]);
   };
@@ -826,74 +998,83 @@ const SchoolFeesReport= () => {
     setShowFilterPanel(false);
   };
 
-  const filteredData = feeData
-    .flatMap((student) =>
-      student.installments.map((installment) => ({
+  const processedData = feeData.flatMap((student) =>
+    student.installments.flatMap((installment) =>
+      installment.reportStatus.map((status) => ({
         ...installment,
         admissionNumber: student.admissionNumber,
         studentName: student.studentName,
         className: student.className,
         sectionName: student.sectionName,
         academicYear: student.academicYear,
+        status,
+        displayDate: status === 'Paid' ? installment.paymentDate : installment.cancelledDate,
+        feesDue: status === 'Cancelled' || status === 'Cheque Return' ? -(installment.feesDue || 0) : (installment.feesDue || 0),
+        feesPaid: status === 'Cancelled' || status === 'Cheque Return' ? -(installment.feesPaid || 0) : (installment.feesPaid || 0),
+        concession: status === 'Cancelled' || status === 'Cheque Return' ? -(installment.concession || 0) : (installment.concession || 0),
+        balance: status === 'Cancelled' || status === 'Cheque Return' ? -(installment.balance || 0) : (installment.balance || 0),
       }))
     )
-    .filter((row) => {
-      const matchesSearchTerm = searchTerm
-        ? (row.paymentDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-          (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-          (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-          (row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-          (row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-          (row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase())
-        : true;
+  );
 
-      const matchesPaymentMode =
-        selectedPaymentModes.length === 0 ||
-        selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
+  const filteredData = processedData.filter((row) => {
+    const matchesSearchTerm = searchTerm
+      ? (row.displayDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        (row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        (row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        (row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        (row.status || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+      : true;
 
-      const matchesYear =
-        selectedYears.length === 0 ||
-        selectedYears.some((year) => row.academicYear === year.value);
+    const matchesPaymentMode =
+      selectedPaymentModes.length === 0 ||
+      selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
 
-      const matchesDate =
-        (!startDate && !endDate) ||
-        (() => {
-          if (!row.paymentDate || row.paymentDate === '-') return false;
-          const recordDate = new Date(row.paymentDate.split('/').reverse().join('-'));
-          const start = startDate ? new Date(startDate) : null;
-          const end = endDate ? new Date(endDate) : null;
-          return (!start || recordDate >= start) && (!end || recordDate <= end);
-        })();
+    const matchesYear =
+      selectedYears.length === 0 ||
+      selectedYears.some((year) => row.academicYear === year.value);
 
-      const matchesFeeType =
-        selectedFeeTypes.length === 0 ||
-        selectedFeeTypes.some((type) => (row.feeTypes[type.value] || 0) > 0);
+    const matchesDate =
+      (!startDate && !endDate) ||
+      (() => {
+        if (!row.displayDate || row.displayDate === '-') return false;
+        const recordDate = new Date(row.displayDate.split('/').reverse().join('-'));
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+        return (!start || recordDate >= start) && (!end || recordDate <= end);
+      })();
 
-      const matchesClass =
-        selectedClasses.length === 0 ||
-        selectedClasses.some((cls) => row.className === cls.value);
+    const matchesFeeType =
+      selectedFeeTypes.length === 0 ||
+      selectedFeeTypes.some((type) => (row.feeTypes[type.value] || 0) > 0);
 
-      const matchesSection =
-        selectedSections.length === 0 ||
-        selectedSections.some((section) => row.sectionName === section.value);
+    const matchesClass =
+      selectedClasses.length === 0 ||
+      selectedClasses.some((cls) => row.className === cls.value);
 
-      const matchesInstallment =
-        selectedInstallments.length === 0 ||
-        selectedInstallments.some((inst) => row.installmentName === inst.value);
+    const matchesSection =
+      selectedSections.length === 0 ||
+      selectedSections.some((section) => row.sectionName === section.value);
 
-      return (
-        matchesSearchTerm &&
-        matchesPaymentMode &&
-        matchesYear &&
-        matchesDate &&
-        matchesFeeType &&
-        matchesClass &&
-        matchesSection &&
-        matchesInstallment
-      );
-    });
+    const matchesInstallment =
+      selectedInstallments.length === 0 ||
+      selectedInstallments.some((inst) => row.installmentName === inst.value);
 
-  // Group data by admission number for student-wise rendering
+    return (
+      matchesSearchTerm &&
+      matchesPaymentMode &&
+      matchesYear &&
+      matchesDate &&
+      matchesFeeType &&
+      matchesClass &&
+      matchesSection &&
+      matchesInstallment
+    );
+  });
+
+ 
   const groupedByStudent = filteredData.reduce((acc, row) => {
     const admissionNumber = row.admissionNumber;
     if (!acc[admissionNumber]) {
@@ -909,22 +1090,22 @@ const SchoolFeesReport= () => {
     return acc;
   }, {});
 
-  // Convert to array and sort by admission number
+
   const studentDataArray = Object.keys(groupedByStudent)
     .map((admissionNumber) => ({
       admissionNumber,
       ...groupedByStudent[admissionNumber],
       rows: groupedByStudent[admissionNumber].rows.sort((a, b) => {
-        if (a.paymentDate === '-' || b.paymentDate === '-') return 0;
+        if (a.displayDate === '-' || b.displayDate === '-') return 0;
         return (
-          new Date(a.paymentDate.split('/').reverse().join('-')).getTime() -
-          new Date(b.paymentDate.split('/').reverse().join('-')).getTime()
+          new Date(a.displayDate.split('/').reverse().join('-')).getTime() -
+          new Date(b.displayDate.split('/').reverse().join('-')).getTime()
         );
       }),
     }))
     .sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
 
-  // Calculate grand totals across all students
+
   const grandTotals = studentDataArray.reduce((acc, student) => {
     const studentTotals = student.rows.reduce((acc, row) => {
       acc.totalFeesDue += row.feesDue || 0;
@@ -940,10 +1121,46 @@ const SchoolFeesReport= () => {
     return acc;
   }, { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 });
 
+
+  const totalRecords = studentDataArray.length;
+  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+  const maxPagesToShow = 5;
+  const pagesToShow = [];
+  const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+  for (let i = startPage; i <= endPage; i++) {
+    pagesToShow.push(i);
+  }
+
+  const paginatedData = () => {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return studentDataArray.slice(startIndex, endIndex);
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   const headerMapping = {
-    paymentDate: 'Date',
+    displayDate: 'Date',
     academicYear: 'Academic Year',
     admissionNumber: 'Admission No.',
+    status: 'Status',
     studentName: 'Name',
     className: 'Class',
     sectionName: 'Section',
@@ -961,16 +1178,22 @@ const SchoolFeesReport= () => {
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
-    if (fieldId === 'paymentDate') {
+    if (fieldId === 'displayDate') {
       return formatDate(record[fieldId]) || '-';
     } else if (fieldId === 'academicYear') {
       return formatAcademicYear(record[fieldId]) || '-';
-    } else if (fieldId === 'admissionNumber' || fieldId === 'studentName' ||
-               fieldId === 'className' || fieldId === 'sectionName' ||
-               fieldId === 'installmentName') {
+    } else if (fieldId === 'status') {
+      return record[fieldId] || '-';
+    } else if (
+      fieldId === 'admissionNumber' ||
+      fieldId === 'studentName' ||
+      fieldId === 'className' ||
+      fieldId === 'sectionName' ||
+      fieldId === 'installmentName'
+    ) {
       return record[fieldId] || '-';
     } else {
-      return (record[fieldId] || 0);
+      return record[fieldId] !== undefined ? record[fieldId] : 0;
     }
   };
 
@@ -986,13 +1209,22 @@ const SchoolFeesReport= () => {
                     <input
                       type="text"
                       className="form-control border-dark"
-                      placeholder="Search by date, admission no., name, class, section, or installment"
+                      placeholder="Search by date, admission no., name, class, section, installment, or status"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
                   </div>
                   <div className="col-md-2"></div>
                   <div className="col-md-5 px-0 d-flex align-items-center justify-content-end">
+                    <Select
+                      isClearable
+                      name="rowsPerPage"
+                      placeholder="Show"
+                      options={pageShowOptions}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      onChange={(selected, action) => handleSelectChange(selected, action)}
+                      className="email-select border border-dark me-lg-2"
+                    />
                     <div
                       className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
@@ -1019,64 +1251,62 @@ const SchoolFeesReport= () => {
                             minWidth: '150px',
                           }}
                         >
-                       <button
-  className="btn btn-light w-100 text-left py-2 px-3"
-  disabled={isExporting}
-  onClick={async () => {
-    setIsExporting(true);
-    try {
-      await exportToExcel(
-        filteredData,
-        tableFields,
-        headerMapping,
-        getFieldValue,
-        grandTotals,
-        formatAcademicYear,
-        selectedYears.length > 0
-          ? selectedYears.map((y) => y.value).join(',')
-          : selectedAcademicYear
-      );
-    } catch (err) {
-      toast.error("Export to Excel failed.");
-    } finally {
-      setIsExporting(false);
-      setShowExportDropdown(false);
-    }
-  }}
->
-  {isExporting ? 'Exporting...' : 'Export to Excel'}
-</button>
-
-<button
-  className="btn btn-light w-100 text-left py-2 px-3"
-  disabled={isExporting}
-  onClick={async () => {
-    setIsExporting(true);
-    try {
-      await exportToPDF(
-        filteredData,
-        tableFields,
-        headerMapping,
-        getFieldValue,
-        grandTotals,
-        formatAcademicYear,
-        selectedYears.length > 0
-          ? selectedYears.map((y) => y.value).join(',')
-          : selectedAcademicYear,
-        school,
-        logoSrc
-      );
-    } catch (err) {
-      toast.error("Export to PDF failed.");
-    } finally {
-      setIsExporting(false);
-      setShowExportDropdown(false);
-    }
-  }}
->
-  {isExporting ? 'Exporting...' : 'Export to PDF'}
-</button>
-
+                          <button
+                            className="btn btn-light w-100 text-left py-2 px-3"
+                            disabled={isExporting}
+                            onClick={async () => {
+                              setIsExporting(true);
+                              try {
+                                await exportToExcel(
+                                  filteredData,
+                                  tableFields,
+                                  headerMapping,
+                                  getFieldValue,
+                                  grandTotals,
+                                  formatAcademicYear,
+                                  selectedYears.length > 0
+                                    ? selectedYears.map((y) => y.value).join(',')
+                                    : selectedAcademicYear
+                                );
+                              } catch (err) {
+                                toast.error("Export to Excel failed.");
+                              } finally {
+                                setIsExporting(false);
+                                setShowExportDropdown(false);
+                              }
+                            }}
+                          >
+                            {isExporting ? 'Exporting...' : 'Export to Excel'}
+                          </button>
+                          <button
+                            className="btn btn-light w-100 text-left py-2 px-3"
+                            disabled={isExporting}
+                            onClick={async () => {
+                              setIsExporting(true);
+                              try {
+                                await exportToPDF(
+                                  filteredData,
+                                  tableFields,
+                                  headerMapping,
+                                  getFieldValue,
+                                  grandTotals,
+                                  formatAcademicYear,
+                                  selectedYears.length > 0
+                                    ? selectedYears.map((y) => y.value).join(',')
+                                    : selectedAcademicYear,
+                                  school,
+                                  logoSrc
+                                );
+                              } catch (err) {
+                                toast.error("Export to PDF failed.");
+                              } finally {
+                                setIsExporting(false);
+                                setShowExportDropdown(false);
+                              }
+                            }}
+                          >
+                            {isExporting ? 'Exporting...' : 'Export to PDF'}
+                          </button>
                         </div>
                       )}
                     </div>
@@ -1231,116 +1461,160 @@ const SchoolFeesReport= () => {
                   <p>Loading...</p>
                 </div>
               ) : studentDataArray.length > 0 ? (
-                <div className="table-responsive pb-4 mt-3">
-                  <table className="table text-dark border border-secondary mb-1">
-                    <thead>
-                      <tr className="payroll-table-header">
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Academic Year</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Admission No.</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Name</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Class</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Section</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Installment</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Due</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Concession</th>
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Balance</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {studentDataArray.map((student, studentIndex) => {
-                        // Calculate totals for this student
-                        const studentTotals = student.rows.reduce(
-                          (acc, row) => {
-                            acc.totalFeesDue += row.feesDue || 0;
-                            acc.totalFeesPaid += row.feesPaid || 0;
-                            acc.totalConcession += row.concession || 0;
-                            acc.totalBalance += row.balance || 0;
-                            return acc;
-                          },
-                          { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 }
-                        );
+                <>
+                  <div className="table-responsive pb-4 mt-3">
+                    <table className="table text-dark border border-secondary mb-1">
+                      <thead>
+                        <tr className="payroll-table-header">
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Academic Year</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Admission No.</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Status</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Name</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Class</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Section</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Installment</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Due</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Concession</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Balance</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {paginatedData().map((student, studentIndex) => {
+                          const studentTotals = student.rows.reduce(
+                            (acc, row) => {
+                              acc.totalFeesDue += row.feesDue || 0;
+                              acc.totalFeesPaid += row.feesPaid || 0;
+                              acc.totalConcession += row.concession || 0;
+                              acc.totalBalance += row.balance || 0;
+                              return acc;
+                            },
+                            { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 }
+                          );
 
-                        return (
-                          <React.Fragment key={student.admissionNumber}>
-                            {student.rows.map((record, rowIndex) => (
-                              <tr key={`${record.admissionNumber}_${record.installmentName}_${studentIndex}_${rowIndex}`}>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {formatDate(record.paymentDate)}
+                          return (
+                            <React.Fragment key={student.admissionNumber}>
+                              {student.rows.map((record, rowIndex) => (
+                                <tr key={`${record.admissionNumber}_${record.installmentName}_${record.status}_${studentIndex}_${rowIndex}`}>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {formatDate(record.displayDate)}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {formatAcademicYear(record.academicYear) || '-'}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.admissionNumber || '-'}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.status || '-'}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.studentName || '-'}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.className || '-'}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.sectionName || '-'}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.installmentName || '-'}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.feesDue}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.feesPaid}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.concession}
+                                  </td>
+                                  <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                    {record.balance}
+                                  </td>
+                                </tr>
+                              ))}
+                              <tr className="payroll-table-footer">
+                                <td colSpan={8} className="text-right border border-secondary p-2">
+                                  <strong>Total</strong>
                                 </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {formatAcademicYear(record.academicYear) || '-'}
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalFeesDue}</strong>
                                 </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {record.admissionNumber || '-'}
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalFeesPaid}</strong>
                                 </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {record.studentName || '-'}
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalConcession}</strong>
                                 </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {record.className || '-'}
-                                </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {record.sectionName || '-'}
-                                </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {record.installmentName || '-'}
-                                </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {(record.feesDue || 0)}
-                                </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {(record.feesPaid || 0)}
-                                </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {(record.concession || 0)}
-                                </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {(record.balance || 0)}
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalBalance}</strong>
                                 </td>
                               </tr>
-                            ))}
-                            <tr className="payroll-table-footer">
-                              <td colSpan={7} className="text-right border border-secondary p-2">
-                                <strong>Total</strong>
-                              </td>
-                              <td className="text-center border border-secondary p-2">
-                                <strong>{studentTotals.totalFeesDue}</strong>
-                              </td>
-                              <td className="text-center border border-secondary p-2">
-                                <strong>{studentTotals.totalFeesPaid}</strong>
-                              </td>
-                              <td className="text-center border border-secondary p-2">
-                                <strong>{studentTotals.totalConcession}</strong>
-                              </td>
-                              <td className="text-center border border-secondary p-2">
-                                <strong>{studentTotals.totalBalance}</strong>
-                              </td>
-                            </tr>
-                          </React.Fragment>
-                        );
-                      })}
-                      <tr className="payroll-table-footer">
-                        <td colSpan={7} className="text-right border border-secondary p-2">
-                          <strong>Grand Total</strong>
-                        </td>
-                        <td className="text-center border border-secondary p-2">
-                          <strong>{grandTotals.totalFeesDue}</strong>
-                        </td>
-                        <td className="text-center border border-secondary p-2">
-                          <strong>{grandTotals.totalFeesPaid}</strong>
-                        </td>
-                        <td className="text-center border border-secondary p-2">
-                          <strong>{grandTotals.totalConcession}</strong>
-                        </td>
-                        <td className="text-center border border-secondary p-2">
-                          <strong>{grandTotals.totalBalance}</strong>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                            </React.Fragment>
+                          );
+                        })}
+                        <tr className="payroll-table-footer">
+                          <td colSpan={8} className="text-right border border-secondary p-2">
+                            <strong>Grand Total</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{grandTotals.totalFeesDue}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{grandTotals.totalFeesPaid}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{grandTotals.totalConcession}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{grandTotals.totalBalance}</strong>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  {totalRecords > 0 && (
+                    <div className="card-footer border-top">
+                      <nav aria-label="Page navigation example">
+                        <ul className="pagination justify-content-end mb-0">
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handlePreviousPage}
+                              disabled={currentPage === 1}
+                            >
+                              Previous
+                            </button>
+                          </li>
+                          {pagesToShow.map((page) => (
+                            <li
+                              key={page}
+                              className={`page-item ${currentPage === page ? 'active' : ''}`}
+                            >
+                              <button
+                                className={`page-link pagination-button ${currentPage === page ? 'active' : ''}`}
+                                onClick={() => handlePageClick(page)}
+                              >
+                                {page}
+                              </button>
+                            </li>
+                          ))}
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handleNextPage}
+                              disabled={currentPage === totalPages}
+                            >
+                              Next
+                            </button>
+                          </li>
+                        </ul>
+                      </nav>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center mt-3">
                   <p>

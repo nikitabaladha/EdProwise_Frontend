@@ -388,10 +388,40 @@ const ConcessionForm = () => {
                                                     </tr>
                                                 ))}
                                             </tbody>
+                                             <tfoot className="bg-light-subtle">
+                                                <tr>
+                                                    <td colSpan="3" className="fw-bold">Totals</td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.totalFees || 0), 0)
+                                                            }
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails.length > 0
+                                                            ? (
+                                                                formData.concessionDetails.reduce(
+                                                                    (sum, detail) => sum + Number(detail.concessionPercentage || 0),
+                                                                    0
+                                                                ) / formData.concessionDetails.length
+                                                            )
+                                                            : "0"}%
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.concessionAmount || 0), 0)
+                                                            }
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.balancePayable || 0), 0)
+                                                            }
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
-                                <div className="d-flex justify-content-end">
+                                <div className="d-flex justify-content-end mt-3">
                                     <div className="mr-2">
                                         <button
                                             type="submit"

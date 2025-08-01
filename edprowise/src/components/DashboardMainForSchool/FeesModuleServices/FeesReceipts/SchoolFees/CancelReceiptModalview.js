@@ -29,7 +29,6 @@ const CancelReceiptModalSchoolFees = ({ show, onClose, student, schoolId, setIsC
   ];
 
   const handleSubmit = async () => {
-    // Validate inputs
     if (!cancelReason) {
       toast.error("Please select a cancel reason.");
       return;
@@ -42,7 +41,6 @@ const CancelReceiptModalSchoolFees = ({ show, onClose, student, schoolId, setIsC
     setIsLoading(true);
 
     try {
-      // Prepare payload
       const payload = {
         status: chequeSpecificReason === "Cheque Return" ? "Cheque Return" : "Cancelled",
         cancelReason,
@@ -53,14 +51,14 @@ const CancelReceiptModalSchoolFees = ({ show, onClose, student, schoolId, setIsC
       }
 
    
+        const encodedAdmissionNumber = encodeURIComponent(student[0]?.studentAdmissionNumber);
+      const encodedReceiptNumber = encodeURIComponent(student[0]?.receiptNumber);
+
       const result = await putAPI(
-        `/update-school-fees-statusbyadm/${schoolId}/${student[0]?.studentAdmissionNumber}`,
+        `/update-school-fees-statusbyadm/${schoolId}/${encodedAdmissionNumber}/${encodedReceiptNumber}`,
         payload,
         true
       );
-
-      console.log("API Response:", result);
-
       if (!result.hasError) {
         setIsCancelled(true);
         toast.success("Receipt status updated successfully.");

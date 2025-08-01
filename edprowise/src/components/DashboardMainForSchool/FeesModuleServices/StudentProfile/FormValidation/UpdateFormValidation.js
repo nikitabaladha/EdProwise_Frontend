@@ -1,9 +1,8 @@
 export const validateFullForm = (formData, isNursery) => {
-    // if (!formData.registrationNumber) {
-    //     return 'Please select a registration number';
-    // }
+    if (!formData.registrationNumber) {
+        return 'Please select a registration number';
+    }
 
-    console.log('Validating formData:', formData);
     const requiredFields = [
         { field: 'firstName', name: 'first name' },
         { field: 'lastName', name: 'last name' },
@@ -13,7 +12,6 @@ export const validateFullForm = (formData, isNursery) => {
         { field: 'gender', name: 'gender' },
         { field: 'masterDefineClass', name: 'class applying for' },
         { field: 'masterDefineShift', name: 'shift' },
-        { field: 'section', name: 'section' },
         { field: 'currentAddress', name: 'current address' },
         { field: 'country', message: 'country' },
         { field: 'state', message: 'state' },
@@ -50,7 +48,7 @@ export const validateFullForm = (formData, isNursery) => {
         return 'Please enter a valid 6-digit pincode';
     }
 
- 
+    // Parental status validation
     if (formData.parentalStatus === 'Single Father') {
         if (!formData.fatherName) return 'Please enter father name';
         if (!formData.fatherContactNo) return 'Please enter father contact number';

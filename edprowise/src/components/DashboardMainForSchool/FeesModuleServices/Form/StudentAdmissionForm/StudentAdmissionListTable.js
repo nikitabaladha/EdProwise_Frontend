@@ -5,6 +5,8 @@ import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import AdmissionExcelSheetModal from "./ExcelSheetModal";
+import * as XLSX from "xlsx";
+import { generatePDF } from "./generateStudentPDF";
 
 const StudentAdmissionListTable = () => {
   const navigate = useNavigate();
@@ -18,7 +20,11 @@ const StudentAdmissionListTable = () => {
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
-     const [shifts, setShifts] = useState([]);
+  const [shifts, setShifts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -76,7 +82,7 @@ const StudentAdmissionListTable = () => {
         if (!classRes.hasError) {
           setClassList(classRes.data.data);
         }
-          const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
+        const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
         if (!shiftResponse.hasError) {
           const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
           setShifts(shiftArray);
@@ -87,8 +93,8 @@ const StudentAdmissionListTable = () => {
 
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
-          console.log("Student Data:", studentArray);
-          setStudentData(studentArray);
+
+          setStudentData(studentArray.sort((a, b) => new Date(b.createdAt || b.paymentDate) - new Date(a.createdAt || a.paymentDate)));
         } else {
           toast.error(response.message || "Failed to fetch student list.");
         }
@@ -106,18 +112,84 @@ const StudentAdmissionListTable = () => {
     return found ? found.className : "N/A";
   };
 
- const getSectionNameById = (sectionId) => {
-  if (!sectionId) {
-    return "N/A";
-  }
-  const found = classList.find((cls) => cls.sections?.some((sec) => sec._id === sectionId));
-  const section = found?.sections?.find((sec) => sec._id === sectionId);
-  return section ? section.name : "N/A";
-};
+  const getSectionNameById = (sectionId) => {
+    if (!sectionId) {
+      return "N/A";
+    }
+    const found = classList.find((cls) => cls.sections?.some((sec) => sec._id === sectionId));
+    const section = found?.sections?.find((sec) => sec._id === sectionId);
+    return section ? section.name : "N/A";
+  };
 
- const getShiftName = (shiftId) => {
+  const getShiftName = (shiftId) => {
     const shift = shifts.find((s) => s._id === shiftId);
     return shift ? shift.masterDefineShiftName : 'N/A';
+  };
+
+  const handleExport = () => {
+    const exportData = studentData.map((student) => ({
+      "Date of Receipts": student.paymentDate
+        ? new Date(student.paymentDate).toLocaleDateString("en-GB")
+        : "",
+      "Registration No.": student.registrationNumber || "",
+      "Admission No.": student.AdmissionNumber || "",
+      "First Name": student.firstName || "",
+      "Middle Name": student.middleName || "",
+      "Last Name": student.lastName || "",
+      "Date of Birth": student.dateOfBirth
+        ? new Date(student.dateOfBirth).toLocaleDateString("en-GB")
+        : "",
+      Age: student.age || "",
+      Nationality: student.nationality || "",
+      Gender: student.gender || "",
+      "Blood Group": student.bloodGroup || "",
+      "Mother Tongue": student.motherTongue || "",
+      Class: getClassNameById(student.masterDefineClass),
+      Section: getSectionNameById(student.section),
+      Shift: getShiftName(student.masterDefineShift),
+      "Parental Status": student.parentalStatus || "",
+      "Father Name": student.fatherName || "",
+      "Father Contact No": student.fatherContactNo || "",
+      "Father Qualification": student.fatherQualification || "",
+      "Father Profession": student.fatherProfession || "",
+      "Mother Name": student.motherName || "",
+      "Mother Contact No": student.motherContactNo || "",
+      "Mother Qualification": student.motherQualification || "",
+      "Mother Profession": student.motherProfession || "",
+      "Current Address": student.currentAddress || "",
+      Country: student.country || "",
+      State: student.state || "",
+      City: student.city || "",
+      Pincode: student.pincode || "",
+      "Parent Contact Number": student.parentContactNumber || "",
+      "Previous School Name": student.previousSchoolName || "",
+      "Previous School Board": student.previousSchoolBoard || "",
+      "Address of Previous School": student.addressOfPreviousSchool || "",
+      "Aadhar/Passport Number": student.aadharPassportNumber || "",
+      "Student Category": student.studentCategory || "",
+      "Relation Type": student.relationType || "",
+      "Sibling Name": student.siblingName || "",
+      "How Reach Us": student.howReachUs || "",
+      "Admission Fee": student.admissionFees || "",
+      "Concession Type": student.concessionType || "",
+      "Concession Amount": student.concessionAmount || "",
+      "Final Amount": student.finalAmount || "",
+      "Payment Mode": student.paymentMode && student.paymentMode !== "null" ? student.paymentMode : "",
+      "Cheque Number": student.chequeNumber || "",
+      "Bank Name": student.bankName || "",
+      Status: student.status || "",
+      "Transaction Number": student.transactionNumber || "",
+      "Receipt Number": student.receiptNumber || "",
+      "Payment Date": student.paymentDate
+        ? new Date(student.paymentDate).toLocaleDateString("en-GB")
+        : "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+
+    XLSX.writeFile(workbook, `Admission_Student_List_${selectedYear}.xlsx`);
   };
 
   const navigateToAdmission = (event) => {
@@ -142,18 +214,33 @@ const StudentAdmissionListTable = () => {
 
 
 
-const navigateToFeesReceipt = (event, student) => {
-  event.preventDefault();
-  const sectionName = student.section ? getSectionNameById(student.section) : "N/A";
-  navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
-    state: {
-      student,
-      feeTypeName: "Admission Fee",
-      sectionName,
-      className: getClassNameById(student.masterDefineClass),
-    },
-  });
-};
+  const navigateToFeesReceipt = (event, student) => {
+    event.preventDefault();
+    const sectionName = student.section ? getSectionNameById(student.section) : "N/A";
+    navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
+      state: {
+        student,
+        feeTypeName: "Admission Fee",
+        sectionName,
+        className: getClassNameById(student.masterDefineClass),
+      },
+    });
+  };
+
+  const handleDownloadPDF = async (student) => {
+    setIsGenerating(true);
+    try {
+      await generatePDF(schoolId, student, getClassNameById, getSectionNameById,getShiftName,);
+    } catch (error) {
+      toast.error("Failed to generate PDF.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const toggleDropdown = (studentId) => {
+    setOpenDropdownId(openDropdownId === studentId ? null : studentId);
+  };
 
   const handleImportSuccess = () => {
     setShowImportModal(false);
@@ -163,7 +250,7 @@ const navigateToFeesReceipt = (event, student) => {
         const response = await getAPI(`/get-admission-form-by-year-schoolId/${schoolId}/${selectedYear}`);
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
-          setStudentData(studentArray);
+          setStudentData(studentArray.sort((a, b) => new Date(b.createdAt || b.paymentDate) - new Date(a.createdAt || a.paymentDate)));
         }
       } catch (err) {
         toast.error("Error refreshing student data.");
@@ -172,14 +259,30 @@ const navigateToFeesReceipt = (event, student) => {
     fetchStudents();
   };
 
+  const filteredStudents = studentData.filter(student => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      (student.paymentDate
+        ? new Date(student.paymentDate).toLocaleDateString('en-GB').replace(/\//g, '-')
+        : '').toLowerCase().includes(searchLower) ||
+      student.AdmissionNumber.toLowerCase().includes(searchLower) ||
+      `${student.firstName} ${student.lastName}`.toLowerCase().includes(searchLower) ||
+      getClassNameById(student.masterDefineClass).toLowerCase().includes(searchLower) ||
+      getShiftName(student.masterDefineShift).toLowerCase().includes(searchLower) ||
+      getSectionNameById(student.section).toLowerCase().includes(searchLower) ||
+      (student.parentContactNumber || '').toLowerCase().includes(searchLower) ||
+      (student.status || '').toLowerCase().includes(searchLower)
+    );
+  });
+
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(10);
 
   const indexOfLastStudent = currentPage * studentListPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
+  const currentStudent = filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent);
 
-  const totalPages = Math.ceil(studentData.length / studentListPerPage);
+  const totalPages = Math.ceil(filteredStudents.length / studentListPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -214,7 +317,8 @@ const navigateToFeesReceipt = (event, student) => {
           >
             Import
           </button>
-          <Link className="btn btn-sm btn-secondary">
+          <Link className="btn btn-sm btn-secondary"
+            onClick={handleExport}>
             Export
           </Link>
         </div>
@@ -225,6 +329,16 @@ const navigateToFeesReceipt = (event, student) => {
                 <h4 className="card-title flex-grow-1">
                   Admission List
                 </h4>
+                <div className="d-none d-md-block">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    placeholder="Search by any field "
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ width: '200px' }}
+                  />
+                </div>
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}
@@ -260,13 +374,14 @@ const navigateToFeesReceipt = (event, student) => {
                             />
                           </div>
                         </th>
+                        <th>Date of Receipts</th>
                         <th>Admission No.</th>
                         <th>Student Name</th>
                         <th>Class</th>
                         <th>Section</th>
                         <th>Shift</th>
                         <th>Contact No</th>
-                         <th>Status</th>
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -288,13 +403,18 @@ const navigateToFeesReceipt = (event, student) => {
                               </label>
                             </div>
                           </td>
+                          <td>
+                            {student.paymentDate
+                              ? new Date(student.paymentDate).toLocaleDateString('en-GB').replace(/\//g, '-')
+                              : ''}
+                          </td>
                           <td>{student.AdmissionNumber}</td>
                           <td>{student.firstName} {student.lastName}</td>
                           <td>{getClassNameById(student.masterDefineClass)}</td>
                           <td>{getSectionNameById(student.section)}</td>
-                              <td>{getShiftName(student.masterDefineShift)}</td>
-                              <td>{student.parentContactNumber}</td>
-                           <td>
+                          <td>{getShiftName(student.masterDefineShift)}</td>
+                          <td>{student.parentContactNumber}</td>
+                          <td>
                             <button
                               className={`btn btn-sm ${student.status === 'Paid' ? 'btn-success' : 'btn-danger'
                                 }`}
@@ -334,14 +454,40 @@ const navigateToFeesReceipt = (event, student) => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link className="btn btn-soft-success btn-sm"
-                                onClick={(event) => navigateToFeesReceipt(event, student)}
-                              >
-                                <iconify-icon
-                                  icon="solar:download-minimalistic-broken"
-                                  className="align-middle fs-18"
-                                />
-                              </Link>
+                              <div className="dropdown">
+                                <Link
+                                  className="btn btn-soft-success btn-sm"
+                                  onClick={() => toggleDropdown(student._id)}
+                                >
+                                  <iconify-icon
+                                    icon="solar:download-minimalistic-broken"
+                                    className="align-middle fs-18"
+                                  />
+                                </Link>
+                                {openDropdownId === student._id && (
+                                  <div className="dropdown-menu dropdown-menu-end show" style={{ position: 'absolute', zIndex: 1000 }}>
+                                    <button
+                                      className="dropdown-item"
+                                      onClick={(event) => {
+                                        navigateToFeesReceipt(event, student);
+                                        setOpenDropdownId(null);
+                                      }}
+                                    >
+                                      Download Receipt
+                                    </button>
+                                    <button
+                                      className="dropdown-item"
+                                      onClick={() => {
+                                        handleDownloadPDF(student);
+                                        setOpenDropdownId(null);
+                                      }}
+                                      disabled={isGenerating}
+                                    >
+                                      {isGenerating ? "Generating..." : "Download Form PDF"}
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </td>
                         </tr>

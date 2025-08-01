@@ -230,6 +230,9 @@ import FeesRefund from "./components/DashboardMainForSchool/FeesModuleServices/F
 import CreateFeesRefund from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/CreateFeesreFund.js'
 import Refundreceipt from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/RefundReceipt.js'
 
+import StudentProfile from './components/DashboardMainForSchool/FeesModuleServices/StudentProfile/StudentAdmissionListTable.js'
+import StudentProfileUpdate from './components/DashboardMainForSchool/FeesModuleServices/StudentProfile/UpdateAdmissionDetail/UpdateAdmissionForm.js'
+import StudentProfileView from './components/DashboardMainForSchool/FeesModuleServices/StudentProfile/ViewStudentAdmissionDetail/ViewStudentAdmissionDetails.js'
             // =====================================Reports==============================================//
 import StudentLedger from "./components/DashboardMainForSchool/FeesModuleServices/Reports/StudentLedger/studentledger.js"
 import DailyCollectionRegistartionFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/RegistartionFees/RegistartionFees.js"
@@ -238,7 +241,9 @@ import DailyCollectionTCFees from "./components/DashboardMainForSchool/FeesModul
 import DailyCollectionBoardRegistration from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/BoardRegistrationFees/BoardRegistrationFees.js"
 import DailyCollectionBoardExam from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/BoardExamFees/BoardExamFees.js"
 import DailyCollectionDatsewiseCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/DateWiseCollection/DateWiseCollection.js"
+import DailyCollectionDatsewiseCollectionWithConcession from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/DateWiseCollectionWithConcession/DateWiseCollection.js"
 import DailyCollectionStudentwiseCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/StudentWiseCollection/StudentWiseCollection.js"
+import DailyCollectionStudentwiseCollectionWithConcesssion from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/StudentWiseCollectionWithConcession/StudentWiseCollection.js"
 import DailyCollectionSchoolFees  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/SchoolFees/SchoolFees.js"
 import DailyCollectionLateFees  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/LateandExcessFees/LateandExcessFee.js"
 import ConcessionReportDatewise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportDatewise/FeesConcessionReportDatewise.js";
@@ -1035,10 +1040,22 @@ const AppRoutes = () => {
           element={<DailyCollectionDatsewiseCollection />}
          />
 
-         
+          <Route
+          path="fees-module/reports/daily-collection/datewise-collection-with-concession"
+          element={<DailyCollectionDatsewiseCollectionWithConcession/>}
+         />
+
+
+    
             <Route
           path="fees-module/reports/daily-collection/studentwise-collection"
           element={<DailyCollectionStudentwiseCollection />}
+         />
+
+         
+            <Route
+          path="fees-module/reports/daily-collection/studentwise-with-collection"
+          element={<DailyCollectionStudentwiseCollectionWithConcesssion />}
          />
 
          
@@ -1075,6 +1092,20 @@ const AppRoutes = () => {
           element={<FeesChequeReturn />}
          />
 
+      {/* --------------------------------------------Profile------------------------------------------------------- */}
+         
+          <Route
+          path="fees-module/student-profile"
+          element={<StudentProfile />}
+         />
+          <Route
+          path="fees-module/student-profile/update-admission-form"
+          element={<StudentProfileUpdate/>}
+         />
+          <Route
+          path="fees-module/student-profile/view-admission-form"
+          element={<StudentProfileView />}
+         />
          
       </Route>
 

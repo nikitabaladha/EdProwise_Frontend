@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-import ExcelSheetModal from "./ExcelSheetModal"; 
+import ExcelSheetModal from "./ExcelSheetModal";
+import { generatePDF } from "./generateStudentPDF";
+import * as XLSX from "xlsx";
 
 const ConcessionStudentListTable = () => {
   const navigate = useNavigate();
@@ -17,7 +19,9 @@ const ConcessionStudentListTable = () => {
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
-  const [showImportModal, setShowImportModal] = useState(false); 
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -75,7 +79,7 @@ const ConcessionStudentListTable = () => {
 
         if (!response.hasError) {
           const studentArray = Array.isArray(response.data.forms) ? response.data.forms : [];
-          setStudentData(studentArray);
+          setStudentData(studentArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
         } else {
           toast.error(response.message || "Failed to fetch student list.");
         }
@@ -156,29 +160,69 @@ const ConcessionStudentListTable = () => {
     });
   };
 
-  const navigateToDownloadConcessionReceipt = (event, student) => {
-    event.preventDefault();
-    navigate(`/school-dashboard/fees-module/form/concession-form-details`, {
-      state: {
-        formData: student,
-        className: getClassName(student.masterDefineClass),
-        sectionName: getSectionName(student.masterDefineClass, student.section),
-        feeTypes,
-        receiptNumber: student.receiptNumber,
-      },
-    });
-  };
+  // const navigateToDownloadConcessionReceipt = (event, student) => {
+  //   event.preventDefault();
+  //   navigate(`/school-dashboard/fees-module/form/concession-form-details`, {
+  //     state: {
+  //       formData: student,
+  //       className: getClassName(student.masterDefineClass),
+  //       sectionName: getSectionName(student.masterDefineClass, student.section),
+  //       feeTypes,
+  //       receiptNumber: student.receiptNumber,
+  //     },
+  //   });
+  // };
 
   const handleImportSuccess = () => {
     if (schoolId && selectedYear) {
       getAPI(`/get-concession-form/${schoolId}/${selectedYear}`).then((response) => {
         if (!response.hasError) {
-          setStudentData(Array.isArray(response.data.forms) ? response.data.forms : []);
+          const studentArray = Array.isArray(response.data.forms) ? response.data.forms : [];
+          setStudentData(studentArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
         }
       });
     }
     setShowImportModal(false);
   };
+
+const handleExport = () => {
+  const exportData = studentData.map((student) => {
+    const studentBase = {
+      AdmissionNumber: student.AdmissionNumber,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      masterDefineClass: getClassName(student.masterDefineClass),
+      section: getSectionName(student.masterDefineClass, student.section),
+      concessionType: student.concessionType,
+      middleName: student.middleName,
+      concessionNumber: student.receiptNumber,
+      status: student.status,
+    };
+
+    const concessionFields = student.concessionDetails.reduce((acc, detail, index) => {
+      const feeType = feeTypes.find((ft) => ft._id === detail.feesType);
+      const feeTypeName = feeType ? feeType.feesTypeName : "N/A";
+
+      return {
+        ...acc,
+        [`concession_${index}_installmentName`]: detail.installmentName,
+        [`concession_${index}_feesType`]: feeTypeName, 
+        [`concession_${index}_totalFees`]: detail.totalFees,
+        [`concession_${index}_concessionPercentage`]: detail.concessionPercentage,
+        [`concession_${index}_concessionAmount`]: detail.concessionAmount,
+        [`concession_${index}_balancePayable`]: detail.balancePayable,
+      };
+    }, {});
+
+    return { ...studentBase, ...concessionFields };
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Concessions");
+
+  XLSX.writeFile(workbook, `Concession_Student_List_${selectedYear}.xlsx`);
+};
 
   const [currentPage, setCurrentPage] = useState(1);
   const [studentListPerPage] = useState(5);
@@ -206,19 +250,34 @@ const ConcessionStudentListTable = () => {
   const endPage = Math.min(totalPages, currentPage + pageRange);
   const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
 
+  const handleDownloadPDF = async (student) => {
+    setIsGenerating(true);
+    try {
+      await generatePDF(schoolId, student, getClassName, getSectionName, feeTypes);
+      console.log(schoolId)
+    } catch (error) {
+      toast.error("Failed to generate PDF.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <>
       <div className="container-fluid">
         <div className="d-flex justify-content-end mb-2 gap-2">
           <Link onClick={(event) => navigateToConcessionForm(event)} className="btn btn-sm btn-primary">
-            Concession Form
+            Add Concession Form
           </Link>
           <button className="btn btn-sm btn-secondary" onClick={() => setShowImportModal(true)}>
             Import
           </button>
-          {/* <Link className="btn btn-sm btn-secondary">
+           <button
+            className="btn btn-sm btn-secondary"
+            onClick={handleExport}
+          >
             Export
-          </Link> */}
+          </button>
         </div>
         <div className="row">
           <div className="col-xl-12">
@@ -258,7 +317,7 @@ const ConcessionStudentListTable = () => {
                         <th>Class</th>
                         <th>Section</th>
                         <th>Concession Type</th>
-                         <th>Status</th>
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -276,13 +335,18 @@ const ConcessionStudentListTable = () => {
                           <td>{getClassName(student.masterDefineClass)}</td>
                           <td>{getSectionName(student.masterDefineClass, student.section)}</td>
                           <td>{student.concessionType}</td>
-                            <td>
+                          <td>
                             <button
-                              className={`btn btn-sm ${student.status === 'Paid' ? 'btn-success' : 'btn-danger'
+                              className={`btn btn-sm ${student.status === 'Approved'
+                                ? 'btn-success'
+                                : student.status === 'Pending'
+                                  ? 'btn-warning'
+                                  : 'btn-danger'
                                 }`}
                             >
                               {student.status}
                             </button>
+
                           </td>
                           <td>
                             <div className="d-flex gap-2">
@@ -304,12 +368,14 @@ const ConcessionStudentListTable = () => {
                               >
                                 <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
                               </Link>
-                              <Link
+                              <button
                                 className="btn btn-soft-success btn-sm"
-                                onClick={(event) => navigateToDownloadConcessionReceipt(event, student)}
+                                onClick={() => handleDownloadPDF(student)}
+                                disabled={isGenerating}
                               >
                                 <iconify-icon icon="solar:download-minimalistic-broken" className="align-middle fs-18" />
-                              </Link>
+                              </button>
+
                             </div>
                           </td>
                         </tr>

@@ -394,7 +394,7 @@ const AdmissionPreviewModal = ({ show, onClose, previewData, validatedData, clas
     'relationType', 'siblingName', 'parentalStatus', 'fatherName', 'fatherContactNo',
     'fatherQualification', 'fatherProfession', 'motherName', 'motherContactNo', 'motherQualification',
     'motherProfession', 'selectedFeeType', 'admissionFees', 'concessionAmount', 'concessionType',
-    'finalAmount', 'name', 'paymentMode', 'chequeNumber', 'bankName', 'Valid', 'Remark'
+    'finalAmount', 'name', 'paymentMode', 'chequeNumber', 'bankName','paymentDate', 'Valid', 'Remark'
   ];
 
   const normalizeValue = (value) =>

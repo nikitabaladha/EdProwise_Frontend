@@ -356,7 +356,7 @@ const FeesRefundReportStudentWise = () => {
                     <input
                       type="text"
                       className="form-control border-dark"
-                      placeholder="Search by adm/reg no., name, class, or section"
+                      placeholder="Search by any field"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />

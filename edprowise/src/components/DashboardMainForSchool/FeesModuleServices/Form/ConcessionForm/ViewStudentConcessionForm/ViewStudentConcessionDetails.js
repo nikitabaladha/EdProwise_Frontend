@@ -57,17 +57,17 @@ const ConcessionForm = () => {
                     <div className="card m-2">
                         <div className="card-body custom-heading-padding">
                             <div className="container">
-                                <div className="card-header mb-2 d-flex justify-content-between align-items-center">
+                                <div className="card-header mb-2">
                                     <h4 className="card-title text-center custom-heading-font">
                                         View Concession Form
                                     </h4>
-                                    <button
+                                    {/* <button
                                         className="btn btn-primary"
                                         onClick={handleDownloadPDF}
                                         title="Download TC Form as PDF"
                                     >
                                         Download PDF
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                             <form onSubmit={handleSubmit}>
@@ -381,10 +381,40 @@ const ConcessionForm = () => {
                                                     </tr>
                                                 ))}
                                             </tbody>
+                                             <tfoot className="bg-light-subtle">
+                                                <tr>
+                                                    <td colSpan="3" className="fw-bold">Totals</td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.totalFees || 0), 0)
+                                                            }
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails.length > 0
+                                                            ? (
+                                                                formData.concessionDetails.reduce(
+                                                                    (sum, detail) => sum + Number(detail.concessionPercentage || 0),
+                                                                    0
+                                                                ) / formData.concessionDetails.length
+                                                            )
+                                                            : "0"}%
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.concessionAmount || 0), 0)
+                                                            }
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.balancePayable || 0), 0)
+                                                            }
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
-                                <div className="d-flex justify-content-end">
+                                <div className="d-flex justify-content-end mt-3">
                                     <div className="text" style={{ marginLeft: "2px" }}>
                                         <button
                                             type="button"

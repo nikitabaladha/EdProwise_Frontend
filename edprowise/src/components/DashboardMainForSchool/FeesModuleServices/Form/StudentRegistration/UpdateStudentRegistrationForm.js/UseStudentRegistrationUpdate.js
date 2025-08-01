@@ -209,12 +209,17 @@ const UseStudentRegistrationUpdate = () => {
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setFormData(prev => ({
-        ...prev,
-        studentPhoto: file
-      }));
+    if (!file) return;
+    const maxSize = 300 * 1024; 
+    if (file.size > maxSize) {
+      toast.error("Image size should not exceed 300KB.");
+      e.target.value = null;
+      return;
     }
+    setFormData(prev => ({
+      ...prev,
+      studentPhoto: file
+    }));
   };
 
   const isNurseryClass = (classId) => {

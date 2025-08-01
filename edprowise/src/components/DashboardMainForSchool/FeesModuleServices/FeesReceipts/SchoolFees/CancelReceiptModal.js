@@ -50,7 +50,7 @@ const CancelReceiptModalSchoolFees = ({ show, onClose, student, setIsCancelled})
       }
 
       const result = await putAPI(
-        `/update-school-fees-statusbyadm/${student[0]?._id }`,
+        `/update-school-fees-status/${student[0]?._id }`,
         payload,
         true
       );

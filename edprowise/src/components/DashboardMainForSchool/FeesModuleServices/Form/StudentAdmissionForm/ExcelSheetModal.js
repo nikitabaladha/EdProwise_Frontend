@@ -1169,6 +1169,7 @@ const AdmissionExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImp
             payload.motherProfession = row.motherProfession?.toString().trim();
             payload.agreementChecked = true;
             payload.name = row.name?.toString().trim();
+            payload.paymentDate = row.paymentDate?.toString().trim() || '';
             payload.paymentMode = row.paymentMode?.toString().trim() || 'null';
             payload.chequeNumber = row.chequeNumber?.toString().trim() || '';
             payload.bankName = row.bankName?.toString().trim() || '';
@@ -1531,7 +1532,7 @@ const AdmissionExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImp
         'relationType', 'siblingName', 'parentalStatus', 'fatherName', 'fatherContactNo',
         'fatherQualification', 'fatherProfession', 'motherName', 'motherContactNo', 'motherQualification',
         'motherProfession', 'selectedFeeType', 'admissionFees', 'concessionAmount', 'concessionType',
-        'finalAmount', 'name', 'paymentMode', 'chequeNumber', 'bankName'
+        'finalAmount', 'name', 'paymentMode', 'chequeNumber', 'bankName','paymentDate'
       ],
       [
         'ABC10001', 'ADM1001', 'John', '', 'Doe', '2010-05-15', '15', 'India', 'Male', 'A+',
@@ -1540,7 +1541,7 @@ const AdmissionExcelSheetModal = ({ show, onClose, schoolId, academicYear, onImp
         '110001', '1234567890', 'English', 'Previous School', '456 Old St', 'CBSE',
         '123456789012', 'General', 'false', 'Brother', 'James Doe', 'Parents',
         'John Sr.', '9876543210', 'MBA', 'Engineer', 'Jane Doe', '8765432109', 'MA', 'Teacher',
-        'Admission Fee', '1000', '100', 'EWS', '900', 'Admin User', 'Cheque', '123456', 'State Bank'
+        'Admission Fee', '1000', '100', 'EWS', '900', 'Admin User', 'Cheque', '123456', 'State Bank','2025-05-15',
       ],
     ];
 

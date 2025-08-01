@@ -190,9 +190,9 @@ const SchoolFeesExcelSheetModal = ({
                   );
                 }
 
-                if (!['Cash', 'Cheque', 'Online Transfer'].includes(payload.paymentMode)) {
+                if (!['Cash', 'Cheque', 'Online'].includes(payload.paymentMode)) {
                   throw new Error(
-                    `Row ${index + 2}: Invalid Payment Mode "${payload.paymentMode}". Must be one of: Cash, Cheque, Online Transfer`
+                    `Row ${index + 2}: Invalid Payment Mode "${payload.paymentMode}". Must be one of: Cash, Cheque, Online`
                   );
                 }
 
@@ -498,7 +498,7 @@ const SchoolFeesExcelSheetModal = ({
             paymentDate: data.paymentDate,
             paymentMode: data.paymentMode,
             collectorName: data.name,
-            transactionNumber: data.paymentMode === 'Online Transfer'
+            transactionNumber: data.paymentMode === 'Online'
               ? `TXN-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`
               : data.chequeNumber,
             chequeNumber: data.paymentMode === 'Cheque' ? data.chequeNumber : undefined,
@@ -631,7 +631,7 @@ const SchoolFeesExcelSheetModal = ({
         'Optional Fields: feeTypeName, paidAmount, excessAmount, fineAmount (at least one must be provided).',
       ],
       [
-        'Formats: paymentMode must be Cash/Cheque/Online Transfer. academicYear must be in format YYYY-YYYY (e.g., 2023-2024). installmentName can be any non-empty string, optionally ending with a positive integer (e.g., "Quarter", "Quarter 1", "Term 1"). paidAmount, excessAmount, and fineAmount must be non-negative numbers. paymentDate must be in format YYYY-MM-DD or DD-MM-YYYY (e.g., 2023-10-15 or 15-10-2023). chequeNumber is stored separately for Cheque payments; transactionNumber is generated automatically.',
+        'Formats: paymentMode must be Cash/Cheque/Online academicYear must be in format YYYY-YYYY (e.g., 2023-2024). installmentName can be any non-empty string, optionally ending with a positive integer (e.g., "Quarter", "Quarter 1", "Term 1"). paidAmount, excessAmount, and fineAmount must be non-negative numbers. paymentDate must be in format YYYY-MM-DD or DD-MM-YYYY (e.g., 2023-10-15 or 15-10-2023). chequeNumber is stored separately for Cheque payments; transactionNumber is generated automatically.',
       ],
       [
         'AdmissionNumber must match an existing student. className and section must match the student’s academic history for the specified academicYear. feeTypeName must exist and be valid for the installment and academic year (if provided).',

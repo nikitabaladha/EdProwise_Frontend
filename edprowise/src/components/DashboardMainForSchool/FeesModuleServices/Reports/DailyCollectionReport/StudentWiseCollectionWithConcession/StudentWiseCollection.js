@@ -8,7 +8,7 @@ import getAPI from '../../../../../../api/getAPI';
 import { exportToExcel, exportToPDF } from './ExportModalStudentWiseFeesReport';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const StudentWiseFeesReport = () => {
+const StudentWiseFeesReportWithConcession = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
@@ -72,6 +72,7 @@ const StudentWiseFeesReport = () => {
         setLogoSrc(logoSrc);
       } catch (error) {
         console.error('Failed to fetch school data:', error);
+        toast.error('Failed to fetch school data.');
       }
     };
     if (schoolId) {
@@ -133,7 +134,7 @@ const StudentWiseFeesReport = () => {
     setIsLoading(true);
     try {
       const promises = years.map((year) =>
-        getAPI(`/get-all-data-studentwise-fees?schoolId=${schoolId}&academicYear=${year}`)
+        getAPI(`/get-all-data-studentwise-Withconcession-fees?schoolId=${schoolId}&academicYear=${year}`)
       );
       const responses = await Promise.all(promises);
       const unifiedData = responses.flatMap((res, index) => {
@@ -149,6 +150,7 @@ const StudentWiseFeesReport = () => {
 
       const allFeeTypes = responses
         .flatMap((res) => res?.data?.feeTypes || [])
+        .filter((type) => typeof type === 'string')
         .filter((type, index, self) => self.indexOf(type) === index)
         .sort();
 
@@ -244,11 +246,11 @@ const StudentWiseFeesReport = () => {
   const filteredData = feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
       ? String(row.paymentDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.paymentMode || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+        String(Array.isArray(row.admissionNumber) && row.admissionNumber.length === 0 ? '-' : row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        String(row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        String(row.paymentMode || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        String(row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        String(row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase())
       : true;
 
     const matchesPaymentMode =
@@ -271,7 +273,7 @@ const StudentWiseFeesReport = () => {
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feeTypes[type.value] || 0) > 0);
+      selectedFeeTypes.some((type) => (row.feeTypes[type.value]?.totalPaid || 0) > 0);
 
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -300,7 +302,9 @@ const StudentWiseFeesReport = () => {
   const totals = filteredData.reduce(
     (acc, row) => {
       feeTypes.forEach((type) => {
-        acc[type] = (acc[type] || 0) + (row.feeTypes[type] || 0);
+        if (row.feeTypes[type]) {
+          acc[type] = (acc[type] || 0) + (row.feeTypes[type].totalPaid || 0);
+        }
       });
       acc.totalPaid = (acc.totalPaid || 0) + (row.totalPaid || 0);
       return acc;
@@ -328,14 +332,22 @@ const StudentWiseFeesReport = () => {
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
-    if (fieldId === 'paymentDate' || fieldId === 'admissionNumber' || fieldId === 'studentName' ||
-      fieldId === 'className' || fieldId === 'sectionName' || fieldId === 'installmentName' ||
-      fieldId === 'paymentMode' || fieldId === 'receiptNumber') {
+    if (
+      fieldId === 'paymentDate' ||
+      fieldId === 'studentName' ||
+      fieldId === 'className' ||
+      fieldId === 'sectionName' ||
+      fieldId === 'installmentName' ||
+      fieldId === 'paymentMode' ||
+      fieldId === 'receiptNumber'
+    ) {
       return record[fieldId] || '-';
+    } else if (fieldId === 'admissionNumber') {
+      return Array.isArray(record[fieldId]) && record[fieldId].length === 0 ? '-' : record[fieldId] || '-';
     } else if (fieldId === 'totalPaid') {
-      return (record[fieldId] || 0);
+      return record[fieldId] || 0;
     } else {
-      return (record.feeTypes[fieldId] || 0);
+      return record.feeTypes[fieldId]?.totalPaid || 0;
     }
   };
 
@@ -445,7 +457,7 @@ const StudentWiseFeesReport = () => {
                                     : selectedAcademicYear
                                 );
                               } catch (err) {
-                                toast.error("Export to Excel failed.");
+                                toast.error('Export to Excel failed.');
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -474,7 +486,7 @@ const StudentWiseFeesReport = () => {
                                   logoSrc
                                 );
                               } catch (err) {
-                                toast.error("Export to PDF failed.");
+                                toast.error('Export to PDF failed.');
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -637,7 +649,7 @@ const StudentWiseFeesReport = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Student-Wise Fees Report</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Student-Wise Fees Report With Concession</h2>
                 </div>
               </div>
 
@@ -648,69 +660,33 @@ const StudentWiseFeesReport = () => {
                   </div>
                   <p>Loading data...</p>
                 </div>
-              ) : feeTypes.length > 0 ? (
+              ) : feeData.length > 0 && feeTypes.length > 0 ? (
                 <>
                   <div className="table-responsive pb-4 mt-3">
                     <table className="table text-dark border border-secondary mb-1">
                       <thead>
                         <tr className="payroll-table-header">
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Admission No.</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Name</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Class</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Section</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Installment</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Payment Mode</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Receipt No.</th>
-                          {feeTypes.map((type) => (
-                            <th key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
-                              {type}
+                          {tableFields.map((field) => (
+                            <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {field.label}
                             </th>
                           ))}
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
                         </tr>
                       </thead>
                       <tbody>
                         {paginatedData().length > 0 ? (
                           paginatedData().map((record, index) => (
                             <tr key={`${record.admissionNumber}_${record.paymentDate}_${record.receiptNumber}_${index}`}>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.paymentDate || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.admissionNumber || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.studentName || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.className || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.sectionName || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.installmentName ||'-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.paymentMode || '-'}
-                              </td>
-                              <td  className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.receiptNumber || '-'}
-                              </td>
-                              {feeTypes.map((type) => (
-                                <td key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {(record.feeTypes[type] || 0)}
+                              {tableFields.map((field) => (
+                                <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                                  {getFieldValue(record, field)}
                                 </td>
                               ))}
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {(record.totalPaid || 0)}
-                              </td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={feeTypes.length + 8} className="text-center">
+                            <td colSpan={tableFields.length} className="text-center">
                               No data matches the selected filters for{' '}
                               {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
                                 formatAcademicYear(selectedAcademicYear)}.
@@ -725,11 +701,11 @@ const StudentWiseFeesReport = () => {
                           </td>
                           {feeTypes.map((type) => (
                             <td key={type} className="text-center border border-secondary p-2">
-                              <strong>{(totals[type] || 0)}</strong>
+                              <strong>{totals[type] || 0}</strong>
                             </td>
                           ))}
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalPaid}</strong>
+                            <strong>{totals.totalPaid || 0}</strong>
                           </td>
                         </tr>
                       </tfoot>
@@ -777,7 +753,7 @@ const StudentWiseFeesReport = () => {
                 </>
               ) : (
                 <div className="text-center mt-3">
-                  <p>No fee types available.</p>
+                  <p>No data or fee types available for the selected criteria.</p>
                 </div>
               )}
             </div>
@@ -788,4 +764,4 @@ const StudentWiseFeesReport = () => {
   );
 };
 
-export default StudentWiseFeesReport;
+export default StudentWiseFeesReportWithConcession;

@@ -557,6 +557,7 @@ const RegistrationPreviewModal = ({
     'paymentMode',
     'chequeNumber',
     'bankName',
+    'paymentDate',
     'Valid',
     'Remark',
   ];

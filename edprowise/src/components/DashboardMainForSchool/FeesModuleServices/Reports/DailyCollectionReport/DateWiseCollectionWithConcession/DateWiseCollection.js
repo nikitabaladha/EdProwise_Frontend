@@ -3,12 +3,12 @@ import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
-import { Link } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
-import { exportToExcel, exportToPDF } from './ExportModalStudentWiseFeesReport';
+import { Link } from 'react-router-dom';
+import { exportToExcel, exportToPDF } from './ExportModalDateWiseFeesCollection';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const StudentWiseFeesReport = () => {
+const DateWiseFeesCollectionWithConcession = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
@@ -19,11 +19,9 @@ const StudentWiseFeesReport = () => {
   const [feeData, setFeeData] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingYears, setLoadingYears] = useState(false);
   const [classOptions, setClassOptions] = useState([]);
   const [sectionOptions, setSectionOptions] = useState([]);
   const [academicYearOptions, setAcademicYearOptions] = useState([]);
-  const [academicYears, setAcademicYears] = useState([]);
   const [installmentOptions, setInstallmentOptions] = useState([]);
   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
@@ -40,7 +38,7 @@ const StudentWiseFeesReport = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment', 'Type of Fees'];
+  const tabs = ['Date', 'Payment Mode', 'Academic Year', 'Installment', 'Type of Fees'];
 
   const pageShowOptions = [
     { value: 10, label: '10' },
@@ -91,49 +89,11 @@ const StudentWiseFeesReport = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchAcademicYears = async () => {
-      try {
-        setLoadingYears(true);
-        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
-        if (!response.hasError && response.data?.data) {
-          const years = response.data.data
-            .map((item) => item.academicYear)
-            .filter(Boolean)
-            .sort((a, b) => a.localeCompare(b));
-          setAcademicYears(years);
-          setAcademicYearOptions(
-            years.map((year) => ({
-              value: year,
-              label: formatAcademicYear(year),
-            }))
-          );
-          if (!selectedAcademicYear && years.length > 0) {
-            const latestYear = years[years.length - 1];
-            setSelectedAcademicYear(latestYear);
-            localStorage.setItem('selectedAcademicYear', latestYear);
-            setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
-          }
-        } else {
-          toast.error('No academic years found.');
-        }
-      } catch (err) {
-        toast.error('Error fetching academic years.');
-        console.error(err);
-      } finally {
-        setLoadingYears(false);
-      }
-    };
-    if (schoolId) {
-      fetchAcademicYears();
-    }
-  }, [schoolId]);
-
   const fetchFeeData = async (years) => {
     setIsLoading(true);
     try {
       const promises = years.map((year) =>
-        getAPI(`/get-all-data-studentwise-fees?schoolId=${schoolId}&academicYear=${year}`)
+        getAPI(`/get-all-data-datewise-Withconcession-fees?schoolId=${schoolId}&academicYear=${year}`)
       );
       const responses = await Promise.all(promises);
       const unifiedData = responses.flatMap((res, index) => {
@@ -144,6 +104,7 @@ const StudentWiseFeesReport = () => {
         return res.data.data.map((record) => ({
           ...record,
           academicYear: years[index],
+          totalPaidFee: Object.values(record.feeTypes).reduce((sum, amount) => sum + (amount || 0), 0),
         }));
       });
 
@@ -160,6 +121,18 @@ const StudentWiseFeesReport = () => {
       setSectionOptions(filterOptions.sectionOptions || []);
       setInstallmentOptions(filterOptions.installmentOptions || []);
       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+      setAcademicYearOptions(
+        filterOptions.academicYearOptions?.length > 0
+          ? filterOptions.academicYearOptions
+          : years.map((year) => ({ value: year, label: formatAcademicYear(year) }))
+      );
+
+      if (!selectedAcademicYear && filterOptions.academicYearOptions?.length > 0) {
+        const latestYear = filterOptions.academicYearOptions[filterOptions.academicYearOptions.length - 1].value;
+        setSelectedAcademicYear(latestYear);
+        localStorage.setItem('selectedAcademicYear', latestYear);
+        setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
+      }
     } catch (error) {
       toast.error('Error fetching data: ' + error.message);
       setFeeData([]);
@@ -168,6 +141,7 @@ const StudentWiseFeesReport = () => {
       setSectionOptions([]);
       setInstallmentOptions([]);
       setPaymentModeOptions([]);
+      setAcademicYearOptions([]);
     } finally {
       setIsLoading(false);
     }
@@ -243,12 +217,8 @@ const StudentWiseFeesReport = () => {
 
   const filteredData = feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
-      ? String(row.paymentDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.paymentMode || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      String(row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+      ? row.paymentDate.toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      row.paymentMode?.toLowerCase().includes(String(searchTerm).toLowerCase())
       : true;
 
     const matchesPaymentMode =
@@ -262,7 +232,6 @@ const StudentWiseFeesReport = () => {
     const matchesDate =
       (!startDate && !endDate) ||
       (() => {
-        if (!row.paymentDate || row.paymentDate === '-') return false;
         const recordDate = new Date(row.paymentDate.split('-').reverse().join('-'));
         const start = startDate ? new Date(startDate) : null;
         const end = endDate ? new Date(endDate) : null;
@@ -297,28 +266,36 @@ const StudentWiseFeesReport = () => {
     );
   });
 
+  const groupedByDate = filteredData.reduce((acc, row) => {
+    const date = row.paymentDate;
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(row);
+    return acc;
+  }, {});
+
+  const groupedDataArray = Object.entries(groupedByDate).map(([date, records]) => ({
+    date,
+    records,
+  }));
+
   const totals = filteredData.reduce(
     (acc, row) => {
       feeTypes.forEach((type) => {
         acc[type] = (acc[type] || 0) + (row.feeTypes[type] || 0);
       });
-      acc.totalPaid = (acc.totalPaid || 0) + (row.totalPaid || 0);
+      acc.totalPaidFee = (acc.totalPaidFee || 0) + row.totalPaidFee;
       return acc;
     },
-    { totalPaid: 0 }
+    { totalPaidFee: 0 }
   );
 
   const headerMapping = {
     paymentDate: 'Date',
-    admissionNumber: 'Admission No.',
-    studentName: 'Name',
-    className: 'Class',
-    sectionName: 'Section',
-    installmentName: 'Installment',
     paymentMode: 'Payment Mode',
-    receiptNumber: 'Receipt No.',
     ...Object.fromEntries(feeTypes.map((type) => [type, type])),
-    totalPaid: 'Fees Paid',
+    totalPaidFee: 'Fees Paid',
   };
 
   const tableFields = Object.keys(headerMapping).map((key) => ({
@@ -328,12 +305,12 @@ const StudentWiseFeesReport = () => {
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
-    if (fieldId === 'paymentDate' || fieldId === 'admissionNumber' || fieldId === 'studentName' ||
-      fieldId === 'className' || fieldId === 'sectionName' || fieldId === 'installmentName' ||
-      fieldId === 'paymentMode' || fieldId === 'receiptNumber') {
+    if (fieldId === 'paymentDate') {
       return record[fieldId] || '-';
-    } else if (fieldId === 'totalPaid') {
-      return (record[fieldId] || 0);
+    } else if (fieldId === 'paymentMode') {
+      return record[fieldId] || '-';
+    } else if (fieldId === 'totalPaidFee') {
+      return record[fieldId] || '0.00';
     } else {
       return (record.feeTypes[fieldId] || 0);
     }
@@ -354,7 +331,9 @@ const StudentWiseFeesReport = () => {
   const paginatedData = () => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
-    return filteredData.slice(startIndex, endIndex);
+    return groupedDataArray
+      .flatMap(({ date, records }) => records.map((record, index) => ({ date, record, groupIndex: index })))
+      .slice(startIndex, endIndex);
   };
 
   const handlePageClick = (page) => {
@@ -387,7 +366,10 @@ const StudentWiseFeesReport = () => {
                       className="form-control border border-dark"
                       placeholder="Search by any field"
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-2"></div>
@@ -419,7 +401,7 @@ const StudentWiseFeesReport = () => {
                       </div>
                       {showExportDropdown && (
                         <div
-                          className="position-absolute bg-white mx-2 border mr-2 mt-2 border-dark rounded shadow"
+                          className="position-absolute bg-white border mx-2 mr-2 mt-2 border-dark rounded shadow"
                           style={{
                             top: '100%',
                             right: 0,
@@ -514,7 +496,10 @@ const StudentWiseFeesReport = () => {
                                 type="date"
                                 className="form-control"
                                 value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                onChange={(e) => {
+                                  setStartDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                             <div className="col-md-4">
@@ -523,7 +508,10 @@ const StudentWiseFeesReport = () => {
                                 type="date"
                                 className="form-control"
                                 value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                                onChange={(e) => {
+                                  setEndDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                           </div>
@@ -545,33 +533,6 @@ const StudentWiseFeesReport = () => {
                           </div>
                         )}
 
-                        {activeTab === 'Class & Section' && (
-                          <div className="row d-flex justify-content-center">
-                            <div className="col-md-4">
-                              <CreatableSelect
-                                isMulti
-                                name="class"
-                                options={classOptions}
-                                value={selectedClasses}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Classes"
-                                className="mt-2"
-                              />
-                            </div>
-                            <div className="col-md-4">
-                              <CreatableSelect
-                                isMulti
-                                name="section"
-                                options={sectionOptions}
-                                value={selectedSections}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Sections"
-                                className="mt-2"
-                              />
-                            </div>
-                          </div>
-                        )}
-
                         {activeTab === 'Academic Year' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
@@ -583,7 +544,6 @@ const StudentWiseFeesReport = () => {
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Academic Years"
                                 className="mt-2"
-                                isLoading={loadingYears}
                               />
                             </div>
                           </div>
@@ -637,11 +597,11 @@ const StudentWiseFeesReport = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Student-Wise Fees Report</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Datewise Collection Fees Report With Concession</h2>
                 </div>
               </div>
 
-              {isLoading || loadingYears ? (
+              {isLoading ? (
                 <div className="text-center mt-3">
                   <div className="spinner-border" role="status">
                     <span className="visually-hidden">Loading...</span>
@@ -655,13 +615,7 @@ const StudentWiseFeesReport = () => {
                       <thead>
                         <tr className="payroll-table-header">
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Admission No.</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Name</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Class</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Section</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Installment</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Payment Mode</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Receipt No.</th>
                           {feeTypes.map((type) => (
                             <th key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
                               {type}
@@ -672,45 +626,33 @@ const StudentWiseFeesReport = () => {
                       </thead>
                       <tbody>
                         {paginatedData().length > 0 ? (
-                          paginatedData().map((record, index) => (
-                            <tr key={`${record.admissionNumber}_${record.paymentDate}_${record.receiptNumber}_${index}`}>
+                          paginatedData().map(({ record, groupIndex, date }, index) => (
+                            <tr
+                              key={`${record.paymentDate}_${record.paymentMode}_${groupIndex}_${index}`}
+                              className="payroll-table-row"
+                            >
                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
                                 {record.paymentDate || '-'}
                               </td>
                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.admissionNumber || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.studentName || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.className || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.sectionName || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.installmentName ||'-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
                                 {record.paymentMode || '-'}
                               </td>
-                              <td  className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.receiptNumber || '-'}
-                              </td>
                               {feeTypes.map((type) => (
-                                <td key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
+                                <td
+                                  key={type}
+                                  className="text-center align-middle border border-secondary text-nowrap p-2"
+                                >
                                   {(record.feeTypes[type] || 0)}
                                 </td>
                               ))}
                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {(record.totalPaid || 0)}
+                                {record.totalPaidFee}
                               </td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={feeTypes.length + 8} className="text-center">
+                            <td colSpan={feeTypes.length + 3} className="text-center">
                               No data matches the selected filters for{' '}
                               {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
                                 formatAcademicYear(selectedAcademicYear)}.
@@ -720,16 +662,16 @@ const StudentWiseFeesReport = () => {
                       </tbody>
                       <tfoot>
                         <tr className="payroll-table-footer">
-                          <td colSpan={8} className="text-right border border-secondary p-2">
+                          <td colSpan={2} className="text-right border border-secondary p-2">
                             <strong>Total</strong>
                           </td>
                           {feeTypes.map((type) => (
                             <td key={type} className="text-center border border-secondary p-2">
-                              <strong>{(totals[type] || 0)}</strong>
+                              <strong>{totals[type] || '0.00'}</strong>
                             </td>
                           ))}
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalPaid}</strong>
+                            <strong>{totals.totalPaidFee || '0.00'}</strong>
                           </td>
                         </tr>
                       </tfoot>
@@ -788,4 +730,4 @@ const StudentWiseFeesReport = () => {
   );
 };
 
-export default StudentWiseFeesReport;
+export default DateWiseFeesCollectionWithConcession;

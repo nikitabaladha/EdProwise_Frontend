@@ -39,7 +39,7 @@ const FeesReceipt = () => {
     try {
       console.log("Fetching status for student ID:", student._id);
       const response = await getAPI(`/get-registration-status/${student._id}`, true);
-      console.log("API Response:", response); 
+      console.log("API Response:", response);
 
       if (!response.hasError && response.data && response.data.student) {
         setStudent(prev => ({ ...prev, ...response.data.student }));
@@ -229,7 +229,7 @@ const FeesReceipt = () => {
         </h3>
 
 
-        <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
+        {/* <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
           <div className="col-md-6">
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
@@ -280,7 +280,39 @@ const FeesReceipt = () => {
               <span>{className || ""}</span>
             </div>
           </div>
-        </div>
+        </div> */}
+
+        <table className="table table-borderless text-black" style={{ zIndex: 1, position: "relative" }}>
+          <tbody>
+            <tr className="text-nowrap">
+              <td className="fw-bold" style={{ minWidth: "120px" }}>Receipt No:</td>
+              <td>{student?.receiptNumber || ""}</td>
+              <td className="fw-bold" style={{ minWidth: "120px" }}>Date:</td>
+              <td>
+                {student?.paymentDate
+                  ? new Date(student.paymentDate).toLocaleDateString("en-GB")
+                  : ""}
+              </td>
+            </tr>
+            <tr className="text-nowrap">
+              <td className="fw-bold">Student Name:</td>
+              <td>
+                {student?.firstName && student?.lastName
+                  ? `${student.firstName} ${student.lastName}`
+                  : ""}
+              </td>
+              <td className="fw-bold">Academic Year:</td>
+              <td>{student?.academicYear || ""}</td>
+            </tr>
+            <tr className="text-nowrap">
+              <td className="fw-bold">Registration No:</td>
+              <td>{student?.registrationNumber || ""}</td>
+              <td className="fw-bold">Class:</td>
+              <td>{className || ""}</td>
+            </tr>
+          </tbody>
+        </table>
+
 
 
         <div className="table-responsive mb-4" style={{ zIndex: 1, position: "relative" }}>
@@ -319,7 +351,7 @@ const FeesReceipt = () => {
               </span>
               <span className="text-capitalize">{student?.paymentMode === 'null' ? '' : student?.paymentMode || ""}</span>
             </div>
-            <div className="d-flex mb-2">
+            {/* <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
                 Date of Payment:
               </span>
@@ -328,7 +360,7 @@ const FeesReceipt = () => {
                   ? new Date(student.paymentDate).toLocaleDateString("en-GB")
                   : ""}
               </span>
-            </div>
+            </div> */}
             {student?.paymentMode !== "Cash" && (
               <div className="d-flex mb-2">
                 <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
@@ -347,7 +379,7 @@ const FeesReceipt = () => {
                   <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
                     Cancel Reason:
                   </span>
-                  <span>{student?.cancelReason|| ""}</span>
+                  <span>{student?.cancelReason || ""}</span>
                 </div>
               </>
             )}

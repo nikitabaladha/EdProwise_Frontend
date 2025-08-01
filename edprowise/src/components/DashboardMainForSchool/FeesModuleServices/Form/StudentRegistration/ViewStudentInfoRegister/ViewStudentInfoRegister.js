@@ -52,7 +52,7 @@ const StudentRegistrationFormview = () => {
   const handleDownloadPDF = async () => {
     setIsGenerating(true);
     try {
-      await generatePDF(formData, student, classes, shifts,existingFiles,schoolId);
+      await generatePDF(formData, student, classes, shifts, existingFiles, schoolId);
     } catch (error) {
       console.error("PDF generation failed:", error);
     } finally {
@@ -68,17 +68,18 @@ const StudentRegistrationFormview = () => {
             <div className="card-body custom-heading-padding">
               <div className="container">
                 <div className="card-header mb-2 d-flex justify-content-between align-items-center">
-                  <h4 className="card-title text-center custom-heading-font">
+                  {/* <h4 className="card-title text-center custom-heading-font"> */}
+                  <h4 className="card-title custom-heading-font flex-grow-1 text-center">
                     Student Registration Form
                   </h4>
-                  <button
+                  {/* <button
                     className="btn btn-primary download-pdf-btn"
                     onClick={handleDownloadPDF}
                     disabled={isGenerating}
                     style={{ marginLeft: "auto" }}
                   >
                     {isGenerating ? "Generating PDF..." : "Download PDF"}
-                  </button>
+                  </button> */}
                 </div>
               </div>
               <div ref={formRef}>
@@ -873,28 +874,28 @@ const StudentRegistrationFormview = () => {
                           />
                         </div>
                       </div>
-                        <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="concessionType" className="form-label">
-                          Concession Type
-                        </label>
-                        <select
-                          id="concessionType"
-                          name="concessionType"
-                          className="form-control"
-                          value={formData.concessionType}
-                          disabled
-                        >
-                          <option value="">Select</option>
-                          <option value="EWS">EWS</option>
-                          <option value="SC">SC</option>
-                          <option value="ST">ST</option>
-                          <option value="OBC">OBC</option>
-                          <option value="Staff Children">Staff Children</option>
-                          <option value="Other">Other</option>
-                        </select>
+                      <div className="col-md-3">
+                        <div className="mb-3">
+                          <label htmlFor="concessionType" className="form-label">
+                            Concession Type
+                          </label>
+                          <select
+                            id="concessionType"
+                            name="concessionType"
+                            className="form-control"
+                            value={formData.concessionType}
+                            disabled
+                          >
+                            <option value="">Select</option>
+                            <option value="EWS">EWS</option>
+                            <option value="SC">SC</option>
+                            <option value="ST">ST</option>
+                            <option value="OBC">OBC</option>
+                            <option value="Staff Children">Staff Children</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
                       </div>
-                    </div>
                       <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="concessionAmount" className="form-label">

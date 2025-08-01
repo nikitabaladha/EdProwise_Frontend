@@ -196,6 +196,12 @@ const Sidebar = () => {
         icon: "solar:file-text-bold",
         children: [
           {
+            id: "studentprofile",
+            label: "Student Profile",
+            icon: "bx-receipt",
+            link: "/school-dashboard/fees-module/student-profile",
+          },
+          {
             id: "form",
             label: "Form",
             icon: "bx-receipt",
@@ -269,8 +275,18 @@ const Sidebar = () => {
                     icon: "solar:bill-list-bold-duotone",
                   },
                   {
+                    label: "Datewise Collection With Concession",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/datewise-collection-with-concession",
+                    icon: "solar:bill-list-bold-duotone",
+                  },
+                  {
                     label: "Studentwise Collection",
                     link: "/school-dashboard/fees-module/reports/daily-collection/studentwise-collection",
+                    icon: "solar:bill-list-bold-duotone",
+                  },
+                   {
+                    label: "Studentwise Collection With Concession",
+                    link: "/school-dashboard/fees-module/reports/daily-collection/studentwise-with-collection",
                     icon: "solar:bill-list-bold-duotone",
                   },
                   {

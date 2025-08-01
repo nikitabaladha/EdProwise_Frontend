@@ -226,7 +226,7 @@ const FeesReceipt = () => {
           <strong>TC Fees Receipt</strong>
         </h3>
 
-        <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
+        {/* <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
           <div className="col-md-6">
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
@@ -277,7 +277,37 @@ const FeesReceipt = () => {
               <span>{className || "N/A"}</span>
             </div>
           </div>
-        </div>
+        </div> */}
+         <table className="table table-borderless text-black" style={{ zIndex: 1, position: "relative" }}>
+          <tbody>
+            <tr className="text-nowrap">
+              <td className="fw-bold" style={{ minWidth: "120px" }}>Receipt No:</td>
+              <td>{student?.receiptNumber || ""}</td>
+              <td className="fw-bold" style={{ minWidth: "120px" }}>Date:</td>
+              <td>
+                {student?.paymentDate
+                  ? new Date(student.paymentDate).toLocaleDateString("en-GB")
+                  : ""}
+              </td>
+            </tr>
+            <tr className="text-nowrap">
+              <td className="fw-bold">Student Name:</td>
+              <td>
+                {student?.firstName && student?.lastName
+                  ? `${student.firstName} ${student.lastName}`
+                  : ""}
+              </td>
+              <td className="fw-bold">Academic Year:</td>
+              <td>{student?.academicYear || ""}</td>
+            </tr>
+            <tr className="text-nowrap">
+              <td className="fw-bold">Admission No:</td>
+              <td>{student?.AdmissionNumber || "N/A"}</td>
+              <td className="fw-bold">Class:</td>
+              <td>{className || ""}</td>
+            </tr>
+          </tbody>
+        </table>
 
         <div className="table-responsive mb-4" style={{ zIndex: 1, position: "relative" }}>
           <table className="table table-bordered">
@@ -311,16 +341,6 @@ const FeesReceipt = () => {
                 Payment Mode:
               </span>
               <span className="text-capitalize">{student?.paymentMode || "N/A"}</span>
-            </div>
-            <div className="d-flex mb-2">
-              <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
-                Date of Payment:
-              </span>
-              <span>
-                {student?.paymentDate
-                  ? new Date(student.paymentDate).toLocaleDateString("en-GB")
-                  : "N/A"}
-              </span>
             </div>
             {student?.paymentMode?.toLowerCase() !== "cash" && (
               <div className="d-flex mb-2">
