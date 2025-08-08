@@ -3,8 +3,8 @@ import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CreatableSelect from 'react-select/creatable';
 import { Link } from 'react-router-dom';
-import getAPI from '../../../../../api/getAPI';
-import { fetchSchoolData } from '../../PdfUtlisReport';
+import getAPI from '../../../../../../api/getAPI';
+import { fetchSchoolData } from '../../../PdfUtlisReport';
 import { exportToExcel, exportToPDF } from './ExportRefundReport';
 
 const FeesRefundReportStudentWise = () => {

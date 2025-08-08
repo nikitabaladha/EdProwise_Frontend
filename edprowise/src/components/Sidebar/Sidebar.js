@@ -265,190 +265,178 @@ const Sidebar = () => {
                 icon: "solar:document-text-bold-duotone",
 
               },
+             
               {
-                label: "Daily Collection Report",
-                icon: "solar:calendar-bold-duotone",
+                "label": "Daily Collection Report",
+                "icon": "solar:calendar-bold-duotone",
+                "children": [
+                  {
+                    "label": "Datewise Collection",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/datewise-collection",
+                    "icon": "solar:chart-square-bold-duotone"
+                  },
+                  {
+                    "label": "DC With Concession",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/datewise-collection-with-concession",
+                    "icon": "solar:chart-bold-duotone"
+                  },
+                  {
+                    "label": "Studentwise Collection",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/studentwise-collection",
+                    "icon": "solar:user-bold-duotone"
+                  },
+                  {
+                    "label": "SC With Concession",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/studentwise-with-collection",
+                    "icon": "solar:user-check-bold-duotone"
+                  }
+                ]
+              },
+               {
+                label: "General",
+                icon: "solar:settings-bold-duotone",
                 children: [
-                  {
-                    label: "Datewise Collection",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/datewise-collection",
-                    icon: "solar:bill-list-bold-duotone",
-                  },
-                  {
-                    label: "Datewise Collection With Concession",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/datewise-collection-with-concession",
-                    icon: "solar:bill-list-bold-duotone",
-                  },
-                  {
-                    label: "Studentwise Collection",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/studentwise-collection",
-                    icon: "solar:bill-list-bold-duotone",
-                  },
-                   {
-                    label: "Studentwise Collection With Concession",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/studentwise-with-collection",
-                    icon: "solar:bill-list-bold-duotone",
-                  },
+
                   {
                     label: "School Fees",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/school-fee",
-                    icon: "solar:profile-circle-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/school-fee",
+                    icon: "solar:buildings-bold-duotone",
                   },
                   {
                     label: "Registration Fee",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/registration-fees",
-                    icon: "solar:profile-circle-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/registration-fees",
+                    icon: "solar:card-bold-duotone",
                   },
                   {
                     label: "Admission Fee",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/admission-fees",
-                    icon: "solar:document-text-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/admission-fees",
+                    icon: "solar:ticket-bold-duotone",
                   },
                   {
                     label: "TC Fees Report",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/tc-reports",
-                    icon: "solar:document-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/tc-reports",
+                    icon: "solar:document-add-bold-duotone",
                   },
                   {
                     label: "Board Registration Fees",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/board-registration",
-                    icon: "solar:document-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/board-registration",
+                    icon: "solar:clipboard-list-bold-duotone",
                   },
                   {
                     label: "Board Exam Fees",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/board-exam",
-                    icon: "solar:document-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/board-exam",
+                    icon: "solar:notebook-bold-duotone",
                   },
                   {
-                    label: "Lates Fees & Excess",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/late-fees-excess",
-                    icon: "solar:warning-bold-duotone",
+                    label: "Late Fees & Excess",
+                    link: "/school-dashboard/fees-module/reports/general/late-fees-excess",
+                    icon: "solar:alarm-bold-duotone",
                   },
                   {
                     label: "Fees Refund",
-                    icon: "solar:document-bold-duotone",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/fees-refund",
+                    icon: "solar:money-bag-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/fees-refund",
                   },
                   {
                     label: "Fees Cancelled",
-                    icon: "solar:document-bold-duotone",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/fees-cancelled",
-                  },
-                   {
-                    label: "Fees Cheque Retuen",
-                    icon: "solar:document-bold-duotone",
-                    link: "/school-dashboard/fees-module/reports/daily-collection/fees-cheque-return",
-                  },
-                ],
-              },
-              {
-                label: "Advanced Report",
-                icon: "solar:layers-bold-duotone",
-                children: [
-                  {
-                    label: "Advance Report",
-                    link: "/school-dashboard/fees-module/reports/advanced/advance-report",
-                    icon: "solar:chart-bold-duotone",
+                    icon: "solar:close-circle-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/fees-cancelled",
                   },
                   {
-                    label: "Defaulter Fees",
-                    link: "/school-dashboard/fees-module/reports/advanced/defaulter-fees",
-                    icon: "solar:shield-warning-bold-duotone",
-                  },
-                  {
-                    label: "Loss of fees due to Left Students",
-                    link: "/school-dashboard/fees-module/reports/advanced/loss-left-students",
-                    icon: "solar:user-cross-bold-duotone",
-                  },
-                  {
-                    label: "Loss of fees due to Late Admission",
-                    link: "/school-dashboard/fees-module/reports/advanced/loss-late-admission",
-                    icon: "solar:clock-bold-duotone",
-                  },
-                  {
-                    label: "Arrear Fees Received",
-                    link: "/school-dashboard/fees-module/reports/advanced/arrear-fees",
-                    icon: "solar:money-bag-bold-duotone",
-                  },
-                  {
-                    label: "Advance Fees",
-                    link: "/school-dashboard/fees-module/reports/advanced/advance-fees",
-                    icon: "solar:wallet-bold-duotone",
-                  },
-                  {
-                    label: "Opening Advance",
-                    link: "/school-dashboard/fees-module/reports/advanced/opening-advance",
-                    icon: "solar:arrow-up-circle-bold-duotone",
-                  },
-                  {
-                    label: "Closing Advance",
-                    link: "/school-dashboard/fees-module/reports/advanced/closing-advance",
-                    icon: "solar:arrow-down-circle-bold-duotone",
-                  },
-                  {
-                    label: "Fees Refund Report",
-                    link: "/school-dashboard/fees-module/reports/advanced/fees-refund",
-                    icon: "solar:wallet-money-bold-duotone",
-                  },
-                  {
-                    label: "Cancelled Receipt Report",
-                    link: "/school-dashboard/fees-module/reports/advanced/cancelled-receipts",
-                    icon: "solar:document-remove-bold-duotone",
+                    label: "Fees Cheque Return",
+                    icon: "solar:card-recive-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/fees-cheque-return",
                   },
                   {
                     label: "Fees Structure",
-                    link: "/school-dashboard/fees-module/reports/advanced/fees-structure",
-                    icon: "solar:layers-bold-duotone",
-                  },
-                  {
-                    label: "Student Master",
-                    link: "/school-dashboard/fees-module/reports/advanced/student-master",
-                    icon: "solar:users-group-rounded-bold-duotone",
-                  },
+                    icon: "solar:structure-bold-duotone",
+                    link: "/school-dashboard/fees-module/reports/general/fees-structure",
+                  }
                 ],
               },
               {
-                label: "Fees Concession Report",
-                icon: "solar:file-text-bold",
-                children: [
+                "label": "Advanced Report",
+                "icon": "solar:layers-bold-duotone",
+                "children": [
                   {
-                    label: "Fees Concession Report",
-                    link: "/school-dashboard/fees-module/reports/concession/overall",
-                    icon: "solar:discount-bold-duotone",
+                    "label": "Defaulter Fees",
+                    "link": "/school-dashboard/fees-module/reports/advanced/defaulter-fees",
+                    "icon": "solar:shield-warning-bold-duotone"
                   },
                   {
-                    label: "Fees Concession Report",
-                    link: "/school-dashboard/fees-module/reports/concession/student-wise",
-                    icon: "solar:chart-pie-bold-duotone",
+                    "label": "Fees Loss-Left Students",
+                    "link": "/school-dashboard/fees-module/reports/advanced/loss-left-students",
+                    "icon": "solar:user-cross-bold-duotone"
                   },
                   {
-                    label: "Fees Concession Report (Date Wise)",
-                    link: "/school-dashboard/fees-module/reports/concession/date-wise",
-                    icon: "solar:calendar-bold-duotone",
+                    "label": "Fees Loss-Late Admission ",
+                    "link": "/school-dashboard/fees-module/reports/advanced/loss-late-admission",
+                    "icon": "solar:clock-square-bold-duotone"
                   },
-                ],
+                  {
+                    "label": "Arrear Fees Received",
+                    "link": "/school-dashboard/fees-module/reports/advanced/arrear-fees",
+                    "icon": "solar:money-bag-bold-duotone"
+                  },
+                  {
+                    "label": "Advance Fees",
+                    "link": "/school-dashboard/fees-module/reports/advanced/advance-fees",
+                    "icon": "solar:wallet-money-bold-duotone"
+                  },
+                  {
+                    "label": "Opening Advance",
+                    "link": "/school-dashboard/fees-module/reports/advanced/opening-advance",
+                    "icon": "solar:arrow-up-bold-duotone"
+                  },
+                  {
+                    "label": "Closing Advance",
+                    "link": "/school-dashboard/fees-module/reports/advanced/closing-advance",
+                    "icon": "solar:arrow-down-bold-duotone"
+                  },
+                  {
+                    "label": "Student Master",
+                    "link": "/school-dashboard/fees-module/reports/advanced/student-master",
+                    "icon": "solar:users-group-rounded-bold-duotone"
+                  }
+                ]
+              },
+              {
+                "label": "Fees Concession Report",
+                "icon": "solar:file-text-bold-duotone",
+                "children": [
+                  {
+                    "label": "Fees Concession",
+                    "link": "/school-dashboard/fees-module/reports/concession/student-wise",
+                    "icon": "solar:chart-square-bold-duotone"
+                  },
+                  {
+                    "label": "Fees Con (Date Wise)",
+                    "link": "/school-dashboard/fees-module/reports/concession/date-wise",
+                    "icon": "solar:calendar-bold-duotone"
+                  }
+                ]
               },
               {
                 label: "Audit Documentation",
                 icon: "solar:document-bold-duotone",
                 children: [
                   {
-                    label: "Fees Reconciliation (Fees wise)",
+                    label: "Fees Recon (Fees wise)",
                     link: "/school-dashboard/fees-module/reports/audit/fees-wise",
                     icon: "solar:bill-list-bold-duotone",
                   },
                   {
-                    label: "Fees Reconciliation (Headcount)",
+                    label: "Fees Recon (Headcount)",
                     link: "/school-dashboard/fees-module/reports/audit/headcount",
                     icon: "solar:users-group-rounded-bold-duotone",
                   },
                   {
-                    label: "Fees Reconciliation (Student wise)",
+                    label: "Fees Recon (Student wise)",
                     link: "/school-dashboard/fees-module/reports/audit/student-wise",
                     icon: "solar:user-bold-duotone",
                   },
                   {
-                    label: "Fees Reconciliation (Fees Module vs Finance Module)",
+                    label: "Fees Recon(Fees vs Finan)",
                     link: "/school-dashboard/fees-module/reports/audit/module-vs-finance",
                     icon: "solar:scale-bold-duotone",
                   },

@@ -233,25 +233,43 @@ import Refundreceipt from './components/DashboardMainForSchool/FeesModuleService
 import StudentProfile from './components/DashboardMainForSchool/FeesModuleServices/StudentProfile/StudentAdmissionListTable.js'
 import StudentProfileUpdate from './components/DashboardMainForSchool/FeesModuleServices/StudentProfile/UpdateAdmissionDetail/UpdateAdmissionForm.js'
 import StudentProfileView from './components/DashboardMainForSchool/FeesModuleServices/StudentProfile/ViewStudentAdmissionDetail/ViewStudentAdmissionDetails.js'
-            // =====================================Reports==============================================//
+// ===================================================Reports==========================================================================================================//
 import StudentLedger from "./components/DashboardMainForSchool/FeesModuleServices/Reports/StudentLedger/studentledger.js"
-import DailyCollectionRegistartionFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/RegistartionFees/RegistartionFees.js"
-import DailyCollectionAdmissionFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/AdmissionFees/AdmissionFees.js"
-import DailyCollectionTCFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/TCReport/TCFees.js"
-import DailyCollectionBoardRegistration from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/BoardRegistrationFees/BoardRegistrationFees.js"
-import DailyCollectionBoardExam from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/BoardExamFees/BoardExamFees.js"
+
+// ===================================================Genral Reports====================================================//
+import GenralRegistartionFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/RegistartionFees/RegistartionFees.js"
+import GenralAdmissionFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/AdmissionFees/AdmissionFees.js"
+import GenralTCFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/TCReport/TCFees.js"
+import GenralBoardRegistration from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/BoardRegistrationFees/BoardRegistrationFees.js"
+import GenralBoardExam from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/BoardExamFees/BoardExamFees.js"
+import GenralSchoolFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/SchoolFees/SchoolFees.js"
+import GenralLateFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/LateandExcessFees/LateandExcessFee.js"
+import GenralFeesReundCancelled from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/FeesRefund/FeesRefund.js";
+import GenralFeesChequeReturn from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/ChequeReturn/FeesChequeReturn.js";
+import GenralFeesReundReport from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/FeesRefund/FeesRefund.js";
+import GenralFeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/FeeStructure/FeeStructureReport.js"
+
+// ===================================================Daily Collectioon====================================================//
 import DailyCollectionDatsewiseCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/DateWiseCollection/DateWiseCollection.js"
 import DailyCollectionDatsewiseCollectionWithConcession from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/DateWiseCollectionWithConcession/DateWiseCollection.js"
 import DailyCollectionStudentwiseCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/StudentWiseCollection/StudentWiseCollection.js"
 import DailyCollectionStudentwiseCollectionWithConcesssion from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/StudentWiseCollectionWithConcession/StudentWiseCollection.js"
-import DailyCollectionSchoolFees  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/SchoolFees/SchoolFees.js"
-import DailyCollectionLateFees  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/LateandExcessFees/LateandExcessFee.js"
-import ConcessionReportDatewise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportDatewise/FeesConcessionReportDatewise.js";
-import ConcessionReportStudentwise  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportStudentwise/FeesConcessionReportStudentWise.js";
-import FeesReundReport  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRefund/FeesRefund.js";
-import FeesReundCancelled from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/FeesCancelled/FeesCancelled.js";
-import FeesChequeReturn from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/ChequeReturn/FeesChequeReturn.js"
 
+// ===================================================Concession===================================================//
+import ConcessionReportDatewise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportDatewise/FeesConcessionReportDatewise.js";
+import ConcessionReportStudentwise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportStudentwise/FeesConcessionReportStudentWise.js";
+
+
+// ===================================================Advanced Report==================================================//
+import LossOfFeeDuetoLeftstudent from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/LossofFeeDueToleftStudent/Leftfeestudent.js";
+import LossOfFeeDuetoLateAdmssion from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/LossofFeeDueTolateAdmission/LossoflateAdmission.js";
+import DefaulterFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/DefaulterFees/DefaulterFees.js";
+import ArrearFeesReceivedReport from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/ArrearFeesReceived/ArrearFeesReport.js";
+import StudentMaster from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/StudentMaster/StudentMaster.js"
+
+// ===================================================FeesRecom==================================================//
+
+import FeesReconHaedwise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/HaedWise/FeesReconHaedwise.js"
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 
@@ -280,6 +298,7 @@ import NewPassword from "./components/ForgotPassword/NewPassword.js";
 // ================================Comman Pages================================================//
 import SchoolCommanpage from "./components/CommanPage/CommanPageCardsSchool.js";
 import SchoolFeesManagementYear from "./components/CommanPage/YearPage.js";
+
 
 // const PrivateRoute = ({ allowedRoles, children }) => {
 //   const { isAuthenticated, role } = useAuth();
@@ -677,7 +696,7 @@ const AppRoutes = () => {
           path="fees-module/form/registration"
           element={
             // <PrivateRoute allowedRoles={["School"]} requiredSubscription="Fees">
-                     <PrivateRoute>
+            <PrivateRoute>
               <StudentRegisterListTable />
             </PrivateRoute>
           }
@@ -930,16 +949,16 @@ const AppRoutes = () => {
         />
 
         {/*--------------------------------------- Promotion-------------------------------- */}
-       <Route
+        <Route
           path="fees-module/admin-setting/promotion/student-promotion"
           element={<StudentPromotionTable />}
         />
-         <Route
+        <Route
           path="fees-module/admin-setting/promotion/student-promotion/PromoteStudent"
           element={<PromoteStudent />}
         />
 
-    
+
 
         {/* --------------------------------------------Fees Receipts------------------------------------------------------- */}
 
@@ -948,19 +967,19 @@ const AppRoutes = () => {
           element={<SchoolFeesReceipts />}
         />
 
-         <Route
+        <Route
           path="fees-module/fees-receipts/fees-refund"
-          element={< FeesRefund/>}
+          element={< FeesRefund />}
         />
 
-         <Route
+        <Route
           path="fees-module/fees-receipts/fees-refund/create-refund"
-          element={<CreateFeesRefund/>}
+          element={<CreateFeesRefund />}
         />
-       
-         <Route
+
+        <Route
           path="fees-module/fees-receipts/fees-refund/refund-receipt"
-          element={< Refundreceipt/>}
+          element={< Refundreceipt />}
         />
 
         <Route
@@ -971,142 +990,168 @@ const AppRoutes = () => {
           path="fees-module/fees-receipts/school-fees/fees-receipts"
           element={<FeeReceiptsSchoolFees />}
         />
-         <Route
+        <Route
           path="fees-module/fees-receipts/school-fees/fees-receipts-view"
           element={<SchoolFeesReceiptsView />}
         />
-    
-        
+
+
 
         <Route
           path="fees-module/fees-receipts/board-registration-fees"
           element={<BoardRegistrationFee />}
         />
 
-          <Route
+        <Route
           path="fees-module/fees-receipts/board-registration-fees/receipts"
-          element={<BoardRegistrationFeeReceipts/>}
+          element={<BoardRegistrationFeeReceipts />}
         />
 
-         <Route
+        <Route
           path="fees-module/fees-receipts/board-exam-fees"
           element={<BoardExamFee />}
         />
 
-          <Route
+        <Route
           path="fees-module/fees-receipts/board-exam-fees/receipts"
-          element={<BoardExamFeeReceipts/>}
+          element={<BoardExamFeeReceipts />}
         />
-        
-                {/* --------------------------------------------Reports------------------------------------------------------- */}
-     
-          <Route
+
+        {/* --------------------------------------------Reports------------------------------------------------------- */}
+
+        <Route
           path="fees-module/reports/student-ledger"
-          element={<StudentLedger/>}
-         />
+          element={<StudentLedger />}
+        />
+                {/* --------------------------------------------Genral Reports-------------------------------------- */}
+        <Route
+          path="fees-module/reports/general/school-fee"
+          element={<GenralSchoolFees />}
+        />
+        <Route
+          path="fees-module/reports/general/late-fees-excess"
+          element={<GenralLateFees/>}
+        />
+        <Route
+          path="fees-module/reports/general/registration-fees"
+          element={<GenralRegistartionFees />}
+        />
+        <Route
+          path="fees-module/reports/general/admission-fees"
+          element={<GenralAdmissionFees />}
+        />
+        <Route
+          path="fees-module/reports/general/tc-reports"
+          element={<GenralTCFees />}
+        />
+        <Route
+          path="fees-module/reports/general/board-registration"
+          element={<GenralBoardRegistration />}
+        />
+        <Route
+          path="fees-module/reports/general/board-exam"
+          element={<GenralBoardExam />}
+        />
+        <Route
+          path="fees-module/reports/general/fees-refund"
+          element={<GenralFeesReundReport />}
+        />
+        <Route
+          path="fees-module/reports/general/fees-cancelled"
+          element={<GenralFeesReundCancelled/>}
+        />
+        <Route
+          path="fees-module/reports/general/fees-cheque-return"
+          element={<GenralFeesChequeReturn/>}
+        />
+        <Route
+          path="fees-module/reports/general/fees-structure"
+          element={<GenralFeesStructure/>}
+        />
 
-           <Route
-          path="fees-module/reports/daily-collection/registration-fees"
-          element={<DailyCollectionRegistartionFees />}
-         />
+        
 
-           <Route
-          path="fees-module/reports/daily-collection/admission-fees"
-          element={<DailyCollectionAdmissionFees />}
-         />
-
-         
-           <Route
-          path="fees-module/reports/daily-collection/tc-reports"
-          element={<DailyCollectionTCFees />}
-         />
-
-            <Route
-          path="fees-module/reports/daily-collection/board-registration"
-          element={<DailyCollectionBoardRegistration />}
-         />
-
-          <Route
-          path="fees-module/reports/daily-collection/board-exam"
-          element={<DailyCollectionBoardExam />}
-         />
-          <Route
-          path="fees-module/reports/daily-collection/board-exam"
-          element={<DailyCollectionBoardExam />}
-         />
-
-            <Route
+          {/* --------------------------------------------Daily Collection-------------------------------------- */}
+        <Route
           path="fees-module/reports/daily-collection/datewise-collection"
           element={<DailyCollectionDatsewiseCollection />}
-         />
+        />
 
-          <Route
+        <Route
           path="fees-module/reports/daily-collection/datewise-collection-with-concession"
-          element={<DailyCollectionDatsewiseCollectionWithConcession/>}
-         />
-
-
-    
-            <Route
+          element={<DailyCollectionDatsewiseCollectionWithConcession />}
+        />
+        <Route
           path="fees-module/reports/daily-collection/studentwise-collection"
           element={<DailyCollectionStudentwiseCollection />}
-         />
-
-         
-            <Route
+        />
+        <Route
           path="fees-module/reports/daily-collection/studentwise-with-collection"
           element={<DailyCollectionStudentwiseCollectionWithConcesssion />}
-         />
+        />
 
-         
-            <Route
-          path="fees-module/reports/daily-collection/school-fee"
-          element={<DailyCollectionSchoolFees />}
-         />
-               <Route
-          path="fees-module/reports/daily-collection/late-fees-excess"
-          element={<DailyCollectionLateFees />}
-         />
 
+
+     {/* --------------------------------------------Concession Reports-------------------------------------- */}
 
         <Route
           path="fees-module/reports/concession/date-wise"
           element={<ConcessionReportDatewise />}
-         />
+        />
 
-           <Route
+        <Route
           path="fees-module/reports/concession/student-wise"
           element={<ConcessionReportStudentwise />}
-         />
-       
-         <Route
-          path="fees-module/reports/daily-collection/fees-refund"
-          element={<FeesReundReport />}
-         />
-        <Route
-          path="fees-module/reports/daily-collection/fees-cancelled"
-          element={<FeesReundCancelled />}
-         />
-         <Route
-          path="fees-module/reports/daily-collection/fees-cheque-return"
-          element={<FeesChequeReturn />}
-         />
+        />
 
-      {/* --------------------------------------------Profile------------------------------------------------------- */}
-         
-          <Route
+
+       {/* --------------------------------------------Advanced Reports-------------------------------------- */}
+        <Route
+          path="fees-module/reports/advanced/loss-left-students"
+          element={<LossOfFeeDuetoLeftstudent />}
+        />
+        <Route
+          path="fees-module/reports/advanced/loss-late-admission"
+          element={<LossOfFeeDuetoLateAdmssion />}
+        />
+
+        <Route
+          path="fees-module/reports/advanced/defaulter-fees"
+          element={<DefaulterFees />}
+        />
+        <Route
+          path="fees-module/reports/advanced/arrear-fees"
+          element={<ArrearFeesReceivedReport />}
+        />
+        <Route
+          path="fees-module/reports/advanced/student-master"
+          element={<StudentMaster />}
+        />
+       {/* --------------------------------------------FeesRecon-------------------------------------- */}
+
+       <Route
+          path="fees-module/reports/audit/headcount"
+          element={<FeesReconHaedwise />}
+        />
+
+
+
+
+        {/* --------------------------------------------Profile------------------------------------------------------- */}
+
+        <Route
           path="fees-module/student-profile"
           element={<StudentProfile />}
-         />
-          <Route
+        />
+        <Route
           path="fees-module/student-profile/update-admission-form"
-          element={<StudentProfileUpdate/>}
-         />
-          <Route
+          element={<StudentProfileUpdate />}
+        />
+        <Route
           path="fees-module/student-profile/view-admission-form"
           element={<StudentProfileView />}
-         />
-         
+        />
+
       </Route>
 
       {/* =========================================Seller Routes============================================= */}

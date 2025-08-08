@@ -513,7 +513,7 @@ const UpdateAdmissionForm = () => {
                             className="form-control"
                              accept=".jpg,.jpeg,.pdf"
                             onChange={handleChange}
-                            required={!student?.previousSchoolResult}
+                           
                           />
                           {typeof formData.previousSchoolResult === 'string' && (
                             <div className="text-muted small mt-1">
@@ -542,7 +542,7 @@ const UpdateAdmissionForm = () => {
                             className="form-control"
                             accept=".jpg,.jpeg,.pdf"
                             onChange={handleChange}
-                            required={!student?.tcCertificate}
+                          
                           />
                           {typeof formData.tcCertificate === 'string' && (
                             <div className="text-muted small mt-1">

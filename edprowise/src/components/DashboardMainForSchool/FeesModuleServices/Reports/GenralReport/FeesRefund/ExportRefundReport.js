@@ -2,7 +2,7 @@ import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { generateHeader, generateFooter } from '../../PdfUtlisReport';
+import { generateHeader, generateFooter } from '../../../PdfUtlisReport';
 
 export const exportToExcel = async (
   refundDataArray,
