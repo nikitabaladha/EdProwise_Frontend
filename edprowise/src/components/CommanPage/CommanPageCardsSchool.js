@@ -35,6 +35,15 @@ const DashboardInformationCards = () => {
     }
   };
 
+   const navigateToPayrollModule = (event) => {
+    event.preventDefault();
+    localStorage.setItem("sidebartab", "PayrollModule");
+    if (role === "School" || role === "Employee") {
+      navigate("/school/payroll-academic-year");
+    } else {
+      navigate("/school/go-to-dashboard");
+    }
+  };
 
   const cardData = [
     {
@@ -49,8 +58,8 @@ const DashboardInformationCards = () => {
     },
     {
       icon: <IoCubeOutline />,
-      label: "Payroll",
-      onClick: () => {},
+      label: "Payroll Module",
+      onClick: navigateToPayrollModule,
     },
     {
       icon: <IoCubeOutline />,

@@ -5,10 +5,11 @@ import SellerDashboardHeader from "./SellerDashboardHeader";
 
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
-
+import { SchoolPayrollSettingsProvider } from "../DashboardMainForSchool/PayrollModule/AdminSettings/ProvidentFoundSetting/SchoolPayrollSettingsContext";
 const SellerDashboardMain = () => {
   return (
     <>
+    <SchoolPayrollSettingsProvider>
       <div className="wrapper">
         <SellerDashboardHeader />
         <Sidebar />
@@ -19,6 +20,7 @@ const SellerDashboardMain = () => {
 
         <Footer />
       </div>
+      </SchoolPayrollSettingsProvider>
     </>
   );
 };

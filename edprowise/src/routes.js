@@ -295,9 +295,40 @@ import PayToEdprowiseForSeller from "./components/DashboardMainForSeller/Procure
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword.js";
 import NewPassword from "./components/ForgotPassword/NewPassword.js";
 
+// ===============================Payroll Module ===========================
+
 // ================================Comman Pages================================================//
 import SchoolCommanpage from "./components/CommanPage/CommanPageCardsSchool.js";
 import SchoolFeesManagementYear from "./components/CommanPage/YearPage.js";
+import SchoolPayrollAcademicYear from "./components/CommanPage/PayrollYearPage.js"
+import EmployeeRegistrationFormList from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationFormList.jsx";
+import AddEmployeeRegistrationForm from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/AddEmployeeRegistrationForm.jsx";
+import UpdateEmployeeRegistration from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/UpdateEmployeeRegistration.jsx";
+import ViewEmployeeRegistrationFormDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/ViewEmployeeRegistrationFormDetails.jsx";
+import EmploerUpdateEmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/UpdateDetails/EmploerUpdateEmployeeDetails.js";
+import FreezeITDeclaration from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/FreezeITDeclaration/FreezeITDeclaration.js";
+import SchoolDefineCtcComponentsList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCDefineComponents/SchoolDefineCtcComponentsList.jsx";
+import DefinePayrollGrade from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/Grade/DefinePayrollGrade.js";
+import DefineEmployeeCategory from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/DefineCategory/DefineEmployeeCategory.js";
+import AnnualLeaveAdminSetting from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/AnnualLeaveUpdate/AnnualLeaveAdminSetting.jsx";
+import CarryForwardSetting from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/AnnualLeaveUpdate/CarryForwordSetting.jsx";
+import EmployeeOvertimeAllowanceRate from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/OvertimeAllowanceRate/EmployeeOvertimeAllowanceRate.jsx";
+import EmployeeIdPrefixTable from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdPrefixTable.jsx";
+import EmployeeIdSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdSettings.js";
+import UpdateEmployeeIdSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/UpdateEmployeeIdSettings.jsx";
+import DefineEmployeeJobDesignation from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/JobDesignation/DefineEmployeeJobDesignation.js";
+import PayrollSMTPSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/PayrollSMTPEmailSettings/PayrollSMTPSettings.jsx";
+import SchoolHolidayCalendar from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/SchoolHolidayCalendar/SchoolHolidayCalendar.jsx";
+import DefineAcademicYear from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/DefineAcadmicYear/DefineAcadmicYear.jsx";
+import ProvidentFundSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/ProvidentFoundSetting/ProvidentFundSettings.jsx";
+import EmployeeDashboardMain from "./components/DashboardMainForEmployee/EmployeeDashboardMain.js";
+import UpdatePayrollEmployeeDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeDetails/UpdatePayrollEmployeeDetails.jsx";
+import EmployeeProvidentFund from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ProvidentFund/EmployeeProvidentFund.jsx";
+import EmployeeItDeclaration from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/EmployeeItDeclaration.js";
+import EmployeeRentDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/EmployeeRentDetails.js";
+import EmployeeMarkAttendance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/MarkAttendance/EmployeeMarkAttendance.jsx";
+import EmployeeLeaveDetailsAndApply from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/ApplyForLeave/EmployeeLeaveDetailsAndApply.jsx";
+import EmployeeAttendanceReport from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/AttendanceReport/EmployeeAttendanceReport.jsx";
 
 
 // const PrivateRoute = ({ allowedRoles, children }) => {
@@ -389,7 +420,7 @@ const AppRoutes = () => {
       <Route
         path="/school/go-to-dashboard"
         element={
-          <PrivateRoute allowedRoles={["School"]}>
+          <PrivateRoute allowedRoles={["School", "Employee"]}>
             <SchoolCommanpage />
           </PrivateRoute>
         }
@@ -399,6 +430,15 @@ const AppRoutes = () => {
         element={
           <PrivateRoute allowedRoles={["School"]}>
             <SchoolFeesManagementYear />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/school/payroll-academic-year"
+        element={
+          <PrivateRoute allowedRoles={["School", "Employee"]}>
+            <SchoolPayrollAcademicYear />
           </PrivateRoute>
         }
       />
@@ -695,12 +735,12 @@ const AppRoutes = () => {
         <Route
           path="fees-module/form/registration"
           element={
-            // <PrivateRoute allowedRoles={["School"]} requiredSubscription="Fees">
             <PrivateRoute>
               <StudentRegisterListTable />
             </PrivateRoute>
           }
         />
+
         <Route
           path="fees-module/form/registration-form"
           element={<StudentRegistrationForm />}
@@ -1023,14 +1063,14 @@ const AppRoutes = () => {
           path="fees-module/reports/student-ledger"
           element={<StudentLedger />}
         />
-                {/* --------------------------------------------Genral Reports-------------------------------------- */}
+        {/* --------------------------------------------Genral Reports-------------------------------------- */}
         <Route
           path="fees-module/reports/general/school-fee"
           element={<GenralSchoolFees />}
         />
         <Route
           path="fees-module/reports/general/late-fees-excess"
-          element={<GenralLateFees/>}
+          element={<GenralLateFees />}
         />
         <Route
           path="fees-module/reports/general/registration-fees"
@@ -1058,20 +1098,20 @@ const AppRoutes = () => {
         />
         <Route
           path="fees-module/reports/general/fees-cancelled"
-          element={<GenralFeesReundCancelled/>}
+          element={<GenralFeesReundCancelled />}
         />
         <Route
           path="fees-module/reports/general/fees-cheque-return"
-          element={<GenralFeesChequeReturn/>}
+          element={<GenralFeesChequeReturn />}
         />
         <Route
           path="fees-module/reports/general/fees-structure"
-          element={<GenralFeesStructure/>}
+          element={<GenralFeesStructure />}
         />
 
-        
 
-          {/* --------------------------------------------Daily Collection-------------------------------------- */}
+
+        {/* --------------------------------------------Daily Collection-------------------------------------- */}
         <Route
           path="fees-module/reports/daily-collection/datewise-collection"
           element={<DailyCollectionDatsewiseCollection />}
@@ -1092,7 +1132,7 @@ const AppRoutes = () => {
 
 
 
-     {/* --------------------------------------------Concession Reports-------------------------------------- */}
+        {/* --------------------------------------------Concession Reports-------------------------------------- */}
 
         <Route
           path="fees-module/reports/concession/date-wise"
@@ -1105,7 +1145,7 @@ const AppRoutes = () => {
         />
 
 
-       {/* --------------------------------------------Advanced Reports-------------------------------------- */}
+        {/* --------------------------------------------Advanced Reports-------------------------------------- */}
         <Route
           path="fees-module/reports/advanced/loss-left-students"
           element={<LossOfFeeDuetoLeftstudent />}
@@ -1127,9 +1167,9 @@ const AppRoutes = () => {
           path="fees-module/reports/advanced/student-master"
           element={<StudentMaster />}
         />
-       {/* --------------------------------------------FeesRecon-------------------------------------- */}
+        {/* --------------------------------------------FeesRecon-------------------------------------- */}
 
-       <Route
+        <Route
           path="fees-module/reports/audit/headcount"
           element={<FeesReconHaedwise />}
         />
@@ -1152,6 +1192,112 @@ const AppRoutes = () => {
           element={<StudentProfileView />}
         />
 
+
+        {/* ===================== Payroll Module ======================================== */}
+        {/* ------------------------ Employer ---------------------- */}
+        <Route
+          path="payroll-module/employer/employee-registration"
+          element={
+            <PrivateRoute>
+              <EmployeeRegistrationFormList />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="payroll-module/employer/employee-registration/new-employee-registration"
+          element={<AddEmployeeRegistrationForm />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-registration/update-employee-registration"
+          element={<UpdateEmployeeRegistration />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-registration/view-employee-registration"
+          element={<ViewEmployeeRegistrationFormDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/update-employee-details"
+          element={<EmploerUpdateEmployeeDetails />}
+        />
+
+        {/* ------------------------ Admin Setting ---------------------- */}
+
+        <Route
+          path="payroll-module/admin-setting/freeze-it-declaration"
+          element={<FreezeITDeclaration />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/ctc-components"
+          element={<SchoolDefineCtcComponentsList />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-grade"
+          element={<DefinePayrollGrade />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-category"
+          element={<DefineEmployeeCategory />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/leave-setting/annual-leave-update"
+          element={<AnnualLeaveAdminSetting />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/leave-setting/carry-forword-setting"
+          element={<CarryForwardSetting />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/overtime-allowance-rate"
+          element={<EmployeeOvertimeAllowanceRate />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/employee-id-setting"
+          element={<EmployeeIdPrefixTable />}
+        />
+        <Route
+          path="payroll-module/admin-setting/employee-id-setting/add-setting"
+          element={<EmployeeIdSettings />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/employee-id-setting/edit-setting"
+          element={<UpdateEmployeeIdSettings />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/define-job-designation"
+          element={<DefineEmployeeJobDesignation />}
+        />
+        <Route
+          path="payroll-module/admin-setting/payroll-smtp-setting"
+          element={<PayrollSMTPSettings />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/school-holiday-calendar"
+          element={<SchoolHolidayCalendar />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/academic-year-setting"
+          element={<DefineAcademicYear />}
+        />
+
+        <Route
+          path="payroll-module/admin-setting/provident-fund-setting"
+          element={<ProvidentFundSettings />}
+        />
       </Route>
 
       {/* =========================================Seller Routes============================================= */}
@@ -1226,6 +1372,110 @@ const AppRoutes = () => {
         />
       </Route>
 
+      {/* ==================================== Employee Routes ==================================== */}
+      <Route
+        path="/employee-dashboard"
+        element={
+          <PrivateRoute allowedRoles={["Employee"]}>
+            <DashboardLayout>
+              <EmployeeDashboardMain />
+            </DashboardLayout>
+          </PrivateRoute>
+        }
+      >
+        {/*Employee Dashboard Route Payroll */}
+        <Route path="payroll-module/employee/update-details" element={< UpdatePayrollEmployeeDetails />} />
+
+        <Route
+          path="payroll-module/employee/provident-fund"
+          element={<EmployeeProvidentFund />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/attendance/mark-attendance"
+          element={<EmployeeMarkAttendance />}
+        />
+        <Route
+          path="payroll-module/employee-services/attendance/apply-for-leave"
+          element={<EmployeeLeaveDetailsAndApply />}
+        />
+        <Route
+          path="payroll-module/employee-services/attendance/my-attendance-report"
+          element={<EmployeeAttendanceReport />}
+        />
+
+        {/* <Route
+          path="payroll-module/employee-services/overtime-allowance"
+          element={<OvertimeAllowanceList />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/overtime-allowance/apply-overtime-allowance"
+          element={<ApplyOvertimeAllowance />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/overtime-allowance/view-overtime-allowance"
+          element={<ViewOvertimeAllowance />}
+        /> */}
+
+        {/* <Route
+          path="payroll-module/employee-services/overtime-allowance/update-overtime-allowance"
+          element={<UpdateOvertimeAllowance />}
+        /> */}
+
+        <Route
+          path="payroll-module/employee/income-tax/it-declaration"
+          element={<EmployeeItDeclaration />}
+        />
+ 
+        <Route
+          path="payroll-module/employee-services/income-tax/it-declaration/rent-details"
+          element={<EmployeeRentDetails />}
+        />
+
+        {/* <Route
+          path="payroll-module/employee-services/income-tax/previous-employment-income"
+          element={<EmployeePreviousEmploymentIncome />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/income-tax/income-tax-computation-sheet"
+          element={<EmployeeIncomeTaxComputationSheet />}
+        /> */}
+
+        {/* <Route
+          path="payroll-module/employee-services/income-tax/it-declaration/lta-details"
+          element={<EmployeeLTADetails />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/income-tax/it-declaration/lta-details/add-lta"
+          element={<AddLtaExamptionDetails />}
+        />
+
+         <Route
+          path="payroll-module/employee-services/income-tax/it-declaration/telephone-allowance-details"
+          element={<TelephoneAllowanceDetails />}
+        /> */}
+
+        {/* <Route
+          path="payroll-module/employee-services/income-tax/it-declaration/telephone-allowance-details/add-telephone-allowance"
+          element={<AddTelephoneAllowanceDetails />}
+        />
+
+         <Route
+          path="payroll-module/employee-services/income-tax/it-declaration/internet-allowance-details"
+          element={<InternetAllowanceDetails />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/income-tax/it-declaration/internet-allowance-details/add-internet-allowance"
+          element={<AddInternetAllowanceDetails />}
+        /> */}
+
+
+      </Route>
       {/* Website Routes */}
 
       <Route path="/" element={<>

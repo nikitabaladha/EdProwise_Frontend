@@ -141,6 +141,15 @@ Version:        1.0.0
 /* Nikita Css Ends */
 
 /* Umesh CSS Starts */
+.declaration-form-btn{
+  width: 100%;
+  background-color: black;
+}
+@media (min-width:1200px) {
+  .declaration-form-btn{
+    background: black;
+  }
+}
 
 @media (max-width: 991px) {
   .hero-section-img-small {

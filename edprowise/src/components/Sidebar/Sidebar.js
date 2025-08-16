@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import { Link, useLocation } from "react-router-dom";
-
+import getAPI from '../../api/getAPI';
+import { usePayrollSettings } from "../DashboardMainForSchool/PayrollModule/AdminSettings/ProvidentFoundSetting/SchoolPayrollSettingsContext";
 const Sidebar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
@@ -9,6 +10,49 @@ const Sidebar = () => {
   const userRole = userDetails?.role || "Guest";
   const email = userDetails?.email;
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [academicYear, setAcademicYear] = useState("");
+  // Get both settings and setter from context
+  const { pfEsiSettings, setPfEsiSettings } = usePayrollSettings();
+
+  useEffect(() => {
+    const fetchPfEsiSetting = async () => {
+      try {
+        const schoolId = userDetails?.schoolId;
+        const academicYear = localStorage.getItem("selectedAcademicYear");
+        setAcademicYear(academicYear);
+        if (userRole === "School" || userRole === "Employee") {
+          const res = await getAPI(`/get-pf-esi-settings/${schoolId}?academicYear=${academicYear}`, {}, true);
+          console.log("sidebar res", res);
+
+          if (!res.hasError) {
+            setPfEsiSettings({
+              pfEnable: res.data.data?.pfEnabled,
+              esiEnable: res.data.data?.esiEnabled,
+            });
+          } else {
+            setPfEsiSettings({
+              pfEnable: false,
+              esiEnable: false,
+            });
+          }
+        }
+      } catch (error) {
+        console.warn("PF/ESI settings fetch failed:", error.message);
+        setPfEsiSettings({
+          pfEnable: false,
+          esiEnable: false,
+        });
+      }
+    };
+
+    fetchPfEsiSetting();
+  }, [userDetails?.schoolId, userRole, academicYear, setPfEsiSettings]);
+
+  useEffect(() => {
+    console.log("pfEnable", pfEsiSettings.pfEnable);
+    console.log("esiEnable", pfEsiSettings.esiEnable);
+  }, [pfEsiSettings]);
+
   useEffect(() => {
     if (userRole === "Admin" || userRole === "Seller") {
       localStorage.removeItem("sidebartab");
@@ -265,7 +309,7 @@ const Sidebar = () => {
                 icon: "solar:document-text-bold-duotone",
 
               },
-             
+
               {
                 "label": "Daily Collection Report",
                 "icon": "solar:calendar-bold-duotone",
@@ -292,7 +336,7 @@ const Sidebar = () => {
                   }
                 ]
               },
-               {
+              {
                 label: "General",
                 icon: "solar:settings-bold-duotone",
                 children: [
@@ -538,6 +582,241 @@ const Sidebar = () => {
 
         ],
       },
+
+      {
+        id: "payrollModule",
+        label: "Payroll Module",
+        icon: "solar:file-text-bold",
+        children: [
+          {
+            id: "employer",
+            label: "Employer",
+            icon: "bx-receipt",
+            children: [
+              {
+                label: "Employee Registration",
+                link: "/school-dashboard/payroll-module/employer/employee-registration",
+                icon: "bx-receipt",
+              },
+
+              {
+                label: "Employee Update",
+                link: "/school-dashboard/payroll-module/employer/update-employee-details",
+                icon: "solar:users-group-rounded-bold-duotone",
+              },
+
+              {
+                label: "CTC Update",
+                link: "/school-dashboard/fees-module/form/trasfer-certificate-list",
+                icon: "solar:users-group-rounded-bold-duotone",
+              },
+              {
+                label: "CTC Master",
+                link: "/school-dashboard/fees-module/form/concession-table",
+                icon: "solar:users-group-rounded-bold-duotone",
+              },
+              {
+                id: "payroll",
+                label: "Payroll",
+                children: [
+                  {
+                    label: "Salary Payout",
+                    link: "/school-dashboard/payroll-module/employer/process-payroll",
+                  },
+
+                  ...(pfEsiSettings.pfEnable
+                    ? [{ label: "PF Register", link: "/school-dashboard/payroll-module/employer/payroll/pf-register", }]
+                    : []),
+
+                  ...(pfEsiSettings.esiEnable
+                    ? [{ label: "ESI Register", link: "/school-dashboard/payroll-module/employer/payroll/esi-register", }]
+                    : []),
+
+                ],
+              },
+              {
+                id: "salaryIncrement",
+                label: "Salary Increment",
+                children: [
+                  {
+                    label: "Bulk Employee Increment",
+                    link: "/school-dashboard/payroll-module/employer/salary-increment/bulk-employee-increment",
+
+                  },
+                  {
+                    label: "Single Employee Increment",
+                    link: "/school-dashboard/payroll-module/employer/salary-increment/single-employee-increment",
+                  },
+                ],
+              },
+              {
+                id: "attendance",
+                label: "Attendance",
+                children: [
+                  {
+                    label: "Leave Approval",
+                    link: "/school-dashboard/payroll-module/employer/attendance/leave-approval",
+                  },
+                  {
+                    label: "Attendance Report",
+                    link: "/school-dashboard/payroll-module/employer/attendance/attendance-report",
+                  },
+                  {
+                    label: "Leave Records",
+                    link: "/school-dashboard/payroll-module/employer/attendance/leave-records",
+                  },
+
+                ],
+              },
+              {
+                id: "overtimeAllowance",
+                label: "Overtime Allowance",
+                children: [
+                  {
+                    label: "Overtime Allowance Approval",
+                    link: "/school-dashboard/payroll-module/employer/overtime-allowance",
+                  },
+                  {
+                    label: "Overtime Allowance Report",
+                    link: "/school-dashboard/payroll-module/employer/overtime-allowance/overtime-allowance-report",
+                  },
+                ],
+              },
+              {
+                id: "incomeTax",
+                label: "Income Tax",
+                // icon: "bx-cog",
+                children: [
+                  {
+                    label: "Supporting Submitted for Tax",
+                    link: "/school-dashboard/payroll-module/employer/income-tax/supporting-tax-submitted",
+                  },
+
+                  {
+                    label: "Form 16 (Upload)",
+                    // link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
+                  },
+
+                  {
+                    label: "Generate Appointment",
+                    // link: "/admin-dashboard/payroll-module/employer/generate-appointment-ctc-letter",
+                  },
+
+                ],
+              },
+              {
+                id: "loanToEmployees",
+                label: "Loan To Employees",
+                // icon: "bx-cog",
+                children: [
+                  {
+                    label: "Pay Loan",
+                    // link: "/admin-dashboard/payroll-module/employer/loan-to-employees/pay-loan",
+                  },
+                  {
+                    label: "Loan Statement",
+                    // link: "/admin-dashboard/payroll-module/employer/loan-to-employees/loan-statement",
+                  },
+                ],
+              },
+              {
+                label: "Performance Tracking",
+                link: "/admin-dashboard/payroll-module/employer/performance-tracking",
+              },
+              {
+                label: "Awards and Achievement",
+                link: "/admin-dashboard/payroll-module/employer/awards-and-achievement",
+              },
+              {
+                id: "resignation",
+                label: "Resignation",
+                children: [
+                  {
+                    label: "Resignation Approval",
+                    link: "/admin-dashboard/payroll-module/employer/resign/resignation",
+                  },
+                ],
+              },
+
+              {
+                label: "Promotion Nomination",
+                link: "/admin-dashboard/payroll-module/employer/promotion-nomination",
+              },
+            ],
+          },
+          {
+            id: "adminSetting",
+            label: "Admin Setting",
+            icon: "solar:book-bookmark-bold-duotone",
+            children: [
+              {
+                label: "Freeze IT Declaration",
+                // link: "/admin-dashboard/payroll-module/admin-setting/freeze-it-declaration",
+              },
+              {
+                id: "leaveSettings",
+                label: "Leave Setting",
+                // icon: "bx-cog",
+                children: [
+                  {
+                    label: "Annual Leave Update",
+                    link: "/school-dashboard/payroll-module/admin-setting/leave-setting/annual-leave-update",
+                  },
+                  {
+                    label: "Carry Forword Setting",
+                    link: "/school-dashboard/payroll-module/admin-setting/leave-setting/carry-forword-setting",
+                  },
+                ],
+              },
+
+              {
+                label: "Overtime Allowance Rate",
+                link: "/school-dashboard/payroll-module/admin-setting/overtime-allowance-rate",
+              },
+              {
+                label: "CTC Components",
+                link: "/school-dashboard/payroll-module/admin-setting/ctc-components",
+              },
+              {
+                label: "Grade",
+                link: "/school-dashboard/payroll-module/admin-setting/define-grade"
+              },
+              {
+                label: "Job Designation",
+                link: "/school-dashboard/payroll-module/admin-setting/define-job-designation"
+              },
+              {
+                label: "Category",
+                link: "/school-dashboard/payroll-module/admin-setting/define-category"
+              },
+              {
+                label: "Employee Id",
+                link: "/school-dashboard/payroll-module/admin-setting/employee-id-setting",
+              },
+              {
+                label: "Holiday Calendar",
+                link: "/school-dashboard/payroll-module/admin-setting/school-holiday-calendar",
+              },
+              {
+                label: "SMTP Email Setting",
+                link: "/school-dashboard/payroll-module/admin-setting/payroll-smtp-setting",
+              },
+              {
+                label: "Academic Year",
+                link: "/school-dashboard/payroll-module/admin-setting/academic-year-setting",
+              },
+              {
+                label: "PF & ESI Setting",
+                link: "/school-dashboard/payroll-module/admin-setting/provident-fund-setting",
+              },
+              {
+                label: "School Details",
+                // link: "payroll-module/admin-setting/payroll-smtp-setting"
+              },
+            ],
+          },
+        ],
+      },
     ],
     Seller: [
       {
@@ -569,6 +848,138 @@ const Sidebar = () => {
         ],
       },
     ],
+
+     Employee: [
+      {
+        id: "payrollModule",
+        label: "Payroll Module",
+        icon: "solar:wallet-money-bold",
+        children: [
+          {
+            id: "employeeSelfService",
+            label: "Employee Self Service",
+            icon: "solar:book-bookmark-bold-duotone",
+            children: [
+              {
+                label: "Update Details",
+                link: "/employee-dashboard/payroll-module/employee/update-details",
+              },
+              ...(pfEsiSettings.pfEnable
+                ? [{
+                  label: "Provident Fund",
+                  link: "/employee-dashboard/payroll-module/employee/provident-fund",
+                }]
+                : []),
+              // {
+              //   label: "Provident Fund",
+              //   link: "/employee-dashboard/payroll-module/employee-services/provident-fund",
+              // },
+              {
+                label: "Salary Slip",
+                // link: "/admin-dashboard/payroll-module/employee-services/salary-slip",
+              },
+              {
+                id: "incomeTax",
+                label: "Income Tax",
+                // icon: "bx-cog",
+                children: [
+                  {
+                    label: "IT Declaration",
+                    link: "/employee-dashboard/payroll-module/employee/income-tax/it-declaration",
+                  },
+                  {
+                    label: "Income Tax Computation Sheet",
+                    link: "/employee-dashboard/payroll-module/employee/income-tax/income-tax-computation-sheet",
+                  },
+                  {
+                    label: "Form 16",
+                    // link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
+                  },
+                  {
+                    label: "Previous Employment Income",
+                    link: "/employee-dashboard/payroll-module/employee/income-tax/previous-employment-income",
+                  },
+                ],
+              },
+
+              {
+                id: "attendance",
+                label: "Attendance",
+                children: [
+                  {
+                    label: "Mark Attendance",
+                    link: "/employee-dashboard/payroll-module/employee/attendance/mark-attendance",
+                  },
+                  {
+                    label: "Apply for Leave",
+                    link: "/employee-dashboard/payroll-module/employee/attendance/apply-for-leave",
+                  },
+                  {
+                    label: "My Attendance Report",
+                    link: "/employee-dashboard/payroll-module/employee/attendance/my-attendance-report",
+                  },
+                ],
+              },
+
+              {
+                label: "Overtime Allowance",
+                link: "/employee-dashboard/payroll-module/employee/overtime-allowance",
+              },
+
+              {
+                label: "Request for Loan",
+                // link: "/admin-dashboard/payroll-module/employee-services/request-for-loan",
+              },
+              {
+                label: "My Loan Statement",
+                // link: "/admin-dashboard/payroll-module/employee-services/loan-summary",
+              },
+
+              {
+                label: "My Attendance Report",
+                // link: "/admin-dashboard/payroll-module/employee-services/my-attendance-report",
+              },
+              {
+                label: "Apply for Leave",
+                // link: "/admin-dashboard/payroll-module/employee-services/apply-for-leave",
+              },
+              {
+                id: "exit",
+                label: "Exit",
+                // icon: "bx-cog",
+                children: [
+                  {
+                    label: "Employee Resignation",
+                    // link: "/admin-dashboard/payroll-module/employee-services/exit/employee-resignation-form",
+                  },
+                  {
+                    label: "Exit Interview",
+                    // link: "/admin-dashboard/payroll-module/employee-services/exit/exit-interview",
+                  },
+                  {
+                    label: "Relieving Letter",
+                    // link: "/admin-dashboard/payroll-module/employee-services/exit/relieving-and-experience-letter",
+                  },
+                ],
+              },
+              {
+                label: "Letter & Documents",
+                // link: "/admin-dashboard/payroll-module/employee-services/letter-documents",
+              },
+              {
+                label: "Awards & Achievement",
+                // link: "/admin-dashboard/payroll-module/employee-services/award-achievement",
+              },
+              {
+                label: "Promotion Nomination",
+                // link: "/admin-dashboard/payroll-module/employee-services/promotion-nomination",
+              },
+            ],
+          },
+
+        ],
+      },
+    ],
     Guest: [
       { id: "login", label: "Login", icon: "solar:login-bold", link: "/login" },
     ],
@@ -583,6 +994,8 @@ const Sidebar = () => {
     currentMenu = currentMenu.filter(item => item.id === "procurementServices");
   } else if (sidebarTab === "FeesModule") {
     currentMenu = currentMenu.filter(item => item.id === "feesmodule");
+  } else if (sidebarTab === "PayrollModule") {
+    currentMenu = currentMenu.filter(item => item.id === "payrollmodule");
   }
 
   const getActivePaths = () => {
@@ -632,85 +1045,15 @@ const Sidebar = () => {
     });
   };
 
-  // const renderMenuItems = (items, level = 0) =>
-  //   items.map((item) => {
-  //     const isActive = item.link ? isPathActive(item.link) : false;
-  //     const hasChildren = item.children && item.children.length > 0;
-  //     const isExpanded = hasChildren && hasActiveChild(item.children);
-  //     const collapseId = `sidebar-${item.id || item.label.replace(/\s+/g, "-")}`;
-
-  //     if (hasChildren) {
-  //       return (
-  //         <li className="nav-item" key={item.id || item.label}>
-  //           <a
-  //             className="nav-link "
-  //             href={`#${collapseId}`}
-  //             data-bs-toggle="collapse"
-  //             role="button"
-  //             aria-expanded={isExpanded}
-  //             aria-controls={collapseId}
-  //             style={{
-  //               justifyContent: isCollapsed ? 'center' : 'flex-start',
-  //               paddingLeft: isCollapsed ? '0' : level > 0 ? '1rem' : '',
-  //               paddingRight: isCollapsed ? '0' : ''
-  //             }}
-  //           >
-  //             <span className="nav-icon">
-  //               <Icon icon={item.icon} />
-  //             </span>
-  //             {!isCollapsed && (
-  //               <>
-  //                 <span className="nav-text">{item.label}</span>
-  //                 <span className="nav-arrow ms-auto">
-  //                   <Icon 
-  //                     icon={isExpanded ? "bi:chevron-down" : "bi:chevron-right"} 
-  //                     width="12" 
-  //                   />
-  //                 </span>
-  //               </>
-  //             )}
-  //           </a>
-  //           <div className={`collapse ${isExpanded ? "show" : ""}`} id={collapseId}>
-  //             <ul className={`nav flex-column ${level > 0 ? 'ms-3' : ''}`}>
-  //               {renderMenuItems(item.children, level + 1)}
-  //             </ul>
-  //           </div>
-  //         </li>
-  //       );
-  //     } else {
-  //       return (
-  //         <li className="nav-item" key={item.id || item.label}>
-  //           <Link 
-  //             className={`nav-link ${isActive ? "active" : ""}`}
-  //             to={item.link}
-  //             style={{
-  //               justifyContent: isCollapsed ? 'center' : 'flex-start',
-  //               paddingLeft: isCollapsed ? '0' : level > 0 ? '1rem' : '',
-  //               paddingRight: isCollapsed ? '0' : ''
-  //             }}
-  //           >
-  //             <span className="nav-icon">
-  //               <Icon icon={item.icon} />
-  //             </span>
-  //             {!isCollapsed && (
-  //               <>
-  //                 <span className="nav-text">{item.label}</span>
-  //                 <span style={{ width: '16px' }}></span>
-  //               </>
-  //             )}
-  //           </Link>
-  //         </li>
-  //       );
-  //     }
-  //   });
-
+  
   const renderMenuItems = (items, level = 0) =>
     items.map((item) => {
       // Only apply the sidebarTab filtering for School role
-      if (userRole === "School" && (sidebarTab === "ProcurementService" || sidebarTab === "FeesModule") && level === 0) {
+      if (userRole === "School" && (sidebarTab === "ProcurementService" || sidebarTab === "FeesModule" || sidebarTab === "PayrollModule") && level === 0) {
         if (
           (sidebarTab === "ProcurementService" && item.id === "procurementServices" && item.children) ||
-          (sidebarTab === "FeesModule" && item.id === "feesmodule" && item.children)
+          (sidebarTab === "FeesModule" && item.id === "feesmodule" && item.children) ||
+          (sidebarTab === "PayrollModule" && item.id === "payrollModule" && item.children)
         ) {
           return (
             <React.Fragment key={item.id || item.label}>

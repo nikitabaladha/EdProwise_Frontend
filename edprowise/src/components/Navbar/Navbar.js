@@ -6,7 +6,6 @@ import Topbar from "./Topbar";
 
 const menuData = [
   { name: "Home", link: "/", subMenu: [] },
-
   {
     name: "Services",
     subMenu: [
@@ -132,6 +131,10 @@ const Header = () => {
             : "/admin-dashboard";
         break;
 
+      case "Employee":
+        route = "/employee-dashboard/payroll-module/employee/update-details";
+        break; 
+ 
       case "Auditor":
         route = "/auditor-dashboard";
         break;

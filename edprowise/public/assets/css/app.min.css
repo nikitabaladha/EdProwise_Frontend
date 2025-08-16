@@ -3,6 +3,57 @@
 
 /*By Nikita: Custom css Start*/
 
+.box-border {
+  border: 2px solid black;
+}
+
+.salary-slip-box {
+  border: 4px solid #04d3d3;
+}
+
+.payroll-box-line {
+  border-top: 2px solid black;
+}
+
+.payroll-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.payroll-table-header {
+  font-size: 1.3rem;
+  background: #a8fffe;
+}
+
+.payroll-input-border {
+  border-color: #f2be00 !important;
+}
+
+.payroll-input-border .css-13cymwt-control{
+  border-color: #f2be00 !important;
+}
+
+.payroll-input-border .css-t3ipsp-control:hover{
+  border-color: #f2be00 !important;
+}
+
+.payroll-input-border .css-t3ipsp-control{
+  border-color: #f2be00 !important;
+  box-shadow: none !important;
+}
+
+.payroll-box-text {
+  font-size: 1.3rem;
+}
+
+.payroll-table-body {
+  font-size: 1.2rem !important;
+}
+
+.it-declaration-section-bg {
+  background: #e7e6e6 !important;
+}
+
 /* Dropdown for search */
 
 .search-results-dropdown {

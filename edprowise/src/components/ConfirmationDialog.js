@@ -170,7 +170,113 @@ refund:{
   successMessage: "Student refund amount deleted!",
   errorMessage: "Failed to delete student refund amount .",
   idKey: "_id",
-}
+},
+
+// Umesh
+
+employeeCategory:{
+    getEndpoint: (id) => `/delete-employee-category/${id}`,
+    successMessage: "Employee category has been deleted!",
+    errorMessage: "Failed to delete Employee Category.",
+    idKey: "_id",
+  },
+  employeeJobDesignation:{
+    getEndpoint: (id) => `/delete-employee-job-designation/${id}`,
+    successMessage: "Employee Job Designation has been deleted!",
+    errorMessage: "Failed to delete Employee Job Designation.",
+    idKey: "_id",
+  },
+  employeeGrade:{
+    getEndpoint: (id) => `/delete-employee-grade/${id}`,
+    successMessage: "Employee Grade has been deleted!",
+    errorMessage: "Failed to delete Employee Grade.",
+    idKey: "_id",
+  },
+  ctcComponents:{
+    getEndpoint: (id) => `/delete-payroll-ctc-component/${id}`,
+    successMessage: "CTC Components has been deleted!",
+    errorMessage: "Failed to delete CTC Components.",
+    idKey: "_id",
+  },
+  employeeIdSetting:{
+    getEndpoint: (id) => `/delete-employee-id-prefix/${id}`,
+    successMessage: "Employee employeeid prefix setting has been deleted!",
+    errorMessage: "Failed to delete employeeid prefix setting",
+    idKey: "_id",
+  },
+   annualLeaveType:{
+    getEndpoint: (id) => `/delete-payroll-annual-leave/${id}`,
+    successMessage: "Annual leave has been deleted!",
+    errorMessage: "Failed to delete annual leave",
+    idKey: "_id",
+  },
+
+  employee:{
+    getEndpoint: (id) => `/delete-employee-registration/${id}`,
+    successMessage: "Employee has been deleted!",
+    errorMessage: "Failed to delete Employee",
+    idKey: "_id",
+  },
+  schoolRole: {
+    getEndpoint: (id) => `/delete-school-roles/${id}`,
+    successMessage: "School role has been deleted!",
+    errorMessage: "Failed to delete school role",
+    idKey: "_id",
+  },
+  employeeCTC: {
+    getEndpoint: (id) => `/delete-employee-ctc-details/${id}`,
+    successMessage: "CTC details has been deleted!",
+    errorMessage: "Failed to delete CTC details",
+    idKey: "_id",
+  },
+  employeeLeave: {
+    getEndpoint: (id) => `/delete-employee-leave/${id}?academicYear=2025-26`,
+    successMessage: "Leave and attendance data deleted successfully!",
+    errorMessage: "Failed to delete leave record.",
+    idKey: "_id",
+  },
+overtimeComponents: {
+    getEndpoint: (id) => `/delete-payroll-overtime-component/${id}`,
+    successMessage: "Overtime details has been deleted!",
+    errorMessage: "Failed to delete overtime details",
+    idKey: "_id",
+  },
+
+employeeOvertime: {
+    getEndpoint: (id) => `/delete-overtime-details/${id}`,
+    successMessage: "Overtime details has been deleted!",
+    errorMessage: "Failed to delete overtime details",
+    idKey: "_id",
+  },
+
+  schoolHoliday: {
+    getEndpoint: (id) => `/school-holidays/${id}`,
+    successMessage: "School holidays has been deleted!",
+    errorMessage: "Failed to delete school holiday",
+    idKey: "_id",
+  },
+
+  LTA: {
+    getEndpoint: (id) => `/delete-lta/${id}`,
+    successMessage: "LTA details has been deleted!",
+    errorMessage: "Failed to delete LTA details",
+    idKey: "_id",
+  },
+
+  telephoneAllowance: {
+    getEndpoint: (employeeId,id) => `/delete-telephone-allowance/${employeeId}/${id}`,
+    successMessage: "Telephone allowance details has been deleted!",
+    errorMessage: "Failed to delete telephone allowance details",
+    idKey: "_id",
+  },
+
+  internetAllowance:{
+     getEndpoint: (id) => `/delete-internet-allowance/${id}`,
+    successMessage: "Internet allowance details has been deleted!",
+    errorMessage: "Failed to delete internet allowance details",
+    idKey: "_id",
+  },
+
 
 };
 

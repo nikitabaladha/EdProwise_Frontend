@@ -4,8 +4,8 @@ import { CgProfile } from "react-icons/cg";
 import { BiLogOut } from "react-icons/bi";
 import { IoKeyOutline } from "react-icons/io5";
 
+// import { ThemeContext } from "../ThemeProvider";
 import { ThemeContext } from "../ThemeProvider";
-
 import getAPI from "../../api/getAPI";
 import { useNavigate } from "react-router-dom";
 import { useLogout } from '../../useLogout';

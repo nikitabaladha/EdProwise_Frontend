@@ -382,7 +382,7 @@ const UpdateSchoolProfile = () => {
       if (isPdfFile) {
         return (
           <div style={containerStyle}>
-            <Worker
+            {/* <Worker
               workerUrl={
                 process.env.REACT_APP_WORKER_URL ||
                 "https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js"
@@ -401,7 +401,7 @@ const UpdateSchoolProfile = () => {
                   )}
                 />
               </div>
-            </Worker>
+            </Worker> */}
           </div>
         );
       } else {

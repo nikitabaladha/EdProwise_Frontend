@@ -4,10 +4,11 @@ import SchoolDashboardHeader from "./SchoolDashboardHeader";
 
 import Sidebar from "../Sidebar/Sidebar";
 import Footer from "../Footer/Footer";
-
+import { SchoolPayrollSettingsProvider } from "./PayrollModule/AdminSettings/ProvidentFoundSetting/SchoolPayrollSettingsContext";
 const SchoolDashboardMain = () => {
   return (
     <>
+    <SchoolPayrollSettingsProvider>
       <div className="wrapper">
         <SchoolDashboardHeader />
         <Sidebar />
@@ -18,6 +19,7 @@ const SchoolDashboardMain = () => {
 
         <Footer />
       </div>
+      </SchoolPayrollSettingsProvider>
     </>
   );
 };
