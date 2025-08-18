@@ -288,7 +288,7 @@ const StudentRegisterListTable = () => {
             onClick={(event) => navigateToRegisterStudent(event)}
             className="btn btn-sm btn-primary"
           >
-            Registration Form
+            Add Registration Form
           </Link>
           <button
             className="btn btn-sm btn-secondary"

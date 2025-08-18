@@ -103,6 +103,7 @@ const ConcessionForm = () => {
                                                         value={formData.firstName}
                                                         onChange={handleChange}
                                                         required
+                                                             disabled
                                                     />
                                                 </div>
                                             </div>
@@ -118,6 +119,7 @@ const ConcessionForm = () => {
                                                         className="form-control"
                                                         value={formData.middleName}
                                                         onChange={handleChange}
+                                                             disabled
                                                     />
                                                 </div>
                                             </div>
@@ -134,6 +136,7 @@ const ConcessionForm = () => {
                                                         value={formData.lastName}
                                                         onChange={handleChange}
                                                         required
+                                                             disabled
                                                     />
                                                 </div>
                                             </div>
@@ -155,6 +158,7 @@ const ConcessionForm = () => {
                                                 value={formData.masterDefineClass}
                                                 onChange={handleClassChange}
                                                 required
+                                                     disabled
 
                                             >
                                                 <option value="">Select Class</option>
@@ -179,6 +183,7 @@ const ConcessionForm = () => {
                                                 value={formData.section}
                                                 onChange={handleChange}
                                                 required
+                                                     disabled
 
                                             >
                                                 <option value="">Select Section</option>
@@ -403,7 +408,7 @@ const ConcessionForm = () => {
                                                                     (sum, detail) => sum + Number(detail.concessionPercentage || 0),
                                                                     0
                                                                 ) / formData.concessionDetails.length
-                                                            )
+                                                            ).toFixed(2)
                                                             : "0"}%
                                                     </td>
                                                     <td className="fw-bold">

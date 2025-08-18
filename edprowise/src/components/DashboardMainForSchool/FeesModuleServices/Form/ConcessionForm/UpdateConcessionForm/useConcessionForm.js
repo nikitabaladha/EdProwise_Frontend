@@ -32,9 +32,9 @@ export const useConcessionForm = () => {
             installmentName: '',
             feesType: '',
             totalFees: '',
-            concessionPercentage: '',
-            concessionAmount: '',
-            balancePayable: ''
+            concessionPercentage: 0,
+            concessionAmount: 0,
+            balancePayable: 0
         })
     });
 
@@ -66,9 +66,9 @@ export const useConcessionForm = () => {
                     installmentName: detail.installmentName,
                     feesType: detail.feesType._id || detail.feesType,
                     totalFees: detail.totalFees.toString(),
-                    concessionPercentage: detail.concessionPercentage.toString(),
-                    concessionAmount: detail.concessionAmount.toString(),
-                    balancePayable: detail.balancePayable.toString()
+                    concessionPercentage: detail.concessionPercentage || 0,
+                    concessionAmount: detail.concessionAmount || 0,
+                    balancePayable: detail.balancePayable || 0
                 }))
             });
         }

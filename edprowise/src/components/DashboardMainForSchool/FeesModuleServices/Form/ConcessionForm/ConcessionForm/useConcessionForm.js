@@ -30,9 +30,9 @@ const useConcessionForm = () => {
             installmentName: '',
             feesType: '',
             totalFees: '',
-            concessionPercentage: '',
-            concessionAmount: '',
-            balancePayable: ''
+            concessionPercentage: 0,
+            concessionAmount: 0,
+            balancePayable: 0
         })
     });
 
@@ -113,10 +113,10 @@ const useConcessionForm = () => {
                             updatedConcessionDetails.push({
                                 installmentName: installment.name || '',
                                 feesType: fee.feesTypeId || '',
-                                totalFees: fee.amount || '',
-                                concessionPercentage: '',
-                                concessionAmount: '',
-                                balancePayable: fee.amount || ''
+                                totalFees: fee.amount || 0,
+                                concessionPercentage: 0,
+                                concessionAmount: 0,
+                                balancePayable: fee.amount || 0
                             });
                         });
                     });
@@ -309,10 +309,10 @@ const useConcessionForm = () => {
             formData.concessionDetails.forEach((detail, index) => {
                 formDataToSend.append(`concessionDetails[${index}][installmentName]`, detail.installmentName);
                 formDataToSend.append(`concessionDetails[${index}][feesType]`, detail.feesType);
-                formDataToSend.append(`concessionDetails[${index}][totalFees]`, detail.totalFees);
-                formDataToSend.append(`concessionDetails[${index}][concessionPercentage]`, detail.concessionPercentage);
-                formDataToSend.append(`concessionDetails[${index}][concessionAmount]`, detail.concessionAmount);
-                formDataToSend.append(`concessionDetails[${index}][balancePayable]`, detail.balancePayable);
+                formDataToSend.append(`concessionDetails[${index}][totalFees]`, detail.totalFees || 0);
+                formDataToSend.append(`concessionDetails[${index}][concessionPercentage]`, detail.concessionPercentage ? detail.concessionPercentage : 0);
+                formDataToSend.append(`concessionDetails[${index}][concessionAmount]`, detail.concessionAmount ? detail.concessionAmount : 0);
+                formDataToSend.append(`concessionDetails[${index}][balancePayable]`, detail.balancePayable || 0);
             });
 
             const response = await postAPI('/create-Concession-form', formDataToSend, {
@@ -323,6 +323,7 @@ const useConcessionForm = () => {
                 const { receiptNumber, _id } = response.data.form;
 
                 toast.success('Concession application submitted successfully!');
+                   navigate(-1);
 
                 // navigate(`/school-dashboard/fees-module/form/concession-form-details`, {
                 //     state: {

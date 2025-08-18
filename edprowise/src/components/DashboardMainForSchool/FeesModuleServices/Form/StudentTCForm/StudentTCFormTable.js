@@ -242,7 +242,7 @@ const StudentTCFormTable = () => {
             onClick={(event) => navigateToTCForm(event)}
             className="btn btn-sm btn-primary"
           >
-            TC Form
+            Add TC Form
           </Link>
           <button
             className="btn btn-sm btn-secondary"

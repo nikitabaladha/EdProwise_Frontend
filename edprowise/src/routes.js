@@ -266,10 +266,12 @@ import LossOfFeeDuetoLateAdmssion from "./components/DashboardMainForSchool/Fees
 import DefaulterFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/DefaulterFees/DefaulterFees.js";
 import ArrearFeesReceivedReport from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/ArrearFeesReceived/ArrearFeesReport.js";
 import StudentMaster from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/StudentMaster/StudentMaster.js"
-
+import AdvancedFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/AdvancedReport/AdvancedFeesReport.js"
+import OpeningAndClosingAdvanced from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OpeningandClosingAdvanced/OpeningandClosingAdvancedReport.js"
 // ===================================================FeesRecom==================================================//
 
 import FeesReconHaedwise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/HaedWise/FeesReconHaedwise.js"
+import FeesReconStudentWise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/StudentWise/FeesReconStudentWise.js"
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 
@@ -1127,11 +1129,31 @@ const AppRoutes = () => {
           path="fees-module/reports/advanced/student-master"
           element={<StudentMaster />}
         />
+
+        <Route
+          path="fees-module/reports/advanced/advance-fees"
+          element={<AdvancedFees/>}
+        />
+
+         <Route
+          path="fees-module/reports/advanced/opening-closing-advance"
+          element={<OpeningAndClosingAdvanced />}
+        />
+
+   
+
+
+     
        {/* --------------------------------------------FeesRecon-------------------------------------- */}
 
        <Route
           path="fees-module/reports/audit/headcount"
           element={<FeesReconHaedwise />}
+        />
+
+          <Route
+          path="fees-module/reports/audit/student-wise"
+          element={<FeesReconStudentWise />}
         />
 
 

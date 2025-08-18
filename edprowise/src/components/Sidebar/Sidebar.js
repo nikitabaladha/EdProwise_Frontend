@@ -384,15 +384,11 @@ const Sidebar = () => {
                     "icon": "solar:wallet-money-bold-duotone"
                   },
                   {
-                    "label": "Opening Advance",
-                    "link": "/school-dashboard/fees-module/reports/advanced/opening-advance",
+                    "label": "Opening&Closing Advance",
+                    "link": "/school-dashboard/fees-module/reports/advanced/opening-closing-advance",
                     "icon": "solar:arrow-up-bold-duotone"
                   },
-                  {
-                    "label": "Closing Advance",
-                    "link": "/school-dashboard/fees-module/reports/advanced/closing-advance",
-                    "icon": "solar:arrow-down-bold-duotone"
-                  },
+                  
                   {
                     "label": "Student Master",
                     "link": "/school-dashboard/fees-module/reports/advanced/student-master",

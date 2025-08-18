@@ -309,7 +309,7 @@ const StudentAdmissionListTable = () => {
             onClick={(event) => navigateToAdmission(event)}
             className="btn btn-sm btn-primary"
           >
-            Admission Form
+            Add Admission Form
           </Link>
           <button
             className="btn btn-sm btn-secondary"

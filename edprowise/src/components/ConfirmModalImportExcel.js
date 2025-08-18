@@ -46,7 +46,7 @@ const ConfirmModal = ({ show, onCancel, onConfirm, onViewExcelSheet }) => {
             size="sm"
             onClick={onViewExcelSheet}
           >
-            View Excel Sheet
+            View Error
           </Button>
         </div>
       </div>

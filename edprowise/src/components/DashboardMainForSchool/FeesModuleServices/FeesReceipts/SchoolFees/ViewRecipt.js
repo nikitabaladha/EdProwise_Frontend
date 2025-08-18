@@ -24,6 +24,7 @@ const FeesReceipt = () => {
   const [schoolData, setSchoolData] = useState({ school: null, logoSrc: "" });
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  console.log("Receipt Details",receiptDetails)
 
   useEffect(() => {
     let isMounted = true;

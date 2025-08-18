@@ -1072,7 +1072,7 @@ const StudentRegistrationForm = () => {
                         className="btn btn-primary custom-submit-button"
                         disabled={isSubmitting}
                       >
-                        {isSubmitting ? 'Proceed Further...' : 'Proceed Further'}
+                        {isSubmitting ? 'Submiting...' : 'Submit'}
                       </button>
                     </div>
                   </div>
