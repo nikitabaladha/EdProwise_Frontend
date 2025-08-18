@@ -8,7 +8,7 @@ const UpdateOvertimeAllowance = () => {
   const location = useLocation();
   const { employee, entry } = location.state || {};
   console.log("entry", entry);
-  
+   
   const [formData, setFormData] = useState({
     overtimeDate: "",
     fromTime: "",

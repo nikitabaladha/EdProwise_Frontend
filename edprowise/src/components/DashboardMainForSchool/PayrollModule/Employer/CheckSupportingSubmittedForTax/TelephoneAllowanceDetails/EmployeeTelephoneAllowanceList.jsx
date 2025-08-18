@@ -10,7 +10,7 @@ const EmployeeTelephoneAllowanceList = () => {
   const [academicYear, setAcademicYear] = useState('2025-26');
   const [schoolId, setSchoolId] = useState(null);
   const [employeeTelephoneDetails, setEmployeeTelephoneDetails] = useState([]);
-
+ 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (!userDetails?.schoolId) {

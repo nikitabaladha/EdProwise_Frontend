@@ -6,7 +6,7 @@
 //         'April', 'May', 'June', 'July', 'August', 'September',
 //         'October', 'November', 'December', 'January', 'February', 'March'
 //     ];
-
+ 
 //     const navigate = useNavigate();
 //     const [rentData, setRentData] = useState(
 //         months.reduce((acc, month) => {

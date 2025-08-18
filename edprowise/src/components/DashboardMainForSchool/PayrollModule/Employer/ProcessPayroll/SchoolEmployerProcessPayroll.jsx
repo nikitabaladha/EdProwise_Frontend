@@ -11,7 +11,7 @@
 //   const [academicYear, setAcademicYear] = useState('2025-26');
 //   const [payrollData, setPayrollData] = useState([]);
 //   const [ctcComponents, setCtcComponents] = useState([]);
-
+ 
 //   const currentYear = moment().year();
 //   const years = Array.from({ length: currentYear - 2024 + 1 }, (_, i) => 2024 + i);
 //   const months = moment.months();
@@ -331,7 +331,7 @@ const SchoolEmployerProcessPayroll = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [year, setYear] = useState(moment().format('YYYY'));
   const [month, setMonth] = useState(moment().format('MMMM'));
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  const [academicYear, setAcademicYear] = useState('');
   const [payrollData, setPayrollData] = useState([]);
   const [ctcComponents, setCtcComponents] = useState([]);
 
@@ -343,6 +343,7 @@ const SchoolEmployerProcessPayroll = () => {
 
   const [pfEnabled, setPfEnabled] = useState(false);
   const [esiEnabled, setEsiEnabled] = useState(false);
+  const [academicYearList, setAcademicYearList] = useState([]);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -350,14 +351,26 @@ const SchoolEmployerProcessPayroll = () => {
       toast.error("School ID not found. Please log in again.");
       return;
     }
-
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
     setSchoolId(userDetails.schoolId);
-    fetchPfEsiSetting(userDetails.schoolId);
-    fetchPayrollAttendance(userDetails.schoolId);
-    fetchCTCComponents(userDetails.schoolId);
+    fetchAcademicYears(userDetails.schoolId);
+    fetchPfEsiSetting(userDetails.schoolId,academicYear);
+    fetchPayrollAttendance(userDetails.schoolId,academicYear);
+    fetchCTCComponents(userDetails.schoolId,academicYear);
   }, [year, month]);
 
-  const fetchPfEsiSetting = async (schoolId) => {
+   const fetchAcademicYears = async (schoolId) => {
+          try {
+            const response = await getAPI(`/get-payroll-academic-year/${schoolId}`);
+            setAcademicYearList(response.data.data || []);
+          } catch (err) {
+            toast.error('Failed to fetch academic years.');
+          }
+        };
+  
+
+  const fetchPfEsiSetting = async (schoolId,academicYear) => {
     try {
       const res = await getAPI(`/get-pf-esi-settings/${schoolId}?academicYear=${academicYear}`, {}, true);
       if (res?.data) {
@@ -368,8 +381,8 @@ const SchoolEmployerProcessPayroll = () => {
       console.error("Failed to fetch PF/ESI settings:", err);
     }
   };
-
-  const fetchCTCComponents = async (schoolId) => {
+ 
+  const fetchCTCComponents = async (schoolId,academicYear) => {
     try {
       const res = await getAPI(`/getall-payroll-ctc-component/${schoolId}?academicYear=${academicYear}`);
       console.log("CTC get res", res);
@@ -386,7 +399,7 @@ const SchoolEmployerProcessPayroll = () => {
     }
   };
 
-  const fetchPayrollAttendance = async (schoolId) => {
+  const fetchPayrollAttendance = async (schoolId,academicYear) => {
     const monthIndex = String(moment().month(month).month() + 1).padStart(2, '0');
     try {
       setIsLoading(true);

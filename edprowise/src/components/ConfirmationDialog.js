@@ -230,7 +230,7 @@ employeeCategory:{
     idKey: "_id",
   },
   employeeLeave: {
-    getEndpoint: (id) => `/delete-employee-leave/${id}?academicYear=2025-26`,
+    // getEndpoint: (id) => `/delete-employee-leave/${id}?academicYear=2025-26`,
     successMessage: "Leave and attendance data deleted successfully!",
     errorMessage: "Failed to delete leave record.",
     idKey: "_id",
@@ -256,13 +256,12 @@ employeeOvertime: {
     idKey: "_id",
   },
 
-  LTA: {
-    getEndpoint: (id) => `/delete-lta/${id}`,
-    successMessage: "LTA details has been deleted!",
-    errorMessage: "Failed to delete LTA details",
-    idKey: "_id",
-  },
-
+LTA: {
+  getEndpoint: (employeeId, detailId) => `/delete-lta/${detailId}?employeeId=${employeeId}`,
+  successMessage: "LTA details has been deleted!",
+  errorMessage: "Failed to delete LTA details",
+  idKey: "_id",
+},
   telephoneAllowance: {
     getEndpoint: (employeeId,id) => `/delete-telephone-allowance/${employeeId}/${id}`,
     successMessage: "Telephone allowance details has been deleted!",

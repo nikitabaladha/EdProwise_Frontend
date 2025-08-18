@@ -7,7 +7,7 @@ import postAPI from "../../../../../api/postAPI";
 const UpdateEmployeeCTCDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+ 
   const [schoolId, setSchoolId] = useState(null);
   const [academicYear, setAcademicYear] = useState(null);
   const [employeeId, setEmployeeId] = useState("");
@@ -31,9 +31,19 @@ const UpdateEmployeeCTCDetails = () => {
 
       const fetchCTCSetup = async () => {
         try {
-          const ctcComponentRes = await getAPI(`/getall-payroll-ctc-component/${scId}`);
+          const ctcComponentRes = await getAPI(`/getall-payroll-ctc-component/${scId}?academicYear=${year}`);
           if (!ctcComponentRes.hasError && Array.isArray(ctcComponentRes.data?.ctcComponent)) {
-            setCtcComponents(ctcComponentRes.data.ctcComponent);
+            let components = ctcComponentRes.data.ctcComponent;
+
+        // Sort: Basic Salary first, HRA second, then all others
+        components = components.sort((a, b) => {
+          const priority = { "Basic Salary": 1, "HRA": 2 };
+          const aPriority = priority[a.ctcComponentName] || 99;
+          const bPriority = priority[b.ctcComponentName] || 99;
+          if (aPriority !== bPriority) return aPriority - bPriority;
+          return a.ctcComponentName.localeCompare(b.ctcComponentName);
+        });
+            setCtcComponents(components);
           }
         } catch (err) {
           toast.error("Failed to load CTC components.");

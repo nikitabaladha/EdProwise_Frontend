@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import moment from 'moment';
 import getAPI from '../../../../../api/getAPI';
 import postAPI from '../../../../../api/postAPI';
-
+  
 const PFRegister = () => {
   const [schoolId, setSchoolId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);

@@ -12,7 +12,7 @@ const VerifyTelephoneAllowanceDetails = () => {
   const [academicYear, setAcademicYear] = useState('2025-26');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewDocument, setPreviewDocument] = useState(null);
-
+ 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (!userDetails?.schoolId) {

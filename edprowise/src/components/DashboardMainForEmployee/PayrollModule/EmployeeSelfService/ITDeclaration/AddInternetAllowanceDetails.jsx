@@ -2,7 +2,7 @@
 // import { useNavigate, useLocation } from 'react-router-dom';
 // import { toast } from 'react-toastify';
 // import postAPI from '../../../../../api/postAPI';
-
+ 
 // const AddInternetAllowanceDetails = () => {
 //   const navigate = useNavigate();
 //   const location = useLocation();
@@ -523,6 +523,12 @@ const AddInternetAllowanceDetails = () => {
     }
     return 'No file selected';
   };
+const navigateToBack = (event) => {
+    event.preventDefault();
+    navigate('/employee-dashboard/payroll-module/employee/income-tax/it-declaration/internet-allowance-details', {
+      state: {academicYear },
+    });
+  }; 
 
   return (
     <div className="container">
@@ -538,7 +544,7 @@ const AddInternetAllowanceDetails = () => {
                   <button
                     type="button"
                     className="btn btn-primary custom-submit-button"
-                    onClick={() => navigate(-1)}
+                    onClick={navigateToBack}
                   >
                     Back
                   </button>

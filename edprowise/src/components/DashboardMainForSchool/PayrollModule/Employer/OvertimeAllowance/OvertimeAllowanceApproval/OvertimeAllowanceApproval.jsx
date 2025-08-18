@@ -7,9 +7,9 @@ import { useNavigate } from 'react-router-dom';
 const OvertimeAllowanceApproval = () => {
     const navigate = useNavigate();
     const [schoolId, setSchoolId] = useState(null);
-    const [academicYear] = useState('2025-26');
+    const [academicYear, setAcademicYear] = useState('');
     const [applications, setApplications] = useState([]);
-
+  
     useEffect(() => {
         const userDetails = JSON.parse(localStorage.getItem('userDetails'));
         if (!userDetails?.schoolId) {
@@ -17,10 +17,13 @@ const OvertimeAllowanceApproval = () => {
             return;
         }
         setSchoolId(userDetails.schoolId);
-        fetchOvertimeApplications(userDetails.schoolId);
-    }, [academicYear]);
+        const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
+    
+        fetchOvertimeApplications(userDetails.schoolId,academicYear);
+    }, []);
 
-    const fetchOvertimeApplications = async (schoolId) => {
+    const fetchOvertimeApplications = async (schoolId,academicYear) => {
         try {
             const res = await getAPI(`/all-overtime-applications?schoolId=${schoolId}&academicYear=${academicYear}`);
             if (res?.data.data) {

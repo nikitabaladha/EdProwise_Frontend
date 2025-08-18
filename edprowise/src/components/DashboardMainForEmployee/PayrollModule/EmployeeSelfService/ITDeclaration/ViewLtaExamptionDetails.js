@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import postAPI from '../../../../../api/postAPI';
-
-const ViewLtaExamptionDerails = () => {
+const ViewLtaExemptionDetails = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [sending, setSending] = useState(false);
-//   const [employeeId, setEmployeeId] = useState(null);
-  const employeeId = location.state?.employeeId;
-
-  
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  const { state } = useLocation();
+  const ltaDetails = state?.lta;
+  const [billFileUrl, setBillFileUrl] = useState(null);
+  const [previewDocument, setPreviewDocument] = useState(null);
   const [formData, setFormData] = useState({
     employeeName: '',
     billNumber: '',
@@ -25,47 +20,39 @@ const ViewLtaExamptionDerails = () => {
     billFile: null
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      billFile: e.target.files[0]
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSending(true);
-
-    try {
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach(key => {
-        if (key === 'billFile' && formData[key]) {
-          formDataToSend.append(key, formData[key]);
-        } else {
-          formDataToSend.append(key, formData[key]);
-        }
+  useEffect(() => {
+    if (ltaDetails) {
+      setFormData({
+        employeeName: ltaDetails.employeeName || '',
+        billNumber: ltaDetails.billNumber || '',
+        billDate: ltaDetails.billDate || '',
+        itemPurchased: ltaDetails.itemPurchased || '',
+        vendorName: ltaDetails.vendorName || '',
+        gstNumber: ltaDetails.gstNumber || '',
+        grossAmount: ltaDetails.grossAmount || '',
+        gstCharge: ltaDetails.gstCharge || '',
+        totalAmount: ltaDetails.totalAmount || '',
+        billFile: ltaDetails.billFile || null,
       });
-      formDataToSend.append('schoolId', location.state?.schoolId);
-      formDataToSend.append('academicYear', academicYear);
+    }
+  }, [ltaDetails]);
 
-      const response = await postAPI(`/create-lta/${employeeId}`, formDataToSend, 
-        { 'Content-Type': 'multipart/form-data' }, true
-      );
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
 
-      toast.success(response.message || 'LTA record added successfully');
-      
-    } catch (err) {
-      toast.error(err.message || 'Failed to add LTA record');
-    } finally {
-      setSending(false);
+
+  const handleDocumentPreview = (documentPath) => {
+    if (documentPath) {
+      // Check if it's already a full URL (from API response)
+      const formattedPath = documentPath.startsWith('http')
+        ? documentPath
+        : `${process.env.REACT_APP_API_URL_FOR_IMAGE}/${documentPath}`;
+      setPreviewDocument(formattedPath); // Use previewDocument state instead of billFileUrl
+    } else {
+      toast.error('No document available for preview');
     }
   };
 
@@ -78,7 +65,7 @@ const ViewLtaExamptionDerails = () => {
               <div className="container">
                 <div className="card-header mb-2 d-flex align-items-center">
                   <h4 className="card-title flex-grow-1 text-center">
-                    LTA Form
+                    LTA Details
                   </h4>
                   <button
                     type="button"
@@ -89,7 +76,7 @@ const ViewLtaExamptionDerails = () => {
                   </button>
                 </div>
               </div>
-              <form onSubmit={handleSubmit}>
+              <form>
                 <div className="row mb-3">
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -102,9 +89,8 @@ const ViewLtaExamptionDerails = () => {
                         name="employeeName"
                         className="form-control"
                         value={formData.employeeName}
-                        onChange={handleInputChange}
-                        required
                         placeholder="Enter Name on Bill"
+                        readOnly
                       />
                     </div>
                   </div>
@@ -119,9 +105,8 @@ const ViewLtaExamptionDerails = () => {
                         name="billNumber"
                         className="form-control"
                         value={formData.billNumber}
-                        onChange={handleInputChange}
-                        required
                         placeholder="Enter Bill Number"
+                        readOnly
                       />
                     </div>
                   </div>
@@ -135,9 +120,8 @@ const ViewLtaExamptionDerails = () => {
                         id="billDate"
                         name="billDate"
                         className="form-control"
-                        value={formData.billDate}
-                        onChange={handleInputChange}
-                        required
+                        value={formatDate(formData.billDate)}
+                        readOnly
                       />
                     </div>
                   </div>
@@ -152,9 +136,8 @@ const ViewLtaExamptionDerails = () => {
                         name="itemPurchased"
                         className="form-control"
                         value={formData.itemPurchased}
-                        onChange={handleInputChange}
-                        required
                         placeholder="Enter Item Purchased"
+                        readOnly
                       />
                     </div>
                   </div>
@@ -169,9 +152,8 @@ const ViewLtaExamptionDerails = () => {
                         name="vendorName"
                         className="form-control"
                         value={formData.vendorName}
-                        onChange={handleInputChange}
-                        required
                         placeholder="Enter Vendor Name"
+                        readOnly
                       />
                     </div>
                   </div>
@@ -186,9 +168,8 @@ const ViewLtaExamptionDerails = () => {
                         name="gstNumber"
                         className="form-control"
                         value={formData.gstNumber}
-                        onChange={handleInputChange}
-                        required
                         placeholder="Enter GST Number"
+                        readOnly
                       />
                     </div>
                   </div>
@@ -203,9 +184,8 @@ const ViewLtaExamptionDerails = () => {
                         name="grossAmount"
                         className="form-control"
                         value={formData.grossAmount}
-                        onChange={handleInputChange}
-                        required
                         placeholder="Enter Gross Amount"
+                        readOnly
                       />
                     </div>
                   </div>
@@ -220,9 +200,8 @@ const ViewLtaExamptionDerails = () => {
                         name="gstCharge"
                         className="form-control"
                         value={formData.gstCharge}
-                        onChange={handleInputChange}
-                        required
                         placeholder="Enter GST Charge"
+                        readOnly
                       />
                     </div>
                   </div>
@@ -237,39 +216,66 @@ const ViewLtaExamptionDerails = () => {
                         name="totalAmount"
                         className="form-control"
                         value={formData.totalAmount}
-                        onChange={handleInputChange}
-                        required
                         placeholder="Enter Total Amount"
+                        readOnly
                       />
                     </div>
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-12">
                     <div className="mb-3">
-                      <label htmlFor="billFile" className="form-label">
-                        Upload Bill <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="file"
-                        id="billFile"
-                        name="billFile"
-                        className="form-control"
-                        onChange={handleFileChange}
-                        required
-                        accept="image/jpeg,image/png,application/pdf"
-                      />
+                      <label className="form-label fw-bold">Uploaded Bill</label>
+                      <button
+                        type='button'
+                        className="btn btn-light btn-sm"
+                        onClick={() => handleDocumentPreview(formData.billFile)}
+                        disabled={!formData.billFile}
+                      >
+                        <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
+                        {formData.billFile ? ' View Document' : ' No Document'}
+                      </button>
+
+                      {/* ) : (
+                        <p className="text-muted">No bill uploaded</p>
+                      )} */}
                     </div>
                   </div>
-                </div>
-                <div className="text-end">
-                  <button
-                    type="submit"
-                    className="btn btn-primary custom-submit-button"
-                    disabled={sending}
-                  >
-                    {sending ? 'Submitting...' : 'Submit'}
-                  </button>
                 </div>
               </form>
+              {previewDocument && (
+                <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                  <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title">Document Preview</h5>
+                        <button
+                          type="button"
+                          className="btn-close"
+                          onClick={() => setPreviewDocument(null)}
+                        ></button>
+                      </div>
+                      <div className="modal-body">
+                        {previewDocument.toLowerCase().endsWith('.pdf') ? (
+                          <iframe
+                            src={`${previewDocument}#toolbar=0`}
+                            style={{ width: '100%', height: '500px', border: 'none' }}
+                            title="Document Preview"
+                          ></iframe>
+                        ) : (
+                          <img
+                            src={previewDocument}
+                            alt="Document"
+                            style={{ maxWidth: '100%', maxHeight: '500px', objectFit: 'contain', borderRadius: '10px' }}
+                            onError={() => {
+                              toast.error('Failed to load document');
+                              setPreviewDocument(null);
+                            }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -278,4 +284,4 @@ const ViewLtaExamptionDerails = () => {
   );
 };
 
-export default ViewLtaExamptionDerails;
+export default ViewLtaExemptionDetails;

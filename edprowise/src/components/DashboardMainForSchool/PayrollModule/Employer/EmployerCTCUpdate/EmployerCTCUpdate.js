@@ -15,7 +15,7 @@ const EmployerCTCUpdate = () => {
   const [componentAmounts, setComponentAmounts] = useState({});
   const [annualCostToInstitution, setAnnualCostToInstitution] = useState(0);
 
-
+ 
   useEffect(() => {
           const userDetails = JSON.parse(localStorage.getItem("userDetails"));
           const id = userDetails?.schoolId;
@@ -60,11 +60,13 @@ const EmployerCTCUpdate = () => {
 
   try {
     const response = await getAPI(`/get-employee-self-details/${schoolId}/${employeeId}?academicYear=${academicYear}`);
+    console.log("get-employee-self-details",response);
+    
     if (!response.hasError && response.data?.data) {
       setEmployeeDetails(response.data.data);
       setShowForm(true);
 
-      const ctcRes = await getAPI(`/getall-payroll-ctc-component/${schoolId}`);
+      const ctcRes = await getAPI(`/getall-payroll-ctc-component/${schoolId}?academicYear=${academicYear}`);
       if (!ctcRes.hasError && Array.isArray(ctcRes.data?.ctcComponent)) {
         let components = ctcRes.data.ctcComponent;
 
@@ -212,19 +214,19 @@ const EmployerCTCUpdate = () => {
                       <div className="col-md-4">
 
                         <p className='text-dark payroll-box-text'>
-                          <strong>Designation : </strong> {employeeDetails.jobDesignation}
+                          <strong>Designation : </strong> {employeeDetails.currentAcademicYearData.jobDesignation}
                         </p>
                       </div>
 
                       <div className="col-md-4">
                         <p className='text-dark' >
-                          <strong>Category of Employees : </strong> {employeeDetails.categoryOfEmployees}
+                          <strong>Category of Employees : </strong> {employeeDetails.currentAcademicYearData?.categoryOfEmployees}
                         </p>
                       </div>
 
                       <div className="col-md-4">
                         <p className='text-dark payroll-box-text' >
-                          <strong> Grade : </strong> {employeeDetails.grade}
+                          <strong> Grade : </strong> {employeeDetails.currentAcademicYearData?.grade}
                         </p>
                       </div>
                     </div>

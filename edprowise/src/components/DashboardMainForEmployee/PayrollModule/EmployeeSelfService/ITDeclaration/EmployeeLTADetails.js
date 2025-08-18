@@ -235,7 +235,7 @@
 // export default EmployeeLTADetails;
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import getAPI from '../../../../../api/getAPI';
@@ -244,12 +244,14 @@ import ConfirmationDialog from '../../../../ConfirmationDialog';
 
 const EmployeeLTADetails = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const academicYear = state?.academicYear;
   const [schoolId, setSchoolId] = useState(null);
   const [employeeId, setEmployeeId] = useState(null);
   const [employeeLtaDetails, setEmployeeLtaDetails] = useState([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [academicYear, setAcademicYear] = useState('');
+  // const [academicYear, setAcademicYear] = useState('');
   const [deleteType, setDeleteType] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(10);
@@ -261,10 +263,11 @@ const EmployeeLTADetails = () => {
       navigate('/login');
       return;
     }
-    setSchoolId(userDetails.schoolId);
-    setEmployeeId(userDetails.userId);
-    setAcademicYear(userDetails.academicYear );
-    fetchLtaDetails(userDetails.schoolId, userDetails.userId, userDetails.academicYear);
+        // const academicYear = localStorage.getItem("selectedAcademicYear");
+        setSchoolId(userDetails.schoolId);
+        setEmployeeId(userDetails.userId);
+        // setAcademicYear(academicYear);
+    fetchLtaDetails(userDetails.schoolId, userDetails.userId, academicYear);
   }, []);
 
   const fetchLtaDetails = async (schoolId, employeeId,academicYear) => {
@@ -284,7 +287,7 @@ const EmployeeLTADetails = () => {
       // setEmployeeLtaDetails(validData);
     } catch (err) {
       console.error('Error fetching LTA details:', err);
-      toast.error(err.message || 'Failed to fetch LTA details');
+      toast.error(err.response.data.message || 'Failed to fetch LTA details');
       setEmployeeLtaDetails([]);
     }
   };
@@ -305,15 +308,20 @@ const EmployeeLTADetails = () => {
   };
 
   const handleDeleteConfirmed = async (detailId) => {
-    
-      setEmployeeLtaDetails((prev) => prev.filter((lta) => lta._id !== detailId));
-      
+      setEmployeeLtaDetails((prev) => prev.filter((lta) => lta._id !== detailId));   
   };
 
   const navigateToAddLta = (event) => {
     event.preventDefault();
-    navigate('/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/lta-details/add-lta', {
+    navigate('/employee-dashboard/payroll-module/employee/income-tax/it-declaration/lta-details/add-lta', {
       state: { schoolId, employeeId, academicYear },
+    });
+  }; 
+ 
+  const navigateToView = (event, lta) => {
+    event.preventDefault();
+    navigate("/employee-dashboard/payroll-module/employee/income-tax/it-declaration/lta-details/view-lta", {
+      state: { lta , academicYear }
     });
   };
 
@@ -347,6 +355,11 @@ const EmployeeLTADetails = () => {
     return new Date(isoDate).toLocaleDateString('en-GB');
   };
 
+  const navigateToBack = (event) => {
+    event.preventDefault();
+    navigate('/employee-dashboard/payroll-module/employee/income-tax/it-declaration');
+  }; 
+
   return (
     <div className="container">
       <div className="row">
@@ -358,6 +371,12 @@ const EmployeeLTADetails = () => {
                   <h4 className="card-title flex-grow-1 text-center">
                     LTA Employee List
                   </h4>
+                  <Link
+                    onClick={navigateToBack}
+                    className="me-2 btn btn-sm btn-primary"
+                  >
+                    Back
+                  </Link>
                   <Link
                     onClick={navigateToAddLta}
                     className="btn btn-sm btn-primary"
@@ -380,17 +399,17 @@ const EmployeeLTADetails = () => {
                           <label className="form-check-label" htmlFor="customCheck1" />
                         </div>
                       </th>
-                      <th>Employee ID</th>
-                      {/* <th>Name on Bill</th> */}
-                      <th>Bill No</th>
-                      <th>Bill Date</th>
-                      <th>Item Purchased</th>
-                      <th>Vendor Name</th>
-                      <th>GST No.</th>
-                      <th>Gross Amt.</th>
-                      <th>GST Charge</th>
-                      <th>Total Amount</th>
-                      <th>Action</th>
+                      <th className='text-nowrap'>Employee ID</th>
+                      <th className='text-nowrap'>Bill No</th>
+                      <th className='text-nowrap'>Bill Date</th>
+                      <th className='text-nowrap'>Item Purchased</th>
+                      <th className='text-nowrap'>Vendor Name</th>
+                      <th className='text-nowrap'>GST No.</th>
+                      <th className='text-nowrap'>Gross Amt.</th>
+                      <th className='text-nowrap'>GST Charge</th>
+                      <th className='text-nowrap'>Total Amount</th>
+                      <th className='text-nowrap'>Status</th>
+                      <th className='text-nowrap'>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -420,22 +439,30 @@ const EmployeeLTADetails = () => {
                           <td>{lta.grossAmount.toLocaleString('en-IN')}</td>
                           <td>{lta.gstCharge.toLocaleString('en-IN')}</td>
                           <td>{lta.totalAmount.toLocaleString('en-IN')}</td>
+                          <td>{lta.billstatus}</td>
                           <td>
                             <div className="d-flex gap-2 justify-content-center">
                               <Link
                                 className="btn btn-light btn-sm"
-                                to={`/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/lta-details/view/${lta._id}`}
-                                disabled={!lta._id}
+                                onClick={(event) => navigateToView(event, lta)}
+                                // disabled={!lta._id}
                               >
                                 <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
                               </Link>
-                              <button
+                              {
+                                lta.billstatus==="Approved" ? "":(
+                                  <>
+                                  <button
                                 className="btn btn-soft-danger btn-sm"
                                 onClick={() => openDeleteDialog(lta)}
-                                disabled={!lta._id}
+                                disabled={lta.billstatus==="Approved"}
                               >
                                 <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
                               </button>
+                                  </>
+                                )
+                              }
+                              
                             </div>
                           </td>
                         </tr>
@@ -474,11 +501,11 @@ const EmployeeLTADetails = () => {
       {isDeleteDialogOpen && selectedEmployee && (
         <ConfirmationDialog
           onClose={handleDeleteCancel}
-          deleteType="lta"
+          deleteType="LTA"
           id={selectedEmployee._id}
-          employeeId={employeeId}
+          employeeId={JSON.parse(localStorage.getItem('userDetails'))?.userId}
           onDeleted={handleDeleteConfirmed}
-        />
+        /> 
       )}
     </div>
   );

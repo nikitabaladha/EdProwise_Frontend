@@ -305,7 +305,7 @@ import EmployeeRegistrationFormList from "./components/DashboardMainForSchool/Pa
 import AddEmployeeRegistrationForm from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/AddEmployeeRegistrationForm.jsx";
 import UpdateEmployeeRegistration from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/UpdateEmployeeRegistration.jsx";
 import ViewEmployeeRegistrationFormDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/ViewEmployeeRegistrationFormDetails.jsx";
-import EmploerUpdateEmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/UpdateDetails/EmploerUpdateEmployeeDetails.js";
+import EmployerUpdateEmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/UpdateDetails/EmployerUpdateEmployeeDetails.js";
 import FreezeITDeclaration from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/FreezeITDeclaration/FreezeITDeclaration.js";
 import SchoolDefineCtcComponentsList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCDefineComponents/SchoolDefineCtcComponentsList.jsx";
 import DefinePayrollGrade from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/Grade/DefinePayrollGrade.js";
@@ -329,6 +329,47 @@ import EmployeeRentDetails from "./components/DashboardMainForEmployee/PayrollMo
 import EmployeeMarkAttendance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/MarkAttendance/EmployeeMarkAttendance.jsx";
 import EmployeeLeaveDetailsAndApply from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/ApplyForLeave/EmployeeLeaveDetailsAndApply.jsx";
 import EmployeeAttendanceReport from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/AttendanceReport/EmployeeAttendanceReport.jsx";
+import OvertimeAllowanceList from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/OvertimeAllowance/OvertimeAllowanceList.jsx";
+import ApplyOvertimeAllowance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/OvertimeAllowance/ApplyOvertimeAllowance/ApplyOvertimeAllowance.jsx";
+import ViewOvertimeAllowance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/OvertimeAllowance/ViewOvertimeAllowance/ViewOvertimeAllowance.jsx";
+import UpdateOvertimeAllowance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/OvertimeAllowance/UpdateOvertimeAllowance/UpdateOvertimeAllowance.jsx";
+import EmployeePreviousEmploymentIncome from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/PreviousEmploymentIncome/EmployeePreviousEmploymentIncome.jsx";
+import EmployeeIncomeTaxComputationSheet from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/IncomeTaxComputationSheet/EmployeeIncomeTaxComputationSheet.jsx";
+import EmployeeLTADetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/EmployeeLTADetails.js";
+import AddLtaExamptionDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/AddLtaExamptionDetails.js";
+import TelephoneAllowanceDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/TelephoneAllowanceDetails.jsx";
+import AddTelephoneAllowanceDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/AddTelephoneAllowanceDetails.jsx";
+import InternetAllowanceDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/InternetAllowanceDetails.jsx";
+import AddInternetAllowanceDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/AddInternetAllowanceDetails.jsx";
+import ViewLtaExamptionDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/ViewLtaExamptionDetails.js";
+import EmployeeSupportingSubmittedForTaxList from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/EmployeeSupportingSubmittedForTaxList.jsx";
+import VerifySupportingSubmittedForTaxList from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/VerifySupportingSubmittedForTaxList.jsx";
+import VerifyEmployerRentDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/VerifyEmployerRentDetails.jsx";
+import ViewTelephoneExamptionDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/ViewTelephoneExamptionDetails.js";
+import ViewInternetExamptionDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/ViewInternetExamptionDetails.js";
+import CTCUpdatedEmployeeTable from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/CTCUpdatedEmployeeTable.js";
+import EmployerCTCUpdate from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/EmployerCTCUpdate.js";
+import ViewEmployeeCTCDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/ViewEmployeeCTCDetails.js";
+import UpdateEmployeeCTCDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/UpdateEmployeeCTCDetails.jsx";
+import PayrollCTCMaster from "./components/DashboardMainForSchool/PayrollModule/Employer/CTCMaster/PayrollCTCMaster.jsx";
+import SingleEmployeeSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/Employer/SalaryIncrement/SingleEmployeeIncrement/SingleEmployeeSalaryIncrement.jsx";
+import BulkEmployeeSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/Employer/SalaryIncrement/BulkEmployeeIncrement/BulkEmployeeSalaryIncrement.jsx";
+import LeaveApplyEmployeeList from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeApplyForLeave/LeaveApplyEmployeeList.jsx";
+import ViewEmployeeAttendanceReports from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeAttendenceReport/ViewEmployeeAttendanceReports.jsx";
+import EmployeeLeaveRecords from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/LeaveRecords/EmployeeLeaveRecords.jsx";
+import OvertimeAllowanceApproval from "./components/DashboardMainForSchool/PayrollModule/Employer/OvertimeAllowance/OvertimeAllowanceApproval/OvertimeAllowanceApproval.jsx";
+import ViewOvertimeAllowanceDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/OvertimeAllowance/OvertimeAllowanceApproval/ViewOvertimeAllowanceDetails.jsx";
+import OvertimeAllowanceReport from "./components/DashboardMainForSchool/PayrollModule/Employer/OvertimeAllowance/OvertimeAllowanceReport/OvertimeAllowanceReport.jsx";
+import SchoolEmployerProcessPayroll from "./components/DashboardMainForSchool/PayrollModule/Employer/ProcessPayroll/SchoolEmployerProcessPayroll.jsx";
+import PFRegister from "./components/DashboardMainForSchool/PayrollModule/Employer/PFRegister/PFRegister.jsx";
+import EsiRegister from "./components/DashboardMainForSchool/PayrollModule/Employer/EsiRegister/EsiRegister.jsx";
+import EmployeeLtaExemptionList from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/LtaExemptionDetails/EmployeeLtaExemptionList.jsx";
+import VerifyLtaDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/LtaExemptionDetails/VerifyEmployeeLtaDetails.jsx";
+import EmployeeTelephoneAllowanceList from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/TelephoneAllowanceDetails/EmployeeTelephoneAllowanceList.jsx";
+import VerifyTelephoneAllowanceDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/TelephoneAllowanceDetails/VerifyTelephoneAllowanceDetails.jsx";
+import EmployeeInternetAllowanceList from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/InternetAllowanceDetails/EmployeeInternetAllowanceList.jsx";
+import VerifyInternetAllowanceDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/InternetAllowanceDetails/VerifyInternetAllowanceDetails.jsx";
+import MarkAttendance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/Attendance/MarkAttendance/MarkAttendance.jsx";
 
 
 // const PrivateRoute = ({ allowedRoles, children }) => {
@@ -1219,10 +1260,152 @@ const AppRoutes = () => {
           element={<ViewEmployeeRegistrationFormDetails />}
         />
 
+        {/* Update Details */}
         <Route
           path="payroll-module/employer/update-employee-details"
-          element={<EmploerUpdateEmployeeDetails />}
+          element={<EmployerUpdateEmployeeDetails />}
         />
+
+        {/* CTC Update */}
+        <Route
+          path="payroll-module/employer/employee-ctc"
+          element={<CTCUpdatedEmployeeTable />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-ctc/ctc-update"
+          element={<EmployerCTCUpdate />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-ctc/view-ctc-details"
+          element={<ViewEmployeeCTCDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/employee-ctc/update-ctc-details"
+          element={<UpdateEmployeeCTCDetails />}
+        />
+
+        {/* CTC Master */}
+        <Route
+          path="payroll-module/employer/ctc-master"
+          element={<PayrollCTCMaster />}
+        />
+
+        {/* Increment */}
+        <Route
+          path="payroll-module/employer/salary-increment/single-employee-increment"
+          element={<SingleEmployeeSalaryIncrement />}
+        />
+
+        <Route
+          path="payroll-module/employer/salary-increment/bulk-employee-increment"
+          element={<BulkEmployeeSalaryIncrement />}
+        />
+
+        {/* leave  */}
+        <Route
+          path="payroll-module/employer/attendance/leave-approval"
+          element={<LeaveApplyEmployeeList />}
+        />
+
+        <Route
+          path="payroll-module/employer/attendance/attendance-report"
+          element={<ViewEmployeeAttendanceReports />}
+        />
+        <Route
+          path="payroll-module/employer/attendance/leave-records"
+          element={<EmployeeLeaveRecords />}
+        />
+
+        {/* Overtime Allowance  */}
+
+        <Route
+          path="payroll-module/employer/overtime-allowance"
+          element={<OvertimeAllowanceApproval />}
+        />
+
+        <Route
+          path="payroll-module/employer/overtime-allowance/view-overtime-allowance-details"
+          element={<ViewOvertimeAllowanceDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/overtime-allowance/overtime-allowance-report"
+          element={<OvertimeAllowanceReport />}
+        />
+
+        {/* Payroll Process */}
+
+        <Route
+          path="payroll-module/employer/process-payroll"
+          element={<SchoolEmployerProcessPayroll />}
+        />
+
+        {/* <Route
+          path="payroll-module/employer/pf-deduction"
+          element={<PFDeductionDetails />}
+        /> */}
+
+        <Route
+          path="payroll-module/employer/payroll/pf-register"
+          element={<PFRegister />}
+        />
+
+        <Route
+          path="payroll-module/employer/payroll/esi-register"
+          element={<EsiRegister />}
+        />
+
+
+        {/* It Declaration */}
+        <Route
+          path="payroll-module/employer/income-tax/supporting-tax-submitted"
+          element={<EmployeeSupportingSubmittedForTaxList />}
+        />
+
+        <Route
+          path="payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax"
+          element={<VerifySupportingSubmittedForTaxList />}
+        />
+
+        <Route
+          path="payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax/verify-rent-details"
+          element={<VerifyEmployerRentDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax/lta-list"
+          element={<EmployeeLtaExemptionList />}
+        />
+
+        <Route
+          path="payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax/lta-list/verify-lta-details"
+          element={<VerifyLtaDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax/telephone-allowance-list"
+          element={<EmployeeTelephoneAllowanceList />}
+        />
+
+        <Route
+          path="payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax/telephone-allowance-list/verify-telephone-allowance-details"
+          element={<VerifyTelephoneAllowanceDetails />}
+        />
+
+        <Route
+          path="payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax/internet-allowance-list"
+          element={<EmployeeInternetAllowanceList />}
+        />
+
+        <Route
+          path="payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax/internet-allowance-list/verify-internet-allowance-details"
+          element={<VerifyInternetAllowanceDetails />}
+        />
+
+
 
         {/* ------------------------ Admin Setting ---------------------- */}
 
@@ -1392,88 +1575,133 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="payroll-module/employee-services/attendance/mark-attendance"
+          path="payroll-module/employee/attendance/mark-attendance"
           element={<EmployeeMarkAttendance />}
         />
         <Route
-          path="payroll-module/employee-services/attendance/apply-for-leave"
+          path="payroll-module/employee/attendance/apply-for-leave"
           element={<EmployeeLeaveDetailsAndApply />}
         />
         <Route
-          path="payroll-module/employee-services/attendance/my-attendance-report"
+          path="payroll-module/employee/attendance/my-attendance-report"
           element={<EmployeeAttendanceReport />}
         />
 
-        {/* <Route
-          path="payroll-module/employee-services/overtime-allowance"
+        <Route
+          path="payroll-module/employee/overtime-allowance"
           element={<OvertimeAllowanceList />}
         />
 
         <Route
-          path="payroll-module/employee-services/overtime-allowance/apply-overtime-allowance"
+          path="payroll-module/employee/overtime-allowance/apply-overtime-allowance"
           element={<ApplyOvertimeAllowance />}
         />
 
         <Route
-          path="payroll-module/employee-services/overtime-allowance/view-overtime-allowance"
+          path="payroll-module/employee/overtime-allowance/view-overtime-allowance"
           element={<ViewOvertimeAllowance />}
-        /> */}
+        />
 
-        {/* <Route
+        <Route
           path="payroll-module/employee-services/overtime-allowance/update-overtime-allowance"
           element={<UpdateOvertimeAllowance />}
-        /> */}
+        />
 
         <Route
           path="payroll-module/employee/income-tax/it-declaration"
           element={<EmployeeItDeclaration />}
         />
- 
+
         <Route
-          path="payroll-module/employee-services/income-tax/it-declaration/rent-details"
+          path="payroll-module/employee/income-tax/it-declaration/rent-details"
           element={<EmployeeRentDetails />}
         />
 
-        {/* <Route
-          path="payroll-module/employee-services/income-tax/previous-employment-income"
+        <Route
+          path="payroll-module/employee/income-tax/previous-employment-income"
           element={<EmployeePreviousEmploymentIncome />}
         />
 
         <Route
-          path="payroll-module/employee-services/income-tax/income-tax-computation-sheet"
+          path="payroll-module/employee/income-tax/income-tax-computation-sheet"
           element={<EmployeeIncomeTaxComputationSheet />}
-        /> */}
+        />
 
-        {/* <Route
-          path="payroll-module/employee-services/income-tax/it-declaration/lta-details"
+        <Route
+          path="payroll-module/employee/income-tax/it-declaration/lta-details"
           element={<EmployeeLTADetails />}
         />
 
         <Route
-          path="payroll-module/employee-services/income-tax/it-declaration/lta-details/add-lta"
+          path="payroll-module/employee/income-tax/it-declaration/lta-details/add-lta"
           element={<AddLtaExamptionDetails />}
         />
 
-         <Route
-          path="payroll-module/employee-services/income-tax/it-declaration/telephone-allowance-details"
-          element={<TelephoneAllowanceDetails />}
-        /> */}
+        <Route
+          path="payroll-module/employee/income-tax/it-declaration/lta-details/view-lta"
+          element={<ViewLtaExamptionDetails />}
+        />
 
-        {/* <Route
-          path="payroll-module/employee-services/income-tax/it-declaration/telephone-allowance-details/add-telephone-allowance"
+        <Route
+          path="payroll-module/employee/income-tax/it-declaration/telephone-allowance-details"
+          element={<TelephoneAllowanceDetails />}
+        />
+
+        <Route
+          path="payroll-module/employee/income-tax/it-declaration/telephone-allowance-details/add-telephone-allowance"
           element={<AddTelephoneAllowanceDetails />}
         />
 
-         <Route
-          path="payroll-module/employee-services/income-tax/it-declaration/internet-allowance-details"
+        <Route
+          path="payroll-module/employee/income-tax/it-declaration/telephone-allowance-details/view-telephone-allowance"
+          element={<ViewTelephoneExamptionDetails />}
+        />
+
+
+        <Route
+          path="payroll-module/employee/income-tax/it-declaration/internet-allowance-details"
           element={<InternetAllowanceDetails />}
         />
 
         <Route
-          path="payroll-module/employee-services/income-tax/it-declaration/internet-allowance-details/add-internet-allowance"
+          path="payroll-module/employee/income-tax/it-declaration/internet-allowance-details/add-internet-allowance"
           element={<AddInternetAllowanceDetails />}
+        />
+
+        <Route
+          path="payroll-module/employee/income-tax/it-declaration/internet-allowance-details/view-internet-allowance"
+          element={<ViewInternetExamptionDetails />}
+        />
+
+        {/* <Route
+          path="payroll-module/employee/attendance/mark-attendance"
+          element={<EmployeeMarkAttendance />}
+        /> */}
+<Route
+          path="payroll-module/employee/attendance/mark-attendance"
+          element={<MarkAttendance />}
+        />
+
+        
+        {/* <Route
+          path="payroll-module/employee/attendance/apply-for-leave"
+          element={<EmployeeApplyForLeave />}
         /> */}
 
+        {/* <Route
+          path="payroll-module/employee/attendance/apply-for-leave"
+          element={<EmployeeApplyForLeave />}
+        /> */}
+
+        <Route
+          path="payroll-module/employee/attendance/apply-for-leave"
+          element={<EmployeeLeaveDetailsAndApply />}
+        />
+
+        <Route
+          path="payroll-module/employee-services/attendance/my-attendance-report"
+          element={<EmployeeAttendanceReport />}
+        />
 
       </Route>
       {/* Website Routes */}

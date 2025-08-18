@@ -241,7 +241,7 @@
 // export default InternetAllowanceDetails;
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import getAPI from '../../../../../api/getAPI';
@@ -249,13 +249,15 @@ import postAPI from '../../../../../api/postAPI';
 import ConfirmationDialog from '../../../../ConfirmationDialog';
 
 const InternetAllowanceDetails = () => {
-  const navigate = useNavigate();
+ const navigate = useNavigate();
+   const { state } = useLocation();
+   const academicYear = state?.academicYear;
   const [schoolId, setSchoolId] = useState(null);
   const [employeeId, setEmployeeId] = useState(null);
   const [employeeInternetDetails, setEmployeeInternetDetails] = useState([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  // const [academicYear, setAcademicYear] = useState('');
   const [deleteType, setDeleteType] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(10);
@@ -267,13 +269,14 @@ const InternetAllowanceDetails = () => {
       navigate('/login');
       return;
     }
-    setSchoolId(userDetails.schoolId);
-    setEmployeeId(userDetails.userId);
-    setAcademicYear(userDetails.academicYear || '2025-26'); 
-    fetchInternetDetails(userDetails.schoolId, userDetails.userId);
+    // const academicYear = localStorage.getItem("selectedAcademicYear");
+        setSchoolId(userDetails.schoolId);
+        setEmployeeId(userDetails.userId);
+        // setAcademicYear(academicYear);
+    fetchInternetDetails(userDetails.schoolId, userDetails.userId,academicYear);
   }, [navigate, academicYear]);
 
-  const fetchInternetDetails = async (schoolId, employeeId) => {
+  const fetchInternetDetails = async (schoolId, employeeId,academicYear) => {
     try {
       const response = await getAPI(`/get-internet-allowance/${schoolId}/${employeeId}?academicYear=${academicYear}`);
       console.log('Internet Allowance Details get', response.data.data);
@@ -311,6 +314,8 @@ const InternetAllowanceDetails = () => {
   };
 
   const handleDeleteConfirmed = async (detailId) => {
+    setEmployeeInternetDetails((prev) => prev.filter((internet) => internet._id !== detailId));
+      
     if (!detailId) {
       toast.error('Cannot delete: Invalid detail ID');
       setIsDeleteDialogOpen(false);
@@ -328,7 +333,7 @@ const InternetAllowanceDetails = () => {
       );
       setEmployeeInternetDetails((prev) => prev.filter((internet) => internet._id !== detailId));
       toast.success(response.data.message || 'Internet allowance detail deleted successfully');
-      fetchInternetDetails(schoolId, employeeId); // Refresh list
+      fetchInternetDetails(schoolId, employeeId,academicYear); // Refresh list
     } catch (err) {
       console.error('Error deleting internet allowance detail:', err);
       toast.error(err.response?.data?.message || 'Failed to delete internet allowance detail');
@@ -340,8 +345,15 @@ const InternetAllowanceDetails = () => {
 
   const navigateToAddInternet = (event) => {
     event.preventDefault();
-    navigate('/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/internet-allowance-details/add-internet-allowance', {
+    navigate('/employee-dashboard/payroll-module/employee/income-tax/it-declaration/internet-allowance-details/add-internet-allowance', {
       state: { schoolId, employeeId, academicYear },
+    });
+  };
+
+  const navigateToView = (event, internet) => {
+    event.preventDefault();
+    navigate("/employee-dashboard/payroll-module/employee/income-tax/it-declaration/internet-allowance-details/view-internet-allowance", {
+      state: { internet }
     });
   };
 
@@ -350,7 +362,7 @@ const InternetAllowanceDetails = () => {
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = employeeInternetDetails.slice(indexOfFirstRecord, indexOfLastRecord);
   const totalPages = Math.ceil(employeeInternetDetails.length / recordsPerPage);
-
+ 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -375,6 +387,11 @@ const InternetAllowanceDetails = () => {
     return new Date(isoDate).toLocaleDateString('en-GB');
   };
 
+  const navigateToBack = (event) => {
+    event.preventDefault();
+    navigate('/employee-dashboard/payroll-module/employee/income-tax/it-declaration');
+  }; 
+
   return (
     <div className="container">
       <div className="row">
@@ -386,6 +403,12 @@ const InternetAllowanceDetails = () => {
                   <h4 className="card-title flex-grow-1 text-center">
                     Internet Allowance List
                   </h4>
+                  <Link
+                                      onClick={navigateToBack}
+                                      className="me-2 btn btn-sm btn-primary"
+                                    >
+                                      Back
+                                    </Link>
                   <Link
                     onClick={navigateToAddInternet}
                     className="btn ms-1 btn-sm btn-primary"
@@ -441,23 +464,28 @@ const InternetAllowanceDetails = () => {
                           <td>{internet.supplierName}</td>
                           <td>{internet.gstNumber}</td>
                           <td>{internet.grossAmount.toLocaleString('en-IN')}</td>
-                          <td>{internet.status}</td>
+                          <td>{internet.billStatus}</td>
                           <td>
                             <div className="d-flex gap-2 justify-content-center">
                               <Link
                                 className="btn btn-light btn-sm"
-                                to={`/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/internet-allowance-details/view/${internet._id}`}
-                                disabled={!internet._id}
+                                onClick={(event) => navigateToView(event, internet)}
                               >
                                 <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
                               </Link>
-                              <button
+                              {
+                                internet.billStatus==="Approved" ?"":(
+                                  <>
+                                  <button
                                 className="btn btn-soft-danger btn-sm"
                                 onClick={() => openDeleteDialog(internet)}
-                                disabled={!internet._id}
+                                disabled={internet.billStatus==="Approved"}
                               >
                                 <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
                               </button>
+                                  </>
+                                )
+                              }
                             </div>
                           </td>
                         </tr>

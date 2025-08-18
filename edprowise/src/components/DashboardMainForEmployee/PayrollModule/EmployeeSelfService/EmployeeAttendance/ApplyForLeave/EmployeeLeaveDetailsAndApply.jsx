@@ -8,7 +8,7 @@ import putAPI from '../../../../../../api/putAPI';
 import LeaveViewModal from './LeaveViewModal';
 import LeaveEditModal from './LeaveEditModal';
 import ConfirmationDialog from "../../../../../ConfirmationDialog";
- 
+   
 const EmployeeLeaveDetailsAndApply = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -20,7 +20,7 @@ const EmployeeLeaveDetailsAndApply = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState(null);
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  const [academicYear, setAcademicYear] = useState();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteType, setDeleteType] = useState("");
   const [showLeaveReport, setShowLeaveReport] = useState(false)
@@ -43,9 +43,10 @@ const EmployeeLeaveDetailsAndApply = () => {
     }
     setSchoolId(userDetails.schoolId);
     setEmployeeId(userDetails.userId);
-    setAcademicYear(userDetails.academicYear)
-    fetchEmployeeData(userDetails.schoolId, userDetails.userId, userDetails.academicYear);
-  }, [academicYear]);
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
+    fetchEmployeeData(userDetails.schoolId, userDetails.userId, academicYear);
+  }, []);
 
   const fetchEmployeeData = async (schoolId, empId, academicYear) => {
     try {
@@ -400,22 +401,22 @@ const EmployeeLeaveDetailsAndApply = () => {
                                 <Link className="btn btn-light btn-sm" onClick={() => openView(leave)}>
                                   <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
                                 </Link>
-                                {
+                                {/* {
                                   leave.status === "pending" ? <><Link className="btn btn-soft-primary btn-sm" onClick={() => openEdit(leave, index)}>
                                     <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
                                   </Link></> : ""
-                                }
+                                } */}
                                 {/* <Link className="btn btn-soft-primary btn-sm" onClick={() => openEdit(leave, index)}>
                                   <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
                                 </Link> */}
 
-                                {
+                                {/* {
                                   leave.status === "pending" ? <><Link className="btn btn-soft-danger btn-sm"
-                                    onClick={() => openDeleteDialog(leave)}
+                                    // onClick={ openDeleteDialog(leave)}
                                   >
                                     <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
                                   </Link></> : ""
-                                }
+                                } */}
 
                                 {/* <Link className="btn btn-soft-danger btn-sm"
                                   onClick={() => openDeleteDialog(leave)}

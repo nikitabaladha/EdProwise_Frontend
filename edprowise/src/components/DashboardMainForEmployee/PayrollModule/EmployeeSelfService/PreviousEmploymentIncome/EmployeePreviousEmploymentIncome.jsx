@@ -5,7 +5,7 @@ import postAPI from "../../../../../api/postAPI";
 import { toast } from "react-toastify";
 const incomeComponents = [
     "Basic Salary",
-    "HRA", 
+    "HRA",  
     "Leave Travel Allowance",
     "Education Allowance",
     "Lunch Allowance",
@@ -17,7 +17,7 @@ const incomeComponents = [
 const EmployeePreviousEmploymentIncome = () => {
     const [schoolId, setSchoolId] = useState(null);
     const [employeeId, setEmployeeId] = useState(null);
-    const [academicYear] = useState("2025-26");
+    const [academicYear, setAcademicYear] = useState("");
     const [employeeDetail, setEmployeeDetail] = useState(null);
     const [incomeDetails, setIncomeDetails] = useState({});
     const [totalIncome, setTotalIncome] = useState(0);
@@ -31,15 +31,17 @@ const EmployeePreviousEmploymentIncome = () => {
             toast.error("Authentication details missing");
             return;
         }
-
+const academicYear = localStorage.getItem("selectedAcademicYear");
         setSchoolId(userDetails.schoolId);
         setEmployeeId(userDetails.userId);
-
-        fetchEmployeeDetails(userDetails.schoolId, userDetails.userId);
-        fetchPreviousEmploymentIncome(userDetails.schoolId, userDetails.userId);
+        setAcademicYear(academicYear);
+    
+        
+        fetchEmployeeDetails(userDetails.schoolId, userDetails.userId,academicYear);
+        fetchPreviousEmploymentIncome(userDetails.schoolId, userDetails.userId,academicYear);
     }, [academicYear]);
 
-    const fetchEmployeeDetails = async (schoolId, empId) => {
+    const fetchEmployeeDetails = async (schoolId, empId, academicYear) => {
         try {
             const res = await getAPI(`/get-employee-self-details/${schoolId}/${empId}?academicYear=${academicYear}`);
             if (!res.hasError && res.data?.data) {
@@ -52,7 +54,7 @@ const EmployeePreviousEmploymentIncome = () => {
         }
     };
 
-    const fetchPreviousEmploymentIncome = async (schoolId, employeeId) => {
+    const fetchPreviousEmploymentIncome = async (schoolId, employeeId, academicYear) => {
         try {
             const res = await getAPI(`/get-previous-employment-income/${schoolId}/${employeeId}?academicYear=${academicYear}`);
             console.log("fetch get previous res", res);
@@ -111,7 +113,7 @@ const EmployeePreviousEmploymentIncome = () => {
             const res = await postAPI("/save-previous-employment-income", payload, {}, true);
             if (!res.hasError) {
                 toast.success("Previous employment income saved successfully");
-                fetchPreviousEmploymentIncome(schoolId, employeeId);
+                fetchPreviousEmploymentIncome(schoolId, employeeId,academicYear);
             } else {
                 toast.error(res.message || "Error saving income details");
             }

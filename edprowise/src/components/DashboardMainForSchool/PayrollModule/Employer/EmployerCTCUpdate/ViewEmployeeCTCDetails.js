@@ -9,7 +9,7 @@ const ViewEmployeeCTCDetails = () => {
     const [employeeDetails, setEmployeeDetails] = useState({});
     const [ctcComponents, setCtcComponents] = useState([]);
     const [annualCostToInstitution, setAnnualCostToInstitution] = useState(0);
-
+ 
     useEffect(() => {
         if (employeeData) {
             setEmployeeDetails(employeeData.employeeInfo || {});

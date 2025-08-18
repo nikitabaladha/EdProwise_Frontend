@@ -3,7 +3,7 @@
 // import getAPI from "../../../../../../api/getAPI";
 // import { Link } from 'react-router-dom';
 // import moment from 'moment';
-
+ 
 // const ViewEmployeeAttendanceReports = () => {
 //     const [showInfo, setShowInfo] = useState(false);
 //     const [showForm, setShowForm] = useState(false);
@@ -745,7 +745,7 @@ const ViewEmployeeAttendanceReports = () => {
     const [employeeId, setEmployeeId] = useState('');
     const [employeeName, setEmployeeName] = useState('');
     const [filteredRecords, setFilteredRecords] = useState([]);
-    const [academicYear, setAcademicYear] = useState('2025-26');
+    const [academicYear, setAcademicYear] = useState('');
     const [year, setYear] = useState(moment().format("YYYY"));
     const [month, setMonth] = useState(moment().format("MMMM"));
     const [fromDate, setFromDate] = useState(moment().startOf('month').format("YYYY-MM-DD"));
@@ -755,6 +755,10 @@ const ViewEmployeeAttendanceReports = () => {
         const userDetails = JSON.parse(localStorage.getItem("userDetails"));
         const id = userDetails?.schoolId;
         setSchoolId(id);
+
+        const academicYear = localStorage.getItem("selectedAcademicYear");
+        setAcademicYear(academicYear);
+
     }, []);
 
     const handleFetchEmployeeData = async () => {
@@ -762,7 +766,6 @@ const ViewEmployeeAttendanceReports = () => {
             toast.error("Employee ID and School ID are required.");
             return;
         }
-        
         try {
             const resEmp = await getAPI(`/get-employee-details/${schoolId}/${employeeId}/${academicYear}`);
             

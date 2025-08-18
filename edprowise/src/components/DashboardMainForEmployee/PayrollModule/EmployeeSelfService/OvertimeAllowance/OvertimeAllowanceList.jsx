@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import getAPI from "../../../../../api/getAPI";
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-
+ 
 const OvertimeAllowanceList = () => {
   const navigate = useNavigate();
   const [schoolId, setSchoolId] = useState(null);

@@ -3,7 +3,7 @@
 // import { useNavigate, useLocation } from 'react-router-dom';
 // import { toast } from 'react-toastify';
 // import postAPI from '../../../../../api/postAPI';
-
+ 
 // const AddLtaExamptionDetails = () => {
 //   const navigate = useNavigate();
 //   const location = useLocation();
@@ -466,7 +466,7 @@ const AddLtaExamptionDetails = () => {
         billFile: null,
       });
       setErrors({});
-      navigate('/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/lta-details');
+      navigate('/employee-dashboard/payroll-module/employee/income-tax/it-declaration/lta-details');
     } catch (err) {
       toast.error(err.message || 'Failed to add LTA record');
     } finally {
@@ -483,6 +483,13 @@ const AddLtaExamptionDetails = () => {
     return 'No file selected';
   };
 
+  const navigateToBack = (event) => {
+    event.preventDefault();
+    navigate('/employee-dashboard/payroll-module/employee/income-tax/it-declaration/lta-details', {
+      state: {academicYear },
+    });
+  }; 
+
   return (
     <div className="container">
       <div className="row">
@@ -497,7 +504,8 @@ const AddLtaExamptionDetails = () => {
                   <button
                     type="button"
                     className="btn btn-primary custom-submit-button"
-                    onClick={() => navigate(-1)}
+                    // onClick={() => navigate(-1)}
+                    onClick={navigateToBack}
                   >
                     Back
                   </button>

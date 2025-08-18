@@ -3,7 +3,7 @@
 // import { toast } from 'react-toastify';
 // import getAPI from '../../../../../api/getAPI';
 // import postAPI from '../../../../../api/postAPI';
-
+ 
 // const EmployeeIncomeTaxComputationSheet = () => {
 //   const navigate = useNavigate();
 //   const [schoolId, setSchoolId] = useState(null);
@@ -828,7 +828,7 @@ const EmployeeIncomeTaxComputationSheet = () => {
   const [schoolId, setSchoolId] = useState(null);
   const [employeeId, setEmployeeId] = useState(null);
   const [employeeDetails, setEmployeeDetails] = useState({});
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  const [academicYear, setAcademicYear] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [computationData, setComputationData] = useState(null);
   const [hasPreviousIncome, setHasPreviousIncome] = useState(false);
@@ -840,14 +840,18 @@ const EmployeeIncomeTaxComputationSheet = () => {
       navigate('/login');
       return;
     }
-    setSchoolId(userDetails.schoolId);
-    setEmployeeId(userDetails.userId);
 
-    fetchEmployeeData(userDetails.schoolId, userDetails.userId);
-    fetchItComputationSheet(userDetails.schoolId, userDetails.userId);
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+        setSchoolId(userDetails.schoolId);
+        setEmployeeId(userDetails.userId);
+        setAcademicYear(academicYear);
+        
+    
+    fetchEmployeeData(userDetails.schoolId, userDetails.userId,academicYear);
+    fetchItComputationSheet(userDetails.schoolId, userDetails.userId,academicYear);
   }, [navigate]);
 
-  const fetchEmployeeData = async (schoolId, empId) => {
+  const fetchEmployeeData = async (schoolId, empId,academicYear) => {
     try {
       const employeeRes = await getAPI(`/get-employee-self-details/${schoolId}/${empId}?academicYear=${academicYear}`);
       console.log('employeeRes', employeeRes);
@@ -859,7 +863,7 @@ const EmployeeIncomeTaxComputationSheet = () => {
     }
   };
 
-  const fetchItComputationSheet = async (schoolId, empId) => {
+  const fetchItComputationSheet = async (schoolId, empId,academicYear) => {
     try {
       const computationRes = await getAPI(`/it-computation-sheet/${schoolId}/${empId}?academicYear=${academicYear}`);
       console.log('computationRes', computationRes);

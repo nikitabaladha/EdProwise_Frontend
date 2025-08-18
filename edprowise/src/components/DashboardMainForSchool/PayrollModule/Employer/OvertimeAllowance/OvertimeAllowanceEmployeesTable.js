@@ -6,7 +6,7 @@ const OvertimeAllowanceEmployeesTable = () => {
 
     const handleNavigateToViewOvertimeDetails = () => {
         navigate("/admin-dashboard/payroll-module/employer/overtime-allowance/view-overtime-allowance-detail");
-    };
+    };  
     return (
         <div className="container-fluid">
             <div className="row">

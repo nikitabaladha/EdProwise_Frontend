@@ -6,7 +6,7 @@ const ViewOvertimeAllowanceDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { entry } = location.state || {};
-
+  
   const [formData, setFormData] = useState({
     overtimeDate: '',
     fromTime: '',

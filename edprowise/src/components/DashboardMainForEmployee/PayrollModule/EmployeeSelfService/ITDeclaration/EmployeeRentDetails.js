@@ -1970,17 +1970,20 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import getAPI from '../../../../../api/getAPI';
 import postAPI from '../../../../../api/postAPI';
 import { MdOutlineAutorenew } from "react-icons/md";
 const EmployeeRentDetails = () => {
-  const navigate = useNavigate();
+ const navigate = useNavigate();
+    const { state } = useLocation();
+    
+   const academicYear = state?.academicYear;
   const [schoolId, setSchoolId] = useState(null);
   const [employeeId, setEmployeeId] = useState(null);
   const [employeeDetails, setEmployeeDetails] = useState({});
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  // const [academicYear, setAcademicYear] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] =useState("Pending")
   const [totals, setTotals] = useState({
@@ -2012,8 +2015,6 @@ const EmployeeRentDetails = () => {
     actualRentPaid: 0,
     basicSalaryCity: 0,
     hraExemption: 0,
-
-    
   });
 
   const [rentDetails, setRentDetails] = useState([
@@ -2037,27 +2038,30 @@ const EmployeeRentDetails = () => {
       toast.error('Authentication details missing');
       navigate('/login');
       return;
-    }
-    setSchoolId(userDetails.schoolId);
-    setEmployeeId(userDetails.userId);
+    } 
 
-    fetchEmployeeData(userDetails.schoolId, userDetails.userId);
-    fetchRentDetails(userDetails.schoolId, userDetails.userId);
+    // const academicYear = localStorage.getItem("selectedAcademicYear");
+        setSchoolId(userDetails.schoolId);
+        setEmployeeId(userDetails.userId);
+        // setAcademicYear(academicYear);
+    fetchEmployeeData(userDetails.schoolId, userDetails.userId,academicYear);
+    fetchRentDetails(userDetails.schoolId, userDetails.userId,academicYear);
   }, [navigate]);
 
-  const fetchEmployeeData = async (schoolId, empId) => {
+  const fetchEmployeeData = async (schoolId, empId,academicYear) => {
     try {
       const employeeRes = await getAPI(`/get-employee-self-details/${schoolId}/${empId}?academicYear=${academicYear}`);
       if (!employeeRes.hasError && employeeRes.data?.data) {
         setEmployeeDetails(employeeRes.data.data);
       }
+
     } catch (error) {
       toast.error("Failed to fetch employee details");
       console.error("Fetch employee error:", error);
     }
   };
 
-  const fetchRentDetails = async (schoolId, empId) => {
+  const fetchRentDetails = async (schoolId, empId,academicYear) => {
     try {
       const rentRes = await getAPI(`/rent-details/${schoolId}/${empId}?academicYear=${academicYear}`);
       if (!rentRes.hasError && rentRes.data?.data) {
@@ -2252,7 +2256,7 @@ const EmployeeRentDetails = () => {
 
       if (!response.hasError) {
         toast.success("Rent details submitted successfully!");
-        fetchRentDetails(schoolId, employeeId);
+        fetchRentDetails(schoolId, employeeId, academicYear);
       } else {
         toast.error(response.message || "Failed to submit rent details");
       }

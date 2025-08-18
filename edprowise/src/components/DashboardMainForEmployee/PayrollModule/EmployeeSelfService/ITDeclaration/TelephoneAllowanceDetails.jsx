@@ -5,7 +5,7 @@
 // import getAPI from '../../../../../api/getAPI';
 // import postAPI from '../../../../../api/postAPI';
 // import ConfirmationDialog from '../../../../ConfirmationDialog';
- 
+  
 // const TelephoneAllowanceDetails = () => {
 //   const navigate = useNavigate();
 //   const [schoolId, setSchoolId] = useState(null);
@@ -502,7 +502,7 @@ const TelephoneAllowanceDetails = () => {
   const [employeeTelephoneDetails, setEmployeeTelephoneDetails] = useState([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  const [academicYear, setAcademicYear] = useState('');
   const [deleteType, setDeleteType] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(10);
@@ -514,13 +514,14 @@ const TelephoneAllowanceDetails = () => {
       navigate('/login');
       return;
     }
-    setSchoolId(userDetails.schoolId);
-    setEmployeeId(userDetails.userId);
-    setAcademicYear(userDetails.academicYear || '2025-26');
-    fetchTelephoneDetails(userDetails.schoolId, userDetails.userId);
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+        setSchoolId(userDetails.schoolId);
+        setEmployeeId(userDetails.userId);
+        setAcademicYear(academicYear);
+    fetchTelephoneDetails(userDetails.schoolId, userDetails.userId,academicYear);
   }, [navigate, academicYear]);
 
-  const fetchTelephoneDetails = async (schoolId, employeeId) => {
+  const fetchTelephoneDetails = async (schoolId, employeeId,academicYear) => {
     try {
       const response = await getAPI(`/get-telephone-allowance/${schoolId}/${employeeId}?academicYear=${academicYear}`);
       console.log('Telephone Allowance Details get', response.data.data);
@@ -562,8 +563,15 @@ const TelephoneAllowanceDetails = () => {
 
   const navigateToAddTelephone = (event) => {
     event.preventDefault();
-    navigate('/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/telephone-allowance-details/add-telephone-allowance', {
+    navigate('/employee-dashboard/payroll-module/employee/income-tax/it-declaration/telephone-allowance-details/add-telephone-allowance', {
       state: { schoolId, employeeId, academicYear },
+    });
+  };
+
+  const navigateToView = (event, telephone ) => {
+    event.preventDefault();
+    navigate("/employee-dashboard/payroll-module/employee/income-tax/it-declaration/telephone-allowance-details/view-telephone-allowance", {
+      state: { telephone }
     });
   };
 
@@ -597,6 +605,11 @@ const TelephoneAllowanceDetails = () => {
     return new Date(isoDate).toLocaleDateString('en-GB');
   };
 
+  const navigateToBack = (event) => {
+    event.preventDefault();
+    navigate('/employee-dashboard/payroll-module/employee/income-tax/it-declaration');
+  }; 
+
   return (
     <div className="container">
       <div className="row">
@@ -608,6 +621,12 @@ const TelephoneAllowanceDetails = () => {
                   <h4 className="card-title flex-grow-1 text-center">
                     Telephone Allowance List
                   </h4>
+                  <Link
+                                      onClick={navigateToBack}
+                                      className="me-2 btn btn-sm btn-primary"
+                                    >
+                                      Back
+                                    </Link>
                   <Link
                     onClick={navigateToAddTelephone}
                     className="btn ms-1 btn-sm btn-primary"
@@ -665,23 +684,30 @@ const TelephoneAllowanceDetails = () => {
                           <td>{telephone.supplierName}</td>
                           <td>{telephone.gstNumber}</td>
                           <td>{telephone.grossAmount.toLocaleString('en-IN')}</td>
-                          <td>{telephone.status}</td>
+                          <td>{telephone.billStatus}</td>
                           <td>
                             <div className="d-flex gap-2 justify-content-center">
                               <Link
                                 className="btn btn-light btn-sm"
-                                to={`/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/telephone-allowance-details/view/${telephone._id}`}
-                                disabled={!telephone._id}
+                                onClick={(event) => navigateToView(event, telephone)}
                               >
                                 <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
                               </Link>
-                              <button
+
+                              {
+                                telephone.billStatus === "Approved" ? "":(
+                                  <>
+                                  <button
                                 className="btn btn-soft-danger btn-sm"
                                 onClick={() => openDeleteDialog(telephone)}
                                 disabled={!telephone._id}
                               >
                                 <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
                               </button>
+                                  </>
+                                )
+                              }
+                              
                             </div>
                           </td>
                         </tr>

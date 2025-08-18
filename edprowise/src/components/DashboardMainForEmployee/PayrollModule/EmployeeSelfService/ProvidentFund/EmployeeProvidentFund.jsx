@@ -374,7 +374,7 @@ const EmployeeProvidentFund = () => {
     const id = userDetails?.schoolId;
     const empid = userDetails?.userId;
     const academicYear = localStorage.getItem("selectedAcademicYear");
-
+ 
     if (!id || !empid) {
       toast.error("User details not found. Please login again.");
       return;

@@ -1455,7 +1455,7 @@ import putAPI from '../../../../../api/putAPI';
 import { Link } from 'react-router-dom';
 import Select from 'react-select'; // Use Select instead of CreatableSelect
 
-const EmploerUpdateEmployeeDetails = () => {
+const EmployerUpdateEmployeeDetails = () => {
   const [showForm, setShowForm] = useState(false);
   const [experiences, setExperiences] = useState([{ id: 1 }]);
   const [nominees, setNominees] = useState([{ id: 1 }]);
@@ -1813,7 +1813,6 @@ const EmploerUpdateEmployeeDetails = () => {
     if (!formData.grade) newErrors.grade = 'Grade is required';
     if (!formData.jobDesignation) newErrors.jobDesignation = 'Job designation is required';
     if (!formData.joiningDate) newErrors.joiningDate = 'Joining date is required';
-    if (!formData.currentAddress) newErrors.currentAddress = 'Current address is required';
     if (!validatePhone(formData.emergencyContactNumber)) newErrors.emergencyContactNumber = 'Must be a valid 10-digit number';
     if (!formData.nationality) newErrors.nationality = 'Nationality is required';
     if (!formData.religion) newErrors.religion = 'Religion is required';
@@ -1822,11 +1821,11 @@ const EmploerUpdateEmployeeDetails = () => {
     if (!formData.physicalHandicap) newErrors.physicalHandicap = 'Physical handicap status is required';
     if (!validateAadhar(formData.aadharPassportNumber)) newErrors.aadharPassportNumber = 'Aadhar must be 12 digits';
     if (!validatePAN(formData.panNumber)) newErrors.panNumber = 'Invalid PAN format';
-    if (!formData.accountHolderName) newErrors.accountHolderName = 'Account holder name is required';
-    if (!formData.bankName) newErrors.bankName = 'Bank name is required';
-    if (!formData.ifscCode) newErrors.ifscCode = 'IFSC code is required';
-    if (!formData.accountNumber) newErrors.accountNumber = 'Account number is required';
-    if (!formData.accountType) newErrors.accountType = 'Account type is required';
+    // if (!formData.accountHolderName) newErrors.accountHolderName = 'Account holder name is required';
+    // if (!formData.bankName) newErrors.bankName = 'Bank name is required';
+    // if (!formData.ifscCode) newErrors.ifscCode = 'IFSC code is required';
+    // if (!formData.accountNumber) newErrors.accountNumber = 'Account number is required';
+    // if (!formData.accountType) newErrors.accountType = 'Account type is required';
     if (!formData.securityDepositAmount && formData.securityDepositAmount !== 0) newErrors.securityDepositAmount = 'Security deposit amount is required';
     if (!formData.taxRegime) newErrors.taxRegime = 'Tax regime is required';
     if (!formData.status) newErrors.status = 'Status is required';
@@ -2192,7 +2191,7 @@ const EmploerUpdateEmployeeDetails = () => {
                             name="currentAddress"
                             rows={3}
                             value={formData.currentAddress}
-                          // onChange={handleChange}
+                            onChange={handleChange}
                           // required
                           />
                           {errors.currentAddress && <div className="invalid-feedback">{errors.currentAddress}</div>}
@@ -2245,7 +2244,7 @@ const EmploerUpdateEmployeeDetails = () => {
                             name="emailId"
                             className={`form-control ${errors.emailId ? 'is-invalid' : ''}`}
                             value={formData.emailId}
-                            // onChange={handleChange}
+                            onChange={handleChange}
                             placeholder="example@gmail.com"
                           // required
                           />
@@ -2262,7 +2261,7 @@ const EmploerUpdateEmployeeDetails = () => {
                             name="nationality"
                             className={`form-control ${errors.nationality ? 'is-invalid' : ''}`}
                             value={formData.nationality}
-                          // onChange={handleChange}
+                          onChange={handleChange}
                           // required
                           >
                             <option value="">Select Nationality</option>
@@ -2285,8 +2284,8 @@ const EmploerUpdateEmployeeDetails = () => {
                             name="religion"
                             className={`form-control ${errors.religion ? 'is-invalid' : ''}`}
                             value={formData.religion}
-                            // onChange={handleChange}
-                            // required
+                            onChange={handleChange}
+                            required
                             placeholder="Enter Religion"
                           />
                           {errors.religion && <div className="invalid-feedback">{errors.religion}</div>}
@@ -2302,7 +2301,7 @@ const EmploerUpdateEmployeeDetails = () => {
                             name="gender"
                             className={`form-control ${errors.gender ? 'is-invalid' : ''}`}
                             value={formData.gender}
-                          // onChange={handleChange}
+                          onChange={handleChange}
                           // required
                           >
                             <option value="">Select Gender</option>
@@ -2318,12 +2317,12 @@ const EmploerUpdateEmployeeDetails = () => {
                           <label htmlFor="maritalStatus" className="form-label">
                             Marital Status <span className="text-danger">*</span>
                           </label>
-                          {/* <select
+                          <select
                             id="maritalStatus"
                             name="maritalStatus"
                             className={`form-control ${errors.maritalStatus ? 'is-invalid' : ''}`}
                             value={formData.maritalStatus}
-                            // onChange={handleChange}
+                            onChange={handleChange}
                             // required
                           >
                             <option value="">Select Status</option>
@@ -2331,8 +2330,8 @@ const EmploerUpdateEmployeeDetails = () => {
                             <option value="Un-Married">Un-Married</option>
                             <option value="Widower">Widower</option>
                             <option value="Divorcee">Divorcee</option>
-                          </select> */}
-                          <input
+                          </select>
+                          {/* <input
                             type="text"
                             id="maritalStatus"
                             name="maritalStatus"
@@ -2341,7 +2340,7 @@ const EmploerUpdateEmployeeDetails = () => {
                           // onChange={handleChange}
                           // required
 
-                          />
+                          /> */}
                           {errors.maritalStatus && <div className="invalid-feedback">{errors.maritalStatus}</div>}
                         </div>
                       </div>
@@ -2350,12 +2349,12 @@ const EmploerUpdateEmployeeDetails = () => {
                           <label htmlFor="higherQualification" className="form-label">
                             Higher Qualification <span className="text-danger">*</span>
                           </label>
-                          {/* <select
+                          <select
                             id="higherQualification"
                             name="higherQualification"
                             className={`form-control ${errors.higherQualification ? 'is-invalid' : ''}`}
                             value={formData.higherQualification}
-                            // onChange={handleChange}
+                            onChange={handleChange}
                             // required
                           >
                             <option value="">Select Qualification</option>
@@ -2363,8 +2362,8 @@ const EmploerUpdateEmployeeDetails = () => {
                             <option value="Upto Class 12">Upto Class 12</option>
                             <option value="Graduate">Graduate</option>
                             <option value="Post Graduate">Post Graduate</option>
-                          </select> */}
-                          <input
+                          </select>
+                          {/* <input
                             type="text"
                             id="higherQualification"
                             name="higherQualification"
@@ -2372,8 +2371,7 @@ const EmploerUpdateEmployeeDetails = () => {
                             value={formData.higherQualification}
                           // onChange={handleChange}
                           // required
-
-                          />
+                          /> */}
                           {errors.higherQualification && <div className="invalid-feedback">{errors.higherQualification}</div>}
                         </div>
                       </div>
@@ -2382,19 +2380,19 @@ const EmploerUpdateEmployeeDetails = () => {
                           <label htmlFor="physicalHandicap" className="form-label">
                             Physical Handicap <span className="text-danger">*</span>
                           </label>
-                          {/* <select
+                          <select
                             id="physicalHandicap"
                             name="physicalHandicap"
                             className={`form-control ${errors.physicalHandicap ? 'is-invalid' : ''}`}
                             value={formData.physicalHandicap}
-                            // onChange={handleChange}
+                            onChange={handleChange}
                             // required
                           >
                             <option value="">Select Status</option>
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
-                          </select> */}
-                          <input
+                          </select>
+                          {/* <input
                             type="text"
                             id="physicalHandicap"
                             name="physicalHandicap"
@@ -2403,7 +2401,7 @@ const EmploerUpdateEmployeeDetails = () => {
                           // onChange={handleChange}
                           // required
                           // placeholder="Enter 12-digit Aadhar Number"
-                          />
+                          /> */}
                           {errors.physicalHandicap && <div className="invalid-feedback">{errors.physicalHandicap}</div>}
                         </div>
                       </div>
@@ -3184,4 +3182,4 @@ const EmploerUpdateEmployeeDetails = () => {
   );
 };
 
-export default EmploerUpdateEmployeeDetails;
+export default EmployerUpdateEmployeeDetails;

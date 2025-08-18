@@ -13,7 +13,7 @@ const EsiRegister = () => {
   const [payrollData, setPayrollData] = useState([]);
   const [isAllCopied, setIsAllCopied] = useState(false);
   const [viewMode, setViewMode] = useState('Both');
-
+ 
   const currentYear = moment().year();
   const years = Array.from({ length: currentYear - 2025 + 1 }, (_, i) => 2025 + i);
   const months = moment.months();

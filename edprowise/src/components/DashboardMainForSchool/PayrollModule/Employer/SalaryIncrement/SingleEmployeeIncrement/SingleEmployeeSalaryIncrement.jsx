@@ -3,12 +3,12 @@ import { toast } from "react-toastify";
 import { useNavigate, useLocation } from 'react-router-dom';
 import getAPI from "../../../../../../api/getAPI";
 import postAPI from "../../../../../../api/postAPI";
-
+  
 const SingleEmployeeSalaryIncrement = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [schoolId, setSchoolId] = useState("");
-  const [academicYear, setAcademicYear] = useState("2025-26");
+  const [academicYear, setAcademicYear] = useState("");
   const [employeeId, setEmployeeId] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [employeeDetails, setEmployeeDetails] = useState(null);
@@ -25,6 +25,8 @@ const SingleEmployeeSalaryIncrement = () => {
       toast.error("School ID not found. Please log in again.");
       return;
     }
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
     setSchoolId(id);
   }, []);
 
@@ -39,7 +41,7 @@ const SingleEmployeeSalaryIncrement = () => {
         setEmployeeDetails(response.data.data);
         setShowForm(true);
 
-        const ctcRes = await getAPI(`/getall-payroll-ctc-component/${schoolId}`);
+        const ctcRes = await getAPI(`/getall-payroll-ctc-component/${schoolId}?academicYear=${academicYear}`);
         if (!ctcRes.hasError && Array.isArray(ctcRes.data?.ctcComponent)) {
           setCtcComponents(ctcRes.data.ctcComponent);
           const initialAmounts = {};

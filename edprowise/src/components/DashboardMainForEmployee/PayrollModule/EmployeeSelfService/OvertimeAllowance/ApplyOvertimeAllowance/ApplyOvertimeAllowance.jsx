@@ -8,7 +8,7 @@ const ApplyOvertimeAllowance = () => {
     const navigate = useNavigate();
     const location = useLocation();
     // const [academicYear,setAcademicYear] = useState("2025-26");
-
+ 
     const passedEmployee = location.state?.employee;
     const academicYear = location.state.academicYear;
     const schoolId = location.state.schoolId;

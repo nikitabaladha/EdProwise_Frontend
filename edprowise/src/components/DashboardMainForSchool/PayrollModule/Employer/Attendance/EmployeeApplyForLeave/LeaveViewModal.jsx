@@ -2,7 +2,7 @@ import { Modal, Button } from 'react-bootstrap';
 
 const LeaveViewModal = ({ show, onHide, record, onStatusChange }) => {
   if (!record) return null;
-
+ 
   return (
     <Modal show={show} onHide={onHide} size="md" centered>
       <Modal.Header closeButton>

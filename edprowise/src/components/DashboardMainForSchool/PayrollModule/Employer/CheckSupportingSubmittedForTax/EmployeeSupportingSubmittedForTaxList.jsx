@@ -6,7 +6,7 @@
 //     const navigate = useNavigate();
 //      const [schoolId, setSchoolId] = useState(null);
 //      const [academicYear] = useState('2025-26');
-     
+
 //       useEffect(() => {
 //         const userDetails = JSON.parse(localStorage.getItem('userDetails'));
 //         if (!userDetails?.schoolId) {
@@ -16,7 +16,7 @@
 //         setSchoolId(userDetails.schoolId);
 //         fetchSupportingTax(userDetails.schoolId);
 //       }, [academicYear]);
-    
+
 
 //     const handleNavigateToVerify = () => {
 //         navigate("/school-dashboard/payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax");
@@ -354,7 +354,7 @@
 //                                 className="form-control payroll-table-body payroll-input-border"
 //                                 value={decl.status}
 //                                 onChange={(e) => {
-                                  
+
 //                                 //   console.log(`Update status for ${decl.employeeId}: ${e.target.value}`);
 //                                 }}
 //                               >
@@ -425,12 +425,12 @@ import putAPI from '../../../../../api/putAPI';
 const EmployeeSupportingSubmittedForTaxList = () => {
   const navigate = useNavigate();
   const [schoolId, setSchoolId] = useState(null);
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  const [academicYear, setAcademicYear] = useState('');
   const [declarations, setDeclarations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
-
+  const [academicYearList, setAcademicYearList] = useState([]);
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (!userDetails?.schoolId) {
@@ -438,9 +438,33 @@ const EmployeeSupportingSubmittedForTaxList = () => {
       navigate('/login');
       return;
     }
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
+    fetchAcademicYears(userDetails.schoolId);
+    if (!academicYear) {
+      toast.error('School ID not found academic year. Please log in again.');
+
+    }
     setSchoolId(userDetails.schoolId);
     fetchSupportingTax(userDetails.schoolId, academicYear);
-  }, [academicYear, navigate]);
+  }, []);
+
+  const fetchAcademicYears = async (schoolId) => {
+    try {
+      const response = await getAPI(`/get-payroll-academic-year/${schoolId}`);
+      setAcademicYearList(response.data.data || []);
+    } catch (err) {
+      toast.error('Failed to fetch academic years.');
+    }
+  };
+
+
+  useEffect(() => {
+    if (schoolId && academicYear) {
+      fetchSupportingTax(schoolId, academicYear)
+
+    }
+  }, [schoolId, academicYear]);
 
   const fetchSupportingTax = async (schoolId, academicYear) => {
     try {
@@ -450,8 +474,8 @@ const EmployeeSupportingSubmittedForTaxList = () => {
         true
       );
 
-      console.log("get response", response );
-      
+      console.log("get response", response);
+
       if (response.hasError) {
         toast.error(response.message || 'Failed to fetch IT declarations');
         return;
@@ -492,7 +516,7 @@ const EmployeeSupportingSubmittedForTaxList = () => {
   const handleNavigateToVerify = (declaration) => {
     navigate(
       '/school-dashboard/payroll-module/employer/income-tax/supporting-tax-submitted/verify-supporting-submitted-for-Tax',
-      { state: { declaration } }
+      { state: { declaration, academicYear } }
     );
   };
 
@@ -537,16 +561,17 @@ const EmployeeSupportingSubmittedForTaxList = () => {
                   <div>
                     <select
                       id="yearSelect"
-                      className="custom-select"
-                      value={academicYear}
-                      onChange={handleYearChange}
+                      className="form-select form-select-sm w-auto"
                       aria-label="Select Year"
+                      value={academicYear}
+                      onChange={(e) => setAcademicYear(e.target.value)}
                     >
-                      <option value="2025-26">2025-26</option>
-                      <option value="2026-27">2026-27</option>
-                      <option value="2027-28">2027-28</option>
-                      <option value="2028-29">2028-29</option>
-                      <option value="2029-30">2029-30</option>
+                      <option value="">Select Year</option>
+                      {academicYearList.map((yearObj, index) => (
+                        <option key={index} value={yearObj.academicYear}>
+                          {yearObj.academicYear}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

@@ -7,10 +7,10 @@ const EmployeeInternetAllowanceList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [employeeId, setEmployeeId] = useState(null);
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  const [academicYear, setAcademicYear] = useState('');
   const [schoolId, setSchoolId] = useState(null);
   const [employeeInternetDetails, setEmployeeInternetDetails] = useState([]);
-
+ 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (!userDetails?.schoolId) {
@@ -21,7 +21,7 @@ const EmployeeInternetAllowanceList = () => {
     setSchoolId(userDetails.schoolId);
     if (location.state?.employeeId) {
       setEmployeeId(location.state.employeeId);
-      setAcademicYear(location.state.academicYear || '2025-26');
+      setAcademicYear(location.state.academicYear );
       fetchInternetDetails(userDetails.schoolId, location.state.employeeId);
     } else {
       toast.error('No internet allowance data found');

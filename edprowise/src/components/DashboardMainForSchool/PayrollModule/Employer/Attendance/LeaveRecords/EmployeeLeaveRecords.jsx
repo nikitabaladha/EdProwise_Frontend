@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import getAPI from '../../../../../../api/getAPI';
-
+ 
 const EmployeeLeaveRecords = () => {
   const [schoolId, setSchoolId] = useState(null);
   const [employeeId, setEmployeeId] = useState(null);
   const [employeeDetails, setEmployeeDetails] = useState({});
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [leaveHistory, setLeaveHistory] = useState([]);
-  const [academicYear, setAcademicYear] = useState('2026-27');
+  const [academicYear, setAcademicYear] = useState('');
   const [showLeaveRecords, setShowLeaveRecords] = useState(false);
   const [showLeaveReport, setShowLeaveReport] = useState(false);
   const [reportFilters, setReportFilters] = useState({ from: '', to: '' });
@@ -21,6 +21,8 @@ const EmployeeLeaveRecords = () => {
       return;
     }
     setSchoolId(userDetails.schoolId);
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
   }, []);
 
   const fetchEmployeeData = async (schoolId, employeeId, academicYear) => {

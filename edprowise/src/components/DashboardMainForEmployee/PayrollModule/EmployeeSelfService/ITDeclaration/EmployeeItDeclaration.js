@@ -4,7 +4,7 @@
 // import getAPI from '../../../../../api/getAPI';
 // import postAPI from '../../../../../api/postAPI';
 // import putAPI from '../../../../../api/putAPI';
- 
+
 // const EmployeeItDeclaration = () => {
 //     const navigate = useNavigate();
 //     const [schoolId, setSchoolId] = useState(null);
@@ -4262,13 +4262,13 @@
 //     };
 
 //     const feachEmployeeCtc = async (schoolId,employeeId,academicYear) => {
-        
+
 //         try {
 //           const response = await getAPI(`/get-employee-ctc-details/${schoolId}/${employeeId}/${academicYear}`);
 //           console.log("ctc res",response);
-          
+
 //           if (!response.hasError && response.data?.data) {
-            
+
 //           } else {
 //             toast.error("No employee CTC data found.");
 //           }
@@ -5145,7 +5145,7 @@
 //         try {
 //             const employeeRes = await getAPI(`/get-employee-details/${schoolId}/${empId}/${academicYear}`);
 //             console.log(employeeRes);
-            
+
 //             // const employeeRes = await getAPI(`/get-employee-self-details/${schoolId}/${empId}?academicYear=${academicYear}`);
 //             if (!employeeRes.hasError && employeeRes.data?.data?.employeeInfo) {
 //                 setEmployeeDetails(employeeRes.data.data.employeeInfo);
@@ -5160,7 +5160,7 @@
 //         try {
 //             const declarationRes = await getAPI(`/it-declaration/${schoolId}/${empId}?academicYear=${academicYear}`);
 //             console.log("declarationRes",declarationRes);
-            
+
 //             if (!declarationRes.hasError && declarationRes.data?.data) {
 //                 const data = declarationRes.data.data;
 //                 setSection80C({
@@ -5238,7 +5238,7 @@
 //         try {
 //             const response = await getAPI(`/get-employee-ctc-details/${schoolId}/${employeeId}/${academicYear}`);
 //             console.log("response ctc",response);
-            
+
 //             if (!response.hasError && response.data?.data) {
 //                 setEmployeeCtcDetails(response.data.data);
 //                 const components = response.data.data.components;
@@ -6104,7 +6104,7 @@
 // import { toast } from 'react-toastify';
 // import getAPI from '../../../../../api/getAPI';
 // import postAPI from '../../../../../api/postAPI';
- 
+
 // const EmployeeItDeclaration = () => {
 //     const navigate = useNavigate();
 //     const [schoolId, setSchoolId] = useState(null);
@@ -6531,7 +6531,7 @@
 //         try {
 //             const declarationRes = await getAPI(`/it-declaration/${schoolId}/${empId}?academicYear=${academicYear}`);
 //             console.log("it declaration", declarationRes);
-            
+
 //             if (!declarationRes.hasError && declarationRes.data?.data) {
 //                 const data = declarationRes.data.data;
 //                 setSection80C({
@@ -7455,7 +7455,7 @@ const EmployeeItDeclaration = () => {
     const [employeeId, setEmployeeId] = useState(null);
     const [employeeDetails, setEmployeeDetails] = useState({});
     const [empPanNumber, setEmpPanNumber] = useState(null);
-    const [academicYear, setAcademicYear] = useState("2025-26");
+    const [academicYear, setAcademicYear] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [employeeCtc, setEmployeeCtcDetails] = useState(null);
     const [ltaCategoryLimit, setLtaCategoryLimit] = useState(0);
@@ -7464,6 +7464,7 @@ const EmployeeItDeclaration = () => {
     const [showLtaExemption, setShowLtaExemption] = useState(false);
     const [showTelephoneAllowance, setShowTelephoneAllowance] = useState(false);
     const [showInternetAllowance, setShowInternetAllowance] = useState(false);
+    const [academicYearList, setAcademicYearList] = useState([]);
 
     const defaultSection80CItems = [
         {
@@ -7811,6 +7812,8 @@ const EmployeeItDeclaration = () => {
         setAcceptTermsAndConditions(e.target.checked);
     };
 
+    
+
     const handleToggle = (index) => {
         const updatedItems = [...otherSections.items];
         const enabled = !updatedItems[index].enabled;
@@ -7996,18 +7999,42 @@ const EmployeeItDeclaration = () => {
             navigate('/login');
             return;
         }
+
+        const academicYear = localStorage.getItem("selectedAcademicYear");
         setSchoolId(userDetails.schoolId);
         setEmployeeId(userDetails.userId);
-        setAcademicYear(userDetails.academicYear || "2025-26");
-
-        fetchEmployeeData(userDetails.schoolId, userDetails.userId, userDetails.academicYear || "2025-26");
-        fetchEmployeeCtc(userDetails.schoolId, userDetails.userId, userDetails.academicYear || "2025-26");
-        fetchItDeclaration(userDetails.schoolId, userDetails.userId, userDetails.academicYear || "2025-26");
+        setAcademicYear(academicYear);
+        
+        fetchEmployeeData(userDetails.schoolId, userDetails.userId, academicYear);
+        fetchAcademicYears(userDetails.schoolId);
+        fetchEmployeeCtc(userDetails.schoolId, userDetails.userId, academicYear);
+        fetchItDeclaration(userDetails.schoolId, userDetails.userId, academicYear);
     }, []);
+
+    useEffect(() => {
+    if (schoolId && academicYear) {
+        console.log("setAcademic year as i change", academicYear);
+        
+      fetchEmployeeData(schoolId, employeeId, academicYear);
+      fetchEmployeeCtc(schoolId, employeeId, academicYear);
+      fetchItDeclaration(schoolId, employeeId, academicYear);
+    }
+  }, [academicYear, schoolId, employeeId]);
+
+  const fetchAcademicYears = async (schoolId) => {
+    try {
+      const response = await getAPI(`/get-payroll-academic-year/${schoolId}`);
+      setAcademicYearList(response.data.data || []);
+    } catch (err) {
+      toast.error("Failed to fetch academic years.");
+    }
+  };
 
     const fetchEmployeeData = async (schoolId, empId, academicYear) => {
         try {
             const employeeRes = await getAPI(`/get-employee-details/${schoolId}/${empId}/${academicYear}`);
+            console.log("employeeRes",employeeRes);
+            
             if (!employeeRes.hasError && employeeRes.data?.data?.employeeInfo) {
                 setEmployeeDetails(employeeRes.data.data.employeeInfo);
                 setEmpPanNumber(employeeRes.data.data.employeeInfo.panNumber);
@@ -8053,6 +8080,9 @@ const EmployeeItDeclaration = () => {
             }
         } catch (error) {
             toast.error(error.response?.data?.message || "Error occurred.");
+            setShowLtaExemption(false);
+            setShowTelephoneAllowance(false);
+            setShowInternetAllowance(false);
         }
     };
 
@@ -8071,10 +8101,10 @@ const EmployeeItDeclaration = () => {
                     finalDeduction: section80CData.finalDeduction || 0,
                     items: section80CData.items.length > 0
                         ? section80CData.items.map(item => ({
-                              ...item,
-                              proofDocument: null,
-                              existingDocument: item.proofDocument
-                          }))
+                            ...item,
+                            proofDocument: null,
+                            existingDocument: item.proofDocument
+                        }))
                         : defaultSection80CItems
                 });
 
@@ -8084,10 +8114,10 @@ const EmployeeItDeclaration = () => {
                     finalDeduction: section80DData.finalDeduction || 0,
                     items: section80DData.items.length > 0
                         ? section80DData.items.map(item => ({
-                              ...item,
-                              proofDocument: null,
-                              existingDocument: item.proofDocument
-                          }))
+                            ...item,
+                            proofDocument: null,
+                            existingDocument: item.proofDocument
+                        }))
                         : defaultSection80DItems
                 });
 
@@ -8097,11 +8127,11 @@ const EmployeeItDeclaration = () => {
                     finalDeduction: otherSectionsData.finalDeduction || 0,
                     items: otherSectionsData.items.length > 0
                         ? otherSectionsData.items.map((item, index) => ({
-                              ...item,
-                              proofDocument: null,
-                              existingDocument: item.proofDocument,
-                              enabled: item.proofSubmitted > 0 && [0, 1, 2, 3, 7, 8].includes(index)
-                          }))
+                            ...item,
+                            proofDocument: null,
+                            existingDocument: item.proofDocument,
+                            enabled: item.proofSubmitted > 0 && [0, 1, 2, 3, 7, 8].includes(index)
+                        }))
                         : defaultOtherSectionsItems
                 });
 
@@ -8240,7 +8270,7 @@ const EmployeeItDeclaration = () => {
             formData.append('employeeId', employeeId);
             formData.append('academicYear', academicYear);
             formData.append('taxRegime', employeeDetails.taxRegime || 'old');
-            formData.append('panNumber', employeeDetails.panNumber || '');
+            formData.append('panNumber', employeeDetails.panNumber || empPanNumber);
             formData.append('acceptTermsAndConditions', acceptTermsAndConditions);
 
             section80C.items.forEach((item, index) => {
@@ -8312,19 +8342,27 @@ const EmployeeItDeclaration = () => {
     };
 
     const handleNavigateToRentDetails = () => {
-        navigate("/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/rent-details");
+        navigate(`/employee-dashboard/payroll-module/employee/income-tax/it-declaration/rent-details`, {
+      state: { academicYear },
+    });
     };
 
     const handleNavigateToLtaDetails = () => {
-        navigate("/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/lta-details");
+        navigate(`/employee-dashboard/payroll-module/employee/income-tax/it-declaration/lta-details`, {
+      state: { academicYear },
+    });
     };
 
     const handleNavigateToTelephoneDetails = () => {
-        navigate("/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/telephone-allowance-details");
+        navigate(`/employee-dashboard/payroll-module/employee/income-tax/it-declaration/telephone-allowance-details`, {
+      state: { academicYear },
+    });
     };
 
     const handleNavigateToInternetDetails = () => {
-        navigate("/employee-dashboard/payroll-module/employee-services/income-tax/it-declaration/internet-allowance-details");
+        navigate(`/employee-dashboard/payroll-module/employee/income-tax/it-declaration/internet-allowance-details`, {
+      state: { academicYear },
+    });
     };
 
     const formatCurrency = (amount) => {
@@ -8345,7 +8383,7 @@ const EmployeeItDeclaration = () => {
     const { totalProofSubmitted: total80C, finalDeduction: final80C } = calculate80CTotals();
     const { totalProofSubmitted: total80D, finalDeduction: final80D } = calculate80DTotals(section80D.items);
     const { totalProofSubmitted: totalOther, finalDeduction: finalOther } = calculateOtherSectionsTotals(otherSections.items);
-
+ 
     return (
         <div className="container-fluid">
             <div className="row">
@@ -8382,22 +8420,24 @@ const EmployeeItDeclaration = () => {
                                         </p>
                                     </div>
                                     <div className="col-md-4">
-                                        <p className='text-dark'>
-                                            <label htmlFor="yearSelect" className="mb-0 payroll-box-text fw-bold">Financial Year: </label>
-                                            <select
+                                        <p className='text-dark payroll-box-text'>
+                                            <label htmlFor="yearSelect" className="mb-0 payroll-box-text fw-bold">Financial Year: </label> 
+                                             <select
                                                 id="yearSelect"
-                                                className="custom-select"
+                                                className=" form-select-sm w-auto"
                                                 aria-label="Select Year"
                                                 style={{ marginLeft: "5px" }}
                                                 value={academicYear}
                                                 onChange={(e) => setAcademicYear(e.target.value)}
                                             >
-                                                <option value="2025-26">2025-26</option>
-                                                <option value="2026-27">2026-27</option>
-                                                <option value="2027-28">2027-28</option>
-                                                <option value="2028-29">2028-29</option>
-                                                <option value="2029-30">2029-30</option>
-                                            </select>
+                                                <option value="">Select Year</option>
+                                                {academicYearList.map((yearObj, index) => (
+                                                    <option key={index} value={yearObj.academicYear}>
+                                                        {yearObj.academicYear}
+                                                    </option>
+                                                ))}
+                                            </select> 
+                                            {/* <strong>Financial Year: </strong>{academicYear || 'N/A'} */}
                                         </p>
                                     </div>
                                 </div>

@@ -3303,7 +3303,7 @@ const VerifySupportingSubmittedForTaxList = () => {
   const location = useLocation();
   const [declaration, setDeclaration] = useState(null);
   const [schoolId, setSchoolId] = useState(null);
-  const [academicYear, setAcademicYear] = useState('2025-26');
+  const [academicYear, setAcademicYear] = useState(location.state?.academicYear || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewDocument, setPreviewDocument] = useState(null);
 
@@ -3325,7 +3325,7 @@ const VerifySupportingSubmittedForTaxList = () => {
   }, [navigate, location.state]);
 
   const handleYearChange = (e) => {
-    setAcademicYear(e.target.value);
+    // setAcademicYear(e.target.value);
   };
 
   const calculateSectionTotals = (section, items) => {
@@ -3900,23 +3900,10 @@ const handleOtherExemptionStatusChange = async (exemptionType, status) => {
                   </div>
                   <div className="col-md-4">
                     <p className="text-dark">
-                      <label htmlFor="yearSelect" className="mb-0 payroll-box-text fw-bold">
+                      {/* <label htmlFor="yearSelect" className="mb-0 payroll-box-text fw-bold">
                         Financial Year:
-                      </label>
-                      <select
-                        id="yearSelect"
-                        className="custom-select"
-                        aria-label="Select Year"
-                        style={{ marginLeft: '5px' }}
-                        value={academicYear}
-                        onChange={handleYearChange}
-                      >
-                        <option value="2025-26">2025-26</option>
-                        <option value="2026-27">2026-27</option>
-                        <option value="2027-28">2027-28</option>
-                        <option value="2028-29">2028-29</option>
-                        <option value="2029-30">2029-30</option>
-                      </select>
+                      </label> */}
+                      <strong>Financial Year: </strong>{academicYear || 'N/A'}
                     </p>
                   </div>
                 </div>
@@ -4452,5 +4439,5 @@ const handleOtherExemptionStatusChange = async (exemptionType, status) => {
     </div>
   );
 };
-
+ 
 export default VerifySupportingSubmittedForTaxList;

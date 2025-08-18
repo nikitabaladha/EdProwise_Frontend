@@ -607,12 +607,12 @@ const Sidebar = () => {
 
               {
                 label: "CTC Update",
-                link: "/school-dashboard/fees-module/form/trasfer-certificate-list",
+                link: "/school-dashboard/payroll-module/employer/employee-ctc",
                 icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "CTC Master",
-                link: "/school-dashboard/fees-module/form/concession-table",
+                link: "/school-dashboard/payroll-module/employer/ctc-master",
                 icon: "solar:users-group-rounded-bold-duotone",
               },
               {
@@ -696,12 +696,6 @@ const Sidebar = () => {
                     label: "Form 16 (Upload)",
                     // link: "/admin-dashboard/payroll-module/employee-services/income-tax/form16",
                   },
-
-                  {
-                    label: "Generate Appointment",
-                    // link: "/admin-dashboard/payroll-module/employer/generate-appointment-ctc-letter",
-                  },
-
                 ],
               },
               {
@@ -720,12 +714,16 @@ const Sidebar = () => {
                 ],
               },
               {
+                    label: "Generate Appointment",
+                    // link: "/admin-dashboard/payroll-module/employer/generate-appointment-ctc-letter",
+              },
+              {
                 label: "Performance Tracking",
-                link: "/admin-dashboard/payroll-module/employer/performance-tracking",
+                // link: "/admin-dashboard/payroll-module/employer/performance-tracking",
               },
               {
                 label: "Awards and Achievement",
-                link: "/admin-dashboard/payroll-module/employer/awards-and-achievement",
+                // link: "/admin-dashboard/payroll-module/employer/awards-and-achievement",
               },
               {
                 id: "resignation",
@@ -733,14 +731,14 @@ const Sidebar = () => {
                 children: [
                   {
                     label: "Resignation Approval",
-                    link: "/admin-dashboard/payroll-module/employer/resign/resignation",
+                    // link: "/admin-dashboard/payroll-module/employer/resign/resignation",
                   },
                 ],
               },
 
               {
                 label: "Promotion Nomination",
-                link: "/admin-dashboard/payroll-module/employer/promotion-nomination",
+                // link: "/admin-dashboard/payroll-module/employer/promotion-nomination",
               },
             ],
           },

@@ -3,7 +3,7 @@
 // import { useNavigate, useLocation } from 'react-router-dom';
 // import getAPI from "../../../../../../api/getAPI";
 // import postAPI from "../../../../../../api/postAPI";
-
+  
 // const BulkEmployeeSalaryIncrement = () => {
 //   const navigate = useNavigate();
 //   const location = useLocation();
@@ -574,7 +574,7 @@ const BulkEmployeeSalaryIncrement = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [schoolId, setSchoolId] = useState("");
-  const [academicYear, setAcademicYear] = useState("2025-26");
+  const [academicYear, setAcademicYear] = useState("");
   const [employeeList, setEmployeeList] = useState([]);
   const [ctcComponents, setCtcComponents] = useState([]);
   const [incrementData, setIncrementData] = useState({}); // { employeeId: { percentage, applicableDate, componentAmounts, totalAnnualCost } }
@@ -588,6 +588,8 @@ const BulkEmployeeSalaryIncrement = () => {
       toast.error("School ID not found. Please log in again.");
       return;
     }
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
     setSchoolId(id);
   }, []);
 
@@ -604,7 +606,7 @@ const BulkEmployeeSalaryIncrement = () => {
           setShowForm(true);
 
           // Fetch CTC components
-          const ctcRes = await getAPI(`/getall-payroll-ctc-component/${schoolId}`);
+          const ctcRes = await getAPI(`/getall-payroll-ctc-component/${schoolId}?academicYear=${academicYear}`);
           if (!ctcRes.hasError && Array.isArray(ctcRes.data?.ctcComponent)) {
             let components = ctcRes.data.ctcComponent;
 
@@ -802,13 +804,13 @@ const BulkEmployeeSalaryIncrement = () => {
                           <th className="text-center border border-dark align-content-center p-2" style={{ width: "120px" }}>Increment %</th>
                           <th className="text-center border border-dark align-content-center p-2" style={{ width: "150px" }}>Applicable From</th>
                           {ctcComponents.map((component) => (
-                            <th key={`old-${component._id}`} className="text-center border border-dark align-content-center p-2" style={{ width: "160px" }}>
+                            <th key={`old-${component._id}`} className="text-center border border-dark align-content-center  p-2" style={{ width: "160px" }}>
                               {component.ctcComponentName}
                             </th>
                           ))}
-                          <th className="text-center border border-dark align-content-center p-2" style={{ width: "140px" }}>Gross Earning</th>
+                          <th className="text-center border border-dark align-content-center  p-2" style={{ width: "50px" }}>Gross Earning</th>
                           {ctcComponents.map((component) => (
-                            <th key={`revised-${component._id}`} className="text-center border border-dark align-content-center p-2" style={{ width: "800px" }}>
+                            <th key={`revised-${component._id}`} className="text-center border border-dark  align-content-center p-2" style={{ width: "800px" }}>
                               {component.ctcComponentName}
                             </th>
                           ))}
@@ -858,7 +860,7 @@ const BulkEmployeeSalaryIncrement = () => {
                                 <input
                                   type="number"
                                   className="form-control payroll-table-body payroll-input-border text-end"
-                                  style={{ padding: "4px 8px", fontSize: "14px", width: "100%", boxSizing: "border-box" }}
+                                  style={{ padding: "4px 8px", fontSize: "14px", width: "130px", boxSizing: "border-box" }}
                                   value={incrementData[emp.employeeId]?.componentAmounts[component._id] || ""}
                                   onChange={(e) => handleComponentAmountChange(emp.employeeId, component._id, e.target.value)}
                                   step="0.01"

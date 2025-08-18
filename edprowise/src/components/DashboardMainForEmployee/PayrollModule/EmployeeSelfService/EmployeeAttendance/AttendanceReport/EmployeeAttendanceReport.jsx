@@ -35,7 +35,7 @@ const EmployeeAttendanceReport = () => {
   const handleProceed = async (type) => {
     setFilterType(type);
     setShowForm(true);
-
+  
     let url = `/employee-attendance-report/${schoolId}/${employeeId}`;
     if (type === 'month') {
       const key = `${year}-${moment().month(month).format("MM")}`;

@@ -5,22 +5,25 @@ import moment from 'moment';
 
 const OvertimeAllowanceReport = () => {
   const [schoolId, setSchoolId] = useState('');
-  const [academicYear] = useState('2025-26');
+  const [academicYear,setAcademicYear] = useState('');
   const [year, setYear] = useState(moment().year());
   const [month, setMonth] = useState(moment().format('MM'));
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [filteredRecords, setFilteredRecords] = useState([]);
-
+  
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (userDetails?.schoolId) {
       setSchoolId(userDetails.schoolId);
-      fetchByMonth(userDetails.schoolId, year, month);
+      const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
+    
+      fetchByMonth(userDetails.schoolId, academicYear, year, month);
     }
   }, []);
 
-  const fetchByMonth = async (schoolId, year, month) => {
+  const fetchByMonth = async (schoolId, academicYear,  year, month) => {
     try {
       const res = await getAPI(`/approve-overtime?schoolId=${schoolId}&academicYear=${academicYear}&year=${year}&month=${month}`);
       if (res?.data?.hasError === false) {

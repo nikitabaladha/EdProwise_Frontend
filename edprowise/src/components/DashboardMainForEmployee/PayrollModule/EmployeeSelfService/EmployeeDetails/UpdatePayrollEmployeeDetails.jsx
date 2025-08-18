@@ -184,7 +184,7 @@ const UpdatePayrollEmployeeDetails = () => {
       }
     }; 
     fetchEmployeeDetails();
-  }, [academicYear]);
+  }, []);
 
   const handleChange = (e, section, index) => {
     const { name, value } = e.target;
@@ -208,7 +208,7 @@ const UpdatePayrollEmployeeDetails = () => {
     }
 
     setErrors(newErrors);
-
+ 
     if (section === 'nominationDetails') {
       setFormData((prev) => {
         const updatedNominees = [...prev.nominationDetails];

@@ -7,20 +7,23 @@ const LeaveApplyEmployeeList = () => {
   const [schoolId, setSchoolId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [academicYear] = useState('2025-26');
+  const [academicYear,  setAcademicYear] = useState('');
   const [leaveRecords, setLeaveRecords] = useState([]);
-
+ 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (!userDetails?.schoolId) {
       toast.error('School ID not found. Please log in again.');
       return;
     }
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
+    
     setSchoolId(userDetails.schoolId);
-    fetchLeaveRecords(userDetails.schoolId);
-  }, [academicYear]);
+    fetchLeaveRecords(userDetails.schoolId, academicYear);
+  }, []);
 
-  const fetchLeaveRecords = async (schoolId) => {
+  const fetchLeaveRecords = async (schoolId,academicYear) => {
   try {
     const response = await getAPI(`/get-all-employee-leaves?schoolId=${schoolId}&academicYear=${academicYear}`);
     if (!response.hasError && Array.isArray(response.data.data)) {
@@ -53,7 +56,7 @@ const LeaveApplyEmployeeList = () => {
 
     if (!res.hasError) {
       toast.success('Status updated successfully');
-      fetchLeaveRecords(schoolId);
+      fetchLeaveRecords(schoolId, academicYear);
     } else {
       toast.error(res.message);
     }

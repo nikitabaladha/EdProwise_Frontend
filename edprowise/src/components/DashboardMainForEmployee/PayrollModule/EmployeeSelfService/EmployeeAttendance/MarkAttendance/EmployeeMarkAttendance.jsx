@@ -8,7 +8,7 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'moment/locale/en-gb';
 moment.locale('en-gb');
-
+  
 const localizer = momentLocalizer(moment);
   
 const EmployeeMarkAttendance = () => {
@@ -153,7 +153,7 @@ const EmployeeMarkAttendance = () => {
   };
 
   const handleLeaveClick = () => {
-    navigate('/employee-dashboard/payroll-module/employee-services/attendance/apply-for-leave', {
+    navigate('/employee-dashboard/payroll-module/employee/attendance/apply-for-leave', {
       state: { selectedDate: selectedDate.toISOString() }
     });
   };
