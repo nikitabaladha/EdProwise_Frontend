@@ -8,40 +8,40 @@ import getAPI from '../../../../../../api/getAPI';
 import { exportToExcel, exportToPDF } from './FeeReconStudentWiseExport';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const SchoolFeesReport = () => {
+const FeeReconStudentWiseReport = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
-  const [activeTab, setActiveTab] = useState('Date');
+  const [activeTab, setActiveTab] = useState('Payment Mode');
   const [searchTerm, setSearchTerm] = useState('');
   const [schoolId, setSchoolId] = useState('');
   const [school, setSchool] = useState(null);
   const [logoSrc, setLogoSrc] = useState('');
   const [feeData, setFeeData] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loadingYears, setLoadingYears] = useState(false);
   const [classOptions, setClassOptions] = useState([]);
   const [sectionOptions, setSectionOptions] = useState([]);
-  const [academicYearOptions, setAcademicYearOptions] = useState([]);
   const [installmentOptions, setInstallmentOptions] = useState([]);
   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
+  const [academicYearOptions, setAcademicYearOptions] = useState([]);
   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
-  const [selectedYears, setSelectedYears] = useState([]);
   const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
   const [selectedInstallments, setSelectedInstallments] = useState([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [selectedYears, setSelectedYears] = useState([]);
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
   const dropdownRef = useRef(null);
 
-  const tabs = [ 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment'];
+  const tabs = ['Academic Year', 'Class & Section', 'Installment','Payment Mode', ];
 
   const pageShowOptions = [
+    { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -77,6 +77,7 @@ const SchoolFeesReport = () => {
         setLogoSrc(logoSrc);
       } catch (error) {
         console.error('Failed to fetch school data:', error);
+        toast.error('Failed to fetch school data.');
       }
     };
     if (schoolId) {
@@ -133,7 +134,40 @@ const SchoolFeesReport = () => {
     }
   }, [schoolId]);
 
+  useEffect(() => {
+    if (Object.keys(classSectionMap).length === 0) {
+      const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
+      setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
+      if (selectedClasses.length === 0) {
+        setSelectedSections([]);
+      }
+      return;
+    }
+
+    let validSections = new Set();
+    if (selectedClasses.length === 0) {
+      Object.values(classSectionMap).forEach(sectionSet => {
+        sectionSet.forEach(section => validSections.add(section));
+      });
+    } else {
+      selectedClasses.forEach(cls => {
+        const sectionsForClass = classSectionMap[cls.value] || new Set();
+        sectionsForClass.forEach(section => validSections.add(section));
+      });
+    }
+
+    const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
+    setSectionOptions(newSectionOptions);
+
+    const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
+    const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
+    if (updatedSelectedSections.length !== selectedSections.length) {
+      setSelectedSections(updatedSelectedSections);
+    }
+  }, [selectedClasses, classSectionMap, feeData]);
+
   const fetchFeeData = async (years) => {
+    if (!schoolId || !years.length) return;
     setIsLoading(true);
     try {
       const promises = years.map((year) =>
@@ -148,19 +182,52 @@ const SchoolFeesReport = () => {
         return res.data.data;
       });
 
+      const classSectionMapping = {};
+      unifiedData.forEach((record) => {
+        const className = record.className || '-';
+        const sectionName = record.sectionName || '-';
+        if (className !== '-' && sectionName !== '-') {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = new Set();
+          }
+          classSectionMapping[className].add(sectionName);
+        }
+      });
+      setClassSectionMap(classSectionMapping);
+
       const allFeeTypes = responses
         .flatMap((res) => res?.data?.feeTypes || [])
-        .filter((type, index, self) => self.indexOf(type) === index)
+        .filter((type, index, self) => type && self.indexOf(type) === index)
         .sort();
 
       setFeeTypes(allFeeTypes);
       setFeeData(unifiedData);
 
       const filterOptions = responses[0]?.data?.filterOptions || {};
-      setClassOptions(filterOptions.classOptions || []);
-      setSectionOptions(filterOptions.sectionOptions || []);
-      setInstallmentOptions(filterOptions.installmentOptions || []);
-      setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+      setClassOptions(
+        (filterOptions.classOptions || [])
+          .filter(cls => cls && cls.value && cls.label !== '-')
+          .map(cls => ({ value: cls.value, label: cls.label }))
+      );
+      setSectionOptions(
+        (filterOptions.sectionOptions || [])
+          .filter(sec => sec && sec.value && sec.label !== '-')
+          .map(sec => ({ value: sec.value, label: sec.label }))
+      );
+      setInstallmentOptions(
+        (filterOptions.installmentOptions || [])
+          .filter(inst => inst && inst.value && inst.label !== '-')
+          .map(inst => ({ value: inst.value, label: inst.label }))
+      );
+      setPaymentModeOptions(
+        (filterOptions.paymentModeOptions || [])
+          .filter(mode => mode && mode.value && mode.label !== '-')
+          .map(mode => ({ value: mode.value, label: mode.label }))
+      );
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
     } catch (error) {
       toast.error('Error fetching data: ' + error.message);
       setFeeData([]);
@@ -169,6 +236,7 @@ const SchoolFeesReport = () => {
       setSectionOptions([]);
       setInstallmentOptions([]);
       setPaymentModeOptions([]);
+      setClassSectionMap({});
     } finally {
       setIsLoading(false);
     }
@@ -183,7 +251,7 @@ const SchoolFeesReport = () => {
   }, [schoolId, selectedAcademicYear, selectedYears]);
 
   const handleSelectChange = (selectedOptions, { name }) => {
-    const selected = selectedOptions || [];
+    const selected = Array.isArray(selectedOptions) ? selectedOptions : [];
     if (name === 'academicYear') {
       setSelectedYears(selected);
       setCurrentPage(1);
@@ -203,7 +271,11 @@ const SchoolFeesReport = () => {
       setSelectedInstallments(selected);
       setCurrentPage(1);
     } else if (name === 'rowsPerPage') {
-      setRowsPerPage(selected ? selected.value : 10);
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(feeData.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      }
       setCurrentPage(1);
     }
   };
@@ -223,11 +295,9 @@ const SchoolFeesReport = () => {
     setSelectedSections([]);
     setSelectedFeeTypes([]);
     setSelectedInstallments([]);
-    setStartDate('');
-    setEndDate('');
     setSearchTerm('');
     setCurrentPage(1);
-    setShowFilterPanel(false);
+    setRowsPerPage('all');
     fetchFeeData([selectedAcademicYear]);
   };
 
@@ -279,19 +349,9 @@ const SchoolFeesReport = () => {
       selectedYears.length === 0 ||
       selectedYears.some((year) => row.academicYear === year.value);
 
-    const matchesDate =
-      (!startDate && !endDate) ||
-      (() => {
-        if (!row.displayDate || row.displayDate === '-') return false;
-        const recordDate = new Date(row.displayDate.split('/').reverse().join('-'));
-        const start = startDate ? new Date(startDate) : null;
-        const end = endDate ? new Date(endDate) : null;
-        return (!start || recordDate >= start) && (!end || recordDate <= end);
-      })();
-
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feeTypes[type.value] || 0) > 0);
+      selectedFeeTypes.some((type) => (row.feeTypes?.[type.value] || 0) > 0);
 
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -309,7 +369,6 @@ const SchoolFeesReport = () => {
       matchesSearchTerm &&
       matchesPaymentMode &&
       matchesYear &&
-      matchesDate &&
       matchesFeeType &&
       matchesClass &&
       matchesSection &&
@@ -317,7 +376,6 @@ const SchoolFeesReport = () => {
     );
   });
 
- 
   const groupedByStudent = filteredData.reduce((acc, row) => {
     const admissionNumber = row.admissionNumber;
     if (!acc[admissionNumber]) {
@@ -333,7 +391,6 @@ const SchoolFeesReport = () => {
     return acc;
   }, {});
 
-
   const studentDataArray = Object.keys(groupedByStudent)
     .map((admissionNumber) => ({
       admissionNumber,
@@ -347,7 +404,6 @@ const SchoolFeesReport = () => {
       }),
     }))
     .sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
-
 
   const grandTotals = studentDataArray.reduce((acc, student) => {
     const studentTotals = student.rows.reduce((acc, row) => {
@@ -364,9 +420,8 @@ const SchoolFeesReport = () => {
     return acc;
   }, { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 });
 
-
   const totalRecords = studentDataArray.length;
-  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -378,6 +433,9 @@ const SchoolFeesReport = () => {
   }
 
   const paginatedData = () => {
+    if (rowsPerPage === 'all') {
+      return studentDataArray;
+    }
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     return studentDataArray.slice(startIndex, endIndex);
@@ -400,7 +458,6 @@ const SchoolFeesReport = () => {
   };
 
   const headerMapping = {
-    displayDate: 'Date',
     academicYear: 'Academic Year',
     admissionNumber: 'Admission No.',
     status: 'Status',
@@ -421,9 +478,7 @@ const SchoolFeesReport = () => {
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
-    if (fieldId === 'displayDate') {
-      return formatDate(record[fieldId]) || '-';
-    } else if (fieldId === 'academicYear') {
+    if (fieldId === 'academicYear') {
       return formatAcademicYear(record[fieldId]) || '-';
     } else if (fieldId === 'status') {
       return record[fieldId] || '-';
@@ -454,7 +509,10 @@ const SchoolFeesReport = () => {
                       className="form-control border-dark"
                       placeholder="Search by field..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-2"></div>
@@ -464,7 +522,7 @@ const SchoolFeesReport = () => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length))}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
@@ -573,33 +631,6 @@ const SchoolFeesReport = () => {
                       </ul>
 
                       <div className="tab-content mt-2">
-                        {/* {activeTab === 'Date' && (
-                          <div className="row d-flex justify-content-center">
-                            <div className="col-md-4">
-                              <label className="form-label">Start Date</label>
-                              <div className="input-group">
-                                <input
-                                  type="date"
-                                  className="form-control"
-                                  value={startDate}
-                                  onChange={(e) => setStartDate(e.target.value)}
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <label className="form-label">End Date</label>
-                              <div className="input-group">
-                                <input
-                                  type="date"
-                                  className="form-control"
-                                  value={endDate}
-                                  onChange={(e) => setEndDate(e.target.value)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )} */}
-
                         {activeTab === 'Payment Mode' && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-8">
@@ -638,6 +669,23 @@ const SchoolFeesReport = () => {
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Sections"
                                 className="mt-2"
+                                isDisabled={selectedClasses.length === 0}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {activeTab === 'Installment' && (
+                          <div className="row d-flex justify-content-center">
+                            <div className="col-md-6">
+                              <CreatableSelect
+                                isMulti
+                                name="installment"
+                                options={installmentOptions}
+                                value={selectedInstallments}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Installments"
+                                className="mt-2"
                               />
                             </div>
                           </div>
@@ -655,22 +703,6 @@ const SchoolFeesReport = () => {
                                 placeholder="Select Academic Years"
                                 className="mt-2"
                                 isLoading={loadingYears}
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {activeTab === 'Installment' && (
-                          <div className="row d-flex justify-content-center">
-                            <div className="col-md-6">
-                              <CreatableSelect
-                                isMulti
-                                name="installment"
-                                options={installmentOptions}
-                                value={selectedInstallments}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Installments"
-                                className="mt-2"
                               />
                             </div>
                           </div>
@@ -709,7 +741,6 @@ const SchoolFeesReport = () => {
                     <table className="table text-dark border border-secondary mb-1">
                       <thead>
                         <tr className="payroll-table-header">
-                          {/* <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th> */}
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Academic Year</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Admission No.</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Status</th>
@@ -740,9 +771,6 @@ const SchoolFeesReport = () => {
                             <React.Fragment key={student.admissionNumber}>
                               {student.rows.map((record, rowIndex) => (
                                 <tr key={`${record.admissionNumber}_${record.installmentName}_${record.status}_${studentIndex}_${rowIndex}`}>
-                                  {/* <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                    {formatDate(record.displayDate)}
-                                  </td> */}
                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
                                     {formatAcademicYear(record.academicYear) || '-'}
                                   </td>
@@ -818,7 +846,7 @@ const SchoolFeesReport = () => {
                       </tbody>
                     </table>
                   </div>
-                  {totalRecords > 0 && (
+                  {totalRecords > 0 && rowsPerPage !== 'all' && (
                     <div className="card-footer border-top">
                       <nav aria-label="Page navigation example">
                         <ul className="pagination justify-content-end mb-0">
@@ -862,8 +890,9 @@ const SchoolFeesReport = () => {
                 <div className="text-center mt-3">
                   <p>
                     No paid installments match the selected filters for{' '}
-                    {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
-                      formatAcademicYear(selectedAcademicYear)}.
+                    {selectedYears.length > 0
+                      ? selectedYears.map((y) => formatAcademicYear(y.value)).join(', ')
+                      : formatAcademicYear(selectedAcademicYear)}.
                   </p>
                 </div>
               )}
@@ -875,4 +904,4 @@ const SchoolFeesReport = () => {
   );
 };
 
-export default SchoolFeesReport;
+export default FeeReconStudentWiseReport;

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
@@ -27,9 +28,25 @@ const ConcessionReport = () => {
   const [selectedYears, setSelectedYears] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [classOptions, setClassOptions] = useState([]);
+  const [selectedClasses, setSelectedClasses] = useState([]);
+  const [sectionOptions, setSectionOptions] = useState([]);
+  const [selectedSections, setSelectedSections] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
+  const [installmentOptions, setInstallmentOptions] = useState([]);
+  const [selectedInstallments, setSelectedInstallments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Fee Type', 'Academic Year'];
+  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Fee Type', 'Installment'];
+  const pageShowOptions = [
+    { value: 'all', label: 'All' },
+    { value: 10, label: '10' },
+    { value: 15, label: '15' },
+    { value: 20, label: '20' },
+    { value: 30, label: '30' },
+  ];
 
   const formatAcademicYear = (year) => {
     if (!year) return '-';
@@ -56,10 +73,12 @@ const ConcessionReport = () => {
     const loadSchoolData = async () => {
       try {
         const { school, logoSrc } = await fetchSchoolData(schoolId);
+        console.log('School data:', school, 'LogoSrc:', logoSrc);
         setSchool(school);
         setLogoSrc(logoSrc);
       } catch (error) {
         console.error('Failed to fetch school data:', error);
+        toast.error('Failed to fetch school data.');
       }
     };
     if (schoolId) {
@@ -84,6 +103,7 @@ const ConcessionReport = () => {
       try {
         setLoadingYears(true);
         const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        console.log('Academic years API response:', response);
         if (!response.hasError && response.data?.data) {
           const years = response.data.data
             .map((item) => item.academicYear)
@@ -105,8 +125,8 @@ const ConcessionReport = () => {
           toast.error('No academic years found.');
         }
       } catch (err) {
-        toast.error('Error fetching academic years.');
-        console.error(err);
+        toast.error('Error fetching academic years: ' + err.message);
+        console.error('Error fetching academic years:', err);
       } finally {
         setLoadingYears(false);
       }
@@ -115,6 +135,39 @@ const ConcessionReport = () => {
       fetchAcademicYears();
     }
   }, [schoolId]);
+
+  useEffect(() => {
+    if (Object.keys(classSectionMap).length === 0) {
+      const sections = new Set(feeData.map(row => row.sectionName).filter(sec => sec && sec !== '-'));
+      setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
+      if (selectedClasses.length === 0) {
+        setSelectedSections([]);
+      }
+      return;
+    }
+
+    let validSections = new Set();
+    if (selectedClasses.length === 0) {
+      Object.values(classSectionMap).forEach(sectionSet => {
+        sectionSet.forEach(section => validSections.add(section));
+      });
+      setSelectedSections([]);
+    } else {
+      selectedClasses.forEach(cls => {
+        const sectionsForClass = classSectionMap[cls.value] || new Set();
+        sectionsForClass.forEach(section => validSections.add(section));
+      });
+    }
+
+    const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
+    setSectionOptions(newSectionOptions);
+
+    const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
+    const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
+    if (updatedSelectedSections.length !== selectedSections.length) {
+      setSelectedSections(updatedSelectedSections);
+    }
+  }, [selectedClasses, classSectionMap, feeData]);
 
   const fetchFeeData = async (years) => {
     setIsLoading(true);
@@ -131,10 +184,43 @@ const ConcessionReport = () => {
         return res.data.data;
       });
 
+      console.log('Processed Data (unifiedData):', unifiedData);
+
       const allFeeTypes = responses
         .flatMap((res) => res?.data?.feeTypes || [])
         .filter((type, index, self) => self.indexOf(type) === index)
         .sort();
+
+      const classes = unifiedData
+        .map((row) => row.className)
+        .filter((name, index, self) => name && name !== '-' && self.indexOf(name) === index)
+        .sort()
+        .map((name) => ({ value: name, label: name }));
+
+      const sections = unifiedData
+        .map((row) => row.sectionName)
+        .filter((name, index, self) => name && name !== '-' && self.indexOf(name) === index)
+        .sort()
+        .map((name) => ({ value: name, label: name }));
+
+      const installments = unifiedData
+        .map((row) => row.installmentName)
+        .filter((name, index, self) => name && name !== '-' && self.indexOf(name) === index)
+        .sort()
+        .map((name) => ({ value: name, label: name }));
+
+      const classSectionMapping = {};
+      unifiedData.forEach(row => {
+        const className = row.className;
+        const sectionName = row.sectionName;
+        if (className && className !== '-' && sectionName && sectionName !== '-') {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = new Set();
+          }
+          classSectionMapping[className].add(sectionName);
+        }
+      });
+      setClassSectionMap(classSectionMapping);
 
       setFeeTypes(allFeeTypes);
       setFeeTypeOptions(
@@ -143,12 +229,26 @@ const ConcessionReport = () => {
           label: type,
         }))
       );
+      setClassOptions(classes);
+      setSectionOptions(sections);
+      setInstallmentOptions(installments);
       setFeeData(unifiedData);
+
+      console.log('Unified Data:', unifiedData);
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
     } catch (error) {
       toast.error('Error fetching concession data: ' + error.message);
+      console.error('Error fetching concession data:', error);
       setFeeData([]);
       setFeeTypes([]);
       setFeeTypeOptions([]);
+      setClassOptions([]);
+      setSectionOptions([]);
+      setInstallmentOptions([]);
+      setClassSectionMap({});
     } finally {
       setIsLoading(false);
     }
@@ -166,13 +266,32 @@ const ConcessionReport = () => {
     const selected = selectedOptions || [];
     if (name === 'academicYear') {
       setSelectedYears(selected);
+      setCurrentPage(1);
     } else if (name === 'feeType') {
       setSelectedFeeTypes(selected);
+      setCurrentPage(1);
+    } else if (name === 'class') {
+      setSelectedClasses(selected);
+      setCurrentPage(1);
+    } else if (name === 'section') {
+      setSelectedSections(selected);
+      setCurrentPage(1);
+    } else if (name === 'installment') {
+      setSelectedInstallments(selected);
+      setCurrentPage(1);
+    } else if (name === 'rowsPerPage') {
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(filteredData.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      }
+      setCurrentPage(1);
     }
   };
 
   const applyFilters = () => {
     setShowFilterPanel(false);
+    setCurrentPage(1);
     const yearsToFetch = selectedYears.length > 0
       ? selectedYears.map((year) => year.value)
       : [selectedAcademicYear];
@@ -184,7 +303,12 @@ const ConcessionReport = () => {
     setSelectedFeeTypes([]);
     setStartDate('');
     setEndDate('');
+    setSelectedClasses([]);
+    setSelectedSections([]);
+    setSelectedInstallments([]);
     setSearchTerm('');
+    setCurrentPage(1);
+    setRowsPerPage('all');
     setShowFilterPanel(false);
     fetchFeeData([selectedAcademicYear]);
   };
@@ -234,38 +358,22 @@ const ConcessionReport = () => {
         return row[key] && row[key] !== 0;
       });
 
-    return matchesSearchTerm && matchesYear && matchesDate && matchesFeeType;
+    const matchesClass =
+      selectedClasses.length === 0 ||
+      selectedClasses.some((cls) => row.className === cls.value);
+
+    const matchesSection =
+      selectedSections.length === 0 ||
+      selectedSections.some((sec) => row.sectionName === sec.value);
+
+    const matchesInstallment =
+      selectedInstallments.length === 0 ||
+      selectedInstallments.some((inst) => row.installmentName === inst.value);
+
+    return matchesSearchTerm && matchesYear && matchesDate && matchesFeeType && matchesClass && matchesSection && matchesInstallment;
   });
 
-  const groupedByStudent = filteredData.reduce((acc, row) => {
-    const admissionNumber = row.admissionNumber;
-    if (!acc[admissionNumber]) {
-      acc[admissionNumber] = {
-        studentName: row.studentName,
-        admissionNumber: row.admissionNumber,
-        className: row.className,
-        sectionName: row.sectionName,
-        academicYear: row.academicYear,
-        transactions: [],
-      };
-    }
-    acc[admissionNumber].transactions.push(row);
-    return acc;
-  }, {});
-
-  const studentDataArray = Object.keys(groupedByStudent)
-    .map((admissionNumber) => ({
-      admissionNumber,
-      ...groupedByStudent[admissionNumber],
-      transactions: groupedByStudent[admissionNumber].transactions.sort((a, b) => {
-        if (a.date === '-' || b.date === '-') return 0;
-        return (
-          new Date(a.date.split('/').reverse().join('-')).getTime() -
-          new Date(b.date.split('/').reverse().join('-')).getTime()
-        );
-      }),
-    }))
-    .sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
+  console.log('Filtered Data:', filteredData);
 
   const displayedFeeTypes = selectedFeeTypes.length > 0
     ? selectedFeeTypes.map((ft) => ft.value).filter((type) => nonZeroFeeTypes.includes(type))
@@ -275,9 +383,10 @@ const ConcessionReport = () => {
     const key = type.replace(/\s+/g, '');
     acc[key] = type.endsWith('Fee') ? `${type}s` : type;
     return acc;
-  }, { date: 'Date', Total: 'Total' });
+  }, { academicYear: 'Academic Year', date: 'Date', Total: 'Total' });
 
   const tableFields = [
+    { id: 'academicYear', label: 'Academic Year' },
     { id: 'date', label: 'Date' },
     ...displayedFeeTypes.map((type) => ({
       id: type.replace(/\s+/g, ''),
@@ -288,10 +397,67 @@ const ConcessionReport = () => {
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
+    if (fieldId === 'academicYear') {
+      return formatAcademicYear(record[fieldId]) || '-';
+    }
     if (fieldId === 'date') {
       return formatDate(record[fieldId]) || '-';
     }
-    return record[fieldId] || 0;
+    return record[fieldId] !== undefined && record[fieldId] !== 0 ? record[fieldId] : '-';
+  };
+
+  const totalRecords = filteredData.length;
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
+
+  const maxPagesToShow = 5;
+  const pagesToShow = [];
+  const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+  for (let i = startPage; i <= endPage; i++) {
+    pagesToShow.push(i);
+  }
+
+  const paginatedData = () => {
+    const sortedData = filteredData.sort((a, b) => {
+      if (a.date === '-' || b.date === '-') return 0;
+      return (
+        new Date(a.date.split('/').reverse().join('-')).getTime() -
+        new Date(b.date.split('/').reverse().join('-')).getTime()
+      );
+    });
+    if (rowsPerPage === 'all') return sortedData;
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return sortedData.slice(startIndex, endIndex);
+  };
+
+  const studentDataArray = paginatedData();
+  console.log('Student Data Array:', studentDataArray);
+
+  const totals = tableFields.reduce((acc, field) => {
+    if (field.id === 'academicYear' || field.id === 'date') {
+      acc[field.id] = 'Total';
+    } else {
+      acc[field.id] = filteredData.reduce((sum, record) => sum + (Number(record[field.id]) || 0), 0);
+    }
+    return acc;
+  }, {});
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   return (
@@ -308,11 +474,23 @@ const ConcessionReport = () => {
                       className="form-control border-dark"
                       placeholder="Search by date, admission no., or name"
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-2"></div>
                   <div className="col-md-5 px-0 d-flex align-items-center justify-content-end">
+                    <Select
+                      isClearable
+                      name="rowsPerPage"
+                      placeholder="Show"
+                      options={pageShowOptions}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === totalRecords))}
+                      onChange={(selected, action) => handleSelectChange(selected, action)}
+                      className="email-select border border-dark me-lg-2"
+                    />
                     <div
                       className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
@@ -343,16 +521,18 @@ const ConcessionReport = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
-                              if (studentDataArray.length === 0) {
+                              if (filteredData.length === 0) {
                                 toast.error('No data to export');
                                 return;
                               }
                               setIsExporting(true);
                               try {
-                                await exportToExcel(studentDataArray, tableFields, headerMapping, getFieldValue, school);
+                                console.log('Starting Excel export with filteredData:', filteredData);
+                                await exportToExcel(filteredData, tableFields, headerMapping, getFieldValue, school);
                                 toast.success('Exported to Excel successfully');
                               } catch (err) {
-                                toast.error('Export to Excel failed.');
+                                console.error('Excel export failed:', err);
+                                toast.error('Export to Excel failed: ' + err.message);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -365,16 +545,18 @@ const ConcessionReport = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
-                              if (studentDataArray.length === 0) {
+                              if (filteredData.length === 0) {
                                 toast.error('No data to export');
                                 return;
                               }
                               setIsExporting(true);
                               try {
-                                await exportToPDF(studentDataArray, tableFields, headerMapping, getFieldValue, school, logoSrc);
+                                console.log('Starting PDF export with filteredData:', filteredData);
+                                await exportToPDF(filteredData, tableFields, headerMapping, getFieldValue, school, logoSrc);
                                 toast.success('Exported to PDF successfully');
                               } catch (err) {
-                                toast.error('Export to PDF failed.');
+                                console.error('PDF export failed:', err);
+                                toast.error('Export to PDF failed: ' + err.message);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -415,7 +597,10 @@ const ConcessionReport = () => {
                                   type="date"
                                   className="form-control"
                                   value={startDate}
-                                  onChange={(e) => setStartDate(e.target.value)}
+                                  onChange={(e) => {
+                                    setStartDate(e.target.value);
+                                    setCurrentPage(1);
+                                  }}
                                 />
                               </div>
                             </div>
@@ -426,9 +611,29 @@ const ConcessionReport = () => {
                                   type="date"
                                   className="form-control"
                                   value={endDate}
-                                  onChange={(e) => setEndDate(e.target.value)}
+                                  onChange={(e) => {
+                                    setEndDate(e.target.value);
+                                    setCurrentPage(1);
+                                  }}
                                 />
                               </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {activeTab === 'Academic Year' && (
+                          <div className="row d-flex justify-content-center">
+                            <div className="col-md-8">
+                              <CreatableSelect
+                                isMulti
+                                name="academicYear"
+                                options={academicYearOptions}
+                                value={selectedYears}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Academic Years"
+                                className="mt-2"
+                                isLoading={loadingYears}
+                              />
                             </div>
                           </div>
                         )}
@@ -449,18 +654,45 @@ const ConcessionReport = () => {
                           </div>
                         )}
 
-                        {activeTab === 'Academic Year' && (
+                        {activeTab === 'Class & Section' && (
+                          <div className="row d-flex justify-content-center">
+                            <div className="col-md-4">
+                              <CreatableSelect
+                                isMulti
+                                name="class"
+                                options={classOptions}
+                                value={selectedClasses}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Classes"
+                                className="mt-2"
+                              />
+                            </div>
+                            <div className="col-md-4">
+                              <CreatableSelect
+                                isMulti
+                                name="section"
+                                options={sectionOptions}
+                                value={selectedSections}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Sections"
+                                className="mt-2"
+                                isDisabled={selectedClasses.length === 0}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {activeTab === 'Installment' && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
                                 isMulti
-                                name="academicYear"
-                                options={academicYearOptions}
-                                value={selectedYears}
+                                name="installment"
+                                options={installmentOptions}
+                                value={selectedInstallments}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Academic Years"
+                                placeholder="Select Installments"
                                 className="mt-2"
-                                isLoading={loadingYears}
                               />
                             </div>
                           </div>
@@ -494,55 +726,84 @@ const ConcessionReport = () => {
                   <p>Loading...</p>
                 </div>
               ) : studentDataArray.length > 0 ? (
-                <div className="table-responsive pb-4 mt-3">
-                  {studentDataArray.map((student, studentIndex) => {
-                    const totals = tableFields.reduce((acc, field) => {
-                      if (field.id === 'date') {
-                        acc[field.id] = 'Total';
-                      } else {
-                        acc[field.id] = student.transactions.reduce((sum, record) => sum + (Number(record[field.id]) || 0), 0);
-                      }
-                      return acc;
-                    }, {});
-                    return (
-                      <React.Fragment key={studentIndex}>
-                        <table className="table text-dark border border-secondary mb-4">
-                          <thead>
-                            <tr className="payroll-table-header">
-                              {tableFields.map((field) => (
-                                <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {field.label}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {student.transactions.map((record, index) => (
-                              <tr key={`record_${studentIndex}_${index}`}>
-                                {tableFields.map((field) => (
-                                  <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                    {getFieldValue(record, field)}
-                                  </td>
-                                ))}
-                              </tr>
+                <>
+                  <div className="table-responsive pb-4 mt-3">
+                    <table className="table text-dark border border-secondary mb-4">
+                      <thead>
+                        <tr className="payroll-table-header">
+                          {tableFields.map((field) => (
+                            <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {field.label}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {studentDataArray.map((record, index) => (
+                          <tr key={`record_${index}`} className="payroll-table-row">
+                            {tableFields.map((field) => (
+                              <td
+                                key={field.id}
+                                className="text-center align-middle border border-secondary text-nowrap p-2"
+                              >
+                                {getFieldValue(record, field)}
+                              </td>
                             ))}
-                            <tr className="payroll-table-row">
-                              {tableFields.map((field) => (
-                                <td
-                                  key={field.id}
-                                  className="text-center align-middle border border-secondary text-nowrap p-2"
-                                  style={{ fontWeight: '700' }}
-                                >
-                                  {totals[field.id]}
-                                </td>
-                              ))}
-                            </tr>
-                          </tbody>
-                        </table>
-                      </React.Fragment>
-                    );
-                  })}
-                </div>
+                          </tr>
+                        ))}
+                        <tr className="payroll-table-footer">
+                          {tableFields.map((field) => (
+                            <td
+                              key={field.id}
+                              className="text-center align-middle border border-secondary text-nowrap p-2"
+                            >
+                              <strong>{totals[field.id]}</strong>
+                            </td>
+                          ))}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  {totalRecords > 0 && rowsPerPage !== 'all' && (
+                    <div className="card-footer border-top">
+                      <nav aria-label="Page navigation example">
+                        <ul className="pagination justify-content-end mb-0">
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handlePreviousPage}
+                              disabled={currentPage === 1}
+                            >
+                              Previous
+                            </button>
+                          </li>
+                          {pagesToShow.map((page) => (
+                            <li
+                              key={page}
+                              className={`page-item ${currentPage === page ? 'active' : ''}`}
+                            >
+                              <button
+                                className={`page-link pagination-button ${currentPage === page ? 'active' : ''}`}
+                                onClick={() => handlePageClick(page)}
+                              >
+                                {page}
+                              </button>
+                            </li>
+                          ))}
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handleNextPage}
+                              disabled={currentPage === totalPages}
+                            >
+                              Next
+                            </button>
+                          </li>
+                        </ul>
+                      </nav>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center mt-3">
                   <p>

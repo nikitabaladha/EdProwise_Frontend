@@ -35,12 +35,13 @@ const DateWiseFeesCollection = () => {
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Payment Mode', 'Academic Year', 'Installment', 'Type of Fees'];
+  const tabs = ['Date', 'Academic Year', 'Type of Fees', 'Installment', 'Payment Mode'];
 
   const pageShowOptions = [
+    { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -70,6 +71,7 @@ const DateWiseFeesCollection = () => {
         setLogoSrc(logoSrc);
       } catch (error) {
         console.error('Failed to fetch school data:', error);
+        toast.error('Failed to fetch school data.');
       }
     };
     if (schoolId) {
@@ -101,20 +103,31 @@ const DateWiseFeesCollection = () => {
           console.warn(`No data found for year ${years[index]}`);
           return [];
         }
-        return res.data.data.map((record) => ({
-          ...record,
-          academicYear: years[index],
-          totalPaidFee: Object.values(record.feeTypes).reduce((sum, amount) => sum + (amount || 0), 0),
-        }));
+        return res.data.data.map((record) => {
+         const totalPaidFee = Object.values(record.feeTypes || {}).reduce(
+          (sum, amount) => sum + (Number(amount) || 0),
+          0
+        ) + (Number(record.fineAmount) || 0) + (Number(record.excessAmount) || 0);
+          return {
+            ...record,
+            academicYear: record.academicYear,
+            feesBreakdown: record.feeTypes || {},
+            totalPaidFee,
+          };
+        });
       });
 
+      setFeeData(unifiedData);
       const allFeeTypes = responses
         .flatMap((res) => res?.data?.feeTypes || [])
+        .filter((type) => type && typeof type === 'string')
         .filter((type, index, self) => self.indexOf(type) === index)
         .sort();
 
       setFeeTypes(allFeeTypes);
-      setFeeData(unifiedData);
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
 
       const filterOptions = responses[0]?.data?.filterOptions || {};
       setClassOptions(filterOptions.classOptions || []);
@@ -123,7 +136,7 @@ const DateWiseFeesCollection = () => {
       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
       setAcademicYearOptions(
         filterOptions.academicYearOptions?.length > 0
-          ? filterOptions.academicYearOptions
+          ? filterOptions.academicYearOptions.filter((opt) => opt && opt.value && opt.label)
           : years.map((year) => ({ value: year, label: formatAcademicYear(year) }))
       );
 
@@ -176,7 +189,11 @@ const DateWiseFeesCollection = () => {
       setSelectedInstallments(selected);
       setCurrentPage(1);
     } else if (name === 'rowsPerPage') {
-      setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(feeData.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 'all');
+      }
       setCurrentPage(1);
     }
   };
@@ -200,7 +217,6 @@ const DateWiseFeesCollection = () => {
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
-    setShowFilterPanel(false);
     setCurrentPage(1);
     fetchFeeData([selectedAcademicYear]);
   };
@@ -218,7 +234,8 @@ const DateWiseFeesCollection = () => {
   const filteredData = feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
       ? row.paymentDate.toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      row.paymentMode?.toLowerCase().includes(String(searchTerm).toLowerCase())
+        row.paymentMode?.toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        row.academicYear?.toLowerCase().includes(String(searchTerm).toLowerCase())
       : true;
 
     const matchesPaymentMode =
@@ -232,7 +249,8 @@ const DateWiseFeesCollection = () => {
     const matchesDate =
       (!startDate && !endDate) ||
       (() => {
-        const recordDate = new Date(row.paymentDate.split('-').reverse().join('-'));
+        const [day, month, year] = row.paymentDate.split('-');
+        const recordDate = new Date(`${year}-${month}-${day}`);
         const start = startDate ? new Date(startDate) : null;
         const end = endDate ? new Date(endDate) : null;
         return (!start || recordDate >= start) && (!end || recordDate <= end);
@@ -240,19 +258,19 @@ const DateWiseFeesCollection = () => {
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feeTypes[type.value] || 0) > 0);
+      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) > 0);
 
     const matchesClass =
       selectedClasses.length === 0 ||
-      selectedClasses.some((cls) => row.className === cls.value);
+      selectedClasses.some((cls) => row.className === cls.value || row.className === null);
 
     const matchesSection =
       selectedSections.length === 0 ||
-      selectedSections.some((sec) => row.sectionName === sec.value);
+      selectedSections.some((sec) => row.sectionName === sec.value || row.sectionName === null);
 
     const matchesInstallment =
       selectedInstallments.length === 0 ||
-      selectedInstallments.some((inst) => row.installmentName === inst.value);
+      selectedInstallments.some((inst) => row.installmentName === inst.value || row.installmentName === null);
 
     return (
       matchesSearchTerm &&
@@ -282,19 +300,31 @@ const DateWiseFeesCollection = () => {
 
   const totals = filteredData.reduce(
     (acc, row) => {
-      feeTypes.forEach((type) => {
-        acc[type] = (acc[type] || 0) + (row.feeTypes[type] || 0);
+      acc.totalPaidFee = (acc.totalPaidFee || 0) + (row.totalPaidFee || 0);
+      acc.fineAmount = (acc.fineAmount || 0) + (row.fineAmount || 0);
+      acc.excessAmount = (acc.excessAmount || 0) + (row.excessAmount || 0);
+      const displayTypes = selectedFeeTypes.length > 0
+        ? selectedFeeTypes.map((type) => type.value)
+        : feeTypes;
+      displayTypes.forEach((type) => {
+        acc[type] = (acc[type] || 0) + (row.feesBreakdown[type] || 0);
       });
-      acc.totalPaidFee = (acc.totalPaidFee || 0) + row.totalPaidFee;
       return acc;
     },
-    { totalPaidFee: 0 }
+    { totalPaidFee: 0, fineAmount: 0, excessAmount: 0 }
   );
+
+  const displayedFeeTypes = selectedFeeTypes.length > 0
+    ? selectedFeeTypes.map((type) => type.value)
+    : feeTypes;
 
   const headerMapping = {
     paymentDate: 'Date',
+    academicYear: 'Academic Year',
     paymentMode: 'Payment Mode',
-    ...Object.fromEntries(feeTypes.map((type) => [type, type])),
+    ...Object.fromEntries(displayedFeeTypes.map((type) => [type, type])),
+    fineAmount: 'Fine Amount',
+    excessAmount: 'Excess Amount',
     totalPaidFee: 'Fees Paid',
   };
 
@@ -307,17 +337,23 @@ const DateWiseFeesCollection = () => {
     const fieldId = field.id;
     if (fieldId === 'paymentDate') {
       return record[fieldId] || '-';
+    } else if (fieldId === 'academicYear') {
+      return formatAcademicYear(record[fieldId]) || '-';
     } else if (fieldId === 'paymentMode') {
       return record[fieldId] || '-';
     } else if (fieldId === 'totalPaidFee') {
-      return record[fieldId] || '0.00';
+      return (record[fieldId] || 0).toFixed(2);
+    } else if (fieldId === 'fineAmount') {
+      return (record[fieldId] || 0).toFixed(2);
+    } else if (fieldId === 'excessAmount') {
+      return (record[fieldId] || 0).toFixed(2);
     } else {
-      return (record.feeTypes[fieldId] || 0);
+      return (record.feesBreakdown[fieldId] || 0).toFixed(2);
     }
   };
 
   const totalRecords = filteredData.length;
-  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const totalPages = Math.ceil(totalRecords / (rowsPerPage === 'all' ? totalRecords : rowsPerPage));
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -329,8 +365,8 @@ const DateWiseFeesCollection = () => {
   }
 
   const paginatedData = () => {
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
+    const startIndex = (currentPage - 1) * (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
+    const endIndex = startIndex + (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
     return groupedDataArray
       .flatMap(({ date, records }) => records.map((record, index) => ({ date, record, groupIndex: index })))
       .slice(startIndex, endIndex);
@@ -379,7 +415,7 @@ const DateWiseFeesCollection = () => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length))}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
@@ -427,7 +463,7 @@ const DateWiseFeesCollection = () => {
                                     : selectedAcademicYear
                                 );
                               } catch (err) {
-                                toast.error("Export to Excel failed.");
+                                toast.error('Export to Excel failed.');
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -456,7 +492,7 @@ const DateWiseFeesCollection = () => {
                                   logoSrc
                                 );
                               } catch (err) {
-                                toast.error("Export to PDF failed.");
+                                toast.error('Export to PDF failed.');
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -516,7 +552,6 @@ const DateWiseFeesCollection = () => {
                             </div>
                           </div>
                         )}
-
                         {activeTab === 'Payment Mode' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
@@ -597,7 +632,7 @@ const DateWiseFeesCollection = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Datewise Collection Fees Report</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Datewise Collection INC Concession</h2>
                 </div>
               </div>
 
@@ -608,20 +643,25 @@ const DateWiseFeesCollection = () => {
                   </div>
                   <p>Loading data...</p>
                 </div>
-              ) : feeTypes.length > 0 ? (
+              ) : displayedFeeTypes.length > 0 ? (
                 <>
                   <div className="table-responsive pb-4 mt-3">
                     <table className="table text-dark border border-secondary mb-1">
                       <thead>
                         <tr className="payroll-table-header">
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Academic Year</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Payment Mode</th>
-                          {feeTypes.map((type) => (
+                          {displayedFeeTypes.map((type) => (
                             <th key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
                               {type}
                             </th>
                           ))}
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Fine Amount</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Excess Amount</th>
+                          {selectedFeeTypes.length === 0 && (
+                            <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+                          )}
                         </tr>
                       </thead>
                       <tbody>
@@ -635,24 +675,35 @@ const DateWiseFeesCollection = () => {
                                 {record.paymentDate || '-'}
                               </td>
                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                {formatAcademicYear(record.academicYear) || '-'}
+                              </td>
+                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
                                 {record.paymentMode || '-'}
                               </td>
-                              {feeTypes.map((type) => (
+                              {displayedFeeTypes.map((type) => (
                                 <td
                                   key={type}
                                   className="text-center align-middle border border-secondary text-nowrap p-2"
                                 >
-                                  {(record.feeTypes[type] || 0)}
+                                  {(record.feesBreakdown[type] || 0).toFixed(2)}
                                 </td>
                               ))}
                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.totalPaidFee}
+                                {(record.fineAmount || 0).toFixed(2)}
                               </td>
+                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                {(record.excessAmount || 0).toFixed(2)}
+                              </td>
+                              {selectedFeeTypes.length === 0 && (
+                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                  {(record.totalPaidFee || 0).toFixed(2)}
+                                </td>
+                              )}
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={feeTypes.length + 3} className="text-center">
+                            <td colSpan={displayedFeeTypes.length + 5} className="text-center">
                               No data matches the selected filters for{' '}
                               {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
                                 formatAcademicYear(selectedAcademicYear)}.
@@ -662,17 +713,25 @@ const DateWiseFeesCollection = () => {
                       </tbody>
                       <tfoot>
                         <tr className="payroll-table-footer">
-                          <td colSpan={2} className="text-right border border-secondary p-2">
+                          <td colSpan={3} className="text-right border border-secondary p-2">
                             <strong>Total</strong>
                           </td>
-                          {feeTypes.map((type) => (
+                          {displayedFeeTypes.map((type) => (
                             <td key={type} className="text-center border border-secondary p-2">
-                              <strong>{totals[type] || '0.00'}</strong>
+                              <strong>{(totals[type] || 0).toFixed(2)}</strong>
                             </td>
                           ))}
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalPaidFee || '0.00'}</strong>
+                            <strong>{(totals.fineAmount || 0).toFixed(2)}</strong>
                           </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{(totals.excessAmount || 0).toFixed(2)}</strong>
+                          </td>
+                          {selectedFeeTypes.length === 0 && (
+                            <td className="text-center border border-secondary p-2">
+                              <strong>{(totals.totalPaidFee || 0).toFixed(2)}</strong>
+                            </td>
+                          )}
                         </tr>
                       </tfoot>
                     </table>

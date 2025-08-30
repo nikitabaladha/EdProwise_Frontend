@@ -18,6 +18,7 @@ const FeesChequeReturn = () => {
   const [logoSrc, setLogoSrc] = useState('');
   const [feeData, setFeeData] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loadingYears, setLoadingYears] = useState(false);
   const [classOptions, setClassOptions] = useState([]);
@@ -37,11 +38,12 @@ const FeesChequeReturn = () => {
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment', 'Type of Fees'];
+  const tabs = ['Date',  'Academic Year','Class & Section',  'Installment', 'Type of Fees','Payment Mode',];
   const pageShowOptions = [
+    { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -71,6 +73,7 @@ const FeesChequeReturn = () => {
         setLogoSrc(logoSrc);
       } catch (error) {
         console.error('Failed to fetch school data:', error);
+        toast.error('Failed to fetch school data.');
       }
     };
     if (schoolId) {
@@ -117,8 +120,8 @@ const FeesChequeReturn = () => {
           toast.error('No academic years found.');
         }
       } catch (err) {
-        toast.error('Error fetching academic years.');
-        console.error(err);
+        toast.error('Error fetching academic years: ' + err.message);
+        console.error('Error fetching academic years:', err);
       } finally {
         setLoadingYears(false);
       }
@@ -128,9 +131,43 @@ const FeesChequeReturn = () => {
     }
   }, [schoolId]);
 
+  useEffect(() => {
+    if (Object.keys(classSectionMap).length === 0) {
+      const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
+      setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
+      if (selectedClasses.length === 0) {
+        setSelectedSections([]);
+      }
+      return;
+    }
+
+    let validSections = new Set();
+    if (selectedClasses.length === 0) {
+      Object.values(classSectionMap).forEach(sectionSet => {
+        sectionSet.forEach(section => validSections.add(section));
+      });
+      setSelectedSections([]);
+    } else {
+      selectedClasses.forEach(cls => {
+        const sectionsForClass = classSectionMap[cls.value] || new Set();
+        sectionsForClass.forEach(section => validSections.add(section));
+      });
+    }
+
+    const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
+    setSectionOptions(newSectionOptions);
+
+    const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
+    const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
+    if (updatedSelectedSections.length !== selectedSections.length) {
+      setSelectedSections(updatedSelectedSections);
+    }
+  }, [selectedClasses, classSectionMap, feeData]);
+
   const fetchFeeData = async (years) => {
     setIsLoading(true);
     try {
+      const classSectionMapping = {};
       const promises = years.map((year) =>
         getAPI(`/get-all-Fees-cheque-return-report?schoolId=${schoolId}&academicYear=${year}`)
       );
@@ -146,11 +183,23 @@ const FeesChequeReturn = () => {
         }));
       });
 
+      unifiedData.forEach(record => {
+        const className = record.className || '-';
+        const sectionName = record.sectionName || '-';
+        if (className !== '-' && sectionName !== '-') {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = new Set();
+          }
+          classSectionMapping[className].add(sectionName);
+        }
+      });
+
       const allFeeTypes = responses
         .flatMap((res) => res?.data?.feeTypes || [])
         .filter((type, index, self) => self.indexOf(type) === index)
         .sort();
 
+      setClassSectionMap(classSectionMapping);
       setFeeTypes(allFeeTypes);
       setFeeData(unifiedData);
 
@@ -159,9 +208,15 @@ const FeesChequeReturn = () => {
       setSectionOptions(filterOptions.sectionOptions || []);
       setInstallmentOptions(filterOptions.installmentOptions || []);
       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
     } catch (error) {
       toast.error('Error fetching data: ' + error.message);
+      console.error('Error fetching fee data:', error);
       setFeeData([]);
+      setClassSectionMap({});
       setFeeTypes([]);
       setClassOptions([]);
       setSectionOptions([]);
@@ -201,18 +256,22 @@ const FeesChequeReturn = () => {
       setSelectedInstallments(selected);
       setCurrentPage(1);
     } else if (name === 'rowsPerPage') {
-      setRowsPerPage(selected ? selected.value : 10);
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(feeData.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      }
       setCurrentPage(1);
     }
   };
 
   const applyFilters = () => {
     setShowFilterPanel(false);
+    setCurrentPage(1);
     const yearsToFetch = selectedYears.length > 0
       ? selectedYears.map((year) => year.value)
       : [selectedAcademicYear];
     fetchFeeData(yearsToFetch);
-    setCurrentPage(1);
   };
 
   const resetFilters = () => {
@@ -225,8 +284,9 @@ const FeesChequeReturn = () => {
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
-    setShowFilterPanel(false);
     setCurrentPage(1);
+    setRowsPerPage('all');
+    setShowFilterPanel(false);
     fetchFeeData([selectedAcademicYear]);
   };
 
@@ -356,7 +416,7 @@ const FeesChequeReturn = () => {
   }, {});
 
   const totalRecords = Object.keys(groupedByDate).reduce((sum, date) => sum + groupedByDate[date].length, 0);
-  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -370,8 +430,8 @@ const FeesChequeReturn = () => {
   const paginatedData = () => {
     const sortedDates = Object.keys(groupedByDate).sort();
     let currentCount = 0;
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
+    const startIndex = rowsPerPage === 'all' ? 0 : (currentPage - 1) * rowsPerPage;
+    const endIndex = rowsPerPage === 'all' ? totalRecords : startIndex + rowsPerPage;
     const paginated = [];
 
     for (const date of sortedDates) {
@@ -419,7 +479,10 @@ const FeesChequeReturn = () => {
                       className="form-control border border-dark"
                       placeholder="Search by any field"
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-2"></div>
@@ -429,7 +492,7 @@ const FeesChequeReturn = () => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length))}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
@@ -463,6 +526,10 @@ const FeesChequeReturn = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
+                              if (filteredData.length === 0) {
+                                toast.error('No data to export');
+                                return;
+                              }
                               setIsExporting(true);
                               try {
                                 await exportToExcel(
@@ -476,8 +543,10 @@ const FeesChequeReturn = () => {
                                     ? selectedYears.map((y) => y.value).join(',')
                                     : selectedAcademicYear
                                 );
+                                toast.success('Exported to Excel successfully');
                               } catch (err) {
-                                toast.error("Export to Excel failed.");
+                                toast.error('Export to Excel failed: ' + err.message);
+                                console.error('Excel export failed:', err);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -490,6 +559,10 @@ const FeesChequeReturn = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
+                              if (filteredData.length === 0) {
+                                toast.error('No data to export');
+                                return;
+                              }
                               setIsExporting(true);
                               try {
                                 await exportToPDF(
@@ -505,8 +578,10 @@ const FeesChequeReturn = () => {
                                   school,
                                   logoSrc
                                 );
+                                toast.success('Exported to PDF successfully');
                               } catch (err) {
-                                toast.error("Export to PDF failed.");
+                                toast.error('Export to PDF failed: ' + err.message);
+                                console.error('PDF export failed:', err);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -546,7 +621,10 @@ const FeesChequeReturn = () => {
                                 type="date"
                                 className="form-control"
                                 value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                onChange={(e) => {
+                                  setStartDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                             <div className="col-md-4">
@@ -555,7 +633,10 @@ const FeesChequeReturn = () => {
                                 type="date"
                                 className="form-control"
                                 value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                                onChange={(e) => {
+                                  setEndDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                           </div>
@@ -599,6 +680,7 @@ const FeesChequeReturn = () => {
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Sections"
                                 className="mt-2"
+                                isDisabled={selectedClasses.length === 0}
                               />
                             </div>
                           </div>
@@ -773,7 +855,7 @@ const FeesChequeReturn = () => {
                       </tfoot>
                     </table>
                   </div>
-                  {totalRecords > 0 && (
+                  {totalRecords > 0 && rowsPerPage !== 'all' && (
                     <div className="card-footer border-top">
                       <nav aria-label="Page navigation example">
                         <ul className="pagination justify-content-end mb-0">

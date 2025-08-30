@@ -230,9 +230,13 @@ import FeesRefund from "./components/DashboardMainForSchool/FeesModuleServices/F
 import CreateFeesRefund from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/CreateFeesreFund.js'
 import Refundreceipt from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/RefundReceipt.js'
 
-import StudentProfile from './components/DashboardMainForSchool/FeesModuleServices/StudentProfile/StudentAdmissionListTable.js'
-import StudentProfileUpdate from './components/DashboardMainForSchool/FeesModuleServices/StudentProfile/UpdateAdmissionDetail/UpdateAdmissionForm.js'
-import StudentProfileView from './components/DashboardMainForSchool/FeesModuleServices/StudentProfile/ViewStudentAdmissionDetail/ViewStudentAdmissionDetails.js'
+import StudentProfile from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentProfile/StudentAdmissionListTable.js';
+import StudentProfileUpdate from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentProfile/UpdateAdmissionDetail/UpdateAdmissionForm.js';
+import StudentProfileView from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentProfile/ViewStudentAdmissionDetail/ViewStudentAdmissionDetails.js';
+import StudentCount from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentCount/StudentCountReport.js';
+import StudentCountRecon from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentCountRecon/StudentCountReconReport.js';
+import StudentMaster from "./components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentMaster/StudentMaster.js"
+import AcademicYearsSetting  from './components/DashboardMainForSchool/FeesModuleServices/AdminSetting/AcademicYear/AcademicYear.js'
 // ===================================================Reports==========================================================================================================//
 import StudentLedger from "./components/DashboardMainForSchool/FeesModuleServices/Reports/StudentLedger/studentledger.js"
 
@@ -245,6 +249,7 @@ import GenralBoardExam from "./components/DashboardMainForSchool/FeesModuleServi
 import GenralSchoolFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/SchoolFees/SchoolFees.js"
 import GenralLateFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/LateandExcessFees/LateandExcessFee.js"
 import GenralFeesReundCancelled from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/FeesRefund/FeesRefund.js";
+import GenralFeesCancelled from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/FeesCancelled/FeesCancelled.js";
 import GenralFeesChequeReturn from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/ChequeReturn/FeesChequeReturn.js";
 import GenralFeesReundReport from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/FeesRefund/FeesRefund.js";
 import GenralFeesStructure from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/FeeStructure/FeeStructureReport.js"
@@ -254,7 +259,8 @@ import DailyCollectionDatsewiseCollection from "./components/DashboardMainForSch
 import DailyCollectionDatsewiseCollectionWithConcession from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/DateWiseCollectionWithConcession/DateWiseCollection.js"
 import DailyCollectionStudentwiseCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/StudentWiseCollection/StudentWiseCollection.js"
 import DailyCollectionStudentwiseCollectionWithConcesssion from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/StudentWiseCollectionWithConcession/StudentWiseCollection.js"
-
+import DailyCollectionMonthwiseCollection  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/MonthWiseCollectionINCConcession/MonthWiseCollection.js"
+import DailyCollectionMonthwiseExcConcessionCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/MonthWiseCollectionEXCConcession/MonthWiseCollection.js"
 // ===================================================Concession===================================================//
 import ConcessionReportDatewise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportDatewise/FeesConcessionReportDatewise.js";
 import ConcessionReportStudentwise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportStudentwise/FeesConcessionReportStudentWise.js";
@@ -265,7 +271,7 @@ import LossOfFeeDuetoLeftstudent from "./components/DashboardMainForSchool/FeesM
 import LossOfFeeDuetoLateAdmssion from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/LossofFeeDueTolateAdmission/LossoflateAdmission.js";
 import DefaulterFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/DefaulterFees/DefaulterFees.js";
 import ArrearFeesReceivedReport from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/ArrearFeesReceived/ArrearFeesReport.js";
-import StudentMaster from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/StudentMaster/StudentMaster.js"
+
 import AdvancedFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/AdvancedReport/AdvancedFeesReport.js"
 import OpeningAndClosingAdvanced from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OpeningandClosingAdvanced/OpeningandClosingAdvancedReport.js"
 // ===================================================FeesRecom==================================================//
@@ -787,6 +793,13 @@ const AppRoutes = () => {
 
         {/*---------------------- Admin Settings ------------------*/}
 
+        <Route
+          path="fees-module/admin-setting/acadmic-year-setting"
+          element={<AcademicYearsSetting />}
+        />
+
+   
+
         {/*------------------------------------ Prefix Seetings----------------------------- */}
 
         <Route
@@ -1060,7 +1073,7 @@ const AppRoutes = () => {
         />
         <Route
           path="fees-module/reports/general/fees-cancelled"
-          element={<GenralFeesReundCancelled/>}
+          element={<GenralFeesCancelled/>}
         />
         <Route
           path="fees-module/reports/general/fees-cheque-return"
@@ -1075,20 +1088,30 @@ const AppRoutes = () => {
 
           {/* --------------------------------------------Daily Collection-------------------------------------- */}
         <Route
-          path="fees-module/reports/daily-collection/datewise-collection"
+          path="fees-module/reports/daily-collection/datewise-collection-inc-concession"
           element={<DailyCollectionDatsewiseCollection />}
         />
 
+          <Route
+          path="fees-module/reports/daily-collection/monthwise-collection-inc-concession"
+          element={<DailyCollectionMonthwiseCollection />}
+        />
+
         <Route
-          path="fees-module/reports/daily-collection/datewise-collection-with-concession"
+          path="fees-module/reports/daily-collection/datewise-collection-exc-concession"
           element={<DailyCollectionDatsewiseCollectionWithConcession />}
         />
+
         <Route
-          path="fees-module/reports/daily-collection/studentwise-collection"
+          path="fees-module/reports/daily-collection/monthwise-collection-exc-concession"
+          element={<DailyCollectionMonthwiseExcConcessionCollection />}
+        />
+        <Route
+          path="fees-module/reports/daily-collection/studentwise-collection-inc-concession"
           element={<DailyCollectionStudentwiseCollection />}
         />
         <Route
-          path="fees-module/reports/daily-collection/studentwise-with-collection"
+          path="fees-module/reports/daily-collection/studentwise-collection-exc-concession"
           element={<DailyCollectionStudentwiseCollectionWithConcesssion />}
         />
 
@@ -1126,11 +1149,6 @@ const AppRoutes = () => {
           element={<ArrearFeesReceivedReport />}
         />
         <Route
-          path="fees-module/reports/advanced/student-master"
-          element={<StudentMaster />}
-        />
-
-        <Route
           path="fees-module/reports/advanced/advance-fees"
           element={<AdvancedFees/>}
         />
@@ -1162,17 +1180,31 @@ const AppRoutes = () => {
         {/* --------------------------------------------Profile------------------------------------------------------- */}
 
         <Route
-          path="fees-module/student-profile"
+          path="fees-module/student-dba/student-profile"
           element={<StudentProfile />}
         />
         <Route
-          path="fees-module/student-profile/update-admission-form"
+          path="fees-module/student-dba/student-profile/update-admission-form"
           element={<StudentProfileUpdate />}
         />
         <Route
-          path="fees-module/student-profile/view-admission-form"
+          path="fees-module/student-dba/student-profile/view-admission-form"
           element={<StudentProfileView />}
         />
+        <Route
+          path="fees-module/student-dba/student-count"
+          element={<StudentCount/>}
+        />
+        <Route
+          path="fees-module/student-dba/student-count-recon"
+          element={<StudentCountRecon/>}
+        />
+         <Route
+          path="fees-module/student-dba/student-master"
+          element={<StudentMaster/>}
+        />
+
+        
 
       </Route>
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import countryData from "../../../../CityData.json";
+import countryData from "../../../../../CityData.json";
 import { useNavigate, useLocation } from 'react-router-dom';
-import getAPI from '../../../../../api/getAPI';
+import getAPI from '../../../../../../api/getAPI';
 import { toast } from 'react-toastify';
-import putAPI from '../../../../../api/putAPI';
+import putAPI from '../../../../../../api/putAPI';
 import { validateFullForm } from '../FormValidation/UpdateFormValidation';
 
 const UseUpdateAdmissionForm = () => {

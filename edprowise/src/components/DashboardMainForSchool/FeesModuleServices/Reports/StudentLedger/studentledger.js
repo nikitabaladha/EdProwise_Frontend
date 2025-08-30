@@ -13,7 +13,7 @@ const StudentFeeLedger = () => {
   const [searchQuery, setSearchQuery] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [schoolId, setSchoolId] = useState('');
   const [school, setSchool] = useState(null);
@@ -23,11 +23,13 @@ const StudentFeeLedger = () => {
   const [feeTypes, setFeeTypes] = useState([]);
   const [isExporting, setIsExporting] = useState(false);
   const [feeData, setFeeData] = useState([]);
+  const [paymentData, setPaymentData] = useState([]);
   const academicYear = localStorage.getItem('selectedAcademicYear');
   const currentDate = new Date();
   const dropdownRef = useRef(null);
 
   const pageShowOptions = [
+    { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -94,13 +96,16 @@ const StudentFeeLedger = () => {
           setFeeTypes(feeTypesRes.data.data || []);
         }
 
-        const studentsRes = await getAPI(`/get-admission-form/${schoolId}`);
+        const studentsRes = await getAPI(`/get-admission-form-for-ledger/${schoolId}`);
         if (!studentsRes.hasError) {
-          setStudents(studentsRes.data.data || []);
+          setStudents(studentsRes.data.data.admissionForms || []);
+          setPaymentData(studentsRes.data.data.payments?.allPayments || []);
         }
       } catch (error) {
         console.error('Error initializing data:', error);
         toast.error('Error initializing data');
+        setStudents([]);
+        setPaymentData([]);
       }
     };
 
@@ -161,6 +166,87 @@ const StudentFeeLedger = () => {
 
     let runningBalance = 0;
 
+    // Process admission fees
+    if (student.admissionFees && student.paymentDate && student.academicYear === academicYear) {
+      const admissionDue = Number(student.admissionFees) || 0;
+      const concession = Number(student.concessionAmount) || 0;
+      const finalAmount = Number(student.finalAmount) || 0;
+      const paymentDate = new Date(student.paymentDate);
+      const formattedDate = paymentDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).replace(/\//g, '-');
+
+      runningBalance += admissionDue;
+      transactions.push({
+        academicYear: student.academicYear,
+        date: formattedDate,
+        particulars: `Fees Due - Admission Fees`,
+        receiptNo: '',
+        paymentMode: '',
+        due: (admissionDue - concession).toFixed(0),
+        receipt: '',
+        balance: runningBalance.toFixed(0),
+        paymentDateRaw: paymentDate,
+      });
+
+      if (student.status === 'Paid') {
+        runningBalance -= finalAmount;
+        transactions.push({
+          academicYear: student.academicYear,
+          date: formattedDate,
+          particulars: `Fees Received - Admission Fees`,
+          receiptNo: student.receiptNumber || '',
+          paymentMode: student.paymentMode || '',
+          due: '',
+          receipt: finalAmount.toFixed(0),
+          balance: runningBalance.toFixed(0),
+          paymentDateRaw: paymentDate,
+        });
+      }
+    }
+
+    const studentPayments = paymentData.filter((payment) => payment.admissionNumber === student.AdmissionNumber);
+    studentPayments.forEach((payment) => {
+      const paymentDate = new Date(payment.paymentDate);
+      const formattedDate = paymentDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).replace(/\//g, '-');
+
+      const paidAmount = Number(payment.paidAmount) || 0;
+
+      runningBalance += paidAmount;
+      transactions.push({
+        academicYear: payment.academicYear,
+        date: formattedDate,
+        particulars: `Fees Due - ${payment.type}`,
+        receiptNo: '',
+        paymentMode: '',
+        due: paidAmount.toFixed(0),
+        receipt: '',
+        balance: runningBalance.toFixed(0),
+        paymentDateRaw: paymentDate,
+      });
+
+      // Add "Received" entry
+      runningBalance -= paidAmount;
+      transactions.push({
+        academicYear: payment.academicYear,
+        date: formattedDate,
+        particulars: `Fees Received - ${payment.type}`,
+        receiptNo: payment.receiptNumber || '',
+        paymentMode: payment.paymentMode || 'Unknown',
+        due: '',
+        receipt: paidAmount.toFixed(0),
+        balance: runningBalance.toFixed(0),
+        paymentDateRaw: paymentDate,
+      });
+    });
+
+    // Process fee installments from feeData
     feeData.forEach((year) => {
       const feeAggregates = {};
 
@@ -226,8 +312,8 @@ const StudentFeeLedger = () => {
             paymentMode: pi.paymentMode,
             totalPayable,
             totalPaid: 0,
-            totalFinePaid: 0,
-            totalExcessPaid: 0,
+            totalFinePaid: Number(pi.paidFine || 0),
+            totalExcessPaid: Number(pi.excessAmount || 0),
             transactionNumber: pi.transactionNumber || '',
             paymentDate: pi.paymentDate,
           });
@@ -235,8 +321,6 @@ const StudentFeeLedger = () => {
 
         const payment = paymentMap.get(key);
         payment.totalPaid += Number(pi.paidAmount || 0);
-        payment.totalFinePaid += Number(pi.paidFine || 0);
-        payment.totalExcessPaid += Number(pi.excessAmount || 0);
       });
 
       paymentMap.forEach((payment) => {
@@ -252,11 +336,23 @@ const StudentFeeLedger = () => {
           transactions.push({
             academicYear: year.academicYear,
             date: formattedDate,
-            particulars: 'Fine',
-            receiptNo: payment.receiptNumber,
-            paymentMode: payment.paymentMode,
+            particulars: 'Fine Due',
+            receiptNo: '',
+            paymentMode: '',
             due: payment.totalFinePaid.toFixed(0),
             receipt: '',
+            balance: runningBalance.toFixed(0),
+            paymentDateRaw: paymentDate,
+          });
+          runningBalance -= Number(payment.totalFinePaid);
+          transactions.push({
+            academicYear: year.academicYear,
+            date: formattedDate,
+            particulars: 'Fine Received',
+            receiptNo: payment.receiptNumber,
+            paymentMode: payment.paymentMode,
+            due: '',
+            receipt: payment.totalFinePaid.toFixed(0),
             balance: runningBalance.toFixed(0),
             paymentDateRaw: paymentDate,
           });
@@ -267,19 +363,30 @@ const StudentFeeLedger = () => {
           transactions.push({
             academicYear: year.academicYear,
             date: formattedDate,
-            particulars: 'Excess Amount',
-            receiptNo: payment.receiptNumber,
-            paymentMode: payment.paymentMode,
+            particulars: 'Excess Amount Due',
+            receiptNo: '',
+            paymentMode: '',
             due: payment.totalExcessPaid.toFixed(0),
             receipt: '',
             balance: runningBalance.toFixed(0),
             paymentDateRaw: paymentDate,
           });
+          runningBalance -= Number(payment.totalExcessPaid);
+          transactions.push({
+            academicYear: year.academicYear,
+            date: formattedDate,
+            particulars: 'Excess Amount Received',
+            receiptNo: payment.receiptNumber,
+            paymentMode: payment.paymentMode,
+            due: '',
+            receipt: payment.totalExcessPaid.toFixed(0),
+            balance: runningBalance.toFixed(0),
+            paymentDateRaw: paymentDate,
+          });
         }
 
-        if (payment.totalPaid > 0 || payment.totalFinePaid > 0 || payment.totalExcessPaid > 0) {
-          const totalReceipt = Number(payment.totalPaid) + Number(payment.totalFinePaid) + Number(payment.totalExcessPaid);
-          runningBalance -= totalReceipt;
+        if (payment.totalPaid > 0) {
+          runningBalance -= Number(payment.totalPaid);
           transactions.push({
             academicYear: year.academicYear,
             date: formattedDate,
@@ -287,7 +394,7 @@ const StudentFeeLedger = () => {
             receiptNo: payment.receiptNumber,
             paymentMode: payment.paymentMode,
             due: '',
-            receipt: totalReceipt.toFixed(0),
+            receipt: payment.totalPaid.toFixed(0),
             balance: runningBalance.toFixed(0),
             paymentDateRaw: paymentDate,
           });
@@ -295,51 +402,10 @@ const StudentFeeLedger = () => {
       });
     });
 
-    if (student.admissionFees && student.paymentDate && student.academicYear === academicYear) {
-      const admissionDue = Number(student.admissionFees) || 0;
-      const concession = Number(student.concessionAmount) || 0;
-      const finalAmount = Number(student.finalAmount) || 0;
-      const paymentDate = new Date(student.paymentDate);
-      const formattedDate = paymentDate.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      }).replace(/\//g, '-');
-
-      runningBalance += admissionDue;
-      transactions.push({
-        academicYear: student.academicYear,
-        date: formattedDate,
-        particulars: `Fees Due - Admission Fees`,
-        receiptNo: '',
-        paymentMode: '',
-        due: (admissionDue - concession).toFixed(0),
-        receipt: '',
-        balance: runningBalance.toFixed(0),
-        paymentDateRaw: paymentDate,
-      });
-
-      if (student.status === 'Paid') {
-        runningBalance -= finalAmount;
-        transactions.push({
-          academicYear: student.academicYear,
-          date: formattedDate,
-          particulars: `Fees Received - Admission Fees`,
-          receiptNo: student.receiptNumber || '',
-          paymentMode: student.paymentMode || '',
-          due: '',
-          receipt: finalAmount.toFixed(0),
-          balance: runningBalance.toFixed(0),
-          paymentDateRaw: paymentDate,
-        });
-      }
-    }
-
     transactions.sort((a, b) => (a.paymentDateRaw || new Date(0)) - (b.paymentDateRaw || new Date(0)));
 
-    // Recalculate balance in order
     let finalBalance = 0;
-    transactions.forEach(txn => {
+    transactions.forEach((txn) => {
       const due = Number(txn.due || 0);
       const receipt = Number(txn.receipt || 0);
       finalBalance += due;
@@ -408,7 +474,7 @@ const StudentFeeLedger = () => {
   };
 
   const totalRecords = filteredStudents.length > 0 ? filteredStudents[0].transactions.length : 0;
-  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -421,6 +487,7 @@ const StudentFeeLedger = () => {
 
   const paginatedData = () => {
     if (filteredStudents.length === 0) return [];
+    if (rowsPerPage === 'all') return filteredStudents[0].transactions;
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     return filteredStudents[0].transactions.slice(startIndex, endIndex);
@@ -444,7 +511,11 @@ const StudentFeeLedger = () => {
 
   const handleSelectChange = (selectedOptions, { name }) => {
     if (name === 'rowsPerPage') {
-      setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(totalRecords || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      }
       setCurrentPage(1);
     }
   };
@@ -477,7 +548,7 @@ const StudentFeeLedger = () => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === totalRecords))}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
@@ -608,6 +679,7 @@ const StudentFeeLedger = () => {
                             setEndDate('');
                             setSearchQuery(null);
                             setCurrentPage(1);
+                            setRowsPerPage('all');
                           }}
                         >
                           Reset
@@ -698,7 +770,7 @@ const StudentFeeLedger = () => {
                         </tbody>
                       </table>
                     </div>
-                    {totalRecords > 0 && (
+                    {totalRecords > 0 && rowsPerPage !== 'all' && (
                       <div className="card-footer border-top">
                         <nav aria-label="Page navigation example">
                           <ul className="pagination justify-content-end mb-0">

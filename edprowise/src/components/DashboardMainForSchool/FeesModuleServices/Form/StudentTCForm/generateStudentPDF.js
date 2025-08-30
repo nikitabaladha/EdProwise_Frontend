@@ -1,6 +1,6 @@
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import { fetchSchoolData, generateHeader, generateFooter } from "../../PdfUtlis";
+import { fetchSchoolData, generateHeader, generateFooter } from "../../PdfUtlisReportFrom";
 
 export const generateTCPDF = async (schoolId,student,getClassNameById) => {
   const capitalizeWords = (str) => {

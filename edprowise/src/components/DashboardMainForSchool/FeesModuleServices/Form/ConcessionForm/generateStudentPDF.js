@@ -1,6 +1,6 @@
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import { fetchSchoolData, generateHeader, generateFooter } from "../../PdfUtlis";
+import { fetchSchoolData, generateHeader, generateFooter } from "../../PdfUtlisReportFrom";
 
 export const generatePDF = async (schoolId, student, getClassName, getSectionName, feeTypes) => {
   console.log("student", student);

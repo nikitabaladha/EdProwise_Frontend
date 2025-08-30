@@ -1,0 +1,444 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import getAPI from "../../../../../api/getAPI";
+import { toast } from "react-toastify";
+import putAPI from "../../../../../api/putAPI";
+
+const StudentAdmissionProfile = () => {
+  const navigate = useNavigate();
+  const [schoolId, setSchoolId] = useState(null);
+  const [studentData, setStudentData] = useState([]);
+  const [classList, setClassList] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+  const [shifts, setShifts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [dropoutStatus, setDropoutStatus] = useState("Dropout");
+  const [dropoutReason, setDropoutReason] = useState("");
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
+
+  useEffect(() => {
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+    const id = userDetails?.schoolId;
+
+    if (!id) {
+      toast.error("School ID not found. Please log in again.");
+      return;
+    }
+
+    setSchoolId(id);
+  }, []);
+
+  useEffect(() => {
+    if (!schoolId || !selectedYear) return;
+
+    const fetchStudents = async () => {
+      try {
+        const response = await getAPI(`/get-admission-form-by-acadmichistoryyear-schoolId/${schoolId}/${selectedYear}`);
+        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        if (!classRes.hasError) {
+          setClassList(classRes.data.data);
+        }
+        const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
+        if (!shiftResponse.hasError) {
+          const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
+          setShifts(shiftArray);
+        } else {
+          toast.error(shiftResponse.message || 'Failed to fetch shifts.');
+          setShifts([]);
+        }
+
+        if (!response.hasError) {
+          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
+          setStudentData(studentArray.sort((a, b) => new Date(b.createdAt || b.paymentDate) - new Date(a.createdAt || a.paymentDate)));
+        } else {
+          toast.error(response.message || "Failed to fetch student list.");
+        }
+      } catch (err) {
+        toast.error("Error fetching student data.");
+        console.error("Student Fetch Error:", err);
+      }
+    };
+
+    fetchStudents();
+  }, [schoolId, selectedYear]);
+
+  const getClassNameById = (id) => {
+    const found = classList.find((cls) => cls._id === id);
+    return found ? found.className : "N/A";
+  };
+
+  const getSectionNameById = (sectionId) => {
+    if (!sectionId) {
+      return "N/A";
+    }
+    const found = classList.find((cls) => cls.sections?.some((sec) => sec._id === sectionId));
+    const section = found?.sections?.find((sec) => sec._id === sectionId);
+    return section ? section.name : "N/A";
+  };
+
+  const getShiftName = (shiftId) => {
+    const shift = shifts.find((s) => s._id === shiftId);
+    return shift ? shift.masterDefineShiftName : 'N/A';
+  };
+
+  const navigateToViewAdmissionInfo = (event, student) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/fees-module/student-dba/student-profile/view-admission-form`, {
+      state: { student },
+    });
+  };
+
+  const navigateToUpdateAdmissionForm = (event, student) => {
+    event.preventDefault();
+    navigate(`/school-dashboard/fees-module/student-dba/student-profile/update-admission-form`, {
+      state: { student },
+    });
+  };
+
+  const handleStatusChange = (studentId, newStatus) => {
+    if (!selectedYear) {
+      toast.error("Please select an academic year before changing the status.");
+      return;
+    }
+    if (newStatus === "Inactive") {
+      setSelectedStudentId(studentId);
+      setDropoutStatus("Dropout");
+      setDropoutReason("");
+      setShowModal(true);
+    } else {
+      updateStudentStatus(studentId, newStatus, null, null);
+    }
+  };
+
+  const updateStudentStatus = async (studentId, newStatus, dropoutStatus, dropoutReason) => {
+    try {
+      const payload = { TCStatus: newStatus };
+      if (dropoutStatus) payload.dropoutStatus = dropoutStatus;
+      if (dropoutReason) payload.dropoutReason = dropoutReason;
+      if (newStatus === "Inactive") payload.dropoutStatusYear = selectedYear;
+
+      const response = await putAPI(`/update-tc-active-inactive-status/${studentId}`, payload);
+      if (!response.hasError) {
+        setStudentData((prevData) =>
+          prevData.map((student) =>
+            student._id === studentId
+              ? {
+                  ...student,
+                  TCStatus: newStatus,
+                  TCStatusDate: response.data.data.TCStatusDate,
+                  dropoutStatus: response.data.data.dropoutStatus || student.dropoutStatus,
+                  dropoutReason: response.data.data.dropoutReason || student.dropoutReason,
+                  dropoutStatusYear: newStatus === "Inactive" ? selectedYear : student.dropoutStatusYear,
+                }
+              : student
+          )
+        );
+        toast.success(response.message || `TCStatus updated to ${newStatus} successfully`);
+      } else {
+        toast.error(response.message || "Failed to update TCStatus");
+      }
+    } catch (error) {
+      toast.error("Error updating TCStatus");
+      console.error("TCStatus Update Error:", error);
+    }
+  };
+
+  const handleModalSubmit = () => {
+    if (!dropoutReason.trim()) {
+      toast.error("Dropout reason is required.");
+      return;
+    }
+    updateStudentStatus(selectedStudentId, "Inactive", dropoutStatus, dropoutReason);
+    setShowModal(false);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedStudentId(null);
+    setDropoutStatus("Dropout");
+    setDropoutReason("");
+  };
+
+  const filteredStudents = studentData.filter(student => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      (student.paymentDate
+        ? new Date(student.paymentDate).toLocaleDateString('en-GB').replace(/\//g, '-')
+        : '').toLowerCase().includes(searchLower) ||
+      student.AdmissionNumber.toLowerCase().includes(searchLower) ||
+      `${student.firstName} ${student.lastName}`.toLowerCase().includes(searchLower) ||
+      getClassNameById(student.masterDefineClass).toLowerCase().includes(searchLower) ||
+      getShiftName(student.masterDefineShift).toLowerCase().includes(searchLower) ||
+      getSectionNameById(student.section).toLowerCase().includes(searchLower) ||
+      (student.parentContactNumber || '').toLowerCase().includes(searchLower) ||
+      (student.status || '').toLowerCase().includes(searchLower)
+    );
+  });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [studentListPerPage] = useState(10);
+
+  const indexOfLastStudent = currentPage * studentListPerPage;
+  const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
+  const currentStudent = filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent);
+
+  const totalPages = Math.ceil(filteredStudents.length / studentListPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const pageRange = 1;
+  const startPage = Math.max(1, currentPage - pageRange);
+  const endPage = Math.min(totalPages, currentPage + pageRange);
+  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+
+  return (
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-xl-12">
+          <div className="card">
+            <div className="card-header d-flex justify-content-between align-items-center gap-1">
+              <h4 className="card-title flex-grow-1">
+                Admission List
+              </h4>
+              <div className="d-none d-md-block">
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  placeholder="Search by any field "
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ width: '200px' }}
+                />
+              </div>
+              <select
+                className="form-select form-select-sm w-auto"
+                value={selectedYear}
+                onChange={(e) => {
+                  setSelectedYear(e.target.value);
+                }}
+                disabled={loadingYears}
+              >
+                <option value="" disabled>Select Year</option>
+                {academicYears.map((year) => (
+                  <option key={year._id} value={year.academicYear}>
+                    {year.academicYear}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <div className="table-responsive">
+                <table className="table align-middle mb-0 table-centered text-center">
+                  <thead className="bg-light-subtle">
+                    <tr>
+                      <th style={{ width: 20 }}>
+                        <div className="form-check ms-1">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customCheck1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customCheck1"
+                          />
+                        </div>
+                      </th>
+                      <th>Admission date</th>
+                      <th>Admission No.</th>
+                      <th>Student Name</th>
+                      <th>Class</th>
+                      <th>Section</th>
+                      <th>Shift</th>
+                      <th>Contact No</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentStudent.map((student, index) => (
+                      <tr key={index}>
+                        <td>
+                          <div className="form-check ms-1">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id={`customCheck${index + 2}`}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`customCheck${index + 2}`}
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          {student.paymentDate
+                            ? new Date(student.paymentDate).toLocaleDateString('en-GB').replace(/\//g, '-')
+                            : ''}
+                        </td>
+                        <td>{student.AdmissionNumber}</td>
+                        <td>{student.firstName} {student.lastName}</td>
+                        <td>{getClassNameById(student.masterDefineClass)}</td>
+                        <td>{getSectionNameById(student.section)}</td>
+                        <td>{getShiftName(student.masterDefineShift)}</td>
+                        <td>{student.parentContactNumber}</td>
+                        <td>
+                          <select
+                            className={`form-select form-select-sm ${
+                              student.TCStatus === 'Active' ? 'text-success' : 'text-danger'
+                            }`}
+                            value={student.TCStatus}
+                            onChange={(e) => handleStatusChange(student._id, e.target.value)}
+                          >
+                            <option value="Active" className="text-success">Active</option>
+                            <option value="Inactive" className="text-danger">Inactive</option>
+                          </select>
+                        </td>
+                        <td>
+                          <div className="d-flex gap-2">
+                            <Link
+                              className="btn btn-light btn-sm"
+                              onClick={(event) => navigateToViewAdmissionInfo(event, student)}
+                            >
+                              <iconify-icon
+                                icon="solar:eye-broken"
+                                className="align-middle fs-18"
+                              />
+                            </Link>
+                            <Link
+                              className="btn btn-soft-primary btn-sm"
+                              onClick={(event) => navigateToUpdateAdmissionForm(event, student)}
+                            >
+                              <iconify-icon
+                                icon="solar:pen-2-broken"
+                                className="align-middle fs-18"
+                              />
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="card-footer border-top">
+              <nav aria-label="Page navigation example">
+                <ul className="pagination justify-content-end mb-0">
+                  <li className="page-item">
+                    <button
+                      className="page-link"
+                      onClick={handlePreviousPage}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+                  </li>
+                  {pagesToShow.map((page) => (
+                    <li
+                      key={page}
+                      className={`page-item ${currentPage === page ? "active" : ""}`}
+                    >
+                      <button
+                        className={`page-link pagination-button ${currentPage === page ? "active" : ""}`}
+                        onClick={() => handlePageClick(page)}
+                      >
+                        {page}
+                      </button>
+                    </li>
+                  ))}
+                  <li className="page-item">
+                    <button
+                      className="page-link"
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal for Inactive Status */}
+      {showModal && (
+        <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" aria-labelledby="dropoutModalLabel" aria-hidden="false">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="dropoutModalLabel">Confirm Inactive Status</h5>
+                <button type="button" className="btn-close" onClick={handleModalClose} aria-label="Close"></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label htmlFor="dropoutStatus" className="form-label">Dropout Status</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="dropoutStatus"
+                    value={dropoutStatus}
+                    readOnly
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="dropoutReason" className="form-label">Dropout Reason</label>
+                  <textarea
+                    className="form-control"
+                    id="dropoutReason"
+                    value={dropoutReason}
+                    onChange={(e) => setDropoutReason(e.target.value)}
+                    placeholder="Enter reason for dropout"
+                    rows="4"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={handleModalClose}>Cancel</button>
+                <button type="button" className="btn btn-primary" onClick={handleModalSubmit}>Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showModal && <div className="modal-backdrop fade show"></div>}
+    </div>
+  );
+};
+
+export default StudentAdmissionProfile;

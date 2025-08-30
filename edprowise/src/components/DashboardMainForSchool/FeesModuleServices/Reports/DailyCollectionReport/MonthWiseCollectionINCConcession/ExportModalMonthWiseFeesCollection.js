@@ -1,101 +1,98 @@
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { generateHeader, generateFooter } from '../../../PdfUtlisReport';
+
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 export const exportToExcel = async (
   filteredData,
   tableFields,
   headerMapping,
   getFieldValue,
-  calculateBalance, // Unused but kept for compatibility
-  totals, // Unused but kept for compatibility
+  totals,
   formatAcademicYear,
-  selectedAcademicYear
+  selectedYears
 ) => {
-  try {
-    console.log('Starting Excel export with:', { filteredDataLength: filteredData.length, tableFields, selectedAcademicYear });
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Student Master');
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Monthwise Collection INC Concession');
 
-    // Add headers
-    const headers = tableFields.map(field => headerMapping[field.id] || field.label);
-    worksheet.addRow(headers);
+  const headers = tableFields.map(field => headerMapping[field.id] || field.label);
+  worksheet.addRow(headers);
 
-    // Add data rows
-    filteredData.forEach(record => {
-      const row = tableFields.map(field => {
-        const value = getFieldValue(record, field);
-        return isNaN(value) ? (value || '-') : Number(value);
-      });
-      worksheet.addRow(row);
+  filteredData.forEach(record => {
+    const row = tableFields.map(field => {
+      const value = getFieldValue(record, field);
+      return isNaN(value) ? value : Number(value);
     });
+    worksheet.addRow(row);
+  });
 
-    // Auto-adjust column widths
-    worksheet.columns.forEach((column, index) => {
-      let maxLength = 10;
-      column.eachCell({ includeEmpty: true }, (cell) => {
-        const cellValue = cell.value ? cell.value.toString() : '';
-        if (cellValue.length > maxLength) {
-          maxLength = cellValue.length;
-        }
-      });
-      column.width = Math.min(maxLength + 2, 50); // Cap width to avoid overly wide columns
+  const totalsRow = tableFields.map(field => {
+    if (field.id === 'totalPaidFee') {
+      return Number(totals.totalPaidFee);
+    } else if (totals[field.id] !== undefined) {
+      return Number(totals[field.id]);
+    }
+    return '';
+  });
+  worksheet.addRow(totalsRow);
+
+  worksheet.columns.forEach((column) => {
+    let maxLength = 10;
+    column.eachCell({ includeEmpty: true }, (cell) => {
+      const value = cell.value ? cell.value.toString() : '';
+      if (value.length > maxLength) maxLength = value.length;
     });
+    column.width = maxLength + 2;
+  });
 
-    const totalRows = worksheet.rowCount;
-    const totalCols = worksheet.getRow(1).cellCount;
+  const totalRows = worksheet.rowCount;
+  const totalCols = worksheet.getRow(1).cellCount;
 
-    // Style header row
-    const headerRow = worksheet.getRow(1);
-    headerRow.font = { bold: true };
-    headerRow.alignment = { horizontal: 'center' };
+  const headerRow = worksheet.getRow(1);
+  headerRow.font = { bold: true };
+  headerRow.alignment = { horizontal: 'center' };
 
-    // Add borders to all cells
-    for (let i = 1; i <= totalRows; i++) {
-      const row = worksheet.getRow(i);
-      for (let j = 1; j <= totalCols; j++) {
-        const cell = row.getCell(j);
-        if (cell.value !== null && cell.value !== undefined && cell.value !== '') {
-          cell.border = {
-            top: { style: 'thin' },
-            left: { style: 'thin' },
-            bottom: { style: 'thin' },
-            right: { style: 'thin' }
-          };
-        }
+  const lastRow = worksheet.getRow(totalRows);
+  lastRow.font = { bold: true };
+  lastRow.alignment = { horizontal: 'center' };
+
+  for (let i = 1; i <= totalRows; i++) {
+    const row = worksheet.getRow(i);
+    for (let j = 1; j <= totalCols; j++) {
+      const cell = row.getCell(j);
+      if (cell.value !== null && cell.value !== undefined && cell.value !== '') {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
       }
     }
-
-    // Generate and save the Excel file
-    const buffer = await workbook.xlsx.writeBuffer();
-    const fileName = `Student_Master_${formatAcademicYear(selectedAcademicYear).replace(/[^a-zA-Z0-9-]/g, '_')}.xlsx`;
-    console.log('Saving Excel file:', fileName);
-    saveAs(
-      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-      fileName
-    );
-  } catch (error) {
-    console.error('Excel export failed:', error);
-    throw error; // Let the caller handle the error
   }
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  saveAs(
+    new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+    `Monthwise_Collection_INC_Concession${formatAcademicYear(selectedYears)}.xlsx`
+  );
 };
+
 
 export const exportToPDF = async (
   filteredData,
   tableFields,
   headerMapping,
   getFieldValue,
-  calculateBalance, // Unused but kept for compatibility
-  totals, // Unused but kept for compatibility
+  totals,
   formatAcademicYear,
-  selectedAcademicYear,
+  selectedYears,
   school,
   logoSrc
 ) => {
   try {
-    console.log('Starting PDF export with:', { filteredDataLength: filteredData.length, tableFields, selectedAcademicYear, school, logoSrc });
     const pdf = new jsPDF({
       unit: 'mm',
       format: 'a4',
@@ -112,17 +109,11 @@ export const exportToPDF = async (
 
     const preloadImage = (src) => {
       return new Promise((resolve) => {
-        if (!src) {
-          console.warn('No logoSrc provided, using fallback.');
-          return resolve(null);
-        }
+        if (!src) return resolve(null);
         const img = new Image();
         img.crossOrigin = 'Anonymous';
         img.src = src;
-        img.onload = () => {
-          console.log('Logo image loaded successfully:', src);
-          resolve(img);
-        };
+        img.onload = () => resolve(img);
         img.onerror = () => {
           console.warn(`Failed to load image: ${src}. Using fallback.`);
           resolve(null);
@@ -135,8 +126,8 @@ export const exportToPDF = async (
     const hiddenContainer = document.createElement('div');
     hiddenContainer.style.cssText = `
       position: absolute;
-      top: -9999px;
-      left: -9999px;
+      top: 0;
+      left: 0;
       opacity: 0;
       z-index: -1;
       pointer-events: none;
@@ -151,9 +142,7 @@ export const exportToPDF = async (
       padding: 5px;
       background-color: #ffffff;
     `;
-    const headerHtml = generateHeader(school || {}, logoImg ? logoSrc : '');
-    console.log('Header HTML:', headerHtml);
-    headerContainer.innerHTML = headerHtml;
+    headerContainer.innerHTML = generateHeader(school, logoImg ? logoSrc : '');
     hiddenContainer.appendChild(headerContainer);
 
     const footerContainer = document.createElement('div');
@@ -163,9 +152,7 @@ export const exportToPDF = async (
       font-family: Arial, sans-serif;
       background-color: #ffffff;
     `;
-    const footerHtml = generateFooter(school || {});
-    console.log('Footer HTML:', footerHtml);
-    footerContainer.innerHTML = footerHtml;
+    footerContainer.innerHTML = generateFooter(school);
     hiddenContainer.appendChild(footerContainer);
 
     const tableContainer = document.createElement('div');
@@ -173,7 +160,7 @@ export const exportToPDF = async (
       width: ${(pageWidth - margin * 2) * mmToPx}px;
       max-height: ${contentHeight * mmToPx}px;
       font-family: Arial, sans-serif;
-      font-size: 8px;
+      font-size: 11px;
       line-height: 1.2;
       color: #000000;
       overflow: hidden;
@@ -189,12 +176,16 @@ export const exportToPDF = async (
         }
         th, td {
           border: 1px solid #4b5563;
-          padding: 3px;
+          padding: 6px;
           text-align: center;
-          font-size: 8px;
+          font-size: 11px;
           line-height: 1.2;
         }
         thead {
+          background-color: #e5e7eb;
+          font-weight: bold;
+        }
+        tfoot {
           background-color: #e5e7eb;
           font-weight: bold;
         }
@@ -203,25 +194,30 @@ export const exportToPDF = async (
           page-break-after: auto;
         }
         .pdf-title {
-          font-size: 14px;
+          font-size: 16px;
           font-weight: bold;
           text-align: center;
-          margin-bottom: 6mm;
+          margin-bottom: 8mm;
           color: #000000;
         }
       </style>
     `;
 
-    const rowsPerPage = 10; // Reduced due to smaller font size and more columns
+    const rowsPerPage = 15;
     const pageData = [];
     for (let i = 0; i < filteredData.length; i += rowsPerPage) {
       pageData.push(filteredData.slice(i, i + rowsPerPage));
     }
-    if (filteredData.length === 0) {
+    if (filteredData.length > 0) {
+      pageData[pageData.length - 1] = [
+        ...pageData[pageData.length - 1],
+        { isTotalsRow: true, totals },
+      ];
+    } else {
       pageData.push([]);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Increased delay
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     const headerCanvas = await html2canvas(headerContainer, {
       scale: 2,
@@ -251,7 +247,7 @@ export const exportToPDF = async (
       const currentPageData = pageData[page];
       const tableContent = `
         ${tableStyle}
-        <div class="pdf-title">Student Master Report - ${formatAcademicYear(selectedAcademicYear)}</div>
+        <div class="pdf-title">Monthwise Collection INC Concession - ${formatAcademicYear(selectedYears)}</div>
         <table>
           <thead>
             <tr>
@@ -261,15 +257,32 @@ export const exportToPDF = async (
           <tbody>
             ${currentPageData.length > 0
               ? currentPageData
-                  .map((record) => `
-                    <tr>
-                      ${tableFields
-                        .map((field) => `<td>${getFieldValue(record, field) || '-'}</td>`)
-                        .join('')}
-                    </tr>
-                  `)
+                  .map((record) => {
+                    if (record.isTotalsRow) {
+                      return `
+                        <tr>
+                          <td colspan="2"><strong>Total</strong></td>
+                          ${tableFields
+                            .slice(2)
+                            .map((field) =>
+                              field.id === 'totalPaidFee'
+                                ? `<td><strong>${totals.totalPaidFee}</strong></td>`
+                                : `<td><strong>${(totals[field.id] || 0)}</strong></td>`
+                            )
+                            .join('')}
+                        </tr>
+                      `;
+                    }
+                    return `
+                      <tr>
+                        ${tableFields
+                          .map((field) => `<td>${getFieldValue(record, field)}</td>`)
+                          .join('')}
+                      </tr>
+                    `;
+                  })
                   .join('')
-              : `<tr><td colspan="${tableFields.length}">No data matches the selected filters for ${formatAcademicYear(selectedAcademicYear)}.</td></tr>`
+              : `<tr><td colspan="${tableFields.length}">No data matches the selected filters for ${formatAcademicYear(selectedYears)}.</td></tr>`
             }
           </tbody>
         </table>
@@ -278,7 +291,7 @@ export const exportToPDF = async (
       tableContainer.innerHTML = tableContent;
       hiddenContainer.appendChild(tableContainer);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Increased delay
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
       const tableCanvas = await html2canvas(tableContainer, {
         scale: 2,
@@ -314,11 +327,10 @@ export const exportToPDF = async (
     }
 
     document.body.removeChild(hiddenContainer);
-    const fileName = `Student_Master_${formatAcademicYear(selectedAcademicYear).replace(/[^a-zA-Z0-9-]/g, '_')}.pdf`;
-    console.log('Saving PDF file:', fileName);
+    const fileName = `Monthwise_Collection_INC_Concession${formatAcademicYear(selectedYears)}.pdf`;
     pdf.save(fileName);
   } catch (error) {
-    console.error('PDF export failed:', error);
-    throw error; 
+    console.error('PDF generation failed:', error);
+    alert('Failed to generate PDF. Please check the console for details.');
   }
 };

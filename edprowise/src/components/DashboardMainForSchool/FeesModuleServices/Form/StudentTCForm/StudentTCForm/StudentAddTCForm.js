@@ -233,41 +233,74 @@ const StudentAddTCForm = () => {
   };
 
   const handleAdmissionSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const selectedAdmissionNumber = formData.AdmissionNumber.trim();
-    const student = existingStudents.find(
-      (s) => s.AdmissionNumber.trim() === selectedAdmissionNumber
-    );
+  const selectedAdmissionNumber = formData.AdmissionNumber.trim();
+  const student = existingStudents.find(
+    (s) => s.AdmissionNumber.trim() === selectedAdmissionNumber
+  );
 
-    if (!student) {
-      toast.error('Invalid admission number. Please select a valid admission number from the list.');
-      return;
+  if (!student) {
+    toast.error('Invalid admission number. Please select a valid admission number from the list.');
+    return;
+  }
+
+  // Find the academic history entry for the current academic year
+  const academicYear = localStorage.getItem('selectedAcademicYear');
+  const academicHistoryEntry = student.academicHistory.find(
+    (history) => history.academicYear === academicYear
+  );
+
+  if (!academicHistoryEntry) {
+    toast.warn('No academic history found for the selected academic year.');
+  }
+
+  setSelectedStudent(student);
+  setFormData((prev) => ({
+    ...prev,
+    studentPhoto: student.studentPhoto || null,
+    firstName: student.firstName,
+    middleName: student.middleName,
+    lastName: student.lastName,
+    dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
+    nationality: student.nationality,
+    masterDefineClass: academicHistoryEntry?.masterDefineClass || '',
+    fatherName: student.fatherName,
+    motherName: student.motherName,
+    dateOfAdmission: student.applicationDate ? student.applicationDate.split('T')[0] : '',
+  }));
+
+  if (academicHistoryEntry?.masterDefineClass) {
+    fetchClassRelatedFeeTypes(academicHistoryEntry.masterDefineClass);
+  }
+
+  setShowFullForm(true);
+};
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      if (!schoolId || !academicYear) {
+        return;
+      }
+      const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
+      setClasses(response?.data?.data || []);
+      console.log('Classes fetched:', response?.data?.data);
+    } catch (error) {
+      toast.error('Error fetching class and section data.');
+      console.error('Class fetch error:', error);
     }
-
-    setSelectedStudent(student);
-    setFormData((prev) => ({
-      ...prev,
-      studentPhoto: student.studentPhoto || null,
-      firstName: student.firstName,
-      middleName: student.middleName,
-      lastName: student.lastName,
-      dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
-      nationality: student.nationality,
-      masterDefineClass: student?.masterDefineClass?._id || student?.masterDefineClass || '',
-      fatherName: student.fatherName,
-      motherName: student.motherName,
-      name: student.name,
-      paymentMode: student.paymentMode,
-      dateOfAdmission: student.applicationDate ? student.applicationDate.split('T')[0] : '',
-    }));
-
-    if (student?.masterDefineClass?._id || student?.masterDefineClass) {
-      fetchClassRelatedFeeTypes(student.masterDefineClass._id || student.masterDefineClass);
-    }
-
-    setShowFullForm(true);
   };
+
+  fetchData();
+}, [schoolId, academicYear]);
+
+useEffect(() => {
+  if (formData.masterDefineClass && !classes.find(c => c._id === formData.masterDefineClass)) {
+    toast.warn('Selected class is not available for the current academic year.');
+    setFormData((prev) => ({ ...prev, masterDefineClass: '' }));
+  }
+}, [formData.masterDefineClass, classes]);
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
@@ -850,7 +883,7 @@ const StudentAddTCForm = () => {
                 </div>
 
                 {!showAdditionalData ? (
-                  <div className="text-center">
+                  <div className="text-end">
                     <button
                       type="button"
                       className="btn btn-primary custom-submit-button"

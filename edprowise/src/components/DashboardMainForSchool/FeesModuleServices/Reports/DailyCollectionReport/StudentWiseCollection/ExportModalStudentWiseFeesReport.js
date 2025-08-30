@@ -1,90 +1,110 @@
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { generateHeader, generateFooter } from '../../../PdfUtlisReport';
-
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
 export const exportToExcel = async (
   filteredData,
   tableFields,
-  headerMapping,
   getFieldValue,
   totals,
   formatAcademicYear,
   selectedYears
 ) => {
-  const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet('Student-Wise Fees Report');
+  try {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Studentwise Collection Inc Concession Report');
 
-  const headers = tableFields.map(field => headerMapping[field.id] || field.label);
-  worksheet.addRow(headers);
 
-  filteredData.forEach(record => {
-    const row = tableFields.map(field => {
-      const value = getFieldValue(record, field);
-      return isNaN(value) ? value : Number(value);
+    const headers = tableFields.map((field) => field.label);
+    worksheet.addRow(headers);
+
+
+    filteredData.forEach((record) => {
+      const row = tableFields.map((field) => {
+        const value = getFieldValue(record, field);
+        return field.isNumeric && !isNaN(value) ? Number(value) : value;
+      });
+      worksheet.addRow(row);
     });
-    worksheet.addRow(row);
-  });
 
-  const totalsRow = tableFields.map(field => {
-    if (field.id === 'totalPaid') {
-      return Number(totals.totalPaid);
-    } else if (totals[field.id] !== undefined) {
-      return Number(totals[field.id]);
-    }
-    return '';
-  });
-  worksheet.addRow(totalsRow);
 
-  worksheet.columns.forEach((column) => {
-    let maxLength = 10;
-    column.eachCell({ includeEmpty: true }, (cell) => {
-      const value = cell.value ? cell.value.toString() : '';
-      if (value.length > maxLength) maxLength = value.length;
+    const nonNumericColumnsCount = tableFields.filter((field) => !field.isNumeric).length;
+    const totalsRow = tableFields.map((field, index) => {
+      if (index < nonNumericColumnsCount) {
+        return index === 0 ? 'Total' : '';
+      }
+      return totals[field.id] !== undefined ? Number(totals[field.id]).toFixed(2) : '';
     });
-    column.width = maxLength + 2;
-  });
+    worksheet.addRow(totalsRow);
 
-  const totalRows = worksheet.rowCount;
-  const totalCols = worksheet.getRow(1).cellCount;
+  
+    worksheet.columns.forEach((column, index) => {
+      let maxLength = 10;
+      column.eachCell({ includeEmpty: true }, (cell) => {
+        const value = cell.value ? cell.value.toString() : '';
+        if (value.length > maxLength) maxLength = value.length;
+      });
+      column.width = Math.min(maxLength + 2, 50); 
+    });
 
-  const headerRow = worksheet.getRow(1);
-  headerRow.font = { bold: true };
-  headerRow.alignment = { horizontal: 'center' };
 
-  const lastRow = worksheet.getRow(totalRows);
-  lastRow.font = { bold: true };
-  lastRow.alignment = { horizontal: 'center' };
+    const headerRow = worksheet.getRow(1);
+    headerRow.font = { bold: true };
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
+    headerRow.eachCell((cell) => {
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    });
 
-  for (let i = 1; i <= totalRows; i++) {
-    const row = worksheet.getRow(i);
-    for (let j = 1; j <= totalCols; j++) {
-      const cell = row.getCell(j);
-      if (cell.value !== null && cell.value !== undefined && cell.value !== '') {
+  
+    const lastRow = worksheet.getRow(worksheet.rowCount);
+    lastRow.font = { bold: true };
+    lastRow.alignment = { horizontal: 'center', vertical: 'middle' };
+    lastRow.eachCell((cell) => {
+      if (cell.value) {
         cell.border = {
           top: { style: 'thin' },
           left: { style: 'thin' },
           bottom: { style: 'thin' },
-          right: { style: 'thin' }
+          right: { style: 'thin' },
         };
       }
-    }
+    });
+
+   
+    worksheet.eachRow((row, rowNumber) => {
+      row.eachCell((cell) => {
+        if (cell.value && rowNumber !== 1 && rowNumber !== worksheet.rowCount) {
+          cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' },
+          };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        }
+      });
+    });
+
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `Studentwise_Collection_Inc_Concession_Report_${formatAcademicYear(selectedYears)}.xlsx`);
+  } catch (error) {
+    console.error('Excel export failed:', error);
+    throw new Error('Failed to export to Excel');
   }
-
-  const buffer = await workbook.xlsx.writeBuffer();
-  saveAs(
-    new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-    `Student_Wise_Fees_Report_${formatAcademicYear(selectedYears)}.xlsx`
-  );
 };
-
 
 export const exportToPDF = async (
   filteredData,
   tableFields,
-  headerMapping,
   getFieldValue,
   totals,
   formatAcademicYear,
@@ -106,6 +126,8 @@ export const exportToPDF = async (
     const footerHeight = 30;
     const contentHeight = pageHeight - margin * 2 - headerHeight - footerHeight;
     const mmToPx = 3.779;
+    const nonNumericColumnsCount = tableFields.filter((field) => !field.isNumeric).length;
+
 
     const preloadImage = (src) => {
       return new Promise((resolve) => {
@@ -123,16 +145,17 @@ export const exportToPDF = async (
 
     const logoImg = await preloadImage(logoSrc);
 
+
     const hiddenContainer = document.createElement('div');
     hiddenContainer.style.cssText = `
       position: absolute;
-      top: 0;
-      left: 0;
+      top: -9999px;
+      left: -9999px;
       opacity: 0;
       z-index: -1;
-      pointer-events: none;
     `;
     document.body.appendChild(hiddenContainer);
+
 
     const headerContainer = document.createElement('div');
     headerContainer.style.cssText = `
@@ -155,17 +178,6 @@ export const exportToPDF = async (
     footerContainer.innerHTML = generateFooter(school);
     hiddenContainer.appendChild(footerContainer);
 
-    const tableContainer = document.createElement('div');
-    tableContainer.style.cssText = `
-      width: ${(pageWidth - margin * 2) * mmToPx}px;
-      max-height: ${contentHeight * mmToPx}px;
-      font-family: Arial, sans-serif;
-      font-size: 11px;
-      line-height: 1.2;
-      color: #000000;
-      overflow: hidden;
-      background-color: #ffffff;
-    `;
 
     const tableStyle = `
       <style>
@@ -203,6 +215,7 @@ export const exportToPDF = async (
       </style>
     `;
 
+    // Paginate data
     const rowsPerPage = 15;
     const pageData = [];
     for (let i = 0; i < filteredData.length; i += rowsPerPage) {
@@ -217,41 +230,46 @@ export const exportToPDF = async (
       pageData.push([]);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
+    // Render header and footer canvases
     const headerCanvas = await html2canvas(headerContainer, {
       scale: 2,
       useCORS: true,
       allowTaint: false,
-      logging: true,
       backgroundColor: '#ffffff',
-      windowWidth: (pageWidth - margin * 2) * mmToPx,
-      windowHeight: headerHeight * mmToPx,
     });
-    const headerImg = headerCanvas.toDataURL('image/jpeg', 0.98);
+    const headerImg = headerCanvas.toDataURL('image/jpeg', 0.95);
 
     const footerCanvas = await html2canvas(footerContainer, {
       scale: 2,
       useCORS: true,
       allowTaint: false,
-      logging: true,
       backgroundColor: '#ffffff',
-      windowWidth: (pageWidth - margin * 2) * mmToPx,
-      windowHeight: footerHeight * mmToPx,
     });
-    const footerImg = footerCanvas.toDataURL('image/jpeg', 0.98);
+    const footerImg = footerCanvas.toDataURL('image/jpeg', 0.95);
 
+    // Render each page
     for (let page = 0; page < pageData.length; page++) {
       if (page > 0) pdf.addPage();
 
       const currentPageData = pageData[page];
+      const tableContainer = document.createElement('div');
+      tableContainer.style.cssText = `
+        width: ${(pageWidth - margin * 2) * mmToPx}px;
+        max-height: ${contentHeight * mmToPx}px;
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        line-height: 1.2;
+        color: #000000;
+        background-color: #ffffff;
+      `;
+
       const tableContent = `
         ${tableStyle}
-        <div class="pdf-title">Student-Wise Fees Report - ${formatAcademicYear(selectedYears)}</div>
+        <div class="pdf-title">Studentwise Collection Inc Concession Report - ${formatAcademicYear(selectedYears)}</div>
         <table>
           <thead>
             <tr>
-              ${tableFields.map((field) => `<th>${headerMapping[field.id] || field.label}</th>`).join('')}
+              ${tableFields.map((field) => `<th>${field.label}</th>`).join('')}
             </tr>
           </thead>
           <tbody>
@@ -261,14 +279,10 @@ export const exportToPDF = async (
                     if (record.isTotalsRow) {
                       return `
                         <tr>
-                          <td colspan="8"><strong>Total</strong></td>
+                          <td colspan="${nonNumericColumnsCount}"><strong>Total</strong></td>
                           ${tableFields
-                            .slice(8)
-                            .map((field) =>
-                              field.id === 'totalPaid'
-                                ? `<td><strong>${totals.totalPaid}</strong></td>`
-                                : `<td><strong>${(totals[field.id] || 0)}</strong></td>`
-                            )
+                            .slice(nonNumericColumnsCount)
+                            .map((field) => `<td><strong>${(totals[field.id] || 0).toFixed(2)}</strong></td>`)
                             .join('')}
                         </tr>
                       `;
@@ -291,17 +305,15 @@ export const exportToPDF = async (
       tableContainer.innerHTML = tableContent;
       hiddenContainer.appendChild(tableContainer);
 
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       const tableCanvas = await html2canvas(tableContainer, {
         scale: 2,
         useCORS: true,
         allowTaint: false,
-        logging: true,
         backgroundColor: '#ffffff',
-        windowWidth: (pageWidth - margin * 2) * mmToPx,
       });
-      const tableImg = tableCanvas.toDataURL('image/jpeg', 0.98);
+      const tableImg = tableCanvas.toDataURL('image/jpeg', 0.95);
       const tableImgHeight = (tableCanvas.height / mmToPx) * (pageWidth - margin * 2) / (tableCanvas.width / mmToPx);
 
       pdf.addImage(headerImg, 'JPEG', margin, margin, pageWidth - margin * 2, headerHeight);
@@ -317,7 +329,6 @@ export const exportToPDF = async (
           destHeight
         );
       } else {
-        console.warn(`Page ${page + 1} - Table height is 0, skipping table rendering.`);
         pdf.text('No content to display', margin, margin + headerHeight + 10);
       }
 
@@ -326,11 +337,14 @@ export const exportToPDF = async (
       hiddenContainer.removeChild(tableContainer);
     }
 
+ 
     document.body.removeChild(hiddenContainer);
-    const fileName = `Student_Wise_Fees_Report_${formatAcademicYear(selectedYears)}.pdf`;
+
+ 
+    const fileName = `Studentwise_Collection_Inc_Concession_Report_${formatAcademicYear(selectedYears)}.pdf`;
     pdf.save(fileName);
   } catch (error) {
     console.error('PDF generation failed:', error);
-    alert('Failed to generate PDF. Please check the console for details.');
+    throw new Error('Failed to generate PDF');
   }
 };

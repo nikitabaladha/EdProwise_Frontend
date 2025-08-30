@@ -20,6 +20,7 @@ const StudentPromotionListTable = () => {
   const [loadingYears, setLoadingYears] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -159,31 +160,46 @@ const StudentPromotionListTable = () => {
     navigate('/school-dashboard/fees-module/admin-setting/promotion/student-promotion/PromoteStudent');
   };
 
+const filteredStudents = studentData.filter((student) => {
+  const query = searchQuery.toLowerCase();
+  return (
+    (student.AdmissionNumber?.toLowerCase() || '').includes(query) ||
+    (student.firstName?.toLowerCase() || '').includes(query) ||
+    (student.lastName?.toLowerCase() || '').includes(query) ||
+    (student.gender?.toLowerCase() || '').includes(query) ||
+    (getClassNameById(student.academicHistory?.masterDefineClass)?.toLowerCase() || '').includes(query) ||
+    (getSectionNameById(student.academicHistory?.section)?.toLowerCase() || '').includes(query) ||
+    (getShiftNameById(student.academicHistory?.masterDefineShift)?.toLowerCase() || '').includes(query)
+  );
+});
+
+
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [studentListPerPage] = useState(5);
-
-  const indexOfLastStudent = currentPage * studentListPerPage;
-  const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
-  const currentStudent = studentData.slice(indexOfFirstStudent, indexOfLastStudent);
-
-  const totalPages = Math.ceil(studentData.length / studentListPerPage);
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
-  const pageRange = 1;
-  const startPage = Math.max(1, currentPage - pageRange);
-  const endPage = Math.min(totalPages, currentPage + pageRange);
-  const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+   const [studentListPerPage] = useState(10);
+ 
+   const indexOfLastStudent = currentPage * studentListPerPage;
+   const indexOfFirstStudent = indexOfLastStudent - studentListPerPage;
+   const currentStudent = filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent);
+ 
+   const totalPages = Math.ceil(filteredStudents.length / studentListPerPage);
+ 
+   const handleNextPage = () => {
+     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+   };
+ 
+   const handlePreviousPage = () => {
+     if (currentPage > 1) setCurrentPage(currentPage - 1);
+   };
+ 
+   const handlePageClick = (page) => {
+     setCurrentPage(page);
+   };
+ 
+   const pageRange = 1;
+   const startPage = Math.max(1, currentPage - pageRange);
+   const endPage = Math.min(totalPages, currentPage + pageRange);
+   const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
 
   return (
     <>
@@ -200,6 +216,16 @@ const StudentPromotionListTable = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">Student Promotion</h4>
+                  <div className="d-none d-md-block">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    placeholder="Search by any field "
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ width: '200px' }}
+                  />
+                </div>
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}

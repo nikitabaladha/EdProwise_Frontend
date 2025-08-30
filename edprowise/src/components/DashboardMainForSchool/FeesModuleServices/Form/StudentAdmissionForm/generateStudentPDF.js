@@ -1,4 +1,4 @@
-import { fetchSchoolData, generateHeader, generateFooter } from "../../PdfUtlis";
+import { fetchSchoolData, generateHeader, generateFooter } from "../../PdfUtlisReportFrom";
 
 export const generatePDF = async (schoolId, student, getClassNameById,getSectionNameById, getShiftName) => {
   console.log(schoolId)

@@ -15,7 +15,7 @@ export const exportToExcel = async (
   selectedYears
 ) => {
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet('Datewise Fees Collection With Concession');
+  const worksheet = workbook.addWorksheet('Datewise Collection EXC Concession');
 
   const headers = tableFields.map(field => headerMapping[field.id] || field.label);
   worksheet.addRow(headers);
@@ -76,7 +76,7 @@ export const exportToExcel = async (
   const buffer = await workbook.xlsx.writeBuffer();
   saveAs(
     new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-    `Datewise_Fees_Collection_WIth_Concession_${formatAcademicYear(selectedYears)}.xlsx`
+    `Datewise_Collection_EXC_Concession${formatAcademicYear(selectedYears)}.xlsx`
   );
 };
 
@@ -247,7 +247,7 @@ export const exportToPDF = async (
       const currentPageData = pageData[page];
       const tableContent = `
         ${tableStyle}
-        <div class="pdf-title">Datewise Fees Collection Report WIth Concession- ${formatAcademicYear(selectedYears)}</div>
+        <div class="pdf-title">Datewise Collection EXC Concession - ${formatAcademicYear(selectedYears)}</div>
         <table>
           <thead>
             <tr>
@@ -327,7 +327,7 @@ export const exportToPDF = async (
     }
 
     document.body.removeChild(hiddenContainer);
-    const fileName = `Datewise_Fees_Collection_WIth_Concession_${formatAcademicYear(selectedYears)}.pdf`;
+    const fileName = `Datewise_Collection_EXC_Concession${formatAcademicYear(selectedYears)}.pdf`;
     pdf.save(fileName);
   } catch (error) {
     console.error('PDF generation failed:', error);

@@ -18,6 +18,7 @@ const DefaulterFees = () => {
   const [logoSrc, setLogoSrc] = useState('');
   const [feeData, setFeeData] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loadingYears, setLoadingYears] = useState(false);
   const [classOptions, setClassOptions] = useState([]);
@@ -34,12 +35,13 @@ const DefaulterFees = () => {
   const [selectedInstallments, setSelectedInstallments] = useState([]);
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Payment Mode', 'Class & Section', 'Academic Year', 'Installment'];
+  const tabs = ['Academic Year','Class & Section',  'Installment','Payment Mode', ];
 
   const pageShowOptions = [
+    { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -69,6 +71,7 @@ const DefaulterFees = () => {
         setLogoSrc(logoSrc);
       } catch (error) {
         console.error('Failed to fetch school data:', error);
+        toast.error('Failed to fetch school data.');
       }
     };
     if (schoolId) {
@@ -114,8 +117,8 @@ const DefaulterFees = () => {
           toast.error('No academic years found.');
         }
       } catch (err) {
-        toast.error('Error fetching academic years.');
-        console.error(err);
+        toast.error('Error fetching academic years: ' + err.message);
+        console.error('Error fetching academic years:', err);
       } finally {
         setLoadingYears(false);
       }
@@ -124,6 +127,39 @@ const DefaulterFees = () => {
       fetchAcademicYears();
     }
   }, [schoolId]);
+
+  useEffect(() => {
+    if (Object.keys(classSectionMap).length === 0) {
+      const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
+      setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
+      if (selectedClasses.length === 0) {
+        setSelectedSections([]);
+      }
+      return;
+    }
+
+    let validSections = new Set();
+    if (selectedClasses.length === 0) {
+      Object.values(classSectionMap).forEach(sectionSet => {
+        sectionSet.forEach(section => validSections.add(section));
+      });
+      setSelectedSections([]);
+    } else {
+      selectedClasses.forEach(cls => {
+        const sectionsForClass = classSectionMap[cls.value] || new Set();
+        sectionsForClass.forEach(section => validSections.add(section));
+      });
+    }
+
+    const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
+    setSectionOptions(newSectionOptions);
+
+    const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
+    const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
+    if (updatedSelectedSections.length !== selectedSections.length) {
+      setSelectedSections(updatedSelectedSections);
+    }
+  }, [selectedClasses, classSectionMap, feeData]);
 
   const fetchFeeData = async (years) => {
     setIsLoading(true);
@@ -140,22 +176,50 @@ const DefaulterFees = () => {
         return res.data.data;
       });
 
+      console.log('Fetched unifiedData:', unifiedData); // Log raw data
+
+      const classSectionMapping = {};
+      unifiedData.forEach(record => {
+        const className = record.className || '-';
+        const sectionName = record.sectionName || '-';
+        if (className !== '-' && sectionName !== '-') {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = new Set();
+          }
+          classSectionMapping[className].add(sectionName);
+        }
+      });
+
+      setClassSectionMap(classSectionMapping);
+
       const allFeeTypes = responses
         .flatMap((res) => res?.data?.feeTypes || [])
         .filter((type, index, self) => self.indexOf(type) === index)
         .sort();
 
-      setFeeTypes(allFeeTypes);
       setFeeData(unifiedData);
+      setFeeTypes(allFeeTypes);
 
       const filterOptions = responses[0]?.data?.filterOptions || {};
       setClassOptions(filterOptions.classOptions || []);
       setSectionOptions(filterOptions.sectionOptions || []);
       setInstallmentOptions(filterOptions.installmentOptions || []);
       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        const studentDataArray = Object.keys(
+          unifiedData.reduce((acc, row) => {
+            acc[row.admissionNumber] = {};
+            return acc;
+          }, {})
+        ).length;
+        setRowsPerPage(studentDataArray || 'all');
+      }
     } catch (error) {
       toast.error('Error fetching data: ' + error.message);
+      console.error('Error fetching fee data:', error);
       setFeeData([]);
+      setClassSectionMap({});
       setFeeTypes([]);
       setClassOptions([]);
       setSectionOptions([]);
@@ -195,13 +259,18 @@ const DefaulterFees = () => {
       setSelectedInstallments(selected);
       setCurrentPage(1);
     } else if (name === 'rowsPerPage') {
-      setRowsPerPage(selected ? selected.value : 10);
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(studentDataArray.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      }
       setCurrentPage(1);
     }
   };
 
   const applyFilters = () => {
     setShowFilterPanel(false);
+    setCurrentPage(1);
     const yearsToFetch = selectedYears.length > 0
       ? selectedYears.map((year) => year.value)
       : [selectedAcademicYear];
@@ -217,6 +286,7 @@ const DefaulterFees = () => {
     setSelectedInstallments([]);
     setSearchTerm('');
     setCurrentPage(1);
+    setRowsPerPage('all');
     setShowFilterPanel(false);
     fetchFeeData([selectedAcademicYear]);
   };
@@ -248,6 +318,8 @@ const DefaulterFees = () => {
     }))
   );
 
+
+
   const filteredData = processedData.filter((row) => {
     const matchesSearchTerm = searchTerm
       ? (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
@@ -268,7 +340,7 @@ const DefaulterFees = () => {
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feeTypes[type.value] || 0) > 0);
+      selectedFeeTypes.some((type) => (row.feeTypes?.[type.value] || 0) > 0);
 
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -289,9 +361,12 @@ const DefaulterFees = () => {
       matchesFeeType &&
       matchesClass &&
       matchesSection &&
-      matchesInstallment
+      matchesInstallment &&
+      row.balance > 0 
     );
   });
+
+
 
   const groupedByStudent = filteredData.reduce((acc, row) => {
     const admissionNumber = row.admissionNumber;
@@ -309,6 +384,8 @@ const DefaulterFees = () => {
     return acc;
   }, {});
 
+
+
   const studentDataArray = Object.keys(groupedByStudent)
     .map((admissionNumber) => ({
       admissionNumber,
@@ -317,23 +394,20 @@ const DefaulterFees = () => {
     }))
     .sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
 
+
+
   const grandTotals = studentDataArray.reduce((acc, student) => {
-    const studentTotals = student.rows.reduce((acc, row) => {
+    student.rows.forEach(row => {
       acc.totalFeesDue += row.feesDue || 0;
       acc.totalFeesPaid += row.feesPaid || 0;
       acc.totalConcession += row.concession || 0;
       acc.totalBalance += row.balance || 0;
-      return acc;
-    }, { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 });
-    acc.totalFeesDue += studentTotals.totalFeesDue;
-    acc.totalFeesPaid += studentTotals.totalFeesPaid;
-    acc.totalConcession += studentTotals.totalConcession;
-    acc.totalBalance += studentTotals.totalBalance;
+    });
     return acc;
   }, { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 });
 
   const totalRecords = studentDataArray.length;
-  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -345,8 +419,8 @@ const DefaulterFees = () => {
   }
 
   const paginatedData = () => {
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
+    const startIndex = rowsPerPage === 'all' ? 0 : (currentPage - 1) * rowsPerPage;
+    const endIndex = rowsPerPage === 'all' ? totalRecords : startIndex + rowsPerPage;
     return studentDataArray.slice(startIndex, endIndex);
   };
 
@@ -418,7 +492,10 @@ const DefaulterFees = () => {
                       className="form-control border-dark"
                       placeholder="Search by field..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-2"></div>
@@ -428,7 +505,7 @@ const DefaulterFees = () => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === studentDataArray.length))}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
@@ -462,6 +539,10 @@ const DefaulterFees = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
+                              if (filteredData.length === 0) {
+                                toast.error('No data to export');
+                                return;
+                              }
                               setIsExporting(true);
                               try {
                                 await exportToExcel(
@@ -475,8 +556,10 @@ const DefaulterFees = () => {
                                     ? selectedYears.map((y) => y.value).join(',')
                                     : selectedAcademicYear
                                 );
+                                toast.success('Exported to Excel successfully');
                               } catch (err) {
-                                toast.error("Export to Excel failed.");
+                                toast.error('Export to Excel failed: ' + err.message);
+                                console.error('Excel export failed:', err);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -489,6 +572,10 @@ const DefaulterFees = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
+                              if (filteredData.length === 0) {
+                                toast.error('No data to export');
+                                return;
+                              }
                               setIsExporting(true);
                               try {
                                 await exportToPDF(
@@ -504,8 +591,10 @@ const DefaulterFees = () => {
                                   school,
                                   logoSrc
                                 );
+                                toast.success('Exported to PDF successfully');
                               } catch (err) {
-                                toast.error("Export to PDF failed.");
+                                toast.error('Export to PDF failed: ' + err.message);
+                                console.error('PDF export failed:', err);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -575,6 +664,7 @@ const DefaulterFees = () => {
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Sections"
                                 className="mt-2"
+                                isDisabled={selectedClasses.length === 0}
                               />
                             </div>
                           </div>
@@ -629,7 +719,7 @@ const DefaulterFees = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Defaulter Fees</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Defaulter Fees Report</h2>
                 </div>
               </div>
 
@@ -725,7 +815,7 @@ const DefaulterFees = () => {
                       </tbody>
                     </table>
                   </div>
-                  {totalRecords > 0 && (
+                  {totalRecords > 0 && rowsPerPage !== 'all' && (
                     <div className="card-footer border-top">
                       <nav aria-label="Page navigation example">
                         <ul className="pagination justify-content-end mb-0">
@@ -768,7 +858,7 @@ const DefaulterFees = () => {
               ) : (
                 <div className="text-center mt-3">
                   <p>
-                    No installments match the selected filters for{' '}
+                    No defaulter installments match the selected filters for{' '}
                     {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
                       formatAcademicYear(selectedAcademicYear)}.
                   </p>

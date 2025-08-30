@@ -3,10 +3,10 @@ import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
-import getAPI from '../../../../../../api/getAPI';
+import getAPI from '../../../../../api/getAPI';
 import { Link } from 'react-router-dom';
 import { exportToExcel, exportToPDF } from './StudentMasterExport';
-import { fetchSchoolData } from '../../../PdfUtlisReport';
+import { fetchSchoolData } from '../../PdfUtlisReport';
 
 const StudentMaster = () => {
   const headerMapping = {
@@ -42,7 +42,9 @@ const StudentMaster = () => {
     motherContactNo: 'Mother Contact No',
     motherQualification: 'Mother Qualification',
     motherProfession: 'Mother Profession',
+      TCStatusDate:'Left Date',
     TCStatus: 'Status',
+  
   };
 
   const [showFilterPanel, setShowFilterPanel] = useState(false);
@@ -54,7 +56,9 @@ const StudentMaster = () => {
   const [logoSrc, setLogoSrc] = useState('');
   const [studentData, setStudentData] = useState([]);
   const [classList, setClassList] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
   const [shifts, setShifts] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
   const [tableFields] = useState(
     Object.keys(headerMapping).map((key) => ({
       id: key,
@@ -73,13 +77,13 @@ const StudentMaster = () => {
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedShifts, setSelectedShifts] = useState([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
-  const tabs = ['Academic Year', 'Class & Section', 'Shift', 'Date'];
+  const tabs = ['Academic Year', 'Class & Section', 'Shift', 'Status'];
   const pageShowOptions = [
+    { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -142,70 +146,6 @@ const StudentMaster = () => {
   }, [schoolId]);
 
   useEffect(() => {
-    if (!schoolId || !selectedAcademicYear) return;
-    const fetchStudents = async () => {
-      setIsLoading(true);
-      try {
-        const response = await getAPI(`/get-admission-form-by-acadmichistoryyear-schoolId/${schoolId}/${selectedAcademicYear}`);
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
-        const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
-
-        console.log('Student API Response:', response.data);
-        console.log('Class API Response:', classRes.data);
-        console.log('Shift API Response:', shiftResponse.data);
-
-        if (!classRes.hasError) {
-          setClassList(classRes.data.data || []);
-          const classes = new Set(classRes.data.data?.map(cls => cls.className).filter(cls => cls) || []);
-          setClassOptions(Array.from(classes).map(cls => ({ value: cls, label: cls })));
-        } else {
-          toast.error(classRes.message || 'Failed to fetch classes.');
-        }
-
-        if (!shiftResponse.hasError) {
-          const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
-          setShifts(shiftArray);
-          setShiftOptions(shiftArray.map(shift => ({ value: shift.masterDefineShiftName, label: shift.masterDefineShiftName })));
-        } else {
-          toast.error(shiftResponse.message || 'Failed to fetch shifts.');
-          setShifts([]);
-        }
-
-        if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
-          const formattedData = studentArray.map(student => ({
-            ...student,
-            studentName: `${student.firstName} ${student.lastName || ''}`.trim(),
-            applicationDate: formatDate(student.applicationDate),
-            dateOfBirth: formatDate(student.dateOfBirth),
-          })).sort((a, b) => new Date(b.applicationDate || b.paymentDate) - new Date(a.applicationDate || a.paymentDate));
-          setStudentData(formattedData);
-          console.log('Formatted Student Data:', formattedData);
-
-          const sections = new Set();
-          classRes.data.data?.forEach(cls => {
-            cls.sections?.forEach(sec => sections.add(sec.name));
-          });
-          setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
-        } else {
-          toast.error(response.message || 'Failed to fetch student list.');
-          setStudentData([]);
-        }
-      } catch (err) {
-        toast.error('Error fetching student data.');
-        console.error('Student Fetch Error:', err);
-        setStudentData([]);
-        setClassOptions([]);
-        setSectionOptions([]);
-        setShiftOptions([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchStudents();
-  }, [schoolId, selectedAcademicYear]);
-
-  useEffect(() => {
     const loadSchoolData = async () => {
       try {
         const { school, logoSrc } = await fetchSchoolData(schoolId);
@@ -234,6 +174,39 @@ const StudentMaster = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (Object.keys(classSectionMap).length === 0) {
+      const sections = new Set(studentData.map(record => getSectionNameById(record.section)).filter(sec => sec && sec !== 'N/A'));
+      setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
+      if (selectedClasses.length === 0) {
+        setSelectedSections([]);
+      }
+      return;
+    }
+
+    let validSections = new Set();
+    if (selectedClasses.length === 0) {
+      Object.values(classSectionMap).forEach(sectionSet => {
+        sectionSet.forEach(section => validSections.add(section));
+      });
+      setSelectedSections([]);
+    } else {
+      selectedClasses.forEach(cls => {
+        const sectionsForClass = classSectionMap[cls.value] || new Set();
+        sectionsForClass.forEach(section => validSections.add(section));
+      });
+    }
+
+    const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
+    setSectionOptions(newSectionOptions);
+
+    const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
+    const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
+    if (updatedSelectedSections.length !== selectedSections.length) {
+      setSelectedSections(updatedSelectedSections);
+    }
+  }, [selectedClasses, classSectionMap, studentData]);
+
   const getClassNameById = (id) => {
     const found = classList.find((cls) => cls._id === id);
     return found ? found.className : 'N/A';
@@ -251,23 +224,105 @@ const StudentMaster = () => {
     return shift ? shift.masterDefineShiftName : 'N/A';
   };
 
+  const fetchStudents = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getAPI(`/get-admission-form-by-acadmichistoryyear-schoolId/${schoolId}/${selectedAcademicYear}`);
+      const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+      const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
+
+      let processedData = [];
+      if (!response.hasError && Array.isArray(response.data.data)) {
+        processedData = response.data.data.map(student => ({
+          ...student,
+          studentName: `${student.firstName} ${student.lastName || ''}`.trim(),
+          applicationDate: formatDate(student.applicationDate),
+          dateOfBirth: formatDate(student.dateOfBirth),
+          TCStatusDate: formatDate(student.TCStatusDate),
+        })).sort((a, b) => a.AdmissionNumber.localeCompare(b.AdmissionNumber));
+        console.log('Processed Data:', processedData);
+      } else {
+        toast.error(response.message || 'Failed to fetch student list.');
+      }
+
+      if (!classRes.hasError && classRes.data.data) {
+        setClassList(classRes.data.data);
+        const classes = new Set(classRes.data.data.map(cls => cls.className).filter(cls => cls));
+        setClassOptions(Array.from(classes).map(cls => ({ value: cls, label: cls })));
+
+        const classSectionMapping = {};
+        classRes.data.data.forEach(cls => {
+          const className = cls.className;
+          const sections = cls.sections?.map(sec => sec.name).filter(sec => sec) || [];
+          if (className && sections.length > 0) {
+            classSectionMapping[className] = new Set(sections);
+          }
+        });
+        setClassSectionMap(classSectionMapping);
+      } else {
+        toast.error(classRes.message || 'Failed to fetch classes.');
+      }
+
+      if (!shiftResponse.hasError && Array.isArray(shiftResponse.data?.data)) {
+        setShifts(shiftResponse.data.data);
+        setShiftOptions(shiftResponse.data.data.map(shift => ({ value: shift.masterDefineShiftName, label: shift.masterDefineShiftName })));
+      } else {
+        toast.error(shiftResponse.message || 'Failed to fetch shifts.');
+        setShifts([]);
+      }
+
+      const statuses = new Set(processedData.map(student => student.TCStatus).filter(status => status));
+      setStatusOptions(Array.from(statuses).map(status => ({ value: status, label: status })));
+
+      setStudentData(processedData);
+
+      if (rowsPerPage === 'all' && processedData.length > 0) {
+        setRowsPerPage(processedData.length);
+      }
+    } catch (err) {
+      toast.error('Error fetching student data.');
+      console.error('Student Fetch Error:', err);
+      setStudentData([]);
+      setClassOptions([]);
+      setSectionOptions([]);
+      setShiftOptions([]);
+      setStatusOptions([]);
+      setClassSectionMap({});
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!schoolId || !selectedAcademicYear) return;
+    fetchStudents();
+  }, [schoolId, selectedAcademicYear]);
+
   const handleSelectChange = (selectedOptions, { name }) => {
+    const selected = selectedOptions || [];
     if (name === 'academicYear') {
       const selectedYear = selectedOptions?.value || '';
       setSelectedAcademicYear(selectedYear);
       localStorage.setItem('selectedAcademicYear', selectedYear);
       setCurrentPage(1);
     } else if (name === 'class') {
-      setSelectedClasses(selectedOptions || []);
+      setSelectedClasses(selected);
       setCurrentPage(1);
     } else if (name === 'section') {
-      setSelectedSections(selectedOptions || []);
+      setSelectedSections(selected);
       setCurrentPage(1);
     } else if (name === 'shift') {
-      setSelectedShifts(selectedOptions || []);
+      setSelectedShifts(selected);
+      setCurrentPage(1);
+    } else if (name === 'status') {
+      setSelectedStatuses(selected);
       setCurrentPage(1);
     } else if (name === 'rowsPerPage') {
-      setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(studentData.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      }
       setCurrentPage(1);
     }
   };
@@ -276,10 +331,10 @@ const StudentMaster = () => {
     setSelectedClasses([]);
     setSelectedSections([]);
     setSelectedShifts([]);
-    setStartDate('');
-    setEndDate('');
+    setSelectedStatuses([]);
     setSearchTerm('');
     setCurrentPage(1);
+    setRowsPerPage('all');
     const storedYear = localStorage.getItem('selectedAcademicYear');
     if (storedYear) {
       setSelectedAcademicYear(storedYear);
@@ -328,29 +383,20 @@ const StudentMaster = () => {
     const matchesShift =
       selectedShifts.length === 0 ||
       selectedShifts.some((shift) => getShiftName(record.masterDefineShift) === shift.value);
-    const matchesDate =
-      (!startDate && !endDate) ||
-      (record.applicationDate !== '-' &&
-        (() => {
-          const [day, month, year] = record.applicationDate.split('-');
-          const recordDate = new Date(`${year}-${month}-${day}`);
-          if (isNaN(recordDate.getTime())) return false;
-          const start = startDate ? new Date(startDate) : null;
-          const end = endDate ? new Date(endDate) : null;
-          return (!start || recordDate >= start) && (!end || recordDate <= end);
-        })());
-    return matchesSearchTerm && matchesClass && matchesSection && matchesShift && matchesDate;
+    const matchesStatus =
+      selectedStatuses.length === 0 ||
+      selectedStatuses.some((status) => record.TCStatus === status.value);
+    return matchesSearchTerm && matchesClass && matchesSection && matchesShift && matchesStatus;
   });
 
-  const groupedByDate = filteredData.reduce((acc, record) => {
-    const date = record.applicationDate || '-';
-    if (!acc[date]) acc[date] = [];
-    acc[date].push(record);
-    return acc;
-  }, {});
+  console.log('Filtered Data:', filteredData);
 
-  const totalRecords = Object.keys(groupedByDate).reduce((sum, date) => sum + groupedByDate[date].length, 0);
-  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const studentDataArray = filteredData.sort((a, b) => a.AdmissionNumber.localeCompare(b.AdmissionNumber));
+
+  console.log('Student Data Array:', studentDataArray);
+
+  const totalRecords = studentDataArray.length;
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -362,25 +408,9 @@ const StudentMaster = () => {
   }
 
   const paginatedData = () => {
-    const sortedDates = Object.keys(groupedByDate).sort();
-    let currentCount = 0;
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    const paginated = [];
-
-    for (const date of sortedDates) {
-      const records = groupedByDate[date];
-      for (const record of records) {
-        if (currentCount >= startIndex && currentCount < endIndex) {
-          paginated.push({ date, record });
-        }
-        currentCount++;
-        if (currentCount >= endIndex) break;
-      }
-      if (currentCount >= endIndex) break;
-    }
-
-    return paginated;
+    const startIndex = rowsPerPage === 'all' ? 0 : (currentPage - 1) * rowsPerPage;
+    const endIndex = rowsPerPage === 'all' ? totalRecords : startIndex + rowsPerPage;
+    return studentDataArray.slice(startIndex, endIndex);
   };
 
   const handlePageClick = (page) => {
@@ -401,6 +431,14 @@ const StudentMaster = () => {
 
   return (
     <div className="container">
+      <style>
+        {`
+          .payroll-table-header {
+            font-weight: 700;
+            background-color: #f0f0f0;
+          }
+        `}
+      </style>
       <div className="row">
         <div className="col-md-12">
           <div className="card m-2">
@@ -413,7 +451,10 @@ const StudentMaster = () => {
                       className="form-control border border-dark"
                       placeholder="Search by any field"
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-2"></div>
@@ -423,7 +464,7 @@ const StudentMaster = () => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === studentDataArray.length))}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
@@ -457,6 +498,10 @@ const StudentMaster = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
+                              if (filteredData.length === 0) {
+                                toast.error('No data to export');
+                                return;
+                              }
                               setIsExporting(true);
                               try {
                                 console.log('Exporting to Excel with:', { filteredData, tableFields, selectedAcademicYear, school, logoSrc });
@@ -470,6 +515,7 @@ const StudentMaster = () => {
                                   formatAcademicYear,
                                   selectedAcademicYear
                                 );
+                                toast.success('Exported to Excel successfully');
                               } catch (err) {
                                 console.error('Excel Export Error:', err);
                                 toast.error(`Export to Excel failed: ${err.message || 'Unknown error'}`);
@@ -485,6 +531,10 @@ const StudentMaster = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
+                              if (filteredData.length === 0) {
+                                toast.error('No data to export');
+                                return;
+                              }
                               setIsExporting(true);
                               try {
                                 console.log('Exporting to PDF with:', { filteredData, tableFields, selectedAcademicYear, school, logoSrc });
@@ -500,6 +550,7 @@ const StudentMaster = () => {
                                   school,
                                   logoSrc
                                 );
+                                toast.success('Exported to PDF successfully');
                               } catch (err) {
                                 console.error('PDF Export Error:', err);
                                 toast.error(`Export to PDF failed: ${err.message || 'Unknown error'}`);
@@ -568,6 +619,7 @@ const StudentMaster = () => {
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Sections"
                                 className="mt-2"
+                                isDisabled={selectedClasses.length === 0}
                               />
                             </div>
                           </div>
@@ -587,24 +639,17 @@ const StudentMaster = () => {
                             </div>
                           </div>
                         )}
-                        {activeTab === 'Date' && (
+                        {activeTab === 'Status' && (
                           <div className="row d-lg-flex justify-content-center">
-                            <div className="col-md-4">
-                              <label className="form-label">Start Date</label>
-                              <input
-                                type="date"
-                                className="form-control"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                              />
-                            </div>
-                            <div className="col-md-4">
-                              <label className="form-label">End Date</label>
-                              <input
-                                type="date"
-                                className="form-control"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                            <div className="col-md-8">
+                              <CreatableSelect
+                                isMulti
+                                name="status"
+                                options={statusOptions}
+                                value={selectedStatuses}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Statuses"
+                                className="mt-2"
                               />
                             </div>
                           </div>
@@ -614,7 +659,9 @@ const StudentMaster = () => {
                         <button className="btn btn-secondary me-2" onClick={resetFilters}>
                           Reset
                         </button>
-                        <button className="btn btn-primary">Apply Filters</button>
+                        <button className="btn btn-primary" onClick={() => setShowFilterPanel(false)}>
+                          Apply Filters
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -647,7 +694,7 @@ const StudentMaster = () => {
                       </thead>
                       <tbody>
                         {paginatedData().length > 0 ? (
-                          paginatedData().map(({ date, record }, index) => (
+                          paginatedData().map((record, index) => (
                             <tr
                               key={`${record.AdmissionNumber}_${record.academicYear}_${index}`}
                               className="payroll-table-row"
@@ -672,7 +719,7 @@ const StudentMaster = () => {
                       </tbody>
                     </table>
                   </div>
-                  {totalRecords > 0 && (
+                  {totalRecords > 0 && rowsPerPage !== 'all' && (
                     <div className="card-footer border-top">
                       <nav aria-label="Page navigation example">
                         <ul className="pagination justify-content-end mb-0">

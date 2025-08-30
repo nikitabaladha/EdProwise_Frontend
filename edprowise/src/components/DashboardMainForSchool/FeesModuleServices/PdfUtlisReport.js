@@ -60,7 +60,7 @@ export const generateFooter = (school) => `
   <div style="position: absolute; left: 0; right: 0; text-align: center;">
     <div style="border-top: 2px solid #0d6efd; "></div>
     <p style="font-size: 0.8rem; color: rgb(0, 0, 0); margin: 0.25rem 20mm; padding: 0;">
-      This is a computer-generated receipt and does not require a physical signature.
+      Please change to This is a computer-generated report
     </p>
     <p style="font-size: 0.8rem; color: rgb(0, 0, 0); margin: 0.25rem 20mm; padding: 0;">
       For any queries, please contact ${school?.schoolEmail || ""} or call ${school?.schoolMobileNo || ""}

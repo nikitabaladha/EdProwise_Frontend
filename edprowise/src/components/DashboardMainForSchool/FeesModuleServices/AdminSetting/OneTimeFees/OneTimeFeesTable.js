@@ -20,7 +20,8 @@ const OneTimeFeesTable = () => {
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
-  const [showImportModal, setShowImportModal] = useState(false); // State for import modal
+  const [showImportModal, setShowImportModal] = useState(false); 
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -99,10 +100,26 @@ const OneTimeFeesTable = () => {
     }
   };
 
+    const filteredOneTimeFeesList = oneTimeFeesList.filter((fee) => {
+    const query = searchQuery.toLowerCase();
+    const className = classMap[fee.classId]?.toLowerCase() || '';
+    const sections = fee.sectionIds?.map(id => sectionMap[id]?.toLowerCase() || '') || [];
+    const feeTypes = fee.oneTimeFees?.map(f => feesTypeMap[f.feesTypeId]?.toLowerCase() || '') || [];
+    const amounts = fee.oneTimeFees?.map(f => f.amount.toString()) || [];
+
+    return (
+      className.includes(query) ||
+      sections.some(section => section.includes(query)) ||
+      feeTypes.some(feeType => feeType.includes(query)) ||
+      amounts.some(amount => amount.includes(query))
+    );
+  });
+
+ 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = oneTimeFeesList.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(oneTimeFeesList.length / itemsPerPage);
+  const currentItems = filteredOneTimeFeesList.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredOneTimeFeesList.length / itemsPerPage);
 
   const handleNextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
   const handlePreviousPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
@@ -146,7 +163,17 @@ const OneTimeFeesTable = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">One Time Fees</h4>
-                <div className="d-flex justify-content-end mb-2 gap-2 align-items-center">
+                  <div className="d-none d-md-block">
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  placeholder="Search by field"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ width: '200px' }}
+                />
+              </div>
+                     <div className="d-flex align-items-center gap-2">
                   <select
                     className="form-select form-select-sm w-auto"
                     value={selectedYear}

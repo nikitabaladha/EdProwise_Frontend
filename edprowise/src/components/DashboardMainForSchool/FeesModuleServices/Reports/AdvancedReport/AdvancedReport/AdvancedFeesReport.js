@@ -18,6 +18,7 @@ const AdvancedFeesReport = () => {
   const [logoSrc, setLogoSrc] = useState('');
   const [feeData, setFeeData] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loadingYears, setLoadingYears] = useState(false);
   const [classOptions, setClassOptions] = useState([]);
@@ -35,13 +36,14 @@ const AdvancedFeesReport = () => {
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
   const [paymentAcademicYear, setPaymentAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Installment', 'Type of Fees', 'Academic Year'];
+  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Type of Fees','Payment Mode',];
 
   const pageShowOptions = [
+    { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -110,7 +112,6 @@ const AdvancedFeesReport = () => {
           if (!paymentAcademicYear && years.length > 0) {
             const latestYear = years[years.length - 1];
             setPaymentAcademicYear(latestYear);
-            // localStorage.setItem('selectedAcademicYear', latestYear);
             setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
           }
         } else {
@@ -128,48 +129,98 @@ const AdvancedFeesReport = () => {
     }
   }, [schoolId]);
 
-const fetchFeeData = async (years) => {
-  if (!schoolId || !years.length) return;
-  setIsLoading(true);
-  try {
-    const promises = years.map((year) =>
-      getAPI(`/get-advanced-fees?schoolId=${schoolId}&academicYear=${year}`)
-    );
-    const responses = await Promise.all(promises);
-    const unifiedData = responses.flatMap((res, index) => {
-      if (!res?.data?.data) {
-        console.warn(`No data found for year ${years[index]}`);
-        return [];
+  useEffect(() => {
+    if (Object.keys(classSectionMap).length === 0) {
+      const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
+      setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
+      if (selectedClasses.length === 0) {
+        setSelectedSections([]);
       }
-      return res.data.data;
-    });
+      return;
+    }
 
-    const usedFeeTypes = [...new Set(unifiedData.flatMap(item => Object.keys(item.feeTypes)))];
-    const allFeeTypes = [...new Set(responses
-      .flatMap((res) => res?.data?.feeTypes || [])
-      .filter(type => !['Admission Fee', 'Admission Fees', 'Registration Fees', 'TC Fees'].includes(type))
-      .filter(type => usedFeeTypes.includes(type))
-    )].sort();
+    let validSections = new Set();
+    if (selectedClasses.length === 0) {
+      Object.values(classSectionMap).forEach(sectionSet => {
+        sectionSet.forEach(section => validSections.add(section));
+      });
+      setSelectedSections([]);
+    } else {
+      selectedClasses.forEach(cls => {
+        const sectionsForClass = classSectionMap[cls.value] || new Set();
+        sectionsForClass.forEach(section => validSections.add(section));
+      });
+    }
 
-    // Update states
-    setFeeData(unifiedData); // Add this line to set feeData
-    setFeeTypes(allFeeTypes);
-    setClassOptions([...new Set(unifiedData.map(item => item.className))].map(cls => ({ value: cls, label: cls })));
-    setSectionOptions([...new Set(unifiedData.map(item => item.sectionName))].map(sec => ({ value: sec, label: sec })));
-    setInstallmentOptions([...new Set(unifiedData.map(item => item.installmentName))].map(inst => ({ value: inst, label: inst })));
-    setPaymentModeOptions([...new Set(unifiedData.map(item => item.paymentMode))].map(mode => ({ value: mode, label: mode })));
-  } catch (error) {
-    toast.error('Error fetching data: ' + error.message);
-    setFeeData([]);
-    setFeeTypes([]);
-    setClassOptions([]);
-    setSectionOptions([]);
-    setInstallmentOptions([]);
-    setPaymentModeOptions([]);
-  } finally {
-    setIsLoading(false);
-  }
-};
+    const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
+    setSectionOptions(newSectionOptions);
+
+    const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
+    const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
+    if (updatedSelectedSections.length !== selectedSections.length) {
+      setSelectedSections(updatedSelectedSections);
+    }
+  }, [selectedClasses, classSectionMap, feeData]);
+
+  const fetchFeeData = async (years) => {
+    if (!schoolId || !years.length) return;
+    setIsLoading(true);
+    try {
+      const promises = years.map((year) =>
+        getAPI(`/get-advanced-fees?schoolId=${schoolId}&academicYear=${year}`)
+      );
+      const responses = await Promise.all(promises);
+      const unifiedData = responses.flatMap((res, index) => {
+        if (!res?.data?.data) {
+          console.warn(`No data found for year ${years[index]}`);
+          return [];
+        }
+        return res.data.data;
+      });
+
+      const classSectionMapping = {};
+      unifiedData.forEach((record) => {
+        const className = record.className || '-';
+        const sectionName = record.sectionName || '-';
+        if (className !== '-' && sectionName !== '-') {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = new Set();
+          }
+          classSectionMapping[className].add(sectionName);
+        }
+      });
+      setClassSectionMap(classSectionMapping);
+
+      const usedFeeTypes = [...new Set(unifiedData.flatMap(item => Object.keys(item.feeTypes)))];
+      const allFeeTypes = [...new Set(responses
+        .flatMap((res) => res?.data?.feeTypes || [])
+        .filter(type => !['Admission Fee', 'Admission Fees', 'Registration Fees', 'TC Fees'].includes(type))
+        .filter(type => usedFeeTypes.includes(type))
+      )].sort();
+
+      setFeeData(unifiedData);
+      setFeeTypes(allFeeTypes);
+      setClassOptions([...new Set(unifiedData.map(item => item.className).filter(cls => cls && cls !== '-'))].map(cls => ({ value: cls, label: cls })));
+      setSectionOptions([...new Set(unifiedData.map(item => item.sectionName).filter(sec => sec && sec !== '-'))].map(sec => ({ value: sec, label: sec })));
+      setInstallmentOptions([...new Set(unifiedData.map(item => item.installmentName).filter(inst => inst && inst !== '-'))].map(inst => ({ value: inst, label: inst })));
+      setPaymentModeOptions([...new Set(unifiedData.map(item => item.paymentMode).filter(mode => mode && mode !== '-'))].map(mode => ({ value: mode, label: mode })));
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
+    } catch (error) {
+      toast.error('Error fetching data: ' + error.message);
+      setFeeData([]);
+      setFeeTypes([]);
+      setClassOptions([]);
+      setSectionOptions([]);
+      setInstallmentOptions([]);
+      setPaymentModeOptions([]);
+      setClassSectionMap({});
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!schoolId || !paymentAcademicYear) return;
@@ -200,7 +251,11 @@ const fetchFeeData = async (years) => {
       setSelectedYears(selected);
       setCurrentPage(1);
     } else if (name === 'rowsPerPage') {
-      setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(feeData.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      }
       setCurrentPage(1);
     }
   };
@@ -223,8 +278,8 @@ const fetchFeeData = async (years) => {
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
-    setShowFilterPanel(false);
     setCurrentPage(1);
+    setRowsPerPage('all');
     fetchFeeData([paymentAcademicYear]);
   };
 
@@ -281,7 +336,6 @@ const fetchFeeData = async (years) => {
       selectedInstallments.length === 0 ||
       selectedInstallments.some((inst) => row.installmentName === inst.value);
 
-    // Allow records where academicYear is greater than the queried year
     const matchesYear =
       selectedYears.length === 0 ||
       selectedYears.some((year) => {
@@ -364,7 +418,7 @@ const fetchFeeData = async (years) => {
   };
 
   const totalRecords = filteredData.length;
-  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -376,6 +430,9 @@ const fetchFeeData = async (years) => {
   }
 
   const paginatedData = () => {
+    if (rowsPerPage === 'all') {
+      return filteredData;
+    }
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     return filteredData.slice(startIndex, endIndex);
@@ -411,7 +468,10 @@ const fetchFeeData = async (years) => {
                       className="form-control border border-dark"
                       placeholder="Search by any field"
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-5 px-0 d-flex align-items-center justify-content-end">
@@ -420,7 +480,7 @@ const fetchFeeData = async (years) => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length))}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
@@ -537,7 +597,10 @@ const fetchFeeData = async (years) => {
                                 type="date"
                                 className="form-control"
                                 value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                onChange={(e) => {
+                                  setStartDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                             <div className="col-md-4">
@@ -546,7 +609,10 @@ const fetchFeeData = async (years) => {
                                 type="date"
                                 className="form-control"
                                 value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                                onChange={(e) => {
+                                  setEndDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                           </div>
@@ -590,6 +656,7 @@ const fetchFeeData = async (years) => {
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Sections"
                                 className="mt-2"
+                                isDisabled={selectedClasses.length === 0}
                               />
                             </div>
                           </div>
@@ -731,7 +798,7 @@ const fetchFeeData = async (years) => {
                       </tfoot>
                     </table>
                   </div>
-                  {totalRecords > 0 && (
+                  {totalRecords > 0 && rowsPerPage !== 'all' && (
                     <div className="card-footer border-top">
                       <nav aria-label="Page navigation example">
                         <ul className="pagination justify-content-end mb-0">

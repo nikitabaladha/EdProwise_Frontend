@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
@@ -16,9 +17,10 @@ const FeesRefundReportStudentWise = () => {
   const [school, setSchool] = useState(null);
   const [logoSrc, setLogoSrc] = useState('');
   const [refundData, setRefundData] = useState([]);
-  const [feeTypes, setFeeTypes] = useState([]);
-  const [feeTypeOptions, setFeeTypeOptions] = useState([]);
-  const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
+  const [refundTypes, setRefundTypes] = useState([]);
+  const [refundTypeOptions, setRefundTypeOptions] = useState([]);
+  const [selectedRefundTypes, setSelectedRefundTypes] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [loadingYears, setLoadingYears] = useState(false);
@@ -31,9 +33,19 @@ const FeesRefundReportStudentWise = () => {
   const [selectedSections, setSelectedSections] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Fee Type', 'Class & Section', 'Academic Year'];
+  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Fees Type'];
+
+  const pageShowOptions = [
+    { value: 'all', label: 'All' },
+    { value: 10, label: '10' },
+    { value: 15, label: '15' },
+    { value: 20, label: '20' },
+    { value: 30, label: '30' },
+  ];
 
   const formatAcademicYear = (year) => {
     if (!year) return '-';
@@ -124,9 +136,43 @@ const FeesRefundReportStudentWise = () => {
     }
   }, [schoolId]);
 
+  useEffect(() => {
+    if (Object.keys(classSectionMap).length === 0) {
+      const sections = new Set(refundData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
+      setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
+      if (selectedClasses.length === 0) {
+        setSelectedSections([]);
+      }
+      return;
+    }
+
+    let validSections = new Set();
+    if (selectedClasses.length === 0) {
+      Object.values(classSectionMap).forEach(sectionSet => {
+        sectionSet.forEach(section => validSections.add(section));
+      });
+      setSelectedSections([]);
+    } else {
+      selectedClasses.forEach(cls => {
+        const sectionsForClass = classSectionMap[cls.value] || new Set();
+        sectionsForClass.forEach(section => validSections.add(section));
+      });
+    }
+
+    const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
+    setSectionOptions(newSectionOptions);
+
+    const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
+    const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
+    if (updatedSelectedSections.length !== selectedSections.length) {
+      setSelectedSections(updatedSelectedSections);
+    }
+  }, [selectedClasses, classSectionMap, refundData]);
+
   const fetchRefundData = async (years, startDate, endDate) => {
     setIsLoading(true);
     try {
+      const classSectionMapping = {};
       const queryParams = new URLSearchParams({
         schoolId,
         academicYear: years.join(','),
@@ -137,15 +183,27 @@ const FeesRefundReportStudentWise = () => {
       if (response.hasError || !response.data?.data) {
         console.warn(`No data found for years ${years.join(', ')}`);
         setRefundData([]);
-        setFeeTypes([]);
-        setFeeTypeOptions([]);
+        setClassSectionMap({});
+        setRefundTypes([]);
+        setRefundTypeOptions([]);
         setClassOptions([]);
         setSectionOptions([]);
         return;
       }
 
       const unifiedData = response.data.data;
-      const feeTypes = response.data.feeTypes || [];
+      unifiedData.forEach(record => {
+        const className = record.className || '-';
+        const sectionName = record.sectionName || '-';
+        if (className !== '-' && sectionName !== '-') {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = new Set();
+          }
+          classSectionMapping[className].add(sectionName);
+        }
+      });
+
+      const refundTypes = [...new Set(unifiedData.map(record => record.refundType).filter(Boolean))].sort();
       const classes = [...new Set(unifiedData.map((request) => request.className))]
         .filter(Boolean)
         .sort()
@@ -155,18 +213,24 @@ const FeesRefundReportStudentWise = () => {
         .sort()
         .map((name) => ({ value: name, label: name }));
 
-      setFeeTypes(feeTypes);
-      setFeeTypeOptions(feeTypes.map((type) => ({ value: type, label: type })));
+      setClassSectionMap(classSectionMapping);
+      setRefundTypes(refundTypes);
+      setRefundTypeOptions(refundTypes.map((type) => ({ value: type, label: type })));
       setClassOptions(classes);
       setSectionOptions(sections);
       setRefundData(unifiedData);
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
       console.log('Fetched Refund Data:', unifiedData);
     } catch (error) {
       toast.error('Error fetching refund data: ' + error.message);
       console.error('Error fetching refund data:', error);
       setRefundData([]);
-      setFeeTypes([]);
-      setFeeTypeOptions([]);
+      setClassSectionMap({});
+      setRefundTypes([]);
+      setRefundTypeOptions([]);
       setClassOptions([]);
       setSectionOptions([]);
     } finally {
@@ -186,17 +250,29 @@ const FeesRefundReportStudentWise = () => {
     const selected = selectedOptions || [];
     if (name === 'academicYear') {
       setSelectedYears(selected);
-    } else if (name === 'feeType') {
-      setSelectedFeeTypes(selected);
+      setCurrentPage(1);
+    } else if (name === 'refundType') {
+      setSelectedRefundTypes(selected);
+      setCurrentPage(1);
     } else if (name === 'class') {
       setSelectedClasses(selected);
+      setCurrentPage(1);
     } else if (name === 'section') {
       setSelectedSections(selected);
+      setCurrentPage(1);
+    } else if (name === 'rowsPerPage') {
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(refundData.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      }
+      setCurrentPage(1);
     }
   };
 
   const applyFilters = () => {
     setShowFilterPanel(false);
+    setCurrentPage(1);
     const yearsToFetch = selectedYears.length > 0
       ? selectedYears.map((year) => year.value)
       : [selectedAcademicYear];
@@ -205,12 +281,14 @@ const FeesRefundReportStudentWise = () => {
 
   const resetFilters = () => {
     setSelectedYears([]);
-    setSelectedFeeTypes([]);
+    setSelectedRefundTypes([]);
     setSelectedClasses([]);
     setSelectedSections([]);
     setSearchTerm('');
     setStartDate('');
     setEndDate('');
+    setCurrentPage(1);
+    setRowsPerPage('all');
     setShowFilterPanel(false);
     fetchRefundData([selectedAcademicYear]);
   };
@@ -225,20 +303,14 @@ const FeesRefundReportStudentWise = () => {
     setShowFilterPanel(false);
   };
 
-  const nonZeroFeeTypes = feeTypes.filter((type) =>
-    refundData.some((request) => {
-      const key = type.replace(/\s+/g, '');
-      return request[key] && request[key] !== 0;
-    })
-  );
-
   const filteredData = refundData.filter((request) => {
     const matchesSearchTerm = searchTerm
       ? (request.admissionNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
          request.registrationNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
          request.studentName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
          request.className?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-         request.sectionName?.toLowerCase().includes(searchTerm.toLowerCase()))
+         request.sectionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+         request.refundType?.toLowerCase().includes(searchTerm.toLowerCase()))
       : true;
 
     const matchesYear =
@@ -253,25 +325,50 @@ const FeesRefundReportStudentWise = () => {
       selectedSections.length === 0 ||
       selectedSections.some((sec) => request.sectionName === sec.value);
 
-    const matchesFeeType =
-      selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((feeType) => {
-        const key = feeType.value.replace(/\s+/g, '');
-        return request[key] && request[key] !== 0;
-      });
+    const matchesRefundType =
+      selectedRefundTypes.length === 0 ||
+      selectedRefundTypes.some((refundType) => request.refundType === refundType.value);
 
     const matchesDateRange =
       (!startDate || new Date(request.paymentDate) >= new Date(startDate)) &&
       (!endDate || new Date(request.paymentDate) <= new Date(endDate));
 
-    return matchesSearchTerm && matchesYear && matchesClass && matchesSection && matchesFeeType && matchesDateRange;
+    return matchesSearchTerm && matchesYear && matchesClass && matchesSection && matchesRefundType && matchesDateRange;
   });
 
-  console.log('Filtered Data:', filteredData);
+  const totalRecords = filteredData.length;
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
 
-  const displayedFeeTypes = selectedFeeTypes.length > 0
-    ? selectedFeeTypes.map((ft) => ft.value).filter((type) => nonZeroFeeTypes.includes(type))
-    : nonZeroFeeTypes;
+  const maxPagesToShow = 5;
+  const pagesToShow = [];
+  const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+  for (let i = startPage; i <= endPage; i++) {
+    pagesToShow.push(i);
+  }
+
+  const paginatedData = () => {
+    const startIndex = rowsPerPage === 'all' ? 0 : (currentPage - 1) * rowsPerPage;
+    const endIndex = rowsPerPage === 'all' ? totalRecords : startIndex + rowsPerPage;
+    return filteredData.slice(startIndex, endIndex);
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const tableFields = [
     { id: 'paymentDate', label: 'Date' },
@@ -280,10 +377,6 @@ const FeesRefundReportStudentWise = () => {
     { id: 'className', label: 'Class' },
     { id: 'sectionName', label: 'Section' },
     { id: 'refundType', label: 'Refund Type' },
-    ...displayedFeeTypes.map((type) => ({
-      id: type.replace(/\s+/g, ''),
-      label: type.endsWith('Fee') ? `${type}s` : type,
-    })),
     { id: 'refundAmount', label: 'Refund Amount' },
     { id: 'paidAmount', label: 'Paid Amount' },
     { id: 'balance', label: 'Balance' },
@@ -304,48 +397,23 @@ const FeesRefundReportStudentWise = () => {
     return request[fieldId] !== undefined && request[fieldId] !== 0 ? request[fieldId] : '-';
   };
 
-  // Calculate totals for fee types, refundAmount, paidAmount, and balance
   const totals = filteredData.reduce(
     (acc, request) => {
       const refund = parseFloat(request.refundAmount || 0);
       const paid = parseFloat(request.paidAmount || 0);
       const balance = parseFloat(request.balance || 0);
-      const feeTypeTotals = {};
-      displayedFeeTypes.forEach((type) => {
-        const key = type.replace(/\s+/g, '');
-        feeTypeTotals[key] = (acc[key] || 0) + (parseFloat(request[key] || 0));
-      });
       return {
         ...acc,
-        ...feeTypeTotals,
         refundAmount: acc.refundAmount + refund,
         paidAmount: acc.paidAmount + paid,
         balance: acc.balance + balance,
       };
     },
-    { ...displayedFeeTypes.reduce((acc, type) => ({ ...acc, [type.replace(/\s+/g, '')]: 0 }), {}), refundAmount: 0, paidAmount: 0, balance: 0 }
+    { refundAmount: 0, paidAmount: 0, balance: 0 }
   );
 
   return (
     <div className="container">
-      <style>
-        {`
-          .total-row {
-            font-weight: 700 !important;
-            background-color: #f0f0f0;
-          }
-          .total-row td {
-            font-weight: 700 !important;
-          }
-          .payroll-table-footer {
-            font-weight: 700 !important;
-            background-color: #f0f0f0;
-          }
-          .payroll-table-footer td {
-            font-weight: 700 !important;
-          }
-        `}
-      </style>
       <div className="row">
         <div className="col-md-12">
           <div className="card m-2">
@@ -358,11 +426,23 @@ const FeesRefundReportStudentWise = () => {
                       className="form-control border-dark"
                       placeholder="Search by any field"
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-2"></div>
                   <div className="col-md-5 px-0 d-flex align-items-center justify-content-end">
+                    <Select
+                      isClearable
+                      name="rowsPerPage"
+                      placeholder="Show"
+                      options={pageShowOptions}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === refundData.length))}
+                      onChange={(selected, action) => handleSelectChange(selected, action)}
+                      className="email-select border border-dark me-lg-2"
+                    />
                     <div
                       className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
@@ -475,16 +555,16 @@ const FeesRefundReportStudentWise = () => {
                           </div>
                         )}
 
-                        {activeTab === 'Fee Type' && (
+                        {activeTab === 'Refund Type' && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
                                 isMulti
-                                name="feeType"
-                                options={feeTypeOptions}
-                                value={selectedFeeTypes}
+                                name="refundType"
+                                options={refundTypeOptions}
+                                value={selectedRefundTypes}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Fee Types"
+                                placeholder="Select Refund Types"
                                 className="mt-2"
                               />
                             </div>
@@ -513,6 +593,7 @@ const FeesRefundReportStudentWise = () => {
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Sections"
                                 className="mt-2"
+                                isDisabled={selectedClasses.length === 0}
                               />
                             </div>
                           </div>
@@ -525,7 +606,10 @@ const FeesRefundReportStudentWise = () => {
                                 type="date"
                                 className="form-control mt-2"
                                 value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                onChange={(e) => {
+                                  setStartDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                                 placeholder="Start Date"
                               />
                             </div>
@@ -534,7 +618,10 @@ const FeesRefundReportStudentWise = () => {
                                 type="date"
                                 className="form-control mt-2"
                                 value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                                onChange={(e) => {
+                                  setEndDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                                 placeholder="End Date"
                               />
                             </div>
@@ -568,55 +655,91 @@ const FeesRefundReportStudentWise = () => {
                   </div>
                   <p>Loading...</p>
                 </div>
-              ) : filteredData.length > 0 ? (
-                <div className="table-responsive pb-4 mt-3">
-                  <table className="table text-dark border border-secondary mb-1">
-                    <thead>
-                      <tr className="payroll-table-header">
-                        {tableFields.map((field) => (
-                          <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                            {field.label}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredData.map((request, index) => (
-                        <tr key={`request_${index}`}>
+              ) : paginatedData().length > 0 ? (
+                <>
+                  <div className="table-responsive pb-4 mt-3">
+                    <table className="table text-dark border border-secondary mb-1">
+                      <thead>
+                        <tr className="payroll-table-header">
                           {tableFields.map((field) => (
-                            <td
-                              key={field.id}
-                              className="text-center align-middle border border-secondary text-nowrap p-2"
-                            >
-                              {getFieldValue(request, field)}
-                            </td>
+                            <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {field.label}
+                            </th>
                           ))}
                         </tr>
-                      ))}
-                    </tbody>
-                    <tfoot>
-                      <tr className="payroll-table-footer">
-                        <td colSpan={6} className="text-right border border-secondary p-2">
-                          <strong>Total</strong>
-                        </td>
-                        {displayedFeeTypes.map((type) => (
-                          <td key={type.replace(/\s+/g, '')} className="text-center border border-secondary p-2">
-                            <strong>{totals[type.replace(/\s+/g, '')] || 0}</strong>
-                          </td>
+                      </thead>
+                      <tbody>
+                        {paginatedData().map((request, index) => (
+                          <tr key={`request_${index}`}>
+                            {tableFields.map((field) => (
+                              <td
+                                key={field.id}
+                                className="text-center align-middle border border-secondary text-nowrap p-2"
+                              >
+                                {getFieldValue(request, field)}
+                              </td>
+                            ))}
+                          </tr>
                         ))}
-                        <td className="text-center border border-secondary p-2">
-                          <strong>{totals.refundAmount}</strong>
-                        </td>
-                        <td className="text-center border border-secondary p-2">
-                          <strong>{totals.paidAmount}</strong>
-                        </td>
-                        <td className="text-center border border-secondary p-2">
-                          <strong>{totals.balance}</strong>
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
+                      </tbody>
+                      <tfoot>
+                        <tr className="payroll-table-footer">
+                          <td colSpan={6} className="text-right border border-secondary p-2">
+                            <strong>Total</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.refundAmount}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.paidAmount}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.balance}</strong>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                  {totalRecords > 0 && rowsPerPage !== 'all' && (
+                    <div className="card-footer border-top">
+                      <nav aria-label="Page navigation example">
+                        <ul className="pagination justify-content-end mb-0">
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handlePreviousPage}
+                              disabled={currentPage === 1}
+                            >
+                              Previous
+                            </button>
+                          </li>
+                          {pagesToShow.map((page) => (
+                            <li
+                              key={page}
+                              className={`page-item ${currentPage === page ? 'active' : ''}`}
+                            >
+                              <button
+                                className={`page-link pagination-button ${currentPage === page ? 'active' : ''}`}
+                                onClick={() => handlePageClick(page)}
+                              >
+                                {page}
+                              </button>
+                            </li>
+                          ))}
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handleNextPage}
+                              disabled={currentPage === totalPages}
+                            >
+                              Next
+                            </button>
+                          </li>
+                        </ul>
+                      </nav>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center mt-3">
                   <p>

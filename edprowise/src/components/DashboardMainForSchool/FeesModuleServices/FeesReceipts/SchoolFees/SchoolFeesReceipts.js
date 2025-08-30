@@ -1456,7 +1456,7 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                             </th>
                             <th style={{ position: 'sticky', left: '60px', zIndex: 2 }}>Academic Year</th>
                             <th style={{ position: 'sticky', left: '210px', zIndex: 2 }}>Installment</th>
-                            <th style={{ position: 'sticky', left: '330px', zIndex: 2 }}>Due Date</th>
+                            <th style={{ position: 'sticky', left: '370px', zIndex: 2 }}>Due Date</th>
                             <th>Fees</th>
                             <th>Concession</th>
                             <th>Total Payable</th>
@@ -1486,57 +1486,51 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                                     (item) => item.installmentName === installmentName
                                   );
 
-                                  const totals = installmentData?.reduce(
-                                    (acc, item, index) => {
-                                      const concessionAmount = Number(item.concession) || 0;
-                                      const fineAmount = index === 0 ? Number(item.fineAmount) || 0 : 0;
-                                      const payableAmount = Number(item.amount) - concessionAmount;
-                                      const paidKey = `${year.academicYear}-${installmentName}-${item.feesTypeId?._id}`;
-                                      const finePaidKey = `${year.academicYear}-${installmentName}-fine`;
-                                      const excessPaidKey = `${year.academicYear}-${installmentName}-excess`;
-                                      const action = actionSelections[`${year.academicYear}-${installmentName}`];
-                                      let currentPaidAmount;
-                                      if (action === 'Full Fees') {
-                                        currentPaidAmount = Number(item.balanceAmount) || 0;
-                                      } else {
-                                        currentPaidAmount = paidAmounts[paidKey] !== undefined ? Number(paidAmounts[paidKey] || 0) : 0;
-                                      }
-                                      const finePaidAmount = index === 0 && paidAmounts[finePaidKey] !== undefined ? Number(paidAmounts[finePaidKey] || 0) : 0;
-                                      const excessPaidAmount = index === 0 && paidAmounts[excessPaidKey] !== undefined ? Number(paidAmounts[excessPaidKey] || 0) : 0;
-                                      const balance = Number(item.balanceAmount) || 0;
-                                      const amountPaid = Number(item.amount) - concessionAmount - balance;
+                               const totals = installmentData.reduce(
+  (acc, item, index) => {
+    const concessionItem = year.concession?.concessionDetails?.find(
+      (cd) => cd.installmentName === item.installmentName && cd.feesType === item.feesTypeId._id
+    );
+    const concessionAmount = Number(concessionItem?.concessionAmount || 0);
+    const fineAmount = index === 0 ? Number(item.fineAmount || 0) : 0;
+    const payableAmount = Number(item.amount) - concessionAmount;
+    const paidKey = `${year.academicYear}-${installmentName}-${item.feesTypeId._id}`;
+    const finePaidKey = `${year.academicYear}-${installmentName}-fine`;
+    const excessPaidKey = `${year.academicYear}-${installmentName}-excess`;
+    const action = actionSelections[`${year.academicYear}-${installmentName}`];
+    let currentPaidAmount;
+    if (action === 'Full Fees') {
+      currentPaidAmount = Number(item.balanceAmount) || 0;
+    } else {
+      currentPaidAmount = paidAmounts[paidKey] !== undefined ? Number(paidAmounts[paidKey] || 0) : 0;
+    }
+    const finePaidAmount = index === 0 && paidAmounts[finePaidKey] !== undefined ? Number(paidAmounts[finePaidKey] || 0) : 0;
+    const excessPaidAmount = index === 0 && paidAmounts[excessPaidKey] !== undefined ? Number(paidAmounts[excessPaidKey] || 0) : 0;
+    const balance = Number(item.balanceAmount) || 0;
+    const amountPaid = Number(item.amount) - concessionAmount - balance;
 
-                                      return {
-                                        totalFeesAmount: acc.totalFeesAmount + (Number(item.amount) || 0),
-                                        totalFine: acc.totalFine + fineAmount,
-                                        totalConcession: acc.totalConcession + concessionAmount,
-                                        totalPayable: acc.totalPayable + payableAmount,
-                                        totalPaid: acc.totalPaid + currentPaidAmount + finePaidAmount + excessPaidAmount,
-                                        totalBalance: acc.totalBalance + balance,
-                                        totalPaidAmount: acc.totalPaidAmount + amountPaid,
-                                        excessPaidAmount: acc.excessPaidAmount + excessPaidAmount,
-                                      };
-                                    },
-                                    {
-                                      totalFeesAmount: 0,
-                                      totalFine: 0,
-                                      totalConcession: 0,
-                                      totalPayable: 0,
-                                      totalPaid: 0,
-                                      totalBalance: 0,
-                                      totalPaidAmount: 0,
-                                      excessPaidAmount: 0,
-                                    }
-                                  ) || {
-                                    totalFeesAmount: 0,
-                                    totalFine: 0,
-                                    totalConcession: 0,
-                                    totalPayable: 0,
-                                    totalPaid: 0,
-                                    totalBalance: 0,
-                                    totalPaidAmount: 0,
-                                    excessPaidAmount: 0,
-                                  };
+    return {
+      totalFeesAmount: acc.totalFeesAmount + (Number(item.amount) || 0),
+      totalFine: acc.totalFine + fineAmount,
+      totalConcession: acc.totalConcession + concessionAmount,
+      totalPayable: acc.totalPayable + payableAmount,
+      totalPaid: acc.totalPaid + currentPaidAmount + finePaidAmount + excessPaidAmount,
+      totalBalance: acc.totalBalance + balance,
+      totalPaidAmount: acc.totalPaidAmount + amountPaid,
+      excessPaidAmount: acc.excessPaidAmount + excessPaidAmount,
+    };
+  },
+  {
+    totalFeesAmount: 0,
+    totalFine: 0,
+    totalConcession: 0,
+    totalPayable: 0,
+    totalPaid: 0,
+    totalBalance: 0,
+    totalPaidAmount: 0,
+    excessPaidAmount: 0,
+  }
+);
 
                                   const isInstallmentSelected = selectedInstallments[year.academicYear]?.includes(installmentName);
 
@@ -1566,7 +1560,7 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                                   </td>
                                   <td style={{ position: 'sticky', left: '60px', zIndex: 1, backgroundColor: 'white' }}>{formatAcademicYear(academicYear)}</td>
                                   <td style={{ position: 'sticky', left: '210px', zIndex: 1, backgroundColor: 'white' }}>{installmentName}</td>
-                                  <td style={{ position: 'sticky', left: '330px', zIndex: 1, backgroundColor: 'white' }}>{dueDate.toLocaleDateString()}</td>
+                                  <td style={{ position: 'sticky', left: '370px', zIndex: 1, backgroundColor: 'white' }}>{dueDate.toLocaleDateString()}</td>
                                   <td><b>{totals.totalFeesAmount || 0}</b></td>
                                   <td><b>{totals.totalConcession || 0}</b></td>
                                   <td><b>{totals.totalPayable || 0}</b></td>

@@ -195,11 +195,32 @@ const Sidebar = () => {
         label: "Fees module",
         icon: "solar:file-text-bold",
         children: [
-          {
-            id: "studentprofile",
-            label: "Student Profile",
+           {
+            id: "Studentdba",
+            label: "Student DBA",
             icon: "bx-receipt",
-            link: "/school-dashboard/fees-module/student-profile",
+            children: [
+                {
+                label: "Student Profile",
+                link: "/school-dashboard/fees-module/student-dba/student-profile",
+                icon: "bx-receipt",
+              },
+              {
+                label: "Student Count",
+                link: "/school-dashboard/fees-module/student-dba/student-count",
+                icon: "bx-receipt",
+              },
+               {
+                label: "Student Count Recon",
+                link: "/school-dashboard/fees-module/student-dba/student-count-recon",
+                icon: "bx-receipt",
+              },
+               {
+                label: "Student Master",
+                link: "/school-dashboard/fees-module/student-dba/student-master",
+                icon: "bx-receipt",
+              },
+            ],
           },
           {
             id: "form",
@@ -267,33 +288,43 @@ const Sidebar = () => {
               },
              
               {
-                "label": "Daily Collection Report",
+                "label": "Collection Report",
                 "icon": "solar:calendar-bold-duotone",
                 "children": [
                   {
-                    "label": "Datewise Collection",
-                    "link": "/school-dashboard/fees-module/reports/daily-collection/datewise-collection",
+                    "label": "DC Inc Concession ",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/datewise-collection-inc-concession",
                     "icon": "solar:chart-square-bold-duotone"
                   },
                   {
-                    "label": "DC With Concession",
-                    "link": "/school-dashboard/fees-module/reports/daily-collection/datewise-collection-with-concession",
+                    "label": "DC Exc Concession",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/datewise-collection-exc-concession",
                     "icon": "solar:chart-bold-duotone"
                   },
+                    {
+                    "label": "MC Inc Concession ",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/monthwise-collection-inc-concession",
+                    "icon": "solar:chart-square-bold-duotone"
+                  },
+                    {
+                    "label": "MC Exc Concession ",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/monthwise-collection-exc-concession",
+                    "icon": "solar:chart-square-bold-duotone"
+                  },
                   {
-                    "label": "Studentwise Collection",
-                    "link": "/school-dashboard/fees-module/reports/daily-collection/studentwise-collection",
+                    "label": "SC Inc Concession",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/studentwise-collection-inc-concession",
                     "icon": "solar:user-bold-duotone"
                   },
                   {
-                    "label": "SC With Concession",
-                    "link": "/school-dashboard/fees-module/reports/daily-collection/studentwise-with-collection",
+                    "label": "SC Exc Concession",
+                    "link": "/school-dashboard/fees-module/reports/daily-collection/studentwise-collection-exc-concession",
                     "icon": "solar:user-check-bold-duotone"
                   }
                 ]
               },
                {
-                label: "General",
+                label: "General Report",
                 icon: "solar:settings-bold-duotone",
                 children: [
 
@@ -389,11 +420,7 @@ const Sidebar = () => {
                     "icon": "solar:arrow-up-bold-duotone"
                   },
                   
-                  {
-                    "label": "Student Master",
-                    "link": "/school-dashboard/fees-module/reports/advanced/student-master",
-                    "icon": "solar:users-group-rounded-bold-duotone"
-                  }
+                 
                 ]
               },
               {
@@ -446,6 +473,12 @@ const Sidebar = () => {
             label: "Admin Setting",
             icon: "bx-cog",
             children: [
+               {
+                label: "Academic Year Setting",
+                icon: "bx-trending-up",
+                link: "/school-dashboard/fees-module/admin-setting/acadmic-year-setting",
+
+              },
               {
                 label: "Prefix Settings",
                 icon: "bx-edit",

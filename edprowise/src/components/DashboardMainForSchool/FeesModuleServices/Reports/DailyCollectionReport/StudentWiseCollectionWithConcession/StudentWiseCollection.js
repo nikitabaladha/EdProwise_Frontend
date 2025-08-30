@@ -8,7 +8,7 @@ import getAPI from '../../../../../../api/getAPI';
 import { exportToExcel, exportToPDF } from './ExportModalStudentWiseFeesReport';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const StudentWiseFeesReportWithConcession = () => {
+const StudentWiseFeesReportEXCConcession= () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
@@ -22,6 +22,7 @@ const StudentWiseFeesReportWithConcession = () => {
   const [loadingYears, setLoadingYears] = useState(false);
   const [classOptions, setClassOptions] = useState([]);
   const [sectionOptions, setSectionOptions] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
   const [academicYearOptions, setAcademicYearOptions] = useState([]);
   const [academicYears, setAcademicYears] = useState([]);
   const [installmentOptions, setInstallmentOptions] = useState([]);
@@ -37,12 +38,13 @@ const StudentWiseFeesReportWithConcession = () => {
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
   const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment', 'Type of Fees'];
 
   const pageShowOptions = [
+    { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -72,7 +74,6 @@ const StudentWiseFeesReportWithConcession = () => {
         setLogoSrc(logoSrc);
       } catch (error) {
         console.error('Failed to fetch school data:', error);
-        toast.error('Failed to fetch school data.');
       }
     };
     if (schoolId) {
@@ -142,32 +143,69 @@ const StudentWiseFeesReportWithConcession = () => {
           console.warn(`No data found for year ${years[index]}`);
           return [];
         }
-        return res.data.data.map((record) => ({
-          ...record,
-          academicYear: years[index],
-        }));
+        return res.data.data.map((record) => {
+          const totalPaidFee = Object.values(record.feeTypes || {}).reduce(
+            (sum, amount) => sum + (Number(amount) || 0),
+            0
+          ) + (Number(record.fineAmount) || 0) + (Number(record.excessAmount) || 0);
+          return {
+            ...record,
+            academicYear: record.academicYear,
+            feesBreakdown: record.feeTypes || {},
+            totalPaidFee,
+          };
+        });
       });
 
-      const allFeeTypes = responses
+      let availableFeeTypes = responses
         .flatMap((res) => res?.data?.feeTypes || [])
-        .filter((type) => typeof type === 'string')
         .filter((type, index, self) => self.indexOf(type) === index)
         .sort();
 
-      setFeeTypes(allFeeTypes);
+      if (selectedInstallments.length > 0) {
+        const selectedInstallmentNames = selectedInstallments.map((inst) => inst.value);
+        availableFeeTypes = unifiedData
+          .filter((record) => selectedInstallmentNames.includes(record.installmentName))
+          .flatMap((record) => Object.keys(record.feesBreakdown))
+          .filter((type, index, self) => self.indexOf(type) === index)
+          .sort();
+      }
+
+      setFeeTypes(availableFeeTypes);
       setFeeData(unifiedData);
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
 
       const filterOptions = responses[0]?.data?.filterOptions || {};
       setClassOptions(filterOptions.classOptions || []);
       setSectionOptions(filterOptions.sectionOptions || []);
-      setInstallmentOptions(filterOptions.installmentOptions || []);
       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+      setInstallmentOptions(filterOptions.installmentOptions || []);
+
+      // Build class-section mapping from data
+      const classSectionMapping = {};
+      unifiedData.forEach((record) => {
+        const className = record.className && record.className !== '-' ? record.className : null;
+        const sectionName = record.sectionName && record.sectionName !== '-' ? record.sectionName : null;
+        if (className && sectionName) {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = [];
+          }
+          if (!classSectionMapping[className].some((sec) => sec.value === sectionName)) {
+            classSectionMapping[className].push({ value: sectionName, label: sectionName });
+          }
+        }
+      });
+      setClassSectionMap(classSectionMapping);
     } catch (error) {
       toast.error('Error fetching data: ' + error.message);
       setFeeData([]);
       setFeeTypes([]);
       setClassOptions([]);
       setSectionOptions([]);
+      setClassSectionMap({});
       setInstallmentOptions([]);
       setPaymentModeOptions([]);
     } finally {
@@ -181,7 +219,7 @@ const StudentWiseFeesReportWithConcession = () => {
       ? selectedYears.map((year) => year.value)
       : [selectedAcademicYear];
     fetchFeeData(yearsToFetch);
-  }, [schoolId, selectedAcademicYear, selectedYears]);
+  }, [schoolId, selectedAcademicYear, selectedYears, selectedInstallments]);
 
   const handleSelectChange = (selectedOptions, { name }) => {
     const selected = selectedOptions || [];
@@ -193,6 +231,7 @@ const StudentWiseFeesReportWithConcession = () => {
       setCurrentPage(1);
     } else if (name === 'class') {
       setSelectedClasses(selected);
+      setSelectedSections([]); // Reset sections when class changes
       setCurrentPage(1);
     } else if (name === 'section') {
       setSelectedSections(selected);
@@ -203,8 +242,16 @@ const StudentWiseFeesReportWithConcession = () => {
     } else if (name === 'installment') {
       setSelectedInstallments(selected);
       setCurrentPage(1);
+      const yearsToFetch = selectedYears.length > 0
+        ? selectedYears.map((year) => year.value)
+        : [selectedAcademicYear];
+      fetchFeeData(yearsToFetch);
     } else if (name === 'rowsPerPage') {
-      setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(feeData.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 'all');
+      }
       setCurrentPage(1);
     }
   };
@@ -228,8 +275,8 @@ const StudentWiseFeesReportWithConcession = () => {
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
-    setShowFilterPanel(false);
     setCurrentPage(1);
+    setRowsPerPage('all');
     fetchFeeData([selectedAcademicYear]);
   };
 
@@ -243,14 +290,23 @@ const StudentWiseFeesReportWithConcession = () => {
     setShowFilterPanel(false);
   };
 
+  const getFilteredSectionOptions = () => {
+    if (selectedClasses.length === 0) return [];
+    const sections = selectedClasses
+      .flatMap((cls) => classSectionMap[cls.value] || [])
+      .filter((sec, index, self) => self.findIndex((s) => s.value === sec.value) === index);
+    return sections;
+  };
+
   const filteredData = feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
-      ? String(row.paymentDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(Array.isArray(row.admissionNumber) && row.admissionNumber.length === 0 ? '-' : row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.paymentMode || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+      ? String(row.paymentDate || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.admissionNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.studentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.paymentMode || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.className || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.sectionName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.academicYear || '').toLowerCase().includes(searchTerm.toLowerCase())
       : true;
 
     const matchesPaymentMode =
@@ -273,7 +329,7 @@ const StudentWiseFeesReportWithConcession = () => {
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feeTypes[type.value]?.totalPaid || 0) > 0);
+      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) > 0);
 
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -301,39 +357,47 @@ const StudentWiseFeesReportWithConcession = () => {
 
   const totals = filteredData.reduce(
     (acc, row) => {
-      feeTypes.forEach((type) => {
-        if (row.feeTypes[type]) {
-          acc[type] = (acc[type] || 0) + (row.feeTypes[type].totalPaid || 0);
-        }
+      const displayTypes = selectedFeeTypes.length > 0
+        ? selectedFeeTypes.map((type) => type.value)
+        : feeTypes;
+      displayTypes.forEach((type) => {
+        acc[type] = (acc[type] || 0) + (row.feesBreakdown[type] || 0);
       });
-      acc.totalPaid = (acc.totalPaid || 0) + (row.totalPaid || 0);
+      if (selectedFeeTypes.length === 0) {
+        acc.fineAmount = (acc.fineAmount || 0) + (row.fineAmount || 0);
+        acc.excessAmount = (acc.excessAmount || 0) + (row.excessAmount || 0);
+        acc.totalPaidFee = (acc.totalPaidFee || 0) + (row.totalPaidFee || 0);
+      }
       return acc;
     },
-    { totalPaid: 0 }
+    {}
   );
 
-  const headerMapping = {
-    paymentDate: 'Date',
-    admissionNumber: 'Admission No.',
-    studentName: 'Name',
-    className: 'Class',
-    sectionName: 'Section',
-    installmentName: 'Installment',
-    paymentMode: 'Payment Mode',
-    receiptNumber: 'Receipt No.',
-    ...Object.fromEntries(feeTypes.map((type) => [type, type])),
-    totalPaid: 'Fees Paid',
-  };
-
-  const tableFields = Object.keys(headerMapping).map((key) => ({
-    id: key,
-    label: headerMapping[key],
-  }));
+  const tableFields = [
+    { id: 'paymentDate', label: 'Date', isNumeric: false },
+    { id: 'academicYear', label: 'Academic Year', isNumeric: false },
+    { id: 'admissionNumber', label: 'Admission No.', isNumeric: false },
+    { id: 'studentName', label: 'Name', isNumeric: false },
+    { id: 'className', label: 'Class', isNumeric: false },
+    { id: 'sectionName', label: 'Section', isNumeric: false },
+    { id: 'installmentName', label: 'Installment', isNumeric: false },
+    { id: 'paymentMode', label: 'Payment Mode', isNumeric: false },
+    { id: 'receiptNumber', label: 'Receipt No.', isNumeric: false },
+    ...(selectedFeeTypes.length > 0
+      ? selectedFeeTypes.map((type) => ({ id: type.value, label: type.value, isNumeric: true }))
+      : [
+          ...feeTypes.map((type) => ({ id: type, label: type, isNumeric: true })),
+          { id: 'fineAmount', label: 'Fine Amount', isNumeric: true },
+          { id: 'excessAmount', label: 'Excess Amount', isNumeric: true },
+          { id: 'totalPaidFee', label: 'Fees Paid', isNumeric: true },
+        ]),
+  ];
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
     if (
       fieldId === 'paymentDate' ||
+      fieldId === 'admissionNumber' ||
       fieldId === 'studentName' ||
       fieldId === 'className' ||
       fieldId === 'sectionName' ||
@@ -342,17 +406,17 @@ const StudentWiseFeesReportWithConcession = () => {
       fieldId === 'receiptNumber'
     ) {
       return record[fieldId] || '-';
-    } else if (fieldId === 'admissionNumber') {
-      return Array.isArray(record[fieldId]) && record[fieldId].length === 0 ? '-' : record[fieldId] || '-';
-    } else if (fieldId === 'totalPaid') {
-      return record[fieldId] || 0;
+    } else if (fieldId === 'academicYear') {
+      return formatAcademicYear(record[fieldId]) || '-';
+    } else if (fieldId === 'totalPaidFee' || fieldId === 'fineAmount' || fieldId === 'excessAmount') {
+      return (record[fieldId] || 0).toFixed(2);
     } else {
-      return record.feeTypes[fieldId]?.totalPaid || 0;
+      return (record.feesBreakdown[fieldId] || 0).toFixed(2);
     }
   };
 
   const totalRecords = filteredData.length;
-  const totalPages = Math.ceil(totalRecords / rowsPerPage);
+  const totalPages = Math.ceil(totalRecords / (rowsPerPage === 'all' ? totalRecords : rowsPerPage));
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -364,8 +428,8 @@ const StudentWiseFeesReportWithConcession = () => {
   }
 
   const paginatedData = () => {
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
+    const startIndex = (currentPage - 1) * (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
+    const endIndex = startIndex + (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
     return filteredData.slice(startIndex, endIndex);
   };
 
@@ -385,6 +449,7 @@ const StudentWiseFeesReportWithConcession = () => {
     }
   };
 
+  const nonNumericColumnsCount = tableFields.filter((field) => !field.isNumeric).length;
   return (
     <div className="container">
       <div className="row">
@@ -399,7 +464,10 @@ const StudentWiseFeesReportWithConcession = () => {
                       className="form-control border border-dark"
                       placeholder="Search by any field"
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-2"></div>
@@ -409,7 +477,9 @@ const StudentWiseFeesReportWithConcession = () => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage)}
+                      value={pageShowOptions.find(
+                        (option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length)
+                      )}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
@@ -448,7 +518,6 @@ const StudentWiseFeesReportWithConcession = () => {
                                 await exportToExcel(
                                   filteredData,
                                   tableFields,
-                                  headerMapping,
                                   getFieldValue,
                                   totals,
                                   formatAcademicYear,
@@ -475,7 +544,6 @@ const StudentWiseFeesReportWithConcession = () => {
                                 await exportToPDF(
                                   filteredData,
                                   tableFields,
-                                  headerMapping,
                                   getFieldValue,
                                   totals,
                                   formatAcademicYear,
@@ -526,7 +594,10 @@ const StudentWiseFeesReportWithConcession = () => {
                                 type="date"
                                 className="form-control"
                                 value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                onChange={(e) => {
+                                  setStartDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                             <div className="col-md-4">
@@ -535,7 +606,10 @@ const StudentWiseFeesReportWithConcession = () => {
                                 type="date"
                                 className="form-control"
                                 value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                                onChange={(e) => {
+                                  setEndDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                           </div>
@@ -574,11 +648,12 @@ const StudentWiseFeesReportWithConcession = () => {
                               <CreatableSelect
                                 isMulti
                                 name="section"
-                                options={sectionOptions}
+                                options={getFilteredSectionOptions()}
                                 value={selectedSections}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Sections"
                                 className="mt-2"
+                                isDisabled={selectedClasses.length === 0}
                               />
                             </div>
                           </div>
@@ -649,7 +724,7 @@ const StudentWiseFeesReportWithConcession = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Student-Wise Fees Report With Concession</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Studentwise Collection Exc Concession Report</h2>
                 </div>
               </div>
 
@@ -660,7 +735,7 @@ const StudentWiseFeesReportWithConcession = () => {
                   </div>
                   <p>Loading data...</p>
                 </div>
-              ) : feeData.length > 0 && feeTypes.length > 0 ? (
+              ) : tableFields.length > 9 ? (
                 <>
                   <div className="table-responsive pb-4 mt-3">
                     <table className="table text-dark border border-secondary mb-1">
@@ -696,17 +771,14 @@ const StudentWiseFeesReportWithConcession = () => {
                       </tbody>
                       <tfoot>
                         <tr className="payroll-table-footer">
-                          <td colSpan={8} className="text-right border border-secondary p-2">
+                          <td colSpan={nonNumericColumnsCount} className="text-right border border-secondary p-2">
                             <strong>Total</strong>
                           </td>
-                          {feeTypes.map((type) => (
-                            <td key={type} className="text-center border border-secondary p-2">
-                              <strong>{totals[type] || 0}</strong>
+                          {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                            <td key={field.id} className="text-center border border-secondary p-2">
+                              <strong>{(totals[field.id] || 0).toFixed(2)}</strong>
                             </td>
                           ))}
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalPaid || 0}</strong>
-                          </td>
                         </tr>
                       </tfoot>
                     </table>
@@ -753,7 +825,7 @@ const StudentWiseFeesReportWithConcession = () => {
                 </>
               ) : (
                 <div className="text-center mt-3">
-                  <p>No data or fee types available for the selected criteria.</p>
+                  <p>No fee types available.</p>
                 </div>
               )}
             </div>
@@ -764,4 +836,4 @@ const StudentWiseFeesReportWithConcession = () => {
   );
 };
 
-export default StudentWiseFeesReportWithConcession;
+export default StudentWiseFeesReportEXCConcession;

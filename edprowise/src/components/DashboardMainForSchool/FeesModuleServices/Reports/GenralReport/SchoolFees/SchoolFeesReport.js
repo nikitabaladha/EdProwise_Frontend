@@ -16,7 +16,7 @@ export const exportToExcel = async (
   selectedYears
 ) => {
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet('Student-Wise Fees Due Report');
+  const worksheet = workbook.addWorksheet('Student-Wise School Fees Report');
 
   const headers = tableFields.map(field => headerMapping[field.id] || field.label);
   worksheet.addRow(headers);
@@ -76,7 +76,7 @@ export const exportToExcel = async (
   const buffer = await workbook.xlsx.writeBuffer();
   saveAs(
     new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-    `Student_Wise_Fees_Due_Report_${formatAcademicYear(selectedYears)}.xlsx`
+    `Student_Wise_School_Fees_Report_${formatAcademicYear(selectedYears)}.xlsx`
   );
 };
 
@@ -247,7 +247,7 @@ export const exportToPDF = async (
       const currentPageData = pageData[page];
       const tableContent = `
         ${tableStyle}
-        <div class="pdf-title">Student-Wise Fees Due Report - ${formatAcademicYear(selectedYears)}</div>
+        <div class="pdf-title">Student-Wise School Fees Report - ${formatAcademicYear(selectedYears)}</div>
         <table>
           <thead>
             <tr>
@@ -331,7 +331,7 @@ export const exportToPDF = async (
     }
 
     document.body.removeChild(hiddenContainer);
-    const fileName = `Student_Wise_Fees_Due_Report_${formatAcademicYear(selectedYears)}.pdf`;
+    const fileName = `Student_Wise_School_Fees_Report_${formatAcademicYear(selectedYears)}.pdf`;
     pdf.save(fileName);
   } catch (error) {
     console.error('PDF generation failed:', error);

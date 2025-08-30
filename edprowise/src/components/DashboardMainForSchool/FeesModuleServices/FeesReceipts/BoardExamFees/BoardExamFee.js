@@ -703,18 +703,18 @@ const BoardExamFeeRegistration = () => {
 
   const academicYear = localStorage.getItem('selectedAcademicYear');
 
-  // Fetch classes and board exam fees
+ 
   useEffect(() => {
     if (!schoolId || !academicYear) return;
 
     const fetchClassesAndFees = async () => {
       setClassesLoading(true);
       try {
-        // Fetch classes
+      
         const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         const classData = classResponse?.data?.data || [];
 
-        // Fetch board exam fees
+       
         const feesResponse = await getAPI(
           `/get-board-exam-fees/${schoolId}/${academicYear}`,
           {},
@@ -725,7 +725,7 @@ const BoardExamFeeRegistration = () => {
         if (Array.isArray(feesData) && feesData.length > 0) {
           setBoardExamFees(feesData);
 
-          // Filter classes that have board exam fees
+       
           const filteredClasses = classData.filter((cls) =>
             feesData.some((fee) => fee.classId === cls._id)
           );
@@ -752,7 +752,7 @@ const BoardExamFeeRegistration = () => {
     fetchClassesAndFees();
   }, [schoolId, academicYear]);
 
-  // Update sections based on selected class and board exam fees
+
   useEffect(() => {
     if (selectedClass) {
       const selectedClassData = classes.find((c) => c._id === selectedClass);

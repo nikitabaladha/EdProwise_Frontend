@@ -20,6 +20,7 @@ const BoardExamFeesList = () => {
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false); 
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -91,10 +92,24 @@ const BoardExamFeesList = () => {
     }
   };
 
+  const filteredBoardFees = boardFees.filter((fees) => {
+    const query = searchQuery.toLowerCase();
+    const className = classMap[fees.classId]?.toLowerCase() || '';
+    const sections = fees.sectionIds?.map(id => sectionMap[id]?.toLowerCase() || '') || [];
+    const amount = fees.amount?.toString() || '';
+
+    return (
+      className.includes(query) ||
+      sections.some(section => section.includes(query)) ||
+      amount.includes(query)
+    );
+  });
+
+  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = boardFees.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(boardFees.length / itemsPerPage);
+  const currentItems = filteredBoardFees.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredBoardFees.length / itemsPerPage);
 
   const handleNextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
   const handlePreviousPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
@@ -138,6 +153,16 @@ const BoardExamFeesList = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">All Board Exam Fees</h4>
+                  <div className="d-none d-md-block">
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  placeholder="Search by any field"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ width: '200px' }}
+                />
+              </div>
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}

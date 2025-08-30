@@ -69,16 +69,16 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete enquiry request.",
     idKey: "_id",
   },
+  academicYears: {
+    getEndpoint: (id) => `/delete-feesmanagment-year/${id}`,
+    successMessage: "Acadmic year successfully deleted!",
+    errorMessage: "Failed to delete acadmic year.",
+    idKey: "_id",
+  },
   feesType: {
     getEndpoint: (id) => `/delete-fees-type/${id}`,
     successMessage: "Fees type successfully deleted!",
     errorMessage: "Failed to delete fees type.",
-    idKey: "_id",
-  },
-  shifts: {
-    getEndpoint: (id) => `/master-define-shift/${id}`,
-    successMessage: "Shift successfully deleted!",
-    errorMessage: "Failed to delete shift.",
     idKey: "_id",
   },
   shifts: {

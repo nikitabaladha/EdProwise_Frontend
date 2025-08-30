@@ -21,6 +21,7 @@ const FeeStructureList = () => {
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
   const [loadingYears, setLoadingYears] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchAcademicYears = async () => {
@@ -96,11 +97,29 @@ const FeeStructureList = () => {
       toast.error("Error refreshing fee structures.");
     }
   };
+const filteredFeeStructures = feeStructures.filter((structure) => {
+    const query = searchQuery.toLowerCase();
+    const className = classMap[structure.classId]?.toLowerCase() || '';
+    const sections = structure.sectionIds?.map(id => sectionMap[id]?.toLowerCase() || '') || [];
+    const totalAmount = Array.isArray(structure.installments)
+      ? structure.installments.reduce((sum, inst) =>
+          sum + (inst.fees?.reduce((subSum, fee) => subSum + fee.amount, 0) || 0), 0)
+      : 0;
+    const numInstallments = structure.installments?.length || 0;
+
+    return (
+      className.includes(query) ||
+      sections.some(section => section.includes(query)) ||
+      totalAmount.toString().includes(query) ||
+      numInstallments.toString().includes(query)
+    );
+  });
+
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = feeStructures.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(feeStructures.length / itemsPerPage);
+  const currentItems = filteredFeeStructures.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredFeeStructures.length / itemsPerPage);
 
   const handleNextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
   const handlePreviousPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
@@ -144,6 +163,16 @@ const FeeStructureList = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">All School Fees</h4>
+                    <div className="d-none d-md-block">
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  placeholder="Search by field"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ width: '200px' }}
+                />
+              </div>
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}
