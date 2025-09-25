@@ -1,0 +1,139 @@
+import React from 'react'
+import CircularProgressCollection from './CircularProgressCollection'
+const TeacherViewStudentAttendanceReport = () => {
+  return (
+   <div className="container-fluid">
+         <div className="d-flex justify-content-end me-3 mb-2 gap-2 align-items-center"></div>
+         <div className="row">
+           <div className="col-xl-12">
+             <div className="card m-2">
+               <div className="card-body custom-heading-padding">
+                 <div className="container">
+                   <div className="card-header d-flex flex-wrap align-items-center">
+                     <h4 className="card-title flex-grow-1 text-center">
+                       Student Attendance
+                     </h4>
+   
+                    
+                     <select className="form-select form-select-sm w-auto">
+                       <option>Select </option>
+                       <option value="All">All</option>
+                       <option value="Pending">Pending</option>
+                       <option value="Approved">Approved</option>
+                       <option value="Reject">Reject</option>
+                     </select>
+                   </div>
+                 </div>
+   
+                 <div className=" d-flex flex-wrap gap-2 justify-content-center my-3">
+                   <div
+                     className="card overflow-hidden border border-dark mb-0"
+                     style={{ height: "-webkit-fill-available" }}
+                   >
+                     <div className="card-body">
+                       <div className=" align-content-center">
+                         <div className="d-flex align-items-center justify-content-center">
+                           <CircularProgressCollection percentage={75} />
+                         </div>
+                         <div className="mt-2">Total Attendance</div>
+                       </div>
+                     </div>
+                   </div>
+   
+                   <div
+                     className="card overflow-hidden border border-dark mb-0"
+                     style={{ height: "-webkit-fill-available" }}
+                   >
+                     <div className="card-body align-content-center">
+                       <div className="row">
+                         <div
+                           className="col-lg-12 col-md-12 col-12 "
+                           style={{ justifyItems: "center" }}
+                         >
+                           <div className="d-flex flex-wrap">
+                             <h3 className="text-muted fw-semibold mb-0 pe-2">
+                           Present :
+                             </h3>
+                             <h3 className="text-dark mb-0"> 21 Days</h3>
+                           </div>
+                           <div className="d-flex flex-wrap mt-2">
+                             <h3 className="text-muted fw-semibold mb-0 pe-2 ">
+                               Absent :
+                             </h3>
+                             <h3 className="text-dark mb-0 "> 3 Days</h3>
+                           </div>
+                           <div className="d-flex flex-wrap mt-2">
+                             <h3 className="text-muted fw-semibold mb-0 pe-2 ">
+                               Halfday :
+                             </h3>
+                             <h3 className="text-dark mb-0 ">
+                              4 Days
+                             </h3>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+   
+                 <div className="table-responsive">
+                   <table className="table align-middle mb-0 table-hover table-centered text-center">
+                     <thead className="bg-light-subtle">
+                       <tr className="payroll-table-header">
+                         <th className="">
+                           <div className="form-check ms-1">
+                             <input
+                               type="checkbox"
+                               className="form-check-input"
+                               id="customCheck1"
+                             />
+                             <label
+                               className="form-check-label"
+                               htmlFor="customCheck1"
+                             />
+                           </div>
+                         </th>
+                         <th className="text-nowrap">Roll No.</th>
+                         <th className="text-nowrap">Name</th>
+                         <th className="text-nowrap">Date</th>
+                         <th className="text-nowrap">Day</th>
+                         <th className="text-nowrap ">In-Time</th>
+                         <th className="text-nowrap">Out-Time</th>
+                         <th className="text-nowrap">Status</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       <tr>
+                         <td className="">
+                           <div className="form-check ms-1">
+                             <input
+                               type="checkbox"
+                               className="form-check-input"
+                               // id={`check-${index}`}
+                             />
+                           </div>
+                         </td>
+                         <td className="">12</td>
+                         <td>Arun Kumar</td>
+                         <td>01-09-2025</td>
+                         <td>Monday</td>
+                         <td>11:00</td>
+                         <td>05:00</td>
+                         <td>
+                           <span class="badge bg-success text-light  px-2 py-1 fs-13">
+                             Present
+                           </span>
+                         </td>
+                       </tr>
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+  )
+}
+
+export default TeacherViewStudentAttendanceReport

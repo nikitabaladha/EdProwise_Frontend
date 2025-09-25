@@ -573,7 +573,7 @@ const TelephoneAllowanceDetails = () => {
     navigate("/employee-dashboard/payroll-module/employee/income-tax/it-declaration/telephone-allowance-details/view-telephone-allowance", {
       state: { telephone }
     });
-  };
+  }; 
 
   // Pagination logic
   const indexOfLastRecord = currentPage * recordsPerPage;
@@ -747,10 +747,10 @@ const TelephoneAllowanceDetails = () => {
         <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType="telephoneAllowance"
-          id={selectedEmployee._id}
-          employeeId={employeeId}
+          id={{ detailId: selectedEmployee._id, employeeId: employeeId }}
           onDeleted={handleDeleteConfirmed}
         />
+        
       )}
     </div>
   );

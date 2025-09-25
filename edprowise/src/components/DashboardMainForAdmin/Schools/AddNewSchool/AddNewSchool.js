@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import CityData from "../../../CityData.json";
+// import CityData from "../../../"
 import Select from "react-select";
 
 const AddNewSchool = () => {
@@ -22,16 +23,17 @@ const AddNewSchool = () => {
 
   const navigate = useNavigate();
 
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
+  const cityOptions = 
+  Object.entries(CityData).flatMap(([state, cities]) =>
     cities.map((city) => ({
       value: `${city}, ${state}, India`,
       label: `${city}, ${state}, India`,
     }))
   );
-
+ 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
+    
     if (files) {
       setFormData((prevState) => ({
         ...prevState,

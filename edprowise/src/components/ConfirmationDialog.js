@@ -87,131 +87,131 @@ const DELETE_CONFIG = {
     errorMessage: "Failed to delete shift.",
     idKey: "_id",
   },
-  classandsection:{
+  classandsection: {
     getEndpoint: (id) => `/delete-class-and-section/${id}`,
     successMessage: "Class and Section successfully deleted!",
     errorMessage: "Failed to delete class and section.",
     idKey: "_id",
   },
-  feesstructure:{
+  feesstructure: {
     getEndpoint: (id) => `/delete-fees-structure/${id}`,
     successMessage: "Fess structure successfully deleted!",
     errorMessage: "Failed to delete fees structure.",
     idKey: "_id",
   },
-  onetimesfees:{
+  onetimesfees: {
     getEndpoint: (id) => `/delete-one-time-fees/${id}`,
     successMessage: "One time fees successfully deleted!",
     errorMessage: "Failed to delete one time fees.",
     idKey: "_id",
   },
-  prefix:{
+  prefix: {
     getEndpoint: (id) => `/delete-prefix/${id}`,
     successMessage: "Prefix successfully deleted!",
     errorMessage: "Failed to delete prefix.",
     idKey: "_id",
   },
-  admissionprefix:{
+  admissionprefix: {
     getEndpoint: (id) => `/delete-admission-prefix/${id}`,
     successMessage: "Prefix successfully deleted!",
     errorMessage: "Failed to delete prefix.",
     idKey: "_id",
-   },
-   fine:{
+  },
+  fine: {
     getEndpoint: (id) => `/delete-fine/${id}`,
     successMessage: "Fine successfully deleted!",
     errorMessage: "Failed to delete fine.",
     idKey: "_id",
-   },
- registrationform:{
-  getEndpoint: (id) => `/delete-registartion-form/${id}`,
-  successMessage: "Registartion form successfully deleted!",
-  errorMessage: "Failed to delete registartion form .",
-  idKey: "_id",
- },
- admissionform:{
-  getEndpoint: (id) => `/delete-admission-form/${id}`,
-  successMessage: "Admission form successfully deleted!",
-  errorMessage: "Failed to delete admission form .",
-  idKey: "_id",
- },
- TCform:{
-  getEndpoint: (id) => `/delete-TC-form/${id}`,
-  successMessage: "TC form successfully deleted!",
-  errorMessage: "Failed to delete TC form .",
-  idKey: "_id",
- },
- concessionform:{
-  getEndpoint: (id) => `/delete-concession-form/${id}`,
-  successMessage: "Concession form successfully deleted!",
-  errorMessage: "Failed to delete Concession form .",
-  idKey: "_id",
- },
- boardregistrationfees:{
-  getEndpoint: (id) => `/delete-board-registration-fees/${id}`,
-  successMessage: "Board registartion fees successfully deleted!",
-  errorMessage: "Failed to delete board registartion fees .",
-  idKey: "_id",
- },
- boardexamfees: {
-  getEndpoint: (id) => `/delete-board-exam-fees/${id}`,
-  successMessage: "Board exam fees successfully deleted!",
-  errorMessage: "Failed to delete board exam fees.",
-  idKey: "_id",
-},
-promotion:{
+  },
+  registrationform: {
+    getEndpoint: (id) => `/delete-registartion-form/${id}`,
+    successMessage: "Registartion form successfully deleted!",
+    errorMessage: "Failed to delete registartion form .",
+    idKey: "_id",
+  },
+  admissionform: {
+    getEndpoint: (id) => `/delete-admission-form/${id}`,
+    successMessage: "Admission form successfully deleted!",
+    errorMessage: "Failed to delete admission form .",
+    idKey: "_id",
+  },
+  TCform: {
+    getEndpoint: (id) => `/delete-TC-form/${id}`,
+    successMessage: "TC form successfully deleted!",
+    errorMessage: "Failed to delete TC form .",
+    idKey: "_id",
+  },
+  concessionform: {
+    getEndpoint: (id) => `/delete-concession-form/${id}`,
+    successMessage: "Concession form successfully deleted!",
+    errorMessage: "Failed to delete Concession form .",
+    idKey: "_id",
+  },
+  boardregistrationfees: {
+    getEndpoint: (id) => `/delete-board-registration-fees/${id}`,
+    successMessage: "Board registartion fees successfully deleted!",
+    errorMessage: "Failed to delete board registartion fees .",
+    idKey: "_id",
+  },
+  boardexamfees: {
+    getEndpoint: (id) => `/delete-board-exam-fees/${id}`,
+    successMessage: "Board exam fees successfully deleted!",
+    errorMessage: "Failed to delete board exam fees.",
+    idKey: "_id",
+  },
+  promotion: {
     getEndpoint: (id) => `/delete-promotion/${id}`,
-  successMessage: "Student promotion successfully deleted!",
-  errorMessage: "Failed to delete Student promotion .",
-  idKey: "_id",
-},
-refund:{
-  getEndpoint: (id) => `/delete-refund-fees/${id}`,
-  successMessage: "Student refund amount deleted!",
-  errorMessage: "Failed to delete student refund amount .",
-  idKey: "_id",
-},
+    successMessage: "Student promotion successfully deleted!",
+    errorMessage: "Failed to delete Student promotion .",
+    idKey: "_id",
+  },
+  refund: {
+    getEndpoint: (id) => `/delete-refund-fees/${id}`,
+    successMessage: "Student refund amount deleted!",
+    errorMessage: "Failed to delete student refund amount .",
+    idKey: "_id",
+  },
 
-// Umesh
+  // Umesh
 
-employeeCategory:{
+  employeeCategory: {
     getEndpoint: (id) => `/delete-employee-category/${id}`,
     successMessage: "Employee category has been deleted!",
     errorMessage: "Failed to delete Employee Category.",
     idKey: "_id",
   },
-  employeeJobDesignation:{
+  employeeJobDesignation: {
     getEndpoint: (id) => `/delete-employee-job-designation/${id}`,
     successMessage: "Employee Job Designation has been deleted!",
     errorMessage: "Failed to delete Employee Job Designation.",
     idKey: "_id",
   },
-  employeeGrade:{
+  employeeGrade: {
     getEndpoint: (id) => `/delete-employee-grade/${id}`,
     successMessage: "Employee Grade has been deleted!",
     errorMessage: "Failed to delete Employee Grade.",
     idKey: "_id",
   },
-  ctcComponents:{
+  ctcComponents: {
     getEndpoint: (id) => `/delete-payroll-ctc-component/${id}`,
     successMessage: "CTC Components has been deleted!",
     errorMessage: "Failed to delete CTC Components.",
     idKey: "_id",
   },
-  employeeIdSetting:{
+  employeeIdSetting: {
     getEndpoint: (id) => `/delete-employee-id-prefix/${id}`,
     successMessage: "Employee employeeid prefix setting has been deleted!",
     errorMessage: "Failed to delete employeeid prefix setting",
     idKey: "_id",
   },
-   annualLeaveType:{
+  annualLeaveType: {
     getEndpoint: (id) => `/delete-payroll-annual-leave/${id}`,
     successMessage: "Annual leave has been deleted!",
     errorMessage: "Failed to delete annual leave",
     idKey: "_id",
   },
 
-  employee:{
+  employee: {
     getEndpoint: (id) => `/delete-employee-registration/${id}`,
     successMessage: "Employee has been deleted!",
     errorMessage: "Failed to delete Employee",
@@ -230,19 +230,19 @@ employeeCategory:{
     idKey: "_id",
   },
   employeeLeave: {
-    // getEndpoint: (id) => `/delete-employee-leave/${id}?academicYear=2025-26`,
+    getEndpoint: (id) => `/delete-employee-leave/${id}`,
     successMessage: "Leave and attendance data deleted successfully!",
     errorMessage: "Failed to delete leave record.",
     idKey: "_id",
   },
-overtimeComponents: {
+  overtimeComponents: {
     getEndpoint: (id) => `/delete-payroll-overtime-component/${id}`,
     successMessage: "Overtime details has been deleted!",
     errorMessage: "Failed to delete overtime details",
     idKey: "_id",
   },
 
-employeeOvertime: {
+  employeeOvertime: {
     getEndpoint: (id) => `/delete-overtime-details/${id}`,
     successMessage: "Overtime details has been deleted!",
     errorMessage: "Failed to delete overtime details",
@@ -256,30 +256,160 @@ employeeOvertime: {
     idKey: "_id",
   },
 
-LTA: {
-  getEndpoint: (employeeId, detailId) => `/delete-lta/${detailId}?employeeId=${employeeId}`,
-  successMessage: "LTA details has been deleted!",
-  errorMessage: "Failed to delete LTA details",
-  idKey: "_id",
-},
+  // LTA: {
+  //   getEndpoint: ( detailId , employeeId,) => `/delete-lta/${detailId}?employeeId=${employeeId}`,
+  //   getEndpoint: ( detailId) => `/delete-lta/${detailId}`,
+  //   successMessage: "LTA details has been deleted!",
+  //   errorMessage: "Failed to delete LTA details",
+  //   idKey: "_id",
+  // },
+
+  LTA: {
+    getEndpoint: (id) =>
+      `/delete-lta/${id.detailId}?employeeId=${id.employeeId}`,
+    successMessage: "LTA details has been deleted!",
+    errorMessage: `Failed to delete LTA details `,
+    idKey: "_id",
+  },
+
   telephoneAllowance: {
-    getEndpoint: (employeeId,id) => `/delete-telephone-allowance/${employeeId}/${id}`,
+    getEndpoint: (id) =>
+      `/delete-telephone-allowance/${id.detailId}?employeeId=${id.employeeId}`,
     successMessage: "Telephone allowance details has been deleted!",
     errorMessage: "Failed to delete telephone allowance details",
     idKey: "_id",
   },
 
-  internetAllowance:{
-     getEndpoint: (id) => `/delete-internet-allowance/${id}`,
+  internetAllowance: {
+    getEndpoint: (id) =>
+      `/delete-internet-allowance/${id.detailId}?employeeId=${id.employeeId}`,
     successMessage: "Internet allowance details has been deleted!",
     errorMessage: "Failed to delete internet allowance details",
     idKey: "_id",
   },
 
+  // operational
+  studentHealthRecord: {
+    getEndpoint: (id) => `/delete-student-health-record/${id}`,
+    successMessage: "Student health record has been deleted!",
+    errorMessage: "Failed to delete student health record",
+    idKey: "_id",
+  },
 
-};
+  bookRecord: {
+    getEndpoint: (id) => `/delete-book/${id.recordId}/${id.bookId}`,
+    successMessage: "Student health record has been deleted!",
+    errorMessage: "Failed to delete student health record",
+    idKey: "_id",
+  },
 
-const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
+  studentRollNumber: {
+    getEndpoint: (id) => `/delete-student-roll-number/${id}`,
+    successMessage: "Student roll number record has been deleted!",
+    errorMessage: "Failed to delete student roll number record",
+    idKey: "_id",
+  },
+
+  classSubject: {
+    getEndpoint: (id) => `/delete-class-section-subjects/${id}`,
+    successMessage: "Class subject record has been deleted!",
+    errorMessage: "Failed to delete class subject record",
+    idKey: "_id",
+  },
+
+  classDefineSubject: {
+    getEndpoint: (id) =>
+      `/delete-class-subjects/${id.parentId}/${id.subjectId}`,
+    successMessage: "Subject deleted successfully!",
+    errorMessage: "Failed to delete subject",
+    idKey: "subjectId",
+  },
+
+  operationalHoliday: {
+    getEndpoint: (id) =>
+      `/delete-school-holidays-operational/${id.parentId}/${id.holidayId}`,
+    successMessage: "Holiday deleted successfully!",
+    errorMessage: "Failed to delete sHoliday",
+    idKey: "holidayId",
+  },
+
+  timeTable: {
+    getEndpoint: (id) => `/delete-time-period/${id}`,
+    successMessage: "Class time period record has been deleted!",
+    errorMessage: "Failed to delete class time period record",
+    idKey: "_id",
+  },
+
+  examTimeTable: {
+    getEndpoint: (id) => `/delete-exam-timetable/${id}`,
+    successMessage: "Class Exam time table record has been deleted!",
+    errorMessage: "Failed to delete Class Exam time table record",
+    idKey: "_id",
+  },
+
+  assignHomework: {
+    getEndpoint: (id) => `/delete-homework/${id}`,
+    successMessage: "Class homework record has been deleted!",
+    errorMessage: "Failed to delete Class homework record",
+    idKey: "_id",
+  },
+
+  studentNotices: {
+    getEndpoint: (id) => `/delete-student-notice/${id}`,
+    successMessage: "Notice has been deleted!",
+    errorMessage: "Failed to delete Notice",
+    idKey: "_id",
+  },
+
+  lessonPlan: {
+    getEndpoint: (id) => `/delete-lesson-plan/${id}`,
+    successMessage: "Lesson plan has been deleted!",
+    errorMessage: "Failed to delete Lesson plan",
+    idKey: "_id",
+  },
+  questionSet: {
+    getEndpoint: (id) => `/delete-question-set/${id}`,
+    successMessage: "Qquestion set has been deleted!",
+    errorMessage: "Failed to delete Question set",
+    idKey: "_id",
+  },
+
+  entranceClassSubject: {
+    getEndpoint: (id) => `/delete-entrance-exam-subjects/${id}`,
+    successMessage: "Class subject record has been deleted!",
+    errorMessage: "Failed to delete class subject record",
+    idKey: "_id",
+  },
+
+  entranceClassDefineSubject: {
+    getEndpoint: (id) =>
+      `/entrance-exam-subjects/${id.parentId}/${id.subjectId}`,
+    successMessage: "Subject deleted successfully!",
+    errorMessage: "Failed to delete subject",
+    idKey: "subjectId",
+  },
+
+  greetingTemplate: {
+    getEndpoint: (id) => `/delete-greeting-template/${id}`,
+    successMessage: "Greeting template deleted successfully!",
+    errorMessage: "Failed to delete greeting template",
+    idKey: "_id",
+  },
+
+  absentsmsTemplate: {
+    getEndpoint: (id) => `/delete-absentsms-template/${id}`,
+    successMessage: "Absent template deleted successfully!",
+    errorMessage: "Failed to delete absents template",
+    idKey: "_id",
+  },
+}; 
+
+const ConfirmationDialog = ({
+  onClose,
+  deleteType,
+  id,
+  onDeleted,
+}) => {
   const handleDelete = async () => {
     const config = DELETE_CONFIG[deleteType];
 
@@ -301,11 +431,63 @@ const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
       return;
     }
 
+     if (deleteType === "LTA" && (!id?.detailId || !id?.employeeId)) {
+       console.error("Missing required delete parameters.");
+       toast.error("Required delete parameters are missing.");
+       return;
+     }
+
+     if (
+       deleteType === "telephoneAllowance" &&
+       (!id?.detailId || !id?.employeeId)
+     ) {
+       console.error("Missing required delete parameters.");
+       toast.error("Required delete parameters are missing.");
+       return;
+     }
+
+     if (
+       deleteType === "internetAllowance" &&
+       (!id?.detailId || !id?.employeeId)
+     ) { 
+       console.error("Missing required delete parameters.");
+       toast.error("Required delete parameters are missing.");
+       return;
+     }
+
+      if (
+        deleteType === "classDefineSubject" &&
+        (!id?.parentId || !id?.subjectId)
+      ) {
+        console.error("Missing required delete parameters.");
+        toast.error("Required delete parameters are missing.");
+        return;
+      }
+
+      if (
+        deleteType === "operationalHoliday" &&
+        (!id?.parentId || !id?.holidayId)
+      ) {
+        console.error("Missing required delete parameters.");
+        toast.error("Required delete parameters are missing.");
+        return;
+      }
+
+      if (
+        deleteType === "entranceClassDefineSubject" &&
+        (!id?.parentId || !id?.subjectId)
+      ) {
+        console.error("Missing required delete parameters.");
+        toast.error("Required delete parameters are missing.");
+        return;
+      }
+
+
     const endpoint = config.getEndpoint(id);
     const payload =
       deleteType === "cart"
         ? { enquiryNumber: id.enquiryNumber, sellerId: id.sellerId }
-        : {};
+        : {}; 
 
     try {
       const response = await deleteAPI(endpoint, payload, true);
@@ -315,7 +497,7 @@ const ConfirmationDialog = ({ onClose, deleteType, id, onDeleted }) => {
 
         if (typeof onDeleted === "function") {
           onDeleted(id);
-        }
+        } 
         onClose();
       } else {
         console.error(config.errorMessage, response.message);

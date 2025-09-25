@@ -15,6 +15,7 @@ const FeesReceipt = () => {
   const [schoolData, setSchoolData] = useState({ school: null, logoSrc: '' });
   const [isCancelledOrReturned, setIsCancelledOrReturned] = useState(['Cancelled', 'Cheque Return'].includes(initialStudent?.status));
   const [showModal, setShowModal] = useState(false);
+  
   useEffect(() => {
 
 

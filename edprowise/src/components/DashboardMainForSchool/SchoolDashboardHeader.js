@@ -8,7 +8,7 @@ import { CgProfile } from "react-icons/cg";
 import { BiLogOut } from "react-icons/bi";
 import { IoKeyOutline } from "react-icons/io5";
 import { ThemeContext } from "../ThemeProvider";
-
+import { AiFillMessage } from "react-icons/ai";
 import getAPI from "../../api/getAPI";
 
 const SchoolDashboardHeader = () => {
@@ -224,7 +224,7 @@ const SchoolDashboardHeader = () => {
                     toggleSidebar();
                   }}
                   style={{
-                    display: isMobile ? "block" : "none"
+                    display: isMobile ? "block" : "none",
                   }}
                 >
                   <iconify-icon
@@ -248,11 +248,11 @@ const SchoolDashboardHeader = () => {
                   className="topbar-button"
                   id="light-dark-mode"
                   onClick={() => {
-                    const sidebarTab = localStorage.getItem('sidebartab');
-                    if (sidebarTab === 'FeesModule') {
-                      navigate('/school/fees-management-year');
+                    const sidebarTab = localStorage.getItem("sidebartab");
+                    if (sidebarTab === "FeesModule") {
+                      navigate("/school/fees-management-year");
                     } else {
-                      navigate('/school/go-to-dashboard');
+                      navigate("/school/go-to-dashboard");
                     }
                   }}
                 >
@@ -275,6 +275,21 @@ const SchoolDashboardHeader = () => {
                     icon="solar:moon-bold-duotone"
                     className="fs-24 align-middle "
                   />
+                </button>
+              </div>
+
+              {/*Message */}
+              <div className="topbar-item">
+                <button
+                  type="button"
+                  className="topbar-button"
+                  id="light-dark-mode"
+                  // onClick={toggleTheme}
+                >
+                  <AiFillMessage className="fs-24 align-middle " />
+                  <span className="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">
+                    3<span className="visually-hidden">unread messages</span>
+                  </span>
                 </button>
               </div>
               {/* Notification */}

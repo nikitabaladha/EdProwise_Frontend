@@ -281,7 +281,7 @@ const StudentRegisterListTable = () => {
   const pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
 
   return (
-    <>
+    <> 
       <div className="container-fluid">
         <div className="d-flex justify-content-end mb-2 gap-2 align-items-center">
           <Link

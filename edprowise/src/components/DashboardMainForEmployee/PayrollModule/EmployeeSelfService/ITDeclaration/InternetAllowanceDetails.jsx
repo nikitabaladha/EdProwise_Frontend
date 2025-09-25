@@ -404,11 +404,11 @@ const InternetAllowanceDetails = () => {
                     Internet Allowance List
                   </h4>
                   <Link
-                                      onClick={navigateToBack}
-                                      className="me-2 btn btn-sm btn-primary"
-                                    >
-                                      Back
-                                    </Link>
+                    onClick={navigateToBack}
+                    className="me-2 btn btn-sm btn-primary"
+                  >
+                    Back
+                  </Link>
                   <Link
                     onClick={navigateToAddInternet}
                     className="btn ms-1 btn-sm btn-primary"
@@ -428,7 +428,10 @@ const InternetAllowanceDetails = () => {
                             className="form-check-input"
                             id="customCheck1"
                           />
-                          <label className="form-check-label" htmlFor="customCheck1" />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customCheck1"
+                          />
                         </div>
                       </th>
                       <th>Employee ID</th>
@@ -444,7 +447,9 @@ const InternetAllowanceDetails = () => {
                   <tbody>
                     {currentRecords.length === 0 ? (
                       <tr>
-                        <td colSpan="9" className="text-center">No Internet Allowance records found</td>
+                        <td colSpan="9" className="text-center">
+                          No Internet Allowance records found
+                        </td>
                       </tr>
                     ) : (
                       currentRecords.map((internet, index) => (
@@ -463,29 +468,41 @@ const InternetAllowanceDetails = () => {
                           <td>{formatDate(internet.billDate)}</td>
                           <td>{internet.supplierName}</td>
                           <td>{internet.gstNumber}</td>
-                          <td>{internet.grossAmount.toLocaleString('en-IN')}</td>
+                          <td>
+                            {internet.grossAmount.toLocaleString("en-IN")}
+                          </td>
                           <td>{internet.billStatus}</td>
                           <td>
                             <div className="d-flex gap-2 justify-content-center">
                               <Link
                                 className="btn btn-light btn-sm"
-                                onClick={(event) => navigateToView(event, internet)}
+                                onClick={(event) =>
+                                  navigateToView(event, internet)
+                                }
                               >
-                                <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
+                                <iconify-icon
+                                  icon="solar:eye-broken"
+                                  className="align-middle fs-18"
+                                />
                               </Link>
-                              {
-                                internet.billStatus==="Approved" ?"":(
-                                  <>
+                              {internet.billStatus === "Approved" ? (
+                                ""
+                              ) : (
+                                <>
                                   <button
-                                className="btn btn-soft-danger btn-sm"
-                                onClick={() => openDeleteDialog(internet)}
-                                disabled={internet.billStatus==="Approved"}
-                              >
-                                <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
-                              </button>
-                                  </>
-                                )
-                              }
+                                    className="btn btn-soft-danger btn-sm"
+                                    onClick={() => openDeleteDialog(internet)}
+                                    disabled={
+                                      internet.billStatus === "Approved"
+                                    }
+                                  >
+                                    <iconify-icon
+                                      icon="solar:trash-bin-minimalistic-2-broken"
+                                      className="align-middle fs-18"
+                                    />
+                                  </button>
+                                </>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -497,19 +514,38 @@ const InternetAllowanceDetails = () => {
               <div className="card-footer border-top">
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-end mb-0">
-                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                      <button className="page-link" onClick={handlePreviousPage}>
+                    <li
+                      className={`page-item ${
+                        currentPage === 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={handlePreviousPage}
+                      >
                         Previous
                       </button>
                     </li>
                     {pagesToShow.map((page) => (
-                      <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
-                        <button className="page-link" onClick={() => handlePageClick(page)}>
+                      <li
+                        key={page}
+                        className={`page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
+                      >
+                        <button
+                          className="page-link"
+                          onClick={() => handlePageClick(page)}
+                        >
                           {page}
                         </button>
                       </li>
                     ))}
-                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <li
+                      className={`page-item ${
+                        currentPage === totalPages ? "disabled" : ""
+                      }`}
+                    >
                       <button className="page-link" onClick={handleNextPage}>
                         Next
                       </button>
@@ -525,8 +561,7 @@ const InternetAllowanceDetails = () => {
         <ConfirmationDialog
           onClose={handleDeleteCancel}
           deleteType="internetAllowance"
-          id={selectedEmployee._id}
-          employeeId={employeeId}
+          id={{ detailId: selectedEmployee._id, employeeId: employeeId }}
           onDeleted={handleDeleteConfirmed}
         />
       )}

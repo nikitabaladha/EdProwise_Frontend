@@ -401,22 +401,22 @@ const EmployeeLeaveDetailsAndApply = () => {
                                 <Link className="btn btn-light btn-sm" onClick={() => openView(leave)}>
                                   <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
                                 </Link>
-                                {/* {
+                                {
                                   leave.status === "pending" ? <><Link className="btn btn-soft-primary btn-sm" onClick={() => openEdit(leave, index)}>
                                     <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
                                   </Link></> : ""
-                                } */}
+                                }
                                 {/* <Link className="btn btn-soft-primary btn-sm" onClick={() => openEdit(leave, index)}>
                                   <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
                                 </Link> */}
 
-                                {/* {
+                                {
                                   leave.status === "pending" ? <><Link className="btn btn-soft-danger btn-sm"
                                     // onClick={ openDeleteDialog(leave)}
                                   >
                                     <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
                                   </Link></> : ""
-                                } */}
+                                }
 
                                 {/* <Link className="btn btn-soft-danger btn-sm"
                                   onClick={() => openDeleteDialog(leave)}

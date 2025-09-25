@@ -8,10 +8,10 @@ import { useLogout } from '../../useLogout';
 const DashboardInformationCards = () => {
   const navigate = useNavigate();
   const logout = useLogout();
-  
-
+  const [calendar, setCalendar] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [isLogoutHovered, setIsLogoutHovered] = useState(false);
+  const [isCalendarHovered, setIsCalendarHovered] = useState(false);
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const role = userDetails?.role;
 
@@ -45,6 +45,40 @@ const DashboardInformationCards = () => {
     }
   };
 
+  const navigateToOperational = (event) => {
+    event.preventDefault();
+    localStorage.setItem("sidebartab", "OperationalService");
+    if (role === "School") {
+      navigate("/school/operational-academic-year");
+    } else {
+      navigate("/school/go-to-dashboard");
+    }
+  };
+
+  const navigateToVisitor = (event) => {
+    event.preventDefault();
+    localStorage.setItem("sidebartab", "VisitorManagements");
+    if (role === "School") {
+      navigate("/school/visitor-academic-year");
+    } else {
+      navigate("/school/go-to-dashboard");
+    }
+  };
+
+  const navigateToTransport = (event) => {
+    event.preventDefault();
+    localStorage.setItem("sidebartab", "TransportManagement");
+    if (role === "School") {
+      navigate("/school/transport-academic-year");
+    } else {
+      navigate("/school/go-to-dashboard");
+    }
+  };
+
+  const navigateToCalendar = (event) => {
+    event.preventDefault();
+    navigate(`/calendar`);
+  };
   const cardData = [
     {
       icon: <IoCubeOutline />,
@@ -52,120 +86,169 @@ const DashboardInformationCards = () => {
       onClick: navigateToProcurementService,
     },
     {
-      icon: 	<BsReceipt />,
+      icon: <BsReceipt />,
       label: "Fees Management",
-      onClick: navigateToFeesModule 
-    },
-    {
-      icon: <IoCubeOutline />,
-      label: "Payroll Module",
-      onClick: navigateToPayrollModule,
+      onClick: navigateToFeesModule,
     },
     {
       icon: <IoCubeOutline />,
       label: "Payroll",
-      onClick: () => {},
-    }
+      onClick: navigateToPayrollModule,
+    },
+    {
+      icon: <IoCubeOutline />,
+      label: "Operational",
+      onClick: navigateToOperational,
+    },
+    {
+      icon: <IoCubeOutline />,
+      label: "Visitor",
+      onClick: navigateToVisitor,
+    },
+    {
+      icon: <IoCubeOutline />,
+      label: "Transport",
+      onClick: navigateToTransport,
+    },
   ];
 
 
   const styles = {
     container: {
-      display: 'flex',
-      justifyContent: 'flex-start', 
-      alignItems: 'center',
-      flexWrap: 'wrap',
-      maxWidth: '1200px',
-      margin: '40px auto', 
-      padding: '0 20px',
-      gap: '30px', 
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      flexWrap: "wrap",
+      maxWidth: "1440px",
+      margin: "40px auto",
+      padding: "0 20px",
+      gap: "20px",
     },
+
     card: {
-      position: 'relative',
-      minWidth: '320px',
-      height: '240px',
-      boxShadow: 'inset 5px 5px 5px #a9fffd, inset -5px -5px 15px #a9fffd, 5px 5px 15px rgba(0, 0, 0, 0.3), -5px -5px 15px rgba(255, 255, 255, 0.1)',
-      borderRadius: '15px',
-      cursor: 'pointer',
-      flex: '1 1 300px',
-      maxWidth: 'calc(33.333% - 30px)', 
+      position: "relative",
+      minWidth: "270px",
+      maxWidth:"270px",
+      height: "240px",
+      boxShadow:
+        "inset 5px 5px 5px #a9fffd, inset -5px -5px 15px #a9fffd, 5px 5px 15px rgba(0, 0, 0, 0.3), -5px -5px 15px rgba(255, 255, 255, 0.1)",
+      borderRadius: "15px",
+      cursor: "pointer",
+      flex: "1 1 300px",
+      maxWidth: "calc(25% - 30px)",
     },
     box: {
-      position: 'absolute',
-      top: '20px',
-      left: '20px',
-      right: '20px',
-      bottom: '20px',
-      background: '#24253b',
-      borderRadius: '15px',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      overflow: 'hidden',
-      transition: 'transform 0.5s ease',
-      WebkitTransition: 'transform 0.5s ease',
+      position: "absolute",
+      top: "20px",
+      left: "20px",
+      right: "20px",
+      bottom: "20px",
+      background: "#24253b",
+      borderRadius: "15px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      overflow: "hidden",
+      transition: "transform 0.5s ease",
+      WebkitTransition: "transform 0.5s ease",
     },
     boxHover: {
-      transform: 'translateY(-30px)',
-      WebkitTransform: 'translateY(-30px)',
+      transform: "translateY(-30px)",
+      WebkitTransform: "translateY(-30px)",
     },
     content: {
-      padding: '20px',
-      textAlign: 'center',
-      width: '100%',
+      padding: "20px",
+      textAlign: "center",
+      width: "100%",
     },
     iconContainer: {
-      position: 'absolute',
-      top: '-10px',
-      right: '30px',
-      fontSize: '8rem',
+      position: "absolute",
+      top: "-10px",
+      right: "30px",
+      fontSize: "8rem",
       opacity: 0.1,
     },
     label: {
-      fontSize: '1.8rem',
-      color: '#fff',
+      fontSize: "1.8rem",
+      color: "#fff",
       zIndex: 1,
-      transition: 'all 0.5s ease',
-      marginBottom: '15px',
-      position: 'relative',
+      transition: "all 0.5s ease",
+      marginBottom: "15px",
+      position: "relative",
     },
     logoutIcon: {
-      position: 'absolute',
-      top: '10px',
-      right: '20px',
-      fontSize: '1.0rem', 
-      color: '#fff',
-      cursor: 'pointer',
+      position: "absolute",
+      top: "10px",
+      right: "20px",
+      fontSize: "1.0rem",
+      color: "#fff",
+      cursor: "pointer",
       zIndex: 1000,
-      transition: 'all 0.3s ease',
-      backgroundColor: '#1a1729',
-      padding: '12px',
-      borderRadius: '10%',
-      boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-      transform: isLogoutHovered ? 'scale(1.1)' : 'scale(1)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '70px', 
-      height: '35px', 
-      textAlign: 'center',
-      fontSize: '1.0rem', 
+      transition: "all 0.3s ease",
+      backgroundColor: "#1a1729",
+      padding: "12px",
+      borderRadius: "10%",
+      boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+      transform: isLogoutHovered ? "scale(1.1)" : "scale(1)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "70px",
+      height: "35px",
+      textAlign: "center",
+      fontSize: "1.0rem",
     },
+
+    calendarIcon: {
+      position: "absolute",
+      top: "10px",
+      right: "112px",
+      fontSize: "1.0rem",
+      color: "black",
+      cursor: "pointer",
+      zIndex: 1000,
+      transition: "all 0.3s ease",
+      // backgroundColor: "#1a1729",
+      padding: "12px",
+      border:"2px solid",
+      borderRadius: "10%",
+      boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+      transform: isCalendarHovered ? "scale(1.1)" : "scale(1)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "70px",
+      height: "35px",
+      textAlign: "center",
+      fontSize: "1.0rem",
+    },
+
     wrapper: {
-      position: 'relative',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '100vh',
-      background: 'white',
+      position: "relative",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100vh",
+      background: "white",
       fontFamily: '"Poppins", sans-serif',
-      padding: '20px',
-      width: '100%',
-    }
+      padding: "20px",
+      width: "100%",
+    },
+
   };
   
   return (
     <div style={styles.wrapper}>
+      <button
+        type="button"
+        style={styles.calendarIcon}
+        onClick={(event) => navigateToCalendar(event)}
+        onMouseEnter={() => setIsCalendarHovered(true)}
+        onMouseLeave={() => setIsCalendarHovered(false)}
+      >
+        Calendar
+      </button>
+
       <span
         style={styles.logoutIcon}
         onClick={logout}
@@ -176,22 +259,26 @@ const DashboardInformationCards = () => {
       </span>
       <div style={styles.container}>
         {cardData.map((card, index) => (
-          <div 
+          <div
             key={index}
             style={styles.card}
             onClick={card.onClick}
             onMouseEnter={() => setHoveredCard(index)}
             onMouseLeave={() => setHoveredCard(null)}
           >
-            <div style={{
-              ...styles.box,
-              ...(hoveredCard === index && styles.boxHover)
-            }}>
+            <div
+              style={{
+                ...styles.box,
+                ...(hoveredCard === index && styles.boxHover),
+              }}
+            >
               <div style={styles.content}>
-                <div style={{ 
-                  ...styles.iconContainer,
-                  color: card.color
-                }}>
+                <div
+                  style={{
+                    ...styles.iconContainer,
+                    color: card.color,
+                  }}
+                >
                   {React.cloneElement(card.icon, { size: "1em" })}
                 </div>
                 <h3 style={styles.label}>{card.label}</h3>

@@ -1,0 +1,457 @@
+import React, { useState, useEffect } from "react";
+import getAPI from "../../../../../api/getAPI";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+// import AddressModal from "./AddressModal";
+import AddressModalDetails from "./AddressModalDetails";
+import Select from "react-select";
+
+const PrincipalRequestQuote = () => {
+    const navigate = useNavigate();
+
+  const unitOptions = [
+    { value: "Piece", label: "Piece" },
+    { value: "Monthly", label: "Monthly" },
+    { value: "Yearly", label: "Yearly" },
+    { value: "Quarterly", label: "Quarterly" },
+    { value: "Kg", label: "Kg" },
+    { value: "Project", label: "Project" },
+    { value: "Sq. feet", label: "Sq. feet" },
+    { value: "BAG - BAGS", label: "BAG - BAGS" },
+    { value: "BAL - BALE", label: "BAL - BALE" },
+    { value: "BDL - BUNDLES", label: "BDL - BUNDLES" },
+    { value: "BKL - BUCKLES", label: "BKL - BUCKLES" },
+    { value: "BOU - BILLION OF UNITS", label: "BOU - BILLION OF UNITS" },
+    { value: "BOX - BOX", label: "BOX - BOX" },
+    { value: "BTL - BOTTLES", label: "BTL - BOTTLES" },
+    { value: "BUN - BUNCHES", label: "BUN - BUNCHES" },
+    { value: "CAN - CANS", label: "CAN - CANS" },
+    { value: "CBM - CUBIC METERS", label: "CBM - CUBIC METERS" },
+    { value: "CCM - CUBIC CENTIMETERS", label: "CCM - CUBIC CENTIMETERS" },
+    { value: "CMS - CENTIMETERS", label: "CMS - CENTIMETERS" },
+    { value: "CTN - CARTONS", label: "CTN - CARTONS" },
+    { value: "DOZ - DOZENS", label: "DOZ - DOZENS" },
+    { value: "DRM - DRUMS", label: "DRM - DRUMS" },
+    { value: "GGK - GREAT GROSS", label: "GGK - GREAT GROSS" },
+    { value: "GMS - GRAMMES", label: "GMS - GRAMMES" },
+    { value: "GRS - GROSS", label: "GRS - GROSS" },
+    { value: "GYD - GROSS YARDS", label: "GYD - GROSS YARDS" },
+    { value: "KGS - KILOGRAMS", label: "KGS - KILOGRAMS" },
+    { value: "KLR - KILOLITRE", label: "KLR - KILOLITRE" },
+    { value: "KME - KILOMETRE", label: "KME - KILOMETRE" },
+    { value: "LTR - LITRES", label: "LTR - LITRES" },
+    { value: "MLT - MILILITRE", label: "MLT - MILILITRE" },
+    { value: "MTR - METERS", label: "MTR - METERS" },
+    { value: "MTS - METRIC TON", label: "MTS - METRIC TON" },
+    { value: "NOS - NUMBERS", label: "NOS - NUMBERS" },
+    { value: "OTH - OTHERS", label: "OTH - OTHERS" },
+    { value: "PAC - PACKS", label: "PAC - PACKS" },
+    { value: "PCS - PIECES", label: "PCS - PIECES" },
+    { value: "PRS - PAIRS", label: "PRS - PAIRS" },
+    { value: "QTL - QUINTAL", label: "QTL - QUINTAL" },
+    { value: "ROL - ROLLS", label: "ROL - ROLLS" },
+    { value: "SET - SETS", label: "SET - SETS" },
+    { value: "SQF - SQUARE FEET", label: "SQF - SQUARE FEET" },
+    { value: "SQM - SQUARE METERS", label: "SQM - SQUARE METERS" },
+    { value: "SQY - SQUARE YARDS", label: "SQY - SQUARE YARDS" },
+    { value: "TBS - TABLETS", label: "TBS - TABLETS" },
+    { value: "TGM - TEN GROSS", label: "TGM - TEN GROSS" },
+    { value: "THD - THOUSANDS", label: "THD - THOUSANDS" },
+    { value: "TON - TONNES", label: "TON - TONNES" },
+    { value: "TUB - TUBES", label: "TUB - TUBES" },
+    { value: "UGS - US GALLONS", label: "UGS - US GALLONS" },
+    { value: "UNT - UNITS", label: "UNT - UNITS" },
+    { value: "YDS - YARDS", label: "YDS - YARDS" },
+  ];
+
+  const handleUnitChange = (selectedOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      unit: selectedOption.value,
+    }));
+  };
+
+  const [formData, setFormData] = useState({
+    categoryId: "",
+    subCategoryId: "",
+    description: "",
+    productImage: null,
+    unit: "",
+    quantity: "",
+  });
+  const [cart, setCart] = useState([]);
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isValidShow, setIsValidShow] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "productImage") {
+      setFormData((prev) => ({ ...prev, productImage: files[0] }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+    console.log(formData);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    setIsValidShow(true)
+    // if (
+    //   !formData.categoryId ||
+    //   !formData.subCategoryId ||
+    //   // !formData.description ||
+    //   !formData.unit ||
+    //   !formData.quantity
+    // ) {
+    //   toast.error("Please fill all required fields");
+    //   setIsFormValid(false);
+    //   return;
+    // }
+
+    // const selectedCategory = categories.find(
+    //   (cat) => cat.id === formData.categoryId
+    // );
+
+    // const selectedSubCategory = subCategories.find(
+    //   (subCat) => subCat.id === formData.subCategoryId
+    // );
+
+    // setCart((prevCart) => [
+    //   ...prevCart,
+    //   {
+    //     ...formData,
+    //     id: prevCart.length + 1,
+    //     categoryName: selectedCategory ? selectedCategory.categoryName : "",
+    //     subCategoryName: selectedSubCategory
+    //       ? selectedSubCategory.subCategoryName
+    //       : "",
+    //   },
+    // ]);
+
+    // setFormData({
+    //   categoryId: "",
+    //   subCategoryId: "",
+    //   description: "",
+    //   productImage: null,
+    //   unit: "",
+    //   quantity: "",
+    // });
+    // document.getElementById("productImage").value = "";
+
+    // toast.success("Product added to cart!");
+    // setIsFormValid(true);
+  };
+
+  const handleRemoveFromCart = (id) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+    toast.success("Product removed from cart!");
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getAPI("/category", {}, true);
+        if (!response.hasError && Array.isArray(response.data.data)) {
+          setCategories(response.data.data);
+        } else {
+          console.error("Error fetching categories.");
+        }
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleCategoryChange = async (e) => {
+    const selectedCategoryId = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      categoryId: selectedCategoryId,
+      subCategoryId: "",
+    }));
+
+    if (selectedCategoryId) {
+      try {
+        const response = await getAPI(
+          `/sub-category/${selectedCategoryId}`,
+          {},
+          true
+        );
+        if (!response.hasError && Array.isArray(response.data.data)) {
+          setSubCategories(response.data.data);
+        } else {
+          console.error("Error fetching subcategories.");
+          setSubCategories([]);
+        }
+      } catch (err) {
+        console.error("Error fetching subcategories:", err);
+        setSubCategories([]);
+      }
+    } else {
+      setSubCategories([]);
+    }
+  };
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-xl-12">
+          <div className="card m-2">
+            <div className="card-body custom-heading-padding">
+              <div className="container">
+                <div className="card-header mb-2 d-flex align-items-center">
+                  <h4 className="card-title text-center flex-grow-1 ">
+                    Request For Quote
+                  </h4>
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={() => navigate(-1)}
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+              <form onSubmit={handleAddToCart}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="category" className="form-label">
+                        Product Required – Select category{" "}
+                        <span className="text-danger">*</span>
+                      </label>
+                      <select
+                        id="category"
+                        name="categoryId"
+                        className="form-control"
+                        value={formData.categoryId}
+                        onChange={handleCategoryChange}
+                        required
+                      >
+                        <option value="">Select Category</option>
+                        {/* {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.categoryName}
+                          </option>
+                        ))} */}
+                        <option>School Banch</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="subCategory" className="form-label">
+                        Product Required – Select sub category{" "}
+                        <span className="text-danger">*</span>
+                      </label>
+
+                      <select
+                        id="subCategory"
+                        name="subCategoryId"
+                        className="form-control"
+                        // value={formData.subCategoryId}
+                        // onChange={handleChange}
+                        // required
+                        // disabled={subCategories.length === 0}
+                      >
+                        <option value="">Select Sub Category</option>
+                        {/* {subCategories.map((subCategory) => (
+                          <option key={subCategory.id} value={subCategory.id}>
+                            {subCategory.subCategoryName}
+                          </option>
+                        ))} */}
+                        <option>School Desk</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label
+                        htmlFor="productDescription"
+                        className="form-label"
+                      >
+                        Product Description (Any Comments)
+                      </label>
+                      <input
+                        type="text"
+                        id="productDescription"
+                        name="description"
+                        className="form-control"
+                        value={formData.description}
+                        placeholder="Example : I want high quality product"
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="productImage" className="form-label">
+                        Product Images (If any)
+                      </label>
+                      <input
+                        type="file"
+                        id="productImage"
+                        name="productImage"
+                        className="form-control"
+                        accept="image/*"
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="unit" className="form-label">
+                        Unit <span className="text-danger">*</span>
+                      </label>
+
+                      <Select
+                        id="unit"
+                        name="unit"
+                        options={unitOptions}
+                        value={unitOptions.find(
+                          (option) => option.value === formData.unit
+                        )}
+                        onChange={handleUnitChange}
+                        isSearchable
+                        placeholder="Select Unit"
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="quantity" className="form-label">
+                        Quantity <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="quantity"
+                        name="quantity"
+                        className="form-control"
+                        value={formData.quantity}
+                        onChange={handleChange}
+                        required
+                        min="1"
+                        placeholder="Example : 10"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="text-end">
+                  <button
+                    type="submit"
+                    className="btn btn-primary custom-submit-button"
+                  >
+                    Add To Cart
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* {isFormValid && ( */}
+      {isValidShow && (
+        <div className="row p-2">
+          <div className="col-xl-12">
+            <div className="card">
+              <div className="card-header d-flex justify-content-between align-items-center gap-1">
+                <h4 className="card-title text-center flex-grow-1">Cart</h4>
+                <div className="text-end">
+                  <button
+                    type="button"
+                    className="btn btn-primary custom-submit-button"
+                    onClick={handleOpenModal}
+                  >
+                    Request Quote
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div className="table-responsive">
+                  <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
+                    <thead className="bg-light-subtle">
+                      <tr>
+                        <th>Product Required – Category</th>
+                        <th>Product Required – Sub category</th>
+                        <th>Product Description</th>
+                        <th>Product Image</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* {cart.map((item, index) => ( */}
+                      <tr>
+                        <td>School Bench </td>
+                        <td>School Desk</td>
+                        <td>{"In good " || "Not Provided"}</td>
+
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <div className="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
+                              {/* {item.productImage && ( */}
+                              <img
+                                // src={URL.createObjectURL(item.productImage)}
+                                alt="img"
+                                className="avatar-md"
+                              />
+                              {/* )} */}
+                            </div>
+                          </div>
+                        </td>
+
+                        <td> 10</td>
+                        <td> Piece</td>
+                        <td>
+                          <button
+                            type="button"
+                            className="btn btn-primary custom-submit-button"
+                            //   onClick={() => handleRemoveFromCart(item.id)}
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                      {/* ))} */}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {isModalOpen && (
+        <AddressModalDetails
+          onClose={handleCloseModal}
+          cart={cart}
+          formData={formData}
+        />
+      )}
+    </div>
+  );
+};
+
+export default PrincipalRequestQuote;

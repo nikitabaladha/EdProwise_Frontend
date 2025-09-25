@@ -330,8 +330,13 @@ const UserLogin = () => {
             }
           } else if (userDetails && userDetails.role === "Employee") {
             navigate("/school/go-to-dashboard"); 
-          }
-           else {
+          } else if (userDetails.role === "Principal") {
+            return navigate(
+              "/principal-dashboard" 
+            );
+          } else if (userDetails.role === "Student") {
+            return navigate("/student/management-year");
+          } else {
             toast.error("No dashboard available for your role!");
           }
         }, 2000);
