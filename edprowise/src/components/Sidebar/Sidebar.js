@@ -2214,12 +2214,12 @@ const Sidebar = () => {
             icon: "bx-receipt",
           },
 
-          {
-            id: "Messager",
-            label: "Messager",
-            link: "/school-dashboard/operational-service/message",
-            icon: "bx-receipt",
-          },
+          // {
+          //   id: "Messager",
+          //   label: "Messager",
+          //   link: "/school-dashboard/operational-service/message",
+          //   icon: "bx-receipt",
+          // },
 
           {
             id: "setting",

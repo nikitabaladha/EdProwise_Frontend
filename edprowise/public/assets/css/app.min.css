@@ -5,7 +5,23 @@
 /* .epr-category-nav{
   display: none !important;
 } */
+.favorite-chats-container::-webkit-scrollbar {
+  height: 6px;
+}
 
+.favorite-chats-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.favorite-chats-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.favorite-chats-container::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
 /* Note */
 .widget-icon-note {
   font-size: 1.5rem;
@@ -328,7 +344,7 @@
 
 .messenger-infoView>div {
   margin: auto;
-  margin-top: 8%;
+  /* margin-top: 8%; */
   text-align: center;
 }
 
