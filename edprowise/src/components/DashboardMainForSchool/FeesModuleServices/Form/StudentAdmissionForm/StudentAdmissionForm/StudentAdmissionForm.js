@@ -73,11 +73,11 @@ const StudentAdmissionForm = () => {
     motherQualification: '',
     motherProfession: '',
     agreementChecked: false,
-    concessionType: null,
-    name: '',
-    paymentMode: '',
-    chequeNumber: '',
-    bankName: ''
+    // concessionType: null,
+    // name: '',
+    // paymentMode: '',
+    // chequeNumber: '',
+    // bankName: ''
   });
 
   useEffect(() => {
@@ -379,7 +379,7 @@ const StudentAdmissionForm = () => {
         motherQualification: student.motherQualification || '',
         motherProfession: student.motherProfession || '',
         agreementChecked: student.agreementChecked || false,
-        name: student.name || ''
+        // name: student.name || ''
       }));
 
       if (student?.masterDefineClass?._id || student?.masterDefineClass) {
@@ -444,9 +444,9 @@ const StudentAdmissionForm = () => {
 
     const submissionData = {
       ...formData,
-      admissionFees,
-      concessionAmount,
-      finalAmount,
+      // admissionFees,
+      // concessionAmount,
+      // finalAmount,
       ...(formData.siblingInfoChecked && {
         relationType: null,
         siblingName: '',
@@ -500,15 +500,18 @@ const StudentAdmissionForm = () => {
         const studentData = response.data?.student || response.student;
 
        const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
+       navigate(-1)
 
-        navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
-          state: {
-            student: response.data?.admission,
-            className: selectedClass?.className || '',
-            sectionName: sections.find(s => s._id === formData.section)?.name || '',
-            feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || ''
-          },
-        });
+        // navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
+        //   state: {
+        //     student: response.data?.admission,
+        //     className: selectedClass?.className || '',
+        //     sectionName: sections.find(s => s._id === formData.section)?.name || '',
+        //     feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || '',
+        //     classId: formData.masterDefineClass, 
+        //     sectionId: formData.section 
+        //   },
+        // });
       }
     } catch (error) {
       const backendMessage = error?.response?.data?.message;
@@ -666,9 +669,9 @@ const StudentAdmissionForm = () => {
                 handleShiftChange={handleShiftChange}
                 handlePhotoUpload={handlePhotoUpload}
                 selectedFeeType={selectedFeeType}
-                admissionFees={admissionFees}
-                concessionAmount={concessionAmount}
-                finalAmount={finalAmount}
+                // admissionFees={admissionFees}
+                // concessionAmount={concessionAmount}
+                // finalAmount={finalAmount}
                 availableFeeTypes={availableFeeTypes}
                 handleFeeTypeChange={handleFeeTypeChange}
                 handleConcessionChange={handleConcessionChange}

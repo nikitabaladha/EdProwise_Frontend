@@ -16,8 +16,9 @@
 //   const [feesLoading, setFeesLoading] = useState(false);
 //   const [submitLoading, setSubmitLoading] = useState(false);
 //   const [schoolId, setSchoolId] = useState('');
-//   const [boardRegistrationFees, setBoardRegistrationFees] = useState({});
+//   const [boardRegistrationFees, setBoardRegistrationFees] = useState([]);
 //   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
+//   const [openDropdownId, setOpenDropdownId] = useState(null); // New state for dropdown
 //   const navigate = useNavigate();
 
 //   useEffect(() => {
@@ -35,75 +36,67 @@
 //   const academicYear = localStorage.getItem('selectedAcademicYear');
 
 //   useEffect(() => {
-//     if (!schoolId) return;
+//     if (!schoolId || !academicYear) return;
 
-//     const fetchClasses = async () => {
+//     const fetchClassesAndFees = async () => {
 //       setClassesLoading(true);
 //       try {
 //         const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
 //         const classData = classResponse?.data?.data || [];
-//         if (Array.isArray(classData) && classData.length > 0) {
-//           setClasses(classData);
+
+//         const feesResponse = await getAPI(
+//           `/get-board-registration-fees/${schoolId}/${academicYear}`,
+//           {},
+//           true
+//         );
+//         const feesData = feesResponse?.data?.data || [];
+
+//         if (Array.isArray(feesData) && feesData.length > 0) {
+//           setBoardRegistrationFees(feesData);
+
+//           const filteredClasses = classData.filter((cls) =>
+//             feesData.some((fee) => fee.classId === cls._id)
+//           );
+
+//           if (filteredClasses.length > 0) {
+//             setClasses(filteredClasses);
+//           } else {
+//             toast.info('No classes with board registration fees found for this school.');
+//             setClasses([]);
+//           }
 //         } else {
-//           toast.info('No classes found for this school.');
+//           toast.info('No board registration fees found for this academic year.');
 //           setClasses([]);
 //         }
 //       } catch (error) {
-//         toast.error('Failed to fetch classes. Please try again.');
+//         toast.error('Failed to fetch classes or board registration fees. Please try again.');
 //         setClasses([]);
+//         setBoardRegistrationFees([]);
 //       } finally {
 //         setClassesLoading(false);
 //       }
 //     };
 
-//     fetchClasses();
+//     fetchClassesAndFees();
 //   }, [schoolId, academicYear]);
-
-//   useEffect(() => {
-//     if (!schoolId || !selectedClass || !academicYear) return;
-
-//     const fetchFees = async () => {
-//       setFeesLoading(true);
-//       try {
-//         const feesResponse = await getAPI(
-//           `/get-board-registration-fees-byIds/${schoolId}/${academicYear}/${selectedClass}/${selectedSection}`,
-//           {},
-//           true
-//         );
-//         const feesData = feesResponse?.data?.data || [];
-//         if (Array.isArray(feesData)) {
-//           const feesMap = {};
-//           feesData.forEach((fee) => {
-//             feesMap[fee.classId] = fee.amount;
-//           });
-//           setBoardRegistrationFees(feesMap);
-//         } else {
-//           toast.info('No board registration fees found for the selected class/section.');
-//           setBoardRegistrationFees({});
-//         }
-//       } catch (error) {
-//         toast.error('Failed to fetch board registration fees.');
-//         setBoardRegistrationFees({});
-//       }
-//       finally {
-//         setFeesLoading(false);
-//       }
-//     };
-
-//     fetchFees();
-//   }, [schoolId, academicYear, selectedClass, selectedSection]);
 
 //   useEffect(() => {
 //     if (selectedClass) {
 //       const selectedClassData = classes.find((c) => c._id === selectedClass);
-//       const sectionsData = selectedClassData?.sections || [];
+//       const relevantFees = boardRegistrationFees.find((fee) => fee.classId === selectedClass);
+//       const validSectionIds = relevantFees ? relevantFees.sectionIds : [];
+
+//       const sectionsData = selectedClassData?.sections.filter((section) =>
+//         validSectionIds.includes(section._id)
+//       ) || [];
+
 //       setSections(sectionsData);
 //       setSelectedSection('');
 //     } else {
 //       setSections([]);
 //       setSelectedSection('');
 //     }
-//   }, [selectedClass, classes]);
+//   }, [selectedClass, classes, boardRegistrationFees]);
 
 //   const fetchStudents = async () => {
 //     if (!selectedClass || !selectedSection) {
@@ -120,7 +113,8 @@
 
 //       const selectedClassData = classes.find((c) => c._id === selectedClass);
 //       const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
-//       const feeAmount = boardRegistrationFees[selectedClass] || 0;
+//       const feeData = boardRegistrationFees.find((fee) => fee.classId === selectedClass);
+//       const feeAmount = feeData ? feeData.amount : 0;
 
 //       const studentData = response?.data?.data || [];
 //       if (Array.isArray(studentData)) {
@@ -146,6 +140,7 @@
 //                   : '',
 //               className: studentClassData?.className || selectedClassData?.className || 'Unknown Class',
 //               sectionName: studentSectionData?.name || selectedSectionData?.name || 'Unknown Section',
+//               refundReceiptNumbers: student.refundReceiptNumbers || [], // Ensure refundReceiptNumbers is included
 //             };
 //           })
 //         );
@@ -169,11 +164,11 @@
 //       prevStudents.map((student) =>
 //         student._id === id
 //           ? {
-//             ...student,
-//             paymentMode: mode,
-//             chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
-//             bankName: mode === 'Cheque' ? student.bankName : '',
-//           }
+//               ...student,
+//               paymentMode: mode,
+//               chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
+//               bankName: mode === 'Cheque' ? student.bankName : '',
+//             }
 //           : student
 //       )
 //     );
@@ -207,12 +202,13 @@
 //       const payment = {
 //         studentId: student._id,
 //         admissionNumber: student.AdmissionNumber,
-//         studentName: `${student.firstName} ${student.lastName}`,
+//         firstName:student.firstName,
+//         lastName:student.lastName,
 //         classId: selectedClass,
 //         sectionId: selectedSection,
 //         className: selectedClassData?.className || 'Unknown Class',
 //         sectionName: selectedSectionData?.name || 'Unknown Section',
-//         amount: student.feesAmt,
+//         finalAmount: student.feesAmt,
 //         paymentMode: student.paymentMode,
 //         chequeNumber: student.chequeNumber || '',
 //         bankName: student.bankName || '',
@@ -237,12 +233,14 @@
 //         sectionName: selectedSectionData?.name || 'Unknown Section',
 //       };
 
-//       navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
+//       navigate('/school-dashboard/fees-module/fees-receipts/board-registration/fees/receipts', {
 //         state: {
 //           student: receiptData,
 //           feeTypeName: 'Board Registration Fee',
 //           className: selectedClassData?.className || 'Unknown Class',
 //           sectionName: selectedSectionData?.name || 'Unknown Section',
+//           classId: selectedClass,
+//           sectionId: selectedSection,
 //         },
 //       });
 
@@ -292,12 +290,13 @@
 //         .map((student) => ({
 //           studentId: student._id,
 //           admissionNumber: student.AdmissionNumber,
-//           studentName: `${student.firstName} ${student.lastName}`,
+//          firstName:student.firstName,
+//         lastName:student.lastName,
 //           classId: selectedClass,
 //           sectionId: selectedSection,
 //           className: selectedClassData?.className || 'Unknown Class',
 //           sectionName: selectedSectionData?.name || 'Unknown Section',
-//           amount: student.feesAmt,
+//           finalAmount: student.feesAmt,
 //           paymentMode: student.paymentMode || 'Cash',
 //           chequeNumber: student.chequeNumber || '',
 //           bankName: student.bankName || '',
@@ -332,12 +331,14 @@
 //         }));
 
 //       if (receiptStudents.length > 0) {
-//         navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
+//         navigate('/school-dashboard/fees-module/fees-receipts/board-registration/fees/receipts', {
 //           state: {
 //             students: receiptStudents,
 //             feeTypeName: 'Board Registration Fee',
 //             className: selectedClassData?.className || 'Unknown Class',
 //             sectionName: selectedSectionData?.name || 'Unknown Section',
+//             classId: selectedClass || 'Unknown Class',
+//             sectionId: selectedSection || 'Unknown Class',
 //           },
 //         });
 
@@ -365,7 +366,8 @@
 //     );
 //   };
 
-//   const handleViewReceipt = (student) => {
+//   const handleViewReceipt = (event, student) => {
+//     event.preventDefault();
 //     const selectedClassData = classes.find((c) => c._id === selectedClass);
 //     const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
 
@@ -382,14 +384,31 @@
 //       sectionName: selectedSectionData?.name || 'Unknown Section',
 //     };
 
-//     navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
+//     navigate('/school-dashboard/fees-module/fees-receipts/board-registration/fees/receipts', {
 //       state: {
 //         student: receiptData,
 //         feeTypeName: 'Board Registration Fee',
 //         className: selectedClassData?.className || 'Unknown Class',
 //         sectionName: selectedSectionData?.name || 'Unknown Section',
+//         classId: selectedClass || 'Unknown Class',
+//         sectionId: selectedSection || 'Unknown Class',
 //       },
 //     });
+//     setOpenDropdownId(null); 
+//   };
+
+//   const navigateToCRNReceipt = (event, crnNumber) => {
+//     event.preventDefault();
+//     navigate('/school-dashboard/fees-module/form/crn-receipts', {
+//       state: {
+//         crnNumber,
+//       },
+//     });
+//     setOpenDropdownId(null); 
+//   };
+
+//   const toggleDropdown = (studentId) => {
+//     setOpenDropdownId(openDropdownId === studentId ? null : studentId);
 //   };
 
 //   const hasChequePayment = students.some((student) => student.paymentMode === 'Cheque');
@@ -449,8 +468,8 @@
 //                 <button
 //                   type="button"
 //                   onClick={fetchStudents}
-//                   disabled={!selectedClass || !selectedSection || loading || feesLoading}
-//                   className={`btn ${!selectedClass || !selectedSection || loading || feesLoading
+//                   disabled={!selectedClass || !selectedSection || loading}
+//                   className={`btn ${!selectedClass || !selectedSection || loading
 //                       ? 'btn-secondary disabled'
 //                       : 'btn-primary'
 //                     }`}
@@ -504,6 +523,7 @@
 //                       )}
 //                       <th>Status</th>
 //                       <th>Pay</th>
+//                       <th>Action</th>
 //                     </tr>
 //                   </thead>
 //                   <tbody>
@@ -514,18 +534,14 @@
 //                             type="checkbox"
 //                             checked={selectedStudentIds.includes(student._id)}
 //                             onChange={() => handleCheckboxChange(student._id)}
-//                             disabled={student.paymentStatus === 'Paid'}
 //                           />
 //                         </td>
 //                         <td>{student.AdmissionNumber || '-'}</td>
 //                         <td>{`${student.firstName} ${student.lastName}`}</td>
 //                         <td>{student.className}</td>
 //                         <td>{student.sectionName}</td>
-//                         <td>{student.feesAmt || 0}</td>
+//                         <td>{student.feesAmt.toFixed(2) || 0}</td>
 //                         <td>
-//                           {student.paymentStatus === 'Paid' ? (
-//                             student.paymentMode || '-'
-//                           ) : (
 //                             <select
 //                               className="form-select form-select-sm"
 //                               value={student.paymentMode || 'Cash'}
@@ -536,15 +552,11 @@
 //                               <option value="Cheque">Cheque</option>
 //                               <option value="Online">Online</option>
 //                             </select>
-//                           )}
+//                           {/* )} */}
 //                         </td>
 //                         {hasChequePayment && (
 //                           <>
 //                             <td>
-//                               {student.paymentMode === 'Cheque' ? (
-//                                 student.paymentStatus === 'Paid' ? (
-//                                   student.chequeNumber || '-'
-//                                 ) : (
 //                                   <input
 //                                     type="text"
 //                                     className="form-control form-control-sm"
@@ -554,16 +566,8 @@
 //                                     }
 //                                     required
 //                                   />
-//                                 )
-//                               ) : (
-//                                 '-'
-//                               )}
 //                             </td>
 //                             <td>
-//                               {student.paymentMode === 'Cheque' ? (
-//                                 student.paymentStatus === 'Paid' ? (
-//                                   student.bankName || '-'
-//                                 ) : (
 //                                   <input
 //                                     type="text"
 //                                     className="form-control form-control-sm"
@@ -573,10 +577,6 @@
 //                                     }
 //                                     required
 //                                   />
-//                                 )
-//                               ) : (
-//                                 '-'
-//                               )}
 //                             </td>
 //                           </>
 //                         )}
@@ -586,8 +586,8 @@
 //                               ? 'bg-success text-white'
 //                               : student.paymentStatus === 'Cancelled'
 //                                 ? 'bg-danger text-white'
-//                                 :student.paymentStatus === 'Cheque Return'
-//                                  ? 'bg-danger text-white'
+//                                 : student.paymentStatus === 'Cheque Return'
+//                                 ? 'bg-danger text-white'
 //                                 : 'bg-warning text-dark'
 //                               }`}
 //                           >
@@ -595,7 +595,6 @@
 //                           </span>
 //                         </td>
 //                         <td>
-//                           {student.paymentStatus !== 'Paid' && student.paymentStatus !== 'Cancelled' && student.paymentStatus !== 'Cheque Return' ? (
 //                             <button
 //                               type="button"
 //                               className="btn btn-success btn-sm"
@@ -615,17 +614,43 @@
 //                                 'Pay Now'
 //                               )}
 //                             </button>
-//                           ) : (
-//                             <button
-//                               type="button"
-//                               className="btn btn-info btn-sm"
-//                               onClick={() => handleViewReceipt(student)}
-//                             >
-//                               View
-//                             </button>
-//                           )}
 //                         </td>
-
+//                         <td>
+//                            <div className="dropdown">
+//                               <button
+//                                 type="button"
+//                                 className="btn btn-info btn-sm"
+//                                 onClick={() => toggleDropdown(student._id)}
+//                               >
+//                                 View
+//                               </button>
+//                               {openDropdownId === student._id && (
+//                                 <div className="dropdown-menu dropdown-menu-end show" style={{ position: 'absolute', zIndex: 1000 }}>
+//                                   <button
+//                                     className="dropdown-item"
+//                                     onClick={(event) => handleViewReceipt(event, student)}
+//                                   >
+//                                     View {student.receiptNumberBrf || 'Receipt'}
+//                                   </button>
+//                                   {student.refundReceiptNumbers?.length > 0 ? (
+//                                     student.refundReceiptNumbers.map((crnNumber, idx) => (
+//                                       <button
+//                                         key={idx}
+//                                         className="dropdown-item"
+//                                         onClick={(event) => navigateToCRNReceipt(event, crnNumber, student)}
+//                                       >
+//                                         View {crnNumber}
+//                                       </button>
+//                                     ))
+//                                   ) : (
+//                                     <button className="dropdown-item" disabled>
+//                                       No CRN Receipts
+//                                     </button>
+//                                   )}
+//                                 </div>
+//                               )}
+//                             </div>
+//                         </td>
 //                       </tr>
 //                     ))}
 //                   </tbody>
@@ -683,11 +708,11 @@ const BoardRegistrationFeeCollection = () => {
   const [showTable, setShowTable] = useState(false);
   const [loading, setLoading] = useState(false);
   const [classesLoading, setClassesLoading] = useState(false);
-  const [feesLoading, setFeesLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [schoolId, setSchoolId] = useState('');
   const [boardRegistrationFees, setBoardRegistrationFees] = useState([]);
   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
+  const [openDropdownId, setOpenDropdownId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -704,18 +729,15 @@ const BoardRegistrationFeeCollection = () => {
 
   const academicYear = localStorage.getItem('selectedAcademicYear');
 
-  // Fetch classes and board registration fees
   useEffect(() => {
     if (!schoolId || !academicYear) return;
 
     const fetchClassesAndFees = async () => {
       setClassesLoading(true);
       try {
-        // Fetch classes
         const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         const classData = classResponse?.data?.data || [];
 
-        // Fetch board registration fees
         const feesResponse = await getAPI(
           `/get-board-registration-fees/${schoolId}/${academicYear}`,
           {},
@@ -726,7 +748,6 @@ const BoardRegistrationFeeCollection = () => {
         if (Array.isArray(feesData) && feesData.length > 0) {
           setBoardRegistrationFees(feesData);
 
-          // Filter classes that have board registration fees
           const filteredClasses = classData.filter((cls) =>
             feesData.some((fee) => fee.classId === cls._id)
           );
@@ -753,7 +774,6 @@ const BoardRegistrationFeeCollection = () => {
     fetchClassesAndFees();
   }, [schoolId, academicYear]);
 
-  // Update sections based on selected class and board registration fees
   useEffect(() => {
     if (selectedClass) {
       const selectedClassData = classes.find((c) => c._id === selectedClass);
@@ -796,10 +816,13 @@ const BoardRegistrationFeeCollection = () => {
           studentData.map((student) => {
             const studentClassData = classes.find((c) => c._id === student.className);
             const studentSectionData = studentClassData?.sections?.find((s) => s._id === student.sectionName);
+            const latestReportStatus = student.reportStatus?.length > 0 
+              ? student.reportStatus[student.reportStatus.length - 1] 
+              : student.boardRegistrationStatus;
             return {
               ...student,
               feesAmt: feeAmount,
-              paymentStatus: student.boardRegistrationStatus || 'Pending',
+              paymentStatus: latestReportStatus || 'Pending',
               paymentMode:
                 student.boardRegistrationStatus === 'Paid'
                   ? student.paymentMode === 'N/A' ? '' : student.paymentMode
@@ -814,6 +837,7 @@ const BoardRegistrationFeeCollection = () => {
                   : '',
               className: studentClassData?.className || selectedClassData?.className || 'Unknown Class',
               sectionName: studentSectionData?.name || selectedSectionData?.name || 'Unknown Section',
+              refundReceiptNumbers: student.refundReceiptNumbers || [],
             };
           })
         );
@@ -875,12 +899,13 @@ const BoardRegistrationFeeCollection = () => {
       const payment = {
         studentId: student._id,
         admissionNumber: student.AdmissionNumber,
-        studentName: `${student.firstName} ${student.lastName}`,
+        firstName: student.firstName,
+        lastName: student.lastName,
         classId: selectedClass,
         sectionId: selectedSection,
         className: selectedClassData?.className || 'Unknown Class',
         sectionName: selectedSectionData?.name || 'Unknown Section',
-        amount: student.feesAmt,
+        finalAmount: student.feesAmt,
         paymentMode: student.paymentMode,
         chequeNumber: student.chequeNumber || '',
         bankName: student.bankName || '',
@@ -905,14 +930,18 @@ const BoardRegistrationFeeCollection = () => {
         sectionName: selectedSectionData?.name || 'Unknown Section',
       };
 
-      navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
-        state: {
-          student: receiptData,
-          feeTypeName: 'Board Registration Fee',
-          className: selectedClassData?.className || 'Unknown Class',
-          sectionName: selectedSectionData?.name || 'Unknown Section',
-        },
-      });
+      navigate(-1)
+
+      // navigate('/school-dashboard/fees-module/fees-receipts/board-registration/fees/receipts', {
+      //   state: {
+      //     student: receiptData,
+      //     feeTypeName: 'Board Registration Fee',
+      //     className: selectedClassData?.className || 'Unknown Class',
+      //     sectionName: selectedSectionData?.name || 'Unknown Section',
+      //     classId: selectedClass,
+      //     sectionId: selectedSection,
+      //   },
+      // });
 
       await fetchStudents();
     } catch (error) {
@@ -960,12 +989,13 @@ const BoardRegistrationFeeCollection = () => {
         .map((student) => ({
           studentId: student._id,
           admissionNumber: student.AdmissionNumber,
-          studentName: `${student.firstName} ${student.lastName}`,
+          firstName: student.firstName,
+          lastName: student.lastName,
           classId: selectedClass,
           sectionId: selectedSection,
           className: selectedClassData?.className || 'Unknown Class',
           sectionName: selectedSectionData?.name || 'Unknown Section',
-          amount: student.feesAmt,
+          finalAmount: student.feesAmt,
           paymentMode: student.paymentMode || 'Cash',
           chequeNumber: student.chequeNumber || '',
           bankName: student.bankName || '',
@@ -1000,14 +1030,17 @@ const BoardRegistrationFeeCollection = () => {
         }));
 
       if (receiptStudents.length > 0) {
-        navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
-          state: {
-            students: receiptStudents,
-            feeTypeName: 'Board Registration Fee',
-            className: selectedClassData?.className || 'Unknown Class',
-            sectionName: selectedSectionData?.name || 'Unknown Section',
-          },
-        });
+        // navigate('/school-dashboard/fees-module/fees-receipts/board-registration/fees/receipts', {
+        //   state: {
+        //     students: receiptStudents,
+        //     feeTypeName: 'Board Registration Fee',
+        //     className: selectedClassData?.className || 'Unknown Class',
+        //     sectionName: selectedSectionData?.name || 'Unknown Section',
+        //     classId: selectedClass || 'Unknown Class',
+        //     sectionId: selectedSection || 'Unknown Class',
+        //   },
+        // });
+        navigate(-1)
 
         if (receiptStudents.length > 1) {
           toast.info(
@@ -1033,13 +1066,14 @@ const BoardRegistrationFeeCollection = () => {
     );
   };
 
-  const handleViewReceipt = (student) => {
+  const handleViewReceipt = (event, student, receiptNumber) => {
+    event.preventDefault();
     const selectedClassData = classes.find((c) => c._id === selectedClass);
     const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
 
     const receiptData = {
       ...student,
-      receiptNumberBrf: student.receiptNumberBrf || `REC-${student._id}-${Date.now()}`,
+      receiptNumberBrf: receiptNumber || `REC-${student._id}-${Date.now()}`,
       admissionFees: student.feesAmt,
       concessionAmount: 0,
       finalAmount: student.feesAmt,
@@ -1050,18 +1084,42 @@ const BoardRegistrationFeeCollection = () => {
       sectionName: selectedSectionData?.name || 'Unknown Section',
     };
 
-    navigate('/school-dashboard/fees-module/fees-receipts/board-registration-fees/receipts', {
+    navigate('/school-dashboard/fees-module/fees-receipts/board-registration/fees/receipts', {
       state: {
-        student: receiptData,
+        receiptNumberBrf: receiptNumber,
+        schoolId:schoolId,
         feeTypeName: 'Board Registration Fee',
         className: selectedClassData?.className || 'Unknown Class',
         sectionName: selectedSectionData?.name || 'Unknown Section',
+        classId: selectedClass || 'Unknown Class',
+        sectionId: selectedSection || 'Unknown Class',
       },
     });
+    setOpenDropdownId(null);
+  };
+
+  const navigateToCRNReceipt = (event, crnNumber) => {
+    event.preventDefault();
+    navigate('/school-dashboard/fees-module/form/crn-receipts', {
+      state: {
+        crnNumber,
+      },
+    });
+    setOpenDropdownId(null);
+  };
+
+  const toggleDropdown = (studentId) => {
+    setOpenDropdownId(openDropdownId === studentId ? null : studentId);
   };
 
   const hasChequePayment = students.some((student) => student.paymentMode === 'Cheque');
   const allPaid = students.every((student) => student.paymentStatus === 'Paid');
+
+  const getLatestStatus = (student) => {
+    return student.reportStatus?.length > 0 
+      ? student.reportStatus[student.reportStatus.length - 1] 
+      : student.boardRegistrationStatus;
+  };
 
   return (
     <div className="container-fluid">
@@ -1147,12 +1205,13 @@ const BoardRegistrationFeeCollection = () => {
                       <th>
                         <input
                           type="checkbox"
-                          checked={selectedStudentIds.length === students.length && students.length > 0}
+                          checked={selectedStudentIds.length === students.filter((student) => getLatestStatus(student) === 'Paid' || getLatestStatus(student) === 'Pending').length && students.length > 0}
                           onChange={() => {
-                            if (selectedStudentIds.length === students.length) {
+                            const payableStudents = students.filter((student) => getLatestStatus(student) === 'Paid' || getLatestStatus(student) === 'Pending').map((s) => s._id);
+                            if (selectedStudentIds.length === payableStudents.length) {
                               setSelectedStudentIds([]);
                             } else {
-                              setSelectedStudentIds(students.map((s) => s._id));
+                              setSelectedStudentIds(payableStudents);
                             }
                           }}
                           disabled={students.length === 0}
@@ -1172,47 +1231,49 @@ const BoardRegistrationFeeCollection = () => {
                       )}
                       <th>Status</th>
                       <th>Pay</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {students.map((student) => (
-                      <tr key={student._id}>
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={selectedStudentIds.includes(student._id)}
-                            onChange={() => handleCheckboxChange(student._id)}
-                            disabled={student.paymentStatus === 'Paid'}
-                          />
-                        </td>
-                        <td>{student.AdmissionNumber || '-'}</td>
-                        <td>{`${student.firstName} ${student.lastName}`}</td>
-                        <td>{student.className}</td>
-                        <td>{student.sectionName}</td>
-                        <td>{student.feesAmt || 0}</td>
-                        <td>
-                          {student.paymentStatus === 'Paid' ? (
-                            student.paymentMode || '-'
-                          ) : (
-                            <select
-                              className="form-select form-select-sm"
-                              value={student.paymentMode || 'Cash'}
-                              onChange={(e) => handlePaymentModeChange(student._id, e.target.value)}
-                              required
-                            >
-                              <option value="Cash">Cash</option>
-                              <option value="Cheque">Cheque</option>
-                              <option value="Online">Online</option>
-                            </select>
-                          )}
-                        </td>
-                        {hasChequePayment && (
-                          <>
-                            <td>
-                              {student.paymentMode === 'Cheque' ? (
-                                student.paymentStatus === 'Paid' ? (
-                                  student.chequeNumber || '-'
-                                ) : (
+                    {students.map((student) => {
+                      const latestStatus = getLatestStatus(student);
+                      const isPayable = latestStatus === 'Cancelled' || latestStatus === 'Cheque Return' 
+                      || latestStatus === 'Refund' || latestStatus === 'Pending';
+                      return (
+                        <tr key={student._id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedStudentIds.includes(student._id)}
+                              onChange={() => handleCheckboxChange(student._id)}
+                              disabled={!isPayable}
+                            />
+                          </td>
+                          <td>{student.AdmissionNumber || '-'}</td>
+                          <td>{`${student.firstName} ${student.lastName}`}</td>
+                          <td>{student.className}</td>
+                          <td>{student.sectionName}</td>
+                          <td>{student.feesAmt.toFixed(2) || 0}</td>
+                          <td>
+                            {isPayable ? (
+                              <select
+                                className="form-select form-select-sm"
+                                value={student.paymentMode || 'Cash'}
+                                onChange={(e) => handlePaymentModeChange(student._id, e.target.value)}
+                                required
+                              >
+                                <option value="Cash">Cash</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Online">Online</option>
+                              </select>
+                            ) : (
+                              <span>{student.paymentMode || 'N/A'}</span>
+                            )}
+                          </td>
+                          {hasChequePayment && (
+                            <>
+                              <td>
+                                {isPayable && student.paymentMode === 'Cheque' ? (
                                   <input
                                     type="text"
                                     className="form-control form-control-sm"
@@ -1222,16 +1283,12 @@ const BoardRegistrationFeeCollection = () => {
                                     }
                                     required
                                   />
-                                )
-                              ) : (
-                                '-'
-                              )}
-                            </td>
-                            <td>
-                              {student.paymentMode === 'Cheque' ? (
-                                student.paymentStatus === 'Paid' ? (
-                                  student.bankName || '-'
                                 ) : (
+                                  <span>{student.chequeNumber || 'N/A'}</span>
+                                )}
+                              </td>
+                              <td>
+                                {isPayable && student.paymentMode === 'Cheque' ? (
                                   <input
                                     type="text"
                                     className="form-control form-control-sm"
@@ -1241,60 +1298,95 @@ const BoardRegistrationFeeCollection = () => {
                                     }
                                     required
                                   />
-                                )
-                              ) : (
-                                '-'
-                              )}
-                            </td>
-                          </>
-                        )}
-                        <td>
-                          <span
-                            className={`badge ${student.paymentStatus === 'Paid'
-                              ? 'bg-success text-white'
-                              : student.paymentStatus === 'Cancelled'
+                                ) : (
+                                  <span>{student.bankName || 'N/A'}</span>
+                                )}
+                              </td>
+                            </>
+                          )}
+                          <td>
+                            <span
+                              className={`badge ${latestStatus === 'Paid'
+                                ? 'bg-success text-white'
+                                : latestStatus === 'Cancelled' || latestStatus === 'Cheque Return'|| latestStatus === 'Refund'
                                 ? 'bg-danger text-white'
-                                : student.paymentStatus === 'Cheque Return'
-                                 ? 'bg-danger text-white'
                                 : 'bg-warning text-dark'
                               }`}
-                          >
-                            {student.paymentStatus}
-                          </span>
-                        </td>
-                        <td>
-                          {student.paymentStatus !== 'Paid' && student.paymentStatus !== 'Cancelled' && student.paymentStatus !== 'Cheque Return' ? (
-                            <button
-                              type="button"
-                              className="btn btn-success btn-sm"
-                              onClick={(event) => handlePaidClick(event, student)}
-                              disabled={submitLoading}
                             >
-                              {submitLoading ? (
-                                <>
-                                  <span
-                                    className="spinner-border spinner-border-sm me-2"
-                                    role="status"
-                                    aria-hidden="true"
-                                  ></span>
-                                  Processing...
-                                </>
-                              ) : (
-                                'Pay Now'
+                              {latestStatus}
+                            </span>
+                          </td>
+                          <td>
+                            {isPayable && (
+                              <button
+                                type="button"
+                                className="btn btn-success btn-sm"
+                                onClick={(event) => handlePaidClick(event, student)}
+                                disabled={submitLoading}
+                              >
+                                {submitLoading ? (
+                                  <>
+                                    <span
+                                      className="spinner-border spinner-border-sm me-2"
+                                      role="status"
+                                      aria-hidden="true"
+                                    ></span>
+                                    Processing...
+                                  </>
+                                ) : (
+                                  'Pay Now'
+                                )}
+                              </button>
+                            )}
+                          </td>
+                          <td>
+                            <div className="dropdown">
+                              <button
+                                type="button"
+                                className="btn btn-info btn-sm"
+                                onClick={() => toggleDropdown(student._id)}
+                              >
+                                View
+                              </button>
+                              {openDropdownId === student._id && (
+                                <div className="dropdown-menu dropdown-menu-end show" style={{ position: 'absolute', zIndex: 1000 }}>
+                                  {student.receiptNumberBrf?.length > 0 ? (
+                                    student.receiptNumberBrf.map((receiptNumber, idx) => (
+                                      <button
+                                        key={`brf-${idx}`}
+                                        className="dropdown-item"
+                                        onClick={(event) => handleViewReceipt(event, student, receiptNumber)}
+                                      >
+                                        View {receiptNumber}
+                                      </button>
+                                    ))
+                                  ) : (
+                                    <button className="dropdown-item" disabled>
+                                      No BRF Receipts
+                                    </button>
+                                  )}
+                                  {student.refundReceiptNumbers?.length > 0 ? (
+                                    student.refundReceiptNumbers.map((crnNumber, idx) => (
+                                      <button
+                                        key={`crn-${idx}`}
+                                        className="dropdown-item"
+                                        onClick={(event) => navigateToCRNReceipt(event, crnNumber)}
+                                      >
+                                        View {crnNumber}
+                                      </button>
+                                    ))
+                                  ) : (
+                                    <button className="dropdown-item" disabled>
+                                      No CRN Receipts
+                                    </button>
+                                  )}
+                                </div>
                               )}
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              className="btn btn-info btn-sm"
-                              onClick={() => handleViewReceipt(student)}
-                            >
-                              View
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
                 {students.length === 0 && (

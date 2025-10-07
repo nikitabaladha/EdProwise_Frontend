@@ -20,21 +20,69 @@ export const exportToExcel = async (
     const headers = tableFields.map(field => headerMapping[field.id] || field.label);
     worksheet.addRow(headers);
 
-    // Add data rows
-    filteredData.forEach(record => {
-      const row = tableFields.map(field => {
-        const value = record[field.id] || '-';
-        return isNaN(value) ? value : Number(value);
+    // Generate enhanced data with class/section-wise totals
+    const enhancedRows = (() => {
+      const result = [];
+      let currentClass = null;
+      let currentSection = null;
+      let currentSum = 0;
+
+      filteredData.forEach((row) => {
+        if (row.className !== currentClass || row.sectionName !== currentSection) {
+          if (currentClass !== null && currentSection !== null) {
+            result.push({
+              type: 'total',
+              className: currentClass,
+              sectionName: currentSection,
+              sum: currentSum.toFixed(2),
+            });
+          }
+          currentClass = row.className;
+          currentSection = row.sectionName;
+          currentSum = 0;
+        }
+        result.push({ type: 'data', row });
+        currentSum += parseFloat(row.amount || 0);
       });
-      worksheet.addRow(row);
+
+      if (currentClass !== null && currentSection !== null) {
+        result.push({
+          type: 'total',
+          className: currentClass,
+          sectionName: currentSection,
+          sum: currentSum.toFixed(2),
+        });
+      }
+
+      return result;
+    })();
+
+    // Add data and total rows
+    enhancedRows.forEach((item) => {
+      if (item.type === 'data') {
+        const row = tableFields.map((field) => {
+          const value = item.row[field.id] || '-';
+          return field.id === 'amount' && !isNaN(value) ? Number(value) : value;
+        });
+        worksheet.addRow(row);
+      } else {
+        // Class/Section total row
+        const row = tableFields.map((field) => {
+          if (field.id === 'feeTypeName') return 'Total';
+          if (field.id === 'amount') return Number(item.sum);
+          return '';
+        });
+        worksheet.addRow(row);
+      }
     });
 
-    // Add total row
-    const totalsRow = tableFields.map(field => {
+    // Add grand total row
+    const grandTotalRow = tableFields.map((field) => {
+      if (field.id === 'feeTypeName') return 'Grand Total';
       if (field.id === 'amount') return Number(grandTotal);
-      return field.id === 'feeTypeName' ? 'Total' : '';
+      return '';
     });
-    worksheet.addRow(totalsRow);
+    worksheet.addRow(grandTotalRow);
 
     // Adjust column widths
     worksheet.columns.forEach((column) => {
@@ -51,16 +99,15 @@ export const exportToExcel = async (
     headerRow.font = { bold: true };
     headerRow.alignment = { horizontal: 'center' };
 
-    // Style total row
-    const totalRows = worksheet.rowCount;
-    const lastRow = worksheet.getRow(totalRows);
-    lastRow.font = { bold: true };
-    lastRow.alignment = { horizontal: 'center' };
-
-    // Add borders to all cells
-    for (let i = 1; i <= totalRows; i++) {
+    // Style total rows (class/section and grand total)
+    for (let i = 2; i <= worksheet.rowCount; i++) {
       const row = worksheet.getRow(i);
-      for (let j = 1; j <= worksheet.getRow(1).cellCount; j++) {
+      if (row.getCell(tableFields.findIndex(f => f.id === 'feeTypeName') + 1).value === 'Total' ||
+          row.getCell(tableFields.findIndex(f => f.id === 'feeTypeName') + 1).value === 'Grand Total') {
+        row.font = { bold: true };
+        row.alignment = { horizontal: 'center' };
+      }
+      for (let j = 1; j <= row.cellCount; j++) {
         const cell = row.getCell(j);
         if (cell.value !== null && cell.value !== undefined && cell.value !== '') {
           cell.border = {
@@ -158,6 +205,81 @@ export const exportToPDF = async (
     footerContainer.innerHTML = generateFooter(school);
     hiddenContainer.appendChild(footerContainer);
 
+    // Generate enhanced data with class/section-wise totals
+    const enhancedRows = (() => {
+      const result = [];
+      let currentClass = null;
+      let currentSection = null;
+      let currentSum = 0;
+
+      filteredData.forEach((row) => {
+        if (row.className !== currentClass || row.sectionName !== currentSection) {
+          if (currentClass !== null && currentSection !== null) {
+            result.push({
+              type: 'total',
+              className: currentClass,
+              sectionName: currentSection,
+              sum: currentSum.toFixed(2),
+            });
+          }
+          currentClass = row.className;
+          currentSection = row.sectionName;
+          currentSum = 0;
+        }
+        result.push({ type: 'data', row });
+        currentSum += parseFloat(row.amount || 0);
+      });
+
+      if (currentClass !== null && currentSection !== null) {
+        result.push({
+          type: 'total',
+          className: currentClass,
+          sectionName: currentSection,
+          sum: currentSum.toFixed(2),
+        });
+      }
+
+      return result;
+    })();
+
+    const rowsPerPage = 15;
+    const pageData = [];
+    for (let i = 0; i < enhancedRows.length; i += rowsPerPage) {
+      pageData.push(enhancedRows.slice(i, i + rowsPerPage));
+    }
+    if (enhancedRows.length > 0) {
+      pageData[pageData.length - 1] = [
+        ...pageData[pageData.length - 1],
+        { type: 'grandTotal', grandTotal },
+      ];
+    } else {
+      pageData.push([]);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const headerCanvas = await html2canvas(headerContainer, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: false,
+      logging: true,
+      backgroundColor: '#ffffff',
+      windowWidth: (pageWidth - margin * 2) * mmToPx,
+      windowHeight: headerHeight * mmToPx,
+    });
+    const headerImg = headerCanvas.toDataURL('image/jpeg', 0.98);
+
+    const footerCanvas = await html2canvas(footerContainer, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: false,
+      logging: true,
+      backgroundColor: '#ffffff',
+      windowWidth: (pageWidth - margin * 2) * mmToPx,
+      windowHeight: footerHeight * mmToPx,
+    });
+    const footerImg = footerCanvas.toDataURL('image/jpeg', 0.98);
+
     const tableContainer = document.createElement('div');
     tableContainer.style.cssText = `
       width: ${(pageWidth - margin * 2) * mmToPx}px;
@@ -188,7 +310,7 @@ export const exportToPDF = async (
           background-color: #e5e7eb;
           font-weight: bold;
         }
-        tfoot {
+        .total-row {
           background-color: #e5e7eb;
           font-weight: bold;
         }
@@ -206,44 +328,6 @@ export const exportToPDF = async (
       </style>
     `;
 
-    const rowsPerPage = 15;
-    const pageData = [];
-    for (let i = 0; i < filteredData.length; i += rowsPerPage) {
-      pageData.push(filteredData.slice(i, i + rowsPerPage));
-    }
-    if (filteredData.length > 0) {
-      pageData[pageData.length - 1] = [
-        ...pageData[pageData.length - 1],
-        { isTotalsRow: true, grandTotal },
-      ];
-    } else {
-      pageData.push([]);
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    const headerCanvas = await html2canvas(headerContainer, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: false,
-      logging: true,
-      backgroundColor: '#ffffff',
-      windowWidth: (pageWidth - margin * 2) * mmToPx,
-      windowHeight: headerHeight * mmToPx,
-    });
-    const headerImg = headerCanvas.toDataURL('image/jpeg', 0.98);
-
-    const footerCanvas = await html2canvas(footerContainer, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: false,
-      logging: true,
-      backgroundColor: '#ffffff',
-      windowWidth: (pageWidth - margin * 2) * mmToPx,
-      windowHeight: footerHeight * mmToPx,
-    });
-    const footerImg = footerCanvas.toDataURL('image/jpeg', 0.98);
-
     for (let page = 0; page < pageData.length; page++) {
       if (page > 0) pdf.addPage();
 
@@ -260,22 +344,31 @@ export const exportToPDF = async (
           <tbody>
             ${currentPageData.length > 0
               ? currentPageData
-                  .map((record) => {
-                    if (record.isTotalsRow) {
+                  .map((item) => {
+                    if (item.type === 'data') {
                       return `
                         <tr>
+                          ${tableFields
+                            .map((field) => `<td>${item.row[field.id] || '-'}</td>`)
+                            .join('')}
+                        </tr>
+                      `;
+                    } else if (item.type === 'total') {
+                      return `
+                        <tr class="total-row">
                           <td colspan="5"><strong>Total</strong></td>
-                          <td><strong>${grandTotal}</strong></td>
+                          <td><strong>${item.sum}</strong></td>
+                        </tr>
+                      `;
+                    } else if (item.type === 'grandTotal') {
+                      return `
+                        <tr class="total-row">
+                          <td colspan="5"><strong>Grand Total</strong></td>
+                          <td><strong>${item.grandTotal}</strong></td>
                         </tr>
                       `;
                     }
-                    return `
-                      <tr>
-                        ${tableFields
-                          .map((field) => `<td>${record[field.id] || '-'}</td>`)
-                          .join('')}
-                      </tr>
-                    `;
+                    return '';
                   })
                   .join('')
               : `<tr><td colspan="${tableFields.length}">No data matches the selected filters for ${formatAcademicYear(selectedAcademicYear)}.</td></tr>`

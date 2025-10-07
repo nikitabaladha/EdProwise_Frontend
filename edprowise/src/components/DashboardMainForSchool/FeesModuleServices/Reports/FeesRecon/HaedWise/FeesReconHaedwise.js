@@ -204,8 +204,8 @@ const ReconFeesHeadwise = () => {
           (endDate ? `&endDate=${formatDate(endDate)}` : '');
 
         let admissionResponse, leftResponse, lateResponse, defaulterResponse, admissionFeesResponse,
-            registrationFeesResponse, tcFeesResponse, boardRegistrationFeesResponse,
-            boardExamFeesResponse, lateFeesResponse, arrearFeesResponse;
+          registrationFeesResponse, tcFeesResponse, boardRegistrationFeesResponse,
+          boardExamFeesResponse, lateFeesResponse, arrearFeesResponse;
 
         try {
           admissionResponse = await getAPI(`/get-recon-fees-headwise?${queryParams}`);
@@ -244,6 +244,7 @@ const ReconFeesHeadwise = () => {
 
         try {
           registrationFeesResponse = await getAPI(`/get-all-data-Registration?${queryParams}`);
+          console.log("✅ Registration API response:", registrationFeesResponse);
         } catch (err) {
           registrationFeesResponse = { hasError: true, data: null };
           console.error('Error fetching registration fees data:', err);
@@ -279,6 +280,8 @@ const ReconFeesHeadwise = () => {
 
         try {
           arrearFeesResponse = await getAPI(`/get-arrear-fees?${queryParams}`);
+
+          console.log('arrearFeesResponse:', arrearFeesResponse);
         } catch (err) {
           arrearFeesResponse = { hasError: true, data: null };
           console.error('Error fetching arrear fees data:', err);
@@ -293,10 +296,20 @@ const ReconFeesHeadwise = () => {
         setLateAdmissionData(lateResponse.data?.data || []);
         setDefaulterData(defaulterResponse.data?.data || []);
         setAdmissionFeesData(admissionFeesResponse.data?.data || []);
-        setRegistrationFeesData(registrationFeesResponse.data?.data?.[selectedAcademicYear] || []);
-        setTcFeesData(tcFeesResponse.data?.data?.[selectedAcademicYear] || []);
-        setBoardRegistrationFeesData(boardRegistrationFeesResponse.data?.data?.[selectedAcademicYear] || []);
-        setBoardExamFeesData(boardExamFeesResponse.data?.data?.[selectedAcademicYear] || []);
+        setRegistrationFeesData(
+          registrationFeesResponse.data?.combinedDetails ||[]
+        );
+        setTcFeesData(tcFeesResponse.data?.combinedDetails
+        //   .filter(
+        //   item => item.academicYear === selectedAcademicYear
+        // ) 
+        || []);
+        setBoardRegistrationFeesData(boardRegistrationFeesResponse.data?.data
+          ?.[selectedAcademicYear] 
+          || []);
+        setBoardExamFeesData(boardExamFeesResponse.data?.data
+          ?.[selectedAcademicYear]
+           || []);
         setLateFeesData(lateFeesResponse.data?.data || []);
         setArrearFeesData(arrearFeesResponse.data?.data || []);
 
@@ -343,7 +356,7 @@ const ReconFeesHeadwise = () => {
         return sum + relevantInstallments.reduce((acc, inst) => acc + (inst.balance || 0), 0);
       }
       return sum + (item.totals?.totalBalance || 0);
-    }, 0);
+    }, 0).toFixed(2);
 
     setLossDueToLeft(totalLeft);
   }, [leftStudentData, selectedClasses, selectedSections, selectedInstallment]);
@@ -370,7 +383,7 @@ const ReconFeesHeadwise = () => {
         return sum + relevantInstallments.reduce((acc, inst) => acc + (inst.balance || 0), 0);
       }
       return sum + (item.totals?.totalBalance || 0);
-    }, 0);
+    }, 0).toFixed(2);
 
     setLossDueToLateAdmission(totalLateAdmission);
   }, [lateAdmissionData, selectedClasses, selectedSections, selectedInstallment]);
@@ -397,7 +410,7 @@ const ReconFeesHeadwise = () => {
         return sum + relevantInstallments.reduce((acc, inst) => acc + (inst.balance || 0), 0);
       }
       return sum + (item.totals?.totalBalance || 0);
-    }, 0);
+    }, 0).toFixed(2);
 
     setDefaulterFees(totalDefaulter);
   }, [defaulterData, selectedClasses, selectedSections, selectedInstallment]);
@@ -425,10 +438,10 @@ const ReconFeesHeadwise = () => {
     });
 
     const totalRegistrationFees = filteredRegistrationFees.reduce((sum, item) => {
-      return item.student?.regFeesStatus.includes("Paid")
-        ? sum + (parseFloat(item.student.regFeesDue) || 0)
+      return item.regFeesStatus.includes("Paid")
+        ? sum + (parseFloat(item.regFeesDue) || 0)
         : sum;
-    }, 0);
+    }, 0).toFixed(2);
 
     setRegistrationFees(totalRegistrationFees);
   }, [registrationFeesData, selectedClasses]);
@@ -441,18 +454,18 @@ const ReconFeesHeadwise = () => {
       const matchesSection =
         selectedSections.length === 0 ||
         selectedSections.some((sec) => record.sectionName === sec.value);
-      const matchesAcademicYear = record.academicYear === selectedAcademicYear;
-      return matchesClass && matchesSection && matchesAcademicYear;
+      // const matchesAcademicYear = record.academicYear === selectedAcademicYear;
+      return matchesClass && matchesSection ;
     });
 
     const totalTcFees = filteredTcFees.reduce((sum, item) => {
-      return item.student?.tcFeesStatus.includes("Paid")
-        ? sum + (parseFloat(item.student.tcFeesDue) || 0)
+      return item.tcFeesStatus.includes("Paid")
+        ? sum + (parseFloat(item.tcFeesDue) || 0)
         : sum;
-    }, 0);
+    }, 0).toFixed(2);
 
     setTcFees(totalTcFees);
-  }, [tcFeesData, selectedClasses, selectedSections, selectedAcademicYear]);
+  }, [tcFeesData, selectedClasses, selectedSections]);
 
   useEffect(() => {
     const filteredBoardRegistrationFees = boardRegistrationFeesData.filter((record) => {
@@ -466,8 +479,8 @@ const ReconFeesHeadwise = () => {
     });
 
     const totalBoardRegistrationFees = filteredBoardRegistrationFees.reduce((sum, item) => {
-      return sum + (parseFloat(item.student.boardRegFeesDue) || 0);
-    }, 0);
+      return sum + (parseFloat(item.boardRegFeesDue) || 0);
+    }, 0).toFixed(2);
 
     setBoardRegistrationFees(totalBoardRegistrationFees);
   }, [boardRegistrationFeesData, selectedClasses, selectedSections]);
@@ -484,8 +497,8 @@ const ReconFeesHeadwise = () => {
     });
 
     const totalBoardExamFees = filteredBoardExamFees.reduce((sum, item) => {
-      return sum + (parseFloat(item.student.boardExamFeesDue) || 0);
-    }, 0);
+      return sum + (parseFloat(item.boardExamFeesDue) || 0);
+    }, 0).toFixed(2);
 
     setBoardExaminationFees(totalBoardExamFees);
   }, [boardExamFeesData, selectedClasses, selectedSections]);
@@ -510,35 +523,85 @@ const ReconFeesHeadwise = () => {
 
     const totalLateAndExcessFees = filteredLateFees.reduce((sum, item) => {
       return sum + (parseFloat(item.paidFine) || 0) + (parseFloat(item.excessFees) || 0);
-    }, 0);
+    }, 0).toFixed(2);
 
     setLateAndExcessFees(totalLateAndExcessFees);
   }, [lateFeesData, selectedClasses, selectedSections, selectedInstallment, startDate, endDate]);
 
-  useEffect(() => {
-    const filteredArrearFees = arrearFeesData.filter((record) => {
-      const matchesClass =
-        selectedClasses.length === 0 ||
-        selectedClasses.some((cls) => record.className === cls.value);
-      const matchesSection =
-        selectedSections.length === 0 ||
-        selectedSections.some((sec) => record.sectionName === sec.value);
-      const matchesInstallment =
-        !selectedInstallment ||
-        record.installmentName === selectedInstallment.value;
-      const paymentDate = record.paymentDate ? new Date(record.paymentDate.split('-').reverse().join('-')) : null;
-      const matchesDate =
-        (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
-        (!endDate || !paymentDate || paymentDate <= new Date(endDate));
-      return matchesClass && matchesSection && matchesInstallment && matchesDate;
-    });
+  // useEffect(() => {
+  //   console.log("arrearFeesData loaded:", arrearFeesData);
+  //   const filteredArrearFees = arrearFeesData.filter((record) => {
+  //     const matchesClass =
+  //       selectedClasses.length === 0 ||
+  //       selectedClasses.some((cls) => record.className === cls.value);
+  //     const matchesSection =
+  //       selectedSections.length === 0 ||
+  //       selectedSections.some((sec) => record.sectionName === sec.value);
+  //     const matchesInstallment =
+  //       !selectedInstallment ||
+  //       record.installmentName === selectedInstallment.value;
+  //     const paymentDate = record.paymentDate ? new Date(record.paymentDate.split('-').reverse().join('-')) : null;
+  //     const matchesDate =
+  //       (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
+  //       (!endDate || !paymentDate || paymentDate <= new Date(endDate));
+  //     return matchesClass && matchesSection && matchesInstallment && matchesDate;
+  //   });
 
-    const totalArrearFeesReceived = filteredArrearFees.reduce((sum, item) => {
-      return sum + (parseFloat(item.totalPaid) || 0);
-    }, 0);
+  //   const totalArrearFeesReceived = filteredArrearFees.reduce((sum, item) => {
+  //     return sum + (parseFloat(item.totalPaid) || 0);
+  //   }, 0).toFixed(2);
 
-    setArrearFeesReceived(totalArrearFeesReceived);
-  }, [arrearFeesData, selectedClasses, selectedSections, selectedInstallment, startDate, endDate]);
+  //   setArrearFeesReceived(totalArrearFeesReceived);
+  // }, [arrearFeesData, selectedClasses, selectedSections, selectedInstallment, startDate, endDate]);
+
+useEffect(() => {
+
+
+  const filteredArrearFees = arrearFeesData.filter((record) => {
+    const matchesClass =
+      selectedClasses.length === 0 ||
+      selectedClasses.some((cls) => record.className === cls.value);
+
+    const matchesSection =
+      selectedSections.length === 0 ||
+      selectedSections.some((sec) => record.sectionName === sec.value);
+
+    const matchesInstallment =
+      !selectedInstallment ||
+      record.installmentName === selectedInstallment.value;
+
+    const paymentDate = record.paymentDate
+      ? new Date(record.paymentDate.split("-").reverse().join("-"))
+      : null;
+
+    const matchesDate =
+      (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
+      (!endDate || !paymentDate || paymentDate <= new Date(endDate));
+
+    return matchesClass && matchesSection && matchesInstallment && matchesDate;
+  });
+
+
+  const totalArrearFeesReceived = filteredArrearFees.reduce((sum, record) => {
+    const feeTypePaidSum = Object.values(record.feeTypes || {}).reduce(
+      (innerSum, fee) => innerSum + (parseFloat(fee.totalPaid) || 0),
+      0
+    );
+    return sum + feeTypePaidSum;
+  }, 0);
+
+
+
+  setArrearFeesReceived(totalArrearFeesReceived.toFixed(2));
+}, [
+  arrearFeesData,
+  selectedClasses,
+  selectedSections,
+  selectedInstallment,
+  startDate,
+  endDate,
+]);
+
 
   useEffect(() => {
     const loadSchoolData = async () => {
@@ -620,18 +683,18 @@ const ReconFeesHeadwise = () => {
     if (fieldId === 'schoolFees') {
       if (selectedInstallment) {
         const installment = record.installments?.find(inst => inst.name === selectedInstallment.value);
-        return installment ? installment.fees.reduce((sum, fee) => sum + fee.amount, 0) : 0;
+        return installment ? Number(installment.fees.reduce((sum, fee) => sum + fee.amount, 0)).toFixed(2) : '0.00';
       }
-      return record.schoolFees || 0;
+      return record.schoolFees ? Number(record.schoolFees).toFixed(2) : '0.00';
     }
-    if (fieldId === 'admFees') return record.admFees || 0;
+    if (fieldId === 'admFees') return record.admFees ? Number(record.admFees).toFixed(2) : '0.00';
     if (fieldId === 'yearlyDues') {
       if (selectedInstallment) {
         const installment = record.installments?.find(inst => inst.name === selectedInstallment.value);
         const installmentFees = installment ? installment.fees.reduce((sum, fee) => sum + fee.amount, 0) : 0;
-        return (record.totalStudents * installmentFees) + (record.newAdmission * (record.admFees || 0));
+        return Number((record.totalStudents * installmentFees) + (record.newAdmission * (record.admFees || 0))).toFixed(2);
       }
-      return record.yearlyDues || 0;
+      return record.yearlyDues ? Number(record.yearlyDues).toFixed(2) : '0.00';
     }
     return '-';
   };
@@ -639,9 +702,9 @@ const ReconFeesHeadwise = () => {
   const filteredData = feeData.filter((record) => {
     const matchesSearchTerm = searchTerm
       ? Object.values(record).some((value) =>
-          value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
-        ) || (record.className && record.className.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (record.sectionName && record.sectionName.toLowerCase().includes(searchTerm.toLowerCase()))
+        value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
+      ) || (record.className && record.className.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (record.sectionName && record.sectionName.toLowerCase().includes(searchTerm.toLowerCase()))
       : true;
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -659,11 +722,11 @@ const ReconFeesHeadwise = () => {
       totalStudents: acc.totalStudents + (record.totalStudents || 0),
       schoolFees: acc.schoolFees + (selectedInstallment
         ? (record.installments?.find(inst => inst.name === selectedInstallment.value)?.fees.reduce((sum, fee) => sum + fee.amount, 0) || 0)
-        : record.schoolFees || 0),
+        : (record.schoolFees || 0)),
       admFees: acc.admFees + (record.admFees || 0),
       yearlyDues: acc.yearlyDues + (selectedInstallment
         ? ((record.installments?.find(inst => inst.name === selectedInstallment.value)?.fees.reduce((sum, fee) => sum + fee.amount, 0) || 0) * record.totalStudents) + ((record.newAdmission || 0) * (record.admFees || 0))
-        : record.yearlyDues || 0),
+        : (record.yearlyDues || 0)),
     }),
     {
       existingStudents: 0,
@@ -675,8 +738,12 @@ const ReconFeesHeadwise = () => {
     }
   );
 
-  const netFeesDue = totals.yearlyDues - lossDueToLeft - lossDueToLateAdmission - defaulterFees;
-  const finalFees = netFeesDue + lateAndExcessFees + registrationFees + tcFees + boardRegistrationFees + boardExaminationFees + arrearFeesReceived;
+  totals.schoolFees = Number(totals.schoolFees).toFixed(2);
+  totals.admFees = Number(totals.admFees).toFixed(2);
+  totals.yearlyDues = Number(totals.yearlyDues).toFixed(2);
+
+  const netFeesDue = (Number(totals.yearlyDues) - Number(lossDueToLeft) - Number(lossDueToLateAdmission) - Number(defaulterFees)).toFixed(2);
+  const finalFees = (Number(netFeesDue) + Number(lateAndExcessFees) + Number(registrationFees) + Number(tcFees) + Number(boardRegistrationFees) + Number(boardExaminationFees) + Number(arrearFeesReceived)).toFixed(2);
 
   return (
     <div className="container">
@@ -944,71 +1011,71 @@ const ReconFeesHeadwise = () => {
                           <td className="text-center border border-dark p-2"><strong>{totals.existingStudents}</strong></td>
                           <td className="text-center border border-dark p-2"><strong>{totals.newAdmission}</strong></td>
                           <td className="text-center border border-dark p-2"><strong>{totals.totalStudents}</strong></td>
-                          <td className="text-center border border-dark p-2"><strong>{totals.schoolFees.toLocaleString()}</strong></td>
-                          <td className="text-center border border-dark p-2"><strong>{totals.admFees.toLocaleString()}</strong></td>
-                          <td className="text-center border border-dark p-2"><strong>{totals.yearlyDues.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{totals.schoolFees}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{totals.admFees}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{totals.yearlyDues}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Less: Loss of fees due to left students
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{lossDueToLeft.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{lossDueToLeft}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Less: Loss of fees due to late Admission
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{lossDueToLateAdmission.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{lossDueToLateAdmission}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Less: Defaulter Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{defaulterFees.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{defaulterFees}</strong></td>
                         </tr>
                         <tr className="payroll-table-footer">
                           <td colSpan={7} className="text-right border border-dark p-2"><strong>Net Fees Due</strong></td>
-                          <td className="text-center border border-dark p-2"><strong>{netFeesDue.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{netFeesDue}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Late Fee & Excess Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{lateAndExcessFees.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{lateAndExcessFees}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Registration Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{registrationFees.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{registrationFees}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: TC Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{tcFees.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{tcFees}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Board Registration Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{boardRegistrationFees.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{boardRegistrationFees}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Board Examination Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{boardExaminationFees.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{boardExaminationFees}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Arrear Fees Received
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{arrearFeesReceived.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{arrearFeesReceived}</strong></td>
                         </tr>
                         <tr className="payroll-table-footer">
                           <td colSpan={7} className="text-right border border-dark p-2"><strong>Final Fees</strong></td>
-                          <td className="text-center border border-dark p-2"><strong>{finalFees.toLocaleString()}</strong></td>
+                          <td className="text-center border border-dark p-2"><strong>{finalFees}</strong></td>
                         </tr>
                       </tbody>
                     </table>

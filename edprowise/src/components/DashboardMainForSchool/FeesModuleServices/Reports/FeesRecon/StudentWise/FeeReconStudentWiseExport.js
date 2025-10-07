@@ -30,10 +30,12 @@ export const exportToExcel = async (
   });
 
   const totalsRow = tableFields.map(field => {
-    if (field.id === 'feesDue') return Number(grandTotals.totalFeesDue);
-    if (field.id === 'feesPaid') return Number(grandTotals.totalFeesPaid);
-    if (field.id === 'concession') return Number(grandTotals.totalConcession);
-    if (field.id === 'balance') return Number(grandTotals.totalBalance);
+  if (field.id === 'feesDue') return Number(grandTotals.totalFeesDue);
+  if (field.id === 'feesPaid') return Number(grandTotals.totalFeesPaid);
+  if (field.id === 'refundCancelledChequeReturn') return Number(grandTotals.totalRefundCancelledChequeReturn);
+  if (field.id === 'netFees') return Number(grandTotals.totalNetFees);
+  if (field.id === 'concession') return Number(grandTotals.totalConcession);
+  if (field.id === 'balance') return Number(grandTotals.totalBalance);
     return '';
   });
   worksheet.addRow(totalsRow);

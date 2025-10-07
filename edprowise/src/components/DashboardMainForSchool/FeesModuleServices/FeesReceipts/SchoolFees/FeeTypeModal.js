@@ -204,7 +204,7 @@ const FeeTypeModal = ({
                           textAlign: 'right',
                         }}
                       >
-                        {item.isFine || item.isExcess ? '0' : item.amount || '0'}
+                        {item.isFine || item.isExcess ? '0.00' : item.amount.toFixed(2) || '0'}
                       </td>
                       <td
                         style={{
@@ -213,7 +213,7 @@ const FeeTypeModal = ({
                           textAlign: 'right',
                         }}
                       >
-                        {item.isFine || item.isExcess ? '0' : item.concession || '0'}
+                        {item.isFine || item.isExcess ? '0.00' : item.concession.toFixed(2) || '0'}
                       </td>
                       <td
                         style={{
@@ -222,7 +222,7 @@ const FeeTypeModal = ({
                           textAlign: 'right',
                         }}
                       >
-                        {item.isFine || item.isExcess ? '0' : payable || '0'}
+                        {item.isFine || item.isExcess ? '0.00' : payable.toFixed(2) || '0'}
                       </td>
                       <td
                         style={{
@@ -231,7 +231,7 @@ const FeeTypeModal = ({
                           textAlign: 'right',
                         }}
                       >
-                        {item.isFine || item.isExcess ? '0' : amountPaid || '0'}
+                        {item.isFine|| item.isExcess ? '0.00' : amountPaid.toFixed(2) || '0'}
                       </td>
                       <td
                         style={{
@@ -240,7 +240,7 @@ const FeeTypeModal = ({
                           textAlign: 'right',
                         }}
                       >
-                        {item.isFine || item.isExcess ? '0' : balance || '0'}
+                        {item.isFine || item.isExcess ? '0.00' : balance.toFixed(2) || '0'}
                       </td>
                       {isPartFeesSelected && (
                         <td
@@ -286,12 +286,12 @@ const FeeTypeModal = ({
               <tfoot>
                 <tr>
                   <th style={{ textAlign: 'left' }}>Total</th>
-                  <th style={{ textAlign: 'right' }}>{totals.totalFees}</th>
-                  <th style={{ textAlign: 'right' }}>{totals.totalConcession}</th>
-                  <th style={{ textAlign: 'right' }}>{totals.totalPayable}</th>
-                  <th style={{ textAlign: 'right' }}>{totals.totalAmountPaid}</th>
-                  <th style={{ textAlign: 'right' }}>{totals.totalBalance}</th>
-                  {isPartFeesSelected && <th style={{ textAlign: 'right' }}>{totals.totalPaid}</th>}
+                  <th style={{ textAlign: 'right' }}>{totals.totalFees.toFixed(2)}</th>
+                  <th style={{ textAlign: 'right' }}>{totals.totalConcession.toFixed(2)}</th>
+                  <th style={{ textAlign: 'right' }}>{totals.totalPayable.toFixed(2)}</th>
+                  <th style={{ textAlign: 'right' }}>{totals.totalAmountPaid.toFixed(2)}</th>
+                  <th style={{ textAlign: 'right' }}>{totals.totalBalance.toFixed(2)}</th>
+                  {isPartFeesSelected && <th style={{ textAlign: 'right' }}>{totals.totalPaid.toFixed(2)}</th>}
                 </tr>
               </tfoot>
             </Table>

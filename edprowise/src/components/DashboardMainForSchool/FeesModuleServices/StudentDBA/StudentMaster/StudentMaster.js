@@ -527,41 +527,7 @@ const StudentMaster = () => {
                           >
                             {isExporting ? 'Exporting...' : 'Export to Excel'}
                           </button>
-                          <button
-                            className="btn btn-light w-100 text-left py-2 px-3"
-                            disabled={isExporting}
-                            onClick={async () => {
-                              if (filteredData.length === 0) {
-                                toast.error('No data to export');
-                                return;
-                              }
-                              setIsExporting(true);
-                              try {
-                                console.log('Exporting to PDF with:', { filteredData, tableFields, selectedAcademicYear, school, logoSrc });
-                                await exportToPDF(
-                                  filteredData,
-                                  tableFields,
-                                  headerMapping,
-                                  getFieldValue,
-                                  null,
-                                  null,
-                                  formatAcademicYear,
-                                  selectedAcademicYear,
-                                  school,
-                                  logoSrc
-                                );
-                                toast.success('Exported to PDF successfully');
-                              } catch (err) {
-                                console.error('PDF Export Error:', err);
-                                toast.error(`Export to PDF failed: ${err.message || 'Unknown error'}`);
-                              } finally {
-                                setIsExporting(false);
-                                setShowExportDropdown(false);
-                              }
-                            }}
-                          >
-                            {isExporting ? 'Exporting...' : 'Export to PDF'}
-                          </button>
+                          
                         </div>
                       )}
                     </div>
@@ -648,7 +614,7 @@ const StudentMaster = () => {
                                 options={statusOptions}
                                 value={selectedStatuses}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Statuses"
+                                placeholder="Select Status"
                                 className="mt-2"
                               />
                             </div>

@@ -195,8 +195,12 @@ import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesModuleSe
 import SchoolFeesReceiptsView from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/ViewRecipt.js"
 import StudentReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/Recipt.js"
 import FeeReceiptsSchoolFees from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/FeeReceiptsForm.js"
+import BoardRegistrationFeeTable from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistartionTable.js";
+import BoardRegistrationFeeTableReceipts  from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceiptsforTable.js";
 import BoardRegistrationFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationFees.js";
 import BoardRegistrationFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceipts.js"
+import BoardExamFeeTable from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamTable.js";
+import BoardExamFeeTableReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamReceiptsforTable.js"
 import BoardExamFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamFee.js";
 import BoardExamFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamReceipts.js"
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
@@ -229,6 +233,7 @@ import PromoteStudent from './components/DashboardMainForSchool/FeesModuleServic
 import FeesRefund from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/Feesrefund.js"
 import CreateFeesRefund from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/CreateFeesreFund.js'
 import Refundreceipt from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/RefundReceipt.js'
+import  CRNreceipt from './components/DashboardMainForSchool/FeesModuleServices/CRNReceipt.js'
 
 import StudentProfile from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentProfile/StudentAdmissionListTable.js';
 import StudentProfileUpdate from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentProfile/UpdateAdmissionDetail/UpdateAdmissionForm.js';
@@ -276,8 +281,10 @@ import AdvancedFees from "./components/DashboardMainForSchool/FeesModuleServices
 import OpeningAndClosingAdvanced from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OpeningandClosingAdvanced/OpeningandClosingAdvancedReport.js"
 // ===================================================FeesRecom==================================================//
 
+import FeesReconFeesWise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/FeesWise/FeesReconHaedwise.js"
 import FeesReconHaedwise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/HaedWise/FeesReconHaedwise.js"
 import FeesReconStudentWise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/StudentWise/FeesReconStudentWise.js"
+import FeesReconFeesvsFinance from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/FeesvsFinance/FeesvsFinance.js"
 // ================================================Seller Routes============================================
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 
@@ -997,6 +1004,11 @@ const AppRoutes = () => {
           element={< Refundreceipt />}
         />
 
+         <Route
+          path="fees-module/form/crn-receipts"
+          element={< CRNreceipt />}
+        />
+
         <Route
           path="fees-module/fees-receipts/school-fees/student-receipts"
           element={<StudentReceipts />}
@@ -1013,23 +1025,46 @@ const AppRoutes = () => {
 
 
         <Route
-          path="fees-module/fees-receipts/board-registration-fees"
+          path="fees-module/fees-receipts/board-registration/fees"
           element={<BoardRegistrationFee />}
         />
 
+         <Route
+          path="fees-module/fees-receipts/board-registration"
+          element={<BoardRegistrationFeeTable />}
+        />
+
         <Route
-          path="fees-module/fees-receipts/board-registration-fees/receipts"
+          path="fees-module/fees-receipts/board-registration/fees/receipts"
           element={<BoardRegistrationFeeReceipts />}
         />
 
+        
         <Route
-          path="fees-module/fees-receipts/board-exam-fees"
-          element={<BoardExamFee />}
+          path="fees-module/fees-receipts/board-registration/receipts"
+          element={<BoardRegistrationFeeTableReceipts />}
         />
 
         <Route
-          path="fees-module/fees-receipts/board-exam-fees/receipts"
+          path="fees-module/fees-receipts/board-exam"
+          element={< BoardExamFeeTable/>}
+        />
+
+        <Route
+          path="fees-module/fees-receipts/board-exam/fees"
+          element={<BoardExamFee />}
+        />
+
+       
+
+        <Route
+          path="fees-module/fees-receipts/board-exam/fees/receipts"
           element={<BoardExamFeeReceipts />}
+        />
+
+          <Route
+          path="fees-module/fees-receipts/board-exam/receipts"
+          element={<BoardExamFeeTableReceipts />}
         />
 
         {/* --------------------------------------------Reports------------------------------------------------------- */}
@@ -1164,6 +1199,12 @@ const AppRoutes = () => {
      
        {/* --------------------------------------------FeesRecon-------------------------------------- */}
 
+
+      <Route
+          path="fees-module/reports/audit/fees-wise"
+          element={<FeesReconFeesWise />}
+        />
+
        <Route
           path="fees-module/reports/audit/headcount"
           element={<FeesReconHaedwise />}
@@ -1172,6 +1213,11 @@ const AppRoutes = () => {
           <Route
           path="fees-module/reports/audit/student-wise"
           element={<FeesReconStudentWise />}
+        />
+
+         <Route
+          path="fees-module/reports/audit/fees-vs-finance"
+          element={<FeesReconFeesvsFinance />}
         />
 
 

@@ -787,7 +787,7 @@ const ViewAdmissionForm = () => {
                       </div>
                     </div>
                   )}
-                  {showAdditionalData && (
+                  {/* {showAdditionalData && (
                     <>
                       <div className="card-header mb-2">
                         <h4 className="card-title text-center custom-heading-font">
@@ -1043,7 +1043,7 @@ const ViewAdmissionForm = () => {
                         </div>
                       </div>
                     </>
-                  )}
+                  )} */}
                 </form>
               </div>
             </div>

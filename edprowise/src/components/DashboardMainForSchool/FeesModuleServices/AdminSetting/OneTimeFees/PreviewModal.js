@@ -75,13 +75,10 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, classes, fees
                 <tbody>
                   {previewData.map((row, index) => {
                     const isValid = validatedData.some((vd) => {
-                      // Find the class object for the row's Class
                       const classObj = classes.find(
                         (c) => c.className.toLowerCase() === String(row.Class).trim().toLowerCase()
                       );
                       if (!classObj) return false;
-
-                      // Check sections
                       const sections = row.Sections
                         ? String(row.Sections).trim().split(',').map(s => s.trim())
                         : [];
@@ -89,18 +86,14 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, classes, fees
                         classObj.sections.some((sec) => sec.name.toLowerCase() === s.toLowerCase())
                       );
                       if (!validSections) return false;
-
-                      // Check fees type
                       const feesType = feesTypes.find(
                         (f) => f.feesTypeName.toLowerCase() === String(row.FeesTypeName).trim().toLowerCase()
                       );
                       if (!feesType) return false;
 
-                      // Check amount
+   
                       const amount = Number(row.Amount);
                       if (!amount || amount <= 0) return false;
-
-                      // Check if validatedData contains an entry matching all criteria
                       return vd.oneTimeFees.some(
                         (otf) =>
                           otf.amount === amount &&
@@ -120,7 +113,7 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, classes, fees
                         <td>{row.Class || '-'}</td>
                         <td>{row.Sections || '-'}</td>
                         <td>{row.FeesTypeName || '-'}</td>
-                        <td>{row.Amount || '-'}</td>
+                        <td>{row.Amount.toFixed(2) || '-'}</td>
                         <td style={{ color: isValid ? 'green' : 'red' }}>
                           {isValid ? 'Yes' : 'No'}
                         </td>

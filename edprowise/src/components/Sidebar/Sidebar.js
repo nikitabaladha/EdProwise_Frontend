@@ -197,7 +197,7 @@ const Sidebar = () => {
         children: [
            {
             id: "Studentdba",
-            label: "Student DBA",
+            label: "Student Database",
             icon: "bx-receipt",
             children: [
                 {
@@ -261,12 +261,12 @@ const Sidebar = () => {
               },
               {
                 label: "Board Registration ",
-                link: "/school-dashboard/fees-module/fees-receipts/board-registration-fees",
+                link: "/school-dashboard/fees-module/fees-receipts/board-registration",
                 icon: "solar:users-group-rounded-bold-duotone",
               },
               {
                 label: "Board Exam ",
-                link: "/school-dashboard/fees-module/fees-receipts/board-exam-fees",
+                link: "/school-dashboard/fees-module/fees-receipts/board-exam",
                 icon: "solar:users-group-rounded-bold-duotone",
               },
               {
@@ -327,7 +327,6 @@ const Sidebar = () => {
                 label: "General Report",
                 icon: "solar:settings-bold-duotone",
                 children: [
-
                   {
                     label: "School Fees",
                     link: "/school-dashboard/fees-module/reports/general/school-fee",
@@ -460,7 +459,7 @@ const Sidebar = () => {
                   },
                   {
                     label: "Fees Recon(Fees vs Finan)",
-                    link: "/school-dashboard/fees-module/reports/audit/module-vs-finance",
+                    link: "/school-dashboard/fees-module/reports/audit/fees-vs-finance",
                     icon: "solar:scale-bold-duotone",
                   },
                 ],

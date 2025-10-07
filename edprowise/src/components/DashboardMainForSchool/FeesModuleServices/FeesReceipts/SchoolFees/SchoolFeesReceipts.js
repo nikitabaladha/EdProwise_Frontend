@@ -886,6 +886,7 @@ const SchoolFeesReceipts = () => {
   const [showImportModal, setShowImportModal] = useState(false);
   const [visibleReceipts, setVisibleReceipts] = useState({});
   const [receiptsData, setReceiptsData] = useState({});
+  const [openDropdownId, setOpenDropdownId] = useState(null);
 
   const handleViewReceipt = (receipt) => {
     navigate('/school-dashboard/fees-module/fees-receipts/school-fees/fees-receipts-view', {
@@ -893,37 +894,43 @@ const SchoolFeesReceipts = () => {
     });
   };
 
-const toggleReceiptsTable = async (academicYear, installmentName) => {
-  const key = `${academicYear}-${installmentName}`;
-  setVisibleReceipts((prev) => ({
-    ...prev,
-    [key]: !prev[key],
-  }));
+  const handleViewCRNReceipt = (crnNumber) => {
+    navigate('/school-dashboard/fees-module/form/crn-receipts', {
+      state: { crnNumber },
+    });
+  };
 
-  if (!visibleReceipts[key]) {
-    try {
-      const response = await getAPI(
-        `/get-school-fees-receipts?schoolId=${schoolId}&admissionNumber=${formData.AdmissionNumber}&academicYear=${academicYear}&installmentName=${installmentName}`,
-        {},
-        true
-      );
-      if (!response.hasError) {
-        const receipts = Array.isArray(response.data?.data) ? response.data.data : Array.isArray(response.data) ? response.data : [];
-        setReceiptsData((prev) => {
-          const newReceiptsData = {
-            ...prev,
-            [key]: receipts,
-          };
-          return newReceiptsData;
-        });
-      } else {
-        toast.error(response.message || 'Failed to fetch receipts');
+  const toggleReceiptsTable = async (academicYear, installmentName) => {
+    const key = `${academicYear}-${installmentName}`;
+    setVisibleReceipts((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+
+    if (!visibleReceipts[key]) {
+      try {
+        const response = await getAPI(
+          `/get-school-fees-receipts?schoolId=${schoolId}&admissionNumber=${formData.AdmissionNumber}&academicYear=${academicYear}&installmentName=${installmentName}`,
+          {},
+          true
+        );
+        if (!response.hasError) {
+          const receipts = Array.isArray(response.data?.data) ? response.data.data : Array.isArray(response.data) ? response.data : [];
+          setReceiptsData((prev) => {
+            const newReceiptsData = {
+              ...prev,
+              [key]: receipts,
+            };
+            return newReceiptsData;
+          });
+        } else {
+          toast.error(response.message || 'Failed to fetch receipts');
+        }
+      } catch (error) {
+        toast.error('Error fetching receipts');
       }
-    } catch (error) {
-      toast.error('Error fetching receipts');
     }
-  }
-};
+  };
   const handleInstallmentCheckbox = (installmentName, academicYear) => {
     handleInstallmentSelection(installmentName, academicYear);
   };
@@ -931,6 +938,17 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
   const formatAcademicYear = (year) => {
     const [start, end] = year.split('-');
     return `${start}-${end.slice(2)}`;
+  };
+
+  const getLatestStatus = (statusArray) => {
+    if (!statusArray || !Array.isArray(statusArray) || statusArray.length === 0) {
+      return 'Pending';
+    }
+    return statusArray[statusArray.length - 1] || 'Pending';
+  };
+
+  const toggleDropdown = (receiptId) => {
+    setOpenDropdownId(openDropdownId === receiptId ? null : receiptId);
   };
 
   const renderReceiptsTable = () => {
@@ -1018,8 +1036,8 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                   chequeNumber: item.chequeNumber || '',
                   fineAmount: Number(item.fineAmount) || 0,
                   excessAmount: Number(item.excessAmount) || 0,
-                  status: item.status || 'Unknown',
-                  cancelReason: item.cancelReason || '',
+                  status: item.status || 'Pending',
+                  refundReceiptNumber: item.refundReceiptNumber || [],
                   installmentId: item._id,
                 };
               }
@@ -1080,6 +1098,7 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
               fineAmount: group.fineAmount || 0,
               excessAmount: group.excessAmount || 0,
               status: group.status,
+              refundReceiptNumber: group.refundReceiptNumber || [],
               cancelReason: group.cancelReason || '',
               installmentId: group.installmentId,
               installments: [
@@ -1110,7 +1129,7 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                 collectorName: group.collectorName,
                 paymentMode: group.paymentMode,
                 status: group.status,
-                cancelReason: group.cancelReason || '-',
+                refundReceiptNumber: group.refundReceiptNumber || [],
                 receiptData: receiptData(receiptNumber, group),
               };
             }).filter(Boolean);
@@ -1149,7 +1168,6 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                   <th>Collector Name</th>
                   <th>Payment Mode</th>
                   <th>Status</th>
-                  <th>Cancel Reason</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -1163,33 +1181,63 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                       <td>{row.paymentMode}</td>
                       <td>
                         <span
-                          className={`badge bg-${
-                            row.status === 'Paid'
+                          className={`badge bg-${getLatestStatus(row.status) === 'Paid'
                               ? 'success'
-                              : row.status === 'Cancelled'
-                              ? 'danger'
-                              : 'warning'
-                          }`}
+                              : getLatestStatus(row.status) === 'Cancelled' || getLatestStatus(row.status) === 'Cheque Return' 
+                              || getLatestStatus(row.status) === 'Refund'
+                                ? 'danger'
+                                : 'warning'
+                            }`}
                         >
-                          {row.status}
+                          {getLatestStatus(row.status)}
                         </span>
                       </td>
-                      <td>{row.cancelReason}</td>
                       <td>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-info ms-2"
-                          onClick={() => handleViewReceipt(row.receiptData)}
-                          aria-label={`View details for receipt ${row.receiptNumber}`}
-                        >
-                          <FaEye />
-                        </button>
+                        <div className="dropdown">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-info"
+                            onClick={() => toggleDropdown(row.receiptNumber)}
+                            aria-label={`View options for receipt ${row.receiptNumber}`}
+                          >
+                            <FaEye />
+                          </button>
+                          {openDropdownId === row.receiptNumber && (
+                            <div
+                              className="dropdown-menu dropdown-menu-end show"
+                              style={{ position: 'absolute', zIndex: 1000 }}
+                            >
+                              <button
+                                className="dropdown-item"
+                                onClick={() => {
+                                  handleViewReceipt(row.receiptData);
+                                  setOpenDropdownId(null);
+                                }}
+                              >
+                                View Receipt {row.receiptNumber}
+                              </button>
+                              {row.refundReceiptNumber?.length > 0 &&
+                                row.refundReceiptNumber.map((crnNumber, idx) => (
+                                  <button
+                                    key={idx}
+                                    className="dropdown-item"
+                                    onClick={() => {
+                                      handleViewCRNReceipt(crnNumber);
+                                      setOpenDropdownId(null);
+                                    }}
+                                  >
+                                    View CRN {crnNumber}
+                                  </button>
+                                ))}
+                            </div>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="text-center">
+                    <td colSpan="6" className="text-center">
                       {rows[0]?.message || 'No receipt data available'}
                     </td>
                   </tr>
@@ -1395,10 +1443,10 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                                     return installmentData?.some((item) => item.balanceAmount > 0);
                                   }).length || 0}
                                 </td>
-                                <td style={{ backgroundColor: 'white' }}>{yearData.totals?.totalFeesAmount || 0}</td>
-                                <td style={{ backgroundColor: 'white' }}>{yearData.totals?.totalConcession || 0}</td>
-                                <td style={{ backgroundColor: 'white' }}>{yearData.totals?.totalPaidAmount || 0}</td>
-                                <td style={{ backgroundColor: 'white' }}>{yearData.totals?.totalRemainingAmount || 0}</td>
+                                <td style={{ backgroundColor: 'white' }}>{yearData.totals?.totalFeesAmount.toFixed(2) || 0}</td>
+                                <td style={{ backgroundColor: 'white' }}>{yearData.totals?.totalConcession.toFixed(2) || 0}</td>
+                                <td style={{ backgroundColor: 'white' }}>{yearData.totals?.totalPaidAmount.toFixed(2) || 0}</td>
+                                <td style={{ backgroundColor: 'white' }}>{yearData.totals?.totalRemainingAmount.toFixed(2) || 0}</td>
                               </tr>
                             );
                           })
@@ -1486,51 +1534,51 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                                     (item) => item.installmentName === installmentName
                                   );
 
-                               const totals = installmentData.reduce(
-  (acc, item, index) => {
-    const concessionItem = year.concession?.concessionDetails?.find(
-      (cd) => cd.installmentName === item.installmentName && cd.feesType === item.feesTypeId._id
-    );
-    const concessionAmount = Number(concessionItem?.concessionAmount || 0);
-    const fineAmount = index === 0 ? Number(item.fineAmount || 0) : 0;
-    const payableAmount = Number(item.amount) - concessionAmount;
-    const paidKey = `${year.academicYear}-${installmentName}-${item.feesTypeId._id}`;
-    const finePaidKey = `${year.academicYear}-${installmentName}-fine`;
-    const excessPaidKey = `${year.academicYear}-${installmentName}-excess`;
-    const action = actionSelections[`${year.academicYear}-${installmentName}`];
-    let currentPaidAmount;
-    if (action === 'Full Fees') {
-      currentPaidAmount = Number(item.balanceAmount) || 0;
-    } else {
-      currentPaidAmount = paidAmounts[paidKey] !== undefined ? Number(paidAmounts[paidKey] || 0) : 0;
-    }
-    const finePaidAmount = index === 0 && paidAmounts[finePaidKey] !== undefined ? Number(paidAmounts[finePaidKey] || 0) : 0;
-    const excessPaidAmount = index === 0 && paidAmounts[excessPaidKey] !== undefined ? Number(paidAmounts[excessPaidKey] || 0) : 0;
-    const balance = Number(item.balanceAmount) || 0;
-    const amountPaid = Number(item.amount) - concessionAmount - balance;
+                                  const totals = installmentData.reduce(
+                                    (acc, item, index) => {
+                                      const concessionItem = year.concession?.concessionDetails?.find(
+                                        (cd) => cd.installmentName === item.installmentName && cd.feesType === item.feesTypeId._id
+                                      );
+                                      const concessionAmount = Number(concessionItem?.concessionAmount || 0);
+                                      const fineAmount = index === 0 ? Number(item.fineAmount || 0) : 0;
+                                      const payableAmount = Number(item.amount) - concessionAmount;
+                                      const paidKey = `${year.academicYear}-${installmentName}-${item.feesTypeId._id}`;
+                                      const finePaidKey = `${year.academicYear}-${installmentName}-fine`;
+                                      const excessPaidKey = `${year.academicYear}-${installmentName}-excess`;
+                                      const action = actionSelections[`${year.academicYear}-${installmentName}`];
+                                      let currentPaidAmount;
+                                      if (action === 'Full Fees') {
+                                        currentPaidAmount = Number(item.balanceAmount) || 0;
+                                      } else {
+                                        currentPaidAmount = paidAmounts[paidKey] !== undefined ? Number(paidAmounts[paidKey] || 0) : 0;
+                                      }
+                                      const finePaidAmount = index === 0 && paidAmounts[finePaidKey] !== undefined ? Number(paidAmounts[finePaidKey] || 0) : 0;
+                                      const excessPaidAmount = index === 0 && paidAmounts[excessPaidKey] !== undefined ? Number(paidAmounts[excessPaidKey] || 0) : 0;
+                                      const balance = Number(item.balanceAmount) || 0;
+                                      const amountPaid = Number(item.amount) - concessionAmount - balance;
 
-    return {
-      totalFeesAmount: acc.totalFeesAmount + (Number(item.amount) || 0),
-      totalFine: acc.totalFine + fineAmount,
-      totalConcession: acc.totalConcession + concessionAmount,
-      totalPayable: acc.totalPayable + payableAmount,
-      totalPaid: acc.totalPaid + currentPaidAmount + finePaidAmount + excessPaidAmount,
-      totalBalance: acc.totalBalance + balance,
-      totalPaidAmount: acc.totalPaidAmount + amountPaid,
-      excessPaidAmount: acc.excessPaidAmount + excessPaidAmount,
-    };
-  },
-  {
-    totalFeesAmount: 0,
-    totalFine: 0,
-    totalConcession: 0,
-    totalPayable: 0,
-    totalPaid: 0,
-    totalBalance: 0,
-    totalPaidAmount: 0,
-    excessPaidAmount: 0,
-  }
-);
+                                      return {
+                                        totalFeesAmount: acc.totalFeesAmount + (Number(item.amount) || 0),
+                                        totalFine: acc.totalFine + fineAmount,
+                                        totalConcession: acc.totalConcession + concessionAmount,
+                                        totalPayable: acc.totalPayable + payableAmount,
+                                        totalPaid: acc.totalPaid + currentPaidAmount + finePaidAmount + excessPaidAmount,
+                                        totalBalance: acc.totalBalance + balance,
+                                        totalPaidAmount: acc.totalPaidAmount + amountPaid,
+                                        excessPaidAmount: acc.excessPaidAmount + excessPaidAmount,
+                                      };
+                                    },
+                                    {
+                                      totalFeesAmount: 0,
+                                      totalFine: 0,
+                                      totalConcession: 0,
+                                      totalPayable: 0,
+                                      totalPaid: 0,
+                                      totalBalance: 0,
+                                      totalPaidAmount: 0,
+                                      excessPaidAmount: 0,
+                                    }
+                                  );
 
                                   const isInstallmentSelected = selectedInstallments[year.academicYear]?.includes(installmentName);
 
@@ -1561,12 +1609,12 @@ const toggleReceiptsTable = async (academicYear, installmentName) => {
                                   <td style={{ position: 'sticky', left: '60px', zIndex: 1, backgroundColor: 'white' }}>{formatAcademicYear(academicYear)}</td>
                                   <td style={{ position: 'sticky', left: '210px', zIndex: 1, backgroundColor: 'white' }}>{installmentName}</td>
                                   <td style={{ position: 'sticky', left: '370px', zIndex: 1, backgroundColor: 'white' }}>{dueDate.toLocaleDateString()}</td>
-                                  <td><b>{totals.totalFeesAmount || 0}</b></td>
-                                  <td><b>{totals.totalConcession || 0}</b></td>
-                                  <td><b>{totals.totalPayable || 0}</b></td>
-                                  <td><b>{totals.totalPaidAmount || 0}</b></td>
-                                  <td><b>{totals.totalBalance || 0}</b></td>
-                                  <td><b>{totals.totalPaid || 0}</b></td>
+                                  <td><b>{totals.totalFeesAmount.toFixed(2) || 0}</b></td>
+                                  <td><b>{totals.totalConcession.toFixed(2) || 0}</b></td>
+                                  <td><b>{totals.totalPayable.toFixed(2) || 0}</b></td>
+                                  <td><b>{totals.totalPaidAmount.toFixed(2) || 0}</b></td>
+                                  <td><b>{totals.totalBalance.toFixed(2) || 0}</b></td>
+                                  <td><b>{totals.totalPaid.toFixed(2) || 0}</b></td>
                                   {totals.totalBalance > 0 ? (
                                     <td>
                                       <select

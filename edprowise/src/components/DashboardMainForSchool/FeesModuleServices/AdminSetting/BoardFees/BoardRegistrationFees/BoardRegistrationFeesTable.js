@@ -206,7 +206,7 @@ const BoardRegistrationFeesList = () => {
                         </td>
                         <td>{classMap[fees.classId] || "N/A"}</td>
                         <td>{fees.sectionIds?.map(id => sectionMap[id] || "N/A").join(", ") || "N/A"}</td>
-                        <td>₹{fees.amount || 0}</td>
+                        <td>₹{fees.amount.toFixed(2) || 0}</td>
                         <td>
                           <div className="d-flex gap-2">
                             <button

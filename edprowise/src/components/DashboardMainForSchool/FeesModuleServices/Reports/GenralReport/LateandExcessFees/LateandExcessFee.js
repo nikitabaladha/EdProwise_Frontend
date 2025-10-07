@@ -46,7 +46,7 @@ const LateandExcessFee = () => {
   const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date','Academic Year','Class & Section', 'Installment','Payment Mode',];
+  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Payment Mode'];
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -392,7 +392,7 @@ const LateandExcessFee = () => {
       acc.totalLateFees += row.lateFees || 0;
       acc.totalPaidFine += row.paidFine || 0;
       acc.totalExcessFees += row.excessFees || 0;
-      acc.total += (row.lateFees || 0) + (row.paidFine || 0) + (row.excessFees || 0);
+      acc.total += (row.lateFees || 0)  + (row.excessFees || 0);
       return acc;
     },
     { totalLateFees: 0, totalPaidFine: 0, totalExcessFees: 0, total: 0 }
@@ -475,8 +475,12 @@ const LateandExcessFee = () => {
       return formatDate(record[fieldId]) || '-';
     } else if (fieldId === 'academicYear') {
       return formatAcademicYear(record[fieldId]) || '-';
+    } else if (fieldId === 'paidFine' || fieldId === 'excessFees') {
+      const value = parseFloat(record[fieldId] || 0);
+      return value === 0 ? '0.00' : value.toFixed(2);
     } else if (fieldId === 'total') {
-      return (record.lateFees || 0) + (record.paidFine || 0) + (record.excessFees || 0);
+      const value = (parseFloat(record.lateFees || 0)  + parseFloat(record.excessFees || 0));
+      return value === 0 ? '0.00' : value.toFixed(2);
     } else {
       return record[fieldId] !== undefined ? record[fieldId] : '-';
     }
@@ -550,7 +554,12 @@ const LateandExcessFee = () => {
                                   tableFields,
                                   headerMapping,
                                   getFieldValue,
-                                  totals,
+                                  {
+                                    totalLateFees: totals.totalLateFees.toFixed(2),
+                                    totalPaidFine: totals.totalPaidFine.toFixed(2),
+                                    totalExcessFees: totals.totalExcessFees.toFixed(2),
+                                    total: totals.total.toFixed(2),
+                                  },
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
@@ -577,7 +586,12 @@ const LateandExcessFee = () => {
                                   tableFields,
                                   headerMapping,
                                   getFieldValue,
-                                  totals,
+                                  {
+                                    totalLateFees: totals.totalLateFees.toFixed(2),
+                                    totalPaidFine: totals.totalPaidFine.toFixed(2),
+                                    totalExcessFees: totals.totalExcessFees.toFixed(2),
+                                    total: totals.total.toFixed(2),
+                                  },
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
@@ -814,13 +828,13 @@ const LateandExcessFee = () => {
                               {record.receiptNo || '-'}
                             </td>
                             <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                              {record.paidFine || 0}
+                              {getFieldValue(record, { id: 'paidFine' })}
                             </td>
                             <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                              {record.excessFees || 0}
+                              {getFieldValue(record, { id: 'excessFees' })}
                             </td>
                             <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                              {(record.lateFees || 0) + (record.paidFine || 0) + (record.excessFees || 0)}
+                              {getFieldValue(record, { id: 'total' })}
                             </td>
                           </tr>
                         ))}
@@ -831,13 +845,13 @@ const LateandExcessFee = () => {
                             <strong>Total</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalPaidFine}</strong>
+                            <strong>{totals.totalPaidFine.toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalExcessFees}</strong>
+                            <strong>{totals.totalExcessFees.toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.total}</strong>
+                            <strong>{totals.total.toFixed(2)}</strong>
                           </td>
                         </tr>
                       </tfoot>

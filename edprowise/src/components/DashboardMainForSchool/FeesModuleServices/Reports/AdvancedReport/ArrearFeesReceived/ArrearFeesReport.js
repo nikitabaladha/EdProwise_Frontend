@@ -176,7 +176,18 @@ const ArrearFeesReceivedReport = () => {
           console.warn(`No data found for year ${years[index]}`);
           return [];
         }
-        return res.data.data;
+        return res.data.data.map(item => ({
+          ...item,
+          totalDue: Number(item.totalDue || 0).toFixed(2),
+          totalPaid: Number(item.totalPaid || 0).toFixed(2),
+          totalConcession: Number(item.totalConcession || 0).toFixed(2),
+          feeTypes: Object.fromEntries(
+            Object.entries(item.feeTypes || {}).map(([type, value]) => [
+              type,
+              { ...value, totalPaid: Number(value.totalPaid || 0).toFixed(2) }
+            ])
+          )
+        }));
       });
 
       const classSectionMapping = {};
@@ -356,16 +367,21 @@ const ArrearFeesReceivedReport = () => {
     (acc, row) => {
       feeTypes.forEach((type) => {
         if (row.feeTypes[type]) {
-          acc[type] = (acc[type] || 0) + (row.feeTypes[type].totalPaid || 0);
+          acc[type] = (Number(acc[type]) || 0) + Number(row.feeTypes[type].totalPaid || 0);
         }
       });
-      acc.totalDue = (acc.totalDue || 0) + (row.totalDue || 0);
-      acc.totalPaid = (acc.totalPaid || 0) + (row.totalPaid || 0);
-      acc.totalConcession = (acc.totalConcession || 0) + (row.totalConcession || 0);
+      acc.totalDue = (Number(acc.totalDue) || 0) + Number(row.totalDue || 0);
+      acc.totalPaid = (Number(acc.totalPaid) || 0) + Number(row.totalPaid || 0);
+      acc.totalConcession = (Number(acc.totalConcession) || 0) + Number(row.totalConcession || 0);
       return acc;
     },
     { totalDue: 0, totalPaid: 0, totalConcession: 0 }
   );
+
+  // Format totals to two decimal places
+  Object.keys(totals).forEach((key) => {
+    totals[key] = Number(totals[key] || 0).toFixed(2);
+  });
 
   const headerMapping = {
     paymentDate: 'Date of Collection',
@@ -404,9 +420,9 @@ const ArrearFeesReceivedReport = () => {
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
     if (feeTypes.includes(fieldId)) {
-      return record.feeTypes[fieldId]?.totalPaid || 0;
+      return record.feeTypes[fieldId]?.totalPaid || '0.00';
     } else if (fieldId === 'totalDue' || fieldId === 'totalPaid' || fieldId === 'totalConcession') {
-      return record[fieldId] || 0;
+      return record[fieldId] || '0.00';
     } else if (fieldId === 'academicYear') {
       return formatAcademicYear(record[fieldId]) || '-';
     }
@@ -777,17 +793,17 @@ const ArrearFeesReceivedReport = () => {
                           </td>
                           {feeTypes.map((type) => (
                             <td key={type} className="text-center border border-secondary p-2">
-                              <strong>{totals[type] || 0}</strong>
+                              <strong>{totals[type] || '0.00'}</strong>
                             </td>
                           ))}
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalDue || 0}</strong>
+                            <strong>{totals.totalDue || '0.00'}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalConcession || 0}</strong>
+                            <strong>{totals.totalConcession || '0.00'}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalPaid || 0}</strong>
+                            <strong>{totals.totalPaid || '0.00'}</strong>
                           </td>
                         </tr>
                       </tfoot>

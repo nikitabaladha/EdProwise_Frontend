@@ -70,7 +70,7 @@ const StudentAdmissionProfile = () => {
         }
 
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.data) ? response.data.data : [];
+          const studentArray = Array.isArray(response.data.forms) ? response.data.forms : [];
           setStudentData(studentArray.sort((a, b) => new Date(b.createdAt || b.paymentDate) - new Date(a.createdAt || a.paymentDate)));
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -230,7 +230,7 @@ const StudentAdmissionProfile = () => {
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center gap-1">
               <h4 className="card-title flex-grow-1">
-                Admission List
+                Student List
               </h4>
               <div className="d-none d-md-block">
                 <input

@@ -391,9 +391,10 @@ const FeesRefundReportStudentWise = () => {
     if (fieldId === 'className') return request.className || '-';
     if (fieldId === 'sectionName') return request.sectionName || '-';
     if (fieldId === 'refundType') return request.refundType || '-';
-    if (fieldId === 'refundAmount') return request.refundAmount || 0;
-    if (fieldId === 'paidAmount') return request.paidAmount || 0;
-    if (fieldId === 'balance') return request.balance || 0;
+    if (fieldId === 'refundAmount' || fieldId === 'paidAmount' || fieldId === 'balance') {
+      const value = parseFloat(request[fieldId] || 0);
+      return value === 0 ? '0.00' : value.toFixed(2);
+    }
     return request[fieldId] !== undefined && request[fieldId] !== 0 ? request[fieldId] : '-';
   };
 
@@ -479,7 +480,18 @@ const FeesRefundReportStudentWise = () => {
                               }
                               setIsExporting(true);
                               try {
-                                await exportToExcel(filteredData, tableFields, {}, getFieldValue, school);
+                                await exportToExcel(
+                                  filteredData,
+                                  tableFields,
+                                  {},
+                                  getFieldValue,
+                                  {
+                                    refundAmount: totals.refundAmount.toFixed(2),
+                                    paidAmount: totals.paidAmount.toFixed(2),
+                                    balance: totals.balance.toFixed(2),
+                                  },
+                                  school
+                                );
                                 toast.success('Exported to Excel successfully');
                               } catch (err) {
                                 console.error('Excel export failed:', err);
@@ -502,7 +514,19 @@ const FeesRefundReportStudentWise = () => {
                               }
                               setIsExporting(true);
                               try {
-                                await exportToPDF(filteredData, tableFields, {}, getFieldValue, school, logoSrc);
+                                await exportToPDF(
+                                  filteredData,
+                                  tableFields,
+                                  {},
+                                  getFieldValue,
+                                  {
+                                    refundAmount: totals.refundAmount.toFixed(2),
+                                    paidAmount: totals.paidAmount.toFixed(2),
+                                    balance: totals.balance.toFixed(2),
+                                  },
+                                  school,
+                                  logoSrc
+                                );
                                 toast.success('Exported to PDF successfully');
                               } catch (err) {
                                 console.error('PDF export failed:', err);
@@ -555,7 +579,7 @@ const FeesRefundReportStudentWise = () => {
                           </div>
                         )}
 
-                        {activeTab === 'Refund Type' && (
+                        {activeTab === 'Fees Type' && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
@@ -688,13 +712,13 @@ const FeesRefundReportStudentWise = () => {
                             <strong>Total</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.refundAmount}</strong>
+                            <strong>{totals.refundAmount.toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.paidAmount}</strong>
+                            <strong>{totals.paidAmount.toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.balance}</strong>
+                            <strong>{totals.balance.toFixed(2)}</strong>
                           </td>
                         </tr>
                       </tfoot>

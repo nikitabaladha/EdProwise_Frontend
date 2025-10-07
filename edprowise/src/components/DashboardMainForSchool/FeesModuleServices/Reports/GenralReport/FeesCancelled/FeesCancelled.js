@@ -1,3 +1,932 @@
+// import React, { useState, useEffect, useRef } from 'react';
+// import { FaFilter, FaDownload } from 'react-icons/fa';
+// import { toast } from 'react-toastify';
+// import CreatableSelect from 'react-select/creatable';
+// import Select from 'react-select';
+// import { Link } from 'react-router-dom';
+// import getAPI from '../../../../../../api/getAPI';
+// import { exportToExcel, exportToPDF } from './ExportModalFeesCancelled';
+// import { fetchSchoolData } from '../../../PdfUtlisReport';
+
+// const FeesCancelled = () => {
+//   const [showFilterPanel, setShowFilterPanel] = useState(false);
+//   const [showExportDropdown, setShowExportDropdown] = useState(false);
+//   const [activeTab, setActiveTab] = useState('Date');
+//   const [searchTerm, setSearchTerm] = useState('');
+//   const [schoolId, setSchoolId] = useState('');
+//   const [school, setSchool] = useState(null);
+//   const [logoSrc, setLogoSrc] = useState('');
+//   const [feeData, setFeeData] = useState([]);
+//   const [feeTypes, setFeeTypes] = useState([]);
+//   const [classSectionMap, setClassSectionMap] = useState({});
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [loadingYears, setLoadingYears] = useState(false);
+//   const [classOptions, setClassOptions] = useState([]);
+//   const [sectionOptions, setSectionOptions] = useState([]);
+//   const [academicYearOptions, setAcademicYearOptions] = useState([]);
+//   const [academicYears, setAcademicYears] = useState([]);
+//   const [installmentOptions, setInstallmentOptions] = useState([]);
+//   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
+//   const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
+//   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
+//   const [selectedClasses, setSelectedClasses] = useState([]);
+//   const [selectedSections, setSelectedSections] = useState([]);
+//   const [selectedYears, setSelectedYears] = useState([]);
+//   const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
+//   const [selectedInstallments, setSelectedInstallments] = useState([]);
+//   const [startDate, setStartDate] = useState('');
+//   const [endDate, setEndDate] = useState('');
+//   const [isExporting, setIsExporting] = useState(false);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [rowsPerPage, setRowsPerPage] = useState('all');
+//   const dropdownRef = useRef(null);
+
+//   const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Type of Fees', 'Payment Mode'];
+
+//   const pageShowOptions = [
+//     { value: 'all', label: 'All' },
+//     { value: 10, label: '10' },
+//     { value: 15, label: '15' },
+//     { value: 20, label: '20' },
+//     { value: 30, label: '30' },
+//   ];
+
+//   const formatAcademicYear = (year) => {
+//     if (!year) return '-';
+//     const [startYear, endYear] = year.split('-');
+//     return `${startYear}-${endYear?.slice(-2) || ''}`;
+//   };
+
+//   const formatDate = (dateStr) => {
+//     if (!dateStr || dateStr === '-') return '-';
+//     const date = new Date(dateStr.split('-').reverse().join('-'));
+//     if (isNaN(date)) return dateStr;
+//     return date.toLocaleDateString('en-GB').split('/').join('/');
+//   };
+
+//   useEffect(() => {
+//     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+//     if (!userDetails?.schoolId) {
+//       toast.error('School ID not found. Please log in again.');
+//       return;
+//     }
+//     setSchoolId(userDetails.schoolId);
+//   }, []);
+
+//   useEffect(() => {
+//     const loadSchoolData = async () => {
+//       try {
+//         const { school, logoSrc } = await fetchSchoolData(schoolId);
+//         setSchool(school);
+//         setLogoSrc(logoSrc);
+//       } catch (error) {
+//         console.error('Failed to fetch school data:', error);
+//       }
+//     };
+//     if (schoolId) {
+//       loadSchoolData();
+//     }
+//   }, [schoolId]);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//         setShowExportDropdown(false);
+//       }
+//     };
+//     document.addEventListener('mousedown', handleClickOutside);
+//     return () => {
+//       document.removeEventListener('mousedown', handleClickOutside);
+//     };
+//   }, []);
+
+//   useEffect(() => {
+//     const fetchAcademicYears = async () => {
+//       try {
+//         setLoadingYears(true);
+//         const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+//         if (!response.hasError && response.data?.data) {
+//           const years = response.data.data
+//             .map((item) => item.academicYear)
+//             .filter(Boolean)
+//             .sort((a, b) => a.localeCompare(b));
+//           setAcademicYears(years);
+//           setAcademicYearOptions(
+//             years.map((year) => ({
+//               value: year,
+//               label: formatAcademicYear(year),
+//             }))
+//           );
+//           if (!selectedAcademicYear && years.length > 0) {
+//             const latestYear = years[years.length - 1];
+//             setSelectedAcademicYear(latestYear);
+//             localStorage.setItem('selectedAcademicYear', latestYear);
+//             setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
+//           }
+//         } else {
+//           toast.error('No academic years found.');
+//         }
+//       } catch (err) {
+//         toast.error('Error fetching academic years.');
+//         console.error(err);
+//       } finally {
+//         setLoadingYears(false);
+//       }
+//     };
+//     if (schoolId) {
+//       fetchAcademicYears();
+//     }
+//   }, [schoolId]);
+
+//   useEffect(() => {
+//     if (Object.keys(classSectionMap).length === 0) {
+//       const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
+//       setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
+//       if (selectedClasses.length === 0) {
+//         setSelectedSections([]);
+//       }
+//       return;
+//     }
+
+//     let validSections = new Set();
+//     if (selectedClasses.length === 0) {
+//       Object.values(classSectionMap).forEach(sectionSet => {
+//         sectionSet.forEach(section => validSections.add(section));
+//       });
+//       setSelectedSections([]);
+//     } else {
+//       selectedClasses.forEach(cls => {
+//         const sectionsForClass = classSectionMap[cls.value] || new Set();
+//         sectionsForClass.forEach(section => validSections.add(section));
+//       });
+//     }
+
+//     const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
+//     setSectionOptions(newSectionOptions);
+
+//     const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
+//     const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
+//     if (updatedSelectedSections.length !== selectedSections.length) {
+//       setSelectedSections(updatedSelectedSections);
+//     }
+//   }, [selectedClasses, classSectionMap, feeData]);
+
+//   const fetchFeeData = async (years) => {
+//     setIsLoading(true);
+//     try {
+//       const classSectionMapping = {};
+//       const promises = years.map((year) =>
+//         getAPI(`/get-all-Fees-cancelled-report?schoolId=${schoolId}&academicYear=${year}${startDate ? `&startDate=${startDate}` : ''}${endDate ? `&endDate=${endDate}` : ''}`)
+//       );
+//       const responses = await Promise.all(promises);
+//       const unifiedData = responses.flatMap((res, index) => {
+//         if (!res?.data?.data) {
+//           console.warn(`No data found for year ${years[index]}`);
+//           return [];
+//         }
+//         return res.data.data.map((record) => ({
+//           ...record,
+//           academicYear: years[index],
+//           cancelledDate: formatDate(record.cancelledDate),
+//           className: record.class || '-',   
+//           sectionName: record.section || '-', 
+//         }));
+//       });
+
+//       unifiedData.forEach(record => {
+//         const className = record.className || '-';
+//         const sectionName = record.sectionName || '-';
+//         if (className !== '-' && sectionName !== '-') {
+//           if (!classSectionMapping[className]) {
+//             classSectionMapping[className] = new Set();
+//           }
+//           classSectionMapping[className].add(sectionName);
+//         }
+//       });
+
+//       const allFeeTypes = responses
+//         .flatMap((res) => res?.data?.feeTypes || [])
+//         .filter((type, index, self) => self.indexOf(type) === index)
+//         .sort();
+
+//       setClassSectionMap(classSectionMapping);
+//       setFeeTypes(allFeeTypes);
+//       setFeeData(unifiedData);
+
+//       const filterOptions = responses[0]?.data?.filterOptions || {};
+//       setClassOptions(filterOptions.classOptions || []);
+//       setSectionOptions(filterOptions.sectionOptions || []);
+//       setInstallmentOptions(filterOptions.installmentOptions || []);
+//       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+
+//       if (rowsPerPage === 'all' && unifiedData.length > 0) {
+//         setRowsPerPage(unifiedData.length);
+//       }
+//     } catch (error) {
+//       toast.error('Error fetching data: ' + error.message);
+//       setFeeData([]);
+//       setClassSectionMap({});
+//       setFeeTypes([]);
+//       setClassOptions([]);
+//       setSectionOptions([]);
+//       setInstallmentOptions([]);
+//       setPaymentModeOptions([]);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (!schoolId || !selectedAcademicYear) return;
+//     const yearsToFetch = selectedYears.length > 0
+//       ? selectedYears.map((year) => year.value)
+//       : [selectedAcademicYear];
+//     fetchFeeData(yearsToFetch);
+//   }, [schoolId, selectedAcademicYear, selectedYears, startDate, endDate]);
+
+//   const handleSelectChange = (selectedOptions, { name }) => {
+//     const selected = selectedOptions || [];
+//     if (name === 'academicYear') {
+//       setSelectedYears(selected);
+//       setCurrentPage(1);
+//     } else if (name === 'paymentMode') {
+//       setSelectedPaymentModes(selected);
+//       setCurrentPage(1);
+//     } else if (name === 'class') {
+//       setSelectedClasses(selected);
+//       setCurrentPage(1);
+//     } else if (name === 'section') {
+//       setSelectedSections(selected);
+//       setCurrentPage(1);
+//     } else if (name === 'feeType') {
+//       setSelectedFeeTypes(selected);
+//       setCurrentPage(1);
+//     } else if (name === 'installment') {
+//       setSelectedInstallments(selected);
+//       setCurrentPage(1);
+//     } else if (name === 'rowsPerPage') {
+//       if (selectedOptions?.value === 'all') {
+//         setRowsPerPage(feeData.length || 'all');
+//       } else {
+//         setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+//       }
+//       setCurrentPage(1);
+//     }
+//   };
+
+//   const applyFilters = () => {
+//     setShowFilterPanel(false);
+//     setCurrentPage(1);
+//     const yearsToFetch = selectedYears.length > 0
+//       ? selectedYears.map((year) => year.value)
+//       : [selectedAcademicYear];
+//     fetchFeeData(yearsToFetch);
+//   };
+
+//   const resetFilters = () => {
+//     setSelectedYears([]);
+//     setSelectedPaymentModes([]);
+//     setSelectedClasses([]);
+//     setSelectedSections([]);
+//     setSelectedFeeTypes([]);
+//     setSelectedInstallments([]);
+//     setStartDate('');
+//     setEndDate('');
+//     setSearchTerm('');
+//     setCurrentPage(1);
+//     setRowsPerPage('all');
+//     setShowFilterPanel(false);
+//     fetchFeeData([selectedAcademicYear]);
+//   };
+
+//   const toggleFilter = () => {
+//     setShowFilterPanel(!showFilterPanel);
+//     setShowExportDropdown(false);
+//   };
+
+//   const toggleExportDropdown = () => {
+//     setShowExportDropdown(!showExportDropdown);
+//     setShowFilterPanel(false);
+//   };
+
+//   const filteredData = feeData.filter((row) => {
+//     const matchesSearchTerm = searchTerm
+//       ? String(row.cancelledDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+//         String(row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+//         String(row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+//         String(row.paymentMode || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+//         String(row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+//         String(row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+//         String(row.cancelReason || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+//       : true;
+
+//     const matchesPaymentMode =
+//       selectedPaymentModes.length === 0 ||
+//       selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
+
+//     const matchesYear =
+//       selectedYears.length === 0 ||
+//       selectedYears.some((year) => row.academicYear === year.value);
+
+//     const matchesDate =
+//       (!startDate && !endDate) ||
+//       (() => {
+//         if (!row.cancelledDate || row.cancelledDate === '-') return false;
+//         const recordDate = new Date(row.cancelledDate.split('/').reverse().join('-'));
+//         const start = startDate ? new Date(startDate) : null;
+//         const end = endDate ? new Date(endDate) : null;
+//         return (!start || recordDate >= start) && (!end || recordDate <= end);
+//       })();
+
+//     const matchesFeeType =
+//       selectedFeeTypes.length === 0 ||
+//       selectedFeeTypes.some((type) => (row.feeTypes[type.value] || 0) !== 0);
+
+//     const matchesClass =
+//       selectedClasses.length === 0 ||
+//       selectedClasses.some((cls) => row.className === cls.value);
+
+//     const matchesSection =
+//       selectedSections.length === 0 ||
+//       selectedSections.some((sec) => row.sectionName === sec.value);
+
+//     const matchesInstallment =
+//       selectedInstallments.length === 0 ||
+//       selectedInstallments.some((inst) => row.installmentName === inst.value);
+
+//     return (
+//       matchesSearchTerm &&
+//       matchesPaymentMode &&
+//       matchesYear &&
+//       matchesDate &&
+//       matchesFeeType &&
+//       matchesClass &&
+//       matchesSection &&
+//       matchesInstallment
+//     );
+//   });
+
+//   const totals = filteredData.reduce(
+//     (acc, row) => {
+//       feeTypes.forEach((type) => {
+//         acc[type] = (acc[type] || 0) + (row.feeTypes[type] || 0);
+//       });
+//       acc.totalPaid = (acc.totalPaid || 0) + (row.totalPaid || 0);
+//       return acc;
+//     },
+//     { totalPaid: 0 }
+//   );
+
+//   const headerMapping = {
+//     cancelledDate: 'Date',
+//     admissionNumber: 'Admission No.',
+//     studentName: 'Name',
+//     className: 'Class',
+//     sectionName: 'Section',
+//     installmentName: 'Installment',
+//     paymentMode: 'Payment Mode',
+//     receiptNumber: 'Receipt No.',
+//     ...Object.fromEntries(feeTypes.map((type) => [type, type])),
+//     totalPaid: 'Fees Paid',
+//     cancelReason: 'Cancel Reason',
+//   };
+
+//   const tableFields = Object.keys(headerMapping).map((key) => ({
+//     id: key,
+//     label: headerMapping[key],
+//   }));
+
+//   const getFieldValue = (record, field) => {
+//     const fieldId = field.id;
+//     if (
+//       fieldId === 'cancelledDate' ||
+//       fieldId === 'admissionNumber' ||
+//       fieldId === 'studentName' ||
+//       fieldId === 'className' ||
+//       fieldId === 'sectionName' ||
+//       fieldId === 'installmentName' ||
+//       fieldId === 'paymentMode' ||
+//       fieldId === 'receiptNumber' ||
+//       fieldId === 'cancelReason'
+//     ) {
+//       return record[fieldId] || '-';
+//     } else if (fieldId === 'totalPaid' || feeTypes.includes(fieldId)) {
+//       const value = parseFloat(record[fieldId] || record.feeTypes[fieldId] || 0);
+//       return value === 0 ? '0.00' : value.toFixed(2);
+//     }
+//     return '-';
+//   };
+
+//   const groupedByDate = filteredData.reduce((acc, record) => {
+//     const date = record.cancelledDate || '-';
+//     if (!acc[date]) acc[date] = [];
+//     acc[date].push(record);
+//     return acc;
+//   }, {});
+
+//   const totalRecords = Object.keys(groupedByDate).reduce((sum, date) => sum + groupedByDate[date].length, 0);
+//   const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
+
+//   const maxPagesToShow = 5;
+//   const pagesToShow = [];
+//   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+//   const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+//   for (let i = startPage; i <= endPage; i++) {
+//     pagesToShow.push(i);
+//   }
+
+//   const paginatedData = () => {
+//     const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+//       if (a === '-' || b === '-') return 0;
+//       return new Date(a.split('/').reverse().join('-')).getTime() - new Date(b.split('/').reverse().join('-')).getTime();
+//     });
+//     let currentCount = 0;
+//     const startIndex = rowsPerPage === 'all' ? 0 : (currentPage - 1) * rowsPerPage;
+//     const endIndex = rowsPerPage === 'all' ? totalRecords : startIndex + rowsPerPage;
+//     const paginated = [];
+
+//     for (const date of sortedDates) {
+//       const records = groupedByDate[date];
+//       for (const record of records) {
+//         if (currentCount >= startIndex && currentCount < endIndex) {
+//           paginated.push({ date, record });
+//         }
+//         currentCount++;
+//         if (currentCount >= endIndex) break;
+//       }
+//       if (currentCount >= endIndex) break;
+//     }
+
+//     return paginated;
+//   };
+
+//   const handlePageClick = (page) => {
+//     setCurrentPage(page);
+//   };
+
+//   const handlePreviousPage = () => {
+//     if (currentPage > 1) {
+//       setCurrentPage(currentPage - 1);
+//     }
+//   };
+
+//   const handleNextPage = () => {
+//     if (currentPage < totalPages) {
+//       setCurrentPage(currentPage + 1);
+//     }
+//   };
+
+//   return (
+//     <div className="container">
+//       <div className="row">
+//         <div className="col-md-12">
+//           <div className="card m-2">
+//             <div className="card-body">
+//               <div className="container">
+//                 <div className="row p-1 border border-dark" style={{ background: '#bfbfbf' }}>
+//                   <div className="col-md-5 col-12">
+//                     <input
+//                       type="text"
+//                       className="form-control border border-dark"
+//                       placeholder="Search by any field"
+//                       value={searchTerm}
+//                       onChange={(e) => {
+//                         setSearchTerm(e.target.value);
+//                         setCurrentPage(1);
+//                       }}
+//                     />
+//                   </div>
+//                   <div className="col-md-2"></div>
+//                   <div className="col-md-5 px-0 d-flex align-items-center justify-content-end">
+//                     <Select
+//                       isClearable
+//                       name="rowsPerPage"
+//                       placeholder="Show"
+//                       options={pageShowOptions}
+//                       value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length))}
+//                       onChange={(selected, action) => handleSelectChange(selected, action)}
+//                       className="email-select border border-dark me-lg-2"
+//                     />
+//                     <div
+//                       className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
+//                       style={{ cursor: 'pointer' }}
+//                       onClick={toggleFilter}
+//                     >
+//                       <FaFilter />
+//                     </div>
+//                     <div className="position-relative" ref={dropdownRef}>
+//                       <div
+//                         className="py-1 px-2 mr-2 border border-dark finance-filter-icon"
+//                         style={{ cursor: 'pointer' }}
+//                         onClick={toggleExportDropdown}
+//                         title="Download"
+//                       >
+//                         <FaDownload />
+//                       </div>
+//                       {showExportDropdown && (
+//                         <div
+//                           className="position-absolute bg-white mx-2 border mr-2 mt-2 border-dark rounded shadow"
+//                           style={{
+//                             top: '100%',
+//                             right: 0,
+//                             zIndex: 1000,
+//                             minWidth: '150px',
+//                           }}
+//                         >
+//                           <button
+//                             className="btn btn-light w-100 text-left py-2 px-3"
+//                             disabled={isExporting}
+//                             onClick={async () => {
+//                               if (filteredData.length === 0) {
+//                                 toast.error('No data to export');
+//                                 return;
+//                               }
+//                               setIsExporting(true);
+//                               try {
+//                                 await exportToExcel(
+//                                   filteredData,
+//                                   tableFields,
+//                                   headerMapping,
+//                                   getFieldValue,
+//                                   {
+//                                     ...Object.fromEntries(feeTypes.map((type) => [type, (totals[type] || 0).toFixed(2)])),
+//                                     totalPaid: totals.totalPaid.toFixed(2),
+//                                   },
+//                                   formatAcademicYear,
+//                                   selectedYears.length > 0
+//                                     ? selectedYears.map((y) => y.value).join(',')
+//                                     : selectedAcademicYear
+//                                 );
+//                                 toast.success('Exported to Excel successfully');
+//                               } catch (err) {
+//                                 toast.error('Export to Excel failed.');
+//                                 console.error(err);
+//                               } finally {
+//                                 setIsExporting(false);
+//                                 setShowExportDropdown(false);
+//                               }
+//                             }}
+//                           >
+//                             {isExporting ? 'Exporting...' : 'Export to Excel'}
+//                           </button>
+//                           <button
+//                             className="btn btn-light w-100 text-left py-2 px-3"
+//                             disabled={isExporting}
+//                             onClick={async () => {
+//                               if (filteredData.length === 0) {
+//                                 toast.error('No data to export');
+//                                 return;
+//                               }
+//                               setIsExporting(true);
+//                               try {
+//                                 await exportToPDF(
+//                                   filteredData,
+//                                   tableFields,
+//                                   headerMapping,
+//                                   getFieldValue,
+//                                   {
+//                                     ...Object.fromEntries(feeTypes.map((type) => [type, (totals[type] || 0).toFixed(2)])),
+//                                     totalPaid: totals.totalPaid.toFixed(2),
+//                                   },
+//                                   formatAcademicYear,
+//                                   selectedYears.length > 0
+//                                     ? selectedYears.map((y) => y.value).join(',')
+//                                     : selectedAcademicYear,
+//                                   school,
+//                                   logoSrc
+//                                 );
+//                                 toast.success('Exported to PDF successfully');
+//                               } catch (err) {
+//                                 toast.error('Export to PDF failed.');
+//                                 console.error(err);
+//                               } finally {
+//                                 setIsExporting(false);
+//                                 setShowExportDropdown(false);
+//                               }
+//                             }}
+//                           >
+//                             {isExporting ? 'Exporting...' : 'Export to PDF'}
+//                           </button>
+//                         </div>
+//                       )}
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {showFilterPanel && (
+//                   <div className="row mt-1 border border-light rounded px-md-3 py-1">
+//                     <div className="col-12 p-2">
+//                       <ul className="nav nav-tabs mb-0 justify-content-center">
+//                         {tabs.map((tab) => (
+//                           <li className="nav-item" key={tab}>
+//                             <Link
+//                               className={`nav-link fw-bold ${activeTab === tab ? 'active' : ''}`}
+//                               onClick={() => setActiveTab(tab)}
+//                             >
+//                               {tab}
+//                             </Link>
+//                           </li>
+//                         ))}
+//                       </ul>
+
+//                       <div className="tab-content mt-2">
+//                         {activeTab === 'Date' && (
+//                           <div className="row d-lg-flex justify-content-center">
+//                             <div className="col-md-4">
+//                               <label className="form-label">Start Date</label>
+//                               <input
+//                                 type="date"
+//                                 className="form-control"
+//                                 value={startDate}
+//                                 onChange={(e) => {
+//                                   setStartDate(e.target.value);
+//                                   setCurrentPage(1);
+//                                 }}
+//                               />
+//                             </div>
+//                             <div className="col-md-4">
+//                               <label className="form-label">End Date</label>
+//                               <input
+//                                 type="date"
+//                                 className="form-control"
+//                                 value={endDate}
+//                                 onChange={(e) => {
+//                                   setEndDate(e.target.value);
+//                                   setCurrentPage(1);
+//                                 }}
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+
+//                         {activeTab === 'Payment Mode' && (
+//                           <div className="row d-lg-flex justify-content-center">
+//                             <div className="col-md-8">
+//                               <CreatableSelect
+//                                 isMulti
+//                                 name="paymentMode"
+//                                 options={paymentModeOptions}
+//                                 value={selectedPaymentModes}
+//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
+//                                 placeholder="Select Payment Modes"
+//                                 className="mt-2"
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+
+//                         {activeTab === 'Class & Section' && (
+//                           <div className="row d-flex justify-content-center">
+//                             <div className="col-md-4">
+//                               <CreatableSelect
+//                                 isMulti
+//                                 name="class"
+//                                 options={classOptions}
+//                                 value={selectedClasses}
+//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
+//                                 placeholder="Select Classes"
+//                                 className="mt-2"
+//                               />
+//                             </div>
+//                             <div className="col-md-4">
+//                               <CreatableSelect
+//                                 isMulti
+//                                 name="section"
+//                                 options={sectionOptions}
+//                                 value={selectedSections}
+//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
+//                                 placeholder="Select Sections"
+//                                 className="mt-2"
+//                                 isDisabled={selectedClasses.length === 0}
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+
+//                         {activeTab === 'Academic Year' && (
+//                           <div className="row d-lg-flex justify-content-center">
+//                             <div className="col-md-8">
+//                               <CreatableSelect
+//                                 isMulti
+//                                 name="academicYear"
+//                                 options={academicYearOptions}
+//                                 value={selectedYears}
+//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
+//                                 placeholder="Select Academic Years"
+//                                 className="mt-2"
+//                                 isLoading={loadingYears}
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+
+//                         {activeTab === 'Installment' && (
+//                           <div className="row d-lg-flex justify-content-center">
+//                             <div className="col-md-8">
+//                               <CreatableSelect
+//                                 isMulti
+//                                 name="installment"
+//                                 options={installmentOptions}
+//                                 value={selectedInstallments}
+//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
+//                                 placeholder="Select Installments"
+//                                 className="mt-2"
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+
+//                         {activeTab === 'Type of Fees' && (
+//                           <div className="row d-lg-flex justify-content-center">
+//                             <div className="col-md-8">
+//                               <CreatableSelect
+//                                 isMulti
+//                                 name="feeType"
+//                                 options={feeTypes.map((type) => ({ value: type, label: type }))}
+//                                 value={selectedFeeTypes}
+//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
+//                                 placeholder="Select Fee Types"
+//                                 className="mt-2"
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+//                       </div>
+
+//                       <div className="text-end mt-3">
+//                         <button className="btn btn-secondary me-2" onClick={resetFilters}>
+//                           Reset
+//                         </button>
+//                         <button className="btn btn-primary" onClick={applyFilters}>
+//                           Apply Filters
+//                         </button>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 )}
+//               </div>
+
+//               <div className="container">
+//                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
+//                   <h2 className="payroll-title text-center mb-0 flex-grow-1">Fees Cancelled Report</h2>
+//                 </div>
+//               </div>
+
+//               {isLoading || loadingYears ? (
+//                 <div className="text-center mt-3">
+//                   <div className="spinner-border" role="status">
+//                     <span className="visually-hidden">Loading...</span>
+//                   </div>
+//                   <p>Loading data...</p>
+//                 </div>
+//               ) : feeTypes.length > 0 ? (
+//                 <>
+//                   <div className="table-responsive pb-4 mt-3">
+//                     <table className="table text-dark border border-secondary mb-1">
+//                       <thead>
+//                         <tr className="payroll-table-header">
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">REG/ADM No.</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Name</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Class</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Section</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Installment</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Payment Mode</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Receipt No.</th>
+//                           {feeTypes.map((type) => (
+//                             <th key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
+//                               {type}
+//                             </th>
+//                           ))}
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Cancel Reason</th>
+//                         </tr>
+//                       </thead>
+//                       <tbody>
+//                         {paginatedData().length > 0 ? (
+//                           paginatedData().map(({ date, record }, index) => (
+//                             <tr key={`${record.admissionNumber}_${record.cancelledDate}_${record.receiptNumber}_${index}`}>
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {record.cancelledDate || '-'}
+//                               </td>
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {record.admissionNumber || '-'}
+//                               </td>
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {record.studentName || '-'}
+//                               </td>
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {record.className || '-'}
+//                               </td>
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {record.sectionName || '-'}
+//                               </td>
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {record.installmentName || '-'}
+//                               </td>
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {record.paymentMode || '-'}
+//                               </td>
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {record.receiptNumber || '-'}
+//                               </td>
+//                               {feeTypes.map((type) => (
+//                                 <td key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                   {getFieldValue(record, { id: type })}
+//                                 </td>
+//                               ))}
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {getFieldValue(record, { id: 'totalPaid' })}
+//                               </td>
+//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                                 {record.cancelReason || '-'}
+//                               </td>
+//                             </tr>
+//                           ))
+//                         ) : (
+//                           <tr>
+//                             <td colSpan={feeTypes.length + 9} className="text-center">
+//                               No data matches the selected filters for{' '}
+//                               {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
+//                                 formatAcademicYear(selectedAcademicYear)}.
+//                             </td>
+//                           </tr>
+//                         )}
+//                       </tbody>
+//                       <tfoot>
+//                         <tr className="payroll-table-footer">
+//                           <td colSpan={8} className="text-right border border-secondary p-2">
+//                             <strong>Total</strong>
+//                           </td>
+//                           {feeTypes.map((type) => (
+//                             <td key={type} className="text-center border border-secondary p-2">
+//                               <strong>{(totals[type] || 0).toFixed(2)}</strong>
+//                             </td>
+//                           ))}
+//                           <td className="text-center border border-secondary p-2">
+//                             <strong>{totals.totalPaid.toFixed(2)}</strong>
+//                           </td>
+//                           <td className="text-center border border-secondary p-2">
+//                           </td>
+//                         </tr>
+//                       </tfoot>
+//                     </table>
+//                   </div>
+//                   {totalRecords > 0 && rowsPerPage !== 'all' && (
+//                     <div className="card-footer border-top">
+//                       <nav aria-label="Page navigation example">
+//                         <ul className="pagination justify-content-end mb-0">
+//                           <li className="page-item">
+//                             <button
+//                               className="page-link"
+//                               onClick={handlePreviousPage}
+//                               disabled={currentPage === 1}
+//                             >
+//                               Previous
+//                             </button>
+//                           </li>
+//                           {pagesToShow.map((page) => (
+//                             <li
+//                               key={page}
+//                               className={`page-item ${currentPage === page ? 'active' : ''}`}
+//                             >
+//                               <button
+//                                 className={`page-link pagination-button ${currentPage === page ? 'active' : ''}`}
+//                                 onClick={() => handlePageClick(page)}
+//                               >
+//                                 {page}
+//                               </button>
+//                             </li>
+//                           ))}
+//                           <li className="page-item">
+//                             <button
+//                               className="page-link"
+//                               onClick={handleNextPage}
+//                               disabled={currentPage === totalPages}
+//                             >
+//                               Next
+//                             </button>
+//                           </li>
+//                         </ul>
+//                       </nav>
+//                     </div>
+//                   )}
+//                 </>
+//               ) : (
+//                 <div className="text-center mt-3">
+//                   <p>No fee types available.</p>
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default FeesCancelled;
 import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -59,7 +988,7 @@ const FeesCancelled = () => {
 
   const formatDate = (dateStr) => {
     if (!dateStr || dateStr === '-') return '-';
-    const date = new Date(dateStr.split('-').reverse().join('-'));
+    const date = new Date(dateStr);
     if (isNaN(date)) return dateStr;
     return date.toLocaleDateString('en-GB').split('/').join('/');
   };
@@ -184,11 +1113,35 @@ const FeesCancelled = () => {
           console.warn(`No data found for year ${years[index]}`);
           return [];
         }
-        return res.data.data.map((record) => ({
-          ...record,
-          academicYear: years[index],
-          cancelledDate: formatDate(record.cancelledDate),
-        }));
+        return res.data.data.map((record) => {
+          let feeTypes = {};
+          if (record.feeType && Array.isArray(record.feeType)) {
+            record.feeType.forEach((fee) => {
+              if (fee.feeType) {
+                feeTypes[fee.feeType] = fee.cancelledAmount || 0;
+              }
+            });
+          } else {
+            feeTypes[record.feeType] = record.cancelledAmount || 0;
+          }
+
+          return {
+            ...record,
+            academicYear: years[index],
+            cancelledDate: formatDate(record.cancelledDate),
+            className: record.class || '-',
+            sectionName: record.section || '-',
+            feeTypes,
+            originalFeeType: record.feeType,
+            totalPaid: record.cancelledAmount || 0,
+            admissionNumber: record.regAdmNo || '-',
+            studentName: record.name || '-',
+            paymentMode: record.paymentMode || '-',
+            receiptNumber: record.receiptNo || '-',
+            cancelReason: record.cancelReason || '-',
+            installmentName: record.installment || '-',
+          };
+        });
       });
 
       unifiedData.forEach(record => {
@@ -202,10 +1155,12 @@ const FeesCancelled = () => {
         }
       });
 
-      const allFeeTypes = responses
-        .flatMap((res) => res?.data?.feeTypes || [])
-        .filter((type, index, self) => self.indexOf(type) === index)
-        .sort();
+      const allFeeTypes = [
+        ...new Set([
+          ...(responses.flatMap(res => res?.data?.filterOptions?.feeTypeOptions?.map(opt => opt.value) || [])),
+          ...unifiedData.flatMap(record => Object.keys(record.feeTypes).filter(Boolean)),
+        ]),
+      ].sort();
 
       setClassSectionMap(classSectionMapping);
       setFeeTypes(allFeeTypes);
@@ -366,7 +1321,9 @@ const FeesCancelled = () => {
 
   const totals = filteredData.reduce(
     (acc, row) => {
-      feeTypes.forEach((type) => {
+      // Only include fee types that are selected, or all if none are selected
+      const activeFeeTypes = selectedFeeTypes.length > 0 ? selectedFeeTypes.map(type => type.value) : feeTypes;
+      activeFeeTypes.forEach((type) => {
         acc[type] = (acc[type] || 0) + (row.feeTypes[type] || 0);
       });
       acc.totalPaid = (acc.totalPaid || 0) + (row.totalPaid || 0);
@@ -375,9 +1332,19 @@ const FeesCancelled = () => {
     { totalPaid: 0 }
   );
 
-  const headerMapping = {
+  const headerMapping = selectedFeeTypes.length > 0 ? {
     cancelledDate: 'Date',
-    admissionNumber: 'Admission No.',
+    admissionNumber: 'REG/ADM No.',
+    studentName: 'Name',
+    className: 'Class',
+    sectionName: 'Section',
+    installmentName: 'Installment',
+    paymentMode: 'Payment Mode',
+    receiptNumber: 'Receipt No.',
+    ...Object.fromEntries(selectedFeeTypes.map((type) => [type.value, type.value])),
+  } : {
+    cancelledDate: 'Date',
+    admissionNumber: 'REG/ADM No.',
     studentName: 'Name',
     className: 'Class',
     sectionName: 'Section',
@@ -409,10 +1376,13 @@ const FeesCancelled = () => {
     ) {
       return record[fieldId] || '-';
     } else if (fieldId === 'totalPaid') {
-      return (record[fieldId] || 0);
-    } else {
-      return (record.feeTypes[fieldId] || 0);
+      const value = parseFloat(record[fieldId] || 0);
+      return value === 0 ? '0.00' : value.toFixed(2);
+    } else if (feeTypes.includes(fieldId)) {
+      const value = parseFloat(record.feeTypes[fieldId] || 0);
+      return value === 0 ? '0.00' : value.toFixed(2);
     }
+    return '-';
   };
 
   const groupedByDate = filteredData.reduce((acc, record) => {
@@ -547,7 +1517,14 @@ const FeesCancelled = () => {
                                   tableFields,
                                   headerMapping,
                                   getFieldValue,
-                                  totals,
+                                  {
+                                    ...Object.fromEntries(
+                                      (selectedFeeTypes.length > 0 ? selectedFeeTypes.map((type) => type.value) : feeTypes).map(
+                                        (type) => [type, (totals[type] || 0).toFixed(2)]
+                                      )
+                                    ),
+                                    ...(selectedFeeTypes.length === 0 && { totalPaid: totals.totalPaid.toFixed(2) }),
+                                  },
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
@@ -580,7 +1557,14 @@ const FeesCancelled = () => {
                                   tableFields,
                                   headerMapping,
                                   getFieldValue,
-                                  totals,
+                                  {
+                                    ...Object.fromEntries(
+                                      (selectedFeeTypes.length > 0 ? selectedFeeTypes.map((type) => type.value) : feeTypes).map(
+                                        (type) => [type, (totals[type] || 0).toFixed(2)]
+                                      )
+                                    ),
+                                    ...(selectedFeeTypes.length === 0 && { totalPaid: totals.totalPaid.toFixed(2) }),
+                                  },
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
@@ -778,67 +1762,27 @@ const FeesCancelled = () => {
                     <table className="table text-dark border border-secondary mb-1">
                       <thead>
                         <tr className="payroll-table-header">
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">REG/ADM No.</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Name</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Class</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Section</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Installment</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Payment Mode</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Receipt No.</th>
-                          {feeTypes.map((type) => (
-                            <th key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
-                              {type}
+                          {tableFields.map((field) => (
+                            <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {field.label}
                             </th>
                           ))}
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Cancel Reason</th>
                         </tr>
                       </thead>
                       <tbody>
                         {paginatedData().length > 0 ? (
                           paginatedData().map(({ date, record }, index) => (
                             <tr key={`${record.admissionNumber}_${record.cancelledDate}_${record.receiptNumber}_${index}`}>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.cancelledDate || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.admissionNumber || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.studentName || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.className || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.sectionName || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.installmentName || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.paymentMode || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.receiptNumber || '-'}
-                              </td>
-                              {feeTypes.map((type) => (
-                                <td key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {(record.feeTypes[type] || 0)}
+                              {tableFields.map((field) => (
+                                <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                                  {getFieldValue(record, field)}
                                 </td>
                               ))}
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {(record.totalPaid || 0)}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.cancelReason || '-'}
-                              </td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={feeTypes.length + 9} className="text-center">
+                            <td colSpan={tableFields.length} className="text-center">
                               No data matches the selected filters for{' '}
                               {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
                                 formatAcademicYear(selectedAcademicYear)}.
@@ -848,19 +1792,19 @@ const FeesCancelled = () => {
                       </tbody>
                       <tfoot>
                         <tr className="payroll-table-footer">
-                          <td colSpan={8} className="text-right border border-secondary p-2">
+                          <td colSpan={selectedFeeTypes.length > 0 ? 8 : 8} className="text-right border border-secondary p-2">
                             <strong>Total</strong>
                           </td>
-                          {feeTypes.map((type) => (
-                            <td key={type} className="text-center border border-secondary p-2">
-                              <strong>{(totals[type] || 0)}</strong>
-                            </td>
+                          {tableFields.slice(selectedFeeTypes.length > 0 ? 8 : 8).map((field) => (
+                            field.id !== 'cancelReason' && (
+                              <td key={field.id} className="text-center border border-secondary p-2">
+                                <strong>{(totals[field.id] || 0).toFixed(2)}</strong>
+                              </td>
+                            )
                           ))}
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalPaid}</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                          </td>
+                          {selectedFeeTypes.length === 0 && (
+                            <td className="text-center border border-secondary p-2"></td>
+                          )}
                         </tr>
                       </tfoot>
                     </table>

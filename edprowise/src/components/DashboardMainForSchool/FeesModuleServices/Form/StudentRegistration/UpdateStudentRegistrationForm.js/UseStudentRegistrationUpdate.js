@@ -62,14 +62,14 @@ const UseStudentRegistrationUpdate = () => {
     parentalStatus: student?.parentalStatus || '',
     howReachUs: student?.howReachUs || '',
     agreementChecked: student?.agreementChecked || false,
-    registrationFee: student?.registrationFee || 0,
-    concessionType: student?.concessionType ||'',
-    concessionAmount: student?.concessionAmount || 0,
-    finalAmount: student?.finalAmount || 0,
-    name: student?.name || '',
-    paymentMode: student?.paymentMode || '',
-    chequeNumber: student?.chequeNumber || '',
-    bankName: student?.bankName || ''
+    // registrationFee: student?.registrationFee || 0,
+    // concessionType: student?.concessionType ||'',
+    // concessionAmount: student?.concessionAmount || 0,
+    // finalAmount: student?.finalAmount || 0,
+    // name: student?.name || '',
+    // paymentMode: student?.paymentMode || '',
+    // chequeNumber: student?.chequeNumber || '',
+    // bankName: student?.bankName || ''
   });
 
   const [existingFiles] = useState({

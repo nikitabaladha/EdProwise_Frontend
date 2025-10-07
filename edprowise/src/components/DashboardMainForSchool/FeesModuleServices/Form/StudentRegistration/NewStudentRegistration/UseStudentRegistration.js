@@ -66,14 +66,14 @@ const useStudentRegistration = () => {
     parentalStatus: '',
     howReachUs: '',
     agreementChecked: false,
-    concessionType: null,
-    registrationFee: '',
-    concessionAmount: '',
-    finalAmount: '',
-    name: '',
-    paymentMode: '',
-    chequeNumber: '',
-    bankName: ''
+    // concessionType: null,
+    // registrationFee: '',
+    // concessionAmount: '',
+    // finalAmount: '',
+    // name: '',
+    // paymentMode: '',
+    // chequeNumber: '',
+    // bankName: ''
   });
 
   useEffect(() => {
@@ -318,13 +318,15 @@ const handlePhotoUpload = (e) => {
         return;
       }
       toast.success('Student registered successfully');
-      navigate(`/school-dashboard/fees-module/form/registration-form/receipts`, {
-        state: {
-          student: response.data?.student || response.student,
-          feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || '',
-          className: classes.find(c => c._id === formData.masterDefineClass)?.className || ''
-        },
-      });
+      navigate(-1)
+      // navigate(`/school-dashboard/fees-module/form/registration-form/receipts`, {
+      //   state: {
+      //     student: response.data?.student || response.student,
+      //     feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || '',
+      //     className: classes.find(c => c._id === formData.masterDefineClass)?.className || '',
+      //     classId: formData.masterDefineClass
+      //   },
+      // });
     } catch (error) {
       console.error('Submission error:', error);
       toast.error(error.response?.data?.message || error.message || 'An error occurred');

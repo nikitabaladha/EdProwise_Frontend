@@ -18,6 +18,7 @@ const FeesStructureReport = () => {
   const [logoSrc, setLogoSrc] = useState('');
   const [feeData, setFeeData] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
+  const [feeCategoryOptions, setFeeCategoryOptions] = useState([]); // New state for fee categories
   const [classSectionMap, setClassSectionMap] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loadingYears, setLoadingYears] = useState(false);
@@ -29,12 +30,13 @@ const FeesStructureReport = () => {
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
+  const [selectedFeeCategories, setSelectedFeeCategories] = useState([]); // New state for selected fee categories
   const [selectedInstallments, setSelectedInstallments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Academic Year', 'Class & Section', 'Installment', 'Fee Type'];
+  const tabs = ['Academic Year', 'Class & Section', 'Installment', 'Fee Category', 'Fee Type']; // Added Fee Category
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -177,6 +179,11 @@ const FeesStructureReport = () => {
         const data = response.data.data;
         setFeeData(data);
         setFeeTypes(response.data.feeTypes || []);
+
+        // Set fee category options
+        const uniqueFeeCategories = [...new Set(data.map(item => item.groupOfFees).filter(cat => cat && cat !== '-'))].sort();
+        setFeeCategoryOptions(uniqueFeeCategories.map(cat => ({ value: cat, label: cat })));
+
         setClassOptions(response.data.filterOptions.classOptions || []);
         setSectionOptions(response.data.filterOptions.sectionOptions || []);
 
@@ -191,6 +198,7 @@ const FeesStructureReport = () => {
         setFeeData([]);
         setClassSectionMap({});
         setFeeTypes([]);
+        setFeeCategoryOptions([]); // Reset fee categories
         setClassOptions([]);
         setSectionOptions([]);
         setInstallmentOptions([]);
@@ -201,6 +209,7 @@ const FeesStructureReport = () => {
       setFeeData([]);
       setClassSectionMap({});
       setFeeTypes([]);
+      setFeeCategoryOptions([]); // Reset fee categories
       setClassOptions([]);
       setSectionOptions([]);
       setInstallmentOptions([]);
@@ -226,6 +235,9 @@ const FeesStructureReport = () => {
     } else if (name === 'feeType') {
       setSelectedFeeTypes(selected);
       setCurrentPage(1);
+    } else if (name === 'feeCategory') { // New handler for fee category
+      setSelectedFeeCategories(selected);
+      setCurrentPage(1);
     } else if (name === 'installment') {
       setSelectedInstallments(selected);
       setCurrentPage(1);
@@ -249,6 +261,7 @@ const FeesStructureReport = () => {
     setSelectedClasses([]);
     setSelectedSections([]);
     setSelectedFeeTypes([]);
+    setSelectedFeeCategories([]); // Reset fee categories
     setSelectedInstallments([]);
     setSearchTerm('');
     setCurrentPage(1);
@@ -289,30 +302,29 @@ const FeesStructureReport = () => {
         selectedFeeTypes.length === 0 ||
         selectedFeeTypes.some((type) => row.feeTypeName === type.value);
 
+      const matchesFeeCategory =
+        selectedFeeCategories.length === 0 ||
+        selectedFeeCategories.some((cat) => row.groupOfFees === cat.value); // New filter logic
+
       const matchesInstallment =
         selectedInstallments.length === 0 ||
         selectedInstallments.some((inst) => row.installment === inst.value);
 
-      return matchesSearchTerm && matchesClass && matchesSection && matchesFeeType && matchesInstallment;
+      return matchesSearchTerm && matchesClass && matchesSection && matchesFeeType && matchesFeeCategory && matchesInstallment;
     })
     .sort((a, b) => {
-
       if (a.className !== b.className) {
         return a.className.localeCompare(b.className);
       }
-
       if (a.sectionName !== b.sectionName) {
         return a.sectionName.localeCompare(b.sectionName);
       }
-
       if (a.groupOfFees !== b.groupOfFees) {
         return a.groupOfFees === 'School Fees' ? -1 : 1;
       }
-
       if (a.installment !== b.installment) {
         return a.installment.localeCompare(b.installment);
       }
-
       return a.feeTypeName.localeCompare(b.feeTypeName);
     });
 
@@ -329,7 +341,7 @@ const FeesStructureReport = () => {
             type: 'total',
             className: currentClass,
             sectionName: currentSection,
-            sum: currentSum,
+            sum: currentSum.toFixed(2),
           });
         }
         currentClass = row.className;
@@ -337,7 +349,7 @@ const FeesStructureReport = () => {
         currentSum = 0;
       }
       result.push({ type: 'data', row });
-      currentSum += row.amount || 0;
+      currentSum += parseFloat(row.amount || 0);
     });
 
     if (currentClass !== null && currentSection !== null) {
@@ -345,14 +357,14 @@ const FeesStructureReport = () => {
         type: 'total',
         className: currentClass,
         sectionName: currentSection,
-        sum: currentSum,
+        sum: currentSum.toFixed(2),
       });
     }
 
     return result;
   };
 
-  const grandTotal = filteredData.reduce((sum, row) => sum + (row.amount || 0), 0);
+  const grandTotal = filteredData.reduce((sum, row) => sum + parseFloat(row.amount || 0), 0).toFixed(2);
 
   const enhancedRows = enhancedData();
   const totalRecords = enhancedRows.length;
@@ -392,7 +404,7 @@ const FeesStructureReport = () => {
   const headerMapping = {
     className: 'Class',
     sectionName: 'Section',
-    groupOfFees: 'Fee Types',
+    groupOfFees: 'Fee Category',
     installment: 'Installment',
     feeTypeName: 'Type of Fees',
     amount: 'Amt. (INR)',
@@ -401,11 +413,19 @@ const FeesStructureReport = () => {
   const tableFields = [
     { id: 'className', label: 'Class' },
     { id: 'sectionName', label: 'Section' },
-    { id: 'groupOfFees', label: 'Fee Types' },
+    { id: 'groupOfFees', label: 'Fee Category' },
     { id: 'installment', label: 'Installment' },
     { id: 'feeTypeName', label: 'Type of Fees' },
     { id: 'amount', label: 'Amt. (INR)' },
   ];
+
+  const getFieldValue = (row, field) => {
+    if (field.id === 'amount') {
+      const value = parseFloat(row[field.id] || 0);
+      return value === 0 ? '0.00' : value.toFixed(2);
+    }
+    return row[field.id] || '-';
+  };
 
   return (
     <div className="container">
@@ -610,6 +630,22 @@ const FeesStructureReport = () => {
                           </div>
                         )}
 
+                        {activeTab === 'Fee Category' && (
+                          <div className="row d-flex justify-content-center">
+                            <div className="col-md-6">
+                              <CreatableSelect
+                                isMulti
+                                name="feeCategory"
+                                options={feeCategoryOptions}
+                                value={selectedFeeCategories}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Fee Categories"
+                                className="mt-2"
+                              />
+                            </div>
+                          </div>
+                        )}
+
                         {activeTab === 'Fee Type' && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-6">
@@ -674,7 +710,7 @@ const FeesStructureReport = () => {
                               <tr key={`${row.className}_${row.sectionName}_${row.groupOfFees}_${row.installment}_${row.feeTypeName}_${index}`}>
                                 {tableFields.map((field) => (
                                   <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                    {row[field.id] || '-'}
+                                    {getFieldValue(row, field)}
                                   </td>
                                 ))}
                               </tr>

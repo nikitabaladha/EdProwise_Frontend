@@ -33,14 +33,6 @@ const UpdateTCForm = () => {
     reasonForLeaving: '',
     anyRemarks: '',
     agreementChecked: false,
-    TCfees: '',
-    concessionAmount: '',
-    concessionType:'',
-    finalAmount: '',
-    name: '',
-    paymentMode: '',
-    chequeNumber: '',
-    bankName: ''
   });
 
   useEffect(() => {
@@ -535,7 +527,7 @@ const handleDownloadPDF = async () => {
                     </label>
                   </div>
 
-                  <div className="col-md-3">
+                  {/* <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="TCfees" className="form-label">
                           TC Fees <span className="text-danger">*</span>
@@ -637,9 +629,9 @@ const handleDownloadPDF = async () => {
                         <option value="Online">Online</option>
                       </select>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
-
+{/* 
                 {formData.paymentMode === 'Cheque' && (
                   <div className="row">
                     <div className="col-md-6">
@@ -673,7 +665,7 @@ const handleDownloadPDF = async () => {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
@@ -708,7 +700,7 @@ const handleDownloadPDF = async () => {
                         id="receiptNumber"
                         name="receiptNumber"
                         className="form-control"
-                        value={formData.receiptNumber}
+                        value={student?.receiptNumber}
                         required
                         disabled
                       />
@@ -724,7 +716,7 @@ const handleDownloadPDF = async () => {
                         id="certificateNumber"
                         name="certificateNumber"
                         className="form-control"
-                        value={formData.certificateNumber}
+                        value={student?.certificateNumber}
                         required
                         disabled
                       />
@@ -743,7 +735,7 @@ const handleDownloadPDF = async () => {
                         name="feesReceivedBy"
                         className="form-control"
                         required
-                        value={formData.paymentMode}
+                        value={student?.paymentMode}
                         disabled
                       />
                     </div>

@@ -37,7 +37,7 @@ const FeesConcessionReportStudentWise = () => {
   const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Academic Year', 'Class & Section', 'Installment','Fee Type' ];
+  const tabs = ['Academic Year', 'Class & Section', 'Installment', 'Fee Type'];
   const pageShowOptions = [
     { value: 'all', label: 'All' },
     { value: 10, label: '10' },
@@ -392,8 +392,10 @@ const FeesConcessionReportStudentWise = () => {
     if (fieldId === 'sectionName') return student.sectionName || '-';
     if (fieldId === 'installmentName') return record.installmentName || '-';
     if (fieldId === 'concessionType') return student.concessionType || '-';
-    if (fieldId === 'Total') return record.Total || 0;
-    return record[fieldId] !== undefined && record[fieldId] !== 0 ? record[fieldId] : '-';
+    if (fieldId === 'Total' || displayedFeeTypes.includes(fieldId.replace(/\s+/g, ''))) {
+      return record[fieldId] !== undefined && record[fieldId] !== 0 ? Number(record[fieldId]).toFixed(2) : '-';
+    }
+    return record[fieldId] !== undefined && record[fieldId] !== 0 ? Number(record[fieldId]).toFixed(2) : '-';
   };
 
   const totalRecords = filteredData.reduce((sum, student) => sum + student.transactions.filter(t => t.installmentName !== 'Total').length, 0);
@@ -429,6 +431,21 @@ const FeesConcessionReportStudentWise = () => {
 
   const studentDataArray = paginatedData();
   console.log('Student Data Array:', studentDataArray);
+
+  const totals = filteredData
+    .flatMap((student) => student.transactions)
+    .filter((record) => record.installmentName !== 'Total')
+    .reduce((acc, record) => {
+      tableFields.forEach((field) => {
+        // Skip if not a fee type field AND not the grand Total column
+        const isFeeTypeField = displayedFeeTypes.some((ft) => ft.replace(/\s+/g, '') === field.id);
+        if (field.id !== 'Total' && !isFeeTypeField) return;
+        
+        const value = record[field.id] || 0;
+        acc[field.id] = (acc[field.id] || 0) + (typeof value === 'number' ? value : 0);
+      });
+      return acc;
+    }, {});
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -715,33 +732,31 @@ const FeesConcessionReportStudentWise = () => {
                           </tr>
                         )}
                         <tr className="payroll-table-footer">
-                          {tableFields.map((field) => (
-                            <td
-                              key={field.id}
-                              className="text-center align-middle border border-secondary text-nowrap p-2"
-                            >
-                              {field.id === 'installmentName' ? (
-                                <strong>Total</strong>
-                              ) : field.id === 'academicYear' ||
-                                field.id === 'admissionNumber' ||
-                                field.id === 'studentName' ||
-                                field.id === 'className' ||
-                                field.id === 'sectionName' ||
-                                field.id === 'concessionType' ? (
-                                ''
-                              ) : (
-                                <strong>
-                                  {filteredData
-                                    .flatMap((student) => student.transactions)
-                                    .filter((record) => record.installmentName !== 'Total')
-                                    .reduce((sum, record) => {
-                                      const value = record[field.id] || 0;
-                                      return sum + (typeof value === 'number' ? value : 0);
-                                    }, 0) || 0}
-                                </strong>
-                              )}
-                            </td>
-                          ))}
+                          {/* Merged "Total" label spanning first 7 fixed columns */}
+                          <td 
+                            colSpan={7} 
+                            className="text-center align-middle border border-secondary text-nowrap p-2"
+                          >
+                            <strong>Total</strong>
+                          </td>
+                          
+                          {/* Dynamic fee type totals (one <td> per fee type) */}
+                          {displayedFeeTypes.map((feeType) => {
+                            const fieldId = feeType.replace(/\s+/g, '');
+                            return (
+                              <td
+                                key={fieldId}
+                                className="text-center align-middle border border-secondary text-nowrap p-2"
+                              >
+                                <strong>{(totals[fieldId] || 0).toFixed(2)}</strong>
+                              </td>
+                            );
+                          })}
+                          
+                          {/* Grand Total column */}
+                          <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                            <strong>{(totals['Total'] || 0).toFixed(2)}</strong>
+                          </td>
                         </tr>
                       </tbody>
                     </table>

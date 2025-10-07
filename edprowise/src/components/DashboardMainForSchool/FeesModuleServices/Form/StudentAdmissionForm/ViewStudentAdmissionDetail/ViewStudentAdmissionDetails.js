@@ -1027,7 +1027,7 @@ const ViewAdmissionForm = () => {
                               id="receivedBy"
                               name="receivedBy"
                               className="form-control"
-                              value={formData.paymentMode}
+                              value={student?.paymentMode}
                               disabled
                             />
                           </div>

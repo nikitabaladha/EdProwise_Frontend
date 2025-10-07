@@ -40,7 +40,7 @@ const OpeningAndClosingAdvancedReport = () => {
   const [paymentAcademicYear, setPaymentAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date','Academic Year', 'Class & Section', 'Installment', 'Type of Fees', ,'Payment Mode', ];
+  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Type of Fees', 'Payment Mode'];
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -175,7 +175,21 @@ const OpeningAndClosingAdvancedReport = () => {
           console.warn(`No data found for year ${years[index]}`);
           return [];
         }
-        return res.data.data;
+        return res.data.data.map(item => ({
+          ...item,
+          totalReceived: Number(item.totalReceived || 0).toFixed(2),
+          feeTypes: Object.fromEntries(
+            Object.entries(item.feeTypes || {}).map(([type, value]) => [
+              type,
+              {
+                openingAdvance: Number(value.openingAdvance || 0).toFixed(2),
+                received: Number(value.received || 0).toFixed(2),
+                adjusted: Number(value.adjusted || 0).toFixed(2),
+                closingBalance: Number(value.closingBalance || 0).toFixed(2),
+              }
+            ])
+          )
+        }));
       });
 
       const classSectionMapping = {};
@@ -320,7 +334,7 @@ const OpeningAndClosingAdvancedReport = () => {
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feeTypes[type.value]?.totalPaid || 0) > 0);
+      selectedFeeTypes.some((type) => (row.feeTypes[type.value]?.closingBalance || 0) > 0);
 
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -355,18 +369,30 @@ const OpeningAndClosingAdvancedReport = () => {
       feeTypes.forEach((type) => {
         if (row.feeTypes[type]) {
           acc[type] = {
-            openingAdvance: (acc[type]?.openingAdvance || 0) + (row.feeTypes[type].openingAdvance || 0),
-            received: (acc[type]?.received || 0) + (row.feeTypes[type].received || 0),
-            adjusted: (acc[type]?.adjusted || 0) + (row.feeTypes[type].adjusted || 0),
-            closingBalance: (acc[type]?.closingBalance || 0) + (row.feeTypes[type].closingBalance || 0),
+            openingAdvance: (Number(acc[type]?.openingAdvance) || 0) + Number(row.feeTypes[type].openingAdvance || 0),
+            received: (Number(acc[type]?.received) || 0) + Number(row.feeTypes[type].received || 0),
+            adjusted: (Number(acc[type]?.adjusted) || 0) + Number(row.feeTypes[type].adjusted || 0),
+            closingBalance: (Number(acc[type]?.closingBalance) || 0) + Number(row.feeTypes[type].closingBalance || 0),
           };
         }
       });
-      acc.totalReceived = (acc.totalReceived || 0) + (row.totalReceived || 0);
+      acc.totalReceived = (Number(acc.totalReceived) || 0) + Number(row.totalReceived || 0);
       return acc;
     },
     { totalReceived: 0 }
   );
+
+  // Format totals to two decimal places
+  Object.keys(totals).forEach((key) => {
+    if (key === 'totalReceived') {
+      totals[key] = Number(totals[key] || 0).toFixed(2);
+    } else if (totals[key]) {
+      totals[key].openingAdvance = Number(totals[key].openingAdvance || 0).toFixed(2);
+      totals[key].received = Number(totals[key].received || 0).toFixed(2);
+      totals[key].adjusted = Number(totals[key].adjusted || 0).toFixed(2);
+      totals[key].closingBalance = Number(totals[key].closingBalance || 0).toFixed(2);
+    }
+  });
 
   const tableFields = [
     { id: 'academicYear', label: 'Academic Year' },
@@ -393,11 +419,11 @@ const OpeningAndClosingAdvancedReport = () => {
       return formatAcademicYear(record[field.id]) || '-';
     }
     if (field.id === 'totalReceived') {
-      return record[field.id] || 0;
+      return record[field.id] || '0.00';
     }
     if (subColumn) {
       const feeType = field.id;
-      return record.feeTypes[feeType]?.[subColumn.prop] || 0;
+      return record.feeTypes[feeType]?.[subColumn.prop] || '0.00';
     }
     return record[field.id] || '-';
   };
@@ -831,20 +857,20 @@ const OpeningAndClosingAdvancedReport = () => {
                           </td>
                           {feeTypes.flatMap((type) => [
                             <td key={`${type}_openingAdvance`} className="text-center border border-secondary p-2">
-                              <strong>{totals[type]?.openingAdvance || 0}</strong>
+                              <strong>{totals[type]?.openingAdvance || '0.00'}</strong>
                             </td>,
                             <td key={`${type}_received`} className="text-center border border-secondary p-2">
-                              <strong>{totals[type]?.received || 0}</strong>
+                              <strong>{totals[type]?.received || '0.00'}</strong>
                             </td>,
                             <td key={`${type}_adjusted`} className="text-center border border-secondary p-2">
-                              <strong>{totals[type]?.adjusted || 0}</strong>
+                              <strong>{totals[type]?.adjusted || '0.00'}</strong>
                             </td>,
                             <td key={`${type}_closingBalance`} className="text-center border border-secondary p-2">
-                              <strong>{totals[type]?.closingBalance || 0}</strong>
+                              <strong>{totals[type]?.closingBalance || '0.00'}</strong>
                             </td>,
                           ])}
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalReceived || 0}</strong>
+                            <strong>{totals.totalReceived || '0.00'}</strong>
                           </td>
                         </tr>
                       </tfoot>

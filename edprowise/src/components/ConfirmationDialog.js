@@ -170,7 +170,21 @@ refund:{
   successMessage: "Student refund amount deleted!",
   errorMessage: "Failed to delete student refund amount .",
   idKey: "_id",
-}
+},
+boardregistrationfeepayment:{
+  getEndpoint: (id) => `/delete-board-registration-fee/${id}`,
+  successMessage: "Board registration fee deleted!",
+  errorMessage: "Failed to delete board registration fee  .",
+  idKey: "_id",
+},
+
+boardexamfeepayment:{
+  getEndpoint: (id) => `/delete-board-exam-fee/${id}`,
+  successMessage: "Board exam fee deleted!",
+  errorMessage: "Failed to delete board exam fee  .",
+  idKey: "_id",
+},
+
 
 };
 

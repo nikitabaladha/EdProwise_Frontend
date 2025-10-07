@@ -164,10 +164,10 @@ const Fine = () => {
                     {currentFines.length > 0 ? currentFines.map((item, index) => (
                       <tr key={index}>
                         <td>{indexOfFirst + index + 1}</td>
-                        <td>{item.feeType === "percentage" ? `${item.value}%` : `₹${item.value}`}</td>
+                        <td>{item.feeType === "percentage" ? `${item.value}%` : `₹${item.value.toFixed(2)}`}</td>
                         <td>{item.feeType.charAt(0).toUpperCase() + item.feeType.slice(1)}</td>
                         <td>{item.frequency}</td>
-                        <td>{item.maxCapFee != null ? `₹${item.maxCapFee}` : '-'}</td>
+                        <td>{item.maxCapFee != null ? `₹${item.maxCapFee.toFixed(2)}` : '-'}</td>
                         <td>
                           <div className="d-flex gap-2">
                             <Link

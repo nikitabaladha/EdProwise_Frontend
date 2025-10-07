@@ -138,7 +138,7 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, classes, fees
                         <td>{row.InstallmentName || '-'}</td>
                         <td>{formatDate(row.DueDate)}</td>
                         <td>{row.FeesTypeName || '-'}</td>
-                        <td>{row.Amount || '-'}</td>
+                        <td>{row.Amount.toFixed(2) || '-'}</td>
                         <td style={{ color: isValid ? 'green' : 'red' }}>
                           {isValid ? 'Yes' : 'No'}
                         </td>

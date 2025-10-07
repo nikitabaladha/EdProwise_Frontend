@@ -96,7 +96,7 @@ const PreviewModal = ({ show, onClose, previewData, validatedData, classes }) =>
                         <td>{index + 1}</td>
                         <td>{row.Class || '-'}</td>
                         <td>{row.Sections || '-'}</td>
-                        <td>{row.Amount || '-'}</td>
+                        <td>{row.Amount.toFixed(2) || '-'}</td>
                         <td style={{ color: isValid ? 'green' : 'red' }}>
                           {isValid ? 'Yes' : 'No'}
                         </td>

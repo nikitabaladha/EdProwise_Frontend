@@ -37,14 +37,14 @@ const UpdateTCForm = () => {
     reasonForLeaving: '',
     anyRemarks: '',
     agreementChecked: false,
-    TCfees: '',
-    concessionType:'',
-    concessionAmount: '',
-    finalAmount: '',
-    name: '',
-    paymentMode: '',
-    chequeNumber: '',
-    bankName: ''
+    // TCfees: '',
+    // concessionType:'',
+    // concessionAmount: '',
+    // finalAmount: '',
+    // name: '',
+    // paymentMode: '',
+    // chequeNumber: '',
+    // bankName: ''
   });
 
   useEffect(() => {
@@ -101,18 +101,18 @@ const UpdateTCForm = () => {
         agreementChecked: student.agreementChecked || '',
         reasonForLeaving: student.reasonForLeaving || '',
         anyRemarks: student.anyRemarks || '',
-        TCfees: student.TCfees || 0,
-        concessionType:student. concessionType ||'',
-        concessionAmount: student.concessionAmount || 0,
-        finalAmount: student.finalAmount || 0,
-        name: student.name || '',
-        paymentMode: student.paymentMode || '',
-        ApplicationReceivedOn: student.ApplicationReceivedOn ? student.ApplicationReceivedOn.split('T')[0] : '',
-        transactionNumber: student.transactionNumber || '',
-        receiptNumber: student.receiptNumber || '',
-        certificateNumber: student.certificateNumber || '',
-        chequeNumber: student. chequeNumber ||'',
-        bankName: student.bankName ||''
+        // TCfees: student.TCfees || 0,
+        // concessionType:student. concessionType ||'',
+        // concessionAmount: student.concessionAmount || 0,
+        // finalAmount: student.finalAmount || 0,
+        // name: student.name || '',
+        // paymentMode: student.paymentMode || '',
+        // ApplicationReceivedOn: student.ApplicationReceivedOn ? student.ApplicationReceivedOn.split('T')[0] : '',
+        // transactionNumber: student.transactionNumber || '',
+        // receiptNumber: student.receiptNumber || '',
+        // certificateNumber: student.certificateNumber || '',
+        // chequeNumber: student. chequeNumber ||'',
+        // bankName: student.bankName ||''
       });
     }
   }, [student]);
@@ -628,7 +628,7 @@ const UpdateTCForm = () => {
                     </label>
                   </div>
 
-                  <div className="col-md-3">
+                  {/* <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="TCfees" className="form-label">
                           TC Fees <span className="text-danger">*</span>
@@ -733,10 +733,10 @@ const UpdateTCForm = () => {
                         <option value="Online">Online</option>
                       </select>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
-                {formData.paymentMode === 'Cheque' && (
+                {/* {formData.paymentMode === 'Cheque' && (
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -773,7 +773,7 @@ const UpdateTCForm = () => {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
@@ -808,7 +808,7 @@ const UpdateTCForm = () => {
                         id="receiptNumber"
                         name="receiptNumber"
                         className="form-control"
-                        value={formData.receiptNumber}
+                        value={student?.receiptNumber}
                         onChange={handleChange}
                         required
                         disabled
@@ -825,7 +825,7 @@ const UpdateTCForm = () => {
                         id="certificateNumber"
                         name="certificateNumber"
                         className="form-control"
-                        value={formData.certificateNumber}
+                        value={student?.certificateNumber}
                         onChange={handleChange}
                         required
                         disabled
@@ -845,7 +845,7 @@ const UpdateTCForm = () => {
                         name="feesReceivedBy"
                         className="form-control"
                         required
-                        value={formData.paymentMode}
+                        value={student?.paymentMode}
                         disabled
                       />
                     </div>

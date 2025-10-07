@@ -8,6 +8,20 @@ const CancelReceiptModal = ({ show, onClose, student, setIsCancelled,fetchStuden
   const [additionalComment, setAdditionalComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+    console.log("CancelReceiptModal Props:", {
+      show,
+      onClose,
+      student,
+      feeTypeName,
+      classId,
+      schoolId,
+      setIsCancelled,
+      action,
+    });
+  }, [show, onClose, student, feeTypeName, classId, schoolId, setIsCancelled, action]);
+
+
   const cancelOptions = student?.paymentMode === "Cheque"
     ? [
         { value: "Cheque Bounced", label: "Cheque Bounced" },

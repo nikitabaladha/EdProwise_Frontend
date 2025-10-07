@@ -56,7 +56,7 @@ const SchoolFeesPreviewModal = ({
     if (typeof row.paymentDate === 'number') {
       const parsedDate = excelSerialToDate(row.paymentDate);
       if (parsedDate && !isNaN(parsedDate.getTime())) {
-        paymentDate = parsedDate.toISOString().split('T')[0]; // YYYY-MM-DD
+        paymentDate = parsedDate.toISOString().split('T')[0]; 
       } else {
         return false;
       }

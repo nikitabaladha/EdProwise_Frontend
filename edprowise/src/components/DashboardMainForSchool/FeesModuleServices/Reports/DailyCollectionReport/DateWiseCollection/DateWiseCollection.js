@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -8,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { exportToExcel, exportToPDF } from './ExportModalDateWiseFeesCollection';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const DateWiseFeesCollection = () => {
+const DateWiseFeesCollectionIncConcession = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
@@ -36,6 +40,7 @@ const DateWiseFeesCollection = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState('all');
+  const [viewMode, setViewMode] = useState('net');
   const dropdownRef = useRef(null);
 
   const tabs = ['Date', 'Academic Year', 'Type of Fees', 'Installment', 'Payment Mode'];
@@ -46,6 +51,11 @@ const DateWiseFeesCollection = () => {
     { value: 15, label: '15' },
     { value: 20, label: '20' },
     { value: 30, label: '30' },
+  ];
+
+  const viewModeOptions = [
+    { value: 'net', label: 'Net' },
+    { value: 'gross', label: 'Gross' },
   ];
 
   const formatAcademicYear = (year) => {
@@ -103,11 +113,11 @@ const DateWiseFeesCollection = () => {
           console.warn(`No data found for year ${years[index]}`);
           return [];
         }
-        return res.data.data.map((record) => {
-         const totalPaidFee = Object.values(record.feeTypes || {}).reduce(
-          (sum, amount) => sum + (Number(amount) || 0),
-          0
-        ) + (Number(record.fineAmount) || 0) + (Number(record.excessAmount) || 0);
+        const records = res.data.data.map((record) => {
+          const totalPaidFee = Object.values(record.feeTypes || {}).reduce(
+            (sum, amount) => sum + (Number(amount) || 0),
+            0
+          ) + (Number(record.fineAmount) || 0) + (Number(record.excessAmount) || 0);
           return {
             ...record,
             academicYear: record.academicYear,
@@ -115,6 +125,43 @@ const DateWiseFeesCollection = () => {
             totalPaidFee,
           };
         });
+
+        const cancellationRecords = records
+          .filter((record) => record.cancelledDate)
+          .map((record) => {
+            const negativeFeesBreakdown = {};
+            Object.keys(record.feesBreakdown).forEach((key) => {
+              negativeFeesBreakdown[key] = -(Number(record.feesBreakdown[key]) || 0);
+            });
+            return {
+              ...record,
+              paymentDate: record.cancelledDate,
+              feesBreakdown: negativeFeesBreakdown,
+              fineAmount: -(Number(record.fineAmount) || 0),
+              excessAmount: -(Number(record.excessAmount) || 0),
+              totalPaidFee: -Math.abs(record.totalPaidFee || 0),
+              status: 'Cancelled',
+            };
+          });
+
+        const nonCancelledRecords = records.map((record) => ({
+          ...record,
+          cancelledDate: null,
+        }));
+
+        return [...nonCancelledRecords, ...cancellationRecords];
+      });
+
+      unifiedData.sort((a, b) => {
+        const dateA = new Date(a.paymentDate.split('-').reverse().join('-'));
+        const dateB = new Date(b.paymentDate.split('-').reverse().join('-'));
+        if (dateA !== dateB) return dateA - dateB;
+        if (a.academicYear !== b.academicYear) return a.academicYear.localeCompare(b.academicYear);
+        if (a.paymentMode !== b.paymentMode) return a.paymentMode.localeCompare(b.paymentMode);
+        const isACancellation = a.cancelledDate || Object.values(a.feesBreakdown).some(amount => Number(amount) < 0);
+        const isBCancellation = b.cancelledDate || Object.values(b.feesBreakdown).some(amount => Number(amount) < 0);
+        if (isACancellation !== isBCancellation) return isACancellation ? 1 : -1;
+        return 0;
       });
 
       setFeeData(unifiedData);
@@ -143,7 +190,6 @@ const DateWiseFeesCollection = () => {
       if (!selectedAcademicYear && filterOptions.academicYearOptions?.length > 0) {
         const latestYear = filterOptions.academicYearOptions[filterOptions.academicYearOptions.length - 1].value;
         setSelectedAcademicYear(latestYear);
-        localStorage.setItem('selectedAcademicYear', latestYear);
         setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
       }
     } catch (error) {
@@ -195,6 +241,9 @@ const DateWiseFeesCollection = () => {
         setRowsPerPage(selectedOptions ? selectedOptions.value : 'all');
       }
       setCurrentPage(1);
+    } else if (name === 'viewMode') {
+      setViewMode(selectedOptions ? selectedOptions.value : 'net');
+      setCurrentPage(1);
     }
   };
 
@@ -218,6 +267,7 @@ const DateWiseFeesCollection = () => {
     setEndDate('');
     setSearchTerm('');
     setCurrentPage(1);
+    setViewMode('net');
     fetchFeeData([selectedAcademicYear]);
   };
 
@@ -234,8 +284,8 @@ const DateWiseFeesCollection = () => {
   const filteredData = feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
       ? row.paymentDate.toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        row.paymentMode?.toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        row.academicYear?.toLowerCase().includes(String(searchTerm).toLowerCase())
+      row.paymentMode?.toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      row.academicYear?.toLowerCase().includes(String(searchTerm).toLowerCase())
       : true;
 
     const matchesPaymentMode =
@@ -258,7 +308,7 @@ const DateWiseFeesCollection = () => {
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) > 0);
+      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) !== 0);
 
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -270,7 +320,11 @@ const DateWiseFeesCollection = () => {
 
     const matchesInstallment =
       selectedInstallments.length === 0 ||
-      selectedInstallments.some((inst) => row.installmentName === inst.value || row.installmentName === null);
+      selectedInstallments.some((inst) => row.installmentName === inst.value);
+
+    const matchesViewMode =
+      viewMode === 'net' ||
+      (viewMode === 'gross' && !row.cancelledDate && !Object.values(row.feesBreakdown).some(amount => Number(amount) < 0));
 
     return (
       matchesSearchTerm &&
@@ -280,23 +334,94 @@ const DateWiseFeesCollection = () => {
       matchesFeeType &&
       matchesClass &&
       matchesSection &&
-      matchesInstallment
+      matchesInstallment &&
+      matchesViewMode
     );
   });
 
-  const groupedByDate = filteredData.reduce((acc, row) => {
-    const date = row.paymentDate;
-    if (!acc[date]) {
-      acc[date] = [];
+  const groupedData = filteredData.reduce((acc, record, index) => {
+    const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
+    const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`;
+    if (!acc[key]) {
+      acc[key] = {
+        aggregated: {
+          paymentDate: record.paymentDate,
+          academicYear: record.academicYear,
+          paymentMode: record.paymentMode,
+          feesBreakdown: {},
+          fineAmount: 0,
+          excessAmount: 0,
+          totalPaidFee: 0,
+          status: isCancellation ? 'Cancelled' : 'Regular',
+        },
+        count: 0,
+      };
     }
-    acc[date].push(row);
+    Object.keys(record.feesBreakdown).forEach((type) => {
+      acc[key].aggregated.feesBreakdown[type] =
+        (acc[key].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
+    });
+    acc[key].aggregated.fineAmount += Number(record.fineAmount) || 0;
+    acc[key].aggregated.excessAmount += Number(record.excessAmount) || 0;
+    acc[key].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
+    acc[key].count += 1;
     return acc;
   }, {});
 
-  const groupedDataArray = Object.entries(groupedByDate).map(([date, records]) => ({
-    date,
-    records,
-  }));
+  // Calculate date-wise totals
+  const dateWiseTotals = filteredData.reduce((acc, record) => {
+    const dateKey = record.paymentDate;
+    if (!acc[dateKey]) {
+      acc[dateKey] = {
+        paymentDate: record.paymentDate,
+        feesBreakdown: {},
+        fineAmount: 0,
+        excessAmount: 0,
+        totalPaidFee: 0,
+      };
+    }
+    Object.keys(record.feesBreakdown).forEach((type) => {
+      acc[dateKey].feesBreakdown[type] =
+        (acc[dateKey].feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
+    });
+    acc[dateKey].fineAmount += Number(record.fineAmount) || 0;
+    acc[dateKey].excessAmount += Number(record.excessAmount) || 0;
+    acc[dateKey].totalPaidFee += Number(record.totalPaidFee) || 0;
+    return acc;
+  }, {});
+
+  const groupedDataArray = [
+    ...Object.entries(groupedData).map(([key, { aggregated, count }], idx) => ({
+      record: aggregated,
+      index: idx,
+      isFirstInGroup: true,
+      rowspan: 1,
+      isTotalRow: false,
+    })),
+    ...Object.entries(dateWiseTotals).map(([date, total], idx) => ({
+      record: {
+        ...total,
+        paymentDate: `${total.paymentDate}-Total`,
+        academicYear: '',
+        paymentMode: '',
+      },
+      index: idx + Object.keys(groupedData).length,
+      isFirstInGroup: true,
+      rowspan: 1,
+      isTotalRow: true,
+    })),
+  ].sort((a, b) => {
+    const dateA = a.record.paymentDate.includes('-Total')
+      ? a.record.paymentDate.replace('-Total', '')
+      : a.record.paymentDate;
+    const dateB = b.record.paymentDate.includes('-Total')
+      ? b.record.paymentDate.replace('-Total', '')
+      : b.record.paymentDate;
+    const dateComparison = new Date(dateA.split('-').reverse().join('-')) - new Date(dateB.split('-').reverse().join('-'));
+    if (dateComparison !== 0) return dateComparison;
+    if (a.isTotalRow !== b.isTotalRow) return a.isTotalRow ? 1 : -1;
+    return a.index - b.index;
+  });
 
   const totals = filteredData.reduce(
     (acc, row) => {
@@ -323,9 +448,13 @@ const DateWiseFeesCollection = () => {
     academicYear: 'Academic Year',
     paymentMode: 'Payment Mode',
     ...Object.fromEntries(displayedFeeTypes.map((type) => [type, type])),
-    fineAmount: 'Fine Amount',
-    excessAmount: 'Excess Amount',
-    totalPaidFee: 'Fees Paid',
+    ...(selectedFeeTypes.length === 0
+      ? {
+        fineAmount: 'Fine Amount',
+        excessAmount: 'Excess Amount',
+        totalPaidFee: 'Fees Paid',
+      }
+      : {}),
   };
 
   const tableFields = Object.keys(headerMapping).map((key) => ({
@@ -352,7 +481,7 @@ const DateWiseFeesCollection = () => {
     }
   };
 
-  const totalRecords = filteredData.length;
+  const totalRecords = groupedDataArray.length;
   const totalPages = Math.ceil(totalRecords / (rowsPerPage === 'all' ? totalRecords : rowsPerPage));
 
   const maxPagesToShow = 5;
@@ -367,9 +496,7 @@ const DateWiseFeesCollection = () => {
   const paginatedData = () => {
     const startIndex = (currentPage - 1) * (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
     const endIndex = startIndex + (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
-    return groupedDataArray
-      .flatMap(({ date, records }) => records.map((record, index) => ({ date, record, groupIndex: index })))
-      .slice(startIndex, endIndex);
+    return groupedDataArray.slice(startIndex, endIndex);
   };
 
   const handlePageClick = (page) => {
@@ -419,6 +546,14 @@ const DateWiseFeesCollection = () => {
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
+                    <Select
+                      name="viewMode"
+                      placeholder="View Mode"
+                      options={viewModeOptions}
+                      value={viewModeOptions.find((option) => option.value === viewMode)}
+                      onChange={(selected, action) => handleSelectChange(selected, action)}
+                      className="email-select border border-dark me-lg-2"
+                    />
                     <div
                       className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
@@ -460,7 +595,8 @@ const DateWiseFeesCollection = () => {
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
-                                    : selectedAcademicYear
+                                    : selectedAcademicYear,
+                                  viewMode
                                 );
                               } catch (err) {
                                 toast.error('Export to Excel failed.');
@@ -472,6 +608,7 @@ const DateWiseFeesCollection = () => {
                           >
                             {isExporting ? 'Exporting...' : 'Export to Excel'}
                           </button>
+
                           <button
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
@@ -489,7 +626,8 @@ const DateWiseFeesCollection = () => {
                                     ? selectedYears.map((y) => y.value).join(',')
                                     : selectedAcademicYear,
                                   school,
-                                  logoSrc
+                                  logoSrc,
+                                  viewMode
                                 );
                               } catch (err) {
                                 toast.error('Export to PDF failed.');
@@ -567,7 +705,6 @@ const DateWiseFeesCollection = () => {
                             </div>
                           </div>
                         )}
-
                         {activeTab === 'Academic Year' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
@@ -583,7 +720,6 @@ const DateWiseFeesCollection = () => {
                             </div>
                           </div>
                         )}
-
                         {activeTab === 'Installment' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
@@ -599,7 +735,6 @@ const DateWiseFeesCollection = () => {
                             </div>
                           </div>
                         )}
-
                         {activeTab === 'Type of Fees' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
@@ -632,7 +767,7 @@ const DateWiseFeesCollection = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Datewise Collection INC Concession</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Datewise Collection Inc Concession</h2>
                 </div>
               </div>
 
@@ -657,53 +792,124 @@ const DateWiseFeesCollection = () => {
                               {type}
                             </th>
                           ))}
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Fine Amount</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Excess Amount</th>
                           {selectedFeeTypes.length === 0 && (
-                            <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+                            <>
+                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Fine Amount</th>
+                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Excess Amount</th>
+                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+                            </>
                           )}
                         </tr>
                       </thead>
                       <tbody>
                         {paginatedData().length > 0 ? (
-                          paginatedData().map(({ record, groupIndex, date }, index) => (
+                          paginatedData().map(({ record, index, isFirstInGroup, rowspan, isTotalRow }, idx) => (
                             <tr
-                              key={`${record.paymentDate}_${record.paymentMode}_${groupIndex}_${index}`}
-                              className="payroll-table-row"
+                              key={`${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${index}_${idx}`}
+                              className={`payroll-table-row ${isTotalRow ? 'fw-bold' : ''}`}
                             >
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.paymentDate || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {formatAcademicYear(record.academicYear) || '-'}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {record.paymentMode || '-'}
-                              </td>
-                              {displayedFeeTypes.map((type) => (
-                                <td
-                                  key={type}
-                                  className="text-center align-middle border border-secondary text-nowrap p-2"
-                                >
-                                  {(record.feesBreakdown[type] || 0).toFixed(2)}
-                                </td>
-                              ))}
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {(record.fineAmount || 0).toFixed(2)}
-                              </td>
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {(record.excessAmount || 0).toFixed(2)}
-                              </td>
-                              {selectedFeeTypes.length === 0 && (
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {(record.totalPaidFee || 0).toFixed(2)}
-                                </td>
+                              {isTotalRow ? (
+                                <>
+                                  <td
+                                    className="text-right align-middle border border-secondary text-nowrap p-2 fw-bold"
+                                    colSpan={3}
+                                  >
+                                    {record.paymentDate}
+                                  </td>
+                                  {displayedFeeTypes.map((type) => (
+                                    <td
+                                      key={type}
+                                      className="text-center align-middle border border-secondary text-nowrap p-2 fw-bold"
+                                    >
+                                      {(record.feesBreakdown[type] || 0).toFixed(2)}
+                                    </td>
+                                  ))}
+                                  {selectedFeeTypes.length === 0 && (
+                                    <>
+                                      <td className="text-center align-middle border border-secondary text-nowrap p-2 fw-bold">
+                                        {(record.fineAmount || 0).toFixed(2)}
+                                      </td>
+                                      <td className="text-center align-middle border border-secondary text-nowrap p-2 fw-bold">
+                                        {(record.excessAmount || 0).toFixed(2)}
+                                      </td>
+                                      <td className="text-center align-middle border border-secondary text-nowrap p-2 fw-bold">
+                                        {(record.totalPaidFee || 0).toFixed(2)}
+                                      </td>
+                                    </>
+                                  )}
+                                </>
+                              ) : isFirstInGroup ? (
+                                <>
+                                  <td
+                                    className="text-center align-middle border border-secondary text-nowrap p-2"
+                                    rowSpan={rowspan}
+                                  >
+                                    {record.paymentDate || '-'}
+                                  </td>
+                                  <td
+                                    className="text-center align-middle border border-secondary text-nowrap p-2"
+                                    rowSpan={rowspan}
+                                  >
+                                    {formatAcademicYear(record.academicYear) || '-'}
+                                  </td>
+                                  <td
+                                    className="text-center align-middle border border-secondary text-nowrap p-2"
+                                    rowSpan={rowspan}
+                                  >
+                                    {record.paymentMode || '-'}
+                                  </td>
+                                  {displayedFeeTypes.map((type) => (
+                                    <td
+                                      key={type}
+                                      className="text-center align-middle border border-secondary text-nowrap p-2"
+                                    >
+                                      {(record.feesBreakdown[type] || 0).toFixed(2)}
+                                    </td>
+                                  ))}
+                                  {selectedFeeTypes.length === 0 && (
+                                    <>
+                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                        {(record.fineAmount || 0).toFixed(2)}
+                                      </td>
+                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                        {(record.excessAmount || 0).toFixed(2)}
+                                      </td>
+                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                        {(record.totalPaidFee || 0).toFixed(2)}
+                                      </td>
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  {displayedFeeTypes.map((type) => (
+                                    <td
+                                      key={type}
+                                      className="text-center align-middle border border-secondary text-nowrap p-2"
+                                    >
+                                      {(record.feesBreakdown[type] || 0).toFixed(2)}
+                                    </td>
+                                  ))}
+                                  {selectedFeeTypes.length === 0 && (
+                                    <>
+                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                        {(record.fineAmount || 0).toFixed(2)}
+                                      </td>
+                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                        {(record.excessAmount || 0).toFixed(2)}
+                                      </td>
+                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                        {(record.totalPaidFee || 0).toFixed(2)}
+                                      </td>
+                                    </>
+                                  )}
+                                </>
                               )}
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={displayedFeeTypes.length + 5} className="text-center">
+                            <td colSpan={displayedFeeTypes.length + (selectedFeeTypes.length === 0 ? 6 : 3)} className="text-center">
                               No data matches the selected filters for{' '}
                               {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
                                 formatAcademicYear(selectedAcademicYear)}.
@@ -714,23 +920,25 @@ const DateWiseFeesCollection = () => {
                       <tfoot>
                         <tr className="payroll-table-footer">
                           <td colSpan={3} className="text-right border border-secondary p-2">
-                            <strong>Total</strong>
+                            <strong>Grand Total</strong>
                           </td>
                           {displayedFeeTypes.map((type) => (
                             <td key={type} className="text-center border border-secondary p-2">
                               <strong>{(totals[type] || 0).toFixed(2)}</strong>
                             </td>
                           ))}
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{(totals.fineAmount || 0).toFixed(2)}</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{(totals.excessAmount || 0).toFixed(2)}</strong>
-                          </td>
                           {selectedFeeTypes.length === 0 && (
-                            <td className="text-center border border-secondary p-2">
-                              <strong>{(totals.totalPaidFee || 0).toFixed(2)}</strong>
-                            </td>
+                            <>
+                              <td className="text-center border border-secondary p-2">
+                                <strong>{(totals.fineAmount || 0).toFixed(2)}</strong>
+                              </td>
+                              <td className="text-center border border-secondary p-2">
+                                <strong>{(totals.excessAmount || 0).toFixed(2)}</strong>
+                              </td>
+                              <td className="text-center border border-secondary p-2">
+                                <strong>{(totals.totalPaidFee || 0).toFixed(2)}</strong>
+                              </td>
+                            </>
                           )}
                         </tr>
                       </tfoot>
@@ -789,4 +997,4 @@ const DateWiseFeesCollection = () => {
   );
 };
 
-export default DateWiseFeesCollection;
+export default DateWiseFeesCollectionIncConcession;

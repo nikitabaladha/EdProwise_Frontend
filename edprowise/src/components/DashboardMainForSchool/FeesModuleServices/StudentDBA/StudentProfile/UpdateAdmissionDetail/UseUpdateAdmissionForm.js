@@ -68,15 +68,15 @@ const UseUpdateAdmissionForm = () => {
     motherQualification: '',
     motherProfession: '',
     agreementChecked: false,
-    admissionFees: '',
-    concessionType: '',
-    concessionAmount: ''||0,
-    finalAmount: '',
-    name: '',
-    paymentMode: '',
-    chequeNumber: '',
-    bankName: '',
-    admissionFeesReceivedBy: ''
+    // admissionFees: '',
+    // concessionType: '',
+    // concessionAmount: ''||0,
+    // finalAmount: '',
+    // name: '',
+    // paymentMode: '',
+    // chequeNumber: '',
+    // bankName: '',
+    // admissionFeesReceivedBy: ''
   });
 
   useEffect(() => {
@@ -140,19 +140,19 @@ const UseUpdateAdmissionForm = () => {
         motherQualification: student.motherQualification || '',
         motherProfession: student.motherProfession || '',
         agreementChecked: student.agreementChecked || false,
-        admissionFees: student.admissionFees || '',
-        concessionType:student.concessionType || '',
-        concessionAmount: student.concessionAmount || '',
-        finalAmount: student.finalAmount|| '',
-        name: student.name || '',
-        paymentMode: student.paymentMode || '',
-        chequeNumber: student?.chequeNumber || '',
-        bankName: student?.bankName || '',
-        admissionNumber: student.AdmissionNumber || '',
-        receiptNumber: student.receiptNumber || '',
-        transactionNumber: student.transactionNumber || '',
-        dateOfAdmission: student.dateOfAdmission ? student.dateOfAdmission.split('T')[0] : '',
-        admissionFeesReceivedBy: student.admissionFeesReceivedBy || ''
+        // admissionFees: student.admissionFees || '',
+        // concessionType:student.concessionType || '',
+        // concessionAmount: student.concessionAmount || '',
+        // finalAmount: student.finalAmount|| '',
+        // name: student.name || '',
+        // paymentMode: student.paymentMode || '',
+        // chequeNumber: student?.chequeNumber || '',
+        // bankName: student?.bankName || '',
+        // admissionNumber: student.AdmissionNumber || '',
+        // receiptNumber: student.receiptNumber || '',
+        // transactionNumber: student.transactionNumber || '',
+        // dateOfAdmission: student.dateOfAdmission ? student.dateOfAdmission.split('T')[0] : '',
+        // admissionFeesReceivedBy: student.admissionFeesReceivedBy || ''
       });
       setShowFullForm(true);
       setShowAdditionalData(true);
@@ -371,12 +371,12 @@ const UseUpdateAdmissionForm = () => {
         fatherContactNo: student.fatherContactNo,
         motherName: student.motherName,
         motherContactNo: student.motherContactNo,
-        admissionFees: student.admissionFees, 
-        concessionType:student.concessionType,
-        concessionAmount: student.concessionAmount ,
-        finalAmount: student.finalAmount,
-        name: student.name,
-        paymentMode: student.paymentMode,
+        // admissionFees: student.admissionFees, 
+        // concessionType:student.concessionType,
+        // concessionAmount: student.concessionAmount ,
+        // finalAmount: student.finalAmount,
+        // name: student.name,
+        // paymentMode: student.paymentMode,
       }));
     }
 

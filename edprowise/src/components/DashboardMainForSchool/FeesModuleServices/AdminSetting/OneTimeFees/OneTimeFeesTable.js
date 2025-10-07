@@ -228,7 +228,8 @@ const OneTimeFeesTable = () => {
                           ) : null}
 
                           <td>{feesTypeMap[oneTimeFee.feesTypeId] || "N/A"}</td>
-                          <td>₹{oneTimeFee.amount}</td>
+                          <td>₹{oneTimeFee.amount.toFixed(2)}</td>
+
 
                           {index === 0 ? (
                             <td rowSpan={fee.oneTimeFees.length}>

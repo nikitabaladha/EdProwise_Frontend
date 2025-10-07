@@ -20,13 +20,13 @@ const Form = ({
   showAdditionalData,
   handleShiftChange,
   handlePhotoUpload,
-  selectedFeeType,
-  admissionFees,
-  concessionAmount,
-  finalAmount,
-  availableFeeTypes,
-  handleFeeTypeChange,
-  handleConcessionChange,
+  // selectedFeeType,
+  // admissionFees,
+  // concessionAmount,
+  // finalAmount,
+  // availableFeeTypes,
+  // handleFeeTypeChange,
+  // handleConcessionChange,
   handleCountryChange,
   handleStateChange,
   handleCityChange,
@@ -976,7 +976,7 @@ const Form = ({
 
       {!showAdditionalData ? (
         <>
-          <div className="text-center">
+              <div className="text-end">
             <button
               type="button"
               className="btn btn-primary custom-submit-button"
@@ -1007,7 +1007,7 @@ const Form = ({
                 I Understand & agree that the registration of my word does not guarantee admission to the school & the registration fee is neither transferable not refundable.
               </label>
             </div>
-
+{/* 
             <div className="col-md-6">
               <div className="mb-3">
                 <label htmlFor="selectedFeeType" className="form-label">
@@ -1029,9 +1029,9 @@ const Form = ({
                   ))}
                 </select>
               </div>
-            </div>
+            </div> */}
 
-              <div className="col-md-6">
+              {/* <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="concessionType" className="form-label">
                           Concession Type
@@ -1052,9 +1052,9 @@ const Form = ({
                           <option value="Other">Other</option>
                         </select>
                       </div>
-                    </div>
+                    </div> */}
 
-            <div className="col-md-4">
+            {/* <div className="col-md-4">
               <div className="mb-3">
                 <label htmlFor="admissionFees" className="form-label">
                   Admission Fees <span className="text-danger">*</span>
@@ -1069,9 +1069,9 @@ const Form = ({
                   required
                 />
               </div>
-            </div>
+            </div> */}
 
-            <div className="col-md-4">
+            {/* <div className="col-md-4">
               <div className="mb-3">
                 <label htmlFor="concessionAmount" className="form-label">
                   Concession
@@ -1087,9 +1087,9 @@ const Form = ({
 
                 />
               </div>
-            </div>
+            </div> */}
 
-            <div className="col-md-4">
+            {/* <div className="col-md-4">
               <div className="mb-3">
                 <label htmlFor="finalamount" className="form-label">
                   Final Amount <span className="text-danger">*</span>
@@ -1104,8 +1104,8 @@ const Form = ({
                   required
                 />
               </div>
-            </div>
-            <div className="col-md-6">
+            </div> */}
+            {/* <div className="col-md-6">
               <div className="mb-3">
                 <label htmlFor="name" className="form-label">
                   Name of Person Filling the Form <span className="text-danger">*</span>
@@ -1120,8 +1120,8 @@ const Form = ({
                   required
                 />
               </div>
-            </div>
-            <div className="col-md-6">
+            </div> */}
+            {/* <div className="col-md-6">
               <div className="mb-3">
                 <label htmlFor="paymentMode" className="form-label">
                   Payment Option  <span className="text-danger">*</span>
@@ -1140,9 +1140,9 @@ const Form = ({
                   <option value="Online">Online</option>
                 </select>
               </div>
-            </div>
+            </div> */}
 
-            {formData.paymentMode === 'Cheque' && (
+            {/* {formData.paymentMode === 'Cheque' && (
               <>
                 <div className="col-md-6">
                   <div className="mb-3">
@@ -1177,7 +1177,7 @@ const Form = ({
                   </div>
                 </div>
               </>
-            )}
+            )} */}
           </div>
 
           <div className="text-end">

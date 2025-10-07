@@ -953,7 +953,7 @@ const UpdateAdmissionForm = () => {
                   null
                 ) : (
                   <>
-                    <div className="row">
+                    {/* <div className="row">
                       <div className="card-header mb-2">
                         <h4 className="card-title text-center custom-heading-font">
                           Understanding
@@ -1227,7 +1227,7 @@ const UpdateAdmissionForm = () => {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                     <div className="d-flex justify-content-end">
                       <div className="text" style={{ marginLeft: "2px" }}>

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import getAPI from '../../../../../api/getAPI';
 import { toast } from "react-toastify";
-import ExcelSheetModal from './ExcelSheetModal'; 
+import ExcelSheetModal from './ExcelSheetModal';
 
 const FeeStructureList = () => {
   const navigate = useNavigate();
@@ -97,13 +97,13 @@ const FeeStructureList = () => {
       toast.error("Error refreshing fee structures.");
     }
   };
-const filteredFeeStructures = feeStructures.filter((structure) => {
+  const filteredFeeStructures = feeStructures.filter((structure) => {
     const query = searchQuery.toLowerCase();
     const className = classMap[structure.classId]?.toLowerCase() || '';
     const sections = structure.sectionIds?.map(id => sectionMap[id]?.toLowerCase() || '') || [];
     const totalAmount = Array.isArray(structure.installments)
       ? structure.installments.reduce((sum, inst) =>
-          sum + (inst.fees?.reduce((subSum, fee) => subSum + fee.amount, 0) || 0), 0)
+        sum + (inst.fees?.reduce((subSum, fee) => subSum + fee.amount, 0) || 0), 0)
       : 0;
     const numInstallments = structure.installments?.length || 0;
 
@@ -163,16 +163,16 @@ const filteredFeeStructures = feeStructures.filter((structure) => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">All School Fees</h4>
-                    <div className="d-none d-md-block">
-                <input
-                  type="text"
-                  className="form-control form-control-sm"
-                  placeholder="Search by field"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{ width: '200px' }}
-                />
-              </div>
+                <div className="d-none d-md-block">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    placeholder="Search by field"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ width: '200px' }}
+                  />
+                </div>
                 <select
                   className="form-select form-select-sm w-auto"
                   value={selectedYear}
@@ -220,10 +220,17 @@ const filteredFeeStructures = feeStructures.filter((structure) => {
                         <td>
                           ₹
                           {Array.isArray(structure.installments)
-                            ? structure.installments.reduce((sum, inst) =>
-                                sum + (inst.fees?.reduce((subSum, fee) => subSum + fee.amount, 0) || 0), 0)
-                            : 0}
+                            ? (
+                              structure.installments.reduce(
+                                (sum, inst) =>
+                                  sum +
+                                  (inst.fees?.reduce((subSum, fee) => subSum + fee.amount, 0) || 0),
+                                0
+                              ).toFixed(2)
+                            )
+                            : "0.00"}
                         </td>
+
                         <td>{structure.installments?.length || 0}</td>
                         <td>
                           <div className="d-flex gap-2">

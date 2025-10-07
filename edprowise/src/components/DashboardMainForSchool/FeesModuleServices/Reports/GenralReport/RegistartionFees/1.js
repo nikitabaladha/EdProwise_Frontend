@@ -1,44 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { FaFilter } from 'react-icons/fa';
-import { MdSettings } from 'react-icons/md';
+import React, { useState, useEffect, useRef } from 'react';
+import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import getAPI from '../../../../../../api/getAPI';
-import SettingsModal from './Settings';
 import { Link } from 'react-router-dom';
+import { exportToExcel, exportToPDF } from './ExportModal';
+import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const RegistartionFees = () => {
-  const [showFilterPanel, setShowFilterPanel] = useState(false);
-  const [activeTab, setActiveTab] = useState('Date');
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [schoolId, setSchoolId] = useState('');
-  const [paymentModes, setPaymentModes] = useState([]);
-  const [feeData, setFeeData] = useState([]);
-  const [tableFields, setTableFields] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingYears, setLoadingYears] = useState(false);
-  const [classOptions, setClassOptions] = useState([]);
-  const [sectionOptions, setSectionOptions] = useState([]);
-  const [academicYearOptions, setAcademicYearOptions] = useState([]);
-  const [academicYears, setAcademicYears] = useState([]);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
-  const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
-  const [selectedClasses, setSelectedClasses] = useState([]);
-  const [selectedSections, setSelectedSections] = useState([]);
-  const [selectedYears, setSelectedYears] = useState([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-
-  const tabs = ['Date', 'Payment Mode', 'Class', 'Section', 'Academic Year'];
-
+const RegistrationFees = () => {
   const headerMapping = {
     regFeesDate: 'Date',
     academicYear: 'Academic Year',
     regNo: 'Reg No.',
     studentName: 'Name',
     class: 'Class',
-    section: 'Section',
+    reportStatus: 'Status',
     regFeesPaymentMode: 'Payment Mode',
     regFeesTransactionNo: 'Cheque No./Transaction No.',
     regFeesReceiptNo: 'Receipts No.',
@@ -46,6 +23,47 @@ const RegistartionFees = () => {
     regFeesPaid: 'Fees Paid',
     regFeesConcession: 'Concession',
   };
+
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [showExportDropdown, setShowExportDropdown] = useState(false);
+  const [activeTab, setActiveTab] = useState('Date');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [schoolId, setSchoolId] = useState('');
+  const [school, setSchool] = useState(null);
+  const [logoSrc, setLogoSrc] = useState('');
+  const [paymentModes, setPaymentModes] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
+  const [feeData, setFeeData] = useState([]);
+  const [tableFields] = useState(
+    Object.keys(headerMapping).map((key) => ({
+      id: key,
+      label: headerMapping[key],
+    }))
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingYears, setLoadingYears] = useState(false);
+  const [classOptions, setClassOptions] = useState([]);
+  const [academicYearOptions, setAcademicYearOptions] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
+  const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
+  const [selectedClasses, setSelectedClasses] = useState([]);
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState('all');
+  const dropdownRef = useRef(null);
+  const tabs = ['Date', 'Academic Year', 'Class', 'Payment Mode', 'Status'];
+
+  const pageShowOptions = [
+    { value: 'all', label: 'All' },
+    { value: 10, label: '10' },
+    { value: 15, label: '15' },
+    { value: 20, label: '20' },
+    { value: 30, label: '30' },
+  ];
 
   const formatAcademicYear = (year) => {
     if (!year) return '-';
@@ -90,11 +108,10 @@ const RegistartionFees = () => {
         setLoadingYears(false);
       }
     };
-
     if (schoolId) {
       fetchAcademicYears();
     }
-  }, [schoolId, selectedAcademicYear]);
+  }, [schoolId]);
 
   useEffect(() => {
     if (!schoolId || !selectedAcademicYear) return;
@@ -102,236 +119,170 @@ const RegistartionFees = () => {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        const fieldsRes = await getAPI(`/get-tab/${schoolId}/DailyCollectionRegistartionFees`, {}, true);
-        if (!fieldsRes.hasError && fieldsRes.data?.data?.inFields) {
-          setTableFields(fieldsRes.data?.data?.inFields || []);
-        } else {
-          toast.warn('No table fields received from API. Please configure in settings.');
-          setTableFields([]);
-        }
-
-        const feeDataRes = await getAPI(`/get-all-data?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
-        if (!feeDataRes?.data) {
-          throw new Error('No fee data found');
-        }
-
+        const feeDataRes = await getAPI(`/get-all-data-Registration?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
         const unifiedData = [];
         const processedKeys = new Set();
 
-        const validYears = academicYears.filter((year) => {
-          const [startYear] = year.split('-').map(Number);
-          const [selectedStartYear] = selectedAcademicYear.split('-').map(Number);
-          return startYear <= selectedStartYear;
-        });
-
-        Object.keys(feeDataRes.data.data || {}).forEach((year) => {
-          if (!validYears.includes(year)) return;
-          feeDataRes.data.data[year].forEach((record) => {
+        if (feeDataRes.data.data[selectedAcademicYear]) {
+          feeDataRes.data.data[selectedAcademicYear].forEach((record) => {
             const regNo = record.student.regNo;
-            const key = `${record.student.admissionNo}_${regNo}_${year}`;
-
+            const key = `${regNo}_${selectedAcademicYear}`;
             if (!processedKeys.has(key)) {
               unifiedData.push({
                 ...record,
-                academicYear: year,
+                academicYear: selectedAcademicYear,
                 className: record.className || '-',
-                sectionName: record.sectionName || '-',
-                shiftName: record.shiftName || '-',
+                student: {
+                  ...record.student,
+                  reportStatus: record.student.regFeesStatus || 'Paid',
+                },
               });
               processedKeys.add(key);
             }
           });
-        });
-
-        feeDataRes.data.admissionDetails.forEach((adm) => {
-          const regNo = adm.registrationNumber;
-          const admissionNo = adm.AdmissionNumber || '-';
-          const studentName = `${adm.firstName} ${adm.lastName}`.trim();
-          const defaultAcademicYear = selectedAcademicYear;
-          const key = `${admissionNo}_${regNo}_${defaultAcademicYear}`;
-
-          if (!processedKeys.has(key) && parseFloat(adm.regFeesDue || 0) === 0) {
-            unifiedData.push({
-              academicYear: defaultAcademicYear,
-              className: '-',
-              sectionName: '-',
-              shiftName: '-',
-              feeInstallments: [],
-              finePolicy: null,
-              concession: null,
-              paidInstallments: [],
-              totals: {
-                totalFeesAmount: 0,
-                totalConcession: 0,
-                totalFine: 0,
-                totalFeesPayable: 0,
-                totalPaidAmount: 0,
-                totalRemainingAmount: 0,
-              },
-              installmentsPresent: [],
-              student: {
-                admissionNo,
-                regNo,
-                studentName,
-                dateOfBirth: '-',
-                age: '-',
-                nationality: '-',
-                gender: '-',
-                bloodGroup: '-',
-                currentAddress: '-',
-                state: '-',
-                pincode: '-',
-                parentContactNo: '-',
-                motherTongue: '-',
-                previousSchool: '-',
-                previousSchoolBoard: '-',
-                aadharPassportNo: '-',
-                category: '-',
-                relationTypeWithSibling: '-',
-                siblingName: '-',
-                parentalStatus: '-',
-                fatherName: '-',
-                fatherMobileNo: '-',
-                fatherQualification: '-',
-                motherName: '-',
-                motherMobileNo: '-',
-                motherQualification: '-',
-                fatherProfession: '-',
-                motherProfession: '-',
-                status: '-',
-                admFeesDate: adm.regFeesDate || '-',
-                admFeesReceiptNo: adm.regFeesReceiptNo || '-',
-                admFeesPaymentMode: adm.regFeesPaymentMode || '-',
-                admFeesTransactionNo: adm.regFeesTransactionNo || '-',
-                admFeesDue: adm.regFeesDue || '0',
-                admFeesConcession: adm.regFeesConcession || '0',
-                admFeesPaid: adm.regFeesPaid || '0',
-                regFeesDate: adm.regFeesDate || '-',
-                regFeesPaymentMode: adm.regFeesPaymentMode || '-',
-                regFeesDue: adm.regFeesDue || '0',
-                regFeesConcession: adm.regFeesConcession || '0',
-                regFeesPaid: adm.regFeesPaid || '0',
-                regFeesChequeNumber: '-',
-                regFeesBankName: '-',
-                regFeesTransactionNo: adm.regFeesTransactionNo || '-',
-                regFeesReceiptNo: adm.regFeesReceiptNo || '-',
-                tcNo: '-',
-                tcFeesDate: '-',
-                tcFeesReceiptNo: '-',
-                tcFeesPaymentMode: '-',
-                tcFeesTransactionNo: '-',
-                tcFeesDue: '0',
-                tcFeesConcession: '0',
-                tcFeesPaid: '0',
-                boardExamFeesDue: '0',
-                boardExamFeesDate: '-',
-                boardExamFeesReceiptNo: '-',
-                boardExamFeesPaymentMode: '-',
-                boardExamFeesTransactionNo: '-',
-                boardExamFeesConcession: '0',
-                boardExamFeesPaid: '0',
-                boardRegFeesDue: '0',
-                boardRegFeesDate: '-',
-                boardRegFeesReceiptNo: '-',
-                boardRegFeesPaymentMode: '-',
-                boardRegFeesTransactionNo: '-',
-                boardRegFeesConcession: '0',
-                boardRegFeesPaid: '0',
-              },
-            });
-            processedKeys.add(key);
-          }
-        });
+        }
 
         unifiedData.sort((a, b) => {
-          const admNoA = a.student.admissionNo || '-';
-          const admNoB = b.student.admissionNo || '-';
-          if (admNoA === admNoB) {
-            return a.academicYear.localeCompare(b.academicYear);
-          }
-          return admNoA.localeCompare(admNoB);
+          const regNoA = a.student.regNo || '-';
+          const regNoB = b.student.regNo || '-';
+          const dateA = a.student.regFeesDate || '-';
+          const dateB = b.student.regFeesDate || '-';
+          return dateA.localeCompare(dateB) || regNoA.localeCompare(regNoB);
         });
 
         setFeeData(unifiedData);
 
         const modes = new Set();
+        const statuses = new Set();
         unifiedData.forEach((record) => {
-          record.paidInstallments?.forEach((pi) => pi.paymentMode && modes.add(pi.paymentMode));
           if (record.student?.regFeesPaymentMode) modes.add(record.student.regFeesPaymentMode);
-          if (record.student?.tcFeesPaymentMode) modes.add(record.student.tcFeesPaymentMode);
-          if (record.student?.boardExamFeesPaymentMode) modes.add(record.student.boardExamFeesPaymentMode);
-          if (record.student?.boardRegFeesPaymentMode) modes.add(record.student.boardRegFeesPaymentMode);
+          if (record.student?.reportStatus) statuses.add(record.student.reportStatus);
         });
         setPaymentModes(
           Array.from(modes)
             .filter((mode) => mode && mode !== '-')
             .map((mode) => ({ value: mode, label: mode }))
         );
-
+        setStatusOptions(
+          Array.from(statuses)
+            .filter((status) => status && status !== '-' && status !== 'Cancelled' && status !== 'Cheque Return')
+            .map((status) => ({ value: status, label: status }))
+        );
         const classes = new Set(unifiedData.map((record) => record.className).filter((cls) => cls && cls !== '-'));
         setClassOptions(
           Array.from(classes).map((cls) => ({ value: cls, label: cls }))
         );
-
-        const sections = new Set(unifiedData.map((record) => record.sectionName).filter((sec) => sec && sec !== '-'));
-        setSectionOptions(
-          Array.from(sections).map((sec) => ({ value: sec, label: sec }))
-        );
+        if (rowsPerPage === 'all' && unifiedData.length > 0) {
+          setRowsPerPage(unifiedData.length);
+        }
       } catch (error) {
         toast.error('Error initializing data: ' + error.message);
         setFeeData([]);
         setPaymentModes([]);
+        setStatusOptions([]);
         setClassOptions([]);
-        setSectionOptions([]);
-        setTableFields([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchInitialData();
-  }, [schoolId, selectedAcademicYear, academicYears]);
+  }, [schoolId, selectedAcademicYear]);
+
+  useEffect(() => {
+    const loadSchoolData = async () => {
+      try {
+        const { school, logoSrc } = await fetchSchoolData(schoolId);
+        setSchool(school);
+        setLogoSrc(logoSrc);
+      } catch (error) {
+        console.error('Failed to fetch school data:', error);
+      }
+    };
+    if (schoolId) {
+      loadSchoolData();
+    }
+  }, [schoolId]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowExportDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSelectChange = (selectedOptions, { name }) => {
     if (name === 'academicYear') {
-      setSelectedYears(selectedOptions || []);
+      const selectedYear = selectedOptions?.value || '';
+      setSelectedAcademicYear(selectedYear);
+      setFeeData([]);
+      setCurrentPage(1);
     } else if (name === 'paymentMode') {
       setSelectedPaymentModes(selectedOptions || []);
+      setCurrentPage(1);
     } else if (name === 'class') {
       setSelectedClasses(selectedOptions || []);
-    } else if (name === 'section') {
-      setSelectedSections(selectedOptions || []);
+      setCurrentPage(1);
+    } else if (name === 'status') {
+      setSelectedStatuses(selectedOptions || []);
+      setCurrentPage(1);
+    } else if (name === 'rowsPerPage') {
+      if (selectedOptions?.value === 'all') {
+        setRowsPerPage(feeData.length || 'all');
+      } else {
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+      }
+      setCurrentPage(1);
     }
   };
 
   const resetFilters = () => {
-    setSelectedYears([]);
+    setSelectedAcademicYear('');
     setSelectedPaymentModes([]);
     setSelectedClasses([]);
-    setSelectedSections([]);
+    setSelectedStatuses([]);
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
+    setCurrentPage(1);
+    setRowsPerPage('all');
+    const storedYear = localStorage.getItem('selectedAcademicYear');
+    if (storedYear) {
+      setSelectedAcademicYear(storedYear);
+    }
   };
 
   const toggleFilterPanel = () => {
     setShowFilterPanel(!showFilterPanel);
+    setShowExportDropdown(false);
+  };
+
+  const toggleExportDropdown = () => {
+    setShowExportDropdown(!showExportDropdown);
+    setShowFilterPanel(false);
   };
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
+
     if (fieldId === 'academicYear') {
       return formatAcademicYear(record[fieldId]) || '-';
     } else if (fieldId === 'studentName') {
       return record.student?.studentName || '-';
-    } else if (fieldId === 'admissionNo' || fieldId === 'admNo') {
-      return record.student?.admissionNo || '-';
     } else if (fieldId === 'class') {
       return record.className || '-';
-    } else if (fieldId === 'section') {
-      return record.sectionName || '-';
-    } else if (fieldId === 'shift') {
-      return record.shiftName || '-';
+    } else if (fieldId === 'regFeesDate') {
+      return record.student?.regFeesDate || '-';
+    } else if (fieldId === 'reportStatus') {
+      return record.student?.reportStatus || '-';
+    } else if (['regFeesDue', 'regFeesPaid', 'regFeesConcession'].includes(fieldId)) {
+      const value = parseFloat(record.student?.[fieldId] || 0);
+      return value === 0 ? '0.00' : value.toFixed(2);
     } else {
       return record.student?.[fieldId] || record[fieldId] || '-';
     }
@@ -341,64 +292,57 @@ const RegistartionFees = () => {
     const due = parseFloat(record.student?.regFeesDue || 0);
     const concession = parseFloat(record.student?.regFeesConcession || 0);
     const paid = parseFloat(record.student?.regFeesPaid || 0);
-    return (due - concession - paid);
+    const balance = due - concession - paid;
+    return balance === 0 ? '0.00' : balance.toFixed(2);
   };
 
-const filteredData = feeData.filter((record) => {
-  const [selectedStartYear] = selectedAcademicYear.split('-').map(Number);
-  const [recordStartYear] = record.academicYear.split('-').map(Number);
-  if (recordStartYear > selectedStartYear) {
-    return false;
-  }
+  const filteredData = feeData.filter((record) => {
+    const matchesAcademicYear = record.academicYear === selectedAcademicYear;
 
-  const matchesSearchTerm = searchTerm
-    ? Object.values(record).some((value) =>
-        value &&
-        typeof value === 'string' &&
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-      ) ||
-      Object.values(record.student || {}).some((value) =>
-        value &&
-        typeof value === 'string' &&
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : true;
+    const matchesSearchTerm = searchTerm
+      ? Object.values(record).some((value) =>
+          value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
+        ) ||
+        Object.values(record.student || {}).some((value) =>
+          value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : true;
 
-  const matchesPaymentMode =
-    selectedPaymentModes.length === 0 ||
-    selectedPaymentModes.some((mode) => record.student?.regFeesPaymentMode === mode.value);
+    const matchesPaymentMode =
+      selectedPaymentModes.length === 0 ||
+      selectedPaymentModes.some((mode) => record.student?.regFeesPaymentMode === mode.value);
 
-  const matchesClass =
-    selectedClasses.length === 0 ||
-    selectedClasses.some((cls) => record.className === cls.value);
+    const matchesClass =
+      selectedClasses.length === 0 ||
+      selectedClasses.some((cls) => record.className === cls.value);
 
-  const matchesSection =
-    selectedSections.length === 0 ||
-    selectedSections.some((sec) => record.sectionName === sec.value);
+    const matchesStatus =
+      selectedStatuses.length === 0 ||
+      selectedStatuses.some((status) => record.student?.reportStatus === status.value);
 
-  const matchesYear =
-    selectedYears.length === 0 ||
-    selectedYears.some((year) => record.academicYear === year.value);
+    const matchesDate =
+      (!startDate && !endDate) ||
+      (record.student?.regFeesDate !== '-' &&
+        (() => {
+          const dateString = record.student.regFeesDate;
+          if (!dateString || !/^\d{2}-\d{2}-\d{4}$/.test(dateString)) return false;
+          const [day, month, year] = dateString.split('-');
+          const recordDate = new Date(`${year}-${month}-${day}`);
+          if (isNaN(recordDate.getTime())) return false;
+          const start = startDate ? new Date(startDate) : null;
+          const end = endDate ? new Date(endDate) : null;
+          return (!start || recordDate >= start) && (!end || recordDate <= end);
+        })());
 
-  const matchesDate =
-    (!startDate && !endDate) ||
-    (record.student?.regFeesDate !== '-' &&
-      (() => {
-        const recordDate = new Date(record.student.regFeesDate.split('-').reverse().join('-'));
-        const start = startDate ? new Date(startDate) : null;
-        const end = endDate ? new Date(endDate) : null;
-        return (!start || recordDate >= start) && (!end || recordDate <= end);
-      })());
+    return matchesAcademicYear && matchesSearchTerm && matchesPaymentMode && matchesClass && matchesStatus && matchesDate;
+  });
 
-  return (
-    matchesSearchTerm &&
-    matchesPaymentMode &&
-    matchesClass &&
-    matchesSection &&
-    matchesYear &&
-    matchesDate
-  );
-});
+  const groupedByDate = filteredData.reduce((acc, record) => {
+    const date = record.student.regFeesDate;
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(record);
+    return acc;
+  }, {});
 
   const totals = filteredData.reduce(
     (acc, record) => {
@@ -406,7 +350,6 @@ const filteredData = feeData.filter((record) => {
       const paid = parseFloat(record.student?.regFeesPaid || 0);
       const concession = parseFloat(record.student?.regFeesConcession || 0);
       const balance = due - concession - paid;
-
       return {
         feesDue: acc.feesDue + due,
         feesPaid: acc.feesPaid + paid,
@@ -416,6 +359,56 @@ const filteredData = feeData.filter((record) => {
     },
     { feesDue: 0, feesPaid: 0, concession: 0, balance: 0 }
   );
+
+  const totalRecords = Object.keys(groupedByDate).reduce((sum, date) => sum + groupedByDate[date].length, 0);
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
+
+  const maxPagesToShow = 5;
+  const pagesToShow = [];
+  const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+  for (let i = startPage; i <= endPage; i++) {
+    pagesToShow.push(i);
+  }
+
+  const paginatedData = () => {
+    const sortedDates = Object.keys(groupedByDate).sort();
+    let currentCount = 0;
+    const startIndex = rowsPerPage === 'all' ? 0 : (currentPage - 1) * rowsPerPage;
+    const endIndex = rowsPerPage === 'all' ? totalRecords : startIndex + rowsPerPage;
+    const paginated = [];
+
+    for (const date of sortedDates) {
+      const records = groupedByDate[date];
+      for (const record of records) {
+        if (currentCount >= startIndex && currentCount < endIndex) {
+          paginated.push({ date, record });
+        }
+        currentCount++;
+        if (currentCount >= endIndex) break;
+      }
+      if (currentCount >= endIndex) break;
+    }
+
+    return paginated;
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <div className="container">
@@ -431,28 +424,118 @@ const filteredData = feeData.filter((record) => {
                       className="form-control border border-dark"
                       placeholder="Search by any field"
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
                     />
                   </div>
                   <div className="col-md-2"></div>
                   <div className="col-md-5 px-0 d-flex align-content-center justify-content-end">
+                    <Select
+                      isClearable
+                      name="rowsPerPage"
+                      placeholder="Show"
+                      options={pageShowOptions}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length))}
+                      onChange={(selected, action) => handleSelectChange(selected, action)}
+                      className="email-select border border-dark me-lg-2"
+                    />
                     <div
-                      className="py-1 px-2 mr-2 border border-dark finance-filter-icon"
+                      className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
                       onClick={toggleFilterPanel}
                     >
                       <FaFilter />
                     </div>
-                    <div
-                      className="py-1 px-2 finance-setting-icon"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => setShowSettingsModal(true)}
-                    >
-                      <MdSettings />
+                    <div className="position-relative" ref={dropdownRef}>
+                      <div
+                        className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
+                        style={{ cursor: 'pointer' }}
+                        onClick={toggleExportDropdown}
+                        title="Download"
+                      >
+                        <FaDownload />
+                      </div>
+                      {showExportDropdown && (
+                        <div
+                          className="position-absolute bg-white border mr-2 mt-2 border-dark rounded shadow"
+                          style={{
+                            top: '100%',
+                            right: 0,
+                            zIndex: 1000,
+                            minWidth: '150px',
+                          }}
+                        >
+                          <button
+                            className="btn btn-light w-100 text-left py-2 px-3"
+                            disabled={isExporting}
+                            onClick={async () => {
+                              setIsExporting(true);
+                              try {
+                                await exportToExcel(
+                                  filteredData,
+                                  tableFields,
+                                  headerMapping,
+                                  getFieldValue,
+                                  calculateBalance,
+                                  {
+                                    feesDue: totals.feesDue.toFixed(2),
+                                    feesPaid: totals.feesPaid.toFixed(2),
+                                    concession: totals.concession.toFixed(2),
+                                    balance: totals.balance.toFixed(2),
+                                  },
+                                  formatAcademicYear,
+                                  selectedAcademicYear
+                                );
+                              } catch (err) {
+                                toast.error("Export to Excel failed.");
+                              } finally {
+                                setIsExporting(false);
+                                setShowExportDropdown(false);
+                              }
+                            }}
+                          >
+                            {isExporting ? 'Exporting...' : 'Export to Excel'}
+                          </button>
+                          <button
+                            className="btn btn-light w-100 text-left py-2 px-3"
+                            disabled={isExporting}
+                            onClick={async () => {
+                              setIsExporting(true);
+                              try {
+                                await exportToPDF(
+                                  filteredData,
+                                  tableFields,
+                                  headerMapping,
+                                  getFieldValue,
+                                  calculateBalance,
+                                  {
+                                    feesDue: totals.feesDue.toFixed(2),
+                                    feesPaid: totals.feesPaid.toFixed(2),
+                                    concession: totals.concession.toFixed(2),
+                                    balance: totals.balance.toFixed(2),
+                                  },
+                                  formatAcademicYear,
+                                  selectedAcademicYear,
+                                  school,
+                                  logoSrc
+                                );
+                              } catch (err) {
+                                toast.error("Export to PDF failed.");
+                              } finally {
+                                setIsExporting(false);
+                                setShowExportDropdown(false);
+                              }
+                            }}
+                          >
+                            {isExporting ? 'Exporting...' : 'Export to PDF'}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-
                 {showFilterPanel && (
                   <div className="row mt-1 border border-light rounded px-md-3 py-1">
                     <div className="col-12 p-2">
@@ -468,7 +551,6 @@ const filteredData = feeData.filter((record) => {
                           </li>
                         ))}
                       </ul>
-
                       <div className="tab-content mt-2">
                         {activeTab === 'Date' && (
                           <div className="row d-lg-flex justify-content-center">
@@ -478,7 +560,10 @@ const filteredData = feeData.filter((record) => {
                                 type="date"
                                 className="form-control"
                                 value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                onChange={(e) => {
+                                  setStartDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                             <div className="col-md-4">
@@ -487,12 +572,14 @@ const filteredData = feeData.filter((record) => {
                                 type="date"
                                 className="form-control"
                                 value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                                onChange={(e) => {
+                                  setEndDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
                               />
                             </div>
                           </div>
                         )}
-
                         {activeTab === 'Payment Mode' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
@@ -508,7 +595,6 @@ const filteredData = feeData.filter((record) => {
                             </div>
                           </div>
                         )}
-
                         {activeTab === 'Class' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
@@ -524,40 +610,36 @@ const filteredData = feeData.filter((record) => {
                             </div>
                           </div>
                         )}
-
-                        {activeTab === 'Section' && (
+                        {activeTab === 'Academic Year' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
-                                isMulti
-                                name="section"
-                                options={sectionOptions}
-                                value={selectedSections}
+                                name="academicYear"
+                                options={academicYearOptions}
+                                value={academicYearOptions.find((option) => option.value === selectedAcademicYear)}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Sections"
+                                placeholder="Select Academic Year"
                                 className="mt-2"
                               />
                             </div>
                           </div>
                         )}
-
-                        {activeTab === 'Academic Year' && (
+                        {activeTab === 'Status' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
                                 isMulti
-                                name="academicYear"
-                                options={academicYearOptions}
-                                value={selectedYears}
+                                name="status"
+                                options={statusOptions}
+                                value={selectedStatuses}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Academic Years"
+                                placeholder="Select Statuses"
                                 className="mt-2"
                               />
                             </div>
                           </div>
                         )}
                       </div>
-
                       <div className="text-end mt-3">
                         <button className="btn btn-secondary me-2" onClick={resetFilters}>
                           Reset
@@ -568,13 +650,11 @@ const filteredData = feeData.filter((record) => {
                   </div>
                 )}
               </div>
-
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Registration Fees Report</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">RegistrationFeesReport</h2>
                 </div>
               </div>
-
               {isLoading || loadingYears ? (
                 <div className="text-center mt-3">
                   <div className="spinner-border" role="status">
@@ -583,51 +663,108 @@ const filteredData = feeData.filter((record) => {
                   <p>Loading data...</p>
                 </div>
               ) : tableFields.length > 0 ? (
-                <div className="table-responsive pb-4 mt-3">
-                  <table className="table text-dark border border-secondary mb-1">
-                    <thead>
-                      <tr className="payroll-table-header">
-                        {tableFields.map((field) => (
-                          <th key={field.id} className="text-center align-content-center border border-secondary text-nowrap p-2">
-                            {headerMapping[field.id] || field.label}
-                          </th>
-                        ))}
-                        <th className="text-center align-content-center border border-secondary text-nowrap p-2">Balance</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredData.length > 0 ? (
-                        filteredData.map((record, index) => (
-                          <tr key={`${record.student.admissionNo}_${record.student.regNo}_${record.academicYear}_${index}`} className="payroll-table-row">
-                            {tableFields.map((field) => (
-                              <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {getFieldValue(record, field)}
+                <>
+                  <div className="table-responsive pb-4 mt-3">
+                    <table className="table text-dark border border-secondary mb-1">
+                      <thead>
+                        <tr className="payroll-table-header">
+                          {tableFields.map((field) => (
+                            <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {headerMapping[field.id] || field.label}
+                            </th>
+                          ))}
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Balance</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {paginatedData().length > 0 ? (
+                          paginatedData().map(({ date, record }, index) => (
+                            <tr
+                              key={`${record.student.regNo}_${record.academicYear}_${record.student.reportStatus}_${index}`}
+                              className="payroll-table-row"
+                            >
+                              {tableFields.map((field) => (
+                                <td
+                                  key={field.id}
+                                  className="text-center align-middle border border-secondary text-nowrap p-2"
+                                >
+                                  {getFieldValue(record, field)}
+                                </td>
+                              ))}
+                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                                {calculateBalance(record)}
                               </td>
-                            ))}
-                            <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                              {calculateBalance(record)}
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={tableFields.length + 1} className="text-center">
+                              No data matches the selected filters for {formatAcademicYear(selectedAcademicYear)}.
                             </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={tableFields.length + 1} className="text-center">
-                            No data matches the selected filters.
+                        )}
+                      </tbody>
+                      <tfoot>
+                        <tr className="payroll-table-footer">
+                          <td colSpan={tableFields.length - 3} className="text-right border border-secondary p-2">
+                            <strong>Total</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.feesDue.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.feesPaid.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.concession.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.balance.toFixed(2)}</strong>
                           </td>
                         </tr>
-                      )}
-                    </tbody>
-                    <tfoot>
-                      <tr className="payroll-table-footer">
-                        <td colSpan={tableFields.length - 3} className="text-right border border-secondary p-2"><strong>Total</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.feesDue}</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.feesPaid}</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.concession}</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.balance}</strong></td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
+                      </tfoot>
+                    </table>
+                  </div>
+                  {totalRecords > 0 && rowsPerPage !== 'all' && (
+                    <div className="card-footer border-top">
+                      <nav aria-label="Page navigation example">
+                        <ul className="pagination justify-content-end mb-0">
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handlePreviousPage}
+                              disabled={currentPage === 1}
+                            >
+                              Previous
+                            </button>
+                          </li>
+                          {pagesToShow.map((page) => (
+                            <li
+                              key={page}
+                              className={`page-item ${currentPage === page ? 'active' : ''}`}
+                            >
+                              <button
+                                className={`page-link pagination-button ${currentPage === page ? 'active' : ''}`}
+                                onClick={() => handlePageClick(page)}
+                              >
+                                {page}
+                              </button>
+                            </li>
+                          ))}
+                          <li className="page-item">
+                            <button
+                              className="page-link"
+                              onClick={handleNextPage}
+                              disabled={currentPage === totalPages}
+                            >
+                              Next
+                            </button>
+                          </li>
+                        </ul>
+                      </nav>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center mt-3">
                   <p>No table fields available. Please configure in settings.</p>
@@ -637,15 +774,8 @@ const filteredData = feeData.filter((record) => {
           </div>
         </div>
       </div>
-
-      <SettingsModal
-        show={showSettingsModal}
-        onHide={() => setShowSettingsModal(false)}
-        onSave={(newInFields) => setTableFields(newInFields)}
-        initialInFields={tableFields}
-      />
     </div>
   );
 };
 
-export default RegistartionFees;
+export default RegistrationFees;

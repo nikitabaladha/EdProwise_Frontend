@@ -973,7 +973,7 @@ const UpdateAdmissionForm = () => {
                       </div>
 
 
-
+{/* 
                       <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="admissionFees" className="form-label">
@@ -1121,7 +1121,7 @@ const UpdateAdmissionForm = () => {
                             </div>
                           </div>
                         </>
-                      )}
+                      )} */}
                     </div>
 
                     <div className="card-header mb-2">
@@ -1190,7 +1190,7 @@ const UpdateAdmissionForm = () => {
                         id="receivedBy"
                         name="receivedBy"
                         className="form-control"
-                        value={formData.paymentMode}
+                        value={student?.paymentMode}
                         disabled
                       />
                     </div>

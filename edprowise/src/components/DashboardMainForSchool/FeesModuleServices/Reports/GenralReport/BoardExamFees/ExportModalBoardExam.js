@@ -35,7 +35,11 @@ export const exportToExcel = async (
   const totalsRow = tableFields.map(field => {
     if (field.id === 'boardExamFeesDue') return Number(totals.feesDue);
     else if (field.id === 'boardExamFeesPaid') return Number(totals.feesPaid);
+    else if (field.id === 'boardExamFeesRefundAmount') return Number(totals.refund);
+    else if (field.id === 'netFees') return Number(totals.netFees);
     else if (field.id === 'boardExamFeesConcession') return Number(totals.concession);
+    else if (field.id === 'balance') return Number(totals.balance);
+  
     return '';
   });
   totalsRow.push(Number(totals.balance));
@@ -258,7 +262,6 @@ export const exportToPDF = async (
           <thead>
             <tr>
               ${tableFields.map((field) => `<th>${headerMapping[field.id] || field.label}</th>`).join('')}
-              <th>Balance</th>
             </tr>
           </thead>
           <tbody>
@@ -268,9 +271,11 @@ export const exportToPDF = async (
                     if (record.isTotalsRow) {
                       return `
                         <tr>
-                          <td colspan="${tableFields.length - 3}"><strong>Total</strong></td>
+                         <td colspan="${tableFields.length - 6}"><strong>Total</strong></td>
                           <td><strong>${totals.feesDue}</strong></td>
                           <td><strong>${totals.feesPaid}</strong></td>
+                          <td><strong>${totals.refund}</strong></td>
+                          <td><strong>${totals.netFees}</strong></td>
                           <td><strong>${totals.concession}</strong></td>
                           <td><strong>${totals.balance}</strong></td>
                         </tr>
@@ -281,7 +286,6 @@ export const exportToPDF = async (
                         ${tableFields
                           .map((field) => `<td>${getFieldValue(record, field)}</td>`)
                           .join('')}
-                        <td>${calculateBalance(record)}</td>
                       </tr>
                     `;
                   })

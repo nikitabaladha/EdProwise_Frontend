@@ -12,18 +12,38 @@ const AdmissionFees = () => {
   const headerMapping = {
     admFeesDate: 'Date',
     academicYear: 'Academic Year',
-    admNo: 'Adm No.',
+    admissionNumber: 'Admission No.',
     studentName: 'Name',
-    class: 'Class',
-    section: 'Section',
-    reportStatus: 'Report Status',
+    className: 'Class',
+    sectionName: 'Section',
+    admFeesStatus: 'Status',
     admFeesPaymentMode: 'Payment Mode',
     admFeesTransactionNo: 'Cheque No./Transaction No.',
     admFeesReceiptNo: 'Receipts No.',
     admFeesDue: 'Fees Due',
     admFeesPaid: 'Fees Paid',
+    admFeesRefundAmount: 'Refund/Cancelled',
     admFeesConcession: 'Concession',
   };
+
+  const tableFields = [
+    { id: 'admFeesDate', label: 'Date' },
+    { id: 'academicYear', label: 'Academic Year' },
+    { id: 'admissionNumber', label: 'Admission No.' },
+    { id: 'studentName', label: 'Name' },
+    { id: 'className', label: 'Class' },
+    { id: 'sectionName', label: 'Section' },
+    { id: 'admFeesStatus', label: 'Status' },
+    { id: 'admFeesPaymentMode', label: 'Payment Mode' },
+    { id: 'admFeesTransactionNo', label: 'Cheque No./Transaction No.' },
+    { id: 'admFeesReceiptNo', label: 'Receipts No.' },
+    { id: 'admFeesDue', label: 'Fees Due' },
+    { id: 'admFeesPaid', label: 'Fees Paid' },
+    { id: 'admFeesRefundAmount', label: 'Refund/Cancelled' },
+    { id: 'netFees', label: 'Net Fees' },
+    { id: 'admFeesConcession', label: 'Concession' },
+    { id: 'balance', label: 'Balance' },
+  ];
 
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
@@ -36,12 +56,6 @@ const AdmissionFees = () => {
   const [statusOptions, setStatusOptions] = useState([]);
   const [feeData, setFeeData] = useState([]);
   const [classSectionMap, setClassSectionMap] = useState({});
-  const [tableFields] = useState(
-    Object.keys(headerMapping).map((key) => ({
-      id: key,
-      label: headerMapping[key],
-    }))
-  );
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [loadingYears, setLoadingYears] = useState(false);
@@ -122,16 +136,45 @@ const AdmissionFees = () => {
       setIsLoading(true);
       try {
         const response = await getAPI(`/get-all-data-admission?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
-        if (!response?.data?.data) {
-          throw new Error('No admission data found');
+        if (!response?.data?.combinedDetails) {
+          throw new Error('No admission fee data found');
         }
 
-        const data = response.data.data;
-        const unifiedData = [];
-        const processedKeys = new Set();
-        const classSectionMapping = {};
+        const unifiedData = response.data.combinedDetails.map((record) => ({
+          recordType: record.recordType || 'Admission Fee',
+          academicYear: record.academicYear || '-',
+          admissionNumber: record.admissionNumber || '-',
+          studentName: record.recordType === 'Refund'
+            ? `${record.firstName} ${record.lastName}`.trim() || '-'
+            : `${record.firstName} ${record.lastName}` || '-',
+          className: record.className || '-',
+          sectionName: record.sectionName || '-',
+          admFeesDate: record.admFeesDate || '-',
+          admFeesPaymentMode: record.admFeesPaymentMode || '-',
+          admFeesChequeNumber: record.admFeesChequeNumber || '-',
+          admFeesBankName: record.admFeesBankName || '-',
+          admFeesTransactionNo: record.admFeesTransactionNo || '-',
+          admFeesReceiptNo: record.admFeesReceiptNo || '-',
+          admFeesStatus: record.admFeesStatus || '-',
+          admFeesDue: record.admFeesDue || '0',
+          admFeesPaid: record.admFeesPaid || '0',
+          admFeesConcession: record.admFeesConcession || '0',
+          admFeesRefundAmount: record.admFeesRefundAmount || '0',
+          admFeesCancelledAmount: record.admFeesCancelledAmount || '0',
+        }));
 
-        data.forEach((record) => {
+        unifiedData.sort((a, b) => {
+          const dateA = a.admFeesDate || '-';
+          const dateB = b.admFeesDate || '-';
+          const admNoA = a.admissionNumber || '-';
+          const admNoB = b.admissionNumber || '-';
+          return dateA.localeCompare(dateB) || admNoA.localeCompare(admNoB);
+        });
+
+        setFeeData(unifiedData);
+
+        const classSectionMapping = {};
+        unifiedData.forEach((record) => {
           const className = record.className || '-';
           const sectionName = record.sectionName || '-';
           if (className !== '-' && sectionName !== '-') {
@@ -140,44 +183,10 @@ const AdmissionFees = () => {
             }
             classSectionMapping[className].add(sectionName);
           }
-
-          const admNo = record.student.admissionNo;
-          const key = `${admNo}_${selectedAcademicYear}`;
-          if (!processedKeys.has(key)) {
-            (record.student.admFeesStatus || ['Paid']).forEach((status) => {
-              unifiedData.push({
-                ...record,
-                academicYear: selectedAcademicYear,
-                className: record.className || '-',
-                sectionName: record.sectionName || '-',
-                student: {
-                  ...record.student,
-                  reportStatus: status,
-                },
-              });
-            });
-            processedKeys.add(key);
-          }
         });
-
-        unifiedData.sort((a, b) => {
-          const admNoA = a.student.admissionNo || '-';
-          const admNoB = b.student.admissionNo || '-';
-          const dateA = a.student.reportStatus === 'Paid' ? a.student.admFeesDate : a.student.admFeesCancelledDate || '-';
-          const dateB = b.student.reportStatus === 'Paid' ? b.student.admFeesDate : b.student.admFeesCancelledDate || '-';
-          const statusA = a.student.reportStatus;
-          const statusB = b.student.reportStatus;
-
-          if (dateA !== dateB) return dateA.localeCompare(dateB);
-          if (statusA === 'Paid' && statusB !== 'Paid') return -1;
-          if (statusB === 'Paid' && statusA !== 'Paid') return 1;
-          return admNoA.localeCompare(admNoB);
-        });
-
-        setFeeData(unifiedData);
         setClassSectionMap(classSectionMapping);
 
-        const modes = new Set(unifiedData.map(record => record.student?.admFeesPaymentMode).filter(mode => mode && mode !== '-'));
+        const modes = new Set(unifiedData.map(record => record.admFeesPaymentMode).filter(mode => mode && mode !== '-'));
         setPaymentModes(Array.from(modes).map(mode => ({ value: mode, label: mode })));
 
         const classes = new Set(unifiedData.map(record => record.className).filter(cls => cls && cls !== '-'));
@@ -186,14 +195,14 @@ const AdmissionFees = () => {
         const sections = new Set(unifiedData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
         setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
 
-        const statuses = new Set(unifiedData.map(record => record.student?.reportStatus).filter(status => status && status !== '-'));
+        const statuses = new Set(unifiedData.map(record => record.admFeesStatus).filter(status => status && status !== '-'));
         setStatusOptions(Array.from(statuses).map(status => ({ value: status, label: status })));
 
         if (rowsPerPage === 'all' && unifiedData.length > 0) {
           setRowsPerPage(unifiedData.length);
         }
       } catch (error) {
-        toast.error('Error fetching admission data: ' + error.message);
+        toast.error('Error fetching admission fee data: ' + error.message);
         setFeeData([]);
         setClassSectionMap({});
         setPaymentModes([]);
@@ -212,7 +221,7 @@ const AdmissionFees = () => {
       const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
       setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
       if (selectedClasses.length === 0) {
-        setSelectedSections([]); // Clear selected sections when no classes are selected
+        setSelectedSections([]);
       }
       return;
     }
@@ -222,7 +231,7 @@ const AdmissionFees = () => {
       Object.values(classSectionMap).forEach(sectionSet => {
         sectionSet.forEach(section => validSections.add(section));
       });
-      setSelectedSections([]); // Clear selected sections when no classes are selected
+      setSelectedSections([]);
     } else {
       selectedClasses.forEach(cls => {
         const sectionsForClass = classSectionMap[cls.value] || new Set();
@@ -327,60 +336,53 @@ const AdmissionFees = () => {
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
-    const isCancelledOrChequeReturn = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus);
-
     if (fieldId === 'academicYear') {
       return formatAcademicYear(record[fieldId]) || '-';
     } else if (fieldId === 'studentName') {
-      return record.student?.studentName || '-';
-    } else if (fieldId === 'admNo') {
-      return record.student?.admissionNo || '-';
-    } else if (fieldId === 'class') {
+      return record.studentName || '-';
+    } else if (fieldId === 'admissionNumber') {
+      return record.admissionNumber || '-';
+    } else if (fieldId === 'className') {
       return record.className || '-';
-    } else if (fieldId === 'section') {
+    } else if (fieldId === 'sectionName') {
       return record.sectionName || '-';
-    } else if (fieldId === 'admFeesDate') {
-      if (isCancelledOrChequeReturn) {
-        const cancelledDate = record.student?.admFeesCancelledDate;
-        if (cancelledDate && /^\d{2}-\d{2}-\d{4}$/.test(cancelledDate)) {
-          return cancelledDate;
-        }
-        return '-';
-      }
-      return record.student?.admFeesDate || '-';
-    } else if (fieldId === 'reportStatus') {
-      return record.student?.reportStatus || '-';
-    } else if (['admFeesDue', 'admFeesPaid', 'admFeesConcession'].includes(fieldId)) {
-      const value = parseInt(record.student?.[fieldId] || 0, 10);
-      if (value === 0) return '0';
-      return isCancelledOrChequeReturn ? `-${value}` : value.toString();
+    } else if (['admFeesDue', 'admFeesPaid', 'admFeesConcession', 'admFeesRefundAmount'].includes(fieldId)) {
+      const value = parseFloat(record[fieldId] || 0);
+      return value === 0 ? '0.00' : value.toFixed(2);
+    } else if (fieldId === 'netFees') {
+      return calculateNetFees(record);
+    } else if (fieldId === 'balance') {
+      return calculateBalance(record);
     } else {
-      return record.student?.[fieldId] || record[fieldId] || '-';
+      return record[fieldId] || '-';
     }
   };
 
+  const calculateNetFees = (record) => {
+    const paid = parseFloat(record.admFeesPaid || 0);
+    const refund = parseFloat(record.admFeesRefundAmount || 0);
+    const netFees = paid - refund;
+    return netFees === 0 ? '0.00' : netFees.toFixed(2);
+  };
+
   const calculateBalance = (record) => {
-    const due = parseInt(record.student?.admFeesDue || 0, 10);
-    const concession = parseInt(record.student?.admFeesConcession || 0, 10);
-    const paid = parseInt(record.student?.admFeesPaid || 0, 10);
-    const balance = due - concession - paid;
-    const isCancelledOrChequeReturn = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus);
-    if (balance === 0) return '0';
-    return isCancelledOrChequeReturn ? `-${balance}` : balance.toString();
+    const due = parseFloat(record.admFeesDue || 0);
+    const concession = parseFloat(record.admFeesConcession || 0);
+    const paid = parseFloat(record.admFeesPaid || 0);
+    const refund = parseFloat(record.admFeesRefundAmount || 0);
+    const balance = due - concession - paid + refund;
+    return balance === 0 ? '0.00' : balance.toFixed(2);
   };
 
   const filteredData = feeData.filter((record) => {
     const matchesSearchTerm = searchTerm
       ? Object.values(record).some((value) =>
           value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
-        ) ||
-        Object.values(record.student || {}).some((value) =>
-          value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
         )
       : true;
     const matchesPaymentMode =
       selectedPaymentModes.length === 0 ||
-      selectedPaymentModes.some((mode) => record.student?.admFeesPaymentMode === mode.value);
+      selectedPaymentModes.some((mode) => record.admFeesPaymentMode === mode.value);
     const matchesClass =
       selectedClasses.length === 0 ||
       selectedClasses.some((cls) => record.className === cls.value);
@@ -389,14 +391,12 @@ const AdmissionFees = () => {
       selectedSections.some((sec) => record.sectionName === sec.value);
     const matchesStatus =
       selectedStatuses.length === 0 ||
-      selectedStatuses.some((status) => record.student?.reportStatus === status.value);
+      selectedStatuses.some((status) => record.admFeesStatus === status.value);
     const matchesDate =
       (!startDate && !endDate) ||
-      ((record.student?.admFeesDate !== '-' || record.student?.admFeesCancelledDate !== '-') &&
+      (record.admFeesDate !== '-' &&
         (() => {
-          const dateString = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus)
-            ? record.student.admFeesCancelledDate
-            : record.student.admFeesDate;
+          const dateString = record.admFeesDate;
           if (!dateString || !/^\d{2}-\d{2}-\d{4}$/.test(dateString)) return false;
           const [day, month, year] = dateString.split('-');
           const recordDate = new Date(`${year}-${month}-${day}`);
@@ -409,9 +409,7 @@ const AdmissionFees = () => {
   });
 
   const groupedByDate = filteredData.reduce((acc, record) => {
-    const date = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus)
-      ? record.student.admFeesCancelledDate
-      : record.student.admFeesDate;
+    const date = record.admFeesDate || '-';
     if (!acc[date]) acc[date] = [];
     acc[date].push(record);
     return acc;
@@ -419,20 +417,22 @@ const AdmissionFees = () => {
 
   const totals = filteredData.reduce(
     (acc, record) => {
-      const due = parseInt(record.student?.admFeesDue || 0, 10);
-      const paid = parseInt(record.student?.admFeesPaid || 0, 10);
-      const concession = parseInt(record.student?.admFeesConcession || 0, 10);
-      const balance = due - concession - paid;
-      const isCancelledOrChequeReturn = ['Cancelled', 'Cheque Return'].includes(record.student?.reportStatus);
-      const multiplier = isCancelledOrChequeReturn ? -1 : 1;
+      const due = parseFloat(record.admFeesDue || 0);
+      const paid = parseFloat(record.admFeesPaid || 0);
+      const concession = parseFloat(record.admFeesConcession || 0);
+      const refund = parseFloat(record.admFeesRefundAmount || 0);
+      const netFees = paid - refund;
+      const balance = due - concession - paid + refund;
       return {
-        feesDue: acc.feesDue + (due !== 0 ? due * multiplier : due),
-        feesPaid: acc.feesPaid + (paid !== 0 ? paid * multiplier : paid),
-        concession: acc.concession + (concession !== 0 ? concession * multiplier : concession),
-        balance: acc.balance + (balance !== 0 ? balance * multiplier : balance),
+        feesDue: acc.feesDue + due,
+        feesPaid: acc.feesPaid + paid,
+        refund: acc.refund + refund,
+        netFees: acc.netFees + netFees,
+        concession: acc.concession + concession,
+        balance: acc.balance + balance,
       };
     },
-    { feesDue: 0, feesPaid: 0, concession: 0, balance: 0 }
+    { feesDue: 0, feesPaid: 0, refund: 0, netFees: 0, concession: 0, balance: 0 }
   );
 
   const totalRecords = Object.keys(groupedByDate).reduce((sum, date) => sum + groupedByDate[date].length, 0);
@@ -554,7 +554,14 @@ const AdmissionFees = () => {
                                   headerMapping,
                                   getFieldValue,
                                   calculateBalance,
-                                  totals,
+                                  {
+                                    feesDue: totals.feesDue.toFixed(2),
+                                    feesPaid: totals.feesPaid.toFixed(2),
+                                    refund: totals.refund.toFixed(2),
+                                    netFees: totals.netFees.toFixed(2),
+                                    concession: totals.concession.toFixed(2),
+                                    balance: totals.balance.toFixed(2),
+                                  },
                                   formatAcademicYear,
                                   selectedAcademicYear
                                 );
@@ -580,7 +587,14 @@ const AdmissionFees = () => {
                                   headerMapping,
                                   getFieldValue,
                                   calculateBalance,
-                                  totals,
+                                  {
+                                    feesDue: totals.feesDue.toFixed(2),
+                                    feesPaid: totals.feesPaid.toFixed(2),
+                                    refund: totals.refund.toFixed(2),
+                                    netFees: totals.netFees.toFixed(2),
+                                    concession: totals.concession.toFixed(2),
+                                    balance: totals.balance.toFixed(2),
+                                  },
                                   formatAcademicYear,
                                   selectedAcademicYear,
                                   school,
@@ -682,7 +696,7 @@ const AdmissionFees = () => {
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Sections"
                                 className="mt-2"
-                                isDisabled={selectedClasses.length === 0} // Disable when no classes are selected
+                                isDisabled={selectedClasses.length === 0}
                               />
                             </div>
                           </div>
@@ -749,17 +763,16 @@ const AdmissionFees = () => {
                         <tr className="payroll-table-header">
                           {tableFields.map((field) => (
                             <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                              {headerMapping[field.id] || field.label}
+                              {field.label}
                             </th>
                           ))}
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Balance</th>
                         </tr>
                       </thead>
                       <tbody>
                         {paginatedData().length > 0 ? (
                           paginatedData().map(({ date, record }, index) => (
                             <tr
-                              key={`${record.student.admissionNo}_${record.academicYear}_${record.student.reportStatus}_${index}`}
+                              key={`${record.admissionNumber}_${record.academicYear}_${record.admFeesStatus}_${index}`}
                               className="payroll-table-row"
                             >
                               {tableFields.map((field) => (
@@ -770,14 +783,11 @@ const AdmissionFees = () => {
                                   {getFieldValue(record, field)}
                                 </td>
                               ))}
-                              <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                {calculateBalance(record)}
-                              </td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={tableFields.length + 1} className="text-center">
+                            <td colSpan={tableFields.length} className="text-center">
                               No data matches the selected filters for {formatAcademicYear(selectedAcademicYear)}.
                             </td>
                           </tr>
@@ -785,20 +795,26 @@ const AdmissionFees = () => {
                       </tbody>
                       <tfoot>
                         <tr className="payroll-table-footer">
-                          <td colSpan={tableFields.length - 3} className="text-right border border-secondary p-2">
+                          <td colSpan={tableFields.length - 6} className="text-right border border-secondary p-2">
                             <strong>Total</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.feesDue}</strong>
+                            <strong>{totals.feesDue.toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.feesPaid}</strong>
+                            <strong>{totals.feesPaid.toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.concession}</strong>
+                            <strong>{totals.refund.toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.balance}</strong>
+                            <strong>{totals.netFees.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.concession.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{totals.balance.toFixed(2)}</strong>
                           </td>
                         </tr>
                       </tfoot>

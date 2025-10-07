@@ -1,3 +1,676 @@
+
+// // import React, { useState, useEffect } from 'react';
+// // import { toast } from 'react-toastify';
+// // import getAPI from '../../../../../api/getAPI';
+// // import postAPI from '../../../../../api/postAPI';
+// // import { useNavigate } from 'react-router-dom';
+
+// // const BoardExamFeeRegistration = () => {
+// //   const [classes, setClasses] = useState([]);
+// //   const [sections, setSections] = useState([]);
+// //   const [selectedClass, setSelectedClass] = useState('');
+// //   const [selectedSection, setSelectedSection] = useState('');
+// //   const [students, setStudents] = useState([]);
+// //   const [showTable, setShowTable] = useState(false);
+// //   const [loading, setLoading] = useState(false);
+// //   const [classesLoading, setClassesLoading] = useState(false);
+// //   const [submitLoading, setSubmitLoading] = useState(false);
+// //   const [schoolId, setSchoolId] = useState('');
+// //   const [boardExamFees, setBoardExamFees] = useState([]);
+// //   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
+// //   const navigate = useNavigate();
+
+// //   useEffect(() => {
+// //     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+// //     const id = userDetails?.schoolId;
+
+// //     if (!id) {
+// //       toast.error('School ID not found. Please log in again.');
+// //       return;
+// //     }
+
+// //     setSchoolId(id);
+// //   }, []);
+
+// //   const academicYear = localStorage.getItem('selectedAcademicYear');
+
+ 
+// //   useEffect(() => {
+// //     if (!schoolId || !academicYear) return;
+
+// //     const fetchClassesAndFees = async () => {
+// //       setClassesLoading(true);
+// //       try {
+      
+// //         const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
+// //         const classData = classResponse?.data?.data || [];
+
+       
+// //         const feesResponse = await getAPI(
+// //           `/get-board-exam-fees/${schoolId}/${academicYear}`,
+// //           {},
+// //           true
+// //         );
+// //         const feesData = feesResponse?.data?.data || [];
+
+// //         if (Array.isArray(feesData) && feesData.length > 0) {
+// //           setBoardExamFees(feesData);
+
+       
+// //           const filteredClasses = classData.filter((cls) =>
+// //             feesData.some((fee) => fee.classId === cls._id)
+// //           );
+
+// //           if (filteredClasses.length > 0) {
+// //             setClasses(filteredClasses);
+// //           } else {
+// //             toast.info('No classes with board exam fees found for this school.');
+// //             setClasses([]);
+// //           }
+// //         } else {
+// //           toast.info('No board exam fees found for this academic year.');
+// //           setClasses([]);
+// //         }
+// //       } catch (error) {
+// //         toast.error('Failed to fetch classes or board exam fees. Please try again.');
+// //         setClasses([]);
+// //         setBoardExamFees([]);
+// //       } finally {
+// //         setClassesLoading(false);
+// //       }
+// //     };
+
+// //     fetchClassesAndFees();
+// //   }, [schoolId, academicYear]);
+
+
+// //   useEffect(() => {
+// //     if (selectedClass) {
+// //       const selectedClassData = classes.find((c) => c._id === selectedClass);
+// //       const relevantFees = boardExamFees.find((fee) => fee.classId === selectedClass);
+// //       const validSectionIds = relevantFees ? relevantFees.sectionIds : [];
+
+// //       const sectionsData = selectedClassData?.sections.filter((section) =>
+// //         validSectionIds.includes(section._id)
+// //       ) || [];
+
+// //       setSections(sectionsData);
+// //       setSelectedSection('');
+// //     } else {
+// //       setSections([]);
+// //       setSelectedSection('');
+// //     }
+// //   }, [selectedClass, classes, boardExamFees]);
+
+// //   const fetchStudents = async () => {
+// //     if (!selectedClass || !selectedSection) {
+// //       toast.warning('Please select both class and section.');
+// //       return;
+// //     }
+// //     setLoading(true);
+// //     try {
+// //       const response = await getAPI(
+// //         `/admission-forms-board-exam/${schoolId}/${academicYear}/${selectedClass}/${selectedSection}`,
+// //         {},
+// //         true
+// //       );
+
+// //       const selectedClassData = classes.find((c) => c._id === selectedClass);
+// //       const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+// //       const feeData = boardExamFees.find((fee) => fee.classId === selectedClass);
+// //       const feeAmount = feeData ? feeData.amount : 0;
+
+// //       const studentData = response?.data?.data || [];
+// //       if (Array.isArray(studentData)) {
+// //         setStudents(
+// //           studentData.map((student) => {
+// //             const studentClassData = classes.find((c) => c._id === student.className);
+// //             const studentSectionData = studentClassData?.sections?.find((s) => s._id === student.sectionName);
+// //             return {
+// //               ...student,
+// //               feesAmt: feeAmount,
+// //               paymentStatus: student.boardExamStatus || 'Pending',
+// //               paymentMode:
+// //                 student.boardExamStatus === 'Paid'
+// //                   ? student.paymentMode === 'N/A' ? '' : student.paymentMode
+// //                   : 'Cash',
+// //               chequeNumber:
+// //                 student.paymentMode === 'Cheque' && student.chequeNumber !== 'N/A'
+// //                   ? student.chequeNumber
+// //                   : '',
+// //               bankName:
+// //                 student.paymentMode === 'Cheque' && student.bankName !== 'N/A'
+// //                   ? student.bankName
+// //                   : '',
+// //               className: studentClassData?.className || selectedClassData?.className || 'Unknown Class',
+// //               sectionName: studentSectionData?.name || selectedSectionData?.name || 'Unknown Section',
+// //             };
+// //           })
+// //         );
+// //         setShowTable(true);
+// //         setSelectedStudentIds([]);
+// //       } else {
+// //         toast.info('No students found for the selected class/section.');
+// //         setStudents([]);
+// //         setShowTable(false);
+// //       }
+// //     } catch (error) {
+// //       toast.error('Failed to fetch student data.');
+// //       setShowTable(false);
+// //     } finally {
+// //       setLoading(false);
+// //     }
+// //   };
+
+// //   const handlePaymentModeChange = (id, mode) => {
+// //     setStudents((prevStudents) =>
+// //       prevStudents.map((student) =>
+// //         student._id === id
+// //           ? {
+// //               ...student,
+// //               paymentMode: mode,
+// //               chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
+// //               bankName: mode === 'Cheque' ? student.bankName : '',
+// //             }
+// //           : student
+// //       )
+// //     );
+// //   };
+
+// //   const handleChequeFieldChange = (id, field, value) => {
+// //     setStudents((prevStudents) =>
+// //       prevStudents.map((student) =>
+// //         student._id === id ? { ...student, [field]: value } : student
+// //       )
+// //  );
+// //   };
+
+// //   const handlePaidClick = async (event, student) => {
+// //     event.preventDefault();
+// //     if (!student.paymentMode) {
+// //       toast.warning(`Please select payment mode for ${student.firstName} ${student.lastName}`);
+// //       return;
+// //     }
+
+// //     if (student.paymentMode === 'Cheque' && (!student.chequeNumber || !student.bankName)) {
+// //       toast.warning(`Please fill cheque number and bank name for ${student.firstName} ${student.lastName}`);
+// //       return;
+// //     }
+
+// //     setSubmitLoading(true);
+// //     try {
+// //       const selectedClassData = classes.find((c) => c._id === selectedClass);
+// //       const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+
+// //       const payment = {
+// //         studentId: student._id,
+// //         admissionNumber: student.AdmissionNumber,
+// //         studentName: `${student.firstName} ${student.lastName}`,
+// //         classId: selectedClass,
+// //         sectionId: selectedSection,
+// //         className: selectedClassData?.className || 'Unknown Class',
+// //         sectionName: selectedSectionData?.name || 'Unknown Section',
+// //         finalAmount: student.feesAmt,
+// //         paymentMode: student.paymentMode,
+// //         chequeNumber: student.chequeNumber || '',
+// //         bankName: student.bankName || '',
+// //         status: 'Paid',
+// //         academicYear,
+// //         schoolId,
+// //       };
+
+// //       const response = await postAPI('/submit-board-exam-fees-payment', { payments: [payment] }, true);
+// //       toast.success(`Payment submitted for ${student.firstName} ${student.lastName}. Viewing receipt.`);
+
+// //       const receiptData = {
+// //         ...student,
+// //         receiptNumberBef: response?.data?.data?.[0]?.receiptNumberBef || `REC-${student._id}-${Date.now()}`,
+// //         admissionFees: student.feesAmt,
+// //         concessionAmount: 0,
+// //         finalAmount: student.feesAmt,
+// //         applicationDate: new Date().toISOString(),
+// //         paymentDate: new Date().toISOString(),
+// //         transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
+// //         className: selectedClassData?.className || 'Unknown Class',
+// //         sectionName: selectedSectionData?.name || 'Unknown Section',
+// //       };
+
+// //       navigate('/school-dashboard/fees-module/fees-receipts/board-exam/fees/receipts', {
+// //         state: {
+// //           student: receiptData,
+// //           feeTypeName: 'Board Exam Fee',
+// //           className: selectedClassData?.className || 'Unknown Class',
+// //           sectionName: selectedSectionData?.name || 'Unknown Section',
+// //           classId: selectedClass || 'Unknown Class', 
+// //           sectionId: selectedSection || 'Unknown Class', 
+// //         },
+// //       });
+
+// //       await fetchStudents();
+// //     } catch (error) {
+// //       const backendMessage = error?.response?.data?.message || 'An unexpected error occurred';
+// //       toast.error(`${backendMessage}`);
+// //     } finally {
+// //       setSubmitLoading(false);
+// //     }
+// //   };
+
+// //   const handleSubmitPayments = async (event) => {
+// //     event.preventDefault();
+
+// //     const selectedStudents = students.filter((student) =>
+// //       selectedStudentIds.includes(student._id)
+// //     );
+
+// //     const invalidPayments = selectedStudents.some((s) => {
+// //       if (s.paymentStatus === 'Paid' && !s.paymentMode) {
+// //         return true;
+// //       }
+// //       if (s.paymentMode === 'Cheque' && s.paymentStatus !== 'Paid' && (!s.chequeNumber || !s.bankName)) {
+// //         return true;
+// //       }
+// //       return false;
+// //     });
+
+// //     if (invalidPayments) {
+// //       toast.warning('Please ensure all selected students have valid payment details.');
+// //       return;
+// //     }
+
+// //     if (selectedStudents.length === 0) {
+// //       toast.warning('No students selected for payment.');
+// //       return;
+// //     }
+
+// //     setSubmitLoading(true);
+// //     try {
+// //       const selectedClassData = classes.find((c) => c._id === selectedClass);
+// //       const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+
+// //       const payments = selectedStudents
+// //         .filter((student) => student.paymentStatus !== 'Paid')
+// //         .map((student) => ({
+// //           studentId: student._id,
+// //           admissionNumber: student.AdmissionNumber,
+// //           studentName: `${student.firstName} ${student.lastName}`,
+// //           classId: selectedClass,
+// //           sectionId: selectedSection,
+// //           className: selectedClassData?.className || 'Unknown Class',
+// //           sectionName: selectedSectionData?.name || 'Unknown Section',
+// //           finalAmount: student.feesAmt,
+// //           paymentMode: student.paymentMode || 'Cash',
+// //           chequeNumber: student.chequeNumber || '',
+// //           bankName: student.bankName || '',
+// //           status: 'Paid',
+// //           academicYear,
+// //           schoolId,
+// //         }));
+
+// //       if (payments.length === 0) {
+// //         toast.warning('No unpaid students selected to submit.');
+// //         setSubmitLoading(false);
+// //         return;
+// //       }
+
+// //       const response = await postAPI('/submit-board-exam-fees-payment', { payments }, true);
+// //       toast.success('Selected payments submitted successfully.');
+
+// //       const receiptStudents = selectedStudents
+// //         .filter((student) => student.paymentStatus !== 'Paid')
+// //         .map((student, index) => ({
+// //           ...student,
+// //           receiptNumberBef:
+// //             response?.data?.data?.[index]?.receiptNumberBef || `REC-${student._id}-${Date.now()}`,
+// //           admissionFees: student.feesAmt,
+// //           concessionAmount: 0,
+// //           finalAmount: student.feesAmt,
+// //           applicationDate: new Date().toISOString(),
+// //           paymentDate: new Date().toISOString(),
+// //           transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
+// //           className: selectedClassData?.className || 'Unknown Class',
+// //           sectionName: selectedClassData?.name || 'Unknown Section',
+// //         }));
+
+// //       if (receiptStudents.length > 0) {
+// //         navigate('/school-dashboard/fees-module/fees-receipts/board-exam/fees/receipts', {
+// //           state: {
+// //             students: receiptStudents,
+// //             feeTypeName: 'Board Exam Fee',
+// //             className: selectedClassData?.className || 'Unknown Class',
+// //             sectionName: selectedSectionData?.name || 'Unknown Section',
+// //             classId: selectedClass || 'Unknown Class', 
+// //             sectionId: selectedSection || 'Unknown Class', 
+// //           },
+// //         });
+
+// //         if (receiptStudents.length > 1) {
+// //           toast.info(
+// //             `${receiptStudents.length} receipts generated. You can view all receipts and download them from the receipt page.`
+// //           );
+// //         }
+// //       }
+
+// //       await fetchStudents();
+// //     } catch (error) {
+// //       const backendMessage = error?.response?.data?.message || 'An unexpected error occurred';
+// //       toast.error(`${backendMessage}`);
+// //     } finally {
+// //       setSubmitLoading(false);
+// //     }
+// //   };
+
+// //   const handleCheckboxChange = (studentId) => {
+// //     setSelectedStudentIds((prev) =>
+// //       prev.includes(studentId)
+// //         ? prev.filter((id) => id !== studentId)
+// //         : [...prev, studentId]
+// //     );
+// //   };
+
+// //   const handleViewReceipt = (student) => {
+// //     const selectedClassData = classes.find((c) => c._id === selectedClass);
+// //     const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
+
+// //     const receiptData = {
+// //       ...student,
+// //       receiptNumberBef: student.receiptNumberBef || `REC-${student._id}-${Date.now()}`,
+// //       admissionFees: student.feesAmt,
+// //       concessionAmount: 0,
+// //       finalAmount: student.feesAmt,
+// //       applicationDate: student.paymentDate || new Date().toISOString(),
+// //       paymentDate: student.paymentDate || new Date().toISOString(),
+// //       transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
+// //       className: selectedClassData?.className || 'Unknown Class',
+// //       sectionName: selectedSectionData?.name || 'Unknown Section',
+// //     };
+
+// //     navigate('/school-dashboard/fees-module/fees-receipts/board-exam/fees/receipts', {
+// //       state: {
+// //         student: receiptData,
+// //         feeTypeName: 'Board Exam Fee',
+// //         className: selectedClassData?.className || 'Unknown Class',
+// //         sectionName: selectedSectionData?.name || 'Unknown Section',
+// //         classId: selectedClass || 'Unknown Class', 
+// //         sectionId: selectedSection || 'Unknown Class', 
+// //       },
+// //     });
+// //   };
+
+// //   const hasChequePayment = students.some((student) => student.paymentMode === 'Cheque');
+// //   const allPaid = students.every((student) => student.paymentStatus === 'Paid');
+
+// //   return (
+// //     <div className="container-fluid">
+// //       <div className="container">
+// //         <h1 className="h3 fw-bold text-dark mb-4">Board Exam Fee Collection</h1>
+
+// //         <div className="card shadow-sm mb-4">
+// //           <div className="card-body">
+// //             <div className="row g-3">
+// //               <div className="col-md-6">
+// //                 <label htmlFor="classSelect" className="form-label">
+// //                   Class
+// //                 </label>
+// //                 <select
+// //                   id="classSelect"
+// //                   className="form-select"
+// //                   value={selectedClass}
+// //                   onChange={(e) => setSelectedClass(e.target.value)}
+// //                   disabled={classesLoading}
+// //                 >
+// //                   <option value="">Select Class</option>
+// //                   {classes.map((cls) => (
+// //                     <option key={cls._id} value={cls._id}>
+// //                       {cls.className}
+// //                     </option>
+// //                   ))}
+// //                 </select>
+// //               </div>
+
+// //               <div className="col-md-6">
+// //                 <label htmlFor="sectionSelect" className="form-label">
+// //                   Section
+// //                 </label>
+// //                 <select
+// //                   id="sectionSelect"
+// //                   className="form-select"
+// //                   value={selectedSection}
+// //                   onChange={(e) => setSelectedSection(e.target.value)}
+// //                   disabled={!selectedClass || sections.length === 0}
+// //                 >
+// //                   <option value="">Select Section</option>
+// //                   {sections.map((sec) => (
+// //                     <option key={sec._id} value={sec._id}>
+// //                       {sec.name}
+// //                     </option>
+// //                   ))}
+// //                 </select>
+// //               </div>
+// //             </div>
+
+// //             {!showTable && (
+// //               <div className="d-flex justify-content-end mt-4">
+// //                 <button
+// //                   type="button"
+// //                   onClick={fetchStudents}
+// //                   disabled={!selectedClass || !selectedSection || loading}
+// //                   className={`btn ${!selectedClass || !selectedSection || loading
+// //                       ? 'btn-secondary disabled'
+// //                       : 'btn-primary'
+// //                     }`}
+// //                 >
+// //                   {loading ? (
+// //                     <>
+// //                       <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+// //                       Loading...
+// //                     </>
+// //                   ) : (
+// //                     'Proceed'
+// //                   )}
+// //                 </button>
+// //               </div>
+// //             )}
+// //           </div>
+// //         </div>
+
+// //         {showTable && (
+// //           <div className="card shadow-sm rounded">
+// //             <div className="card-body p-2">
+// //               <div className="table-responsive p-2">
+// //                 <table className="table mb-1 text-nowrap">
+// //                   <thead className="table-light">
+// //                     <tr>
+// //                       <th>
+// //                         <input
+// //                           type="checkbox"
+// //                           checked={selectedStudentIds.length === students.length && students.length > 0}
+// //                           onChange={() => {
+// //                             if (selectedStudentIds.length === students.length) {
+// //                               setSelectedStudentIds([]);
+// //                             } else {
+// //                               setSelectedStudentIds(students.map((s) => s._id));
+// //                             }
+// //                           }}
+// //                           disabled={students.length === 0}
+// //                         />
+// //                       </th>
+// //                       <th>Adm. No.</th>
+// //                       <th>Student Name</th>
+// //                       <th>Class</th>
+// //                       <th>Section</th>
+// //                       <th>Board Exam Fees (₹)</th>
+// //                       <th>Mode of Payment</th>
+// //                       {hasChequePayment && (
+// //                         <>
+// //                           <th>Cheque No.</th>
+// //                           <th>Bank Name</th>
+// //                         </>
+// //                       )}
+// //                       <th>Status</th>
+// //                       <th>Pay</th>
+// //                     </tr>
+// //                   </thead>
+// //                   <tbody>
+// //                     {students.map((student) => (
+// //                       <tr key={student._id}>
+// //                         <td>
+// //                           <input
+// //                             type="checkbox"
+// //                             checked={selectedStudentIds.includes(student._id)}
+// //                             onChange={() => handleCheckboxChange(student._id)}
+// //                             disabled={student.paymentStatus === 'Paid'}
+// //                           />
+// //                         </td>
+// //                         <td>{student.AdmissionNumber || '-'}</td>
+// //                         <td>{`${student.firstName} ${student.lastName}`}</td>
+// //                         <td>{student.className}</td>
+// //                         <td>{student.sectionName}</td>
+// //                         <td>{student.feesAmt.toFixed(2) || 0}</td>
+// //                         <td>
+// //                           {student.paymentStatus === 'Paid' ? (
+// //                             student.paymentMode || '-'
+// //                           ) : (
+// //                             <select
+// //                               className="colon-sm form-select-sm"
+// //                               value={student.paymentMode || 'Cash'}
+// //                               onChange={(e) => handlePaymentModeChange(student._id, e.target.value)}
+// //                               required
+// //                             >
+// //                               <option value="Cash">Cash</option>
+// //                               <option value="Cheque">Cheque</option>
+// //                               <option value="Online">Online</option>
+// //                             </select>
+// //                           )}
+// //                         </td>
+// //                         {hasChequePayment && (
+// //                           <>
+// //                             <td>
+// //                               {student.paymentMode === 'Cheque' ? (
+// //                                 student.paymentStatus === 'Paid' ? (
+// //                                   student.chequeNumber || '-'
+// //                                 ) : (
+// //                                   <input
+// //                                     type="text"
+// //                                     className="form-control form-control-sm"
+// //                                     value={student.chequeNumber || ''}
+// //                                     onChange={(e) =>
+// //                                       handleChequeFieldChange(student._id, 'chequeNumber', e.target.value)
+// //                                     }
+// //                                     required
+// //                                   />
+// //                                 )
+// //                               ) : (
+// //                                 '-'
+// //                               )}
+// //                             </td>
+// //                             <td>
+// //                               {student.paymentMode === 'Cheque' ? (
+// //                                 student.paymentStatus === 'Paid' ? (
+// //                                   student.bankName || '-'
+// //                                 ) : (
+// //                                   <input
+// //                                     type="text"
+// //                                     className="form-control form-control-sm"
+// //                                     value={student.bankName || ''}
+// //                                     onChange={(e) =>
+// //                                       handleChequeFieldChange(student._id, 'bankName', e.target.value)
+// //                                     }
+// //                                     required
+// //                                   />
+// //                                 )
+// //                               ) : (
+// //                                 '-'
+// //                               )}
+// //                             </td>
+// //                           </>
+// //                         )}
+// //                         <td>
+// //                           <span
+// //                             className={`badge ${student.paymentStatus === 'Paid'
+// //                               ? 'bg-success text-white'
+// //                               : student.paymentStatus === 'Cancelled'
+// //                                 ? 'bg-danger text-white'
+// //                                 : student.paymentStatus === 'Cheque Return'
+// //                                   ? 'bg-danger text-white'
+// //                                   : 'bg-warning text-dark'
+// //                               }`}
+// //                           >
+// //                             {student.paymentStatus}
+// //                           </span>
+// //                         </td>
+// //                         <td>
+// //                           {student.paymentStatus !== 'Paid' && student.paymentStatus !== 'Cancelled' && student.paymentStatus !== 'Cheque Return' ? (
+// //                             <button
+// //                               type="button"
+// //                               className="btn btn-success btn-sm"
+// //                               onClick={(event) => handlePaidClick(event, student)}
+// //                               disabled={submitLoading}
+// //                             >
+// //                               {submitLoading ? (
+// //                                 <>
+// //                                   <span
+// //                                     className="spinner-border spinner-border-sm me-2"
+// //                                     role="status"
+// //                                     aria-hidden="true"
+// //                                   ></span>
+// //                                   Processing...
+// //                                 </>
+// //                               ) : (
+// //                                 'Pay Now'
+// //                               )}
+// //                             </button>
+// //                           ) : (
+// //                             <button
+// //                               type="button"
+// //                               className="btn btn-info btn-sm"
+// //                               onClick={() => handleViewReceipt(student)}
+// //                             >
+// //                               View
+// //                             </button>
+// //                           )}
+// //                         </td>
+// //                       </tr>
+// //                     ))}
+// //                   </tbody>
+// //                 </table>
+// //                 {students.length === 0 && (
+// //                   <div className="text-center py-3">No students found.</div>
+// //                 )}
+// //               </div>
+// //             </div>
+
+// //             {!allPaid && (
+// //               <div className="card-footer d-flex justify-content-end">
+// //                 <button
+// //                   type="button"
+// //                   onClick={handleSubmitPayments}
+// //                   className="btn btn-primary"
+// //                   disabled={students.length === 0 || submitLoading || selectedStudentIds.length === 0}
+// //                 >
+// //                   {submitLoading ? (
+// //                     <>
+// //                       <span
+// //                         className="spinner-border spinner-border-sm me-2"
+// //                         role="status"
+// //                         aria-hidden="true"
+// //                       ></span>
+// //                       Submitting...
+// //                     </>
+// //                   ) : (
+// //                     'Submit'
+// //                   )}
+// //                 </button>
+// //               </div>
+// //             )}
+// //           </div>
+// //         )}
+// //       </div>
+// //     </div>
+// //   );
+// // };
+
+// // export default BoardExamFeeRegistration;
+
 // import React, { useState, useEffect } from 'react';
 // import { toast } from 'react-toastify';
 // import getAPI from '../../../../../api/getAPI';
@@ -13,17 +686,16 @@
 //   const [showTable, setShowTable] = useState(false);
 //   const [loading, setLoading] = useState(false);
 //   const [classesLoading, setClassesLoading] = useState(false);
-//   const [feesLoading, setFeesLoading] = useState(false);
 //   const [submitLoading, setSubmitLoading] = useState(false);
 //   const [schoolId, setSchoolId] = useState('');
-//   const [boardExamFees, setBoardExamFees] = useState({});
+//   const [boardExamFees, setBoardExamFees] = useState([]);
 //   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
+//   const [openDropdownId, setOpenDropdownId] = useState(null); // State for dropdown
 //   const navigate = useNavigate();
 
 //   useEffect(() => {
 //     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
 //     const id = userDetails?.schoolId;
-
 
 //     if (!id) {
 //       toast.error('School ID not found. Please log in again.');
@@ -36,74 +708,67 @@
 //   const academicYear = localStorage.getItem('selectedAcademicYear');
 
 //   useEffect(() => {
-//     if (!schoolId) return;
+//     if (!schoolId || !academicYear) return;
 
-//     const fetchClasses = async () => {
+//     const fetchClassesAndFees = async () => {
 //       setClassesLoading(true);
 //       try {
 //         const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
 //         const classData = classResponse?.data?.data || [];
-//         if (Array.isArray(classData) && classData.length > 0) {
-//           setClasses(classData);
+
+//         const feesResponse = await getAPI(
+//           `/get-board-exam-fees/${schoolId}/${academicYear}`,
+//           {},
+//           true
+//         );
+//         const feesData = feesResponse?.data?.data || [];
+
+//         if (Array.isArray(feesData) && feesData.length > 0) {
+//           setBoardExamFees(feesData);
+
+//           const filteredClasses = classData.filter((cls) =>
+//             feesData.some((fee) => fee.classId === cls._id)
+//           );
+
+//           if (filteredClasses.length > 0) {
+//             setClasses(filteredClasses);
+//           } else {
+//             toast.info('No classes with board exam fees found for this school.');
+//             setClasses([]);
+//           }
 //         } else {
-//           toast.info('No classes found for this school.');
+//           toast.info('No board exam fees found for this academic year.');
 //           setClasses([]);
 //         }
 //       } catch (error) {
-//         toast.error('Failed to fetch classes. Please try again.');
+//         toast.error('Failed to fetch classes or board exam fees. Please try again.');
 //         setClasses([]);
+//         setBoardExamFees([]);
 //       } finally {
 //         setClassesLoading(false);
 //       }
 //     };
 
-//     fetchClasses();
+//     fetchClassesAndFees();
 //   }, [schoolId, academicYear]);
-
-//   useEffect(() => {
-//     if (!schoolId || !selectedClass || !academicYear) return;
-
-//     const fetchFees = async () => {
-//       setFeesLoading(true);
-//       try {
-//         const feesResponse = await getAPI(
-//           `/get-board-exam-fees-byIds/${schoolId}/${academicYear}/${selectedClass}/${selectedSection}`,
-//           {},
-//           true
-//         );
-//         const feesData = feesResponse?.data?.data || [];
-//         if (Array.isArray(feesData)) {
-//           const feesMap = {};
-//           feesData.forEach((fee) => {
-//             feesMap[fee.classId] = fee.amount;
-//           });
-//           setBoardExamFees(feesMap);
-//         } else {
-//           toast.info('No board exam fees found for the selected class/section.');
-//           setBoardExamFees({});
-//         }
-//       } catch (error) {
-//         toast.error('Failed to fetch board exam fees.');
-//         setBoardExamFees({});
-//       } finally {
-//         setFeesLoading(false);
-//       }
-//     };
-
-//     fetchFees();
-//   }, [schoolId, academicYear, selectedClass, selectedSection]);
 
 //   useEffect(() => {
 //     if (selectedClass) {
 //       const selectedClassData = classes.find((c) => c._id === selectedClass);
-//       const sectionsData = selectedClassData?.sections || [];
+//       const relevantFees = boardExamFees.find((fee) => fee.classId === selectedClass);
+//       const validSectionIds = relevantFees ? relevantFees.sectionIds : [];
+
+//       const sectionsData = selectedClassData?.sections.filter((section) =>
+//         validSectionIds.includes(section._id)
+//       ) || [];
+
 //       setSections(sectionsData);
 //       setSelectedSection('');
 //     } else {
 //       setSections([]);
 //       setSelectedSection('');
 //     }
-//   }, [selectedClass, classes]);
+//   }, [selectedClass, classes, boardExamFees]);
 
 //   const fetchStudents = async () => {
 //     if (!selectedClass || !selectedSection) {
@@ -120,7 +785,8 @@
 
 //       const selectedClassData = classes.find((c) => c._id === selectedClass);
 //       const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
-//       const feeAmount = boardExamFees[selectedClass] || 0;
+//       const feeData = boardExamFees.find((fee) => fee.classId === selectedClass);
+//       const feeAmount = feeData ? feeData.amount : 0;
 
 //       const studentData = response?.data?.data || [];
 //       if (Array.isArray(studentData)) {
@@ -146,6 +812,7 @@
 //                   : '',
 //               className: studentClassData?.className || selectedClassData?.className || 'Unknown Class',
 //               sectionName: studentSectionData?.name || selectedSectionData?.name || 'Unknown Section',
+//               refundReceiptNumbers: student.refundReceiptNumbers || [], // Include refundReceiptNumbers
 //             };
 //           })
 //         );
@@ -169,11 +836,11 @@
 //       prevStudents.map((student) =>
 //         student._id === id
 //           ? {
-//             ...student,
-//             paymentMode: mode,
-//             chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
-//             bankName: mode === 'Cheque' ? student.bankName : '',
-//           }
+//               ...student,
+//               paymentMode: mode,
+//               chequeNumber: mode === 'Cheque' ? student.chequeNumber : '',
+//               bankName: mode === 'Cheque' ? student.bankName : '',
+//             }
 //           : student
 //       )
 //     );
@@ -207,12 +874,13 @@
 //       const payment = {
 //         studentId: student._id,
 //         admissionNumber: student.AdmissionNumber,
-//         studentName: `${student.firstName} ${student.lastName}`,
+//           firstName:student.firstName,
+//         lastName:student.lastName,
 //         classId: selectedClass,
 //         sectionId: selectedSection,
 //         className: selectedClassData?.className || 'Unknown Class',
 //         sectionName: selectedSectionData?.name || 'Unknown Section',
-//         amount: student.feesAmt,
+//         finalAmount: student.feesAmt,
 //         paymentMode: student.paymentMode,
 //         chequeNumber: student.chequeNumber || '',
 //         bankName: student.bankName || '',
@@ -237,12 +905,14 @@
 //         sectionName: selectedSectionData?.name || 'Unknown Section',
 //       };
 
-//       navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
+//       navigate('/school-dashboard/fees-module/fees-receipts/board-exam/fees/receipts', {
 //         state: {
 //           student: receiptData,
 //           feeTypeName: 'Board Exam Fee',
 //           className: selectedClassData?.className || 'Unknown Class',
 //           sectionName: selectedSectionData?.name || 'Unknown Section',
+//           classId: selectedClass || 'Unknown Class',
+//           sectionId: selectedSection || 'Unknown Class',
 //         },
 //       });
 
@@ -292,12 +962,13 @@
 //         .map((student) => ({
 //           studentId: student._id,
 //           admissionNumber: student.AdmissionNumber,
-//           studentName: `${student.firstName} ${student.lastName}`,
+//           firstName:student.firstName,
+//           lastName:student.lastName,
 //           classId: selectedClass,
 //           sectionId: selectedSection,
 //           className: selectedClassData?.className || 'Unknown Class',
 //           sectionName: selectedSectionData?.name || 'Unknown Section',
-//           amount: student.feesAmt,
+//           finalAmount: student.feesAmt,
 //           paymentMode: student.paymentMode || 'Cash',
 //           chequeNumber: student.chequeNumber || '',
 //           bankName: student.bankName || '',
@@ -332,12 +1003,14 @@
 //         }));
 
 //       if (receiptStudents.length > 0) {
-//         navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
+//         navigate('/school-dashboard/fees-module/fees-receipts/board-exam/fees/receipts', {
 //           state: {
 //             students: receiptStudents,
 //             feeTypeName: 'Board Exam Fee',
 //             className: selectedClassData?.className || 'Unknown Class',
 //             sectionName: selectedSectionData?.name || 'Unknown Section',
+//             classId: selectedClass || 'Unknown Class',
+//             sectionId: selectedSection || 'Unknown Class',
 //           },
 //         });
 
@@ -365,7 +1038,8 @@
 //     );
 //   };
 
-//   const handleViewReceipt = (student) => {
+//   const handleViewReceipt = (event, student) => {
+//     event.preventDefault();
 //     const selectedClassData = classes.find((c) => c._id === selectedClass);
 //     const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
 
@@ -382,14 +1056,31 @@
 //       sectionName: selectedSectionData?.name || 'Unknown Section',
 //     };
 
-//     navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
+//     navigate('/school-dashboard/fees-module/fees-receipts/board-exam/fees/receipts', {
 //       state: {
 //         student: receiptData,
 //         feeTypeName: 'Board Exam Fee',
 //         className: selectedClassData?.className || 'Unknown Class',
 //         sectionName: selectedSectionData?.name || 'Unknown Section',
+//         classId: selectedClass || 'Unknown Class',
+//         sectionId: selectedSection || 'Unknown Class',
 //       },
 //     });
+//     setOpenDropdownId(null);
+//   };
+
+//   const navigateToCRNReceipt = (event, crnNumber) => {
+//     event.preventDefault();
+//     navigate('/school-dashboard/fees-module/form/crn-receipts', {
+//       state: {
+//         crnNumber,
+//       },
+//     });
+//     setOpenDropdownId(null);
+//   };
+
+//   const toggleDropdown = (studentId) => {
+//     setOpenDropdownId(openDropdownId === studentId ? null : studentId);
 //   };
 
 //   const hasChequePayment = students.some((student) => student.paymentMode === 'Cheque');
@@ -449,8 +1140,8 @@
 //                 <button
 //                   type="button"
 //                   onClick={fetchStudents}
-//                   disabled={!selectedClass || !selectedSection || loading || feesLoading}
-//                   className={`btn ${!selectedClass || !selectedSection || loading || feesLoading
+//                   disabled={!selectedClass || !selectedSection || loading}
+//                   className={`btn ${!selectedClass || !selectedSection || loading
 //                       ? 'btn-secondary disabled'
 //                       : 'btn-primary'
 //                     }`}
@@ -521,7 +1212,7 @@
 //                         <td>{`${student.firstName} ${student.lastName}`}</td>
 //                         <td>{student.className}</td>
 //                         <td>{student.sectionName}</td>
-//                         <td>{student.feesAmt || 0}</td>
+//                         <td>{student.feesAmt.toFixed(2) || 0}</td>
 //                         <td>
 //                           {student.paymentStatus === 'Paid' ? (
 //                             student.paymentMode || '-'
@@ -581,14 +1272,14 @@
 //                           </>
 //                         )}
 //                         <td>
-//                            <span
+//                           <span
 //                             className={`badge ${student.paymentStatus === 'Paid'
 //                               ? 'bg-success text-white'
 //                               : student.paymentStatus === 'Cancelled'
 //                                 ? 'bg-danger text-white'
-//                                 :student.paymentStatus === 'Cheque Return'
-//                                  ? 'bg-danger text-white'
-//                                 : 'bg-warning text-dark'
+//                                 : student.paymentStatus === 'Cheque Return'
+//                                   ? 'bg-danger text-white'
+//                                   : 'bg-warning text-dark'
 //                               }`}
 //                           >
 //                             {student.paymentStatus}
@@ -616,13 +1307,40 @@
 //                               )}
 //                             </button>
 //                           ) : (
-//                             <button
-//                               type="button"
-//                               className="btn btn-info btn-sm"
-//                               onClick={() => handleViewReceipt(student)}
-//                             >
-//                               View
-//                             </button>
+//                             <div className="dropdown">
+//                               <button
+//                                 type="button"
+//                                 className="btn btn-info btn-sm"
+//                                 onClick={() => toggleDropdown(student._id)}
+//                               >
+//                                 View
+//                               </button>
+//                               {openDropdownId === student._id && (
+//                                 <div className="dropdown-menu dropdown-menu-end show" style={{ position: 'absolute', zIndex: 1000 }}>
+//                                   <button
+//                                     className="dropdown-item"
+//                                     onClick={(event) => handleViewReceipt(event, student)}
+//                                   >
+//                                     View {student.receiptNumberBef || 'Receipt'}
+//                                   </button>
+//                                   {student.refundReceiptNumbers?.length > 0 ? (
+//                                     student.refundReceiptNumbers.map((crnNumber, idx) => (
+//                                       <button
+//                                         key={idx}
+//                                         className="dropdown-item"
+//                                         onClick={(event) => navigateToCRNReceipt(event, crnNumber)}
+//                                       >
+//                                         View {crnNumber}
+//                                       </button>
+//                                     ))
+//                                   ) : (
+//                                     <button className="dropdown-item" disabled>
+//                                       No CRN Receipts
+//                                     </button>
+//                                   )}
+//                                 </div>
+//                               )}
+//                             </div>
 //                           )}
 //                         </td>
 //                       </tr>
@@ -667,7 +1385,6 @@
 
 // export default BoardExamFeeRegistration;
 
-
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import getAPI from '../../../../../api/getAPI';
@@ -687,6 +1404,7 @@ const BoardExamFeeRegistration = () => {
   const [schoolId, setSchoolId] = useState('');
   const [boardExamFees, setBoardExamFees] = useState([]);
   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
+  const [openDropdownId, setOpenDropdownId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -703,18 +1421,15 @@ const BoardExamFeeRegistration = () => {
 
   const academicYear = localStorage.getItem('selectedAcademicYear');
 
- 
   useEffect(() => {
     if (!schoolId || !academicYear) return;
 
     const fetchClassesAndFees = async () => {
       setClassesLoading(true);
       try {
-      
         const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         const classData = classResponse?.data?.data || [];
 
-       
         const feesResponse = await getAPI(
           `/get-board-exam-fees/${schoolId}/${academicYear}`,
           {},
@@ -725,7 +1440,6 @@ const BoardExamFeeRegistration = () => {
         if (Array.isArray(feesData) && feesData.length > 0) {
           setBoardExamFees(feesData);
 
-       
           const filteredClasses = classData.filter((cls) =>
             feesData.some((fee) => fee.classId === cls._id)
           );
@@ -751,7 +1465,6 @@ const BoardExamFeeRegistration = () => {
 
     fetchClassesAndFees();
   }, [schoolId, academicYear]);
-
 
   useEffect(() => {
     if (selectedClass) {
@@ -795,10 +1508,13 @@ const BoardExamFeeRegistration = () => {
           studentData.map((student) => {
             const studentClassData = classes.find((c) => c._id === student.className);
             const studentSectionData = studentClassData?.sections?.find((s) => s._id === student.sectionName);
+            const latestReportStatus = student.reportStatus?.length > 0 
+              ? student.reportStatus[student.reportStatus.length - 1] 
+              : student.boardExamStatus;
             return {
               ...student,
               feesAmt: feeAmount,
-              paymentStatus: student.boardExamStatus || 'Pending',
+              paymentStatus: latestReportStatus || 'Pending',
               paymentMode:
                 student.boardExamStatus === 'Paid'
                   ? student.paymentMode === 'N/A' ? '' : student.paymentMode
@@ -813,6 +1529,7 @@ const BoardExamFeeRegistration = () => {
                   : '',
               className: studentClassData?.className || selectedClassData?.className || 'Unknown Class',
               sectionName: studentSectionData?.name || selectedSectionData?.name || 'Unknown Section',
+              refundReceiptNumbers: student.refundReceiptNumbers || [],
             };
           })
         );
@@ -851,7 +1568,7 @@ const BoardExamFeeRegistration = () => {
       prevStudents.map((student) =>
         student._id === id ? { ...student, [field]: value } : student
       )
- );
+    );
   };
 
   const handlePaidClick = async (event, student) => {
@@ -874,12 +1591,13 @@ const BoardExamFeeRegistration = () => {
       const payment = {
         studentId: student._id,
         admissionNumber: student.AdmissionNumber,
-        studentName: `${student.firstName} ${student.lastName}`,
+        firstName: student.firstName,
+        lastName: student.lastName,
         classId: selectedClass,
         sectionId: selectedSection,
         className: selectedClassData?.className || 'Unknown Class',
         sectionName: selectedSectionData?.name || 'Unknown Section',
-        amount: student.feesAmt,
+        finalAmount: student.feesAmt,
         paymentMode: student.paymentMode,
         chequeNumber: student.chequeNumber || '',
         bankName: student.bankName || '',
@@ -904,14 +1622,18 @@ const BoardExamFeeRegistration = () => {
         sectionName: selectedSectionData?.name || 'Unknown Section',
       };
 
-      navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
-        state: {
-          student: receiptData,
-          feeTypeName: 'Board Exam Fee',
-          className: selectedClassData?.className || 'Unknown Class',
-          sectionName: selectedSectionData?.name || 'Unknown Section',
-        },
-      });
+      // navigate('/school-dashboard/fees-module/fees-receipts/board-exam/fees/receipts', {
+      //   state: {
+      //     student: receiptData,
+      //     feeTypeName: 'Board Exam Fee',
+      //     className: selectedClassData?.className || 'Unknown Class',
+      //     sectionName: selectedSectionData?.name || 'Unknown Section',
+      //     classId: selectedClass,
+      //     sectionId: selectedSection,
+      //   },
+      // });
+
+      navigate(-1)
 
       await fetchStudents();
     } catch (error) {
@@ -959,12 +1681,13 @@ const BoardExamFeeRegistration = () => {
         .map((student) => ({
           studentId: student._id,
           admissionNumber: student.AdmissionNumber,
-          studentName: `${student.firstName} ${student.lastName}`,
+          firstName: student.firstName,
+          lastName: student.lastName,
           classId: selectedClass,
           sectionId: selectedSection,
           className: selectedClassData?.className || 'Unknown Class',
           sectionName: selectedSectionData?.name || 'Unknown Section',
-          amount: student.feesAmt,
+          finalAmount: student.feesAmt,
           paymentMode: student.paymentMode || 'Cash',
           chequeNumber: student.chequeNumber || '',
           bankName: student.bankName || '',
@@ -995,18 +1718,21 @@ const BoardExamFeeRegistration = () => {
           paymentDate: new Date().toISOString(),
           transactionNumber: student.paymentMode === 'Online' ? `TXN-${Date.now()}` : '',
           className: selectedClassData?.className || 'Unknown Class',
-          sectionName: selectedClassData?.name || 'Unknown Section',
+          sectionName: selectedSectionData?.name || 'Unknown Section',
         }));
 
       if (receiptStudents.length > 0) {
-        navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
-          state: {
-            students: receiptStudents,
-            feeTypeName: 'Board Exam Fee',
-            className: selectedClassData?.className || 'Unknown Class',
-            sectionName: selectedSectionData?.name || 'Unknown Section',
-          },
-        });
+        // navigate('/school-dashboard/fees-module/fees-receipts/board-exam/fees/receipts', {
+        //   state: {
+        //     students: receiptStudents,
+        //     feeTypeName: 'Board Exam Fee',
+        //     className: selectedClassData?.className || 'Unknown Class',
+        //     sectionName: selectedSectionData?.name || 'Unknown Section',
+        //     classId: selectedClass,
+        //     sectionId: selectedSection,
+        //   },
+        // });
+        navigate(-1)
 
         if (receiptStudents.length > 1) {
           toast.info(
@@ -1032,13 +1758,14 @@ const BoardExamFeeRegistration = () => {
     );
   };
 
-  const handleViewReceipt = (student) => {
+  const handleViewReceipt = (event, student, receiptNumber) => {
+    event.preventDefault();
     const selectedClassData = classes.find((c) => c._id === selectedClass);
     const selectedSectionData = selectedClassData?.sections?.find((s) => s._id === selectedSection);
 
     const receiptData = {
       ...student,
-      receiptNumberBef: student.receiptNumberBef || `REC-${student._id}-${Date.now()}`,
+      receiptNumberBef: receiptNumber || `REC-${student._id}-${Date.now()}`,
       admissionFees: student.feesAmt,
       concessionAmount: 0,
       finalAmount: student.feesAmt,
@@ -1049,18 +1776,42 @@ const BoardExamFeeRegistration = () => {
       sectionName: selectedSectionData?.name || 'Unknown Section',
     };
 
-    navigate('/school-dashboard/fees-module/fees-receipts/board-exam-fees/receipts', {
+    navigate('/school-dashboard/fees-module/fees-receipts/board-exam/fees/receipts', {
       state: {
-        student: receiptData,
+        receiptNumberBef: receiptNumber,
+        schoolId:schoolId,
         feeTypeName: 'Board Exam Fee',
         className: selectedClassData?.className || 'Unknown Class',
         sectionName: selectedSectionData?.name || 'Unknown Section',
+        classId: selectedClass,
+        sectionId: selectedSection,
       },
     });
+    setOpenDropdownId(null);
+  };
+
+  const navigateToCRNReceipt = (event, crnNumber) => {
+    event.preventDefault();
+    navigate('/school-dashboard/fees-module/form/crn-receipts', {
+      state: {
+        crnNumber,
+      },
+    });
+    setOpenDropdownId(null);
+  };
+
+  const toggleDropdown = (studentId) => {
+    setOpenDropdownId(openDropdownId === studentId ? null : studentId);
+  };
+
+  const getLatestStatus = (student) => {
+    return student.reportStatus?.length > 0 
+      ? student.reportStatus[student.reportStatus.length - 1] 
+      : student.boardExamStatus || 'Pending';
   };
 
   const hasChequePayment = students.some((student) => student.paymentMode === 'Cheque');
-  const allPaid = students.every((student) => student.paymentStatus === 'Paid');
+  const allPaid = students.every((student) => getLatestStatus(student) === 'Paid');
 
   return (
     <div className="container-fluid">
@@ -1146,12 +1897,13 @@ const BoardExamFeeRegistration = () => {
                       <th>
                         <input
                           type="checkbox"
-                          checked={selectedStudentIds.length === students.length && students.length > 0}
+                          checked={selectedStudentIds.length === students.filter((student) => getLatestStatus(student) === 'Paid' || getLatestStatus(student) === 'Pending').length && students.length > 0}
                           onChange={() => {
-                            if (selectedStudentIds.length === students.length) {
+                            const payableStudents = students.filter((student) => getLatestStatus(student) === 'Paid' || getLatestStatus(student) === 'Pending').map((s) => s._id);
+                            if (selectedStudentIds.length === payableStudents.length) {
                               setSelectedStudentIds([]);
                             } else {
-                              setSelectedStudentIds(students.map((s) => s._id));
+                              setSelectedStudentIds(payableStudents);
                             }
                           }}
                           disabled={students.length === 0}
@@ -1171,47 +1923,49 @@ const BoardExamFeeRegistration = () => {
                       )}
                       <th>Status</th>
                       <th>Pay</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {students.map((student) => (
-                      <tr key={student._id}>
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={selectedStudentIds.includes(student._id)}
-                            onChange={() => handleCheckboxChange(student._id)}
-                            disabled={student.paymentStatus === 'Paid'}
-                          />
-                        </td>
-                        <td>{student.AdmissionNumber || '-'}</td>
-                        <td>{`${student.firstName} ${student.lastName}`}</td>
-                        <td>{student.className}</td>
-                        <td>{student.sectionName}</td>
-                        <td>{student.feesAmt || 0}</td>
-                        <td>
-                          {student.paymentStatus === 'Paid' ? (
-                            student.paymentMode || '-'
-                          ) : (
-                            <select
-                              className="colon-sm form-select-sm"
-                              value={student.paymentMode || 'Cash'}
-                              onChange={(e) => handlePaymentModeChange(student._id, e.target.value)}
-                              required
-                            >
-                              <option value="Cash">Cash</option>
-                              <option value="Cheque">Cheque</option>
-                              <option value="Online">Online</option>
-                            </select>
-                          )}
-                        </td>
-                        {hasChequePayment && (
-                          <>
-                            <td>
-                              {student.paymentMode === 'Cheque' ? (
-                                student.paymentStatus === 'Paid' ? (
-                                  student.chequeNumber || '-'
-                                ) : (
+                    {students.map((student) => {
+                      const latestStatus = getLatestStatus(student);
+                      const isPayable = latestStatus === 'Cancelled' || latestStatus === 'Cheque Return' 
+                      || latestStatus === 'Refund' || latestStatus === 'Pending';
+                      return (
+                        <tr key={student._id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedStudentIds.includes(student._id)}
+                              onChange={() => handleCheckboxChange(student._id)}
+                              disabled={!isPayable}
+                            />
+                          </td>
+                          <td>{student.AdmissionNumber || '-'}</td>
+                          <td>{`${student.firstName} ${student.lastName}`}</td>
+                          <td>{student.className}</td>
+                          <td>{student.sectionName}</td>
+                          <td>{student.feesAmt.toFixed(2) || 0}</td>
+                          <td>
+                            {isPayable ? (
+                              <select
+                                className="form-select form-select-sm"
+                                value={student.paymentMode || 'Cash'}
+                                onChange={(e) => handlePaymentModeChange(student._id, e.target.value)}
+                                required
+                              >
+                                <option value="Cash">Cash</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Online">Online</option>
+                              </select>
+                            ) : (
+                              <span>{student.paymentMode || 'N/A'}</span>
+                            )}
+                          </td>
+                          {hasChequePayment && (
+                            <>
+                              <td>
+                                {isPayable && student.paymentMode === 'Cheque' ? (
                                   <input
                                     type="text"
                                     className="form-control form-control-sm"
@@ -1221,16 +1975,12 @@ const BoardExamFeeRegistration = () => {
                                     }
                                     required
                                   />
-                                )
-                              ) : (
-                                '-'
-                              )}
-                            </td>
-                            <td>
-                              {student.paymentMode === 'Cheque' ? (
-                                student.paymentStatus === 'Paid' ? (
-                                  student.bankName || '-'
                                 ) : (
+                                  <span>{student.chequeNumber || 'N/A'}</span>
+                                )}
+                              </td>
+                              <td>
+                                {isPayable && student.paymentMode === 'Cheque' ? (
                                   <input
                                     type="text"
                                     className="form-control form-control-sm"
@@ -1240,60 +1990,95 @@ const BoardExamFeeRegistration = () => {
                                     }
                                     required
                                   />
-                                )
-                              ) : (
-                                '-'
-                              )}
-                            </td>
-                          </>
-                        )}
-                        <td>
-                          <span
-                            className={`badge ${student.paymentStatus === 'Paid'
-                              ? 'bg-success text-white'
-                              : student.paymentStatus === 'Cancelled'
-                                ? 'bg-danger text-white'
-                                : student.paymentStatus === 'Cheque Return'
-                                  ? 'bg-danger text-white'
-                                  : 'bg-warning text-dark'
-                              }`}
-                          >
-                            {student.paymentStatus}
-                          </span>
-                        </td>
-                        <td>
-                          {student.paymentStatus !== 'Paid' && student.paymentStatus !== 'Cancelled' && student.paymentStatus !== 'Cheque Return' ? (
-                            <button
-                              type="button"
-                              className="btn btn-success btn-sm"
-                              onClick={(event) => handlePaidClick(event, student)}
-                              disabled={submitLoading}
-                            >
-                              {submitLoading ? (
-                                <>
-                                  <span
-                                    className="spinner-border spinner-border-sm me-2"
-                                    role="status"
-                                    aria-hidden="true"
-                                  ></span>
-                                  Processing...
-                                </>
-                              ) : (
-                                'Pay Now'
-                              )}
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              className="btn btn-info btn-sm"
-                              onClick={() => handleViewReceipt(student)}
-                            >
-                              View
-                            </button>
+                                ) : (
+                                  <span>{student.bankName || 'N/A'}</span>
+                                )}
+                              </td>
+                            </>
                           )}
-                        </td>
-                      </tr>
-                    ))}
+                          <td>
+                              <span
+                              className={`badge ${latestStatus === 'Paid'
+                                ? 'bg-success text-white'
+                                : latestStatus === 'Cancelled' || latestStatus === 'Cheque Return'|| latestStatus === 'Refund'
+                                ? 'bg-danger text-white'
+                                : 'bg-warning text-dark'
+                              }`}
+                            >
+                              {latestStatus}
+                            </span>
+                          </td>
+                          <td>
+                            {isPayable && (
+                              <button
+                                type="button"
+                                className="btn btn-success btn-sm"
+                                onClick={(event) => handlePaidClick(event, student)}
+                                disabled={submitLoading}
+                              >
+                                {submitLoading ? (
+                                  <>
+                                    <span
+                                      className="spinner-border spinner-border-sm me-2"
+                                      role="status"
+                                      aria-hidden="true"
+                                    ></span>
+                                    Processing...
+                                  </>
+                                ) : (
+                                  'Pay Now'
+                                )}
+                              </button>
+                            )}
+                          </td>
+                          <td>
+                            <div className="dropdown">
+                              <button
+                                type="button"
+                                className="btn btn-info btn-sm"
+                                onClick={() => toggleDropdown(student._id)}
+                              >
+                                View
+                              </button>
+                              {openDropdownId === student._id && (
+                                <div className="dropdown-menu dropdown-menu-end show" style={{ position: 'absolute', zIndex: 1000 }}>
+                                  {student.receiptNumberBef?.length > 0 ? (
+                                    student.receiptNumberBef.map((receiptNumber, idx) => (
+                                      <button
+                                        key={`brf-${idx}`}
+                                        className="dropdown-item"
+                                        onClick={(event) => handleViewReceipt(event, student, receiptNumber)}
+                                      >
+                                        View {receiptNumber}
+                                      </button>
+                                    ))
+                                  ) : (
+                                    <button className="dropdown-item" disabled>
+                                      No BEF Receipts
+                                    </button>
+                                  )}
+                                  {student.refundReceiptNumbers?.length > 0 ? (
+                                    student.refundReceiptNumbers.map((crnNumber, idx) => (
+                                      <button
+                                        key={`crn-${idx}`}
+                                        className="dropdown-item"
+                                        onClick={(event) => navigateToCRNReceipt(event, crnNumber)}
+                                      >
+                                        View {crnNumber}
+                                      </button>
+                                    ))
+                                  ) : (
+                                    <button className="dropdown-item" disabled>
+                                      No CRN Receipts
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
                 {students.length === 0 && (

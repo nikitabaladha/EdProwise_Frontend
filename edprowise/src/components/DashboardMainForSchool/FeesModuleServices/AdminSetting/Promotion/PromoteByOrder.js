@@ -128,7 +128,7 @@ const PromoteByOrder = ({ schoolId, newAcademicYear, previousYear, classes, shif
 
     setLoading(true);
     try {
-      const response = await getAPI(`/get-admission-form-by-year-schoolId/${schoolId}/${previousYear}`);
+      const response = await getAPI(`/get-admission-form-by-year-schoolId-active/${schoolId}/${previousYear}`);
       if (!response.hasError) {
         let filteredStudents = response.data.data.filter(
           student => student.masterDefineClass === selectedPreviousClass

@@ -922,7 +922,7 @@ const StudentRegistrationForm = () => {
                       I Understand & agree that the registration of my ward does not guarantee admission to the school & the registration fee is neither transferable nor refundable.
                     </label>
                   </div>
-                  <div className="col-md-3">
+                  {/* <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="registrationFee" className="form-label">
                         Registration Fees <span className="text-danger">*</span>
@@ -1067,7 +1067,8 @@ const StudentRegistrationForm = () => {
                       </div>
                     </>
                   )}
-                </div>
+                 */}
+                 </div>
 
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
@@ -1130,7 +1131,7 @@ const StudentRegistrationForm = () => {
                         id="paymentMode"
                         name="paymentMode"
                         className="form-control"
-                        value={formData.paymentMode}
+                        value={student?.paymentMode}
                         disabled
                       />
                     </div>

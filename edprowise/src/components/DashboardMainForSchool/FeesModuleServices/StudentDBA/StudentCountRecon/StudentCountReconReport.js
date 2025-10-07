@@ -47,7 +47,7 @@ const StudentCountRecon = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
-  const tabs = ['Academic Year','Class & Section', ];
+  const tabs = ['Academic Year', 'Class & Section'];
   const pageShowOptions = [
     { value: 'all', label: 'All' },
     { value: 10, label: '10' },
@@ -642,7 +642,7 @@ const StudentCountRecon = () => {
                       <tbody>
                         {paginatedData().length > 0 ? (
                           paginatedData().map(({ record }, index, array) => {
-                            const isFirstInClass = index === 0 || record.className !== array[index - 1]?.record.className;
+                            const isLastInClass = index === array.length - 1 || record.className !== array[index + 1]?.record.className;
                             return (
                               <React.Fragment key={`${record.className}_${record.sectionName}_${index}`}>
                                 <tr className="payroll-table-row">
@@ -651,11 +651,11 @@ const StudentCountRecon = () => {
                                       key={field.id}
                                       className="text-center align-middle border border-secondary text-nowrap p-2"
                                     >
-                                      {field.id === 'className' && !isFirstInClass ? '' : getFieldValue(record, field)}
+                                      {getFieldValue(record, field)}
                                     </td>
                                   ))}
                                 </tr>
-                                {index === array.length - 1 || record.className !== array[index + 1]?.record.className ? (
+                                {isLastInClass ? (
                                   <tr className="payroll-table-footer">
                                     <td colSpan={2} className="text-right border border-secondary p-2">
                                       <strong>Total</strong>
@@ -691,7 +691,7 @@ const StudentCountRecon = () => {
                       <tfoot>
                         <tr className="payroll-table-footer">
                           <td colSpan={2} className="text-right border border-secondary p-2">
-                            <strong>Total</strong>
+                            <strong>Grand Total</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
                             <strong>{grandTotals.openingHC.toFixed(0)}</strong>

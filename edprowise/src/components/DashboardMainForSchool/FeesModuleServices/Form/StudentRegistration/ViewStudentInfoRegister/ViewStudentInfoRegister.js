@@ -858,7 +858,7 @@ const StudentRegistrationFormview = () => {
                           I Understand & agree that the registration of my ward does not guarantee admission to the school & the registration fee is neither transferable nor refundable.
                         </label>
                       </div>
-                      <div className="col-md-3">
+                      {/* <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="registrationFee" className="form-label">
                             Registration Fees <span className="text-danger"></span>
@@ -873,8 +873,8 @@ const StudentRegistrationFormview = () => {
                             required
                           />
                         </div>
-                      </div>
-                      <div className="col-md-3">
+                      </div> */}
+                      {/* <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="concessionType" className="form-label">
                             Concession Type
@@ -895,8 +895,8 @@ const StudentRegistrationFormview = () => {
                             <option value="Other">Other</option>
                           </select>
                         </div>
-                      </div>
-                      <div className="col-md-3">
+                      </div> */}
+                      {/* <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="concessionAmount" className="form-label">
                             Concession
@@ -911,8 +911,8 @@ const StudentRegistrationFormview = () => {
                             disabled
                           />
                         </div>
-                      </div>
-                      <div className="col-md-3">
+                      </div> */}
+                      {/* <div className="col-md-3">
                         <div className="mb-3">
                           <label htmlFor="finalAmount" className="form-label">
                             Final Amount <span className="text-danger"></span>
@@ -1002,7 +1002,7 @@ const StudentRegistrationFormview = () => {
                             </div>
                           </div>
                         </>
-                      )}
+                      )} */}
                     </div>
                   </div>
 
@@ -1068,7 +1068,7 @@ const StudentRegistrationFormview = () => {
                             id="paymentMode"
                             name="paymentMode"
                             className="form-control"
-                            value={formData.paymentMode}
+                            value={student?.paymentMode}
                             disabled
                           />
                         </div>

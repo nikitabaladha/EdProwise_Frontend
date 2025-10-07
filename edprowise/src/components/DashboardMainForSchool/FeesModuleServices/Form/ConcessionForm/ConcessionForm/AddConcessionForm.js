@@ -440,21 +440,21 @@ const ConcessionForm = () => {
                                             </tbody>
                                             <tfoot className="bg-light-subtle">
                                                 <tr>
-                                                    <td colSpan="3" className="fw-bold">Totals</td>
+                                                    <td colSpan="3" className="fw-bold">Total</td>
                                                     <td className="fw-bold">
                                                         {formData.concessionDetails
                                                             .reduce((sum, detail) => sum + Number(detail.totalFees || 0), 0)
                                                             }
                                                     </td>
                                                     <td className="fw-bold">
-                                                        {formData.concessionDetails.length > 0
+                                                        {/* {formData.concessionDetails.length > 0
                                                             ? (
                                                                 formData.concessionDetails.reduce(
                                                                     (sum, detail) => sum + Number(detail.concessionPercentage || 0),
                                                                     0
                                                                 ) / formData.concessionDetails.length
                                                             ).toFixed(2)
-                                                            : "0"}%
+                                                            : "0"}% */}
                                                     </td>
                                                     <td className="fw-bold">
                                                         {formData.concessionDetails

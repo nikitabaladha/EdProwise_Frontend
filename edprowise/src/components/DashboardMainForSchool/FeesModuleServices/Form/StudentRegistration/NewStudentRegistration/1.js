@@ -1,113 +1,321 @@
-// import React from "react";
+// import React, { useEffect, useState } from "react";
 // import { useLocation } from "react-router-dom";
-// import { FaPrint, FaDownload } from "react-icons/fa";
-// import html2pdf from "html2pdf.js";
+// import { FaPrint, FaDownload, FaTimes } from "react-icons/fa";
+// import { toast } from "react-toastify";
+// import html2canvas from "html2canvas";
+// import { jsPDF } from "jspdf";
+// import { fetchSchoolData, generateHeader, generateFooter } from "../../../PdfUtlis";
+// import CancelReceiptModal from "../CancelReceiptModal";
+// import getAPI from "../../../../../../api/getAPI";
 
 // const FeesReceipt = () => {
 //   const location = useLocation();
-//   const { student, feeTypeName, className } = location.state || {};
+//   const { student: initialStudent, feeTypeName, className } = location.state || {};
+//   const [student, setStudent] = useState(initialStudent);
+//   const [schoolData, setSchoolData] = useState({ school: null, logoSrc: '' });
+//   const [isCancelledOrReturned, setIsCancelledOrReturned] = useState(['Cancelled', 'Cheque Return'].includes(initialStudent?.status));
+//   const [showModal, setShowModal] = useState(false);
+
+//   useEffect(() => {
+//     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+//     const id = userDetails?.schoolId;
+
+//     const loadSchoolData = async () => {
+//       try {
+//         const data = await fetchSchoolData(id);
+//         setSchoolData(data);
+//       } catch (error) {
+//         toast.error("Failed to fetch school data. Please try again.");
+//         console.error("Error in loadSchoolData:", error);
+//       }
+//     };
+
+//     if (id) {
+//       loadSchoolData();
+//     }
+//   }, []);
+
+//   const fetchStudentStatus = async () => {
+//     try {
+//       console.log("Fetching status for student ID:", student._id);
+//       const response = await getAPI(`/get-registration-status/${student._id}`, true);
+//       console.log("API Response:", response);
+
+//       if (!response.hasError && response.data && response.data.student) {
+//         setStudent(prev => ({ ...prev, ...response.data.student }));
+//         setIsCancelledOrReturned(['Cancelled', 'Cheque Return'].includes(response.data.student.status));
+//         toast.success(`Student status fetched: ${response.data.student.status}`);
+//       } else {
+//         toast.error(response.message || "Failed to fetch student status.");
+//       }
+//     } catch (error) {
+//       toast.error("Error fetching student status. Please try again.");
+//     }
+//   };
+
+//   const handleModalClose = async (updatedStudent) => {
+//     setShowModal(false);
+//     if (updatedStudent) {
+//       setTimeout(async () => {
+//         await fetchStudentStatus();
+//       }, 500);
+//     }
+//   };
 
 //   const printReceipt = () => {
 //     window.print();
 //   };
 
-//   const downloadReceiptAsPDF = () => {
+//   const downloadReceiptAsPDF = async () => {
 //     const element = document.getElementById("receipt-content");
-//     const options = {
-//       filename: `fees_receipt_${student.receiptNumber}.pdf`,
-//       image: { type: "jpeg", quality: 0.98 },
-//       html2canvas: { scale: 2 },
-//       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-//     };
-//     html2pdf().from(element).set(options).save();
+//     if (!element) {
+//       toast.error("Receipt content not found. Please try again.");
+//       return;
+//     }
+
+//     const wrapper = document.createElement("div");
+//     wrapper.style.cssText = `
+//       width: 210mm;
+//       min-height: 297mm;
+//       padding: 10mm 15mm 22mm 15mm;
+//       background: white;
+//       font-family: 'Arial', sans-serif;
+//       position: absolute;
+//       left: -9999px;
+//       box-sizing: border-box;
+//       font-size: 18px;
+//       line-height: 1.4;
+//     `;
+
+//     const contentWithoutHeaderFooter = element.cloneNode(true);
+//     const headerElement = contentWithoutHeaderFooter.querySelector(".header-class");
+//     const footerElement = contentWithoutHeaderFooter.querySelector(".footer-class");
+//     if (headerElement) headerElement.remove();
+//     if (footerElement) footerElement.remove();
+
+//     wrapper.innerHTML = `
+//       ${generateHeader(schoolData.school, schoolData.logoSrc)}
+//       ${contentWithoutHeaderFooter.outerHTML}
+//       ${generateFooter(schoolData.school)}
+//     `;
+
+//     const footer = wrapper.querySelector(".footer-class");
+//     if (footer) {
+//       footer.style.position = "absolute";
+//       footer.style.bottom = "10mm";
+//       footer.style.textAlign = "center";
+//     }
+
+//     document.body.appendChild(wrapper);
+
+//     const images = wrapper.querySelectorAll("img");
+//     await Promise.all(
+//       Array.from(images).map((img) =>
+//         new Promise((resolve) => {
+//           img.crossOrigin = "anonymous";
+//           if (img.complete) resolve();
+//           else {
+//             img.onload = resolve;
+//             img.onerror = resolve;
+//           }
+//         })
+//       )
+//     );
+
+//     const canvas = await html2canvas(wrapper, {
+//       scale: 2,
+//       useCORS: true,
+//       logging: false,
+//       backgroundColor: "#ffffff",
+//       windowWidth: 794,
+//       windowHeight: 1123,
+//     });
+
+//     const pdf = new jsPDF({
+//       unit: "mm",
+//       format: "a4",
+//       orientation: "portrait",
+//     });
+
+//     const imgWidth = 210;
+//     const pageHeight = 297;
+//     const canvasHeight = Math.min((canvas.height * imgWidth) / canvas.width, pageHeight);
+
+//     pdf.addImage(canvas.toDataURL("image/jpeg", 0.98), "JPEG", 0, 0, imgWidth, canvasHeight);
+//     pdf.save(`fees_receipt_${student?.receiptNumber || "unknown"}.pdf`);
+
+//     document.body.removeChild(wrapper);
+//   };
+
+//   const handleCancelClick = () => {
+//     if (isCancelledOrReturned) {
+//       toast.info(`Receipt is already ${student.status.toLowerCase()}.`);
+//       return;
+//     }
+//     setShowModal(true);
 //   };
 
 //   return (
-//     <div className="container my-4" style={{ maxWidth: '800px' }}>
+//     <div className="container my-4" style={{ maxWidth: "800px" }}>
 //       <div className="d-flex justify-content-between align-items-center mb-4">
 //         <h4 className="text-primary">
 //           <strong>Registration Fees Receipt</strong>
 //         </h4>
 //         <div>
-//           <button 
-//             onClick={printReceipt} 
+//           <button
+//             onClick={handleCancelClick}
+//             className="btn btn-outline-danger me-2"
+//             style={{ borderRadius: "20px" }}
+//             disabled={isCancelledOrReturned || student?.paymentMode === 'null'}
+//           >
+//             <FaTimes className="me-1" /> Cancel/Return
+//           </button>
+//           <button
+//             onClick={printReceipt}
 //             className="btn btn-outline-primary me-2"
-//             style={{ borderRadius: '20px' }}
+//             style={{ borderRadius: "20px" }}
 //           >
 //             <FaPrint className="me-1" /> Print
 //           </button>
-//           <button 
-//             onClick={downloadReceiptAsPDF} 
+//           <button
+//             onClick={downloadReceiptAsPDF}
 //             className="btn btn-primary"
-//             style={{ borderRadius: '20px' }}
+//             style={{ borderRadius: "20px" }}
 //           >
 //             <FaDownload className="me-1" /> Download PDF
 //           </button>
 //         </div>
 //       </div>
 
-//       <div 
-//         id="receipt-content" 
+//       <div
+//         id="receipt-content"
 //         className="p-4 shadow-sm"
-//         style={{ backgroundColor: '#ffffff' }}
+//         style={{
+//           backgroundColor: "#ffffff",
+//           position: "relative",
+//           minHeight: "297mm",
+//         }}
 //       >
-//         {/* Header */}
-//         <div className="text-center mb-3">
-//           <h2 className="text-primary mb-1">ABC International School</h2>
-//           <p className="mb-1">123 Education Street, Knowledge City</p>
-//           <p>Phone: (123) 456-7890 | Email: info@abcschool.edu</p>
-//           <div className="d-flex justify-content-center">
-//             <div style={{ 
-//               borderTop: '2px solid #0d6efd', 
-//               width: '100%', 
-//               margin: '0 10px' 
-//             }}></div>
+//         {['Cancelled', 'Cheque Return'].includes(student?.status) && (
+//           <div
+//             style={{
+//               position: "absolute",
+//               top: "50%",
+//               left: "50%",
+//               transform: "translate(-50%, -50%)",
+//               opacity: 0.2,
+//               pointerEvents: "none",
+//               zIndex: 99,
+//               width: "80%",
+//               maxWidth: "500px",
+//             }}
+//           >
+//             <img
+//               src={student.status === 'Cheque Return' ? "/assets/images/StatusReturned.png" : "/assets/images/StatusCancelled.png"}
+//               alt={student.status === 'Cheque Return' ? "Returned Watermark" : "Cancelled Watermark"}
+//               style={{
+//                 width: "100%",
+//                 height: "auto",
+//               }}
+//             />
 //           </div>
-//         </div>
+//         )}
 
-//         <h3 className="text-center text-uppercase mb-3" style={{ color: '#0d6efd' }}>
+
+//         <div className="header-class" dangerouslySetInnerHTML={{ __html: generateHeader(schoolData.school, schoolData.logoSrc) }} />
+
+//         <h3 className="text-center text-uppercase mb-3" style={{ color: "#0d6efd", zIndex: 1, position: "relative" }}>
 //           <strong>Registration Fees Receipt</strong>
 //         </h3>
 
-//         {/* Receipt Details */}
-//         <div className="row mb-3 text-black">
+
+//         {/* <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
 //           <div className="col-md-6">
 //             <div className="d-flex mb-2">
-//               <span className="fw-bold me-2" style={{ minWidth: '120px' }}>Receipt No:</span>
-//               <span>{student.receiptNumber}</span>
+//               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
+//                 Receipt No:
+//               </span>
+//               <span>{student?.receiptNumber || ""}</span>
 //             </div>
 //             <div className="d-flex mb-2">
-//               <span className="fw-bold me-2" style={{ minWidth: '120px' }}>Student Name:</span>
-//               <span>{student.firstName} {student.lastName}</span>
-//             </div>
-//             <div className="d-flex mb-2">
-//               <span className="fw-bold me-2" style={{ minWidth: '120px' }}>Registration No:</span>
-//               <span>{student.registrationNumber}</span>
-//             </div>
-//           </div>
-//           <div className="col-md-6">
-//             <div className="d-flex mb-2">
-//               <span className="fw-bold me-2" style={{ minWidth: '120px' }}>Date:</span>
-//               <span>{new Date(student.registrationDate).toLocaleDateString('en-GB')}</span>
-//             </div>
-//             <div className="d-flex mb-2">
-//               <span className="fw-bold me-2" style={{ minWidth: '120px' }}>Academic Year:</span>
+//               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
+//                 Student Name:
+//               </span>
 //               <span>
-//                 {(() => {
-//                   const year = new Date(student.registrationDate).getFullYear();
-//                   return `${year}-${year + 1}`;
-//                 })()}
+//                 {student?.firstName && student?.lastName
+//                   ? `${student.firstName} ${student.lastName}`
+//                   : ""}
 //               </span>
 //             </div>
 //             <div className="d-flex mb-2">
-//               <span className="fw-bold me-2" style={{ minWidth: '120px' }}>Class:</span>
-//               <span>{className}</span>
+//               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
+//                 Registration No:
+//               </span>
+//               <span>{student?.registrationNumber || ""}</span>
 //             </div>
 //           </div>
-//         </div>
+//           <div className="col-md-6">
+//             <div className="d-flex mb-2">
+//               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
+//                 Date:
+//               </span>
+//               <span>
+//                 {student?.registrationDate
+//                   ? new Date(student.registrationDate).toLocaleDateString("en-GB")
+//                   : ""}
+//               </span>
+//             </div>
+//             <div className="d-flex mb-2">
+//               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
+//                 Academic Year:
+//               </span>
+//               <span>
+//                 {student?.academicYear||""}
+//               </span>
+//             </div>
+//             <div className="d-flex mb-2">
+//               <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
+//                 Class:
+//               </span>
+//               <span>{className || ""}</span>
+//             </div>
+//           </div>
+//         </div> */}
 
-//         {/* Fee Table */}
-//         <div className="table-responsive mb-3">
+//         <table className="table table-borderless text-black" style={{ zIndex: 1, position: "relative" }}>
+//           <tbody>
+//             <tr className="text-nowrap">
+//               <td className="fw-bold" style={{ minWidth: "120px" }}>Receipt No:</td>
+//               <td>{student?.receiptNumber || ""}</td>
+//               <td className="fw-bold" style={{ minWidth: "120px" }}>Date:</td>
+//               <td>
+//                 {student?.paymentDate
+//                   ? new Date(student.paymentDate).toLocaleDateString("en-GB")
+//                   : ""}
+//               </td>
+//             </tr>
+//             <tr className="text-nowrap">
+//               <td className="fw-bold">Student Name:</td>
+//               <td>
+//                 {student?.firstName && student?.lastName
+//                   ? `${student.firstName} ${student.lastName}`
+//                   : ""}
+//               </td>
+//               <td className="fw-bold">Academic Year:</td>
+//               <td>{student?.academicYear || ""}</td>
+//             </tr>
+//             <tr className="text-nowrap">
+//               <td className="fw-bold">Registration No:</td>
+//               <td>{student?.registrationNumber || ""}</td>
+//               <td className="fw-bold">Class:</td>
+//               <td>{className || ""}</td>
+//             </tr>
+//           </tbody>
+//         </table>
+
+
+
+//         <div className="table-responsive mb-4" style={{ zIndex: 1, position: "relative" }}>
 //           <table className="table table-bordered">
 //             <thead className="table-primary">
 //               <tr>
@@ -119,42 +327,70 @@
 //             </thead>
 //             <tbody>
 //               <tr>
-//                 <td className="text-center">{feeTypeName}</td>
-//                 <td className="text-center">{student.registrationFee}</td>
-//                 <td className="text-center text-danger">{student.concessionAmount}</td>
-//                 <td className="text-center fw-bold">{student.finalAmount}</td>
+//                 <td className="text-center">{feeTypeName || ""}</td>
+//                 <td className="text-center">{student?.registrationFee.toFixed(2) || "0"}</td>
+//                 <td className="text-center">{student?.concessionAmount.toFixed(2) || "0"}</td>
+//                 <td className="text-center fw-bold">{student?.finalAmount.toFixed(2) || "0"}</td>
 //               </tr>
 //               <tr className="table-active">
-//                 <td colSpan="3" className="text-end fw-bold">Total Paid:</td>
-//                 <td className="text-center fw-bold">{student.finalAmount}</td>
+//                 <td colSpan="3" className="text-end fw-bold">
+//                   Total Paid:
+//                 </td>
+//                 <td className="text-center fw-bold">{student?.finalAmount.toFixed(2) || "0"}</td>
 //               </tr>
 //             </tbody>
 //           </table>
 //         </div>
 
-//         {/* Payment Details and Signature */}
-//         <div className="row mb-3 text-black">
+
+//         <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
 //           <div className="col-md-6">
 //             <div className="d-flex mb-2">
-//               <span className="fw-bold me-2" style={{ minWidth: '150px' }}>Payment Mode:</span>
-//               <span className="text-capitalize">{student.paymentMode}</span>
+//               <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
+//                 Payment Mode:
+//               </span>
+//               <span className="text-capitalize">{student?.paymentMode === 'null' ? '' : student?.paymentMode || ""}</span>
 //             </div>
-//             <div className="d-flex mb-2">
-//               <span className="fw-bold me-2" style={{ minWidth: '150px' }}>Date of Payment:</span>
-//               <span>{new Date(student.paymentDate).toLocaleDateString('en-GB')}</span>
-//             </div>
-//             {student.paymentMode!== 'Cash' && (
-//             <div className="d-flex mb-2">
-//               <span className="fw-bold me-2" style={{ minWidth: '150px' }}>Transaction/Cheque No:</span>
-//               <span>{student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ''}</span>
-//             </div>
+//             {/* <div className="d-flex mb-2">
+//               <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
+//                 Date of Payment:
+//               </span>
+//               <span>
+//                 {student?.paymentDate
+//                   ? new Date(student.paymentDate).toLocaleDateString("en-GB")
+//                   : ""}
+//               </span>
+//             </div> */}
+//             {student?.paymentMode !== "Cash" && (
+//               <div className="d-flex mb-2">
+//                 <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
+//                   Transaction/Cheque No:
+//                 </span>
+//                 <span>
+//                   {student?.chequeNumber
+//                     ? student.chequeNumber
+//                     : student?.transactionNumber || ""}
+//                 </span>
+//               </div>
+//             )}
+//             {['Cancelled', 'Cheque Return'].includes(student?.status) && (
+//               <>
+//                 <div className="d-flex mb-2">
+//                   <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
+//                     Cancel Reason:
+//                   </span>
+//                   <span>{student?.cancelReason || ""}</span>
+//                 </div>
+//               </>
 //             )}
 //           </div>
 //           <div className="col-md-6">
-//             <div className="p-3 text-center" style={{ height: '100%' }}>
+//             <div className="p-3 text-center" style={{ height: "100%" }}>
 //               <p className="mb-4">Authorized Signature</p>
-//               <div className="mt-4 pt-3" style={{ borderTop: '1px solid #dee2e6' }}>
-//                 <p className="mb-0 fw-bold">{student.name || "School Administrator"}</p>
+//               <div className="mt-4 pt-3" style={{ borderTop: "1px solid #dee2e6" }}>
+//                 <p className="mb-0 fw-bold">
+//                   {schoolData.school?.schoolName || "School Administrator"}
+//                 </p>
 //                 <p className="mb-0 small text-muted">Receipt Collector</p>
 //               </div>
 //             </div>
@@ -162,20 +398,36 @@
 //         </div>
 
 //         {/* Footer */}
-//         <div className="text-center mt-4 pt-3" style={{ borderTop: '2px solid #0d6efd' }}>
-//           <p className="small text-muted mb-1">
-//             This is a computer-generated receipt and does not require a physical signature.
-//           </p>
-//           <p className="small text-muted">
-//             For any queries, please contact accounts@abcschool.edu or call +1234567890
-//           </p>
-//         </div>
+//         <div
+//           className="footer-class"
+//           style={{
+//             position: "absolute",
+//             bottom: "10mm",
+//             left: 0,
+//             right: 0,
+//             textAlign: "center",
+//             width: "100%",
+//             boxSizing: "border-box",
+//             zIndex: 1,
+//           }}
+//           dangerouslySetInnerHTML={{ __html: generateFooter(schoolData.school) }}
+//         />
 //       </div>
+
+//       <CancelReceiptModal
+//         show={showModal}
+//         onClose={handleModalClose}
+//         student={student}
+//         setIsCancelled={setIsCancelledOrReturned}
+//         fetchStudentStatus={fetchStudentStatus}
+//       />
 //     </div>
 //   );
 // };
 
 // export default FeesReceipt;
+
+
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { FaPrint, FaDownload } from "react-icons/fa";
@@ -183,18 +435,28 @@ import { toast } from "react-toastify";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { fetchSchoolData, generateHeader, generateFooter } from "../../../PdfUtlis";
+import CancelReceiptModal from "../../../CancelReceiptModal";
 
-const FeesReceipt = () => {
+const RegistartionFeesReceipt = () => {
   const location = useLocation();
-  const { student, feeTypeName, className } = location.state || {};
+  const { student: initialStudent, feeTypeName, className, classId } = location.state || {};
+  console.log("student", initialStudent)
+  const [student, setStudent] = useState(initialStudent);
   const [schoolData, setSchoolData] = useState({ school: null, logoSrc: '' });
-
+  const [isCancelledOrReturned, setIsCancelledOrReturned] = useState(
+    ['Cancelled', 'Cheque Return'].includes(initialStudent?.status) ||
+    initialStudent?.reportStatus?.some(status =>
+      ['Refund', 'Cancelled', 'Cheque Return'].includes(status)
+    )
+  );
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAction, setSelectedAction] = useState('');
+  const [schoolId, setSchoolId] = useState(null);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
-
- 
+    setSchoolId(id);
 
     const loadSchoolData = async () => {
       try {
@@ -211,6 +473,11 @@ const FeesReceipt = () => {
     }
   }, []);
 
+  const handleModalClose = async () => {
+    setShowModal(false);
+    setSelectedAction('');
+  };
+
   const printReceipt = () => {
     window.print();
   };
@@ -222,7 +489,6 @@ const FeesReceipt = () => {
       return;
     }
 
-   
     const wrapper = document.createElement("div");
     wrapper.style.cssText = `
       width: 210mm;
@@ -237,32 +503,27 @@ const FeesReceipt = () => {
       line-height: 1.4;
     `;
 
-
     const contentWithoutHeaderFooter = element.cloneNode(true);
     const headerElement = contentWithoutHeaderFooter.querySelector(".header-class");
     const footerElement = contentWithoutHeaderFooter.querySelector(".footer-class");
     if (headerElement) headerElement.remove();
     if (footerElement) footerElement.remove();
 
-   
     wrapper.innerHTML = `
       ${generateHeader(schoolData.school, schoolData.logoSrc)}
       ${contentWithoutHeaderFooter.outerHTML}
       ${generateFooter(schoolData.school)}
     `;
 
-
     const footer = wrapper.querySelector(".footer-class");
     if (footer) {
       footer.style.position = "absolute";
       footer.style.bottom = "10mm";
-      // footer.style.width = "100%";
       footer.style.textAlign = "center";
     }
 
     document.body.appendChild(wrapper);
 
-  
     const images = wrapper.querySelectorAll("img");
     await Promise.all(
       Array.from(images).map((img) =>
@@ -277,16 +538,14 @@ const FeesReceipt = () => {
       )
     );
 
-   
     const canvas = await html2canvas(wrapper, {
       scale: 2,
       useCORS: true,
       logging: false,
       backgroundColor: "#ffffff",
-      windowWidth: 794, 
-      windowHeight: 1123, 
+      windowWidth: 794,
+      windowHeight: 1123,
     });
-
 
     const pdf = new jsPDF({
       unit: "mm",
@@ -304,6 +563,15 @@ const FeesReceipt = () => {
     document.body.removeChild(wrapper);
   };
 
+  const handleActionSelect = (action) => {
+    if (isCancelledOrReturned) {
+      toast.info(`Receipt is already ${student.status.toLowerCase()}.`);
+      return;
+    }
+    setSelectedAction(action);
+    setShowModal(true);
+  };
+
   return (
     <div className="container my-4" style={{ maxWidth: "800px" }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -311,6 +579,40 @@ const FeesReceipt = () => {
           <strong>Registration Fees Receipt</strong>
         </h4>
         <div>
+          <div className="dropdown me-2 d-inline-block">
+            <button
+              className="btn btn-outline-danger dropdown-toggle"
+              type="button"
+              id="actionDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style={{ borderRadius: "20px" }}
+              disabled={
+                student?.paymentMode === 'null' ||
+                isCancelledOrReturned
+              }
+            >
+              Action
+            </button>
+            <ul className="dropdown-menu" aria-labelledby="actionDropdown">
+              <li>
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleActionSelect('Cancelled/Cheque Return')}
+                >
+                  Cancelled/Cheque Return
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleActionSelect('Refund')}
+                >
+                  Refund
+                </button>
+              </li>
+            </ul>
+          </div>
           <button
             onClick={printReceipt}
             className="btn btn-outline-primary me-2"
@@ -331,76 +633,50 @@ const FeesReceipt = () => {
       <div
         id="receipt-content"
         className="p-4 shadow-sm"
-        style={{ backgroundColor: "#ffffff", position: "relative", minHeight: "297mm" }}
+        style={{
+          backgroundColor: "#ffffff",
+          position: "relative",
+          minHeight: "297mm",
+        }}
       >
-        {/* Header */}
         <div className="header-class" dangerouslySetInnerHTML={{ __html: generateHeader(schoolData.school, schoolData.logoSrc) }} />
 
-        <h3 className="text-center text-uppercase mb-3" style={{ color: "#0d6efd" }}>
+        <h3 className="text-center text-uppercase mb-3" style={{ color: "#0d6efd", zIndex: 1, position: "relative" }}>
           <strong>Registration Fees Receipt</strong>
         </h3>
 
-        {/* Receipt Details */}
-        <div className="row mb-4 text-black">
-          <div className="col-md-6">
-            <div className="d-flex mb-2">
-              <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
-                Receipt No:
-              </span>
-              <span>{student?.receiptNumber || "N/A"}</span>
-            </div>
-            <div className="d-flex mb-2">
-              <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
-                Student Name:
-              </span>
-              <span>
+        <table className="table table-borderless text-black" style={{ zIndex: 1, position: "relative" }}>
+          <tbody>
+            <tr className="text-nowrap">
+              <td className="fw-bold" style={{ minWidth: "120px" }}>Receipt No:</td>
+              <td>{student?.receiptNumber || ""}</td>
+              <td className="fw-bold" style={{ minWidth: "120px" }}>Date:</td>
+              <td>
+                {student?.paymentDate
+                  ? new Date(student.paymentDate).toLocaleDateString("en-GB")
+                  : ""}
+              </td>
+            </tr>
+            <tr className="text-nowrap">
+              <td className="fw-bold">Student Name:</td>
+              <td>
                 {student?.firstName && student?.lastName
                   ? `${student.firstName} ${student.lastName}`
-                  : "N/A"}
-              </span>
-            </div>
-            <div className="d-flex mb-2">
-              <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
-                Registration No:
-              </span>
-              <span>{student?.registrationNumber || "N/A"}</span>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="d-flex mb-2">
-              <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
-                Date:
-              </span>
-              <span>
-                {student?.registrationDate
-                  ? new Date(student.registrationDate).toLocaleDateString("en-GB")
-                  : "N/A"}
-              </span>
-            </div>
-            <div className="d-flex mb-2">
-              <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
-                Academic Year:
-              </span>
-              <span>
-                {student?.registrationDate
-                  ? (() => {
-                      const year = new Date(student.registrationDate).getFullYear();
-                      return `${year}-${year + 1}`;
-                    })()
-                  : "N/A"}
-              </span>
-            </div>
-            <div className="d-flex mb-2">
-              <span className="fw-bold me-2" style={{ minWidth: "120px" }}>
-                Class:
-              </span>
-              <span>{className || "N/A"}</span>
-            </div>
-          </div>
-        </div>
+                  : ""}
+              </td>
+              <td className="fw-bold">Academic Year:</td>
+              <td>{student?.academicYear || ""}</td>
+            </tr>
+            <tr className="text-nowrap">
+              <td className="fw-bold">Registration No:</td>
+              <td>{student?.registrationNumber || ""}</td>
+              <td className="fw-bold">Class:</td>
+              <td>{className || ""}</td>
+            </tr>
+          </tbody>
+        </table>
 
-        {/* Fee Table */}
-        <div className="table-responsive mb-4">
+        <div className="table-responsive mb-4" style={{ zIndex: 1, position: "relative" }}>
           <table className="table table-bordered">
             <thead className="table-primary">
               <tr>
@@ -412,39 +688,28 @@ const FeesReceipt = () => {
             </thead>
             <tbody>
               <tr>
-                <td className="text-center">{feeTypeName || "N/A"}</td>
-                <td className="text-center">{student?.registrationFee || "0"}</td>
-                <td className="text-center text-danger">{student?.concessionAmount || "0"}</td>
-                <td className="text-center fw-bold">{student?.finalAmount || "0"}</td>
+                <td className="text-center">{feeTypeName || ""}</td>
+                <td className="text-center">{student?.registrationFee.toFixed(2) || "0"}</td>
+                <td className="text-center">{student?.concessionAmount.toFixed(2) || "0"}</td>
+                <td className="text-center fw-bold">{student?.finalAmount.toFixed(2) || "0"}</td>
               </tr>
               <tr className="table-active">
                 <td colSpan="3" className="text-end fw-bold">
                   Total Paid:
                 </td>
-                <td className="text-center fw-bold">{student?.finalAmount || "0"}</td>
+                <td className="text-center fw-bold">{student?.finalAmount.toFixed(2) || "0"}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        {/* Payment Details and Signature */}
-        <div className="row mb-4 text-black">
+        <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
           <div className="col-md-6">
             <div className="d-flex mb-2">
               <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
                 Payment Mode:
               </span>
-              <span className="text-capitalize">{student?.paymentMode || "N/A"}</span>
-            </div>
-            <div className="d-flex mb-2">
-              <span className="fw-bold me-2" style={{ minWidth: "150px" }}>
-                Date of Payment:
-              </span>
-              <span>
-                {student?.paymentDate
-                  ? new Date(student.paymentDate).toLocaleDateString("en-GB")
-                  : "N/A"}
-              </span>
+              <span className="text-capitalize">{student?.paymentMode === 'null' ? '' : student?.paymentMode || ""}</span>
             </div>
             {student?.paymentMode !== "Cash" && (
               <div className="d-flex mb-2">
@@ -454,7 +719,7 @@ const FeesReceipt = () => {
                 <span>
                   {student?.chequeNumber
                     ? student.chequeNumber
-                    : student?.transactionNumber || "N/A"}
+                    : student?.transactionNumber || ""}
                 </span>
               </div>
             )}
@@ -472,23 +737,34 @@ const FeesReceipt = () => {
           </div>
         </div>
 
-        {/* Footer */}
-      <div
-  className="footer-class"
-  style={{
-    position: "absolute",
-    bottom: "10mm",
-    left: 0,
-    right: 0,
-    textAlign: "center",
-    width: "100%",
-    boxSizing: "border-box",
-  }}
-  dangerouslySetInnerHTML={{ __html: generateFooter(schoolData.school) }}
-/>
+        <div
+          className="footer-class"
+          style={{
+            position: "absolute",
+            bottom: "10mm",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            width: "100%",
+            boxSizing: "border-box",
+            zIndex: 1,
+          }}
+          dangerouslySetInnerHTML={{ __html: generateFooter(schoolData.school) }}
+        />
       </div>
+
+      <CancelReceiptModal
+        show={showModal}
+        onClose={handleModalClose}
+        student={student}
+        feeTypeName={feeTypeName}
+        classId={classId}
+        schoolId={schoolId}
+        setIsCancelled={setIsCancelledOrReturned}
+        action={selectedAction}
+      />
     </div>
   );
 };
 
-export default FeesReceipt;
+export default RegistartionFeesReceipt;

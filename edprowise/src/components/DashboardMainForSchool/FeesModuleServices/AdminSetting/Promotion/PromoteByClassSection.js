@@ -269,7 +269,7 @@ const PromoteByClassSection = ({ schoolId, newAcademicYear, previousYear, classe
 
         setLoading(true);
         try {
-            const response = await getAPI(`/get-admission-form-by-year-schoolId/${schoolId}/${previousYear}`);
+            const response = await getAPI(`/get-admission-form-by-year-schoolId-active/${schoolId}/${previousYear}`);
             if (!response.hasError) {
                 const filteredStudents = response.data.data.filter(
                     student => student.masterDefineClass === selectedPreviousClass && student.section === selectedPreviousSection

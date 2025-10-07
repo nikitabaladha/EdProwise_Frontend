@@ -87,18 +87,18 @@ export const validateFullForm = (formData, isNursery) => {
         return 'Please agree to the terms and conditions';
     }
 
-    if (!formData.paymentMode) {
-        return 'Please select payment mode';
-    }
+    // if (!formData.paymentMode) {
+    //     return 'Please select payment mode';
+    // }
 
-    if (!formData.name) {
-        return 'Please enter your name in the agreement section';
-    }
+    // if (!formData.name) {
+    //     return 'Please enter your name in the agreement section';
+    // }
 
-    if (formData.paymentMode === 'Cheque') {
-        if (!formData.chequeNumber) return 'Please enter cheque number';
-        if (!formData.bankName) return 'Please enter bank name';
-    }
+    // if (formData.paymentMode === 'Cheque') {
+    //     if (!formData.chequeNumber) return 'Please enter cheque number';
+    //     if (!formData.bankName) return 'Please enter bank name';
+    // }
 
     return null;
 };

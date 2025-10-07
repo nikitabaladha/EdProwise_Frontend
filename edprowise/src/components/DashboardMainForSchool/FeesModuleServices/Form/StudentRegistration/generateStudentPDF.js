@@ -522,22 +522,7 @@ export const generatePDF = async (schoolId, student, getClassNameById, getShiftN
           color: #000000;
           text-transform: capitalize;
         }
-        .pdf-checkbox {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 10px;
-        }
-        .pdf-checkbox-box {
-          width: 16px;
-          height: 16px;
-          border: 2px solid #000000;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: #000000;
-        }
+       
         .pdf-address {
           min-height: 60px;
         }
@@ -640,119 +625,6 @@ export const generatePDF = async (schoolId, student, getClassNameById, getShiftN
         : ""
       }
         </div>
-
-        <!-- Understanding & Payment -->
-        <div class="pdf-section">
-          <div class="pdf-section-title">Understanding And Payment</div>
-          <div class="pdf-checkbox">
-            <div class="pdf-checkbox-box">${mockstudentData.agreementChecked ? "✓" : ""}</div>
-            <span style="color: #000000; text-transform: capitalize;">I Understand And Agree That The Registration Of My Ward Does Not Guarantee Admission To The School And The Registration Fee Is Neither Transferable Nor Refundable.</span>
-          </div>
-          <div class="pdf-row">
-            <div class="pdf-col-4">
-              <div class="pdf-field">
-                <label class="pdf-label">Registration Fees</label>
-                <div class="pdf-value">₹${mockstudentData.registrationFee}</div>
-              </div>
-            </div>
-            <div class="pdf-col-4">
-              <div class="pdf-field">
-                <label class="pdf-label">Concession Type</label>
-                <div class="pdf-value">${mockstudentData.concessionType}</div>
-              </div>
-            </div>
-            <div class="pdf-col-4">
-              <div class="pdf-field">
-                <label class="pdf-label">Concession</label>
-                <div class="pdf-value">₹${mockstudentData.concessionAmount}</div>
-              </div>
-            </div>
-            <div class="pdf-col-4">
-              <div class="pdf-field">
-                <label class="pdf-label">Final Amount</label>
-                <div class="pdf-value">₹${mockstudentData.finalAmount}</div>
-              </div>
-            </div>
-          </div>
-          <div class="pdf-row">
-            <div class="pdf-col-6">
-              <div class="pdf-field">
-                <label class="pdf-label">Name Of Person Filling Form</label>
-                <div class="pdf-value">${mockstudentData.name}</div>
-              </div>
-            </div>
-            <div class="pdf-col-6">
-              <div class="pdf-field">
-                <label class="pdf-label">Payment Mode</label>
-                <div class="pdf-value">${mockstudentData.paymentMode}</div>
-              </div>
-            </div>
-          </div>
-          ${mockstudentData.paymentMode === "Cheque"
-        ? `
-                <div class="pdf-row">
-                  <div class="pdf-col-6">
-                    <div class="pdf-field">
-                      <label class="pdf-label">Cheque Number</label>
-                      <div class="pdf-value">${mockstudentData.chequeNumber}</div>
-                    </div>
-                  </div>
-                  <div class="pdf-col-6">
-                    <div class="pdf-field">
-                      <label class="pdf-label">Bank Name</label>
-                      <div class="pdf-value">${mockstudentData.bankName}</div>
-                    </div>
-                  </div>
-                </div>`
-        : ""
-      }
-        </div>
-
-        <!-- For Official Use Only -->
-        <div class="pdf-section">
-          <div class="pdf-section-title">For Official Use Only</div>
-          <div class="pdf-row">
-            <div class="pdf-col-3">
-              <div class="pdf-field">
-                <label class="pdf-label">Application Received On</label>
-                <div class="pdf-value">${mockstudentData.paymentDate}</div>
-              </div>
-            </div>
-            <div class="pdf-col-3">
-              <div class="pdf-field">
-                <label class="pdf-label">Receipt No.</label>
-                <div class="pdf-value">${mockstudentData.receiptNumber}</div>
-              </div>
-            </div>
-            <div class="pdf-col-3">
-              <div class="pdf-field">
-                <label class="pdf-label">Registration No.</label>
-                <div class="pdf-value">${mockstudentData.registrationNumber}</div>
-              </div>
-            </div>
-          </div>
-          <div class="pdf-row">
-            <div class="pdf-col-3">
-              <div class="pdf-field">
-                <label class="pdf-label">Payment Mode</label>
-                <div class="pdf-value">${mockstudentData.paymentMode}</div>
-              </div>
-            </div>
-            <div class="pdf-col-3">
-              <div class="pdf-field">
-                <label class="pdf-label">Payment Date</label>
-                <div class="pdf-value">${mockstudentData.paymentDate}</div>
-              </div>
-            </div>
-            <div class="pdf-col-3">
-              <div class="pdf-field">
-                <label class="pdf-label">Transaction/Cheque No.</label>
-                <div class="pdf-value">${mockstudentData.chequeNumber || mockstudentData.transactionNumber || ""}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     `;
 
     page1Container.innerHTML = generateHeader(school, logoSrc) + createPDFContent() + generateFooter(school);

@@ -135,7 +135,7 @@ const StudentFeeLedger = () => {
         }
 
         const response = await getAPI(
-          `/get-concession-formbyADMID?classId=${academicHistory.masterDefineClass || ''}&sectionIds=${academicHistory.section || ''}&schoolId=${schoolId}&admissionNumber=${admissionNumber}`
+          `/get-all-data?classId=${academicHistory.masterDefineClass || ''}&sectionIds=${academicHistory.section || ''}&schoolId=${schoolId}&admissionNumber=${admissionNumber}`
         );
         console.log('API response:', response);
 
@@ -178,16 +178,16 @@ const StudentFeeLedger = () => {
         year: 'numeric',
       }).replace(/\//g, '-');
 
-      runningBalance += admissionDue;
+      runningBalance += admissionDue - concession;
       transactions.push({
         academicYear: student.academicYear,
         date: formattedDate,
         particulars: `Fees Due - Admission Fees`,
         receiptNo: '',
         paymentMode: '',
-        due: (admissionDue - concession).toFixed(0),
+        due: (admissionDue - concession).toFixed(2),
         receipt: '',
-        balance: runningBalance.toFixed(0),
+        balance: runningBalance.toFixed(2),
         paymentDateRaw: paymentDate,
       });
 
@@ -200,14 +200,17 @@ const StudentFeeLedger = () => {
           receiptNo: student.receiptNumber || '',
           paymentMode: student.paymentMode || '',
           due: '',
-          receipt: finalAmount.toFixed(0),
-          balance: runningBalance.toFixed(0),
+          receipt: finalAmount.toFixed(2),
+          balance: runningBalance.toFixed(2),
           paymentDateRaw: paymentDate,
         });
       }
     }
 
-    const studentPayments = paymentData.filter((payment) => payment.admissionNumber === student.AdmissionNumber);
+
+    const studentPayments = paymentData.filter(
+      (payment) => payment.admissionNumber === student.AdmissionNumber && !payment.refundDate
+    );
     studentPayments.forEach((payment) => {
       const paymentDate = new Date(payment.paymentDate);
       const formattedDate = paymentDate.toLocaleDateString('en-GB', {
@@ -225,13 +228,12 @@ const StudentFeeLedger = () => {
         particulars: `Fees Due - ${payment.type}`,
         receiptNo: '',
         paymentMode: '',
-        due: paidAmount.toFixed(0),
+        due: paidAmount.toFixed(2),
         receipt: '',
-        balance: runningBalance.toFixed(0),
+        balance: runningBalance.toFixed(2),
         paymentDateRaw: paymentDate,
       });
 
-      // Add "Received" entry
       runningBalance -= paidAmount;
       transactions.push({
         academicYear: payment.academicYear,
@@ -240,13 +242,95 @@ const StudentFeeLedger = () => {
         receiptNo: payment.receiptNumber || '',
         paymentMode: payment.paymentMode || 'Unknown',
         due: '',
-        receipt: paidAmount.toFixed(0),
-        balance: runningBalance.toFixed(0),
+        receipt: paidAmount.toFixed(2),
+        balance: runningBalance.toFixed(2),
         paymentDateRaw: paymentDate,
       });
     });
 
-    // Process fee installments from feeData
+
+    const refundPayments = paymentData.filter(
+      (payment) => payment.admissionNumber === student.AdmissionNumber && payment.refundDate
+    );
+    refundPayments.forEach((payment) => {
+      const paymentDate = new Date(payment.refundDate);
+      const formattedDate = paymentDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).replace(/\//g, '-');
+
+      const refundAmount = Number(payment.paidAmount) || 0
+
+      if (payment.feesType !== 'School Fees') {
+        runningBalance += refundAmount;
+        transactions.push({
+          academicYear: payment.academicYear,
+          date: formattedDate,
+          particulars: `Fees Refunded Due - ${payment.type}`,
+          receiptNo: '',
+          paymentMode: '',
+          due: (-refundAmount).toFixed(2),
+          receipt: '',
+          balance: runningBalance.toFixed(2),
+          paymentDateRaw: paymentDate,
+        });
+      }
+
+      runningBalance -= refundAmount;
+      transactions.push({
+        academicYear: payment.academicYear,
+        date: formattedDate,
+        particulars: `Fees Refunded Received - ${payment.type}`,
+        receiptNo: payment.receiptNumber || '',
+        paymentMode: payment.paymentMode || 'Unknown',
+        due: '',
+        receipt: (-refundAmount).toFixed(2),
+        balance: runningBalance.toFixed(2),
+        paymentDateRaw: paymentDate,
+      });
+    });
+
+    const studentCancelledPayments = paymentData.filter(
+      (payment) => payment.admissionNumber === student.AdmissionNumber && !payment.refundDate
+    );
+    studentCancelledPayments.forEach((payment) => {
+      const paymentDate = new Date(payment.paymentDate);
+      const formattedDate = paymentDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).replace(/\//g, '-');
+
+      const paidAmount = Number(payment.paidAmount) || 0;
+      runningBalance += paidAmount;
+      transactions.push({
+        academicYear: payment.academicYear,
+        date: formattedDate,
+        particulars: `Fees Cancelled  Due - ${payment.type}`,
+        receiptNo: '',
+        paymentMode: '',
+        due: (-paidAmount).toFixed(2),
+        receipt: '',
+        balance: runningBalance.toFixed(2),
+        paymentDateRaw: paymentDate,
+      });
+
+      runningBalance -= paidAmount;
+      transactions.push({
+        academicYear: payment.academicYear,
+        date: formattedDate,
+        particulars: `Fees Cancelled Received - ${payment.type}`,
+        receiptNo: payment.receiptNumber || '',
+        paymentMode: payment.paymentMode || 'Unknown',
+        due: '',
+        receipt: (-paidAmount).toFixed(2),
+        balance: runningBalance.toFixed(2),
+        paymentDateRaw: paymentDate,
+      });
+    });
+
+
     feeData.forEach((year) => {
       const feeAggregates = {};
 
@@ -286,9 +370,9 @@ const StudentFeeLedger = () => {
             particulars: `Fees Due - ${name}`,
             receiptNo: '',
             paymentMode: '',
-            due: totalAmount.toFixed(0),
+            due: totalAmount.toFixed(2),
             receipt: '',
-            balance: runningBalance.toFixed(0),
+            balance: runningBalance.toFixed(2),
             paymentDateRaw: dueDate,
           });
         }
@@ -339,9 +423,9 @@ const StudentFeeLedger = () => {
             particulars: 'Fine Due',
             receiptNo: '',
             paymentMode: '',
-            due: payment.totalFinePaid.toFixed(0),
+            due: payment.totalFinePaid.toFixed(2),
             receipt: '',
-            balance: runningBalance.toFixed(0),
+            balance: runningBalance.toFixed(2),
             paymentDateRaw: paymentDate,
           });
           runningBalance -= Number(payment.totalFinePaid);
@@ -352,8 +436,8 @@ const StudentFeeLedger = () => {
             receiptNo: payment.receiptNumber,
             paymentMode: payment.paymentMode,
             due: '',
-            receipt: payment.totalFinePaid.toFixed(0),
-            balance: runningBalance.toFixed(0),
+            receipt: payment.totalFinePaid.toFixed(2),
+            balance: runningBalance.toFixed(2),
             paymentDateRaw: paymentDate,
           });
         }
@@ -366,9 +450,9 @@ const StudentFeeLedger = () => {
             particulars: 'Excess Amount Due',
             receiptNo: '',
             paymentMode: '',
-            due: payment.totalExcessPaid.toFixed(0),
+            due: payment.totalExcessPaid.toFixed(2),
             receipt: '',
-            balance: runningBalance.toFixed(0),
+            balance: runningBalance.toFixed(2),
             paymentDateRaw: paymentDate,
           });
           runningBalance -= Number(payment.totalExcessPaid);
@@ -379,8 +463,8 @@ const StudentFeeLedger = () => {
             receiptNo: payment.receiptNumber,
             paymentMode: payment.paymentMode,
             due: '',
-            receipt: payment.totalExcessPaid.toFixed(0),
-            balance: runningBalance.toFixed(0),
+            receipt: payment.totalExcessPaid.toFixed(2),
+            balance: runningBalance.toFixed(2),
             paymentDateRaw: paymentDate,
           });
         }
@@ -394,8 +478,148 @@ const StudentFeeLedger = () => {
             receiptNo: payment.receiptNumber,
             paymentMode: payment.paymentMode,
             due: '',
-            receipt: payment.totalPaid.toFixed(0),
-            balance: runningBalance.toFixed(0),
+            receipt: payment.totalPaid.toFixed(2),
+            balance: runningBalance.toFixed(2),
+            paymentDateRaw: paymentDate,
+          });
+        }
+      });
+    });
+
+
+    // Cancelled Fees Data
+
+    feeData.forEach((year) => {
+      const feeAggregates = {};
+
+      year.feeInstallments.forEach((installment) => {
+        if (!installment.feesTypeId?._id) return;
+
+        const dueDate = new Date(installment.dueDate);
+        const dueMonthStart = new Date(dueDate.getFullYear(), dueDate.getMonth(), 1);
+        if (dueMonthStart > currentDate) return;
+
+        const name = installment.installmentName;
+        if (!feeAggregates[name]) {
+          feeAggregates[name] = {
+            totalAmount: 0,
+            totalFine: 0,
+            dueDate,
+          };
+        }
+
+        feeAggregates[name].totalAmount += Number(installment.amount || 0);
+        feeAggregates[name].totalFine += Number(installment.fineAmount || 0);
+      });
+
+      const paymentMap = new Map();
+      year.paidInstallments?.forEach((pi) => {
+        if (!pi.feesTypeId?._id) return;
+        if (!pi.cancelledDate) return;
+
+        const name = pi.installmentName || 'Unknown Installment';
+        const key = `${name}-${pi.receiptNumber}-${pi.paymentDate}`;
+
+        if (!paymentMap.has(key)) {
+          const totalPayable = year.feeInstallments
+            .filter((fi) => fi.installmentName === name)
+            .reduce((sum, fi) => sum + (Number(fi.amount) || 0) + (Number(fi.fineAmount) || 0), 0);
+
+          paymentMap.set(key, {
+            installmentName: name,
+            receiptNumber: pi.receiptNumber,
+            paymentMode: pi.paymentMode,
+            totalPayable,
+            totalPaid: 0,
+            totalFinePaid: Number(pi.paidFine || 0),
+            totalExcessPaid: Number(pi.excessAmount || 0),
+            transactionNumber: pi.transactionNumber || '',
+            paymentDate: pi.cancelledDate,
+          });
+        }
+
+        const payment = paymentMap.get(key);
+        payment.totalPaid += Number(pi.paidAmount || 0);
+      });
+
+      paymentMap.forEach((payment) => {
+        if (!payment.paymentDate) return;
+
+        const paymentDate = new Date(payment.paymentDate);
+        const formattedDate = paymentDate.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).replace(/\//g, '-');
+
+        if (payment.totalFinePaid > 0) {
+           runningBalance += Number(payment.totalFinePaid);
+          transactions.push({
+            academicYear: year.academicYear,
+            date: formattedDate,
+            particulars: 'Fine Cancelled Due',
+            receiptNo: '',
+            paymentMode: '',
+            due:(- payment.totalFinePaid).toFixed(2),
+            receipt: '',
+            balance: runningBalance.toFixed(2),
+            paymentDateRaw: paymentDate,
+          });
+
+          runningBalance -= Number(payment.totalFinePaid);
+          transactions.push({
+            academicYear: year.academicYear,
+            date: formattedDate,
+            particulars: 'Fine Cancelled Received',
+            receiptNo: payment.receiptNumber,
+            paymentMode: payment.paymentMode,
+            due: '',
+            receipt: (-payment.totalFinePaid).toFixed(2),
+            balance: runningBalance.toFixed(2),
+            paymentDateRaw: paymentDate,
+          });
+        }
+
+        if (payment.totalExcessPaid > 0) {
+
+            runningBalance += Number(payment.totalExcessPaid);
+          transactions.push({
+            academicYear: year.academicYear,
+            date: formattedDate,
+            particulars: 'Excess Amount Cancelled Due',
+            receiptNo: '',
+            paymentMode: '',
+            due: (-payment.totalExcessPaid).toFixed(2),
+            receipt: '',
+            balance: runningBalance.toFixed(2),
+            paymentDateRaw: paymentDate,
+          });
+
+          runningBalance -= Number(payment.totalExcessPaid);
+          transactions.push({
+            academicYear: year.academicYear,
+            date: formattedDate,
+            particulars: 'Excess Amount Cancelled Received',
+            receiptNo: payment.receiptNumber,
+            paymentMode: payment.paymentMode,
+            due: '',
+            receipt: (-payment.totalExcessPaid).toFixed(2),
+            balance: runningBalance.toFixed(2),
+            paymentDateRaw: paymentDate,
+          });
+        }
+
+        if (payment.totalPaid > 0) {
+          runningBalance -= Number(payment.totalPaid);
+          transactions.push({
+            academicYear: year.academicYear,
+            date: formattedDate,
+            particulars: `Fees Cancelled Received - ${payment.installmentName}`,
+            receiptNo: payment.receiptNumber,
+            paymentMode: payment.paymentMode,
+            due: '',
+            receipt: (-payment.totalPaid).toFixed(2),
+            balance: runningBalance.toFixed(2),
             paymentDateRaw: paymentDate,
           });
         }
@@ -410,7 +634,7 @@ const StudentFeeLedger = () => {
       const receipt = Number(txn.receipt || 0);
       finalBalance += due;
       finalBalance -= receipt;
-      txn.balance = finalBalance.toFixed(0);
+      txn.balance = finalBalance.toFixed(2);
     });
 
     return {

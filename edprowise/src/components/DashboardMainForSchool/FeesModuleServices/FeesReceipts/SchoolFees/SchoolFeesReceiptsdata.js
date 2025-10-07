@@ -1156,7 +1156,8 @@ const handleFinalSubmit = async (e, frontendReceiptDetails = null, isImport = fa
         }
 
         const baseReceiptDetails = {
-          studentName: `${formData.firstName} ${formData.lastName}`,
+          firstName: formData.firstName,
+          lastName:formData.lastName,
           studentAdmissionNumber: formData.AdmissionNumber,
           className: yearData.classId,
           section: yearData.sectionId,
@@ -1274,7 +1275,7 @@ const handleFinalSubmit = async (e, frontendReceiptDetails = null, isImport = fa
     toast.success('Receipts generated successfully!');
 
     navigate('/school-dashboard/fees-module/fees-receipts/school-fees/student-receipts', {
-      state: receiptDetailsToProcess,
+      state: receiptDetailsToProcess[0]?.receiptNumber || null,
     });
   } catch (error) {
     toast.error(error.message || 'Failed to generate receipts');

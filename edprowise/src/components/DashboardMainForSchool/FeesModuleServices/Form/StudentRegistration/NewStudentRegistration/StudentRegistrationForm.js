@@ -29,7 +29,7 @@ const StudentRegistrationForm = () => {
     handleCityChange,
   } = useStudentRegistration();
 
-  
+
 
   return (
     <div className="container">
@@ -871,7 +871,7 @@ const StudentRegistrationForm = () => {
                 )}
 
                 {!showAdditionalData ? (
-                  <div className="text-center">
+                  <div className="text-end">
                     <button
                       type="button"
                       className="btn btn-primary custom-submit-button"
@@ -880,6 +880,7 @@ const StudentRegistrationForm = () => {
                       Save & Continue
                     </button>
                   </div>
+
                 ) : (
                   <div className="row">
                     <div className="card-header mb-2">
@@ -901,7 +902,7 @@ const StudentRegistrationForm = () => {
                         I Understand & agree that the registration of my ward does not guarantee admission to the school & the registration fee is neither transferable nor refundable.
                       </label>
                     </div>
-                    <div className="col-md-6">
+                    {/* <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="selectedFeeType" className="form-label">
                           Fee Type <span className="text-danger">*</span>
@@ -1064,7 +1065,7 @@ const StudentRegistrationForm = () => {
                           </div>
                         </div>
                       </>
-                    )}
+                    )} */}
 
                     <div className="text-end">
                       <button

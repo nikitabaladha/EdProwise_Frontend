@@ -25,7 +25,7 @@ const PromoteByAdmissionNumber = ({ schoolId, newAcademicYear, previousYear, cla
 
         const fetchAdmissionNumbers = async () => {
             try {
-                const response = await getAPI(`/get-admission-form-by-year-schoolId/${schoolId}/${previousYear}`);
+                const response = await getAPI(`/get-admission-form-by-year-schoolId-active/${schoolId}/${previousYear}`);
                 if (!response.hasError) {
                     const students = response.data.data || [];
                     setAdmissionNumbers(students.map(student => ({

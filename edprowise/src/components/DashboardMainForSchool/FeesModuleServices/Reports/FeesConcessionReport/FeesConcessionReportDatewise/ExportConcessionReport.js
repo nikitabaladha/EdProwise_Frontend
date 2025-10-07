@@ -13,37 +13,50 @@ export const exportToExcel = async (
 ) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Concession Report');
-  studentDataArray.forEach((student, index) => {
-    const headers = tableFields.map(field => headerMapping[field.id] || field.label);
-    worksheet.addRow(headers);
 
-    student.transactions.forEach(record => {
-      const row = tableFields.map(field => {
-        const value = getFieldValue(record, field);
-        return isNaN(value) ? value : Number(value);
-      });
-      worksheet.addRow(row);
-    });
+ 
+  const headerRow = worksheet.addRow(
+    tableFields.map(field => headerMapping[field.id] || field.label)
+  );
+  headerRow.font = { bold: true, size: 12 };
+  headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
 
-    const totals = tableFields.reduce((acc, field) => {
-      if (field.id === 'date') {
-        acc[field.id] = 'Total';
-      } else {
-        acc[field.id] = student.transactions.reduce((sum, record) => sum + (Number(record[field.id]) || 0), 0);
-      }
-      return acc;
-    }, {});
-    const totalRow = tableFields.map(field => {
-      const value = totals[field.id];
-      return isNaN(value) ? value : Number(value);
-    });
-    worksheet.addRow(totalRow);
-    if (index < studentDataArray.length - 1) {
-      worksheet.addRow([]);
+
+  let colIndex = 1;
+  tableFields.forEach((field, index) => {
+    if (field.colSpan > 1) {
+      worksheet.mergeCells(1, colIndex, 1, colIndex + field.colSpan - 1);
     }
+    colIndex += field.colSpan;
   });
 
-  worksheet.columns.forEach((column) => {
+
+  studentDataArray.forEach(record => {
+    const row = tableFields.map(field => {
+      const value = getFieldValue(record, field);
+      return isNaN(value) ? value : Number(value);
+    });
+    const dataRow = worksheet.addRow(row);
+    dataRow.alignment = { horizontal: 'center', vertical: 'middle' };
+  });
+
+
+  const totals = tableFields.reduce((acc, field) => {
+    if (field.id !== 'academicYear' && field.id !== 'date') {
+      acc[field.id] = studentDataArray.reduce((sum, record) => sum + (Number(record[field.id]) || 0), 0).toFixed(2);
+    }
+    return acc;
+  }, {});
+
+
+  const totalRowData = ['Total','', ...tableFields.slice(2).map(field => totals[field.id] || '0.00')];
+  const totalRow = worksheet.addRow(totalRowData);
+  totalRow.font = { bold: true, size: 12 };
+  totalRow.alignment = { horizontal: 'center', vertical: 'middle' };
+  worksheet.mergeCells(worksheet.rowCount, 1, worksheet.rowCount, 2); 
+
+
+  worksheet.columns.forEach((column, index) => {
     let maxLength = 10;
     column.eachCell({ includeEmpty: true }, (cell) => {
       const value = cell.value ? cell.value.toString() : '';
@@ -52,15 +65,11 @@ export const exportToExcel = async (
     column.width = maxLength + 2;
   });
 
-  const totalRows = worksheet.rowCount;
-  const totalCols = worksheet.getRow(1).cellCount;
 
+  const totalRows = worksheet.rowCount;
+  const totalCols = colIndex - 1; 
   for (let i = 1; i <= totalRows; i++) {
     const row = worksheet.getRow(i);
-    if (row.values.includes('Date') || row.values.includes('Total')) {
-      row.font = { bold: true, size: 12 };
-      row.alignment = { horizontal: 'center', vertical: 'middle' };
-    }
     for (let j = 1; j <= totalCols; j++) {
       const cell = row.getCell(j);
       if (cell.value !== null && cell.value !== undefined && cell.value !== '') {
@@ -74,7 +83,7 @@ export const exportToExcel = async (
     }
   }
 
-  worksheet.views = [{ state: 'frozen', ySplit: 4 }];
+  worksheet.views = [{ state: 'frozen', ySplit: 1 }];
 
   const fileName = `Concession_Report_${school?.schoolName?.replace(/\s+/g, '_') || 'School'}_${new Date().toISOString().split('T')[0]}.xlsx`;
   const buffer = await workbook.xlsx.writeBuffer();
@@ -177,148 +186,146 @@ export const exportToPDF = async (
     });
     const footerImg = footerCanvas.toDataURL('image/jpeg', 0.98);
 
+    // Calculate totals
+    const totals = tableFields.reduce((acc, field) => {
+      if (field.id !== 'academicYear' && field.id !== 'date') {
+        acc[field.id] = studentDataArray.reduce((sum, record) => sum + (Number(record[field.id]) || 0), 0).toFixed(2);
+      }
+      return acc;
+    }, {});
+
     const rowsPerPage = 15;
-    let currentPage = 0;
+    const pageData = [];
+    for (let i = 0; i < studentDataArray.length; i += rowsPerPage) {
+      pageData.push(studentDataArray.slice(i, i + rowsPerPage));
+    }
 
-    for (const [index, student] of studentDataArray.entries()) {
-      const studentData = [
-        ...student.transactions.map(transaction => ({ type: 'transaction', content: transaction })),
-        {
-          type: 'total',
-          content: tableFields.reduce((acc, field) => {
-            if (field.id === 'date') {
-              acc[field.id] = 'Total';
-            } else {
-              acc[field.id] = student.transactions.reduce((sum, record) => sum + (Number(record[field.id]) || 0), 0);
-            }
-            return acc;
-          }, {}),
-        },
-      ];
+    for (const [pageIndex, data] of pageData.entries()) {
+      if (pageIndex > 0) pdf.addPage();
 
-      const pageData = [];
-      for (let i = 0; i < studentData.length; i += rowsPerPage) {
-        pageData.push(studentData.slice(i, i + rowsPerPage));
-      }
+      const tableContainer = document.createElement('div');
+      tableContainer.style.cssText = `
+        width: ${(pageWidth - margin * 2) * mmToPx}px;
+        max-height: ${contentHeight * mmToPx}px;
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        line-height: 1.2;
+        color: #000000;
+        overflow: hidden;
+        background-color: #ffffff;
+      `;
 
-      for (const [pageIndex, data] of pageData.entries()) {
-        if (currentPage > 0 || pageIndex > 0) pdf.addPage();
-        currentPage++;
+      const tableStyle = `
+        <style>
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            page-break-inside: auto;
+          }
+          th, td {
+            border: 1px solid #4b5563;
+            padding: 6px;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.2;
+          }
+          thead {
+            background-color: #e5e7eb;
+            font-weight: bold;
+          }
+          tfoot {
+            font-weight: bold;
+            background-color: #e5e7eb;
+          }
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+          .pdf-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            margin: 2mm 0;
+            color: #000000;
+          }
+          .total-cell {
+            text-align: right;
+          }
+        </style>
+      `;
 
-        const tableContainer = document.createElement('div');
-        tableContainer.style.cssText = `
-          width: ${(pageWidth - margin * 2) * mmToPx}px;
-          max-height: ${contentHeight * mmToPx}px;
-          font-family: Arial, sans-serif;
-          font-size: 11px;
-          line-height: 1.2;
-          color: #000000;
-          overflow: hidden;
-          background-color: #ffffff;
-        `;
-
-        const tableStyle = `
-          <style>
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              page-break-inside: auto;
-            }
-            th, td {
-              border: 1px solid #4b5563;
-              padding: 6px;
-              text-align: center;
-              font-size: 11px;
-              line-height: 1.2;
-            }
-            thead {
-              background-color: #e5e7eb;
-              font-weight: bold;
-            }
-            tr {
-              page-break-inside: avoid;
-              page-break-after: auto;
-            }
-            .pdf-title {
-              font-size: 16px;
-              font-weight: bold;
-              text-align: center;
-              margin: 2mm 0;
-              color: #000000;
-            }
-            .total-row {
-              font-weight: bold;
-            }
-          </style>
-        `;
-
-        const tableContent = `
-          ${tableStyle}
-          <div class="pdf-title">Concession Report</div>
-          <table>
-            <thead>
+      const tableContent = `
+        ${tableStyle}
+        <div class="pdf-title">Concession Report</div>
+        <table>
+          <thead>
+            <tr>
+              ${tableFields.map(field => `<th colspan="${field.colSpan}">${headerMapping[field.id] || field.label}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${data.map(item => `
               <tr>
-                ${tableFields.map(field => `<th>${headerMapping[field.id] || field.label}</th>`).join('')}
+                ${tableFields.map(field => `<td colspan="${field.colSpan}">${getFieldValue(item, field)}</td>`).join('')}
               </tr>
-            </thead>
-            <tbody>
-              ${data.map(item => `
-                <tr ${item.type === 'total' ? 'class="total-row"' : ''}>
-                  ${tableFields.map(field => `<td>${item.type === 'transaction' ? getFieldValue(item.content, field) : (item.content[field.id] || '-')}</td>`).join('')}
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `;
+            `).join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" class="total-cell">Total</td>
+              ${tableFields.slice(2).map(field => `<td colspan="${field.colSpan}">${totals[field.id] || '0.00'}</td>`).join('')}
+            </tr>
+          </tfoot>
+        </table>
+      `;
 
-        tableContainer.innerHTML = tableContent;
-        hiddenContainer.appendChild(tableContainer);
+      tableContainer.innerHTML = tableContent;
+      hiddenContainer.appendChild(tableContainer);
 
-        const tableCanvas = await html2canvas(tableContainer, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: false,
-          logging: true,
-          backgroundColor: '#ffffff',
-          windowWidth: (pageWidth - margin * 2) * mmToPx,
-          windowHeight: contentHeight * mmToPx,
-        });
+      const tableCanvas = await html2canvas(tableContainer, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        logging: true,
+        backgroundColor: '#ffffff',
+        windowWidth: (pageWidth - margin * 2) * mmToPx,
+        windowHeight: contentHeight * mmToPx,
+      });
 
-        pdf.addImage(
-          headerImg,
-          'JPEG',
-          margin,
-          margin,
-          pageWidth - margin * 2,
-          headerHeight,
-          undefined,
-          'FAST'
-        );
+      pdf.addImage(
+        headerImg,
+        'JPEG',
+        margin,
+        margin,
+        pageWidth - margin * 2,
+        headerHeight,
+        undefined,
+        'FAST'
+      );
 
-        pdf.addImage(
-          tableCanvas.toDataURL('image/jpeg', 0.98),
-          'JPEG',
-          margin,
-          margin + headerHeight,
-          pageWidth - margin * 2,
-          contentHeight,
-          undefined,
-          'FAST'
-        );
+      pdf.addImage(
+        tableCanvas.toDataURL('image/jpeg', 0.98),
+        'JPEG',
+        margin,
+        margin + headerHeight,
+        pageWidth - margin * 2,
+        contentHeight,
+        undefined,
+        'FAST'
+      );
 
-        pdf.addImage(
-          footerImg,
-          'JPEG',
-          margin,
-          pageHeight - margin - footerHeight,
-          pageWidth - margin * 2,
-          footerHeight,
-          undefined,
-          'FAST'
-        );
+      pdf.addImage(
+        footerImg,
+        'JPEG',
+        margin,
+        pageHeight - margin - footerHeight,
+        pageWidth - margin * 2,
+        footerHeight,
+        undefined,
+        'FAST'
+      );
 
-        hiddenContainer.removeChild(tableContainer);
-      }
+      hiddenContainer.removeChild(tableContainer);
     }
 
     document.body.removeChild(hiddenContainer);

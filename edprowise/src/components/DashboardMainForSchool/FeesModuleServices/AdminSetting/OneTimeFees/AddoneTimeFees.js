@@ -111,7 +111,7 @@ const ADDOneTimeFees = () => {
         sectionIds: form.selectedSections,
         oneTimeFees: form.feesDetails.map((fd) => ({
           feesTypeId: fd.feesType,
-          amount: Number(fd.amount),
+          amount: Number(fd.amount).toFixed(2),
         })),
       };
 
@@ -261,7 +261,6 @@ const ADDOneTimeFees = () => {
                               <div className="col-md-5">
                                 <label>Amount</label>
                                 <input
-                                  type="number"
                                   className="form-control"
                                   value={fee.amount}
                                   onChange={(e) =>
