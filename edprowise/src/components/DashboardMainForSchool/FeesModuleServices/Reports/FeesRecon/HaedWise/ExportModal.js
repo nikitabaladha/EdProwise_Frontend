@@ -69,19 +69,19 @@ export const exportToExcel = async (
     column.width = maxLength + 2;
   });
 
-  // Style header row
+
   const headerRow = worksheet.getRow(1);
   headerRow.font = { bold: true };
   headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
 
-  // Style totals and additional rows
+ 
   for (let i = filteredData.length + 2; i <= worksheet.rowCount; i++) {
     const row = worksheet.getRow(i);
     row.font = { bold: true };
     row.alignment = { horizontal: 'right', vertical: 'middle' };
   }
 
-  // Add borders to all cells
+
   worksheet.eachRow({ includeEmpty: true }, (row) => {
     row.eachCell({ includeEmpty: true }, (cell) => {
       if (cell.value !== null && cell.value !== undefined && cell.value !== '') {
@@ -95,7 +95,6 @@ export const exportToExcel = async (
     });
   });
 
-  // Save the file
   const buffer = await workbook.xlsx.writeBuffer();
   saveAs(
     new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
@@ -132,7 +131,7 @@ export const exportToPDF = async (
     const contentHeight = pageHeight - margin * 2 - headerHeight - footerHeight;
     const mmToPx = 3.779;
 
-    // Preload logo image
+
     const preloadImage = (src) => {
       return new Promise((resolve) => {
         if (!src) return resolve(null);
@@ -149,7 +148,7 @@ export const exportToPDF = async (
 
     const logoImg = await preloadImage(logoSrc);
 
-    // Create a hidden container for rendering
+
     const hiddenContainer = document.createElement('div');
     hiddenContainer.style.cssText = `
       position: absolute;
@@ -161,7 +160,7 @@ export const exportToPDF = async (
     `;
     document.body.appendChild(hiddenContainer);
 
-    // Render header
+
     const headerContainer = document.createElement('div');
     headerContainer.style.cssText = `
       width: ${(pageWidth - margin * 2) * mmToPx}px;
@@ -171,7 +170,7 @@ export const exportToPDF = async (
     headerContainer.innerHTML = generateHeader(school, logoImg ? logoSrc : '');
     hiddenContainer.appendChild(headerContainer);
 
-    // Render footer
+
     const footerContainer = document.createElement('div');
     footerContainer.style.cssText = `
       width: ${(pageWidth - margin * 2) * mmToPx}px;
@@ -238,14 +237,14 @@ export const exportToPDF = async (
       { isDeductionRow: true, label: 'Final Fees', value: totals.finalFees },
     ];
 
-    // Paginate data
+
     const rowsPerPage = 15;
     const pageData = [];
     for (let i = 0; i < allData.length; i += rowsPerPage) {
       pageData.push(allData.slice(i, i + rowsPerPage));
     }
 
-    // Render header and footer canvases
+ 
     const headerCanvas = await html2canvas(headerContainer, {
       scale: 2,
       useCORS: true,
@@ -266,7 +265,7 @@ export const exportToPDF = async (
     });
     const footerImg = footerCanvas.toDataURL('image/jpeg', 0.98);
 
-    // Render each page
+ 
     for (let page = 0; page < pageData.length; page++) {
       if (page > 0) pdf.addPage();
 

@@ -1272,13 +1272,13 @@ const SchoolFeesReceipts = () => {
                         >
                           Import
                         </button>
-                        <button
+                        {/* <button
                           type="button"
                           className="btn btn-primary custom-submit-button"
                           onClick={() => navigate('/school-dashboard/fees-module/fees-receipts/school-fees/fees-receipts')}
                         >
                           Fee Receipts
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>

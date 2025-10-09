@@ -281,7 +281,7 @@ import AdvancedFees from "./components/DashboardMainForSchool/FeesModuleServices
 import OpeningAndClosingAdvanced from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OpeningandClosingAdvanced/OpeningandClosingAdvancedReport.js"
 // ===================================================FeesRecom==================================================//
 
-import FeesReconFeesWise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/FeesWise/FeesReconHaedwise.js"
+import FeesReconFeesWise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/FeesWise/FeesReconFeeswise.js"
 import FeesReconHaedwise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/HaedWise/FeesReconHaedwise.js"
 import FeesReconStudentWise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/StudentWise/FeesReconStudentWise.js"
 import FeesReconFeesvsFinance from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/FeesvsFinance/FeesvsFinance.js"

@@ -437,13 +437,16 @@ const ReconFeesHeadwise = () => {
       return matchesClass;
     });
 
-    const totalRegistrationFees = filteredRegistrationFees.reduce((sum, item) => {
-      return item.regFeesStatus.includes("Paid")
-        ? sum + (parseFloat(item.regFeesDue) || 0)
-        : sum;
-    }, 0).toFixed(2);
+       let totalReg = 0;
+    filteredRegistrationFees.forEach(item => {
+    if (item.recordType === "Registration" && item.regFeesStatus && item.regFeesStatus.includes("Paid")) {
+      totalReg += parseFloat(item.regFeesPaid || item.totalPaid || 0);
+    } else if (item.recordType === "Refund" && item.regFeesrefundAmount) {
+      totalReg -= parseFloat(item.regFeesrefundAmount);
+    }
+  });
 
-    setRegistrationFees(totalRegistrationFees);
+    setRegistrationFees(Number(totalReg).toFixed(2));
   }, [registrationFeesData, selectedClasses]);
 
   useEffect(() => {
@@ -458,13 +461,18 @@ const ReconFeesHeadwise = () => {
       return matchesClass && matchesSection ;
     });
 
-    const totalTcFees = filteredTcFees.reduce((sum, item) => {
-      return item.tcFeesStatus.includes("Paid")
-        ? sum + (parseFloat(item.tcFeesDue) || 0)
-        : sum;
-    }, 0).toFixed(2);
+     let totalTc = 0;
+   filteredTcFees.forEach(item => {
+    if (item.recordType === "Transfer Certificate" && item.tcFeesStatus && item.tcFeesStatus.includes("Paid")) {
+      totalTc += parseFloat(item.tcFeesPaid || item.totalPaid || 0);
+    } else if (item.recordType === "Refund" && item.tcFeesRefundAmount) {
+      totalTc -= parseFloat(item.tcFeesRefundAmount);
+    }
+  });
 
-    setTcFees(totalTcFees);
+    setTcFees(Number(totalTc).toFixed(2));
+
+    
   }, [tcFeesData, selectedClasses, selectedSections]);
 
   useEffect(() => {
@@ -475,33 +483,45 @@ const ReconFeesHeadwise = () => {
       const matchesSection =
         selectedSections.length === 0 ||
         selectedSections.some((sec) => record.sectionName === sec.value);
-      return matchesClass && matchesSection;
+      const matchesAcademicYear = record.academicYear === selectedAcademicYear;
+    return matchesClass && matchesSection && matchesAcademicYear;
     });
 
-    const totalBoardRegistrationFees = filteredBoardRegistrationFees.reduce((sum, item) => {
-      return sum + (parseFloat(item.boardRegFeesDue) || 0);
-    }, 0).toFixed(2);
+       let totalBoardReg = 0;
+  filteredBoardRegistrationFees.forEach(item => {
+    if (item.recordType === "Board Registration Fee" && item.boardRegFeesStatus && (Array.isArray(item.boardRegFeesStatus) ? item.boardRegFeesStatus.includes("Paid") : item.boardRegFeesStatus.includes("Paid"))) {
+      totalBoardReg += parseFloat(item.boardRegFeesPaid || item.totalPaid || 0);
+    } else if (item.recordType === "Refund" && item.boardRegFeesRefundAmount) {
+      totalBoardReg -= parseFloat(item.boardRegFeesRefundAmount);
+    }
+  });
 
-    setBoardRegistrationFees(totalBoardRegistrationFees);
+    setBoardRegistrationFees(Number(totalBoardReg).toFixed(2));
   }, [boardRegistrationFeesData, selectedClasses, selectedSections]);
 
-  useEffect(() => {
-    const filteredBoardExamFees = boardExamFeesData.filter((record) => {
-      const matchesClass =
-        selectedClasses.length === 0 ||
-        selectedClasses.some((cls) => record.className === cls.value);
-      const matchesSection =
-        selectedSections.length === 0 ||
-        selectedSections.some((sec) => record.sectionName === sec.value);
-      return matchesClass && matchesSection;
-    });
+ useEffect(() => {
+  const filteredBoardExamFees = boardExamFeesData.filter((record) => {
+    const matchesClass =
+      selectedClasses.length === 0 ||
+      selectedClasses.some((cls) => record.className === cls.value);
+    const matchesSection =
+      selectedSections.length === 0 ||
+      selectedSections.some((sec) => record.sectionName === sec.value);
+      const matchesAcademicYear = record.academicYear === selectedAcademicYear;
+    return matchesClass && matchesSection && matchesAcademicYear;
+  });
 
-    const totalBoardExamFees = filteredBoardExamFees.reduce((sum, item) => {
-      return sum + (parseFloat(item.boardExamFeesDue) || 0);
-    }, 0).toFixed(2);
+  let totalBoardExam = 0;
+  filteredBoardExamFees.forEach(item => {
+    if (item.recordType === "Board Exam Fee" && item.boardExamFeesStatus && (Array.isArray(item.boardExamFeesStatus) ? item.boardExamFeesStatus.includes("Paid") : item.boardExamFeesStatus.includes("Paid"))) {
+      totalBoardExam += parseFloat(item.boardExamFeesPaid || item.totalPaid || 0);
+    } else if (item.recordType === "Refund" && item.boardExamFeesRefundAmount) {
+      totalBoardExam -= parseFloat(item.boardExamFeesRefundAmount);
+    }
+  });
 
-    setBoardExaminationFees(totalBoardExamFees);
-  }, [boardExamFeesData, selectedClasses, selectedSections]);
+  setBoardExaminationFees(totalBoardExam.toFixed(2));
+}, [boardExamFeesData, selectedClasses, selectedSections]);
 
   useEffect(() => {
     const filteredLateFees = lateFeesData.filter((record) => {
@@ -1011,27 +1031,26 @@ useEffect(() => {
                           <td className="text-center border border-dark p-2"><strong>{totals.existingStudents}</strong></td>
                           <td className="text-center border border-dark p-2"><strong>{totals.newAdmission}</strong></td>
                           <td className="text-center border border-dark p-2"><strong>{totals.totalStudents}</strong></td>
-                          <td className="text-center border border-dark p-2"><strong>{totals.schoolFees}</strong></td>
-                          <td className="text-center border border-dark p-2"><strong>{totals.admFees}</strong></td>
+                          <td colSpan={2} className="text-center border border-dark p-2"></td>
                           <td className="text-center border border-dark p-2"><strong>{totals.yearlyDues}</strong></td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Less: Loss of fees due to left students
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{lossDueToLeft}</strong></td>
+                          <td className="text-center border border-dark p-2">{lossDueToLeft}</td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Less: Loss of fees due to late Admission
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{lossDueToLateAdmission}</strong></td>
+                          <td className="text-center border border-dark p-2">{lossDueToLateAdmission}</td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Less: Defaulter Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{defaulterFees}</strong></td>
+                          <td className="text-center border border-dark p-2">{defaulterFees}</td>
                         </tr>
                         <tr className="payroll-table-footer">
                           <td colSpan={7} className="text-right border border-dark p-2"><strong>Net Fees Due</strong></td>
@@ -1041,37 +1060,37 @@ useEffect(() => {
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Late Fee & Excess Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{lateAndExcessFees}</strong></td>
+                          <td className="text-center border border-dark p-2">{lateAndExcessFees}</td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Registration Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{registrationFees}</strong></td>
+                          <td className="text-center border border-dark p-2">{registrationFees}</td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: TC Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{tcFees}</strong></td>
+                          <td className="text-center border border-dark p-2">{tcFees}</td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Board Registration Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{boardRegistrationFees}</strong></td>
+                          <td className="text-center border border-dark p-2">{boardRegistrationFees}</td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Board Examination Fees
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{boardExaminationFees}</strong></td>
+                          <td className="text-center border border-dark p-2">{boardExaminationFees}</td>
                         </tr>
                         <tr>
                           <td colSpan={7} className="text-right border border-dark p-2">
                             Add: Arrear Fees Received
                           </td>
-                          <td className="text-center border border-dark p-2"><strong>{arrearFeesReceived}</strong></td>
+                          <td className="text-center border border-dark p-2">{arrearFeesReceived}</td>
                         </tr>
                         <tr className="payroll-table-footer">
                           <td colSpan={7} className="text-right border border-dark p-2"><strong>Final Fees</strong></td>

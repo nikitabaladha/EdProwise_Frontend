@@ -269,11 +269,11 @@ const Sidebar = () => {
                 link: "/school-dashboard/fees-module/fees-receipts/board-exam",
                 icon: "solar:users-group-rounded-bold-duotone",
               },
-              {
-                label: "Fees Refund",
-                link: "/school-dashboard/fees-module/fees-receipts/fees-refund",
-                icon: "solar:users-group-rounded-bold-duotone",
-              },
+              // {
+              //   label: "Fees Refund",
+              //   link: "/school-dashboard/fees-module/fees-receipts/fees-refund",
+              //   icon: "solar:users-group-rounded-bold-duotone",
+              // },
             ],
           },
           {

@@ -392,7 +392,7 @@ const LateandExcessFee = () => {
       acc.totalLateFees += row.lateFees || 0;
       acc.totalPaidFine += row.paidFine || 0;
       acc.totalExcessFees += row.excessFees || 0;
-      acc.total += (row.lateFees || 0)  + (row.excessFees || 0);
+      acc.total += (row.paidFine || 0)  + (row.excessFees || 0);
       return acc;
     },
     { totalLateFees: 0, totalPaidFine: 0, totalExcessFees: 0, total: 0 }
@@ -479,7 +479,7 @@ const LateandExcessFee = () => {
       const value = parseFloat(record[fieldId] || 0);
       return value === 0 ? '0.00' : value.toFixed(2);
     } else if (fieldId === 'total') {
-      const value = (parseFloat(record.lateFees || 0)  + parseFloat(record.excessFees || 0));
+      const value = (parseFloat(record.paidFine|| 0)  + parseFloat(record.excessFees || 0));
       return value === 0 ? '0.00' : value.toFixed(2);
     } else {
       return record[fieldId] !== undefined ? record[fieldId] : '-';

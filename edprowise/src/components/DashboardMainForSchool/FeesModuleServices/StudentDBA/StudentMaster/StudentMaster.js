@@ -232,8 +232,8 @@ const StudentMaster = () => {
       const shiftResponse = await getAPI(`/master-define-shift/${schoolId}`);
 
       let processedData = [];
-      if (!response.hasError && Array.isArray(response.data.data)) {
-        processedData = response.data.data.map(student => ({
+      if (!response.hasError && Array.isArray(response.data.forms)) {
+        processedData = response.data.forms.map(student => ({
           ...student,
           studentName: `${student.firstName} ${student.lastName || ''}`.trim(),
           applicationDate: formatDate(student.applicationDate),
