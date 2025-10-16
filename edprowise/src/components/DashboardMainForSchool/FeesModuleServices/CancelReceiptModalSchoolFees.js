@@ -14,34 +14,34 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
   const [bankName, setBankName] = useState("");
   const [hasPreviousRefund, setHasPreviousRefund] = useState(false);
 
-   useEffect(() => {
-      console.log("CancelReceiptModal Props:", {
-        show,
-        onClose,
-        student,
-        feeTypeName,
-        classId,
-        schoolId,
-        setIsCancelled,
-        action,
-        sectionId
-      });
-    }, [show, onClose, student, feeTypeName, classId, schoolId, setIsCancelled, action]);
+  useEffect(() => {
+    console.log("CancelReceiptModal Props:", {
+      show,
+      onClose,
+      student,
+      feeTypeName,
+      classId,
+      schoolId,
+      setIsCancelled,
+      action,
+      sectionId
+    });
+  }, [show, onClose, student, feeTypeName, classId, schoolId, setIsCancelled, action]);
 
- 
+
   const cancelOptions = student?.paymentMode === "Cheque"
     ? [
-        { value: "Cheque Bounced", label: "Cheque Bounced" },
-        { value: "Invalid Cheque", label: "Invalid Cheque" },
-        { value: "Incorrect Details", label: "Incorrect Details" },
-        { value: "Other", label: "Other" },
-      ]
+      { value: "Cheque Bounced", label: "Cheque Bounced" },
+      { value: "Invalid Cheque", label: "Invalid Cheque" },
+      { value: "Incorrect Details", label: "Incorrect Details" },
+      { value: "Other", label: "Other" },
+    ]
     : [
-        { value: "Student Request", label: "Student Request" },
-        { value: "Administrative Decision", label: "Administrative Decision" },
-        { value: "Payment Issue", label: "Payment Issue" },
-        { value: "Other", label: "Other" },
-      ];
+      { value: "Student Request", label: "Student Request" },
+      { value: "Administrative Decision", label: "Administrative Decision" },
+      { value: "Payment Issue", label: "Payment Issue" },
+      { value: "Other", label: "Other" },
+    ];
 
   const chequeSpecificOptions = [
     { value: "Cancelled", label: "Cancelled" },
@@ -50,7 +50,7 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
 
   const paymentModes = ["Cash", "Cheque", "Online"];
 
-  // Initialize refundData with feeItems from student.installments
+
   const initializeRefundData = () => {
     const feeItems = student?.installments?.[0]?.feeItems || [];
     if (feeItems.length === 0) {
@@ -69,6 +69,7 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
       paidAmount: item.paid || 0,
       refundAmount: 0,
       balance: item.paid || 0,
+      concession: item.concession || 0,
     }));
   };
 
@@ -87,7 +88,7 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
       sectionId,
     });
 
-    // Reset refundData when student or feeTypeName changes
+
     setRefundData(initializeRefundData());
   }, [student, feeTypeName]);
 
@@ -111,7 +112,7 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
           const feeItems = student?.installments?.[0]?.feeItems || [];
           const refundDataMap = {};
 
-          // Initialize refundDataMap for each feeType
+
           feeItems.forEach(item => {
             refundDataMap[item.feeTypeId] = {
               feeType: item.feeTypeName,
@@ -123,7 +124,7 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
             };
           });
 
-          // Aggregate refund and cancelled amounts
+
           refunds.forEach(refund => {
             refund.feeTypeRefunds.forEach(ftr => {
               const feeTypeId = ftr.feeType?.toString();
@@ -136,7 +137,6 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
           });
 
           const newRefundData = Object.values(refundDataMap);
-          // Add a new row for additional refund if action is Refund
           if (action === "Refund") {
             newRefundData.push(...feeItems.map(item => ({
               feeType: item.feeTypeName,
@@ -210,6 +210,9 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
       }
 
       const totalPaidAmount = student.installments[0].feeItems.reduce((sum, item) => sum + (item.paid || 0), 0);
+      const totalConcessionAmount = student.installments[0].feeItems.reduce((sum, item) => sum + (item.concession || 0), 0);
+      const totalFineAmount = student.installments[0].fineAmount || 0;
+      const totalExcessAmount = student.installments[0].excessAmount || 0;
       const totalRefundAmount = refundData.slice(0, student.installments[0].feeItems.length).reduce((sum, item) => sum + (item.refundAmount || 0), 0);
       const totalCancelledAmount = refundData.slice(0, student.installments[0].feeItems.length).reduce((sum, item) => sum + (item.cancelledAmount || 0), 0);
 
@@ -224,8 +227,11 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
         classId: classId || "",
         sectionId: sectionId || null,
         paidAmount: totalPaidAmount,
+        concessionAmount: totalConcessionAmount,
+        fineAmount: action === "Refund" ? 0 : totalFineAmount,
+        excessAmount: action === "Refund" ? 0 : totalExcessAmount,
         refundAmount: action === "Refund" ? totalRefundAmount : 0,
-        cancelledAmount: action === "Cancelled/Cheque Return" ? totalPaidAmount : 0,
+        cancelledAmount: action === "Cancelled/Cheque Return" ? totalPaidAmount-totalRefundAmount  : 0,
         balance: totalPaidAmount - totalRefundAmount - totalCancelledAmount,
         paymentMode: action === "Refund" ? paymentMode : student?.paymentMode || "",
         chequeNumber: paymentMode === "Cheque" ? chequeNumber : student?.chequeNumber,
@@ -234,19 +240,25 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
         refundDate: action === "Refund" ? new Date() : null,
         cancelledDate: action === "Cancelled/Cheque Return" ? new Date() : null,
         feeTypeRefunds: action === "Refund" ?
-          refundData.slice(-student.installments[0].feeItems.length).map(item => ({
+          refundData.slice(0, student.installments[0].feeItems.length).map(item => ({
             feeType: item.feeTypeId,
             refundAmount: item.refundAmount,
             paidAmount: item.paidAmount,
-            balance: item.paidAmount - item.refundAmount,
+            concessionAmount: 0,
+            balance: item.balance,
           })) :
-          refundData.slice(0, student.installments[0].feeItems.length).map(item => ({
+       refundData.slice(0, student.installments[0].feeItems.length).map(item => {
+          const originalItem = student.installments[0].feeItems.find(fi => fi.feeTypeId === item.feeTypeId);
+          return {
             feeType: item.feeTypeId,
             refundAmount: 0,
-            cancelledAmount: item.paidAmount,
+            cancelledAmount: item.paidAmount - item.refundAmount,
             paidAmount: item.paidAmount,
+            concessionAmount: originalItem?.concession || 0, 
             balance: 0,
-          })),
+          };
+
+          }),
         installmentName: student?.installments?.[0]?.installmentName || null,
         existancereceiptNumber: student?.receiptNumber || student?.receiptNumberBrf || student?.receiptNumberBef,
         status: action === "Refund" ? "Refund" : student?.paymentMode === "Cheque" ? "Cheque Return" : "Cancelled",
@@ -287,6 +299,7 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
             refundAmount: 0,
             cancelledAmount: 0,
             balance: item.paid || 0,
+            concession: item.concession || 0,
           };
         });
 

@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -8,10 +5,10 @@ import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
 import getAPI from '../../../../../../api/getAPI';
 import { Link } from 'react-router-dom';
-import { exportToExcel, exportToPDF } from './ExportModalDateWiseFeesCollection';
+import { exportToExcel, exportToPDF } from './ExportModalStudentWiseFeesReport';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const DateWiseFeesCollectionExcConcession = () => {
+const StudentWiseFeesCollectionExcConcession = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
@@ -24,6 +21,7 @@ const DateWiseFeesCollectionExcConcession = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [classOptions, setClassOptions] = useState([]);
   const [sectionOptions, setSectionOptions] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
   const [academicYearOptions, setAcademicYearOptions] = useState([]);
   const [installmentOptions, setInstallmentOptions] = useState([]);
   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
@@ -42,7 +40,7 @@ const DateWiseFeesCollectionExcConcession = () => {
   const [viewMode, setViewMode] = useState('net');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Academic Year', 'Type of Fees', 'Installment', 'Payment Mode'];
+  const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment', 'Type of Fees'];
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -104,7 +102,7 @@ const DateWiseFeesCollectionExcConcession = () => {
     setIsLoading(true);
     try {
       const promises = years.map((year) =>
-        getAPI(`/get-all-data-datewise-Withconcession-fees?schoolId=${schoolId}&academicYear=${year}`)
+        getAPI(`/get-all-data-studentwise-Withconcession-fees?schoolId=${schoolId}&academicYear=${year}`)
       );
       const responses = await Promise.all(promises);
       const unifiedData = responses.flatMap((res, index) => {
@@ -112,7 +110,7 @@ const DateWiseFeesCollectionExcConcession = () => {
           console.warn(`No data found for year ${years[index]}`);
           return [];
         }
-        const records = res.data.data.map((record) => {
+        return res.data.data.map((record) => {
           const totalPaidFee = Object.values(record.feeTypes || {}).reduce(
             (sum, amount) => sum + (Number(amount) || 0),
             0
@@ -122,36 +120,40 @@ const DateWiseFeesCollectionExcConcession = () => {
             academicYear: record.academicYear,
             feesBreakdown: record.feeTypes || {},
             totalPaidFee,
+            studentName: record.studentName || '-',
+            className: record.className || '-',
+            sectionName: record.sectionName || '-',
+            installmentName: record.installmentName || '-',
+            receiptNumber: record.receiptNumber || '-',
+            studentAdmissionNumber: record.studentAdmissionNumber || '-',
+          };
+        });
+      });
+
+      const cancellationRecords = unifiedData
+        .filter((record) => record.cancelledDate)
+        .map((record) => {
+          const negativeFeesBreakdown = {};
+          Object.keys(record.feesBreakdown).forEach((key) => {
+            negativeFeesBreakdown[key] = -(Number(record.feesBreakdown[key]) || 0);
+          });
+          return {
+            ...record,
+            paymentDate: record.cancelledDate,
+            feesBreakdown: negativeFeesBreakdown,
+            fineAmount: -(Number(record.fineAmount) || 0),
+            excessAmount: -(Number(record.excessAmount) || 0),
+            totalPaidFee: -Math.abs(record.totalPaidFee || 0),
+            status: 'Cancelled',
           };
         });
 
-        const cancellationRecords = records
-          .filter((record) => record.cancelledDate)
-          .map((record) => {
-            const negativeFeesBreakdown = {};
-            Object.keys(record.feesBreakdown).forEach((key) => {
-              negativeFeesBreakdown[key] = -(Number(record.feesBreakdown[key]) || 0);
-            });
-            return {
-              ...record,
-              paymentDate: record.cancelledDate,
-              feesBreakdown: negativeFeesBreakdown,
-              fineAmount: -(Number(record.fineAmount) || 0),
-              excessAmount: -(Number(record.excessAmount) || 0),
-              totalPaidFee: -Math.abs(record.totalPaidFee || 0),
-              status: 'Cancelled',
-            };
-          });
+      const nonCancelledRecords = unifiedData.map((record) => ({
+        ...record,
+        cancelledDate: null,
+      }));
 
-        const nonCancelledRecords = records.map((record) => ({
-          ...record,
-          cancelledDate: null,
-        }));
-
-        return [...nonCancelledRecords, ...cancellationRecords];
-      });
-
-      unifiedData.sort((a, b) => {
+      const combinedData = [...nonCancelledRecords, ...cancellationRecords].sort((a, b) => {
         const dateA = new Date(a.paymentDate.split('-').reverse().join('-'));
         const dateB = new Date(b.paymentDate.split('-').reverse().join('-'));
         if (dateA !== dateB) return dateA - dateB;
@@ -163,7 +165,8 @@ const DateWiseFeesCollectionExcConcession = () => {
         return 0;
       });
 
-      setFeeData(unifiedData);
+      setFeeData(combinedData);
+
       const allFeeTypes = responses
         .flatMap((res) => res?.data?.feeTypes || [])
         .filter((type) => type && typeof type === 'string')
@@ -171,13 +174,42 @@ const DateWiseFeesCollectionExcConcession = () => {
         .sort();
 
       setFeeTypes(allFeeTypes);
-      if (rowsPerPage === 'all' && unifiedData.length > 0) {
-        setRowsPerPage(unifiedData.length);
+      if (rowsPerPage === 'all' && combinedData.length > 0) {
+        setRowsPerPage(combinedData.length);
       }
 
+      // Compute class and section options from combinedData
+      const uniqueClasses = [...new Set(combinedData
+        .map(record => record.className)
+        .filter(className => className && className !== '-'))]
+        .map(className => ({ value: className, label: className }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+
+      const uniqueSections = [...new Set(combinedData
+        .map(record => record.sectionName)
+        .filter(sectionName => sectionName && sectionName !== '-'))]
+        .map(sectionName => ({ value: sectionName, label: sectionName }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+
+      const classSectionMapping = {};
+      combinedData.forEach((record) => {
+        const className = record.className && record.className !== '-' ? record.className : null;
+        const sectionName = record.sectionName && record.sectionName !== '-' ? record.sectionName : null;
+        if (className && sectionName) {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = [];
+          }
+          if (!classSectionMapping[className].some((sec) => sec.value === sectionName)) {
+            classSectionMapping[className].push({ value: sectionName, label: sectionName });
+          }
+        }
+      });
+
+      setClassOptions(uniqueClasses);
+      setSectionOptions(uniqueSections);
+      setClassSectionMap(classSectionMapping);
+
       const filterOptions = responses[0]?.data?.filterOptions || {};
-      setClassOptions(filterOptions.classOptions || []);
-      setSectionOptions(filterOptions.sectionOptions || []);
       setInstallmentOptions(filterOptions.installmentOptions || []);
       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
       setAcademicYearOptions(
@@ -197,6 +229,7 @@ const DateWiseFeesCollectionExcConcession = () => {
       setFeeTypes([]);
       setClassOptions([]);
       setSectionOptions([]);
+      setClassSectionMap({});
       setInstallmentOptions([]);
       setPaymentModeOptions([]);
       setAcademicYearOptions([]);
@@ -223,6 +256,7 @@ const DateWiseFeesCollectionExcConcession = () => {
       setCurrentPage(1);
     } else if (name === 'class') {
       setSelectedClasses(selected);
+      setSelectedSections([]); // Clear sections when classes change
       setCurrentPage(1);
     } else if (name === 'section') {
       setSelectedSections(selected);
@@ -280,11 +314,27 @@ const DateWiseFeesCollectionExcConcession = () => {
     setShowFilterPanel(false);
   };
 
+  const getFilteredSectionOptions = () => {
+    if (selectedClasses.length === 0) {
+      return sectionOptions;
+    }
+    const sections = selectedClasses
+      .flatMap((cls) => classSectionMap[cls.value] || [])
+      .filter((sec, index, self) => self.findIndex((s) => s.value === sec.value) === index);
+    return sections.length > 0 ? sections : sectionOptions;
+  };
+
   const filteredData = feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
-      ? row.paymentDate.toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      row.paymentMode?.toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      row.academicYear?.toLowerCase().includes(String(searchTerm).toLowerCase())
+      ? String(row.paymentDate || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.studentAdmissionNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.studentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.paymentMode || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.className || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.sectionName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.academicYear || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.installmentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.receiptNumber || '').toLowerCase().includes(searchTerm.toLowerCase())
       : true;
 
     const matchesPaymentMode =
@@ -311,15 +361,15 @@ const DateWiseFeesCollectionExcConcession = () => {
 
     const matchesClass =
       selectedClasses.length === 0 ||
-      selectedClasses.some((cls) => row.className === cls.value || row.className === null);
+      selectedClasses.some((cls) => row.className === cls.value || row.className === '-');
 
     const matchesSection =
       selectedSections.length === 0 ||
-      selectedSections.some((sec) => row.sectionName === sec.value || row.sectionName === null);
+      selectedSections.some((sec) => row.sectionName === sec.value || row.sectionName === '-');
 
     const matchesInstallment =
       selectedInstallments.length === 0 ||
-      selectedInstallments.some((inst) => row.installmentName === inst.value);
+      selectedInstallments.some((inst) => row.installmentName === inst.value || row.installmentName === '-');
 
     const matchesViewMode =
       viewMode === 'net' ||
@@ -338,80 +388,41 @@ const DateWiseFeesCollectionExcConcession = () => {
     );
   });
 
-  // // Group and aggregate data by date, academic year, payment mode, and cancellation status
-  // const groupedData = filteredData.reduce((acc, record, index) => {
-  //   const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
-  //   const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`;
-  //   if (!acc[key]) {
-  //     acc[key] = {
-  //       aggregated: {
-  //         paymentDate: record.paymentDate,
-  //         academicYear: record.academicYear,
-  //         paymentMode: record.paymentMode,
-  //         feesBreakdown: {},
-  //         fineAmount: 0,
-  //         excessAmount: 0,
-  //         totalPaidFee: 0,
-  //         status: isCancellation ? 'Cancelled' : 'Regular',
-  //       },
-  //       count: 0,
-  //     };
-  //   }
-  //   Object.keys(record.feesBreakdown).forEach((type) => {
-  //     acc[key].aggregated.feesBreakdown[type] =
-  //       (acc[key].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
-  //   });
-  //   acc[key].aggregated.fineAmount += Number(record.fineAmount) || 0;
-  //   acc[key].aggregated.excessAmount += Number(record.excessAmount) || 0;
-  //   acc[key].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
-  //   acc[key].count += 1;
-  //   return acc;
-  // }, {});
-
   const groupedData = filteredData.reduce((acc, record, index) => {
+    const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
+    const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${record.studentAdmissionNumber}_${record.studentName}_${record.className}_${record.sectionName}_${record.installmentName}_${record.receiptNumber}_${isCancellation ? 'cancel' : 'regular'}`;
+    if (!acc[key]) {
+      acc[key] = {
+        aggregated: {
+          paymentDate: record.paymentDate,
+          academicYear: record.academicYear,
+          paymentMode: record.paymentMode,
+          studentAdmissionNumber: record.studentAdmissionNumber,
+          studentName: record.studentName,
+          className: record.className,
+          sectionName: record.sectionName,
+          installmentName: record.installmentName,
+          receiptNumber: record.receiptNumber,
+          feesBreakdown: {},
+          fineAmount: 0,
+          excessAmount: 0,
+          totalPaidFee: 0,
+          status: isCancellation ? 'Cancelled' : record.status || 'Regular',
+        },
+        count: 0,
+      };
+    }
+    Object.keys(record.feesBreakdown).forEach((type) => {
+      acc[key].aggregated.feesBreakdown[type] =
+        (acc[key].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
+    });
+    acc[key].aggregated.fineAmount += Number(record.fineAmount) || 0;
+    acc[key].aggregated.excessAmount += Number(record.excessAmount) || 0;
+    acc[key].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
+    acc[key].count += 1;
+    return acc;
+  }, {});
 
-  const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
-  const groupKey = viewMode === 'net' 
-    ? `${record.paymentDate}_${record.academicYear}_${record.paymentMode}` 
-    : `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`; 
-  
-  if (!acc[groupKey]) {
-    acc[groupKey] = {
-      aggregated: {
-        paymentDate: record.paymentDate,
-        academicYear: record.academicYear,
-        paymentMode: record.paymentMode,
-        feesBreakdown: {},
-        fineAmount: 0,
-        excessAmount: 0,
-        totalPaidFee: 0,
-        status: viewMode === 'net' ? 'Net' : (isCancellation ? 'Cancelled' : 'Regular'),
-        hasCancellation: false, 
-      },
-      count: 0,
-    };
-  }
-  
-
-  if (isCancellation) {
-    acc[groupKey].aggregated.hasCancellation = true;
-  }
-  
-
-  Object.keys(record.feesBreakdown).forEach((type) => {
-    acc[groupKey].aggregated.feesBreakdown[type] =
-      (acc[groupKey].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
-  });
-  
-
-  acc[groupKey].aggregated.fineAmount += Number(record.fineAmount) || 0;
-  acc[groupKey].aggregated.excessAmount += Number(record.excessAmount) || 0;
-  acc[groupKey].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
-  acc[groupKey].count += 1;
-  
-  return acc;
-}, {});
-  // Calculate date-wise totals
   const dateWiseTotals = filteredData.reduce((acc, record) => {
     const dateKey = record.paymentDate;
     if (!acc[dateKey]) {
@@ -447,6 +458,12 @@ const DateWiseFeesCollectionExcConcession = () => {
         paymentDate: `${total.paymentDate}-Total`,
         academicYear: '',
         paymentMode: '',
+        studentAdmissionNumber: '',
+        studentName: '',
+        className: '',
+        sectionName: '',
+        installmentName: '',
+        receiptNumber: '',
       },
       index: idx + Object.keys(groupedData).length,
       isFirstInGroup: true,
@@ -489,20 +506,27 @@ const DateWiseFeesCollectionExcConcession = () => {
   const headerMapping = {
     paymentDate: 'Date',
     academicYear: 'Academic Year',
+    studentAdmissionNumber: 'Admission No.',
+    studentName: 'Name',
+    className: 'Class',
+    sectionName: 'Section',
+    installmentName: 'Installment',
+    receiptNumber: 'Receipt No.',
     paymentMode: 'Payment Mode',
     ...Object.fromEntries(displayedFeeTypes.map((type) => [type, type])),
     ...(selectedFeeTypes.length === 0
       ? {
-        fineAmount: 'Fine Amount',
-        excessAmount: 'Excess Amount',
-        totalPaidFee: 'Fees Paid',
-      }
+          fineAmount: 'Fine Amount',
+          excessAmount: 'Excess Amount',
+          totalPaidFee: 'Fees Paid',
+        }
       : {}),
   };
 
   const tableFields = Object.keys(headerMapping).map((key) => ({
     id: key,
     label: headerMapping[key],
+    isNumeric: ['totalPaidFee', 'fineAmount', 'excessAmount', ...displayedFeeTypes].includes(key),
   }));
 
   const getFieldValue = (record, field) => {
@@ -511,13 +535,9 @@ const DateWiseFeesCollectionExcConcession = () => {
       return record[fieldId] || '-';
     } else if (fieldId === 'academicYear') {
       return formatAcademicYear(record[fieldId]) || '-';
-    } else if (fieldId === 'paymentMode') {
+    } else if (fieldId === 'paymentMode' || fieldId === 'studentAdmissionNumber' || fieldId === 'studentName' || fieldId === 'className' || fieldId === 'sectionName' || fieldId === 'installmentName' || fieldId === 'receiptNumber') {
       return record[fieldId] || '-';
-    } else if (fieldId === 'totalPaidFee') {
-      return (record[fieldId] || 0).toFixed(2);
-    } else if (fieldId === 'fineAmount') {
-      return (record[fieldId] || 0).toFixed(2);
-    } else if (fieldId === 'excessAmount') {
+    } else if (fieldId === 'totalPaidFee' || fieldId === 'fineAmount' || fieldId === 'excessAmount') {
       return (record[fieldId] || 0).toFixed(2);
     } else {
       return (record.feesBreakdown[fieldId] || 0).toFixed(2);
@@ -557,6 +577,8 @@ const DateWiseFeesCollectionExcConcession = () => {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  const nonNumericColumnsCount = tableFields.filter((field) => !field.isNumeric).length;
 
   return (
     <div className="container">
@@ -651,7 +673,6 @@ const DateWiseFeesCollectionExcConcession = () => {
                           >
                             {isExporting ? 'Exporting...' : 'Export to Excel'}
                           </button>
-
                           <button
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
@@ -748,6 +769,33 @@ const DateWiseFeesCollectionExcConcession = () => {
                             </div>
                           </div>
                         )}
+                        {activeTab === 'Class & Section' && (
+                          <div className="row d-flex justify-content-center">
+                            <div className="col-md-4">
+                              <CreatableSelect
+                                isMulti
+                                name="class"
+                                options={classOptions}
+                                value={selectedClasses}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Classes"
+                                className="mt-2"
+                              />
+                            </div>
+                            <div className="col-md-4">
+                              <CreatableSelect
+                                isMulti
+                                name="section"
+                                options={getFilteredSectionOptions()}
+                                value={selectedSections}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Sections"
+                                className="mt-2"
+                                isDisabled={selectedClasses.length === 0 && sectionOptions.length === 0}
+                              />
+                            </div>
+                          </div>
+                        )}
                         {activeTab === 'Academic Year' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
@@ -810,7 +858,7 @@ const DateWiseFeesCollectionExcConcession = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Datewise Collection Exc Concession</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">StudentWise Collection Exc Concession</h2>
                 </div>
               </div>
 
@@ -821,138 +869,72 @@ const DateWiseFeesCollectionExcConcession = () => {
                   </div>
                   <p>Loading data...</p>
                 </div>
-              ) : displayedFeeTypes.length > 0 ? (
+              ) : tableFields.length > 9 ? (
                 <>
                   <div className="table-responsive pb-4 mt-3">
                     <table className="table text-dark border border-secondary mb-1">
                       <thead>
                         <tr className="payroll-table-header">
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Academic Year</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Payment Mode</th>
-                          {displayedFeeTypes.map((type) => (
-                            <th key={type} className="text-center align-middle border border-secondary text-nowrap p-2">
-                              {type}
+                          {tableFields.map((field) => (
+                            <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {field.label}
                             </th>
                           ))}
-                          {selectedFeeTypes.length === 0 && (
-                            <>
-                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Fine Amount</th>
-                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Excess Amount</th>
-                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
-                            </>
-                          )}
                         </tr>
                       </thead>
                       <tbody>
                         {paginatedData().length > 0 ? (
                           paginatedData().map(({ record, index, isFirstInGroup, rowspan, isTotalRow }, idx) => (
                             <tr
-                              key={`${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${index}_${idx}`}
+                              key={`${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${record.studentAdmissionNumber}_${index}_${idx}`}
                               className={`payroll-table-row ${isTotalRow ? 'fw-bold' : ''}`}
                             >
                               {isTotalRow ? (
                                 <>
                                   <td
                                     className="text-right align-middle border border-secondary text-nowrap p-2 fw-bold"
-                                    colSpan={3}
+                                    colSpan={nonNumericColumnsCount}
                                   >
                                     {record.paymentDate}
                                   </td>
-                                  {displayedFeeTypes.map((type) => (
+                                  {tableFields.slice(nonNumericColumnsCount).map((field) => (
                                     <td
-                                      key={type}
+                                      key={field.id}
                                       className="text-center align-middle border border-secondary text-nowrap p-2 fw-bold"
                                     >
-                                      {(record.feesBreakdown[type] || 0).toFixed(2)}
+                                      {getFieldValue(record, field)}
                                     </td>
                                   ))}
-                                  {selectedFeeTypes.length === 0 && (
-                                    <>
-                                      <td className="text-center align-middle border border-secondary text-nowrap p-2 fw-bold">
-                                        {(record.fineAmount || 0).toFixed(2)}
-                                      </td>
-                                      <td className="text-center align-middle border border-secondary text-nowrap p-2 fw-bold">
-                                        {(record.excessAmount || 0).toFixed(2)}
-                                      </td>
-                                      <td className="text-center align-middle border border-secondary text-nowrap p-2 fw-bold">
-                                        {(record.totalPaidFee || 0).toFixed(2)}
-                                      </td>
-                                    </>
-                                  )}
                                 </>
                               ) : isFirstInGroup ? (
                                 <>
-                                  <td
-                                    className="text-center align-middle border border-secondary text-nowrap p-2"
-                                    rowSpan={rowspan}
-                                  >
-                                    {record.paymentDate || '-'}
-                                  </td>
-                                  <td
-                                    className="text-center align-middle border border-secondary text-nowrap p-2"
-                                    rowSpan={rowspan}
-                                  >
-                                    {formatAcademicYear(record.academicYear) || '-'}
-                                  </td>
-                                  <td
-                                    className="text-center align-middle border border-secondary text-nowrap p-2"
-                                    rowSpan={rowspan}
-                                  >
-                                    {record.paymentMode || '-'}
-                                  </td>
-                                  {displayedFeeTypes.map((type) => (
+                                  {tableFields.map((field) => (
                                     <td
-                                      key={type}
+                                      key={field.id}
                                       className="text-center align-middle border border-secondary text-nowrap p-2"
+                                      rowSpan={rowspan}
                                     >
-                                      {(record.feesBreakdown[type] || 0).toFixed(2)}
+                                      {getFieldValue(record, field)}
                                     </td>
                                   ))}
-                                  {selectedFeeTypes.length === 0 && (
-                                    <>
-                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                        {(record.fineAmount || 0).toFixed(2)}
-                                      </td>
-                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                        {(record.excessAmount || 0).toFixed(2)}
-                                      </td>
-                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                        {(record.totalPaidFee || 0).toFixed(2)}
-                                      </td>
-                                    </>
-                                  )}
                                 </>
                               ) : (
                                 <>
-                                  {displayedFeeTypes.map((type) => (
+                                  {tableFields.slice(nonNumericColumnsCount).map((field) => (
                                     <td
-                                      key={type}
+                                      key={field.id}
                                       className="text-center align-middle border border-secondary text-nowrap p-2"
                                     >
-                                      {(record.feesBreakdown[type] || 0).toFixed(2)}
+                                      {getFieldValue(record, field)}
                                     </td>
                                   ))}
-                                  {selectedFeeTypes.length === 0 && (
-                                    <>
-                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                        {(record.fineAmount || 0).toFixed(2)}
-                                      </td>
-                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                        {(record.excessAmount || 0).toFixed(2)}
-                                      </td>
-                                      <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                        {(record.totalPaidFee || 0).toFixed(2)}
-                                      </td>
-                                    </>
-                                  )}
                                 </>
                               )}
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={displayedFeeTypes.length + (selectedFeeTypes.length === 0 ? 6 : 3)} className="text-center">
+                            <td colSpan={tableFields.length} className="text-center">
                               No data matches the selected filters for{' '}
                               {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
                                 formatAcademicYear(selectedAcademicYear)}.
@@ -962,27 +944,14 @@ const DateWiseFeesCollectionExcConcession = () => {
                       </tbody>
                       <tfoot>
                         <tr className="payroll-table-footer">
-                          <td colSpan={3} className="text-right border border-secondary p-2">
+                          <td colSpan={nonNumericColumnsCount} className="text-right border border-secondary p-2">
                             <strong>Grand Total</strong>
                           </td>
-                          {displayedFeeTypes.map((type) => (
-                            <td key={type} className="text-center border border-secondary p-2">
-                              <strong>{(totals[type] || 0).toFixed(2)}</strong>
+                          {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                            <td key={field.id} className="text-center border border-secondary p-2">
+                              <strong>{(totals[field.id] || 0).toFixed(2)}</strong>
                             </td>
                           ))}
-                          {selectedFeeTypes.length === 0 && (
-                            <>
-                              <td className="text-center border border-secondary p-2">
-                                <strong>{(totals.fineAmount || 0).toFixed(2)}</strong>
-                              </td>
-                              <td className="text-center border border-secondary p-2">
-                                <strong>{(totals.excessAmount || 0).toFixed(2)}</strong>
-                              </td>
-                              <td className="text-center border border-secondary p-2">
-                                <strong>{(totals.totalPaidFee || 0).toFixed(2)}</strong>
-                              </td>
-                            </>
-                          )}
                         </tr>
                       </tfoot>
                     </table>
@@ -1040,4 +1009,4 @@ const DateWiseFeesCollectionExcConcession = () => {
   );
 };
 
-export default DateWiseFeesCollectionExcConcession;
+export default StudentWiseFeesCollectionExcConcession;

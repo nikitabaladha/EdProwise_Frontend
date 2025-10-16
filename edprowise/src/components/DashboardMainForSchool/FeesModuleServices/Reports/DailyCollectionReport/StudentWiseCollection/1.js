@@ -3,28 +3,12 @@
 // import { toast } from 'react-toastify';
 // import CreatableSelect from 'react-select/creatable';
 // import Select from 'react-select';
-// import getAPI from '../../../../../../api/getAPI';
 // import { Link } from 'react-router-dom';
-// import { exportToExcel, exportToPDF } from './ExportModalBoardExam';
+// import getAPI from '../../../../../../api/getAPI';
+// import { exportToExcel, exportToPDF } from './ExportModalStudentWiseFeesReport';
 // import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-// const BoardExamFees = () => {
-//   const headerMapping = {
-//     boardExamFeesDate: 'Date',
-//     academicYear: 'Academic Year',
-//     admNo: 'Adm No.',
-//     studentName: 'Name',
-//     class: 'Class',
-//     section: 'Section',
-//     boardExamFeesFeesStatus: 'Status',
-//     boardExamFeesPaymentMode: 'Payment Mode',
-//     boardExamFeesTransactionNo: 'Cheque No./Transaction No.',
-//     boardExamFeesReceiptNo: 'Receipts No.',
-//     boardExamFeesDue: 'Fees Due',
-//     boardExamFeesPaid: 'Fees Paid',
-//     boardExamFeesConcession: 'Concession',
-//   };
-
+// const StudentWiseFeesReportIncConcession = () => {
 //   const [showFilterPanel, setShowFilterPanel] = useState(false);
 //   const [showExportDropdown, setShowExportDropdown] = useState(false);
 //   const [activeTab, setActiveTab] = useState('Date');
@@ -32,36 +16,33 @@
 //   const [schoolId, setSchoolId] = useState('');
 //   const [school, setSchool] = useState(null);
 //   const [logoSrc, setLogoSrc] = useState('');
-//   const [paymentModes, setPaymentModes] = useState([]);
-//   const [statusOptions, setStatusOptions] = useState([]);
 //   const [feeData, setFeeData] = useState([]);
-//   const [classSectionMap, setClassSectionMap] = useState({});
-//   const [tableFields] = useState(
-//     Object.keys(headerMapping).map((key) => ({
-//       id: key,
-//       label: headerMapping[key],
-//     }))
-//   );
+//   const [feeTypes, setFeeTypes] = useState([]);
 //   const [isLoading, setIsLoading] = useState(false);
 //   const [loadingYears, setLoadingYears] = useState(false);
-//   const [isExporting, setIsExporting] = useState(false);
 //   const [classOptions, setClassOptions] = useState([]);
 //   const [sectionOptions, setSectionOptions] = useState([]);
+//   const [classSectionMap, setClassSectionMap] = useState({});
 //   const [academicYearOptions, setAcademicYearOptions] = useState([]);
 //   const [academicYears, setAcademicYears] = useState([]);
+//   const [installmentOptions, setInstallmentOptions] = useState([]);
+//   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
 //   const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
 //   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
 //   const [selectedClasses, setSelectedClasses] = useState([]);
 //   const [selectedSections, setSelectedSections] = useState([]);
-//   const [selectedStatuses, setSelectedStatuses] = useState([]);
 //   const [selectedYears, setSelectedYears] = useState([]);
+//   const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
+//   const [selectedInstallments, setSelectedInstallments] = useState([]);
 //   const [startDate, setStartDate] = useState('');
 //   const [endDate, setEndDate] = useState('');
+//   const [isExporting, setIsExporting] = useState(false);
 //   const [currentPage, setCurrentPage] = useState(1);
 //   const [rowsPerPage, setRowsPerPage] = useState('all');
 //   const dropdownRef = useRef(null);
 
-//   const tabs = ['Date', 'Academic Year', 'Class & Section', 'Payment Mode', 'Status'];
+//   const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment', 'Type of Fees'];
+
 //   const pageShowOptions = [
 //     { value: 'all', label: 'All' },
 //     { value: 10, label: '10' },
@@ -73,7 +54,7 @@
 //   const formatAcademicYear = (year) => {
 //     if (!year) return '-';
 //     const [startYear, endYear] = year.split('-');
-//     return `${startYear}-${endYear.slice(-2)}`;
+//     return `${startYear}-${endYear?.slice(-2) || ''}`;
 //   };
 
 //   useEffect(() => {
@@ -86,12 +67,42 @@
 //   }, []);
 
 //   useEffect(() => {
+//     const loadSchoolData = async () => {
+//       try {
+//         const { school, logoSrc } = await fetchSchoolData(schoolId);
+//         setSchool(school);
+//         setLogoSrc(logoSrc);
+//       } catch (error) {
+//         console.error('Failed to fetch school data:', error);
+//       }
+//     };
+//     if (schoolId) {
+//       loadSchoolData();
+//     }
+//   }, [schoolId]);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//         setShowExportDropdown(false);
+//       }
+//     };
+//     document.addEventListener('mousedown', handleClickOutside);
+//     return () => {
+//       document.removeEventListener('mousedown', handleClickOutside);
+//     };
+//   }, []);
+
+//   useEffect(() => {
 //     const fetchAcademicYears = async () => {
 //       try {
 //         setLoadingYears(true);
 //         const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
 //         if (!response.hasError && response.data?.data) {
-//           const years = response.data.data.map((item) => item.academicYear).sort((a, b) => a.localeCompare(b));
+//           const years = response.data.data
+//             .map((item) => item.academicYear)
+//             .filter(Boolean)
+//             .sort((a, b) => a.localeCompare(b));
 //           setAcademicYears(years);
 //           setAcademicYearOptions(
 //             years.map((year) => ({
@@ -115,207 +126,131 @@
 //         setLoadingYears(false);
 //       }
 //     };
-
 //     if (schoolId) {
 //       fetchAcademicYears();
 //     }
 //   }, [schoolId]);
 
-//   useEffect(() => {
-//     const loadSchoolData = async () => {
-//       try {
-//         const { school, logoSrc } = await fetchSchoolData(schoolId);
-//         setSchool(school);
-//         setLogoSrc(logoSrc);
-//       } catch (error) {
-//         console.error('Failed to fetch school data:', error);
-//       }
-//     };
-//     if (schoolId) {
-//       loadSchoolData();
-//     }
-//   }, [schoolId]);
-
-//   useEffect(() => {
-//     if (!schoolId) return;
-//     const yearsToFetch = selectedYears.length > 0
-//       ? selectedYears.map((year) => year.value)
-//       : [selectedAcademicYear];
-//     if (yearsToFetch[0]) {
-//       fetchFeeData(yearsToFetch);
-//     }
-//   }, [schoolId, selectedAcademicYear, selectedYears, academicYears]);
-
-//   useEffect(() => {
-//     if (Object.keys(classSectionMap).length === 0) {
-//       const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
-//       setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
-//       if (selectedClasses.length === 0) {
-//         setSelectedSections([]);
-//       }
-//       return;
-//     }
-
-//     let validSections = new Set();
-//     if (selectedClasses.length === 0) {
-//       Object.values(classSectionMap).forEach(sectionSet => {
-//         sectionSet.forEach(section => validSections.add(section));
-//       });
-//       setSelectedSections([]);
-//     } else {
-//       selectedClasses.forEach(cls => {
-//         const sectionsForClass = classSectionMap[cls.value] || new Set();
-//         sectionsForClass.forEach(section => validSections.add(section));
-//       });
-//     }
-
-//     const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
-//     setSectionOptions(newSectionOptions);
-
-//     const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
-//     const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
-//     if (updatedSelectedSections.length !== selectedSections.length) {
-//       setSelectedSections(updatedSelectedSections);
-//     }
-//   }, [selectedClasses, classSectionMap, feeData]);
-
-//   useEffect(() => {
-//     const handleClickOutside = (event) => {
-//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-//         setShowExportDropdown(false);
-//       }
-//     };
-//     document.addEventListener('mousedown', handleClickOutside);
-//     return () => {
-//       document.removeEventListener('mousedown', handleClickOutside);
-//     };
-//   }, []);
-
 //   const fetchFeeData = async (years) => {
 //     setIsLoading(true);
 //     try {
-//       const classSectionMapping = {};
 //       const promises = years.map((year) =>
-//         getAPI(`/get-all-data-board-exam?schoolId=${schoolId}&academicYear=${year}`)
+//         getAPI(`/get-all-data-studentwise-fees?schoolId=${schoolId}&academicYear=${year}`)
 //       );
 //       const responses = await Promise.all(promises);
 //       const unifiedData = responses.flatMap((res, index) => {
-//         if (!res?.data?.data?.[years[index]]) {
+//         if (!res?.data?.data) {
 //           console.warn(`No data found for year ${years[index]}`);
 //           return [];
 //         }
-//         return res.data.data[years[index]].flatMap((record) => {
-//           const className = record.className || '-';
-//           const sectionName = record.sectionName || '-';
-//           if (className !== '-' && sectionName !== '-') {
-//             if (!classSectionMapping[className]) {
-//               classSectionMapping[className] = new Set();
-//             }
-//             classSectionMapping[className].add(sectionName);
-//           }
-//           const statuses = record.student?.boardExamFeesFeesStatus && record.student.boardExamFeesFeesStatus !== '-'
-//             ? record.student.boardExamFeesFeesStatus
-//             : ['Paid'];
-//           return statuses.map((status) => ({
+//         return res.data.data.map((record) => {
+//           const totalPaidFee = Object.values(record.feeTypes || {}).reduce(
+//             (sum, amount) => sum + (Number(amount) || 0),
+//             0
+//           ) + (Number(record.fineAmount) || 0) + (Number(record.excessAmount) || 0);
+//           return {
 //             ...record,
-//             academicYear: years[index],
-//             className: record.className || '-',
-//             sectionName: record.sectionName || '-',
-//             student: {
-//               ...record.student,
-//               boardExamFeesFeesStatus: [status],
-//             },
-//           }));
+//             academicYear: record.academicYear,
+//             feesBreakdown: record.feeTypes || {},
+//             totalPaidFee,
+//           };
 //         });
 //       });
 
-//       unifiedData.sort((a, b) => {
-//         const admNoA = a.student?.admissionNo || '-';
-//         const admNoB = b.student?.admissionNo || '-';
-//         const dateA = a.student?.boardExamFeesFeesStatus.includes('Cancelled') || a.student?.boardExamFeesFeesStatus.includes('Cheque Return')
-//           ? a.student.boardExamFeesCancelledDate
-//           : a.student.boardExamFeesDate || '-';
-//         const dateB = b.student?.boardExamFeesFeesStatus.includes('Cancelled') || b.student?.boardExamFeesFeesStatus.includes('Cheque Return')
-//           ? b.student.boardExamFeesCancelledDate
-//           : b.student.boardExamFeesDate || '-';
-//         const statusA = a.student.boardExamFeesFeesStatus[0];
-//         const statusB = b.student.boardExamFeesFeesStatus[0];
+//       let availableFeeTypes = responses
+//         .flatMap((res) => res?.data?.feeTypes || [])
+//         .filter((type, index, self) => self.indexOf(type) === index)
+//         .sort();
 
-//         if (dateA !== dateB) return dateA.localeCompare(dateB);
-//         if (statusA === 'Paid' && statusB !== 'Paid') return -1;
-//         if (statusB === 'Paid' && statusA !== 'Paid') return 1;
-//         return admNoA.localeCompare(admNoB);
-//       });
+//       if (selectedInstallments.length > 0) {
+//         const selectedInstallmentNames = selectedInstallments.map((inst) => inst.value);
+//         availableFeeTypes = unifiedData
+//           .filter((record) => selectedInstallmentNames.includes(record.installmentName))
+//           .flatMap((record) => Object.keys(record.feesBreakdown))
+//           .filter((type, index, self) => self.indexOf(type) === index)
+//           .sort();
+//       }
 
+//       setFeeTypes(availableFeeTypes);
 //       setFeeData(unifiedData);
-//       setClassSectionMap(classSectionMapping);
-
-//       const modes = new Set();
-//       const statuses = new Set();
-//       unifiedData.forEach((record) => {
-//         if (record.student?.boardExamFeesPaymentMode) modes.add(record.student.boardExamFeesPaymentMode);
-//         if (record.student?.boardExamFeesFeesStatus) {
-//           record.student.boardExamFeesFeesStatus.forEach((status) => statuses.add(status));
-//         }
-//       });
-//       setPaymentModes(
-//         Array.from(modes)
-//           .filter((mode) => mode && mode !== '-')
-//           .map((mode) => ({ value: mode, label: mode }))
-//       );
-//       setStatusOptions(
-//         Array.from(statuses)
-//           .filter((status) => status && status !== '-')
-//           .map((status) => ({ value: status, label: status }))
-//       );
-
-//       const classes = new Set(unifiedData.map((record) => record.className).filter((cls) => cls && cls !== '-'));
-//       setClassOptions(
-//         Array.from(classes).map((cls) => ({ value: cls, label: cls }))
-//       );
-
-//       const sections = new Set(unifiedData.map((record) => record.sectionName).filter((sec) => sec && sec !== '-'));
-//       setSectionOptions(
-//         Array.from(sections).map((sec) => ({ value: sec, label: sec }))
-//       );
 
 //       if (rowsPerPage === 'all' && unifiedData.length > 0) {
 //         setRowsPerPage(unifiedData.length);
 //       }
+
+//       const filterOptions = responses[0]?.data?.filterOptions || {};
+//       setClassOptions(filterOptions.classOptions || []);
+//       setSectionOptions(filterOptions.sectionOptions || []);
+//       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+//       setInstallmentOptions(filterOptions.installmentOptions || []);
+
+//       // Build class-section mapping from data
+//       const classSectionMapping = {};
+//       unifiedData.forEach((record) => {
+//         const className = record.className && record.className !== '-' ? record.className : null;
+//         const sectionName = record.sectionName && record.sectionName !== '-' ? record.sectionName : null;
+//         if (className && sectionName) {
+//           if (!classSectionMapping[className]) {
+//             classSectionMapping[className] = [];
+//           }
+//           if (!classSectionMapping[className].some((sec) => sec.value === sectionName)) {
+//             classSectionMapping[className].push({ value: sectionName, label: sectionName });
+//           }
+//         }
+//       });
+//       setClassSectionMap(classSectionMapping);
 //     } catch (error) {
-//       toast.error('Error initializing data: ' + error.message);
+//       toast.error('Error fetching data: ' + error.message);
 //       setFeeData([]);
-//       setClassSectionMap({});
-//       setPaymentModes([]);
-//       setStatusOptions([]);
+//       setFeeTypes([]);
 //       setClassOptions([]);
 //       setSectionOptions([]);
+//       setClassSectionMap({});
+//       setInstallmentOptions([]);
+//       setPaymentModeOptions([]);
 //     } finally {
 //       setIsLoading(false);
 //     }
 //   };
 
+//   useEffect(() => {
+//     if (!schoolId || !selectedAcademicYear) return;
+//     const yearsToFetch = selectedYears.length > 0
+//       ? selectedYears.map((year) => year.value)
+//       : [selectedAcademicYear];
+//     fetchFeeData(yearsToFetch);
+//   }, [schoolId, selectedAcademicYear, selectedYears, selectedInstallments]);
+
 //   const handleSelectChange = (selectedOptions, { name }) => {
+//     const selected = selectedOptions || [];
 //     if (name === 'academicYear') {
-//       setSelectedYears(selectedOptions || []);
+//       setSelectedYears(selected);
 //       setCurrentPage(1);
 //     } else if (name === 'paymentMode') {
-//       setSelectedPaymentModes(selectedOptions || []);
+//       setSelectedPaymentModes(selected);
 //       setCurrentPage(1);
 //     } else if (name === 'class') {
-//       setSelectedClasses(selectedOptions || []);
+//       setSelectedClasses(selected);
+//       setSelectedSections([]); // Reset sections when class changes
 //       setCurrentPage(1);
 //     } else if (name === 'section') {
-//       setSelectedSections(selectedOptions || []);
+//       setSelectedSections(selected);
 //       setCurrentPage(1);
-//     } else if (name === 'status') {
-//       setSelectedStatuses(selectedOptions || []);
+//     } else if (name === 'feeType') {
+//       setSelectedFeeTypes(selected);
 //       setCurrentPage(1);
+//     } else if (name === 'installment') {
+//       setSelectedInstallments(selected);
+//       setCurrentPage(1);
+//       const yearsToFetch = selectedYears.length > 0
+//         ? selectedYears.map((year) => year.value)
+//         : [selectedAcademicYear];
+//       fetchFeeData(yearsToFetch);
 //     } else if (name === 'rowsPerPage') {
 //       if (selectedOptions?.value === 'all') {
 //         setRowsPerPage(feeData.length || 'all');
 //       } else {
-//         setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+//         setRowsPerPage(selectedOptions ? selectedOptions.value : 'all');
 //       }
 //       setCurrentPage(1);
 //     }
@@ -327,6 +262,7 @@
 //       ? selectedYears.map((year) => year.value)
 //       : [selectedAcademicYear];
 //     fetchFeeData(yearsToFetch);
+//     setCurrentPage(1);
 //   };
 
 //   const resetFilters = () => {
@@ -334,7 +270,8 @@
 //     setSelectedPaymentModes([]);
 //     setSelectedClasses([]);
 //     setSelectedSections([]);
-//     setSelectedStatuses([]);
+//     setSelectedFeeTypes([]);
+//     setSelectedInstallments([]);
 //     setStartDate('');
 //     setEndDate('');
 //     setSearchTerm('');
@@ -343,7 +280,7 @@
 //     fetchFeeData([selectedAcademicYear]);
 //   };
 
-//   const toggleFilterPanel = () => {
+//   const toggleFilter = () => {
 //     setShowFilterPanel(!showFilterPanel);
 //     setShowExportDropdown(false);
 //   };
@@ -353,139 +290,133 @@
 //     setShowFilterPanel(false);
 //   };
 
-//   const getFieldValue = (record, field) => {
-//     const fieldId = field.id;
-//     const isCancelledOrChequeReturn = record.student?.boardExamFeesFeesStatus.includes('Cancelled') || record.student?.boardExamFeesFeesStatus.includes('Cheque Return');
-//     if (fieldId === 'academicYear') {
-//       return formatAcademicYear(record[fieldId]) || '-';
-//     } else if (fieldId === 'studentName') {
-//       return record.student?.studentName || '-';
-//     } else if (fieldId === 'admNo') {
-//       return record.student?.admissionNo || '-';
-//     } else if (fieldId === 'class') {
-//       return record.className || '-';
-//     } else if (fieldId === 'section') {
-//       return record.sectionName || '-';
-//     } else if (fieldId === 'boardExamFeesDate') {
-//       if (isCancelledOrChequeReturn) {
-//         const cancelledDate = record.student?.boardExamFeesCancelledDate;
-//         if (cancelledDate && /^\d{2}-\d{2}-\d{4}$/.test(cancelledDate)) {
-//           return cancelledDate;
-//         }
-//         return '-';
-//       }
-//       return record.student?.boardExamFeesDate || '-';
-//     } else if (fieldId === 'boardExamFeesFeesStatus') {
-//       return record.student?.boardExamFeesFeesStatus.join(', ') || '-';
-//     } else if (['boardExamFeesDue', 'boardExamFeesPaid', 'boardExamFeesConcession'].includes(fieldId)) {
-//       const value = parseFloat(record.student?.[fieldId] || 0);
-//       if (value === 0) return '0.00';
-//       return isCancelledOrChequeReturn ? `-${value.toFixed(2)}` : value.toFixed(2);
-//     } else {
-//       return record.student?.[fieldId] || record[fieldId] || '-';
-//     }
+//   const getFilteredSectionOptions = () => {
+//     if (selectedClasses.length === 0) return [];
+//     const sections = selectedClasses
+//       .flatMap((cls) => classSectionMap[cls.value] || [])
+//       .filter((sec, index, self) => self.findIndex((s) => s.value === sec.value) === index);
+//     return sections;
 //   };
 
-//   const calculateBalance = (record) => {
-//     const due = parseFloat(record.student?.boardExamFeesDue || 0);
-//     const concession = parseFloat(record.student?.boardExamFeesConcession || 0);
-//     const paid = parseFloat(record.student?.boardExamFeesPaid || 0);
-//     const balance = due - concession - paid;
-//     const isCancelledOrChequeReturn = record.student?.boardExamFeesFeesStatus.includes('Cancelled') || record.student?.boardExamFeesFeesStatus.includes('Cheque Return');
-//     if (balance === 0) return '0.00';
-//     return isCancelledOrChequeReturn ? `-${balance.toFixed(2)}` : balance.toFixed(2);
-//   };
-
-//   const filteredData = feeData.filter((record) => {
-//     const hasValidAdmissionNo = record.student?.admissionNo && record.student.admissionNo !== '-';
-//     const hasFeesDue = parseFloat(record.student?.boardExamFeesDue || 0) > 0;
-//     if (!hasValidAdmissionNo || !hasFeesDue) return false;
-
+//   const filteredData = feeData.filter((row) => {
 //     const matchesSearchTerm = searchTerm
-//       ? Object.values(record).some((value) =>
-//           value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
-//         ) ||
-//         Object.values(record.student || {}).some((value) =>
-//           value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
-//         )
+//       ? String(row.paymentDate || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         String(row.admissionNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         String(row.studentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         String(row.paymentMode || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         String(row.className || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         String(row.sectionName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         String(row.academicYear || '').toLowerCase().includes(searchTerm.toLowerCase())
 //       : true;
 
 //     const matchesPaymentMode =
 //       selectedPaymentModes.length === 0 ||
-//       selectedPaymentModes.some((mode) => record.student?.boardExamFeesPaymentMode === mode.value);
-
-//     const matchesClass =
-//       selectedClasses.length === 0 ||
-//       selectedClasses.some((cls) => record.className === cls.value);
-
-//     const matchesSection =
-//       selectedSections.length === 0 ||
-//       selectedSections.some((sec) => record.sectionName === sec.value);
+//       selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
 
 //     const matchesYear =
 //       selectedYears.length === 0 ||
-//       selectedYears.some((year) => record.academicYear === year.value);
-
-//     const matchesStatus =
-//       selectedStatuses.length === 0 ||
-//       selectedStatuses.some((status) => record.student?.boardExamFeesFeesStatus.includes(status.value));
+//       selectedYears.some((year) => row.academicYear === year.value);
 
 //     const matchesDate =
 //       (!startDate && !endDate) ||
-//       ((record.student?.boardExamFeesDate !== '-' || record.student?.boardExamFeesCancelledDate !== '-') &&
-//         (() => {
-//           const dateString = record.student?.boardExamFeesFeesStatus.includes('Cancelled') || record.student?.boardExamFeesFeesStatus.includes('Cheque Return')
-//             ? record.student.boardExamFeesCancelledDate
-//             : record.student.boardExamFeesDate;
-//           if (!dateString || !/^\d{2}-\d{2}-\d{4}$/.test(dateString)) return false;
-//           const [day, month, year] = dateString.split('-');
-//           const recordDate = new Date(`${year}-${month}-${day}`);
-//           if (isNaN(recordDate.getTime())) return false;
-//           const start = startDate ? new Date(startDate) : null;
-//           const end = endDate ? new Date(endDate) : null;
-//           return (!start || recordDate >= start) && (!end || recordDate <= end);
-//         })());
+//       (() => {
+//         if (!row.paymentDate || row.paymentDate === '-') return false;
+//         const recordDate = new Date(row.paymentDate.split('-').reverse().join('-'));
+//         const start = startDate ? new Date(startDate) : null;
+//         const end = endDate ? new Date(endDate) : null;
+//         return (!start || recordDate >= start) && (!end || recordDate <= end);
+//       })();
+
+//     const matchesFeeType =
+//       selectedFeeTypes.length === 0 ||
+//       selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) > 0);
+
+//     const matchesClass =
+//       selectedClasses.length === 0 ||
+//       selectedClasses.some((cls) => row.className === cls.value);
+
+//     const matchesSection =
+//       selectedSections.length === 0 ||
+//       selectedSections.some((sec) => row.sectionName === sec.value);
+
+//     const matchesInstallment =
+//       selectedInstallments.length === 0 ||
+//       selectedInstallments.some((inst) => row.installmentName === inst.value);
 
 //     return (
 //       matchesSearchTerm &&
 //       matchesPaymentMode &&
+//       matchesYear &&
+//       matchesDate &&
+//       matchesFeeType &&
 //       matchesClass &&
 //       matchesSection &&
-//       matchesYear &&
-//       matchesStatus &&
-//       matchesDate
+//       matchesInstallment
 //     );
 //   });
 
-//   const groupedByDate = filteredData.reduce((acc, record) => {
-//     const date = record.student?.boardExamFeesFeesStatus.includes('Cancelled') || record.student?.boardExamFeesFeesStatus.includes('Cheque Return')
-//       ? record.student.boardExamFeesCancelledDate
-//       : record.student.boardExamFeesDate;
-//     if (!acc[date]) acc[date] = [];
-//     acc[date].push(record);
-//     return acc;
-//   }, {});
-
 //   const totals = filteredData.reduce(
-//     (acc, record) => {
-//       const due = parseFloat(record.student?.boardExamFeesDue || 0);
-//       const paid = parseFloat(record.student?.boardExamFeesPaid || 0);
-//       const concession = parseFloat(record.student?.boardExamFeesConcession || 0);
-//       const balance = due - concession - paid;
-//       const isCancelledOrChequeReturn = record.student?.boardExamFeesFeesStatus.includes('Cancelled') || record.student?.boardExamFeesFeesStatus.includes('Cheque Return');
-//       const multiplier = isCancelledOrChequeReturn ? -1 : 1;
-//       return {
-//         feesDue: acc.feesDue + (due !== 0 ? due * multiplier : due),
-//         feesPaid: acc.feesPaid + (paid !== 0 ? paid * multiplier : paid),
-//         concession: acc.concession + (concession !== 0 ? concession * multiplier : concession),
-//         balance: acc.balance + (balance !== 0 ? balance * multiplier : balance),
-//       };
+//     (acc, row) => {
+//       const displayTypes = selectedFeeTypes.length > 0
+//         ? selectedFeeTypes.map((type) => type.value)
+//         : feeTypes;
+//       displayTypes.forEach((type) => {
+//         acc[type] = (acc[type] || 0) + (row.feesBreakdown[type] || 0);
+//       });
+//       if (selectedFeeTypes.length === 0) {
+//         acc.fineAmount = (acc.fineAmount || 0) + (row.fineAmount || 0);
+//         acc.excessAmount = (acc.excessAmount || 0) + (row.excessAmount || 0);
+//         acc.totalPaidFee = (acc.totalPaidFee || 0) + (row.totalPaidFee || 0);
+//       }
+//       return acc;
 //     },
-//     { feesDue: 0, feesPaid: 0, concession: 0, balance: 0 }
+//     {}
 //   );
 
-//   const totalRecords = Object.keys(groupedByDate).reduce((sum, date) => sum + groupedByDate[date].length, 0);
-//   const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
+//   const tableFields = [
+//     { id: 'paymentDate', label: 'Date', isNumeric: false },
+//     { id: 'academicYear', label: 'Academic Year', isNumeric: false },
+//     { id: 'admissionNumber', label: 'Admission No.', isNumeric: false },
+//     { id: 'studentName', label: 'Name', isNumeric: false },
+//     { id: 'className', label: 'Class', isNumeric: false },
+//     { id: 'sectionName', label: 'Section', isNumeric: false },
+//     { id: 'installmentName', label: 'Installment', isNumeric: false },
+//     { id: 'paymentMode', label: 'Payment Mode', isNumeric: false },
+//     { id: 'receiptNumber', label: 'Receipt No.', isNumeric: false },
+//     ...(selectedFeeTypes.length > 0
+//       ? selectedFeeTypes.map((type) => ({ id: type.value, label: type.value, isNumeric: true }))
+//       : [
+//           ...feeTypes.map((type) => ({ id: type, label: type, isNumeric: true })),
+//           { id: 'fineAmount', label: 'Fine Amount', isNumeric: true },
+//           { id: 'excessAmount', label: 'Excess Amount', isNumeric: true },
+//           { id: 'totalPaidFee', label: 'Fees Paid', isNumeric: true },
+//         ]),
+//   ];
+
+//   const getFieldValue = (record, field) => {
+//     const fieldId = field.id;
+//     if (
+//       fieldId === 'paymentDate' ||
+//       fieldId === 'admissionNumber' ||
+//       fieldId === 'studentName' ||
+//       fieldId === 'className' ||
+//       fieldId === 'sectionName' ||
+//       fieldId === 'installmentName' ||
+//       fieldId === 'paymentMode' ||
+//       fieldId === 'receiptNumber'
+//     ) {
+//       return record[fieldId] || '-';
+//     } else if (fieldId === 'academicYear') {
+//       return formatAcademicYear(record[fieldId]) || '-';
+//     } else if (fieldId === 'totalPaidFee' || fieldId === 'fineAmount' || fieldId === 'excessAmount') {
+//       return (record[fieldId] || 0).toFixed(2);
+//     } else {
+//       return (record.feesBreakdown[fieldId] || 0).toFixed(2);
+//     }
+//   };
+
+//   const totalRecords = filteredData.length;
+//   const totalPages = Math.ceil(totalRecords / (rowsPerPage === 'all' ? totalRecords : rowsPerPage));
 
 //   const maxPagesToShow = 5;
 //   const pagesToShow = [];
@@ -497,25 +428,9 @@
 //   }
 
 //   const paginatedData = () => {
-//     const sortedDates = Object.keys(groupedByDate).sort();
-//     let currentCount = 0;
-//     const startIndex = rowsPerPage === 'all' ? 0 : (currentPage - 1) * rowsPerPage;
-//     const endIndex = rowsPerPage === 'all' ? totalRecords : startIndex + rowsPerPage;
-//     const paginated = [];
-
-//     for (const date of sortedDates) {
-//       const records = groupedByDate[date];
-//       for (const record of records) {
-//         if (currentCount >= startIndex && currentCount < endIndex) {
-//           paginated.push({ date, record });
-//         }
-//         currentCount++;
-//         if (currentCount >= endIndex) break;
-//       }
-//       if (currentCount >= endIndex) break;
-//     }
-
-//     return paginated;
+//     const startIndex = (currentPage - 1) * (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
+//     const endIndex = startIndex + (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
+//     return filteredData.slice(startIndex, endIndex);
 //   };
 
 //   const handlePageClick = (page) => {
@@ -534,6 +449,7 @@
 //     }
 //   };
 
+//   const nonNumericColumnsCount = tableFields.filter((field) => !field.isNumeric).length;
 //   return (
 //     <div className="container">
 //       <div className="row">
@@ -555,20 +471,22 @@
 //                     />
 //                   </div>
 //                   <div className="col-md-2"></div>
-//                   <div className="col-md-5 px-0 d-flex align-content-center justify-content-end">
+//                   <div className="col-md-5 px-0 d-flex align-items-center justify-content-end">
 //                     <Select
 //                       isClearable
 //                       name="rowsPerPage"
 //                       placeholder="Show"
 //                       options={pageShowOptions}
-//                       value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length))}
+//                       value={pageShowOptions.find(
+//                         (option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length)
+//                       )}
 //                       onChange={(selected, action) => handleSelectChange(selected, action)}
 //                       className="email-select border border-dark me-lg-2"
 //                     />
 //                     <div
 //                       className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
 //                       style={{ cursor: 'pointer' }}
-//                       onClick={toggleFilterPanel}
+//                       onClick={toggleFilter}
 //                     >
 //                       <FaFilter />
 //                     </div>
@@ -583,7 +501,7 @@
 //                       </div>
 //                       {showExportDropdown && (
 //                         <div
-//                           className="position-absolute bg-white border mr-2 mt-2 border-dark rounded shadow"
+//                           className="position-absolute bg-white mx-2 border mr-2 mt-2 border-dark rounded shadow"
 //                           style={{
 //                             top: '100%',
 //                             right: 0,
@@ -600,22 +518,15 @@
 //                                 await exportToExcel(
 //                                   filteredData,
 //                                   tableFields,
-//                                   headerMapping,
 //                                   getFieldValue,
-//                                   calculateBalance,
-//                                   {
-//                                     feesDue: totals.feesDue.toFixed(2),
-//                                     feesPaid: totals.feesPaid.toFixed(2),
-//                                     concession: totals.concession.toFixed(2),
-//                                     balance: totals.balance.toFixed(2),
-//                                   },
+//                                   totals,
 //                                   formatAcademicYear,
 //                                   selectedYears.length > 0
 //                                     ? selectedYears.map((y) => y.value).join(',')
 //                                     : selectedAcademicYear
 //                                 );
 //                               } catch (err) {
-//                                 toast.error("Export to Excel failed.");
+//                                 toast.error('Export to Excel failed.');
 //                               } finally {
 //                                 setIsExporting(false);
 //                                 setShowExportDropdown(false);
@@ -633,15 +544,8 @@
 //                                 await exportToPDF(
 //                                   filteredData,
 //                                   tableFields,
-//                                   headerMapping,
 //                                   getFieldValue,
-//                                   calculateBalance,
-//                                   {
-//                                     feesDue: totals.feesDue.toFixed(2),
-//                                     feesPaid: totals.feesPaid.toFixed(2),
-//                                     concession: totals.concession.toFixed(2),
-//                                     balance: totals.balance.toFixed(2),
-//                                   },
+//                                   totals,
 //                                   formatAcademicYear,
 //                                   selectedYears.length > 0
 //                                     ? selectedYears.map((y) => y.value).join(',')
@@ -650,7 +554,7 @@
 //                                   logoSrc
 //                                 );
 //                               } catch (err) {
-//                                 toast.error("Export to PDF failed.");
+//                                 toast.error('Export to PDF failed.');
 //                               } finally {
 //                                 setIsExporting(false);
 //                                 setShowExportDropdown(false);
@@ -717,7 +621,7 @@
 //                               <CreatableSelect
 //                                 isMulti
 //                                 name="paymentMode"
-//                                 options={paymentModes}
+//                                 options={paymentModeOptions}
 //                                 value={selectedPaymentModes}
 //                                 onChange={(selected, action) => handleSelectChange(selected, action)}
 //                                 placeholder="Select Payment Modes"
@@ -744,28 +648,12 @@
 //                               <CreatableSelect
 //                                 isMulti
 //                                 name="section"
-//                                 options={sectionOptions}
+//                                 options={getFilteredSectionOptions()}
 //                                 value={selectedSections}
 //                                 onChange={(selected, action) => handleSelectChange(selected, action)}
 //                                 placeholder="Select Sections"
 //                                 className="mt-2"
 //                                 isDisabled={selectedClasses.length === 0}
-//                               />
-//                             </div>
-//                           </div>
-//                         )}
-
-//                         {activeTab === 'Status' && (
-//                           <div className="row d-lg-flex justify-content-center">
-//                             <div className="col-md-8">
-//                               <CreatableSelect
-//                                 isMulti
-//                                 name="status"
-//                                 options={statusOptions}
-//                                 value={selectedStatuses}
-//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-//                                 placeholder="Select Statuses"
-//                                 className="mt-2"
 //                               />
 //                             </div>
 //                           </div>
@@ -781,6 +669,39 @@
 //                                 value={selectedYears}
 //                                 onChange={(selected, action) => handleSelectChange(selected, action)}
 //                                 placeholder="Select Academic Years"
+//                                 className="mt-2"
+//                                 isLoading={loadingYears}
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+
+//                         {activeTab === 'Installment' && (
+//                           <div className="row d-lg-flex justify-content-center">
+//                             <div className="col-md-8">
+//                               <CreatableSelect
+//                                 isMulti
+//                                 name="installment"
+//                                 options={installmentOptions}
+//                                 value={selectedInstallments}
+//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
+//                                 placeholder="Select Installments"
+//                                 className="mt-2"
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+
+//                         {activeTab === 'Type of Fees' && (
+//                           <div className="row d-lg-flex justify-content-center">
+//                             <div className="col-md-8">
+//                               <CreatableSelect
+//                                 isMulti
+//                                 name="feeType"
+//                                 options={feeTypes.map((type) => ({ value: type, label: type }))}
+//                                 value={selectedFeeTypes}
+//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
+//                                 placeholder="Select Fee Types"
 //                                 className="mt-2"
 //                               />
 //                             </div>
@@ -803,7 +724,7 @@
 
 //               <div className="container">
 //                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-//                   <h2 className="payroll-title text-center mb-0 flex-grow-1">Board Exam Fees Report</h2>
+//                   <h2 className="payroll-title text-center mb-0 flex-grow-1">Studentwise Collection Inc Concession Report</h2>
 //                 </div>
 //               </div>
 
@@ -814,78 +735,55 @@
 //                   </div>
 //                   <p>Loading data...</p>
 //                 </div>
-//               ) : tableFields.length > 0 ? (
+//               ) : tableFields.length > 9 ? (
 //                 <>
 //                   <div className="table-responsive pb-4 mt-3">
 //                     <table className="table text-dark border border-secondary mb-1">
 //                       <thead>
 //                         <tr className="payroll-table-header">
 //                           {tableFields.map((field) => (
-//                             <th
-//                               key={field.id}
-//                               className="text-center align-content-center border border-secondary text-nowrap p-2"
-//                             >
-//                               {headerMapping[field.id] || field.label}
+//                             <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+//                               {field.label}
 //                             </th>
 //                           ))}
-//                           <th className="text-center align-content-center border border-secondary text-nowrap p-2">
-//                             Balance
-//                           </th>
 //                         </tr>
 //                       </thead>
 //                       <tbody>
 //                         {paginatedData().length > 0 ? (
-//                           paginatedData().map(({ date, record }, index) => (
-//                             <tr
-//                               key={`${record.student?.admissionNo}_${record.student?.regNo}_${record.academicYear}_${record.student.boardExamFeesFeesStatus[0]}_${index}`}
-//                               className="payroll-table-row"
-//                             >
+//                           paginatedData().map((record, index) => (
+//                             <tr key={`${record.admissionNumber}_${record.paymentDate}_${record.receiptNumber}_${index}`}>
 //                               {tableFields.map((field) => (
-//                                 <td
-//                                   key={field.id}
-//                                   className="text-center align-middle border border-secondary text-nowrap p-2"
-//                                 >
+//                                 <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
 //                                   {getFieldValue(record, field)}
 //                                 </td>
 //                               ))}
-//                               <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                 {calculateBalance(record)}
-//                               </td>
 //                             </tr>
 //                           ))
 //                         ) : (
 //                           <tr>
-//                             <td colSpan={tableFields.length + 1} className="text-center">
-//                               No data matches the selected filters for {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') || formatAcademicYear(selectedAcademicYear)}.
+//                             <td colSpan={tableFields.length} className="text-center">
+//                               No data matches the selected filters for{' '}
+//                               {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
+//                                 formatAcademicYear(selectedAcademicYear)}.
 //                             </td>
 //                           </tr>
 //                         )}
 //                       </tbody>
 //                       <tfoot>
 //                         <tr className="payroll-table-footer">
-//                           <td
-//                             colSpan={tableFields.length - 3}
-//                             className="text-right border border-secondary p-2"
-//                           >
+//                           <td colSpan={nonNumericColumnsCount} className="text-right border border-secondary p-2">
 //                             <strong>Total</strong>
 //                           </td>
-//                           <td className="text-center border border-secondary p-2">
-//                             <strong>{totals.feesDue.toFixed(2)}</strong>
-//                           </td>
-//                           <td className="text-center border border-secondary p-2">
-//                             <strong>{totals.feesPaid.toFixed(2)}</strong>
-//                           </td>
-//                           <td className="text-center border border-secondary p-2">
-//                             <strong>{totals.concession.toFixed(2)}</strong>
-//                           </td>
-//                           <td className="text-center border border-secondary p-2">
-//                             <strong>{totals.balance.toFixed(2)}</strong>
-//                           </td>
+//                           {tableFields.slice(nonNumericColumnsCount).map((field) => (
+//                             <td key={field.id} className="text-center border border-secondary p-2">
+//                               <strong>{(totals[field.id] || 0).toFixed(2)}</strong>
+//                             </td>
+//                           ))}
 //                         </tr>
 //                       </tfoot>
 //                     </table>
 //                   </div>
-//                   {totalRecords > 0 && rowsPerPage !== 'all' && (
+//                   {totalRecords > 0 && (
 //                     <div className="card-footer border-top">
 //                       <nav aria-label="Page navigation example">
 //                         <ul className="pagination justify-content-end mb-0">
@@ -927,7 +825,7 @@
 //                 </>
 //               ) : (
 //                 <div className="text-center mt-3">
-//                   <p>No table fields available.</p>
+//                   <p>No fee types available.</p>
 //                 </div>
 //               )}
 //             </div>
@@ -938,7 +836,7 @@
 //   );
 // };
 
-// export default BoardExamFees;
+// export default StudentWiseFeesReportIncConcession;
 
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -948,46 +846,10 @@ import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
 import getAPI from '../../../../../../api/getAPI';
 import { Link } from 'react-router-dom';
-import { exportToExcel, exportToPDF } from './ExportModalBoardExam';
+import { exportToExcel, exportToPDF } from './ExportModalStudentWiseFeesReport';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const BoardExamFees = () => {
-  const headerMapping = {
-    boardExamFeesDate: 'Date',
-    academicYear: 'Academic Year',
-    admissionNumber: 'Adm No.',
-    studentName: 'Name',
-    className: 'Class',
-    sectionName: 'Section',
-    boardExamFeesStatus: 'Status',
-    boardExamFeesPaymentMode: 'Payment Mode',
-    boardExamFeesTransactionNo: 'Cheque No./Transaction No.',
-    boardExamFeesReceiptNo: 'Receipts No.',
-    boardExamFeesDue: 'Fees Due',
-    boardExamFeesPaid: 'Fees Paid',
-    boardExamFeesRefundAmount: 'Refund/Cancelled',
-    boardExamFeesConcession: 'Concession',
-  };
-
-  const [tableFields] = useState([
-    { id: 'boardExamFeesDate', label: 'Date' },
-    { id: 'academicYear', label: 'Academic Year' },
-    { id: 'admissionNumber', label: 'Adm No.' },
-    { id: 'studentName', label: 'Name' },
-    { id: 'className', label: 'Class' },
-    { id: 'sectionName', label: 'Section' },
-    { id: 'boardExamFeesStatus', label: 'Status' },
-    { id: 'boardExamFeesPaymentMode', label: 'Payment Mode' },
-    { id: 'boardExamFeesTransactionNo', label: 'Cheq/Tran No.' },
-    { id: 'boardExamFeesReceiptNo', label: 'Receipts No.' },
-    { id: 'boardExamFeesDue', label: 'Fees Due' },
-    { id: 'boardExamFeesPaid', label: 'Fees Paid' },
-    { id: 'boardExamFeesRefundAmount', label: 'CRN' },
-    { id: 'netFees', label: 'Net Fees' },
-    { id: 'boardExamFeesConcession', label: 'Concession' },
-    { id: 'balance', label: 'Balance' },
-  ]);
-
+const StudentWiseFeesCollectionIncConcession = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
@@ -995,30 +857,32 @@ const BoardExamFees = () => {
   const [schoolId, setSchoolId] = useState('');
   const [school, setSchool] = useState(null);
   const [logoSrc, setLogoSrc] = useState('');
-  const [paymentModes, setPaymentModes] = useState([]);
-  const [statusOptions, setStatusOptions] = useState([]);
   const [feeData, setFeeData] = useState([]);
-  const [classSectionMap, setClassSectionMap] = useState({});
+  const [feeTypes, setFeeTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingYears, setLoadingYears] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
   const [classOptions, setClassOptions] = useState([]);
   const [sectionOptions, setSectionOptions] = useState([]);
+  const [classSectionMap, setClassSectionMap] = useState({});
   const [academicYearOptions, setAcademicYearOptions] = useState([]);
-  const [academicYears, setAcademicYears] = useState([]);
+  const [installmentOptions, setInstallmentOptions] = useState([]);
+  const [paymentModeOptions, setPaymentModeOptions] = useState([]);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
-  const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [selectedYears, setSelectedYears] = useState([]);
+  const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
+  const [selectedInstallments, setSelectedInstallments] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState('all');
+  const [viewMode, setViewMode] = useState('net');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Payment Mode', 'Status'];
+  const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment', 'Type of Fees'];
+
   const pageShowOptions = [
     { value: 'all', label: 'All' },
     { value: 10, label: '10' },
@@ -1027,10 +891,15 @@ const BoardExamFees = () => {
     { value: 30, label: '30' },
   ];
 
+  const viewModeOptions = [
+    { value: 'net', label: 'Net' },
+    { value: 'gross', label: 'Gross' },
+  ];
+
   const formatAcademicYear = (year) => {
     if (!year) return '-';
     const [startYear, endYear] = year.split('-');
-    return `${startYear}-${endYear.slice(-2)}`;
+    return `${startYear}-${endYear?.slice(-2) || ''}`;
   };
 
   useEffect(() => {
@@ -1043,42 +912,6 @@ const BoardExamFees = () => {
   }, []);
 
   useEffect(() => {
-    const fetchAcademicYears = async () => {
-      try {
-        setLoadingYears(true);
-        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
-        if (!response.hasError && response.data?.data) {
-          const years = response.data.data.map((item) => item.academicYear).sort((a, b) => a.localeCompare(b));
-          setAcademicYears(years);
-          setAcademicYearOptions(
-            years.map((year) => ({
-              value: year,
-              label: formatAcademicYear(year),
-            }))
-          );
-          if (!selectedAcademicYear && years.length > 0) {
-            const latestYear = years[years.length - 1];
-            setSelectedAcademicYear(latestYear);
-            localStorage.setItem('selectedAcademicYear', latestYear);
-            setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
-          }
-        } else {
-          toast.error('No academic years found.');
-        }
-      } catch (err) {
-        toast.error('Error fetching academic years.');
-        console.error(err);
-      } finally {
-        setLoadingYears(false);
-      }
-    };
-
-    if (schoolId) {
-      fetchAcademicYears();
-    }
-  }, [schoolId]);
-
-  useEffect(() => {
     const loadSchoolData = async () => {
       try {
         const { school, logoSrc } = await fetchSchoolData(schoolId);
@@ -1086,55 +919,13 @@ const BoardExamFees = () => {
         setLogoSrc(logoSrc);
       } catch (error) {
         console.error('Failed to fetch school data:', error);
+        toast.error('Failed to fetch school data.');
       }
     };
     if (schoolId) {
       loadSchoolData();
     }
   }, [schoolId]);
-
-  useEffect(() => {
-    if (!schoolId) return;
-    const yearsToFetch = selectedYears.length > 0
-      ? selectedYears.map((year) => year.value)
-      : [selectedAcademicYear];
-    if (yearsToFetch[0]) {
-      fetchFeeData(yearsToFetch);
-    }
-  }, [schoolId, selectedAcademicYear, selectedYears]);
-
-  useEffect(() => {
-    if (Object.keys(classSectionMap).length === 0) {
-      const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
-      setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
-      if (selectedClasses.length === 0) {
-        setSelectedSections([]);
-      }
-      return;
-    }
-
-    let validSections = new Set();
-    if (selectedClasses.length === 0) {
-      Object.values(classSectionMap).forEach(sectionSet => {
-        sectionSet.forEach(section => validSections.add(section));
-      });
-      setSelectedSections([]);
-    } else {
-      selectedClasses.forEach(cls => {
-        const sectionsForClass = classSectionMap[cls.value] || new Set();
-        sectionsForClass.forEach(section => validSections.add(section));
-      });
-    }
-
-    const newSectionOptions = Array.from(validSections).map(sec => ({ value: sec, label: sec }));
-    setSectionOptions(newSectionOptions);
-
-    const validSectionValues = new Set(newSectionOptions.map(opt => opt.value));
-    const updatedSelectedSections = selectedSections.filter(sec => validSectionValues.has(sec.value));
-    if (updatedSelectedSections.length !== selectedSections.length) {
-      setSelectedSections(updatedSelectedSections);
-    }
-  }, [selectedClasses, classSectionMap, feeData]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -1151,135 +942,181 @@ const BoardExamFees = () => {
   const fetchFeeData = async (years) => {
     setIsLoading(true);
     try {
-      const classSectionMapping = {};
       const promises = years.map((year) =>
-        getAPI(`/get-all-data-board-exam?schoolId=${schoolId}&academicYear=${year}`)
+        getAPI(`/get-all-data-studentwise-fees?schoolId=${schoolId}&academicYear=${year}`)
       );
       const responses = await Promise.all(promises);
       const unifiedData = responses.flatMap((res, index) => {
-        if (!res?.data?.data?.[years[index]]) {
+        if (!res?.data?.data) {
           console.warn(`No data found for year ${years[index]}`);
           return [];
         }
-        return res.data.data[years[index]].map((record) => {
-          const className = record.className || '-';
-          const sectionName = record.sectionName || '-';
-          if (className !== '-' && sectionName !== '-') {
-            if (!classSectionMapping[className]) {
-              classSectionMapping[className] = new Set();
-            }
-            classSectionMapping[className].add(sectionName);
-          }
+        return res.data.data.map((record) => {
+          const totalPaidFee = Object.values(record.feeTypes || {}).reduce(
+            (sum, amount) => sum + (Number(amount) || 0),
+            0
+          ) + (Number(record.fineAmount) || 0) + (Number(record.excessAmount) || 0);
           return {
-            recordType: record.recordType || 'Board Exam Fee',
-            academicYear: years[index],
-            admissionNumber: record.admissionNumber || '-',
-            studentName: `${record.firstName || '-'} ${record.lastName || '-'}`.trim() || '-',
-            className,
-            sectionName,
-            boardExamFeesDate: record.boardExamFeesDate || '-',
-            boardExamFeesCancelledDate: record.boardExamFeesCancelledDate || '-',
-            boardExamFeesPaymentMode: record.boardExamFeesPaymentMode || '-',
-            boardExamFeesTransactionNo: record.boardExamFeesTransactionNo || '-',
-            boardExamFeesReceiptNo: record.boardExamFeesReceiptNo || '-',
-            boardExamFeesStatus: Array.isArray(record.boardExamFeesStatus) ? record.boardExamFeesStatus : (record.boardExamFeesStatus || 'Paid').split(',').map(s => s.trim()).filter(s => s),
-            boardExamFeesDue: record.boardExamFeesDue || '0',
-            boardExamFeesPaid: record.boardExamFeesPaid || '0',
-            boardExamFeesConcession: record.boardExamFeesConcession || '0',
-            boardExamFeesRefundAmount: record.boardExamFeesRefundAmount || '0',
-            boardExamFeesCancelledAmount: record.boardExamFeesCancelledAmount || '0',
+            ...record,
+            academicYear: record.academicYear,
+            feesBreakdown: record.feeTypes || {},
+            totalPaidFee,
+            studentName: record.studentName || '-',
+            className: record.className || '-',
+            sectionName: record.sectionName || '-',
+            installmentName: record.installmentName || '-',
+            receiptNumber: record.receiptNumber || '-',
+            studentAdmissionNumber: record.studentAdmissionNumber || '-',
           };
         });
       });
 
-      unifiedData.sort((a, b) => {
-        const dateA = a.boardExamFeesStatus.includes('Cancelled') || a.boardExamFeesStatus.includes('Cheque Return')
-          ? (a.boardExamFeesCancelledDate !== '-' ? a.boardExamFeesCancelledDate : a.boardExamFeesDate)
-          : a.boardExamFeesDate || '-';
-        const dateB = b.boardExamFeesStatus.includes('Cancelled') || b.boardExamFeesStatus.includes('Cheque Return')
-          ? (b.boardExamFeesCancelledDate !== '-' ? b.boardExamFeesCancelledDate : b.boardExamFeesDate)
-          : b.boardExamFeesDate || '-';
-        const admNoA = a.admissionNumber || '-';
-        const admNoB = b.admissionNumber || '-';
-        const statusA = a.boardExamFeesStatus[0];
-        const statusB = b.boardExamFeesStatus[0];
+      const cancellationRecords = unifiedData
+        .filter((record) => record.cancelledDate)
+        .map((record) => {
+          const negativeFeesBreakdown = {};
+          Object.keys(record.feesBreakdown).forEach((key) => {
+            negativeFeesBreakdown[key] = -(Number(record.feesBreakdown[key]) || 0);
+          });
+          return {
+            ...record,
+            paymentDate: record.cancelledDate,
+            feesBreakdown: negativeFeesBreakdown,
+            fineAmount: -(Number(record.fineAmount) || 0),
+            excessAmount: -(Number(record.excessAmount) || 0),
+            totalPaidFee: -Math.abs(record.totalPaidFee || 0),
+            status: 'Cancelled',
+          };
+        });
 
-        if (dateA !== dateB) return dateA.localeCompare(dateB);
-        if (statusA === 'Paid' && statusB !== 'Paid') return -1;
-        if (statusB === 'Paid' && statusA !== 'Paid') return 1;
-        return admNoA.localeCompare(admNoB);
+      const nonCancelledRecords = unifiedData.map((record) => ({
+        ...record,
+        cancelledDate: null,
+      }));
+
+      const combinedData = [...nonCancelledRecords, ...cancellationRecords].sort((a, b) => {
+        const dateA = new Date(a.paymentDate.split('-').reverse().join('-'));
+        const dateB = new Date(b.paymentDate.split('-').reverse().join('-'));
+        if (dateA !== dateB) return dateA - dateB;
+        if (a.academicYear !== b.academicYear) return a.academicYear.localeCompare(b.academicYear);
+        if (a.paymentMode !== b.paymentMode) return a.paymentMode.localeCompare(b.paymentMode);
+        const isACancellation = a.cancelledDate || Object.values(a.feesBreakdown).some(amount => Number(amount) < 0);
+        const isBCancellation = b.cancelledDate || Object.values(b.feesBreakdown).some(amount => Number(amount) < 0);
+        if (isACancellation !== isBCancellation) return isACancellation ? 1 : -1;
+        return 0;
       });
 
-      setFeeData(unifiedData);
-      setClassSectionMap(classSectionMapping);
+      setFeeData(combinedData);
 
-      const modes = new Set();
-      const statuses = new Set();
-      unifiedData.forEach((record) => {
-        if (record.boardExamFeesPaymentMode) modes.add(record.boardExamFeesPaymentMode);
-        if (record.boardExamFeesStatus) {
-          record.boardExamFeesStatus.forEach((status) => statuses.add(status));
+      const allFeeTypes = responses
+        .flatMap((res) => res?.data?.feeTypes || [])
+        .filter((type) => type && typeof type === 'string')
+        .filter((type, index, self) => self.indexOf(type) === index)
+        .sort();
+
+      setFeeTypes(allFeeTypes);
+      if (rowsPerPage === 'all' && combinedData.length > 0) {
+        setRowsPerPage(combinedData.length);
+      }
+
+    
+      const uniqueClasses = [...new Set(combinedData
+        .map(record => record.className)
+        .filter(className => className && className !== '-'))]
+        .map(className => ({ value: className, label: className }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+
+      const uniqueSections = [...new Set(combinedData
+        .map(record => record.sectionName)
+        .filter(sectionName => sectionName && sectionName !== '-'))]
+        .map(sectionName => ({ value: sectionName, label: sectionName }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+
+      const classSectionMapping = {};
+      combinedData.forEach((record) => {
+        const className = record.className && record.className !== '-' ? record.className : null;
+        const sectionName = record.sectionName && record.sectionName !== '-' ? record.sectionName : null;
+        if (className && sectionName) {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = [];
+          }
+          if (!classSectionMapping[className].some((sec) => sec.value === sectionName)) {
+            classSectionMapping[className].push({ value: sectionName, label: sectionName });
+          }
         }
       });
-      setPaymentModes(
-        Array.from(modes)
-          .filter((mode) => mode && mode !== '-')
-          .map((mode) => ({ value: mode, label: mode }))
-      );
-      setStatusOptions(
-        Array.from(statuses)
-          .filter((status) => status && status !== '-')
-          .map((status) => ({ value: status, label: status }))
+
+      setClassOptions(uniqueClasses);
+      setSectionOptions(uniqueSections);
+      setClassSectionMap(classSectionMapping);
+
+      const filterOptions = responses[0]?.data?.filterOptions || {};
+      setInstallmentOptions(filterOptions.installmentOptions || []);
+      setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+      setAcademicYearOptions(
+        filterOptions.academicYearOptions?.length > 0
+          ? filterOptions.academicYearOptions.filter((opt) => opt && opt.value && opt.label)
+          : years.map((year) => ({ value: year, label: formatAcademicYear(year) }))
       );
 
-      const classes = new Set(unifiedData.map((record) => record.className).filter((cls) => cls && cls !== '-'));
-      setClassOptions(
-        Array.from(classes).map((cls) => ({ value: cls, label: cls }))
-      );
-
-      const sections = new Set(unifiedData.map((record) => record.sectionName).filter((sec) => sec && sec !== '-'));
-      setSectionOptions(
-        Array.from(sections).map((sec) => ({ value: sec, label: sec }))
-      );
-
-      if (rowsPerPage === 'all' && unifiedData.length > 0) {
-        setRowsPerPage(unifiedData.length);
+      if (!selectedAcademicYear && filterOptions.academicYearOptions?.length > 0) {
+        const latestYear = filterOptions.academicYearOptions[filterOptions.academicYearOptions.length - 1].value;
+        setSelectedAcademicYear(latestYear);
+        setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
       }
     } catch (error) {
-      toast.error('Error initializing data: ' + error.message);
+      toast.error('Error fetching data: ' + error.message);
       setFeeData([]);
-      setClassSectionMap({});
-      setPaymentModes([]);
-      setStatusOptions([]);
+      setFeeTypes([]);
       setClassOptions([]);
       setSectionOptions([]);
+      setClassSectionMap({});
+      setInstallmentOptions([]);
+      setPaymentModeOptions([]);
+      setAcademicYearOptions([]);
     } finally {
       setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    if (!schoolId || !selectedAcademicYear) return;
+    const yearsToFetch = selectedYears.length > 0
+      ? selectedYears.map((year) => year.value)
+      : [selectedAcademicYear];
+    fetchFeeData(yearsToFetch);
+  }, [schoolId, selectedAcademicYear, selectedYears]);
+
   const handleSelectChange = (selectedOptions, { name }) => {
+    const selected = selectedOptions || [];
     if (name === 'academicYear') {
-      setSelectedYears(selectedOptions || []);
+      setSelectedYears(selected);
       setCurrentPage(1);
     } else if (name === 'paymentMode') {
-      setSelectedPaymentModes(selectedOptions || []);
+      setSelectedPaymentModes(selected);
       setCurrentPage(1);
     } else if (name === 'class') {
-      setSelectedClasses(selectedOptions || []);
+      setSelectedClasses(selected);
+      setSelectedSections([]); // Clear sections when classes change
       setCurrentPage(1);
     } else if (name === 'section') {
-      setSelectedSections(selectedOptions || []);
+      setSelectedSections(selected);
       setCurrentPage(1);
-    } else if (name === 'status') {
-      setSelectedStatuses(selectedOptions || []);
+    } else if (name === 'feeType') {
+      setSelectedFeeTypes(selected);
+      setCurrentPage(1);
+    } else if (name === 'installment') {
+      setSelectedInstallments(selected);
       setCurrentPage(1);
     } else if (name === 'rowsPerPage') {
       if (selectedOptions?.value === 'all') {
         setRowsPerPage(feeData.length || 'all');
       } else {
-        setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
+        setRowsPerPage(selectedOptions ? selectedOptions.value : 'all');
       }
+      setCurrentPage(1);
+    } else if (name === 'viewMode') {
+      setViewMode(selectedOptions ? selectedOptions.value : 'net');
       setCurrentPage(1);
     }
   };
@@ -1290,6 +1127,7 @@ const BoardExamFees = () => {
       ? selectedYears.map((year) => year.value)
       : [selectedAcademicYear];
     fetchFeeData(yearsToFetch);
+    setCurrentPage(1);
   };
 
   const resetFilters = () => {
@@ -1297,16 +1135,17 @@ const BoardExamFees = () => {
     setSelectedPaymentModes([]);
     setSelectedClasses([]);
     setSelectedSections([]);
-    setSelectedStatuses([]);
+    setSelectedFeeTypes([]);
+    setSelectedInstallments([]);
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
     setCurrentPage(1);
-    setRowsPerPage('all');
+    setViewMode('net');
     fetchFeeData([selectedAcademicYear]);
   };
 
-  const toggleFilterPanel = () => {
+  const toggleFilter = () => {
     setShowFilterPanel(!showFilterPanel);
     setShowExportDropdown(false);
   };
@@ -1316,157 +1155,238 @@ const BoardExamFees = () => {
     setShowFilterPanel(false);
   };
 
-  const calculateNetFees = (record) => {
-    const paid = parseFloat(record.boardExamFeesPaid || 0);
-    const refund = parseFloat(record.boardExamFeesRefundAmount || 0);
-    const cancelled = parseFloat(record.boardExamFeesCancelledAmount || 0);
-    const refundOrCancelled = refund > 0 ? refund : cancelled;
-    const netFees = paid - refundOrCancelled;
-    return netFees === 0 ? '0.00' : netFees.toFixed(2);
-  };
-
-  const getFieldValue = (record, field) => {
-    const fieldId = field.id;
-    const isCancelledOrChequeReturn = record.boardExamFeesStatus.includes('Cancelled') || record.boardExamFeesStatus.includes('Cheque Return');
-    if (fieldId === 'academicYear') {
-      return formatAcademicYear(record[fieldId]) || '-';
-    } else if (fieldId === 'studentName') {
-      return record.studentName || '-';
-    } else if (fieldId === 'admissionNumber') {
-      return record.admissionNumber || '-';
-    } else if (fieldId === 'className') {
-      return record.className || '-';
-    } else if (fieldId === 'sectionName') {
-      return record.sectionName || '-';
-    } else if (fieldId === 'boardExamFeesDate') {
-      if (isCancelledOrChequeReturn) {
-        const cancelledDate = record.boardExamFeesCancelledDate;
-        if (cancelledDate && /^\d{2}-\d{2}-\d{4}$/.test(cancelledDate)) {
-          return cancelledDate;
-        }
-        return record.boardExamFeesDate || '-';
-      }
-      return record.boardExamFeesDate || '-';
-    } else if (fieldId === 'boardExamFeesStatus') {
-      return record.boardExamFeesStatus.join(', ') || '-';
-    } else if (fieldId === 'boardExamFeesRefundAmount') {
-      const refund = parseFloat(record.boardExamFeesRefundAmount || 0);
-      const cancelled = parseFloat(record.boardExamFeesCancelledAmount || 0);
-      const total = refund > 0 ? refund : cancelled;
-      return total === 0 ? '0.00' : total.toFixed(2);
-    } else if (fieldId === 'netFees') {
-      return calculateNetFees(record);
-    } else if (fieldId === 'balance') {
-      return calculateBalance(record);
-    } else if (['boardExamFeesDue', 'boardExamFeesPaid', 'boardExamFeesConcession'].includes(fieldId)) {
-      const value = parseFloat(record[fieldId] || 0);
-      return value === 0 ? '0.00' : value.toFixed(2);
-    } else {
-      return record[fieldId] || '-';
+  const getFilteredSectionOptions = () => {
+    if (selectedClasses.length === 0) {
+      return sectionOptions;
     }
+    const sections = selectedClasses
+      .flatMap((cls) => classSectionMap[cls.value] || [])
+      .filter((sec, index, self) => self.findIndex((s) => s.value === sec.value) === index);
+    return sections.length > 0 ? sections : sectionOptions;
   };
 
-  const calculateBalance = (record) => {
-    const due = parseFloat(record.boardExamFeesDue || 0);
-    const concession = parseFloat(record.boardExamFeesConcession || 0);
-    const paid = parseFloat(record.boardExamFeesPaid || 0);
-    const refund = parseFloat(record.boardExamFeesRefundAmount || 0);
-    const cancelled = parseFloat(record.boardExamFeesCancelledAmount || 0);
-    const refundOrCancelled = refund > 0 ? refund : cancelled;
-    const balance = due - concession - paid + refundOrCancelled;
-    return balance === 0 ? '0.00' : balance.toFixed(2);
-  };
-
-  const filteredData = feeData.filter((record) => {
-    const hasValidAdmissionNo = record.admissionNumber && record.admissionNumber !== '-';
-    const hasFeesDue = parseFloat(record.boardExamFeesDue || 0) > 0;
-    if (!hasValidAdmissionNo || !hasFeesDue) return false;
-
+  const filteredData = feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
-      ? Object.values(record).some((value) =>
-          value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+      ? String(row.paymentDate || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.studentAdmissionNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.studentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.paymentMode || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.className || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.sectionName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.academicYear || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.installmentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(row.receiptNumber || '').toLowerCase().includes(searchTerm.toLowerCase())
       : true;
 
     const matchesPaymentMode =
       selectedPaymentModes.length === 0 ||
-      selectedPaymentModes.some((mode) => record.boardExamFeesPaymentMode === mode.value);
-
-    const matchesClass =
-      selectedClasses.length === 0 ||
-      selectedClasses.some((cls) => record.className === cls.value);
-
-    const matchesSection =
-      selectedSections.length === 0 ||
-      selectedSections.some((sec) => record.sectionName === sec.value);
+      selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
 
     const matchesYear =
       selectedYears.length === 0 ||
-      selectedYears.some((year) => record.academicYear === year.value);
-
-    const matchesStatus =
-      selectedStatuses.length === 0 ||
-      selectedStatuses.some((status) => record.boardExamFeesStatus.includes(status.value));
+      selectedYears.some((year) => row.academicYear === year.value);
 
     const matchesDate =
       (!startDate && !endDate) ||
-      ((record.boardExamFeesDate !== '-' || record.boardExamFeesCancelledDate !== '-') &&
-        (() => {
-          const dateString = record.boardExamFeesStatus.includes('Cancelled') || record.boardExamFeesStatus.includes('Cheque Return')
-            ? (record.boardExamFeesCancelledDate !== '-' ? record.boardExamFeesCancelledDate : record.boardExamFeesDate)
-            : record.boardExamFeesDate;
-          if (!dateString || !/^\d{2}-\d{2}-\d{4}$/.test(dateString)) return false;
-          const [day, month, year] = dateString.split('-');
-          const recordDate = new Date(`${year}-${month}-${day}`);
-          if (isNaN(recordDate.getTime())) return false;
-          const start = startDate ? new Date(startDate) : null;
-          const end = endDate ? new Date(endDate) : null;
-          return (!start || recordDate >= start) && (!end || recordDate <= end);
-        })());
+      (() => {
+        const [day, month, year] = row.paymentDate.split('-');
+        const recordDate = new Date(`${year}-${month}-${day}`);
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+        return (!start || recordDate >= start) && (!end || recordDate <= end);
+      })();
+
+    const matchesFeeType =
+      selectedFeeTypes.length === 0 ||
+      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) !== 0);
+
+    const matchesClass =
+      selectedClasses.length === 0 ||
+      selectedClasses.some((cls) => row.className === cls.value || row.className === '-');
+
+    const matchesSection =
+      selectedSections.length === 0 ||
+      selectedSections.some((sec) => row.sectionName === sec.value || row.sectionName === '-');
+
+    const matchesInstallment =
+      selectedInstallments.length === 0 ||
+      selectedInstallments.some((inst) => row.installmentName === inst.value || row.installmentName === '-');
+
+    const matchesViewMode =
+      viewMode === 'net' ||
+      (viewMode === 'gross' && !row.cancelledDate && !Object.values(row.feesBreakdown).some(amount => Number(amount) < 0));
 
     return (
       matchesSearchTerm &&
       matchesPaymentMode &&
+      matchesYear &&
+      matchesDate &&
+      matchesFeeType &&
       matchesClass &&
       matchesSection &&
-      matchesYear &&
-      matchesStatus &&
-      matchesDate
+      matchesInstallment &&
+      matchesViewMode
     );
   });
 
-  const groupedByDate = filteredData.reduce((acc, record) => {
-    const date = record.boardExamFeesStatus.includes('Cancelled') || record.boardExamFeesStatus.includes('Cheque Return')
-      ? (record.boardExamFeesCancelledDate !== '-' ? record.boardExamFeesCancelledDate : record.boardExamFeesDate)
-      : record.boardExamFeesDate;
-    if (!acc[date]) acc[date] = [];
-    acc[date].push(record);
+  const groupedData = filteredData.reduce((acc, record, index) => {
+    const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
+    const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${record.studentAdmissionNumber}_${record.studentName}_${record.className}_${record.sectionName}_${record.installmentName}_${record.receiptNumber}_${isCancellation ? 'cancel' : 'regular'}`;
+    if (!acc[key]) {
+      acc[key] = {
+        aggregated: {
+          paymentDate: record.paymentDate,
+          academicYear: record.academicYear,
+          paymentMode: record.paymentMode,
+          studentAdmissionNumber: record.studentAdmissionNumber,
+          studentName: record.studentName,
+          className: record.className,
+          sectionName: record.sectionName,
+          installmentName: record.installmentName,
+          receiptNumber: record.receiptNumber,
+          feesBreakdown: {},
+          fineAmount: 0,
+          excessAmount: 0,
+          totalPaidFee: 0,
+          status: isCancellation ? 'Cancelled' : record.status || 'Regular',
+        },
+        count: 0,
+      };
+    }
+    Object.keys(record.feesBreakdown).forEach((type) => {
+      acc[key].aggregated.feesBreakdown[type] =
+        (acc[key].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
+    });
+    acc[key].aggregated.fineAmount += Number(record.fineAmount) || 0;
+    acc[key].aggregated.excessAmount += Number(record.excessAmount) || 0;
+    acc[key].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
+    acc[key].count += 1;
     return acc;
   }, {});
 
-  const totals = filteredData.reduce(
-    (acc, record) => {
-      const due = parseFloat(record.boardExamFeesDue || 0);
-      const paid = parseFloat(record.boardExamFeesPaid || 0);
-      const concession = parseFloat(record.boardExamFeesConcession || 0);
-      const refund = parseFloat(record.boardExamFeesRefundAmount || 0);
-      const cancelled = parseFloat(record.boardExamFeesCancelledAmount || 0);
-      const refundOrCancelled = refund > 0 ? refund : cancelled;
-      const netFees = paid - refundOrCancelled;
-      return {
-        feesDue: acc.feesDue + due,
-        feesPaid: acc.feesPaid + paid,
-        refund: acc.refund + refundOrCancelled,
-        netFees: acc.netFees + netFees,
-        concession: acc.concession + concession,
-        balance: acc.balance + (due - concession - paid + refundOrCancelled),
+  const dateWiseTotals = filteredData.reduce((acc, record) => {
+    const dateKey = record.paymentDate;
+    if (!acc[dateKey]) {
+      acc[dateKey] = {
+        paymentDate: record.paymentDate,
+        feesBreakdown: {},
+        fineAmount: 0,
+        excessAmount: 0,
+        totalPaidFee: 0,
       };
+    }
+    Object.keys(record.feesBreakdown).forEach((type) => {
+      acc[dateKey].feesBreakdown[type] =
+        (acc[dateKey].feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
+    });
+    acc[dateKey].fineAmount += Number(record.fineAmount) || 0;
+    acc[dateKey].excessAmount += Number(record.excessAmount) || 0;
+    acc[dateKey].totalPaidFee += Number(record.totalPaidFee) || 0;
+    return acc;
+  }, {});
+
+  const groupedDataArray = [
+    ...Object.entries(groupedData).map(([key, { aggregated, count }], idx) => ({
+      record: aggregated,
+      index: idx,
+      isFirstInGroup: true,
+      rowspan: 1,
+      isTotalRow: false,
+    })),
+    ...Object.entries(dateWiseTotals).map(([date, total], idx) => ({
+      record: {
+        ...total,
+        paymentDate: `${total.paymentDate}-Total`,
+        academicYear: '',
+        paymentMode: '',
+        studentAdmissionNumber: '',
+        studentName: '',
+        className: '',
+        sectionName: '',
+        installmentName: '',
+        receiptNumber: '',
+      },
+      index: idx + Object.keys(groupedData).length,
+      isFirstInGroup: true,
+      rowspan: 1,
+      isTotalRow: true,
+    })),
+  ].sort((a, b) => {
+    const dateA = a.record.paymentDate.includes('-Total')
+      ? a.record.paymentDate.replace('-Total', '')
+      : a.record.paymentDate;
+    const dateB = b.record.paymentDate.includes('-Total')
+      ? b.record.paymentDate.replace('-Total', '')
+      : b.record.paymentDate;
+    const dateComparison = new Date(dateA.split('-').reverse().join('-')) - new Date(dateB.split('-').reverse().join('-'));
+    if (dateComparison !== 0) return dateComparison;
+    if (a.isTotalRow !== b.isTotalRow) return a.isTotalRow ? 1 : -1;
+    return a.index - b.index;
+  });
+
+  const totals = filteredData.reduce(
+    (acc, row) => {
+      acc.totalPaidFee = (acc.totalPaidFee || 0) + (row.totalPaidFee || 0);
+      acc.fineAmount = (acc.fineAmount || 0) + (row.fineAmount || 0);
+      acc.excessAmount = (acc.excessAmount || 0) + (row.excessAmount || 0);
+      const displayTypes = selectedFeeTypes.length > 0
+        ? selectedFeeTypes.map((type) => type.value)
+        : feeTypes;
+      displayTypes.forEach((type) => {
+        acc[type] = (acc[type] || 0) + (row.feesBreakdown[type] || 0);
+      });
+      return acc;
     },
-    { feesDue: 0, feesPaid: 0, refund: 0, netFees: 0, concession: 0, balance: 0 }
+    { totalPaidFee: 0, fineAmount: 0, excessAmount: 0 }
   );
 
-  const totalRecords = Object.keys(groupedByDate).reduce((sum, date) => sum + groupedByDate[date].length, 0);
-  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
+  const displayedFeeTypes = selectedFeeTypes.length > 0
+    ? selectedFeeTypes.map((type) => type.value)
+    : feeTypes;
+
+  const headerMapping = {
+    paymentDate: 'Date',
+    academicYear: 'Academic Year',
+    studentAdmissionNumber: 'Admission No.',
+    studentName: 'Name',
+    className: 'Class',
+    sectionName: 'Section',
+    installmentName: 'Installment',
+    receiptNumber: 'Receipt No.',
+    paymentMode: 'Payment Mode',
+    ...Object.fromEntries(displayedFeeTypes.map((type) => [type, type])),
+    ...(selectedFeeTypes.length === 0
+      ? {
+          fineAmount: 'Fine Amount',
+          excessAmount: 'Excess Amount',
+          totalPaidFee: 'Fees Paid',
+        }
+      : {}),
+  };
+
+  const tableFields = Object.keys(headerMapping).map((key) => ({
+    id: key,
+    label: headerMapping[key],
+    isNumeric: ['totalPaidFee', 'fineAmount', 'excessAmount', ...displayedFeeTypes].includes(key),
+  }));
+
+  const getFieldValue = (record, field) => {
+    const fieldId = field.id;
+    if (fieldId === 'paymentDate') {
+      return record[fieldId] || '-';
+    } else if (fieldId === 'academicYear') {
+      return formatAcademicYear(record[fieldId]) || '-';
+    } else if (fieldId === 'paymentMode' || fieldId === 'studentAdmissionNumber' || fieldId === 'studentName' || fieldId === 'className' || fieldId === 'sectionName' || fieldId === 'installmentName' || fieldId === 'receiptNumber') {
+      return record[fieldId] || '-';
+    } else if (fieldId === 'totalPaidFee' || fieldId === 'fineAmount' || fieldId === 'excessAmount') {
+      return (record[fieldId] || 0).toFixed(2);
+    } else {
+      return (record.feesBreakdown[fieldId] || 0).toFixed(2);
+    }
+  };
+
+  const totalRecords = groupedDataArray.length;
+  const totalPages = Math.ceil(totalRecords / (rowsPerPage === 'all' ? totalRecords : rowsPerPage));
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -1478,25 +1398,9 @@ const BoardExamFees = () => {
   }
 
   const paginatedData = () => {
-    const sortedDates = Object.keys(groupedByDate).sort();
-    let currentCount = 0;
-    const startIndex = rowsPerPage === 'all' ? 0 : (currentPage - 1) * rowsPerPage;
-    const endIndex = rowsPerPage === 'all' ? totalRecords : startIndex + rowsPerPage;
-    const paginated = [];
-
-    for (const date of sortedDates) {
-      const records = groupedByDate[date];
-      for (const record of records) {
-        if (currentCount >= startIndex && currentCount < endIndex) {
-          paginated.push({ date, record });
-        }
-        currentCount++;
-        if (currentCount >= endIndex) break;
-      }
-      if (currentCount >= endIndex) break;
-    }
-
-    return paginated;
+    const startIndex = (currentPage - 1) * (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
+    const endIndex = startIndex + (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
+    return groupedDataArray.slice(startIndex, endIndex);
   };
 
   const handlePageClick = (page) => {
@@ -1514,6 +1418,8 @@ const BoardExamFees = () => {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  const nonNumericColumnsCount = tableFields.filter((field) => !field.isNumeric).length;
 
   return (
     <div className="container">
@@ -1536,7 +1442,7 @@ const BoardExamFees = () => {
                     />
                   </div>
                   <div className="col-md-2"></div>
-                  <div className="col-md-5 px-0 d-flex align-content-center justify-content-end">
+                  <div className="col-md-5 px-0 d-flex align-items-center justify-content-end">
                     <Select
                       isClearable
                       name="rowsPerPage"
@@ -1546,10 +1452,18 @@ const BoardExamFees = () => {
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
+                    <Select
+                      name="viewMode"
+                      placeholder="View Mode"
+                      options={viewModeOptions}
+                      value={viewModeOptions.find((option) => option.value === viewMode)}
+                      onChange={(selected, action) => handleSelectChange(selected, action)}
+                      className="email-select border border-dark me-lg-2"
+                    />
                     <div
                       className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
-                      onClick={toggleFilterPanel}
+                      onClick={toggleFilter}
                     >
                       <FaFilter />
                     </div>
@@ -1564,7 +1478,7 @@ const BoardExamFees = () => {
                       </div>
                       {showExportDropdown && (
                         <div
-                          className="position-absolute bg-white border mr-2 mt-2 border-dark rounded shadow"
+                          className="position-absolute bg-white border mx-2 mr-2 mt-2 border-dark rounded shadow"
                           style={{
                             top: '100%',
                             right: 0,
@@ -1583,22 +1497,15 @@ const BoardExamFees = () => {
                                   tableFields,
                                   headerMapping,
                                   getFieldValue,
-                                  calculateBalance,
-                                  {
-                                    feesDue: totals.feesDue.toFixed(2),
-                                    feesPaid: totals.feesPaid.toFixed(2),
-                                    refund: totals.refund.toFixed(2),
-                                    netFees: totals.netFees.toFixed(2),
-                                    concession: totals.concession.toFixed(2),
-                                    balance: totals.balance.toFixed(2),
-                                  },
+                                  totals,
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
-                                    : selectedAcademicYear
+                                    : selectedAcademicYear,
+                                  viewMode
                                 );
                               } catch (err) {
-                                toast.error("Export to Excel failed.");
+                                toast.error('Export to Excel failed.');
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -1618,24 +1525,17 @@ const BoardExamFees = () => {
                                   tableFields,
                                   headerMapping,
                                   getFieldValue,
-                                  calculateBalance,
-                                  {
-                                    feesDue: totals.feesDue.toFixed(2),
-                                    feesPaid: totals.feesPaid.toFixed(2),
-                                    refund: totals.refund.toFixed(2),
-                                    netFees: totals.netFees.toFixed(2),
-                                    concession: totals.concession.toFixed(2),
-                                    balance: totals.balance.toFixed(2),
-                                  },
+                                  totals,
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
                                     : selectedAcademicYear,
                                   school,
-                                  logoSrc
+                                  logoSrc,
+                                  viewMode
                                 );
                               } catch (err) {
-                                toast.error("Export to PDF failed.");
+                                toast.error('Export to PDF failed.');
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -1695,14 +1595,13 @@ const BoardExamFees = () => {
                             </div>
                           </div>
                         )}
-
                         {activeTab === 'Payment Mode' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
                                 isMulti
                                 name="paymentMode"
-                                options={paymentModes}
+                                options={paymentModeOptions}
                                 value={selectedPaymentModes}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Payment Modes"
@@ -1711,7 +1610,6 @@ const BoardExamFees = () => {
                             </div>
                           </div>
                         )}
-
                         {activeTab === 'Class & Section' && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-4">
@@ -1729,33 +1627,16 @@ const BoardExamFees = () => {
                               <CreatableSelect
                                 isMulti
                                 name="section"
-                                options={sectionOptions}
+                                options={getFilteredSectionOptions()}
                                 value={selectedSections}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Sections"
                                 className="mt-2"
-                                isDisabled={selectedClasses.length === 0}
+                                isDisabled={selectedClasses.length === 0 && sectionOptions.length === 0}
                               />
                             </div>
                           </div>
                         )}
-
-                        {activeTab === 'Status' && (
-                          <div className="row d-lg-flex justify-content-center">
-                            <div className="col-md-8">
-                              <CreatableSelect
-                                isMulti
-                                name="status"
-                                options={statusOptions}
-                                value={selectedStatuses}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Statuses"
-                                className="mt-2"
-                              />
-                            </div>
-                          </div>
-                        )}
-
                         {activeTab === 'Academic Year' && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
@@ -1766,6 +1647,36 @@ const BoardExamFees = () => {
                                 value={selectedYears}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Academic Years"
+                                className="mt-2"
+                              />
+                            </div>
+                          </div>
+                        )}
+                        {activeTab === 'Installment' && (
+                          <div className="row d-lg-flex justify-content-center">
+                            <div className="col-md-8">
+                              <CreatableSelect
+                                isMulti
+                                name="installment"
+                                options={installmentOptions}
+                                value={selectedInstallments}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Installments"
+                                className="mt-2"
+                              />
+                            </div>
+                          </div>
+                        )}
+                        {activeTab === 'Type of Fees' && (
+                          <div className="row d-lg-flex justify-content-center">
+                            <div className="col-md-8">
+                              <CreatableSelect
+                                isMulti
+                                name="feeType"
+                                options={feeTypes.map((type) => ({ value: type, label: type }))}
+                                value={selectedFeeTypes}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Fee Types"
                                 className="mt-2"
                               />
                             </div>
@@ -1788,28 +1699,25 @@ const BoardExamFees = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Board Exam Fees Report</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">StudentWise Collection Inc Concession</h2>
                 </div>
               </div>
 
-              {isLoading || loadingYears ? (
+              {isLoading ? (
                 <div className="text-center mt-3">
                   <div className="spinner-border" role="status">
                     <span className="visually-hidden">Loading...</span>
                   </div>
                   <p>Loading data...</p>
                 </div>
-              ) : tableFields.length > 0 ? (
+              ) : tableFields.length > 9 ? (
                 <>
                   <div className="table-responsive pb-4 mt-3">
                     <table className="table text-dark border border-secondary mb-1">
                       <thead>
                         <tr className="payroll-table-header">
                           {tableFields.map((field) => (
-                            <th
-                              key={field.id}
-                              className="text-center align-middle border border-secondary text-nowrap p-2"
-                            >
+                            <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
                               {field.label}
                             </th>
                           ))}
@@ -1817,60 +1725,79 @@ const BoardExamFees = () => {
                       </thead>
                       <tbody>
                         {paginatedData().length > 0 ? (
-                          paginatedData().map(({ date, record }, index) => (
+                          paginatedData().map(({ record, index, isFirstInGroup, rowspan, isTotalRow }, idx) => (
                             <tr
-                              key={`${record.admissionNumber}_${record.academicYear}_${record.boardExamFeesStatus[0]}_${index}`}
-                              className="payroll-table-row"
+                              key={`${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${record.studentAdmissionNumber}_${index}_${idx}`}
+                              className={`payroll-table-row ${isTotalRow ? 'fw-bold' : ''}`}
                             >
-                              {tableFields.map((field) => (
-                                <td
-                                  key={field.id}
-                                  className="text-center align-middle border border-secondary text-nowrap p-2"
-                                >
-                                  {getFieldValue(record, field)}
-                                </td>
-                              ))}
+                              {isTotalRow ? (
+                                <>
+                                  <td
+                                    className="text-right align-middle border border-secondary text-nowrap p-2 fw-bold"
+                                    colSpan={nonNumericColumnsCount}
+                                  >
+                                    {record.paymentDate}
+                                  </td>
+                                  {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                                    <td
+                                      key={field.id}
+                                      className="text-center align-middle border border-secondary text-nowrap p-2 fw-bold"
+                                    >
+                                      {getFieldValue(record, field)}
+                                    </td>
+                                  ))}
+                                </>
+                              ) : isFirstInGroup ? (
+                                <>
+                                  {tableFields.map((field) => (
+                                    <td
+                                      key={field.id}
+                                      className="text-center align-middle border border-secondary text-nowrap p-2"
+                                      rowSpan={rowspan}
+                                    >
+                                      {getFieldValue(record, field)}
+                                    </td>
+                                  ))}
+                                </>
+                              ) : (
+                                <>
+                                  {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                                    <td
+                                      key={field.id}
+                                      className="text-center align-middle border border-secondary text-nowrap p-2"
+                                    >
+                                      {getFieldValue(record, field)}
+                                    </td>
+                                  ))}
+                                </>
+                              )}
                             </tr>
                           ))
                         ) : (
                           <tr>
                             <td colSpan={tableFields.length} className="text-center">
-                              No data matches the selected filters for {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') || formatAcademicYear(selectedAcademicYear)}.
+                              No data matches the selected filters for{' '}
+                              {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
+                                formatAcademicYear(selectedAcademicYear)}.
                             </td>
                           </tr>
                         )}
                       </tbody>
                       <tfoot>
                         <tr className="payroll-table-footer">
-                          <td
-                            colSpan={tableFields.length - 6}
-                            className="text-right border border-secondary p-2"
-                          >
-                            <strong>Total</strong>
+                          <td colSpan={nonNumericColumnsCount} className="text-right border border-secondary p-2">
+                            <strong>Grand Total</strong>
                           </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{totals.feesDue.toFixed(2)}</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{totals.feesPaid.toFixed(2)}</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{totals.refund.toFixed(2)}</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{totals.netFees.toFixed(2)}</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{totals.concession.toFixed(2)}</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{totals.balance.toFixed(2)}</strong>
-                          </td>
+                          {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                            <td key={field.id} className="text-center border border-secondary p-2">
+                              <strong>{(totals[field.id] || 0).toFixed(2)}</strong>
+                            </td>
+                          ))}
                         </tr>
                       </tfoot>
                     </table>
                   </div>
-                  {totalRecords > 0 && rowsPerPage !== 'all' && (
+                  {totalRecords > 0 && (
                     <div className="card-footer border-top">
                       <nav aria-label="Page navigation example">
                         <ul className="pagination justify-content-end mb-0">
@@ -1912,7 +1839,7 @@ const BoardExamFees = () => {
                 </>
               ) : (
                 <div className="text-center mt-3">
-                  <p>No table fields available.</p>
+                  <p>No fee types available.</p>
                 </div>
               )}
             </div>
@@ -1923,4 +1850,4 @@ const BoardExamFees = () => {
   );
 };
 
-export default BoardExamFees;
+export default StudentWiseFeesCollectionIncConcession;

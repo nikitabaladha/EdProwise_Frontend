@@ -196,6 +196,9 @@ const LateandExcessFee = () => {
         return (record.reportStatus || ['Paid']).map((status) => ({
           ...record,
           status,
+          receiptNo: (status === 'Cancelled' || status === 'Cheque Return')
+            ? record.refundReceiptNumbers || '-'
+            : record.receiptNo,
           displayDate: status === 'Paid' ? record.paymentDate : record.cancelledDate,
           lateFees: (status === 'Cancelled' || status === 'Cheque Return') ? -(record.lateFees || 0) : (record.lateFees || 0),
           paidFine: (status === 'Cancelled' || status === 'Cheque Return') ? -(record.paidFine || 0) : (record.paidFine || 0),
@@ -309,15 +312,15 @@ const LateandExcessFee = () => {
   const filteredData = feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
       ? formatDate(row.displayDate).toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.paymentMode || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.chequeNoOrTransactionNo || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.receiptNo || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.status || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+      (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.paymentMode || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.chequeNoOrTransactionNo || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.receiptNo || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.status || '').toLowerCase().includes(String(searchTerm).toLowerCase())
       : true;
 
     const matchesPaymentMode =
@@ -392,7 +395,7 @@ const LateandExcessFee = () => {
       acc.totalLateFees += row.lateFees || 0;
       acc.totalPaidFine += row.paidFine || 0;
       acc.totalExcessFees += row.excessFees || 0;
-      acc.total += (row.paidFine || 0)  + (row.excessFees || 0);
+      acc.total += (row.paidFine || 0) + (row.excessFees || 0);
       return acc;
     },
     { totalLateFees: 0, totalPaidFine: 0, totalExcessFees: 0, total: 0 }
@@ -479,7 +482,7 @@ const LateandExcessFee = () => {
       const value = parseFloat(record[fieldId] || 0);
       return value === 0 ? '0.00' : value.toFixed(2);
     } else if (fieldId === 'total') {
-      const value = (parseFloat(record.paidFine|| 0)  + parseFloat(record.excessFees || 0));
+      const value = (parseFloat(record.paidFine || 0) + parseFloat(record.excessFees || 0));
       return value === 0 ? '0.00' : value.toFixed(2);
     } else {
       return record[fieldId] !== undefined ? record[fieldId] : '-';
@@ -784,7 +787,7 @@ const LateandExcessFee = () => {
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Section</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Installment</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Payment Mode</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Cheque No./Transaction No.</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Cheq/TranNo.</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Receipt No.</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Late Fees</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Excess Fees</th>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -698,18 +697,28 @@ const ReconFeesFeeswise = () => {
     });
 
     let totalLateAndExcess = 0;
+    const lateFeesBreakdown = { lateExcessFee: 0 }; // Initialize breakdown
+    
     filteredLateFees.forEach(item => {
-      totalLateAndExcess += (parseFloat(item.paidFine) || 0) + (parseFloat(item.excessFees) || 0);
+      const lateAmount = (parseFloat(item.paidFine) || 0) + (parseFloat(item.excessFees) || 0);
+      totalLateAndExcess += lateAmount;
+      lateFeesBreakdown.lateExcessFee = totalLateAndExcess;
     });
 
-
-
     setLateAndExcessFees(Number(totalLateAndExcess).toFixed(2));
+    
+    // Update both Late & Excess Fee row and Fees Due -One Time
     setFeeBreakdowns(prev => ({
       ...prev,
       'Late & Excess Fee': {
         lateExcessFee: Number(totalLateAndExcess).toFixed(2),
         total: Number(totalLateAndExcess).toFixed(2)
+      },
+      // Add late fees to Fees Due -One Time under lateExcessFee column
+      'Fees Due -One Time': {
+        ...prev['Fees Due -One Time'],
+        lateExcessFee: (parseFloat(prev['Fees Due -One Time']?.lateExcessFee || 0) + Number(totalLateAndExcess)).toFixed(2),
+        total: (parseFloat(prev['Fees Due -One Time']?.total || 0) + Number(totalLateAndExcess)).toFixed(2)
       }
     }));
   }, [lateFeesData, selectedClasses, selectedSections, selectedInstallment, startDate, endDate]);
@@ -817,6 +826,7 @@ const ReconFeesFeeswise = () => {
     const totalABreakdown = {};
 
 
+    // Include school fees
     if (feeBreakdowns['Fees Due-School Fees']) {
       Object.keys(feeBreakdowns['Fees Due-School Fees']).forEach(key => {
         if (key !== 'total') {
@@ -825,7 +835,7 @@ const ReconFeesFeeswise = () => {
       });
     }
 
-
+    // Include one time fees (this now includes late fees in lateExcessFee column)
     if (feeBreakdowns['Fees Due -One Time']) {
       Object.keys(feeBreakdowns['Fees Due -One Time']).forEach(key => {
         if (key !== 'total') {
@@ -834,7 +844,7 @@ const ReconFeesFeeswise = () => {
       });
     }
 
-
+    // Include arrear fees
     if (feeBreakdowns['Arrear Fees Received']) {
       Object.keys(feeBreakdowns['Arrear Fees Received']).forEach(key => {
         if (key !== 'total') {
@@ -845,43 +855,38 @@ const ReconFeesFeeswise = () => {
 
     totalABreakdown.total = totalA;
 
-
+    // For Total (B), late fees should appear in Late & Excess Fee row, not in school/one-time received
     const totalBBreakdown = {};
-
-
+    
     if (feeBreakdowns['School Fees Received']) {
       Object.keys(feeBreakdowns['School Fees Received']).forEach(key => {
-        if (key !== 'total') {
+        if (key !== 'total' && key !== 'lateExcessFee') { // Exclude late fees from school fees
           totalBBreakdown[key] = (totalBBreakdown[key] || 0) + parseFloat(feeBreakdowns['School Fees Received'][key] || 0);
         }
       });
     }
 
-
     if (feeBreakdowns['One Time Fees Received']) {
       Object.keys(feeBreakdowns['One Time Fees Received']).forEach(key => {
-        if (key !== 'total') {
+        if (key !== 'total' && key !== 'lateExcessFee') { // Exclude late fees from one-time fees
           totalBBreakdown[key] = (totalBBreakdown[key] || 0) + parseFloat(feeBreakdowns['One Time Fees Received'][key] || 0);
         }
       });
     }
 
-
     if (feeBreakdowns['Fees Concession']) {
       Object.keys(feeBreakdowns['Fees Concession']).forEach(key => {
-        if (key !== 'total') {
+        if (key !== 'total' && key !== 'lateExcessFee') {
           totalBBreakdown[key] = (totalBBreakdown[key] || 0) + parseFloat(feeBreakdowns['Fees Concession'][key] || 0);
         }
       });
     }
 
-
-    totalBBreakdown.lateExcessFee = lateAndExcessFeesNum;
-
-
+    // Add late fees to Total (B) in the lateExcessFee column
+    totalBBreakdown.lateExcessFee = parseFloat(lateAndExcessFees || 0);
     totalBBreakdown.total = totalB;
 
-
+    // ... rest of the calculation for difference ...
     const differenceBreakdown = {};
     const allKeys = new Set([
       ...Object.keys(totalABreakdown),
@@ -897,7 +902,6 @@ const ReconFeesFeeswise = () => {
     });
 
     differenceBreakdown.total = differenceAB;
-
 
     setFeeBreakdowns(prev => ({
       ...prev,

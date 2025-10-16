@@ -1075,7 +1075,7 @@ const SchoolFeesReport = () => {
   const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Payment Mode', 'Status'];
+  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Payment Mode'];
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -1375,7 +1375,7 @@ const SchoolFeesReport = () => {
       feesDue: installment.feesDue || 0,
       feesPaid:  installment.feesPaid || 0 ,
       refund: installment.refund || 0,
-      cancelled: installment.cancelled || 0,
+      cancelled: installment.cancelled|| 0,
       chequeReturn: installment.chequeReturn || 0,
       concession: installment.concession || 0,
       balance: installment.balance || 0,
@@ -1508,7 +1508,7 @@ const SchoolFeesReport = () => {
     });
     acc.totalFeesDue += studentTotals.totalFeesDue;
     acc.totalFeesPaid += studentTotals.totalFeesPaid;
-    acc.totalRefundCancelledChequeReturn += studentTotals.totalRefundCancelledChequeReturn;
+    acc.totalRefundCancelledChequeReturn -= studentTotals.totalRefundCancelledChequeReturn;
     acc.totalNetFees += studentTotals.totalNetFees;
     acc.totalConcession += studentTotals.totalConcession;
     acc.totalBalance += studentTotals.totalBalance;
@@ -1560,14 +1560,14 @@ const SchoolFeesReport = () => {
     displayDate: 'Date',
     academicYear: 'Academic Year',
     admissionNumber: 'Admission No.',
-    status: 'Status',
+    // status: 'Status',
     studentName: 'Name',
     className: 'Class',
     sectionName: 'Section',
     installmentName: 'Installment',
     feesDue: 'Fees Due',
     feesPaid: 'Fees Paid',
-    refundCancelledChequeReturn: 'Refund/Cancelled/Cheque Return',
+    refundCancelledChequeReturn: 'CRN',
     netFees: 'Net Fees',
     concession: 'Concession',
     balance: 'Balance',
@@ -1577,14 +1577,14 @@ const SchoolFeesReport = () => {
     { id: 'displayDate', label: 'Date' },
     { id: 'academicYear', label: 'Academic Year' },
     { id: 'admissionNumber', label: 'Admission No.' },
-    { id: 'status', label: 'Status' },
+    // { id: 'status', label: 'Status' },
     { id: 'studentName', label: 'Name' },
     { id: 'className', label: 'Class' },
     { id: 'sectionName', label: 'Section' },
     { id: 'installmentName', label: 'Installment' },
     { id: 'feesDue', label: 'Fees Due' },
     { id: 'feesPaid', label: 'Fees Paid' },
-    { id: 'refundCancelledChequeReturn', label: 'Refund/Cancelled/Cheque Return' },
+    { id: 'refundCancelledChequeReturn', label: 'CRN' },
     { id: 'netFees', label: 'Net Fees' },
     { id: 'concession', label: 'Concession' },
     { id: 'balance', label: 'Balance' },
@@ -1599,9 +1599,10 @@ const SchoolFeesReport = () => {
     } else if (fieldId === 'status') {
       return record[fieldId] || '-';
     } else if (fieldId === 'refundCancelledChequeReturn') {
-      return record.status === 'Refund' ? (record.refund || 0).toFixed(2) :
-             record.status === 'Cancelled' ? (record.cancelled || 0).toFixed(2) :
-             record.status === 'Cheque Return' ? (record.chequeReturn || 0).toFixed(2) : (0).toFixed(2);
+      // return record.status === 'Refund' ? (record.refund || 0).toFixed(2) :
+      //        record.status === 'Cancelled' ? (record.cancelled || 0).toFixed(2) :
+      //        record.status === 'Cheque Return' ? (record.chequeReturn || 0).toFixed(2) : (0).toFixed(2);
+      return (-record.cancelled || 0).toFixed(2);
     } else if (fieldId === 'netFees') {
       const net = record.netFees || 0;
       return net !== 0 ? net.toFixed(2) : (0).toFixed(2);
@@ -1955,7 +1956,7 @@ const SchoolFeesReport = () => {
                             (acc, row) => {
                               acc.totalFeesDue += row.feesDue || 0;
                               acc.totalFeesPaid += row.feesPaid || 0;
-                              acc.totalRefundCancelledChequeReturn += (row.refund || 0) + (row.cancelled || 0) + (row.chequeReturn || 0);
+                              acc.totalRefundCancelledChequeReturn -= (row.refund || 0) + (row.cancelled || 0) + (row.chequeReturn || 0);
                               acc.totalNetFees += row.netFees || 0;
                               acc.totalConcession += row.concession || 0;
                               acc.totalBalance += row.balance || 0;
@@ -1986,7 +1987,7 @@ const SchoolFeesReport = () => {
                                 </tr>
                               ))}
                               <tr className="payroll-table-footer">
-                                <td colSpan={8} className="text-right border border-secondary p-2">
+                                <td colSpan={7} className="text-right border border-secondary p-2">
                                   <strong>Total</strong>
                                 </td>
                                 <td className="text-center border border-secondary p-2">
@@ -2012,7 +2013,7 @@ const SchoolFeesReport = () => {
                           );
                         })}
                         <tr className="payroll-table-footer">
-                          <td colSpan={8} className="text-right border border-secondary p-2">
+                          <td colSpan={7} className="text-right border border-secondary p-2">
                             <strong>Grand Total</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">

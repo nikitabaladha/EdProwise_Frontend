@@ -987,11 +987,11 @@ const BoardRegistrationFees = () => {
     { id: 'sectionName', label: 'Section' },
     { id: 'boardRegFeesStatus', label: 'Status' },
     { id: 'boardRegFeesPaymentMode', label: 'Payment Mode' },
-    { id: 'boardRegFeesTransactionNo', label: 'Cheque No./Transaction No.' },
+    { id: 'boardRegFeesTransactionNo', label: 'Cheq/TranNo.' },
     { id: 'boardRegFeesReceiptNo', label: 'Receipts No.' },
     { id: 'boardRegFeesDue', label: 'Fees Due' },
     { id: 'boardRegFeesPaid', label: 'Fees Paid' },
-    { id: 'boardRegFeesRefundAmount', label: 'Refund/Cancelled' },
+    { id: 'boardRegFeesRefundAmount', label: 'CRN' },
     { id: 'netFees', label: 'Net Fees' },
     { id: 'boardRegFeesConcession', label: 'Concession' },
     { id: 'balance', label: 'Balance' },
@@ -1388,8 +1388,8 @@ const BoardRegistrationFees = () => {
 
   const filteredData = feeData.filter((record) => {
     const hasValidAdmissionNo = record.admissionNumber && record.admissionNumber !== '-';
-    const hasFeesDue = parseFloat(record.boardRegFeesDue || 0) > 0;
-    if (!hasValidAdmissionNo || !hasFeesDue) return false;
+    // const hasFeesDue = parseFloat(record.boardRegFeesDue || 0) > 0;
+    // if (!hasValidAdmissionNo || !hasFeesDue) return false;
 
     const matchesSearchTerm = searchTerm
       ? Object.values(record).some((value) =>

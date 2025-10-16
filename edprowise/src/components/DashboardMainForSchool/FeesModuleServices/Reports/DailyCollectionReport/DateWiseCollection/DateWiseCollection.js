@@ -1,7 +1,4 @@
 
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -339,36 +336,80 @@ const DateWiseFeesCollectionIncConcession = () => {
     );
   });
 
-  const groupedData = filteredData.reduce((acc, record, index) => {
-    const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
-    const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`;
-    if (!acc[key]) {
-      acc[key] = {
-        aggregated: {
-          paymentDate: record.paymentDate,
-          academicYear: record.academicYear,
-          paymentMode: record.paymentMode,
-          feesBreakdown: {},
-          fineAmount: 0,
-          excessAmount: 0,
-          totalPaidFee: 0,
-          status: isCancellation ? 'Cancelled' : 'Regular',
-        },
-        count: 0,
-      };
-    }
-    Object.keys(record.feesBreakdown).forEach((type) => {
-      acc[key].aggregated.feesBreakdown[type] =
-        (acc[key].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
-    });
-    acc[key].aggregated.fineAmount += Number(record.fineAmount) || 0;
-    acc[key].aggregated.excessAmount += Number(record.excessAmount) || 0;
-    acc[key].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
-    acc[key].count += 1;
-    return acc;
-  }, {});
+  // const groupedData = filteredData.reduce((acc, record, index) => {
+  //   const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
+  //   const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`;
+  //   if (!acc[key]) {
+  //     acc[key] = {
+  //       aggregated: {
+  //         paymentDate: record.paymentDate,
+  //         academicYear: record.academicYear,
+  //         paymentMode: record.paymentMode,
+  //         feesBreakdown: {},
+  //         fineAmount: 0,
+  //         excessAmount: 0,
+  //         totalPaidFee: 0,
+  //         status: isCancellation ? 'Cancelled' : 'Regular',
+  //       },
+  //       count: 0,
+  //     };
+  //   }
+  //   Object.keys(record.feesBreakdown).forEach((type) => {
+  //     acc[key].aggregated.feesBreakdown[type] =
+  //       (acc[key].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
+  //   });
+  //   acc[key].aggregated.fineAmount += Number(record.fineAmount) || 0;
+  //   acc[key].aggregated.excessAmount += Number(record.excessAmount) || 0;
+  //   acc[key].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
+  //   acc[key].count += 1;
+  //   return acc;
+  // }, {});
 
   // Calculate date-wise totals
+ 
+ const groupedData = filteredData.reduce((acc, record, index) => {
+
+  const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
+  const groupKey = viewMode === 'net' 
+    ? `${record.paymentDate}_${record.academicYear}_${record.paymentMode}` 
+    : `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`; 
+  
+  if (!acc[groupKey]) {
+    acc[groupKey] = {
+      aggregated: {
+        paymentDate: record.paymentDate,
+        academicYear: record.academicYear,
+        paymentMode: record.paymentMode,
+        feesBreakdown: {},
+        fineAmount: 0,
+        excessAmount: 0,
+        totalPaidFee: 0,
+        status: viewMode === 'net' ? 'Net' : (isCancellation ? 'Cancelled' : 'Regular'),
+        hasCancellation: false, 
+      },
+      count: 0,
+    };
+  }
+  
+
+  if (isCancellation) {
+    acc[groupKey].aggregated.hasCancellation = true;
+  }
+  
+
+  Object.keys(record.feesBreakdown).forEach((type) => {
+    acc[groupKey].aggregated.feesBreakdown[type] =
+      (acc[groupKey].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
+  });
+  
+
+  acc[groupKey].aggregated.fineAmount += Number(record.fineAmount) || 0;
+  acc[groupKey].aggregated.excessAmount += Number(record.excessAmount) || 0;
+  acc[groupKey].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
+  acc[groupKey].count += 1;
+  
+  return acc;
+}, {});
   const dateWiseTotals = filteredData.reduce((acc, record) => {
     const dateKey = record.paymentDate;
     if (!acc[dateKey]) {

@@ -1085,7 +1085,7 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, scho
       }
 
       const initialRefundData = feeItems.map(item => ({
-        feeType: item.type || "Unknown Fee", // Use item.type directly since feeTypeName is undefined
+        feeType: item.type || "Unknown Fee",
         paidAmount: Number(item.paid) || 0,
         refundAmount: 0,
         cancelledAmount: 0,

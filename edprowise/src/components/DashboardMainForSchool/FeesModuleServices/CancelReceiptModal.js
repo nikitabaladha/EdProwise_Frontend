@@ -271,6 +271,7 @@ useEffect(() => {
         classId: classId || "",
         sectionId: sectionId || null,
         paidAmount: refundData[refundData.length - 1].paidAmount,
+        concessionAmount:student?.concessionAmount,
         refundAmount: action === "Refund" ? refundData[refundData.length - 1].refundAmount : 0,
         cancelledAmount: action === "Cancelled/Cheque Return" ? refundData[0].balance : 0,
         balance: refundData[refundData.length - 1].paidAmount - refundData[refundData.length - 1].refundAmount,

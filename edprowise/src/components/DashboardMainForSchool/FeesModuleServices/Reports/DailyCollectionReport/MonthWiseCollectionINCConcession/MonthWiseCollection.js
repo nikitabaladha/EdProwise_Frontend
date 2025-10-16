@@ -380,38 +380,87 @@ const MonthWiseFeesCollectionIncConcession = () => {
     );
   });
 
-  const groupedData = filteredData.reduce((acc, record, index) => {
-    const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
-    const month = formatMonth(record.paymentDate);
-    const key = selectedMonths.length > 0
-      ? `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`
-      : `${month}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`;
-    if (!acc[key]) {
-      acc[key] = {
-        aggregated: {
-          paymentDate: record.paymentDate,
-          month: month,
-          academicYear: record.academicYear,
-          paymentMode: record.paymentMode,
-          feesBreakdown: {},
-          fineAmount: 0,
-          excessAmount: 0,
-          totalPaidFee: 0,
-          status: isCancellation ? 'Cancelled' : 'Regular',
-        },
-        count: 0,
-      };
-    }
-    Object.keys(record.feesBreakdown).forEach((type) => {
-      acc[key].aggregated.feesBreakdown[type] =
-        (acc[key].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
-    });
-    acc[key].aggregated.fineAmount += Number(record.fineAmount) || 0;
-    acc[key].aggregated.excessAmount += Number(record.excessAmount) || 0;
-    acc[key].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
-    acc[key].count += 1;
-    return acc;
-  }, {});
+  // const groupedData = filteredData.reduce((acc, record, index) => {
+  //   const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
+  //   const month = formatMonth(record.paymentDate);
+  //   const key = selectedMonths.length > 0
+  //     ? `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`
+  //     : `${month}_${record.academicYear}_${record.paymentMode}_${isCancellation ? 'cancel' : 'regular'}`;
+  //   if (!acc[key]) {
+  //     acc[key] = {
+  //       aggregated: {
+  //         paymentDate: record.paymentDate,
+  //         month: month,
+  //         academicYear: record.academicYear,
+  //         paymentMode: record.paymentMode,
+  //         feesBreakdown: {},
+  //         fineAmount: 0,
+  //         excessAmount: 0,
+  //         totalPaidFee: 0,
+  //         status: isCancellation ? 'Cancelled' : 'Regular',
+  //       },
+  //       count: 0,
+  //     };
+  //   }
+  //   Object.keys(record.feesBreakdown).forEach((type) => {
+  //     acc[key].aggregated.feesBreakdown[type] =
+  //       (acc[key].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
+  //   });
+  //   acc[key].aggregated.fineAmount += Number(record.fineAmount) || 0;
+  //   acc[key].aggregated.excessAmount += Number(record.excessAmount) || 0;
+  //   acc[key].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
+  //   acc[key].count += 1;
+  //   return acc;
+  // }, {});
+
+const groupedData = filteredData.reduce((acc, record, index) => {
+  const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
+  const month = formatMonth(record.paymentDate);
+  
+
+  const baseKey = selectedMonths.length > 0
+    ? `${record.paymentDate}_${record.academicYear}_${record.paymentMode}`
+    : `${month}_${record.academicYear}_${record.paymentMode}`;
+    
+  const key = viewMode === 'net' 
+    ? baseKey 
+    : `${baseKey}_${isCancellation ? 'cancel' : 'regular'}`; 
+  
+  if (!acc[key]) {
+    acc[key] = {
+      aggregated: {
+        paymentDate: record.paymentDate,
+        month: month,
+        academicYear: record.academicYear,
+        paymentMode: record.paymentMode,
+        feesBreakdown: {},
+        fineAmount: 0,
+        excessAmount: 0,
+        totalPaidFee: 0,
+        status: viewMode === 'net' ? 'Net' : (isCancellation ? 'Cancelled' : 'Regular'),
+        hasCancellation: false, 
+      },
+      count: 0,
+    };
+  }
+  
+
+  if (isCancellation && viewMode === 'net') {
+    acc[key].aggregated.hasCancellation = true;
+  }
+ 
+  Object.keys(record.feesBreakdown).forEach((type) => {
+    acc[key].aggregated.feesBreakdown[type] =
+      (acc[key].aggregated.feesBreakdown[type] || 0) + (Number(record.feesBreakdown[type]) || 0);
+  });
+
+  acc[key].aggregated.fineAmount += Number(record.fineAmount) || 0;
+  acc[key].aggregated.excessAmount += Number(record.excessAmount) || 0;
+  acc[key].aggregated.totalPaidFee += Number(record.totalPaidFee) || 0;
+  acc[key].count += 1;
+  
+  return acc;
+}, {});
 
   const monthWiseTotals = filteredData.reduce((acc, record) => {
     const month = formatMonth(record.paymentDate);

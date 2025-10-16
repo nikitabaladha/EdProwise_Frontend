@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 export const exportToExcel = async (
   filteredData,
   tableFields,
+  headerMapping,
   getFieldValue,
   totals,
   formatAcademicYear,
@@ -19,8 +20,8 @@ export const exportToExcel = async (
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet(`Studentwise Collection INC Concession (${viewMode.toUpperCase()})`);
 
-
-    const headers = tableFields.map(field => field.label);
+    // Add headers
+    const headers = tableFields.map(field => headerMapping[field.id] || field.label);
     const headerRow = worksheet.addRow(headers);
     headerRow.font = { bold: true };
     headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
@@ -33,7 +34,7 @@ export const exportToExcel = async (
       };
     });
 
-
+    // Group data as in the component
     const groupedData = filteredData.reduce((acc, record) => {
       const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
       const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${record.studentAdmissionNumber}_${record.studentName}_${record.className}_${record.sectionName}_${record.installmentName}_${record.receiptNumber}_${isCancellation ? 'cancel' : 'regular'}`;
@@ -69,6 +70,7 @@ export const exportToExcel = async (
       return acc;
     }, {});
 
+    // Calculate date-wise totals
     const dateWiseTotals = filteredData.reduce((acc, record) => {
       const dateKey = record.paymentDate;
       if (!acc[dateKey]) {
@@ -90,7 +92,7 @@ export const exportToExcel = async (
       return acc;
     }, {});
 
-   
+    // Combine grouped data and date-wise totals
     const groupedDataArray = [
       ...Object.entries(groupedData).map(([key, { aggregated }], idx) => ({
         record: aggregated,
@@ -126,7 +128,7 @@ export const exportToExcel = async (
       return a.index - b.index;
     });
 
-
+    // Add rows to worksheet
     groupedDataArray.forEach(({ record, isTotalRow }) => {
       const row = tableFields.map(field => {
         const value = getFieldValue(record, field);
@@ -147,7 +149,7 @@ export const exportToExcel = async (
       });
     });
 
-
+    // Add grand total row
     const nonNumericFields = tableFields.filter(field => !field.isNumeric).map(field => field.id);
     const totalsRow = tableFields.map(field => {
       if (nonNumericFields.includes(field.id)) {
@@ -167,7 +169,7 @@ export const exportToExcel = async (
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
     });
 
-
+    // Auto-size columns
     worksheet.columns.forEach((column, index) => {
       let maxLength = 10;
       column.eachCell({ includeEmpty: true }, (cell) => {
@@ -177,7 +179,7 @@ export const exportToExcel = async (
       column.width = Math.min(maxLength + 2, 50); // Cap max width
     });
 
-
+    // Save the workbook
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(
       new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
@@ -192,6 +194,7 @@ export const exportToExcel = async (
 export const exportToPDF = async (
   filteredData,
   tableFields,
+  headerMapping,
   getFieldValue,
   totals,
   formatAcademicYear,
@@ -215,7 +218,7 @@ export const exportToPDF = async (
     const contentHeight = pageHeight - margin * 2 - headerHeight - footerHeight;
     const mmToPx = 3.779;
 
-
+    // Group data as in the component
     const groupedData = filteredData.reduce((acc, record) => {
       const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
       const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${record.studentAdmissionNumber}_${record.studentName}_${record.className}_${record.sectionName}_${record.installmentName}_${record.receiptNumber}_${isCancellation ? 'cancel' : 'regular'}`;
@@ -251,6 +254,7 @@ export const exportToPDF = async (
       return acc;
     }, {});
 
+    // Calculate date-wise totals
     const dateWiseTotals = filteredData.reduce((acc, record) => {
       const dateKey = record.paymentDate;
       if (!acc[dateKey]) {
@@ -272,7 +276,7 @@ export const exportToPDF = async (
       return acc;
     }, {});
 
-
+    // Combine grouped data and date-wise totals
     const groupedDataArray = [
       ...Object.entries(groupedData).map(([key, { aggregated }], idx) => ({
         record: aggregated,
@@ -308,7 +312,7 @@ export const exportToPDF = async (
       return a.index - b.index;
     });
 
-
+    // Add grand total to the array
     if (groupedDataArray.length > 0) {
       groupedDataArray.push({
         record: {
@@ -336,7 +340,7 @@ export const exportToPDF = async (
       });
     }
 
-
+    // Preload logo image
     const preloadImage = (src) => {
       return new Promise((resolve) => {
         if (!src) return resolve(null);
@@ -352,7 +356,7 @@ export const exportToPDF = async (
     };
     const logoImg = await preloadImage(logoSrc);
 
-
+    // Create hidden container for rendering
     const hiddenContainer = document.createElement('div');
     hiddenContainer.style.cssText = `
       position: absolute;
@@ -376,7 +380,7 @@ export const exportToPDF = async (
     headerContainer.innerHTML = generateHeader(school, logoImg ? logoSrc : '');
     hiddenContainer.appendChild(headerContainer);
 
-
+    // Render footer
     const footerContainer = document.createElement('div');
     footerContainer.style.cssText = `
       width: ${(pageWidth - margin * 2) * mmToPx}px;
@@ -387,6 +391,7 @@ export const exportToPDF = async (
     footerContainer.innerHTML = generateFooter(school);
     hiddenContainer.appendChild(footerContainer);
 
+    // Define table styles
     const tableStyle = `
       <style>
         table {
@@ -423,7 +428,7 @@ export const exportToPDF = async (
       </style>
     `;
 
-
+    // Paginate data
     const rowsPerPage = 15;
     const pageData = [];
     for (let i = 0; i < groupedDataArray.length; i += rowsPerPage) {
@@ -433,7 +438,7 @@ export const exportToPDF = async (
       pageData.push([]);
     }
 
-   
+    // Render header and footer canvases
     await new Promise(resolve => setTimeout(resolve, 300));
     const headerCanvas = await html2canvas(headerContainer, {
       scale: 2,
@@ -457,7 +462,7 @@ export const exportToPDF = async (
     });
     const footerImg = footerCanvas.toDataURL('image/jpeg', 0.98);
 
-
+    // Render each page
     const nonNumericFields = tableFields.filter(field => !field.isNumeric).map(field => field.id);
     for (let page = 0; page < pageData.length; page++) {
       if (page > 0) pdf.addPage();
@@ -481,7 +486,7 @@ export const exportToPDF = async (
         <table>
           <thead>
             <tr>
-              ${tableFields.map((field) => `<th>${field.label}</th>`).join('')}
+              ${tableFields.map((field) => `<th>${headerMapping[field.id] || field.label}</th>`).join('')}
             </tr>
           </thead>
           <tbody>

@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 export const exportToExcel = async (
   filteredData,
   tableFields,
-  headerMapping,
   getFieldValue,
   totals,
   formatAcademicYear,
@@ -21,7 +20,7 @@ export const exportToExcel = async (
     const worksheet = workbook.addWorksheet(`Studentwise Collection EXC Concession (${viewMode.toUpperCase()})`);
 
     // Add headers
-    const headers = tableFields.map(field => headerMapping[field.id] || field.label);
+    const headers = tableFields.map(field =>  field.label);
     const headerRow = worksheet.addRow(headers);
     headerRow.font = { bold: true };
     headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
@@ -34,7 +33,7 @@ export const exportToExcel = async (
       };
     });
 
-    // Group data as in the component
+
     const groupedData = filteredData.reduce((acc, record) => {
       const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
       const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${record.studentAdmissionNumber}_${record.studentName}_${record.className}_${record.sectionName}_${record.installmentName}_${record.receiptNumber}_${isCancellation ? 'cancel' : 'regular'}`;
@@ -194,7 +193,6 @@ export const exportToExcel = async (
 export const exportToPDF = async (
   filteredData,
   tableFields,
-  headerMapping,
   getFieldValue,
   totals,
   formatAcademicYear,
@@ -218,7 +216,7 @@ export const exportToPDF = async (
     const contentHeight = pageHeight - margin * 2 - headerHeight - footerHeight;
     const mmToPx = 3.779;
 
-    // Group data as in the component
+ 
     const groupedData = filteredData.reduce((acc, record) => {
       const isCancellation = record.cancelledDate || Object.values(record.feesBreakdown).some(amount => Number(amount) < 0);
       const key = `${record.paymentDate}_${record.academicYear}_${record.paymentMode}_${record.studentAdmissionNumber}_${record.studentName}_${record.className}_${record.sectionName}_${record.installmentName}_${record.receiptNumber}_${isCancellation ? 'cancel' : 'regular'}`;
@@ -486,7 +484,7 @@ export const exportToPDF = async (
         <table>
           <thead>
             <tr>
-              ${tableFields.map((field) => `<th>${headerMapping[field.id] || field.label}</th>`).join('')}
+              ${tableFields.map((field) => `<th>${field.label}</th>`).join('')}
             </tr>
           </thead>
           <tbody>

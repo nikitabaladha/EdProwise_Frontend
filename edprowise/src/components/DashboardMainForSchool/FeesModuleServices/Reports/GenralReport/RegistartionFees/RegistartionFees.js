@@ -816,7 +816,7 @@ const RegistrationFees = () => {
     { id: 'regFeesReceiptNo', label: 'Receipts No.' },
     { id: 'regFeesDue', label: 'Fees Due' },
     { id: 'regFeesPaid', label: 'Fees Paid' },
-    { id: 'regFeesrefundAmount', label: 'Refund/Cancelled' },
+    { id: 'regFeesrefundAmount', label: 'CRN' },
     { id: 'netFees', label: 'Net Fees' }, 
     { id: 'regFeesConcession', label: 'Concession' },
     { id: 'balance', label: 'Balance' }, 
