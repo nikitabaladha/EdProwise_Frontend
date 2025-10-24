@@ -3,9 +3,11 @@ import { useLocation } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
 import { toast } from 'react-toastify';
 import { generateTCPDF } from "./generateStudentPDF";
-
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const UpdateTCForm = () => {
+      const navigate = useNavigate();
   const location = useLocation();
   const student = location.state?.student;
   const [classes, setClasses] = useState([]);
@@ -121,18 +123,18 @@ const handleDownloadPDF = async () => {
           <div className="card m-2">
             <div className="card-body custom-heading-padding">
               <div className="container">
-               <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    View Transfer Certificate Form
-                  </h4>
-                  {/* <button
-                    className="btn btn-primary"
-                    onClick={handleDownloadPDF}
-                    title="Download TC Form as PDF"
-                  >
-                    Download PDF
-                  </button> */}
-                </div>
+                       <div className="card-header mb-2 d-flex justify-content-between align-items-center">
+                     <button
+                       className="btn btn-primary download-pdf-btn d-flex align-items-center mx-2"
+                       onClick={() => navigate(-1)}
+                     >
+                       <FaArrowLeft />
+                     </button>
+               
+                     <h4 className="card-title custom-heading-font flex-grow-1 text-center m-0">
+                       Student TC Form
+                     </h4>
+                   </div>
               </div>
               <form onSubmit={""}>
               <div className="row">

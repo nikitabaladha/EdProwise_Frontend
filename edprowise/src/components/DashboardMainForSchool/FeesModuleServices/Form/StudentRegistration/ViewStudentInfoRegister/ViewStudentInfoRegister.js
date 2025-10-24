@@ -2,8 +2,12 @@ import React, { useRef, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import useStudentRegistration from "../UpdateStudentRegistrationForm.js/UseStudentRegistrationUpdate";
 import { generatePDF } from "./generateStudentPDF";
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
+
 
 const StudentRegistrationFormview = () => {
+    const navigate = useNavigate();
   const {
     student,
     formData,
@@ -67,20 +71,18 @@ const StudentRegistrationFormview = () => {
           <div className="card m-2">
             <div className="card-body custom-heading-padding">
               <div className="container">
-                <div className="card-header mb-2 d-flex justify-content-between align-items-center">
-                  {/* <h4 className="card-title text-center custom-heading-font"> */}
-                  <h4 className="card-title custom-heading-font flex-grow-1 text-center">
-                    Student Registration Form
-                  </h4>
-                  {/* <button
-                    className="btn btn-primary download-pdf-btn"
-                    onClick={handleDownloadPDF}
-                    disabled={isGenerating}
-                    style={{ marginLeft: "auto" }}
-                  >
-                    {isGenerating ? "Generating PDF..." : "Download PDF"}
-                  </button> */}
-                </div>
+                 <div className="card-header mb-2 d-flex justify-content-between align-items-center">
+      <button
+        className="btn btn-primary download-pdf-btn d-flex align-items-center mx-2"
+        onClick={() => navigate(-1)}
+      >
+        <FaArrowLeft />
+      </button>
+
+      <h4 className="card-title custom-heading-font flex-grow-1 text-center m-0">
+        Student Registration Form
+      </h4>
+    </div>
               </div>
               <div ref={formRef}>
                 <form onSubmit={handleSubmit}>

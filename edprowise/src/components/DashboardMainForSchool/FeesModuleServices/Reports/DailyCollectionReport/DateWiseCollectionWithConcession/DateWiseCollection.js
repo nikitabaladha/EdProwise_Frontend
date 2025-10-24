@@ -307,7 +307,7 @@ const DateWiseFeesCollectionExcConcession = () => {
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) !== 0);
+      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0));
 
     const matchesClass =
       selectedClasses.length === 0 ||

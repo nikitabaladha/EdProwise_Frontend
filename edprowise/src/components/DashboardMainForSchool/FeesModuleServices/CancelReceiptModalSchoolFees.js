@@ -489,7 +489,7 @@ const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId, sect
                         <td>
                           {action === "Refund" ? (
                             <Form.Control
-                              type="number"
+                              // type="number"
                               value={item.refundAmount}
                               onChange={(e) => handleRefundAmountChange(index, e.target.value)}
                               min="0"

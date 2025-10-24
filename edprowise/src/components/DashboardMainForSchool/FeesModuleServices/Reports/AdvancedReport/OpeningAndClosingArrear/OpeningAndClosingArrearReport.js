@@ -5,28 +5,30 @@
 // import Select from 'react-select';
 // import { Link } from 'react-router-dom';
 // import getAPI from '../../../../../../api/getAPI';
-// import { exportToExcel, exportToPDF } from './SchoolFeesReport';
+// import { exportToExcel, exportToPDF } from './OpeningAndClosingArrearReportExport';
 // import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-// const SchoolFeesReport = () => {
+// const OpeningAndClosingArrearFeesReport = () => {
 //   const [showFilterPanel, setShowFilterPanel] = useState(false);
 //   const [showExportDropdown, setShowExportDropdown] = useState(false);
-//   const [activeTab, setActiveTab] = useState('Date');
+//   const [activeTab, setActiveTab] = useState('Payment Mode');
 //   const [searchTerm, setSearchTerm] = useState('');
 //   const [schoolId, setSchoolId] = useState('');
 //   const [school, setSchool] = useState(null);
 //   const [logoSrc, setLogoSrc] = useState('');
 //   const [feeData, setFeeData] = useState([]);
+//   const [archiveData, setArchiveData] = useState([]);
+//   const [ArrearFeesData, setArrearFeeData]= useState([]);
 //   const [feeTypes, setFeeTypes] = useState([]);
 //   const [classSectionMap, setClassSectionMap] = useState({});
 //   const [isLoading, setIsLoading] = useState(false);
 //   const [loadingYears, setLoadingYears] = useState(false);
 //   const [classOptions, setClassOptions] = useState([]);
 //   const [sectionOptions, setSectionOptions] = useState([]);
+//   const [academicYearOptions, setAcademicYearOptions] = useState([]);
 //   const [installmentOptions, setInstallmentOptions] = useState([]);
 //   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
-//   const [statusOptions] = useState([{ value: 'Paid', label: 'Paid' }]); // Only "Paid" status
-//   const [academicYearOptions, setAcademicYearOptions] = useState([]);
+//   const [tcStatusOptions, setTCStatusOptions] = useState([]);
 //   const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
 //   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
 //   const [selectedClasses, setSelectedClasses] = useState([]);
@@ -34,7 +36,7 @@
 //   const [selectedYears, setSelectedYears] = useState([]);
 //   const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
 //   const [selectedInstallments, setSelectedInstallments] = useState([]);
-//   const [selectedStatuses, setSelectedStatuses] = useState([]);
+//   const [selectedTCStatus, setSelectedTCStatus] = useState(null);
 //   const [startDate, setStartDate] = useState('');
 //   const [endDate, setEndDate] = useState('');
 //   const [isExporting, setIsExporting] = useState(false);
@@ -42,7 +44,7 @@
 //   const [rowsPerPage, setRowsPerPage] = useState('all');
 //   const dropdownRef = useRef(null);
 
-//   const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Payment Mode', 'Status'];
+//   const tabs = [ 'Academic Year'];
 
 //   const pageShowOptions = [
 //     { value: 'all', label: 'All' },
@@ -58,14 +60,228 @@
 //     return `${startYear}-${endYear?.slice(-2) || ''}`;
 //   };
 
-//   const formatDate = (dateStr) => {
-//     if (!dateStr || dateStr === '-') return '-';
+
+//   const fetchDefaulterData = async () => {
+//     setIsLoading(true);
 //     try {
-//       const [day, month, year] = dateStr.split('/');
-//       return `${day}-${month}-${year}`;
+//       const defaulterResponse = await getAPI(`/Defaulter-Fees?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
+//       const unifiedData = !defaulterResponse?.hasError && defaulterResponse?.data?.data ? defaulterResponse.data.data : [];
+      
+//       if (!defaulterResponse?.data?.data && !defaulterResponse?.hasError) {
+//         console.warn(`No defaulter data found for year ${selectedAcademicYear}: ${defaulterResponse?.data?.message || 'Unknown error'}`);
+//       }
+
+//       console.log('Fetched unifiedData:', unifiedData);
+
+ 
+//       const classSectionMapping = {};
+//       unifiedData.forEach(record => {
+//         const className = record.className || '-';
+//         const sectionName = record.sectionName || '-';
+//         if (className !== '-' && sectionName !== '-') {
+//           if (!classSectionMapping[className]) {
+//             classSectionMapping[className] = new Set();
+//           }
+//           classSectionMapping[className].add(sectionName);
+//         }
+//       });
+
+//       setClassSectionMap(prev => ({ ...prev, ...classSectionMapping }));
+//       setFeeData(unifiedData);
+
+//       // Update filter options
+//       const filterOptions = defaulterResponse?.hasError ? {} : defaulterResponse?.data?.filterOptions || {};
+//       setClassOptions(filterOptions.classOptions || []);
+//       setSectionOptions(filterOptions.sectionOptions || []);
+//       setInstallmentOptions(filterOptions.installmentOptions || []);
+//       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+//       setTCStatusOptions(filterOptions.tcStatusOptions || []);
+
+//       if (rowsPerPage === 'all' && unifiedData.length > 0) {
+//         setRowsPerPage(unifiedData.length);
+//       }
 //     } catch (error) {
-//       console.warn('Invalid date format:', dateStr);
-//       return '-';
+//       toast.error('Error fetching defaulter data: ' + error.message);
+//       console.error('Error fetching defaulter data:', error);
+//       setFeeData([]);
+//       setClassSectionMap({});
+//       setClassOptions([]);
+//       setSectionOptions([]);
+//       setInstallmentOptions([]);
+//       setPaymentModeOptions([]);
+//       setTCStatusOptions([]);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+
+//  const fetchArchiveData = async () => {
+//   setIsLoading(true);
+//   try {
+//     const archiveResponse = await getAPI(`/get-arrear-fees-ArrearFeesArchive?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
+//     const previousAcademicYear = archiveResponse?.data?.data?.previousAcademicYear;
+//     console.log("privous acdmicyear",previousAcademicYear)
+//     const unifiedArchiveData = !archiveResponse?.hasError && archiveResponse?.data?.data?.defaulters
+//       ? archiveResponse.data.data.defaulters.map(defaulter => ({
+//           admissionNumber: defaulter.admissionNumber,
+//           studentName: defaulter.studentName || '-',
+//           className: defaulter.className || '-',
+//           sectionName: defaulter.sectionName || '-',
+//           parentContactNumber: defaulter.parentContactNumber || '-',
+//           tcStatus: defaulter.tcStatus || 'Active',
+//           academicYear: previousAcademicYear,
+//           totalFeesDue: defaulter.totals?.totalFeesDue || 0,
+//         }))
+//       : [];
+
+//     if (!archiveResponse?.data?.data?.defaulters && !archiveResponse?.hasError) {
+//       console.warn(`No archive data found for year ${selectedAcademicYear}: ${archiveResponse?.data?.message || 'Unknown error'}`);
+//     }
+
+//     console.log('Fetched unifiedArchiveData:', JSON.stringify(unifiedArchiveData, null, 2)); // Debug log
+
+//     const classSectionMapping = {};
+//     unifiedArchiveData.forEach(record => {
+//       const className = record.className || '-';
+//       const sectionName = record.sectionName || '-';
+//       if (className !== '-' && sectionName !== '-') {
+//         if (!classSectionMapping[className]) {
+//           classSectionMapping[className] = new Set();
+//         }
+//         classSectionMapping[className].add(sectionName);
+//       }
+//     });
+
+//     setClassSectionMap(prev => ({ ...prev, ...classSectionMapping }));
+//     setArchiveData(unifiedArchiveData);
+
+//     if (rowsPerPage === 'all' && unifiedArchiveData.length > 0) {
+//       setRowsPerPage(unifiedArchiveData.length);
+//     }
+//   } catch (error) {
+//     toast.error('Error fetching archive data: ' + error.message);
+//     console.error('Error fetching archive data:', error);
+//     setArchiveData([]);
+//     setClassSectionMap({});
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
+
+// const fetchArrearFeesData = async (years) => {
+//     if (!schoolId || !years.length) return;
+//     setIsLoading(true);
+//     try {
+//       const promises = years.map((year) =>
+//         getAPI(`/get-arrear-fees?schoolId=${schoolId}&academicYear=${year}`)
+//       );
+//       const responses = await Promise.all(promises);
+//       const unifiedData = responses.flatMap((res, index) => {
+//         if (!res?.data?.data) {
+//           console.warn(`No data found for year ${years[index]}`);
+//           return [];
+//         }
+//         const feeRecords = res.data.data.map(item => ({
+//           ...item,
+//           totalDue: Number(item.totalDue || 0).toFixed(2),
+//           totalPaid: Number(item.totalPaid || 0).toFixed(2),
+//           totalConcession: Number(item.totalConcession || 0).toFixed(2),
+//           fineAmount: Number(item.fineAmount || 0).toFixed(2),
+//           totalBalance: Number(item.totalBalance || 0).toFixed(2),
+//           openingBalance: Number(item.openingBalance || 0).toFixed(2), 
+//           feeTypes: Object.fromEntries(
+//             Object.entries(item.feeTypes || {}).map(([type, value]) => [
+//               type,
+//               { ...value, totalPaid: Number(value.totalPaid || 0).toFixed(2) }
+//             ])
+//           ),
+//           isRefund: false,
+//         }));
+
+//         const refundRecords = res.data.data.flatMap(item =>
+//           (item.refundData || []).map(refund => {
+//             const feeTypeRefunds = refund.feeTypeRefunds || [];
+//             const totalRefundAmount = feeTypeRefunds.reduce(
+//               (sum, feeType) => sum + Number(feeType.refundAmountandcancelledAmount || 0),
+//               0
+//             );
+//             const totalConcession = feeTypeRefunds.reduce(
+//               (sum, feeType) => sum + Number(feeType.concessionAmount || 0),
+//               0
+//             );
+//             return {
+//               paymentDate: refund.refundDate || '-',
+//               academicYear: item.academicYear || '-',
+//               admissionNumber: item.admissionNumber || '-',
+//               studentName: item.studentName || '-',
+//               className: item.className || '-',
+//               sectionName: item.sectionName || '-',
+//               installmentName: item.installmentName || '-',
+//               paymentMode: refund.paymentMode || '-',
+//               transactionNumber: refund.transactionNumber || '-',
+//               receiptNumber: refund.receiptNumber || '-',
+//               feeTypes: Object.fromEntries(
+//                 feeTypeRefunds.map(feeType => [
+//                   feeType.feeType,
+//                   {
+//                     totalPaid: Number(feeType.refundAmountandcancelledAmount || 0).toFixed(2),
+//                   }
+//                 ])
+//               ),
+//               totalDue: Number(totalRefundAmount).toFixed(2),
+//               totalPaid: Number(totalRefundAmount - totalConcession).toFixed(2),
+//               totalConcession: Number(totalConcession).toFixed(2),
+//               fineAmount: '0.00',
+//               totalBalance: '0.00',
+//               isRefund: true,
+//             };
+//           })
+//         );
+
+//         return [...feeRecords, ...refundRecords];
+//       });
+
+//       const classSectionMapping = {};
+//       unifiedData.forEach((record) => {
+//         const className = record.className || '-';
+//         const sectionName = record.sectionName || '-';
+//         if (className !== '-' && sectionName !== '-') {
+//           if (!classSectionMapping[className]) {
+//             classSectionMapping[className] = new Set();
+//           }
+//           classSectionMapping[className].add(sectionName);
+//         }
+//       });
+//       setClassSectionMap(prev => ({ ...prev, ...classSectionMapping }));
+
+//       const allFeeTypes = responses
+//         .flatMap((res) => res?.data?.feeTypes || [])
+//         .filter((type, index, self) => self.indexOf(type) === index)
+//         .sort();
+
+//       setArrearFeeData(unifiedData);
+//       setFeeTypes(allFeeTypes);
+//       const filterOptions = responses[0]?.data?.filterOptions || {};
+//       setClassOptions(filterOptions.classOptions || []);
+//       setSectionOptions(filterOptions.sectionOptions || []);
+//       setInstallmentOptions(filterOptions.installmentOptions || []);
+//       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+
+//       if (rowsPerPage === 'all' && unifiedData.length > 0) {
+//         setRowsPerPage(unifiedData.length);
+//       }
+//     } catch (error) {
+//       toast.error('Error fetching arrear fees data: ' + error.message);
+//       setFeeData([]);
+//       setFeeTypes([]);
+//       setClassOptions([]);
+//       setSectionOptions([]);
+//       setInstallmentOptions([]);
+//       setPaymentModeOptions([]);
+//       setClassSectionMap({});
+//     } finally {
+//       setIsLoading(false);
 //     }
 //   };
 
@@ -143,9 +359,22 @@
 //     }
 //   }, [schoolId]);
 
+// useEffect(() => {
+//   if (!schoolId || !selectedAcademicYear) return;
+//   Promise.all([
+//     fetchDefaulterData(),
+//     fetchArchiveData(),
+//     fetchArrearFeesData([selectedAcademicYear])
+//   ])
+//     .catch((error) => {
+//       console.error('Error fetching data:', error);
+//       toast.error('Error fetching data: ' + error.message);
+//     });
+// }, [schoolId, selectedAcademicYear]);
+
 //   useEffect(() => {
 //     if (Object.keys(classSectionMap).length === 0) {
-//       const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
+//       const sections = new Set([...feeData, ...archiveData].map(record => record.sectionName).filter(sec => sec && sec !== '-'));
 //       setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
 //       if (selectedClasses.length === 0) {
 //         setSelectedSections([]);
@@ -174,90 +403,16 @@
 //     if (updatedSelectedSections.length !== selectedSections.length) {
 //       setSelectedSections(updatedSelectedSections);
 //     }
-//   }, [selectedClasses, classSectionMap, feeData]);
+//   }, [selectedClasses, classSectionMap, feeData, archiveData]);
 
-//   const fetchFeeData = async (years) => {
-//     setIsLoading(true);
-//     try {
-//       const promises = years.map((year) =>
-//         getAPI(`/get-all-data-school-fees?schoolId=${schoolId}&academicYear=${year}`)
-//       );
-//       const responses = await Promise.all(promises);
-//       const unifiedData = responses.flatMap((res, index) => {
-//         if (!res?.data?.data) {
-//           console.warn(`No data found for year ${years[index]}`);
-//           return [];
-//         }
-//         return res.data.data;
-//       });
-
-//       console.log('Fetched unifiedData:', unifiedData);
-
-//       const classSectionMapping = {};
-//       unifiedData.forEach(record => {
-//         const className = record.className || '-';
-//         const sectionName = record.sectionName || '-';
-//         if (className !== '-' && sectionName !== '-') {
-//           if (!classSectionMapping[className]) {
-//             classSectionMapping[className] = new Set();
-//           }
-//           classSectionMapping[className].add(sectionName);
-//         }
-//       });
-
-//       setClassSectionMap(classSectionMapping);
-
-//       const allFeeTypes = responses
-//         .flatMap((res) => res?.data?.feeTypes || [])
-//         .filter((type, index, self) => self.indexOf(type) === index)
-//         .sort();
-
-//       setFeeData(unifiedData);
-//       setFeeTypes(allFeeTypes);
-
-//       const filterOptions = responses[0]?.data?.filterOptions || {};
-//       setClassOptions(filterOptions.classOptions || []);
-//       setSectionOptions(filterOptions.sectionOptions || []);
-//       setInstallmentOptions(filterOptions.installmentOptions || []);
-//       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
-
-//       if (rowsPerPage === 'all' && unifiedData.length > 0) {
-//         const studentDataArray = Object.keys(
-//           unifiedData.reduce((acc, row) => {
-//             acc[row.admissionNumber] = {};
-//             return acc;
-//           }, {})
-//         ).length;
-//         setRowsPerPage(studentDataArray || 'all');
-//       }
-//     } catch (error) {
-//       toast.error('Error fetching data: ' + error.message);
-//       console.error('Error fetching fee data:', error);
-//       setFeeData([]);
-//       setClassSectionMap({});
-//       setFeeTypes([]);
-//       setClassOptions([]);
-//       setSectionOptions([]);
-//       setInstallmentOptions([]);
-//       setPaymentModeOptions([]);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (!schoolId || !selectedAcademicYear) return;
-//     const yearsToFetch = selectedYears.length > 0
-//       ? selectedYears.map((year) => year.value)
-//       : [selectedAcademicYear];
-//     fetchFeeData(yearsToFetch);
-//   }, [schoolId, selectedAcademicYear, selectedYears]);
-
-//   const handleSelectChange = (selectedOptions, { name }) => {
+//  const handleSelectChange = (selectedOptions, { name }) => {
 //     const selected = selectedOptions || [];
 //     if (name === 'academicYear') {
 //       setSelectedYears(selected);
 //       setCurrentPage(1);
+//       if (selected.length > 0) {
+//        fetchArrearFeesData(selected.map(year => year.value)); 
+//       }
 //     } else if (name === 'paymentMode') {
 //       setSelectedPaymentModes(selected);
 //       setCurrentPage(1);
@@ -273,15 +428,15 @@
 //     } else if (name === 'installment') {
 //       setSelectedInstallments(selected);
 //       setCurrentPage(1);
-//     } else if (name === 'status') {
-//       setSelectedStatuses(selected);
-//       setCurrentPage(1);
 //     } else if (name === 'rowsPerPage') {
 //       if (selectedOptions?.value === 'all') {
-//         setRowsPerPage(studentDataArray.length || 'all');
+//         setRowsPerPage(feeData.length + archiveData.length || 'all');
 //       } else {
 //         setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
 //       }
+//       setCurrentPage(1);
+//     } else if (name === 'tcStatus') {
+//       setSelectedTCStatus(selectedOptions);
 //       setCurrentPage(1);
 //     }
 //   };
@@ -289,10 +444,15 @@
 //   const applyFilters = () => {
 //     setShowFilterPanel(false);
 //     setCurrentPage(1);
-//     const yearsToFetch = selectedYears.length > 0
-//       ? selectedYears.map((year) => year.value)
-//       : [selectedAcademicYear];
-//     fetchFeeData(yearsToFetch);
+//     Promise.all([
+//       fetchDefaulterData(),
+//       fetchArchiveData(),
+//        fetchArrearFeesData(selectedYears.length > 0 ? selectedYears.map(year => year.value) : [selectedAcademicYear])
+//     ])
+//       .catch((error) => {
+//         console.error('Error applying filters:', error);
+//         toast.error('Error applying filters: ' + error.message);
+//       });
 //   };
 
 //   const resetFilters = () => {
@@ -302,85 +462,122 @@
 //     setSelectedSections([]);
 //     setSelectedFeeTypes([]);
 //     setSelectedInstallments([]);
-//     setSelectedStatuses([]);
+//     setSelectedTCStatus(null);
 //     setStartDate('');
 //     setEndDate('');
 //     setSearchTerm('');
 //     setCurrentPage(1);
 //     setRowsPerPage('all');
 //     setShowFilterPanel(false);
-//     fetchFeeData([selectedAcademicYear]);
+//     Promise.all([
+//       fetchDefaulterData(),
+//       fetchArchiveData(),
+//        fetchArrearFeesData([selectedAcademicYear || academicYearOptions[0]?.value])
+//     ])
+//       .catch((error) => {
+//         console.error('Error resetting filters:', error);
+//         toast.error('Error resetting filters: ' + error.message);
+//       });
 //   };
 
-//   const toggleFilter = () => {
-//     setShowFilterPanel(!showFilterPanel);
-//     setShowExportDropdown(false);
-//   };
+//  const processedData = () => {
+//   const defaulterRows = feeData.map((student) => {
+//     const archiveStudent = archiveData.find(
+//       (archive) => archive.admissionNumber === student.admissionNumber && archive.academicYear === selectedAcademicYear
+//     );
+//     const openingArrear = archiveStudent ? Number(archiveStudent.totalFeesDue).toFixed(2) : '0.00';
+//     const closingBalance = archiveStudent ? Number(archiveStudent.totalFeesDue).toFixed(2) : Number(student.totalBalance || student.totals?.totalBalance || 0).toFixed(2);
 
-//   const toggleExportDropdown = () => {
-//     setShowExportDropdown(!showExportDropdown);
-//     setShowFilterPanel(false);
-//   };
+//     return {
+//       academicYear: student.academicYear,
+//       studentName: student.studentName,
+//       admissionNumber: student.admissionNumber,
+//       className: student.className,
+//       sectionName: student.sectionName,
+//       parentContactNumber: student.parentContactNumber || '-',
+//       tcStatus: student.tcStatus || 'Active',
+//       openingArrear,
+//       feesReceived: '0.00',
+//       defaulterFeesTransferred: Number(student.totalBalance || student.totals?.totalBalance || 0).toFixed(2),
+//       closingBalance,
+//       source: 'defaulter',
+//     };
+//   });
 
-//   // Process only "Paid" status records
-//   const processedData = feeData.flatMap((student) =>
-//     student.installments.flatMap((installment) =>
-//       installment.reportStatus
-//         .filter((status) => status === 'Paid') // Only include "Paid" status
-//         .map((status) => ({
-//           ...installment,
-//           admissionNumber: student.admissionNumber,
-//           studentName: student.studentName,
-//           className: student.className,
-//           sectionName: student.sectionName,
-//           academicYear: student.academicYear,
-//           status,
-//           displayDate: installment.paymentDate, // Use paymentDate for "Paid" status
-//           feesDue: installment.feesDue || 0,
-//           feesPaid: installment.feesPaid || 0,
-//           concession: installment.concession || 0,
-//           balance: installment.balance || 0,
-//         }))
-//     )
-//   );
+// const archiveRows = archiveData
+//   .filter((archive) => {
+//     const exists = feeData.some(
+//       (student) => student.admissionNumber === archive.admissionNumber
+//     );
+//     return !exists;
+//   })
+//   .map((archive) => {
+//     // Find corresponding records
+//     const arrearRecord = ArrearFeesData.find(
+//       (arrear) => arrear.admissionNumber === archive.admissionNumber
+//     );
 
-//   const filteredData = processedData.filter((row) => {
+//     const feeRecord = feeData.find(
+//       (fee) => fee.admissionNumber === archive.admissionNumber
+//     );
+
+//     const openingArrear = Number(archive.totalFeesDue || 0).toFixed(2);;
+//   const feesReceived = arrearRecord
+//          ? Number(arrearRecord.openingBalance || 0).toFixed(2)
+//       : "0.00";
+//  const closingBalance = (openingArrear - feesReceived).toFixed(2);
+  
+
+//     return {
+//       academicYear: archive.academicYear,
+//       studentName: archive.studentName,
+//       admissionNumber: archive.admissionNumber,
+//       className: archive.className,
+//       sectionName: archive.sectionName,
+//       parentContactNumber: archive.parentContactNumber || "-",
+//       tcStatus: archive.tcStatus || "Active",
+//       openingArrear,
+//       feesReceived,
+//       defaulterFeesTransferred: "0.00",
+//       closingBalance,
+//       source: "archive",
+//     };
+//   });
+
+
+
+//   const result = [...defaulterRows, ...archiveRows];
+//   console.log('processedData:', JSON.stringify(result, null, 2)); 
+//   return result;
+// };
+
+//   const filteredData = processedData().filter((row) => {
 //     const matchesSearchTerm = searchTerm
-//       ? (row.displayDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-//         (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-//         (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-//         (row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-//         (row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-//         (row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-//         (row.status || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+//       ? (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+//         (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase())
 //       : true;
 
 //     const matchesPaymentMode =
 //       selectedPaymentModes.length === 0 ||
-//       selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
+//       (row.source === 'defaulter' &&
+//         feeData
+//           .find((student) => student.admissionNumber === row.admissionNumber)
+//           ?.installments?.some((inst) => selectedPaymentModes.some((mode) => inst.paymentMode === mode.value))) ||
+//       row.source === 'archive';
 
 //     const matchesYear =
 //       selectedYears.length === 0 ||
 //       selectedYears.some((year) => row.academicYear === year.value);
 
-//     const matchesDate =
-//       (!startDate && !endDate) ||
-//       (() => {
-//         if (!row.displayDate || row.displayDate === '-') return false;
-//         try {
-//           const recordDate = new Date(row.displayDate.split('/').reverse().join('-'));
-//           const start = startDate ? new Date(startDate) : null;
-//           const end = endDate ? new Date(endDate) : null;
-//           return (!start || recordDate >= start) && (!end || recordDate <= end);
-//         } catch (error) {
-//           console.warn('Invalid date in matchesDate:', row.displayDate);
-//           return false;
-//         }
-//       })();
-
 //     const matchesFeeType =
 //       selectedFeeTypes.length === 0 ||
-//       selectedFeeTypes.some((type) => (row.feeTypes?.[type.value] || 0) > 0);
+//       (row.source === 'defaulter' &&
+//         feeData
+//           .find((student) => student.admissionNumber === row.admissionNumber)
+//           ?.installments?.some((inst) =>
+//             selectedFeeTypes.some((type) => (inst.feeTypes?.[type.value] || 0) > 0)
+//           )) ||
+//       row.source === 'archive';
 
 //     const matchesClass =
 //       selectedClasses.length === 0 ||
@@ -392,77 +589,52 @@
 
 //     const matchesInstallment =
 //       selectedInstallments.length === 0 ||
-//       selectedInstallments.some((inst) => row.installmentName === inst.value);
+//       (row.source === 'defaulter' &&
+//         feeData
+//           .find((student) => student.admissionNumber === row.admissionNumber)
+//           ?.installments?.some((inst) => selectedInstallments.some((instOpt) => inst.installmentName === instOpt.value))) ||
+//       row.source === 'archive';
 
-//     const matchesStatus =
-//       selectedStatuses.length === 0 ||
-//       selectedStatuses.some((status) => row.status === status.value);
+//     const matchesTCStatus =
+//       !selectedTCStatus || row.tcStatus === selectedTCStatus.value;
+
+//     const matchesDate = true;
 
 //     return (
 //       matchesSearchTerm &&
 //       matchesPaymentMode &&
 //       matchesYear &&
-//       matchesDate &&
 //       matchesFeeType &&
 //       matchesClass &&
 //       matchesSection &&
 //       matchesInstallment &&
-//       matchesStatus
+//       matchesTCStatus &&
+//       (Number(row.closingBalance) > 0 || Number(row.openingArrear) > 0)
 //     );
 //   });
 
-//   console.log('Filtered data:', filteredData);
+//   const studentDataArray = filteredData.sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
 
-//   const groupedByStudent = filteredData.reduce((acc, row) => {
-//     const admissionNumber = row.admissionNumber;
-//     if (!acc[admissionNumber]) {
-//       acc[admissionNumber] = {
-//         studentName: row.studentName,
-//         className: row.className,
-//         sectionName: row.sectionName,
-//         academicYear: row.academicYear,
-//         rows: [],
-//       };
-//     }
-//     acc[admissionNumber].rows.push(row);
-//     return acc;
-//   }, {});
-
-//   console.log('Grouped by student:', groupedByStudent);
-
-//   const studentDataArray = Object.keys(groupedByStudent)
-//     .map((admissionNumber) => ({
-//       admissionNumber,
-//       ...groupedByStudent[admissionNumber],
-//       rows: groupedByStudent[admissionNumber].rows.sort((a, b) => {
-//         if (!a.displayDate || a.displayDate === '-' || !b.displayDate || b.displayDate === '-') return 0;
-//         try {
-//           return (
-//             new Date(a.displayDate.split('/').reverse().join('-')).getTime() -
-//             new Date(b.displayDate.split('/').reverse().join('-')).getTime()
-//           );
-//         } catch (error) {
-//           console.warn('Invalid date in sorting:', a.displayDate, b.displayDate);
-//           return 0;
-//         }
-//       }),
-//     }))
-//     .sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
-
-//   const grandTotals = studentDataArray.reduce((acc, student) => {
-//     const studentTotals = student.rows.reduce((acc, row) => {
-//       acc.totalFeesDue += row.feesDue || 0;
-//       acc.totalFeesPaid += row.feesPaid || 0;
-//       acc.totalConcession += row.concession || 0;
-//       acc.totalBalance += row.balance || 0;
+//   const grandTotals = studentDataArray.reduce(
+//     (acc, student) => {
+//       acc.totalOpeningArrear += Number(student.openingArrear) || 0;
+//       acc.totalFeesReceived += Number(student.feesReceived) || 0;
+//       acc.totalDefaulterFeesTransferred += Number(student.defaulterFeesTransferred) || 0;
+//       acc.totalClosingBalance += Number(student.closingBalance) || 0;
 //       return acc;
-//     }, { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 });
-//     acc.totalFeesDue += studentTotals.totalFeesDue;
-//     acc.totalFeesPaid += studentTotals.totalFeesPaid;
-//     acc.totalConcession += studentTotals.totalConcession;
-//     acc.totalBalance += studentTotals.totalBalance;
-//     return acc;
-//   }, { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 });
+//     },
+//     {
+//       totalOpeningArrear: 0,
+//       totalFeesReceived: 0,
+//       totalDefaulterFeesTransferred: 0,
+//       totalClosingBalance: 0,
+//     }
+//   );
+
+//   grandTotals.totalOpeningArrear = Number(grandTotals.totalOpeningArrear).toFixed(2);
+//   grandTotals.totalFeesReceived = Number(grandTotals.totalFeesReceived).toFixed(2);
+//   grandTotals.totalDefaulterFeesTransferred = Number(grandTotals.totalDefaulterFeesTransferred).toFixed(2);
+//   grandTotals.totalClosingBalance = Number(grandTotals.totalClosingBalance).toFixed(2);
 
 //   const totalRecords = studentDataArray.length;
 //   const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
@@ -499,18 +671,12 @@
 //   };
 
 //   const headerMapping = {
-//     displayDate: 'Date',
 //     academicYear: 'Academic Year',
-//     admissionNumber: 'Admission No.',
-//     status: 'Status',
 //     studentName: 'Name',
-//     className: 'Class',
-//     sectionName: 'Section',
-//     installmentName: 'Installment',
-//     feesDue: 'Fees Due',
-//     feesPaid: 'Fees Paid',
-//     concession: 'Concession',
-//     balance: 'Balance',
+//     openingArrear: 'Opening Arrear',
+//     feesReceived: 'Fees Received',
+//     defaulterFeesTransferred: 'Defaulter Fees Transferred',
+//     closingBalance: 'Closing Balance',
 //   };
 
 //   const tableFields = Object.keys(headerMapping).map((key) => ({
@@ -520,22 +686,12 @@
 
 //   const getFieldValue = (record, field) => {
 //     const fieldId = field.id;
-//     if (fieldId === 'displayDate') {
-//       return formatDate(record[fieldId]) || '-';
-//     } else if (fieldId === 'academicYear') {
+//     if (fieldId === 'academicYear') {
 //       return formatAcademicYear(record[fieldId]) || '-';
-//     } else if (fieldId === 'status') {
-//       return record[fieldId] || '-';
-//     } else if (
-//       fieldId === 'admissionNumber' ||
-//       fieldId === 'studentName' ||
-//       fieldId === 'className' ||
-//       fieldId === 'sectionName' ||
-//       fieldId === 'installmentName'
-//     ) {
+//     } else if (fieldId === 'studentName') {
 //       return record[fieldId] || '-';
 //     } else {
-//       return record[fieldId] !== undefined ? Number(record[fieldId]).toFixed(2) : '0.00';
+//       return record[fieldId] !== undefined ? record[fieldId] : '0.00';
 //     }
 //   };
 
@@ -551,7 +707,7 @@
 //                     <input
 //                       type="text"
 //                       className="form-control border-dark"
-//                       placeholder="Search by field"
+//                       placeholder="Search by field..."
 //                       value={searchTerm}
 //                       onChange={(e) => {
 //                         setSearchTerm(e.target.value);
@@ -566,14 +722,23 @@
 //                       name="rowsPerPage"
 //                       placeholder="Show"
 //                       options={pageShowOptions}
-//                       value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === studentDataArray.length))}
+//                       value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === (feeData.length + archiveData.length)))}
+//                       onChange={(selected, action) => handleSelectChange(selected, action)}
+//                       className="email-select border border-dark me-lg-2"
+//                     />
+//                     <Select
+//                       isClearable
+//                       name="tcStatus"
+//                       placeholder="Select Status"
+//                       options={tcStatusOptions}
+//                       value={selectedTCStatus}
 //                       onChange={(selected, action) => handleSelectChange(selected, action)}
 //                       className="email-select border border-dark me-lg-2"
 //                     />
 //                     <div
 //                       className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
 //                       style={{ cursor: 'pointer' }}
-//                       onClick={toggleFilter}
+//                       onClick={() => setShowFilterPanel(!showFilterPanel)}
 //                     >
 //                       <FaFilter />
 //                     </div>
@@ -581,7 +746,7 @@
 //                       <div
 //                         className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
 //                         style={{ cursor: 'pointer' }}
-//                         onClick={toggleExportDropdown}
+//                         onClick={() => setShowExportDropdown(!showExportDropdown)}
 //                         title="Download"
 //                       >
 //                         <FaDownload />
@@ -611,12 +776,7 @@
 //                                   tableFields,
 //                                   headerMapping,
 //                                   getFieldValue,
-//                                   {
-//                                     totalFeesDue: grandTotals.totalFeesDue.toFixed(2),
-//                                     totalFeesPaid: grandTotals.totalFeesPaid.toFixed(2),
-//                                     totalConcession: grandTotals.totalConcession.toFixed(2),
-//                                     totalBalance: grandTotals.totalBalance.toFixed(2),
-//                                   },
+//                                   grandTotals,
 //                                   formatAcademicYear,
 //                                   selectedYears.length > 0
 //                                     ? selectedYears.map((y) => y.value).join(',')
@@ -649,12 +809,7 @@
 //                                   tableFields,
 //                                   headerMapping,
 //                                   getFieldValue,
-//                                   {
-//                                     totalFeesDue: grandTotals.totalFeesDue.toFixed(2),
-//                                     totalFeesPaid: grandTotals.totalFeesPaid.toFixed(2),
-//                                     totalConcession: grandTotals.totalConcession.toFixed(2),
-//                                     totalBalance: grandTotals.totalBalance.toFixed(2),
-//                                   },
+//                                   grandTotals,
 //                                   formatAcademicYear,
 //                                   selectedYears.length > 0
 //                                     ? selectedYears.map((y) => y.value).join(',')
@@ -697,51 +852,17 @@
 //                       </ul>
 
 //                       <div className="tab-content mt-2">
-//                         {activeTab === 'Date' && (
-//                           <div className="row d-flex justify-content-center">
-//                             <div className="col-md-4">
-//                               <label className="form-label">Start Date</label>
-//                               <div className="input-group">
-//                                 <input
-//                                   type="date"
-//                                   className="form-control"
-//                                   value={startDate}
-//                                   onChange={(e) => {
-//                                     setStartDate(e.target.value);
-//                                     setCurrentPage(1);
-//                                   }}
-//                                 />
-//                               </div>
-//                             </div>
-//                             <div className="col-md-4">
-//                               <label className="form-label">End Date</label>
-//                               <div className="input-group">
-//                                 <input
-//                                   type="date"
-//                                   className="form-control"
-//                                   value={endDate}
-//                                   onChange={(e) => {
-//                                     setEndDate(e.target.value);
-//                                     setCurrentPage(1);
-//                                   }}
-//                                 />
-//                               </div>
-//                             </div>
-//                           </div>
-//                         )}
-
-//                         {activeTab === 'Academic Year' && (
+//                         {activeTab === 'Payment Mode' && (
 //                           <div className="row d-flex justify-content-center">
 //                             <div className="col-md-8">
 //                               <CreatableSelect
 //                                 isMulti
-//                                 name="academicYear"
-//                                 options={academicYearOptions}
-//                                 value={selectedYears}
+//                                 name="paymentMode"
+//                                 options={paymentModeOptions}
+//                                 value={selectedPaymentModes}
 //                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-//                                 placeholder="Select Academic Years"
+//                                 placeholder="Select Payment Modes"
 //                                 className="mt-2"
-//                                 isLoading={loadingYears}
 //                               />
 //                             </div>
 //                           </div>
@@ -775,6 +896,52 @@
 //                           </div>
 //                         )}
 
+//                         {activeTab === 'Date' && (
+//                           <div className="row d-lg-flex justify-content-center">
+//                             <div className="col-md-4">
+//                               <label className="form-label">Start Date </label>
+//                               <input
+//                                 type="date"
+//                                 className="form-control"
+//                                 value={startDate}
+//                                 onChange={(e) => {
+//                                   setStartDate(e.target.value);
+//                                   setCurrentPage(1);
+//                                 }}
+//                               />
+//                             </div>
+//                             <div className="col-md-4">
+//                               <label className="form-label">End Date </label>
+//                               <input
+//                                 type="date"
+//                                 className="form-control"
+//                                 value={endDate}
+//                                 onChange={(e) => {
+//                                   setEndDate(e.target.value);
+//                                   setCurrentPage(1);
+//                                 }}
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+
+//                         {activeTab === 'Academic Year' && (
+//                           <div className="row d-flex justify-content-center">
+//                             <div className="col-md-8">
+//                               <CreatableSelect
+//                                 isMulti
+//                                 name="academicYear"
+//                                 options={academicYearOptions}
+//                                 value={selectedYears}
+//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
+//                                 placeholder="Select Academic Years"
+//                                 className="mt-2"
+//                                 isLoading={loadingYears}
+//                               />
+//                             </div>
+//                           </div>
+//                         )}
+
 //                         {activeTab === 'Installment' && (
 //                           <div className="row d-flex justify-content-center">
 //                             <div className="col-md-6">
@@ -785,38 +952,6 @@
 //                                 value={selectedInstallments}
 //                                 onChange={(selected, action) => handleSelectChange(selected, action)}
 //                                 placeholder="Select Installments"
-//                                 className="mt-2"
-//                               />
-//                             </div>
-//                           </div>
-//                         )}
-
-//                         {activeTab === 'Payment Mode' && (
-//                           <div className="row d-flex justify-content-center">
-//                             <div className="col-md-8">
-//                               <CreatableSelect
-//                                 isMulti
-//                                 name="paymentMode"
-//                                 options={paymentModeOptions}
-//                                 value={selectedPaymentModes}
-//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-//                                 placeholder="Select Payment Modes"
-//                                 className="mt-2"
-//                               />
-//                             </div>
-//                           </div>
-//                         )}
-
-//                         {activeTab === 'Status' && (
-//                           <div className="row d-flex justify-content-center">
-//                             <div className="col-md-6">
-//                               <CreatableSelect
-//                                 isMulti
-//                                 name="status"
-//                                 options={statusOptions}
-//                                 value={selectedStatuses}
-//                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-//                                 placeholder="Select Statuses"
 //                                 className="mt-2"
 //                               />
 //                             </div>
@@ -839,7 +974,7 @@
 
 //               <div className="container">
 //                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-//                   <h2 className="payroll-title text-center mb-0 flex-grow-1">Student-Wise School Fees Report</h2>
+//                   <h2 className="payroll-title text-center mb-0 flex-grow-1">Opening And Closing Arrear Report</h2>
 //                 </div>
 //               </div>
 
@@ -856,110 +991,52 @@
 //                     <table className="table text-dark border border-secondary mb-1">
 //                       <thead>
 //                         <tr className="payroll-table-header">
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Date</th>
 //                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Academic Year</th>
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Admission No.</th>
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Status</th>
 //                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Name</th>
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Class</th>
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Section</th>
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Installment</th>
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Due</th>
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Concession</th>
-//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Balance</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Opening Arrear</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Received</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Defaulter Fees Transferred</th>
+//                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Closing Balance</th>
 //                         </tr>
 //                       </thead>
 //                       <tbody>
-//                         {paginatedData().map((student, studentIndex) => {
-//                           const studentTotals = student.rows.reduce(
-//                             (acc, row) => {
-//                               acc.totalFeesDue += row.feesDue || 0;
-//                               acc.totalFeesPaid += row.feesPaid || 0;
-//                               acc.totalConcession += row.concession || 0;
-//                               acc.totalBalance += row.balance || 0;
-//                               return acc;
-//                             },
-//                             { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 }
-//                           );
-
-//                           return (
-//                             <React.Fragment key={student.admissionNumber}>
-//                               {student.rows.map((record, rowIndex) => (
-//                                 <tr key={`${record.admissionNumber}_${record.installmentName}_${record.status}_${studentIndex}_${rowIndex}`}>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {formatDate(record.displayDate)}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {formatAcademicYear(record.academicYear) || '-'}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {record.admissionNumber || '-'}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {record.status || '-'}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {record.studentName || '-'}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {record.className || '-'}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {record.sectionName || '-'}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {record.installmentName || '-'}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {Number(record.feesDue).toFixed(2)}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {Number(record.feesPaid).toFixed(2)}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {Number(record.concession).toFixed(2)}
-//                                   </td>
-//                                   <td className="text-center align-middle border border-secondary text-nowrap p-2">
-//                                     {Number(record.balance).toFixed(2)}
-//                                   </td>
-//                                 </tr>
-//                               ))}
-//                               <tr className="payroll-table-footer">
-//                                 <td colSpan={8} className="text-right border border-secondary p-2">
-//                                   <strong>Total</strong>
-//                                 </td>
-//                                 <td className="text-center border border-secondary p-2">
-//                                   <strong>{studentTotals.totalFeesDue.toFixed(2)}</strong>
-//                                 </td>
-//                                 <td className="text-center border border-secondary p-2">
-//                                   <strong>{studentTotals.totalFeesPaid.toFixed(2)}</strong>
-//                                 </td>
-//                                 <td className="text-center border border-secondary p-2">
-//                                   <strong>{studentTotals.totalConcession.toFixed(2)}</strong>
-//                                 </td>
-//                                 <td className="text-center border border-secondary p-2">
-//                                   <strong>{studentTotals.totalBalance.toFixed(2)}</strong>
-//                                 </td>
-//                               </tr>
-//                             </React.Fragment>
-//                           );
-//                         })}
+//                         {paginatedData().map((student, index) => (
+//                           <tr key={`${student.admissionNumber}_${index}`}>
+//                             <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                               {formatAcademicYear(student.academicYear) || '-'}
+//                             </td>
+//                             <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                               {student.studentName || '-'}
+//                             </td>
+//                             <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                               {student.openingArrear}
+//                             </td>
+//                             <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                               {student.feesReceived}
+//                             </td>
+//                             <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                               {student.defaulterFeesTransferred}
+//                             </td>
+//                             <td className="text-center align-middle border border-secondary text-nowrap p-2">
+//                               {student.closingBalance}
+//                             </td>
+//                           </tr>
+//                         ))}
 //                         <tr className="payroll-table-footer">
-//                           <td colSpan={8} className="text-right border border-secondary p-2">
-//                             <strong>Grand Total</strong>
+//                           <td colSpan={2} className="text-right border border-secondary p-2">
+//                             <strong>Total</strong>
 //                           </td>
 //                           <td className="text-center border border-secondary p-2">
-//                             <strong>{grandTotals.totalFeesDue.toFixed(2)}</strong>
+//                             <strong>{grandTotals.totalOpeningArrear}</strong>
 //                           </td>
 //                           <td className="text-center border border-secondary p-2">
-//                             <strong>{grandTotals.totalFeesPaid.toFixed(2)}</strong>
+//                             <strong>{grandTotals.totalFeesReceived}</strong>
 //                           </td>
 //                           <td className="text-center border border-secondary p-2">
-//                             <strong>{grandTotals.totalConcession.toFixed(2)}</strong>
+//                             <strong>{grandTotals.totalDefaulterFeesTransferred}</strong>
 //                           </td>
 //                           <td className="text-center border border-secondary p-2">
-//                             <strong>{grandTotals.totalBalance.toFixed(2)}</strong>
+//                             <strong>{grandTotals.totalClosingBalance}</strong>
 //                           </td>
 //                         </tr>
 //                       </tbody>
@@ -1008,7 +1085,7 @@
 //               ) : (
 //                 <div className="text-center mt-3">
 //                   <p>
-//                     No paid installments match the selected filters for{' '}
+//                     No data matches the selected filters for{' '}
 //                     {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
 //                       formatAcademicYear(selectedAcademicYear)}.
 //                   </p>
@@ -1022,7 +1099,8 @@
 //   );
 // };
 
-// export default SchoolFeesReport;
+// export default OpeningAndClosingArrearFeesReport;
+
 
 
 
@@ -1033,33 +1111,30 @@ import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
-import { exportToExcel, exportToPDF } from './SchoolFeesReport';
+import { exportToExcel, exportToPDF } from './OpeningAndClosingArrearReportExport';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const SchoolFeesReport = () => {
+const OpeningAndClosingArrearFeesReport = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
-  const [activeTab, setActiveTab] = useState('Date');
+  const [activeTab, setActiveTab] = useState('Payment Mode');
   const [searchTerm, setSearchTerm] = useState('');
   const [schoolId, setSchoolId] = useState('');
   const [school, setSchool] = useState(null);
   const [logoSrc, setLogoSrc] = useState('');
   const [feeData, setFeeData] = useState([]);
+  const [archiveData, setArchiveData] = useState([]);
+  const [ArrearFeesData, setArrearFeeData] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
   const [classSectionMap, setClassSectionMap] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loadingYears, setLoadingYears] = useState(false);
   const [classOptions, setClassOptions] = useState([]);
   const [sectionOptions, setSectionOptions] = useState([]);
+  const [academicYearOptions, setAcademicYearOptions] = useState([]);
   const [installmentOptions, setInstallmentOptions] = useState([]);
   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
-  const [statusOptions] = useState([
-    { value: 'Paid', label: 'Paid' },
-    { value: 'Refund', label: 'Refund' },
-    { value: 'Cancelled', label: 'Cancelled' },
-    { value: 'Cheque Return', label: 'Cheque Return' },
-  ]);
-  const [academicYearOptions, setAcademicYearOptions] = useState([]);
+  const [tcStatusOptions, setTCStatusOptions] = useState([]);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
@@ -1067,7 +1142,7 @@ const SchoolFeesReport = () => {
   const [selectedYears, setSelectedYears] = useState([]);
   const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
   const [selectedInstallments, setSelectedInstallments] = useState([]);
-  const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [selectedTCStatus, setSelectedTCStatus] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
@@ -1075,7 +1150,7 @@ const SchoolFeesReport = () => {
   const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Payment Mode'];
+  const tabs = ['Academic Year'];
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -1091,14 +1166,224 @@ const SchoolFeesReport = () => {
     return `${startYear}-${endYear?.slice(-2) || ''}`;
   };
 
-  const formatDate = (dateStr) => {
-    if (!dateStr || dateStr === '-') return '-';
+  const fetchDefaulterData = async () => {
+    setIsLoading(true);
     try {
-      const [day, month, year] = dateStr.split('/');
-      return `${day}-${month}-${year}`;
+      const defaulterResponse = await getAPI(`/Defaulter-Fees?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
+      const unifiedData = !defaulterResponse?.hasError && defaulterResponse?.data?.data ? defaulterResponse.data.data : [];
+      
+      if (!defaulterResponse?.data?.data && !defaulterResponse?.hasError) {
+        console.warn(`No defaulter data found for year ${selectedAcademicYear}: ${defaulterResponse?.data?.message || 'Unknown error'}`);
+      }
+
+      console.log('Fetched unifiedData:', unifiedData);
+
+      const classSectionMapping = {};
+      unifiedData.forEach(record => {
+        const className = record.className || '-';
+        const sectionName = record.sectionName || '-';
+        if (className !== '-' && sectionName !== '-') {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = new Set();
+          }
+          classSectionMapping[className].add(sectionName);
+        }
+      });
+
+      setClassSectionMap(prev => ({ ...prev, ...classSectionMapping }));
+      setFeeData(unifiedData);
+
+      const filterOptions = defaulterResponse?.hasError ? {} : defaulterResponse?.data?.filterOptions || {};
+      setClassOptions(filterOptions.classOptions || []);
+      setSectionOptions(filterOptions.sectionOptions || []);
+      setInstallmentOptions(filterOptions.installmentOptions || []);
+      setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+      setTCStatusOptions(filterOptions.tcStatusOptions || []);
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
     } catch (error) {
-      console.warn('Invalid date format:', dateStr);
-      return '-';
+      console.error('Error fetching defaulter data:', error);
+      setFeeData([]);
+      setClassSectionMap({});
+      setClassOptions([]);
+      setSectionOptions([]);
+      setInstallmentOptions([]);
+      setPaymentModeOptions([]);
+      setTCStatusOptions([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchArchiveData = async () => {
+    setIsLoading(true);
+    try {
+      const archiveResponse = await getAPI(`/get-arrear-fees-ArrearFeesArchive?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
+      const previousAcademicYear = archiveResponse?.data?.data?.previousAcademicYear;
+      console.log("previous academicYear:", previousAcademicYear);
+      const unifiedArchiveData = !archiveResponse?.hasError && archiveResponse?.data?.data?.defaulters
+        ? archiveResponse.data.data.defaulters.map(defaulter => ({
+            admissionNumber: defaulter.admissionNumber,
+            studentName: defaulter.studentName || '-',
+            className: defaulter.className || '-',
+            sectionName: defaulter.sectionName || '-',
+            parentContactNumber: defaulter.parentContactNumber || '-',
+            tcStatus: defaulter.tcStatus || 'Active',
+            academicYear: previousAcademicYear,
+            totalFeesDue: defaulter.totals?.totalFeesDue || 0,
+          }))
+        : [];
+
+      if (!archiveResponse?.data?.data?.defaulters && !archiveResponse?.hasError) {
+        console.warn(`No archive data found for year ${selectedAcademicYear}: ${archiveResponse?.data?.message || 'Unknown error'}`);
+      }
+
+      console.log('Fetched unifiedArchiveData:', JSON.stringify(unifiedArchiveData, null, 2));
+
+      const classSectionMapping = {};
+      unifiedArchiveData.forEach(record => {
+        const className = record.className || '-';
+        const sectionName = record.sectionName || '-';
+        if (className !== '-' && sectionName !== '-') {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = new Set();
+          }
+          classSectionMapping[className].add(sectionName);
+        }
+      });
+
+      setClassSectionMap(prev => ({ ...prev, ...classSectionMapping }));
+      setArchiveData(unifiedArchiveData);
+
+      if (rowsPerPage === 'all' && unifiedArchiveData.length > 0) {
+        setRowsPerPage(unifiedArchiveData.length);
+      }
+    } catch (error) {
+      toast.error('Error fetching archive data: ' + error.message);
+      console.error('Error fetching archive data:', error);
+      setArchiveData([]);
+      setClassSectionMap({});
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchArrearFeesData = async (years) => {
+    if (!schoolId || !years.length) return;
+    setIsLoading(true);
+    try {
+      const promises = years.map((year) =>
+        getAPI(`/get-arrear-fees?schoolId=${schoolId}&academicYear=${year}`)
+      );
+      const responses = await Promise.all(promises);
+      const unifiedData = responses.flatMap((res, index) => {
+        if (!res?.data?.data) {
+          console.warn(`No data found for year ${years[index]}`);
+          return [];
+        }
+        const feeRecords = res.data.data.map(item => ({
+          ...item,
+          totalDue: Number(item.totalDue || 0).toFixed(2),
+          totalPaid: Number(item.totalPaid || 0).toFixed(2),
+          totalConcession: Number(item.totalConcession || 0).toFixed(2),
+          fineAmount: Number(item.fineAmount || 0).toFixed(2),
+          totalBalance: Number(item.totalBalance || 0).toFixed(2),
+          openingBalance: Number(item.openingBalance || 0).toFixed(2),
+          feeTypes: Object.fromEntries(
+            Object.entries(item.feeTypes || {}).map(([type, value]) => [
+              type,
+              { ...value, totalPaid: Number(value.totalPaid || 0).toFixed(2) }
+            ])
+          ),
+          isRefund: false,
+        }));
+
+        const refundRecords = res.data.data.flatMap(item =>
+          (item.refundData || []).map(refund => {
+            const feeTypeRefunds = refund.feeTypeRefunds || [];
+            const totalRefundAmount = feeTypeRefunds.reduce(
+              (sum, feeType) => sum + Number(feeType.refundAmountandcancelledAmount || 0),
+              0
+            );
+            const totalConcession = feeTypeRefunds.reduce(
+              (sum, feeType) => sum + Number(feeType.concessionAmount || 0),
+              0
+            );
+            return {
+              paymentDate: refund.refundDate || '-',
+              academicYear: item.academicYear || '-',
+              admissionNumber: item.admissionNumber || '-',
+              studentName: item.studentName || '-',
+              className: item.className || '-',
+              sectionName: item.sectionName || '-',
+              installmentName: item.installmentName || '-',
+              paymentMode: refund.paymentMode || '-',
+              transactionNumber: refund.transactionNumber || '-',
+              receiptNumber: refund.receiptNumber || '-',
+              feeTypes: Object.fromEntries(
+                feeTypeRefunds.map(feeType => [
+                  feeType.feeType,
+                  {
+                    totalPaid: Number(feeType.refundAmountandcancelledAmount || 0).toFixed(2),
+                  }
+                ])
+              ),
+              totalDue: Number(totalRefundAmount).toFixed(2),
+              totalPaid: Number(totalRefundAmount - totalConcession).toFixed(2),
+              totalConcession: Number(totalConcession).toFixed(2),
+              fineAmount: '0.00',
+              totalBalance: '0.00',
+              isRefund: true,
+            };
+          })
+        );
+
+        return [...feeRecords, ...refundRecords];
+      });
+
+      const classSectionMapping = {};
+      unifiedData.forEach((record) => {
+        const className = record.className || '-';
+        const sectionName = record.sectionName || '-';
+        if (className !== '-' && sectionName !== '-') {
+          if (!classSectionMapping[className]) {
+            classSectionMapping[className] = new Set();
+          }
+          classSectionMapping[className].add(sectionName);
+        }
+      });
+      setClassSectionMap(prev => ({ ...prev, ...classSectionMapping }));
+
+      const allFeeTypes = responses
+        .flatMap((res) => res?.data?.feeTypes || [])
+        .filter((type, index, self) => self.indexOf(type) === index)
+        .sort();
+
+      setArrearFeeData(unifiedData);
+      setFeeTypes(allFeeTypes);
+      const filterOptions = responses[0]?.data?.filterOptions || {};
+      setClassOptions(filterOptions.classOptions || []);
+      setSectionOptions(filterOptions.sectionOptions || []);
+      setInstallmentOptions(filterOptions.installmentOptions || []);
+      setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
+    } catch (error) {
+      toast.error('Error fetching arrear fees data: ' + error.message);
+      console.error('Error fetching arrear fees data:', error);
+      setArrearFeeData([]);
+      setFeeTypes([]);
+      setClassOptions([]);
+      setSectionOptions([]);
+      setInstallmentOptions([]);
+      setPaymentModeOptions([]);
+      setClassSectionMap({});
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -1177,8 +1462,21 @@ const SchoolFeesReport = () => {
   }, [schoolId]);
 
   useEffect(() => {
+    if (!schoolId || !selectedAcademicYear) return;
+    Promise.all([
+      fetchDefaulterData(),
+      fetchArchiveData(),
+      fetchArrearFeesData([selectedAcademicYear])
+    ])
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        toast.error('Error fetching data: ' + error.message);
+      });
+  }, [schoolId, selectedAcademicYear]);
+
+  useEffect(() => {
     if (Object.keys(classSectionMap).length === 0) {
-      const sections = new Set(feeData.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
+      const sections = new Set([...feeData, ...archiveData].map(record => record.sectionName).filter(sec => sec && sec !== '-'));
       setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
       if (selectedClasses.length === 0) {
         setSelectedSections([]);
@@ -1207,90 +1505,16 @@ const SchoolFeesReport = () => {
     if (updatedSelectedSections.length !== selectedSections.length) {
       setSelectedSections(updatedSelectedSections);
     }
-  }, [selectedClasses, classSectionMap, feeData]);
-
-  const fetchFeeData = async (years) => {
-    setIsLoading(true);
-    try {
-      const promises = years.map((year) =>
-        getAPI(`/get-all-data-school-fees?schoolId=${schoolId}&academicYear=${year}`)
-      );
-      const responses = await Promise.all(promises);
-      const unifiedData = responses.flatMap((res, index) => {
-        if (!res?.data?.data) {
-          console.warn(`No data found for year ${years[index]}`);
-          return [];
-        }
-        return res.data.data;
-      });
-
-      console.log('Fetched unifiedData:', unifiedData);
-
-      const classSectionMapping = {};
-      unifiedData.forEach(record => {
-        const className = record.className || '-';
-        const sectionName = record.sectionName || '-';
-        if (className !== '-' && sectionName !== '-') {
-          if (!classSectionMapping[className]) {
-            classSectionMapping[className] = new Set();
-          }
-          classSectionMapping[className].add(sectionName);
-        }
-      });
-
-      setClassSectionMap(classSectionMapping);
-
-      const allFeeTypes = responses
-        .flatMap((res) => res?.data?.feeTypes || [])
-        .filter((type, index, self) => type && self.indexOf(type) === index)
-        .sort();
-
-      setFeeData(unifiedData);
-      setFeeTypes(allFeeTypes);
-
-      const filterOptions = responses[0]?.data?.filterOptions || {};
-      setClassOptions(filterOptions.classOptions || []);
-      setSectionOptions(filterOptions.sectionOptions || []);
-      setInstallmentOptions(filterOptions.installmentOptions || []);
-      setPaymentModeOptions(filterOptions.paymentModeOptions || []);
-
-      if (rowsPerPage === 'all' && unifiedData.length > 0) {
-        const studentDataArray = Object.keys(
-          unifiedData.reduce((acc, row) => {
-            acc[row.admissionNumber] = {};
-            return acc;
-          }, {})
-        ).length;
-        setRowsPerPage(studentDataArray || 'all');
-      }
-    } catch (error) {
-      toast.error('Error fetching data: ' + error.message);
-      console.error('Error fetching fee data:', error);
-      setFeeData([]);
-      setClassSectionMap({});
-      setFeeTypes([]);
-      setClassOptions([]);
-      setSectionOptions([]);
-      setInstallmentOptions([]);
-      setPaymentModeOptions([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!schoolId || !selectedAcademicYear) return;
-    const yearsToFetch = selectedYears.length > 0
-      ? selectedYears.map((year) => year.value)
-      : [selectedAcademicYear];
-    fetchFeeData(yearsToFetch);
-  }, [schoolId, selectedAcademicYear, selectedYears]);
+  }, [selectedClasses, classSectionMap, feeData, archiveData]);
 
   const handleSelectChange = (selectedOptions, { name }) => {
     const selected = selectedOptions || [];
     if (name === 'academicYear') {
       setSelectedYears(selected);
       setCurrentPage(1);
+      if (selected.length > 0) {
+        fetchArrearFeesData(selected.map(year => year.value));
+      }
     } else if (name === 'paymentMode') {
       setSelectedPaymentModes(selected);
       setCurrentPage(1);
@@ -1306,15 +1530,15 @@ const SchoolFeesReport = () => {
     } else if (name === 'installment') {
       setSelectedInstallments(selected);
       setCurrentPage(1);
-    } else if (name === 'status') {
-      setSelectedStatuses(selected);
-      setCurrentPage(1);
     } else if (name === 'rowsPerPage') {
       if (selectedOptions?.value === 'all') {
-        setRowsPerPage(studentDataArray.length || 'all');
+        setRowsPerPage(feeData.length + archiveData.length || 'all');
       } else {
         setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
       }
+      setCurrentPage(1);
+    } else if (name === 'tcStatus') {
+      setSelectedTCStatus(selectedOptions);
       setCurrentPage(1);
     }
   };
@@ -1322,10 +1546,15 @@ const SchoolFeesReport = () => {
   const applyFilters = () => {
     setShowFilterPanel(false);
     setCurrentPage(1);
-    const yearsToFetch = selectedYears.length > 0
-      ? selectedYears.map((year) => year.value)
-      : [selectedAcademicYear];
-    fetchFeeData(yearsToFetch);
+    Promise.all([
+      fetchDefaulterData(),
+      fetchArchiveData(),
+      fetchArrearFeesData(selectedYears.length > 0 ? selectedYears.map(year => year.value) : [selectedAcademicYear])
+    ])
+      .catch((error) => {
+        console.error('Error applying filters:', error);
+        toast.error('Error applying filters: ' + error.message);
+      });
   };
 
   const resetFilters = () => {
@@ -1335,92 +1564,112 @@ const SchoolFeesReport = () => {
     setSelectedSections([]);
     setSelectedFeeTypes([]);
     setSelectedInstallments([]);
-    setSelectedStatuses([]);
+    setSelectedTCStatus(null);
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
     setCurrentPage(1);
     setRowsPerPage('all');
     setShowFilterPanel(false);
-    fetchFeeData([selectedAcademicYear]);
+    Promise.all([
+      fetchDefaulterData(),
+      fetchArchiveData(),
+      fetchArrearFeesData([selectedAcademicYear || academicYearOptions[0]?.value])
+    ])
+      .catch((error) => {
+        console.error('Error resetting filters:', error);
+        toast.error('Error resetting filters: ' + error.message);
+      });
   };
 
-  const toggleFilter = () => {
-    setShowFilterPanel(!showFilterPanel);
-    setShowExportDropdown(false);
+  const processedData = () => {
+    const defaulterRows = feeData.map((student) => {
+      const archiveStudent = archiveData.find(
+        (archive) => archive.admissionNumber === student.admissionNumber && archive.academicYear === selectedAcademicYear
+      );
+      const openingArrear = archiveStudent ? Number(archiveStudent.totalFeesDue).toFixed(2) : '0.00';
+      const closingBalance = Number(student.totalBalance || student.totals?.totalBalance || 0).toFixed(2);
+
+      return {
+        academicYear: student.academicYear,
+        studentName: student.studentName,
+        admissionNumber: student.admissionNumber,
+        className: student.className,
+        sectionName: student.sectionName,
+        parentContactNumber: student.parentContactNumber || '-',
+        tcStatus: student.tcStatus || 'Active',
+        openingArrear,
+        feesReceived: '0.00',
+        defaulterFeesTransferred: Number(student.totalBalance || student.totals?.totalBalance || 0).toFixed(2),
+        closingBalance,
+        source: 'defaulter',
+      };
+    });
+
+    const archiveRows = archiveData
+      .filter((archive) => {
+        const exists = feeData.some(
+          (student) => student.admissionNumber === archive.admissionNumber
+        );
+        return !exists;
+      })
+      .map((archive) => {
+        const arrearRecord = ArrearFeesData.find(
+          (arrear) => arrear.admissionNumber === archive.admissionNumber
+        );
+
+        const openingArrear = Number(archive.totalFeesDue || 0).toFixed(2);
+        const feesReceived = arrearRecord ? Number(arrearRecord.totalPaid || 0).toFixed(2) : '0.00';
+        const closingBalance = Number((Number(openingArrear) - Number(feesReceived)).toFixed(2)).toFixed(2);
+
+        return {
+          academicYear: archive.academicYear,
+          studentName: archive.studentName,
+          admissionNumber: archive.admissionNumber,
+          className: archive.className,
+          sectionName: archive.sectionName,
+          parentContactNumber: archive.parentContactNumber || '-',
+          tcStatus: archive.tcStatus || 'Active',
+          openingArrear,
+          feesReceived,
+          defaulterFeesTransferred: '0.00',
+          closingBalance,
+          source: 'archive',
+        };
+      });
+
+    const result = [...defaulterRows, ...archiveRows];
+    console.log('processedData:', JSON.stringify(result, null, 2));
+    return result;
   };
 
-  const toggleExportDropdown = () => {
-    setShowExportDropdown(!showExportDropdown);
-    setShowFilterPanel(false);
-  };
-
-  
-  const processedData = feeData.flatMap((student) =>
-    student.installments.map((installment) => ({
-      admissionNumber: student.admissionNumber,
-      studentName: student.studentName,
-      className: student.className,
-      sectionName: student.sectionName,
-      academicYear: student.academicYear,
-      status: installment.type,
-      displayDate:
-        installment.type === 'Paid' ? installment.paymentDate :
-        installment.type === 'Refund' ? installment.refundDate :
-        installment.type === 'Cancelled' ? installment.cancelledDate :
-        installment.type === 'Cheque Return' ? installment.chequeReturnDate : '-',
-      paymentMode: installment.paymentMode,
-      receiptNumber: installment.receiptNumber,
-      installmentName: installment.installmentName,
-      feesDue: installment.feesDue || 0,
-      feesPaid:  installment.feesPaid || 0 ,
-      refund: installment.refund || 0,
-      cancelled: installment.cancelled|| 0,
-      chequeReturn: installment.chequeReturn || 0,
-      concession: installment.concession || 0,
-      balance: installment.balance || 0,
-      netFees: (installment.feesPaid || 0) - (installment.refund || 0) - (installment.cancelled || 0) - (installment.chequeReturn || 0),
-      feeTypes: installment.feeTypes || {},
-    }))
-  );
-
-  const filteredData = processedData.filter((row) => {
+  const filteredData = processedData().filter((row) => {
     const matchesSearchTerm = searchTerm
-      ? (row.displayDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        (row.status || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+      ? (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+        (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase())
       : true;
 
     const matchesPaymentMode =
       selectedPaymentModes.length === 0 ||
-      selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
+      (row.source === 'defaulter' &&
+        feeData
+          .find((student) => student.admissionNumber === row.admissionNumber)
+          ?.installments?.some((inst) => selectedPaymentModes.some((mode) => inst.paymentMode === mode.value))) ||
+      row.source === 'archive';
 
     const matchesYear =
       selectedYears.length === 0 ||
       selectedYears.some((year) => row.academicYear === year.value);
 
-    const matchesDate =
-      (!startDate && !endDate) ||
-      (() => {
-        if (!row.displayDate || row.displayDate === '-') return false;
-        try {
-          const recordDate = new Date(row.displayDate.split('/').reverse().join('-'));
-          const start = startDate ? new Date(startDate) : null;
-          const end = endDate ? new Date(endDate) : null;
-          return (!start || recordDate >= start) && (!end || recordDate <= end);
-        } catch (error) {
-          console.warn('Invalid date in matchesDate:', row.displayDate);
-          return false;
-        }
-      })();
-
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feeTypes?.[type.value] || 0) > 0);
+      (row.source === 'defaulter' &&
+        feeData
+          .find((student) => student.admissionNumber === row.admissionNumber)
+          ?.installments?.some((inst) =>
+            selectedFeeTypes.some((type) => (inst.feeTypes?.[type.value] || 0) > 0)
+          )) ||
+      row.source === 'archive';
 
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -1432,95 +1681,54 @@ const SchoolFeesReport = () => {
 
     const matchesInstallment =
       selectedInstallments.length === 0 ||
-      selectedInstallments.some((inst) => row.installmentName === inst.value);
+      (row.source === 'defaulter' &&
+        feeData
+          .find((student) => student.admissionNumber === row.admissionNumber)
+          ?.installments?.some((inst) => selectedInstallments.some((instOpt) => inst.installmentName === instOpt.value))) ||
+      row.source === 'archive';
 
-    const matchesStatus =
-      selectedStatuses.length === 0 ||
-      selectedStatuses.some((status) => row.status === status.value);
+    const matchesTCStatus =
+      !selectedTCStatus || row.tcStatus === selectedTCStatus.value;
+
+    const matchesDate = true;
 
     return (
       matchesSearchTerm &&
       matchesPaymentMode &&
       matchesYear &&
-      matchesDate &&
       matchesFeeType &&
       matchesClass &&
       matchesSection &&
       matchesInstallment &&
-      matchesStatus
+      matchesTCStatus &&
+      (Number(row.closingBalance) > 0 || Number(row.openingArrear) > 0)
     );
   });
 
-  console.log('Filtered data:', filteredData);
+  const studentDataArray = filteredData.sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
 
-  const groupedByStudent = filteredData.reduce((acc, row) => {
-    const admissionNumber = row.admissionNumber;
-    if (!acc[admissionNumber]) {
-      acc[admissionNumber] = {
-        studentName: row.studentName,
-        className: row.className,
-        sectionName: row.sectionName,
-        academicYear: row.academicYear,
-        rows: [],
-      };
-    }
-    acc[admissionNumber].rows.push(row);
-    return acc;
-  }, {});
-
-  console.log('Grouped by student:', groupedByStudent);
-
-  const studentDataArray = Object.keys(groupedByStudent)
-    .map((admissionNumber) => ({
-      admissionNumber,
-      ...groupedByStudent[admissionNumber],
-      rows: groupedByStudent[admissionNumber].rows.sort((a, b) => {
-        if (!a.displayDate || a.displayDate === '-' || !b.displayDate || b.displayDate === '-') return 0;
-        try {
-          return (
-            new Date(a.displayDate.split('/').reverse().join('-')).getTime() -
-            new Date(b.displayDate.split('/').reverse().join('-')).getTime()
-          );
-        } catch (error) {
-          console.warn('Invalid date in sorting:', a.displayDate, b.displayDate);
-          return 0;
-        }
-      }),
-    }))
-    .sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
-
-  const grandTotals = studentDataArray.reduce((acc, student) => {
-    const studentTotals = student.rows.reduce((acc, row) => {
-      acc.totalFeesDue += row.feesDue || 0;
-      acc.totalFeesPaid += row.feesPaid || 0;
-      acc.totalRefundCancelledChequeReturn += (row.refund || 0) + (row.cancelled || 0) + (row.chequeReturn || 0);
-      acc.totalNetFees += row.netFees || 0;
-      acc.totalConcession += row.concession || 0;
-      acc.totalBalance += row.balance || 0;
+  const grandTotals = studentDataArray.reduce(
+    (acc, student) => {
+      acc.totalOpeningArrear += Number(student.openingArrear) || 0;
+      acc.totalFeesReceived += Number(student.feesReceived) || 0;
+      acc.totalDefaulterFeesTransferred += Number(student.defaulterFeesTransferred) || 0;
+      acc.totalClosingBalance += Number(student.closingBalance) || 0;
       return acc;
-    }, {
-      totalFeesDue: 0,
-      totalFeesPaid: 0,
-      totalRefundCancelledChequeReturn: 0,
-      totalNetFees: 0,
-      totalConcession: 0,
-      totalBalance: 0,
-    });
-    acc.totalFeesDue += studentTotals.totalFeesDue;
-    acc.totalFeesPaid += studentTotals.totalFeesPaid;
-    acc.totalRefundCancelledChequeReturn -= studentTotals.totalRefundCancelledChequeReturn;
-    acc.totalNetFees += studentTotals.totalNetFees;
-    acc.totalConcession += studentTotals.totalConcession;
-    acc.totalBalance += studentTotals.totalBalance;
-    return acc;
-  }, {
-    totalFeesDue: 0,
-    totalFeesPaid: 0,
-    totalRefundCancelledChequeReturn: 0,
-    totalNetFees: 0,
-    totalConcession: 0,
-    totalBalance: 0,
-  });
+    },
+    {
+      totalOpeningArrear: 0,
+      totalFeesReceived: 0,
+      totalDefaulterFeesTransferred: 0,
+      totalClosingBalance: 0,
+    }
+  );
+
+  grandTotals.totalOpeningArrear = Number(grandTotals.totalOpeningArrear).toFixed(2);
+  grandTotals.totalFeesReceived = Number(grandTotals.totalFeesReceived).toFixed(2);
+  grandTotals.totalDefaulterFeesTransferred = Number(grandTotals.totalDefaulterFeesTransferred).toFixed(2);
+  grandTotals.totalClosingBalance = Number(grandTotals.totalClosingBalance).toFixed(2);
+
+  console.log('grandTotals:', grandTotals); // Debug log for grandTotals
 
   const totalRecords = studentDataArray.length;
   const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
@@ -1557,65 +1765,27 @@ const SchoolFeesReport = () => {
   };
 
   const headerMapping = {
-    displayDate: 'Date',
     academicYear: 'Academic Year',
-    admissionNumber: 'Admission No.',
-    // status: 'Status',
     studentName: 'Name',
-    className: 'Class',
-    sectionName: 'Section',
-    installmentName: 'Installment',
-    feesDue: 'Fees Due',
-    feesPaid: 'Fees Paid',
-    refundCancelledChequeReturn: 'CRN',
-    netFees: 'Net Fees',
-    concession: 'Concession',
-    balance: 'Balance',
+    openingArrear: 'Opening Arrear',
+    feesReceived: 'Fees Received',
+    defaulterFeesTransferred: 'Defaulter Fees Transferred',
+    closingBalance: 'Closing Balance',
   };
 
-  const tableFields = [
-    { id: 'displayDate', label: 'Date' },
-    { id: 'academicYear', label: 'Academic Year' },
-    { id: 'admissionNumber', label: 'Admission No.' },
-    // { id: 'status', label: 'Status' },
-    { id: 'studentName', label: 'Name' },
-    { id: 'className', label: 'Class' },
-    { id: 'sectionName', label: 'Section' },
-    { id: 'installmentName', label: 'Installment' },
-    { id: 'feesDue', label: 'Fees Due' },
-    { id: 'feesPaid', label: 'Fees Paid' },
-    { id: 'refundCancelledChequeReturn', label: 'CRN' },
-    { id: 'netFees', label: 'Net Fees' },
-    { id: 'concession', label: 'Concession' },
-    { id: 'balance', label: 'Balance' },
-  ];
+  const tableFields = Object.keys(headerMapping).map((key) => ({
+    id: key,
+    label: headerMapping[key],
+  }));
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
-    if (fieldId === 'displayDate') {
-      return formatDate(record[fieldId]) || '-';
-    } else if (fieldId === 'academicYear') {
+    if (fieldId === 'academicYear') {
       return formatAcademicYear(record[fieldId]) || '-';
-    } else if (fieldId === 'status') {
-      return record[fieldId] || '-';
-    } else if (fieldId === 'refundCancelledChequeReturn') {
-      // return record.status === 'Refund' ? (record.refund || 0).toFixed(2) :
-      //        record.status === 'Cancelled' ? (record.cancelled || 0).toFixed(2) :
-      //        record.status === 'Cheque Return' ? (record.chequeReturn || 0).toFixed(2) : (0).toFixed(2);
-      return (-record.cancelled || 0).toFixed(2);
-    } else if (fieldId === 'netFees') {
-      const net = record.netFees || 0;
-      return net !== 0 ? net.toFixed(2) : (0).toFixed(2);
-    } else if (
-      fieldId === 'admissionNumber' ||
-      fieldId === 'studentName' ||
-      fieldId === 'className' ||
-      fieldId === 'sectionName' ||
-      fieldId === 'installmentName'
-    ) {
+    } else if (fieldId === 'studentName') {
       return record[fieldId] || '-';
     } else {
-      return record[fieldId] !== undefined && record[fieldId] !== 0 ? Number(record[fieldId]).toFixed(2) : (0).toFixed(2);
+      return record[fieldId] !== undefined ? Number(record[fieldId]).toFixed(2) : '0.00';
     }
   };
 
@@ -1631,7 +1801,7 @@ const SchoolFeesReport = () => {
                     <input
                       type="text"
                       className="form-control border-dark"
-                      placeholder="Search by field"
+                      placeholder="Search by field..."
                       value={searchTerm}
                       onChange={(e) => {
                         setSearchTerm(e.target.value);
@@ -1646,14 +1816,23 @@ const SchoolFeesReport = () => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === studentDataArray.length))}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === (feeData.length + archiveData.length)))}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
+                    {/* <Select
+                      isClearable
+                      name="tcStatus"
+                      placeholder="Select Status"
+                      options={tcStatusOptions}
+                      value={selectedTCStatus}
+                      onChange={(selected, action) => handleSelectChange(selected, action)}
+                      className="email-select border border-dark me-lg-2"
+                    /> */}
                     <div
                       className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
-                      onClick={toggleFilter}
+                      onClick={() => setShowFilterPanel(!showFilterPanel)}
                     >
                       <FaFilter />
                     </div>
@@ -1661,7 +1840,7 @@ const SchoolFeesReport = () => {
                       <div
                         className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
                         style={{ cursor: 'pointer' }}
-                        onClick={toggleExportDropdown}
+                        onClick={() => setShowExportDropdown(!showExportDropdown)}
                         title="Download"
                       >
                         <FaDownload />
@@ -1686,19 +1865,13 @@ const SchoolFeesReport = () => {
                               }
                               setIsExporting(true);
                               try {
+                                console.log('Exporting to Excel with grandTotals:', grandTotals); // Debug log
                                 await exportToExcel(
                                   filteredData,
                                   tableFields,
                                   headerMapping,
                                   getFieldValue,
-                                  {
-                                    totalFeesDue: grandTotals.totalFeesDue.toFixed(2),
-                                    totalFeesPaid: grandTotals.totalFeesPaid.toFixed(2),
-                                    totalRefundCancelledChequeReturn: grandTotals.totalRefundCancelledChequeReturn.toFixed(2),
-                                    totalNetFees: grandTotals.totalNetFees.toFixed(2),
-                                    totalConcession: grandTotals.totalConcession.toFixed(2),
-                                    totalBalance: grandTotals.totalBalance.toFixed(2),
-                                  },
+                                  grandTotals,
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
@@ -1726,19 +1899,13 @@ const SchoolFeesReport = () => {
                               }
                               setIsExporting(true);
                               try {
+                                console.log('Exporting to PDF with grandTotals:', grandTotals); // Debug log
                                 await exportToPDF(
                                   filteredData,
                                   tableFields,
                                   headerMapping,
                                   getFieldValue,
-                                  {
-                                    totalFeesDue: grandTotals.totalFeesDue.toFixed(2),
-                                    totalFeesPaid: grandTotals.totalFeesPaid.toFixed(2),
-                                    totalRefundCancelledChequeReturn: grandTotals.totalRefundCancelledChequeReturn.toFixed(2),
-                                    totalNetFees: grandTotals.totalNetFees.toFixed(2),
-                                    totalConcession: grandTotals.totalConcession.toFixed(2),
-                                    totalBalance: grandTotals.totalBalance.toFixed(2),
-                                  },
+                                  grandTotals,
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
@@ -1781,57 +1948,23 @@ const SchoolFeesReport = () => {
                       </ul>
 
                       <div className="tab-content mt-2">
-                        {activeTab === 'Date' && (
-                          <div className="row d-flex justify-content-center">
-                            <div className="col-md-4">
-                              <label className="form-label">Start Date</label>
-                              <div className="input-group">
-                                <input
-                                  type="date"
-                                  className="form-control"
-                                  value={startDate}
-                                  onChange={(e) => {
-                                    setStartDate(e.target.value);
-                                    setCurrentPage(1);
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-4">
-                              <label className="form-label">End Date</label>
-                              <div className="input-group">
-                                <input
-                                  type="date"
-                                  className="form-control"
-                                  value={endDate}
-                                  onChange={(e) => {
-                                    setEndDate(e.target.value);
-                                    setCurrentPage(1);
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {activeTab === 'Academic Year' && (
+                        {/* {activeTab === 'Payment Mode' && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
                                 isMulti
-                                name="academicYear"
-                                options={academicYearOptions}
-                                value={selectedYears}
+                                name="paymentMode"
+                                options={paymentModeOptions}
+                                value={selectedPaymentModes}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Academic Years"
+                                placeholder="Select Payment Modes"
                                 className="mt-2"
-                                isLoading={loadingYears}
                               />
                             </div>
                           </div>
-                        )}
+                        )} */}
 
-                        {activeTab === 'Class & Section' && (
+                        {/* {activeTab === 'Class & Section' && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-4">
                               <CreatableSelect
@@ -1857,9 +1990,55 @@ const SchoolFeesReport = () => {
                               />
                             </div>
                           </div>
+                        )} */}
+
+                        {/* {activeTab === 'Date' && (
+                          <div className="row d-lg-flex justify-content-center">
+                            <div className="col-md-4">
+                              <label className="form-label">Start Date </label>
+                              <input
+                                type="date"
+                                className="form-control"
+                                value={startDate}
+                                onChange={(e) => {
+                                  setStartDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
+                              />
+                            </div>
+                            <div className="col-md-4">
+                              <label className="form-label">End Date </label>
+                              <input
+                                type="date"
+                                className="form-control"
+                                value={endDate}
+                                onChange={(e) => {
+                                  setEndDate(e.target.value);
+                                  setCurrentPage(1);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )} */}
+
+                        {activeTab === 'Academic Year' && (
+                          <div className="row d-flex justify-content-center">
+                            <div className="col-md-8">
+                              <CreatableSelect
+                                isMulti
+                                name="academicYear"
+                                options={academicYearOptions}
+                                value={selectedYears}
+                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                placeholder="Select Academic Years"
+                                className="mt-2"
+                                isLoading={loadingYears}
+                              />
+                            </div>
+                          </div>
                         )}
 
-                        {activeTab === 'Installment' && (
+                        {/* {activeTab === 'Installment' && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-6">
                               <CreatableSelect
@@ -1873,39 +2052,7 @@ const SchoolFeesReport = () => {
                               />
                             </div>
                           </div>
-                        )}
-
-                        {activeTab === 'Payment Mode' && (
-                          <div className="row d-flex justify-content-center">
-                            <div className="col-md-8">
-                              <CreatableSelect
-                                isMulti
-                                name="paymentMode"
-                                options={paymentModeOptions}
-                                value={selectedPaymentModes}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Payment Modes"
-                                className="mt-2"
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {activeTab === 'Status' && (
-                          <div className="row d-flex justify-content-center">
-                            <div className="col-md-6">
-                              <CreatableSelect
-                                isMulti
-                                name="status"
-                                options={statusOptions}
-                                value={selectedStatuses}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Statuses"
-                                className="mt-2"
-                              />
-                            </div>
-                          </div>
-                        )}
+                        )} */}
                       </div>
 
                       <div className="text-end mt-3">
@@ -1923,7 +2070,7 @@ const SchoolFeesReport = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Student-Wise School Fees Report</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Opening And Closing Arrear Report</h2>
                 </div>
               </div>
 
@@ -1940,99 +2087,52 @@ const SchoolFeesReport = () => {
                     <table className="table text-dark border border-secondary mb-1">
                       <thead>
                         <tr className="payroll-table-header">
-                          {tableFields.map((field) => (
-                            <th
-                              key={field.id}
-                              className="text-center align-middle border border-secondary text-nowrap p-2"
-                            >
-                              {field.label}
-                            </th>
-                          ))}
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Academic Year</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Name</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Opening Arrear</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Received</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Defaulter Fees Transferred</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Closing Balance</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {paginatedData().map((student, studentIndex) => {
-                          const studentTotals = student.rows.reduce(
-                            (acc, row) => {
-                              acc.totalFeesDue += row.feesDue || 0;
-                              acc.totalFeesPaid += row.feesPaid || 0;
-                              acc.totalRefundCancelledChequeReturn -= (row.refund || 0) + (row.cancelled || 0) + (row.chequeReturn || 0);
-                              acc.totalNetFees += row.netFees || 0;
-                              acc.totalConcession += row.concession || 0;
-                              acc.totalBalance += row.balance || 0;
-                              return acc;
-                            },
-                            {
-                              totalFeesDue: 0,
-                              totalFeesPaid: 0,
-                              totalRefundCancelledChequeReturn: 0,
-                              totalNetFees: 0,
-                              totalConcession: 0,
-                              totalBalance: 0,
-                            }
-                          );
-
-                          return (
-                            <React.Fragment key={student.admissionNumber}>
-                              {student.rows.map((record, rowIndex) => (
-                                <tr key={`${record.admissionNumber}_${record.installmentName}_${record.status}_${studentIndex}_${rowIndex}`}>
-                                  {tableFields.map((field) => (
-                                    <td
-                                      key={field.id}
-                                      className="text-center align-middle border border-secondary text-nowrap p-2"
-                                    >
-                                      {getFieldValue(record, field)}
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                              <tr className="payroll-table-footer">
-                                <td colSpan={7} className="text-right border border-secondary p-2">
-                                  <strong>Total</strong>
-                                </td>
-                                <td className="text-center border border-secondary p-2">
-                                  <strong>{studentTotals.totalFeesDue.toFixed(2)}</strong>
-                                </td>
-                                <td className="text-center border border-secondary p-2">
-                                  <strong>{studentTotals.totalFeesPaid.toFixed(2)}</strong>
-                                </td>
-                                <td className="text-center border border-secondary p-2">
-                                  <strong>{studentTotals.totalRefundCancelledChequeReturn.toFixed(2)}</strong>
-                                </td>
-                                <td className="text-center border border-secondary p-2">
-                                  <strong>{studentTotals.totalNetFees.toFixed(2)}</strong>
-                                </td>
-                                <td className="text-center border border-secondary p-2">
-                                  <strong>{studentTotals.totalConcession.toFixed(2)}</strong>
-                                </td>
-                                <td className="text-center border border-secondary p-2">
-                                  <strong>{studentTotals.totalBalance.toFixed(2)}</strong>
-                                </td>
-                              </tr>
-                            </React.Fragment>
-                          );
-                        })}
+                        {paginatedData().map((student, index) => (
+                          <tr key={`${student.admissionNumber}_${index}`}>
+                            <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {formatAcademicYear(student.academicYear) || '-'}
+                            </td>
+                            <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {student.studentName || '-'}
+                            </td>
+                            <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {Number(student.openingArrear).toFixed(2)}
+                            </td>
+                            <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {Number(student.feesReceived).toFixed(2)}
+                            </td>
+                            <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {Number(student.defaulterFeesTransferred).toFixed(2)}
+                            </td>
+                            <td className="text-center align-middle border border-secondary text-nowrap p-2">
+                              {Number(student.closingBalance).toFixed(2)}
+                            </td>
+                          </tr>
+                        ))}
                         <tr className="payroll-table-footer">
-                          <td colSpan={7} className="text-right border border-secondary p-2">
-                            <strong>Grand Total</strong>
+                          <td colSpan={2} className="text-right border border-secondary p-2">
+                            <strong>Total</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{grandTotals.totalFeesDue.toFixed(2)}</strong>
+                            <strong>{Number(grandTotals.totalOpeningArrear).toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{grandTotals.totalFeesPaid.toFixed(2)}</strong>
+                            <strong>{Number(grandTotals.totalFeesReceived).toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{grandTotals.totalRefundCancelledChequeReturn.toFixed(2)}</strong>
+                            <strong>{Number(grandTotals.totalDefaulterFeesTransferred).toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
-                            <strong>{grandTotals.totalNetFees.toFixed(2)}</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{grandTotals.totalConcession.toFixed(2)}</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{grandTotals.totalBalance.toFixed(2)}</strong>
+                            <strong>{Number(grandTotals.totalClosingBalance).toFixed(2)}</strong>
                           </td>
                         </tr>
                       </tbody>
@@ -2081,7 +2181,7 @@ const SchoolFeesReport = () => {
               ) : (
                 <div className="text-center mt-3">
                   <p>
-                    No installments match the selected filters for{' '}
+                    No data matches the selected filters for{' '}
                     {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
                       formatAcademicYear(selectedAcademicYear)}.
                   </p>
@@ -2095,4 +2195,4 @@ const SchoolFeesReport = () => {
   );
 };
 
-export default SchoolFeesReport;
+export default OpeningAndClosingArrearFeesReport;

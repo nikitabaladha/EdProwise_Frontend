@@ -2,8 +2,11 @@ import React, { useRef, useState } from "react";
 import CreatableSelect from 'react-select/creatable';
 import UseUpdateAdmissionForm from "../UpdateAdmissionDetail/UseUpdateAdmissionForm";
 import { generatePDF } from "./generateStudentPDF";
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const ViewAdmissionForm = () => {
+      const navigate = useNavigate();
   const {
     formData,
     handleChange,
@@ -61,20 +64,18 @@ const ViewAdmissionForm = () => {
           <div className="card m-2">
             <div className="card-body custom-heading-padding">
               <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Student Admission Form
-                  </h4>
-                
-                  {/* <button
-                    className="btn btn-primary download-pdf-btn"
-                    onClick={handleDownloadPDF}
-                    disabled={isGenerating}
-                    style={{ marginLeft: "auto" }}
-                  >
-                    {isGenerating ? "Generating PDF..." : "Download PDF"}
-                  </button> */}
-                </div>
+                       <div className="card-header mb-2 d-flex justify-content-between align-items-center">
+                     <button
+                       className="btn btn-primary download-pdf-btn d-flex align-items-center mx-2"
+                       onClick={() => navigate(-1)}
+                     >
+                       <FaArrowLeft />
+                     </button>
+               
+                     <h4 className="card-title custom-heading-font flex-grow-1 text-center m-0">
+                       Student Admission Form
+                     </h4>
+                   </div>
               </div>
               <div ref={formRef}>
                 <form>
@@ -822,149 +823,11 @@ const ViewAdmissionForm = () => {
                           id="customCheck1"
                           name="agreementChecked"
                           checked={formData.agreementChecked}
-                          disabled
+                        readOnly
                         />
                         <label className="form-check-label" htmlFor="customCheck1">
                           I Understand & agree that the registration of my ward does not guarantee admission to the school & the registration fee is neither transferable nor refundable.
                         </label>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-3">
-                          <div className="mb-3">
-                            <label htmlFor="admissionFees" className="form-label">
-                              Admission Fees <span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="number"
-                              id="admissionFees"
-                              name="admissionFees"
-                              className="form-control"
-                              value={formData.admissionFees}
-                              disabled
-                              required
-                            />
-                          </div>
-                        </div>
-                         <div className="col-md-3">
-                      <div className="mb-3">
-                        <label htmlFor="concessionType" className="form-label">
-                          Concession Type
-                        </label>
-                        <select
-                          id="concessionType"
-                          name="concessionType"
-                          className="form-control"
-                          value={formData.concessionType}
-                          disabled
-                        >
-                          <option value="">Select</option>
-                          <option value="EWS">EWS</option>
-                          <option value="SC">SC</option>
-                          <option value="ST">ST</option>
-                          <option value="OBC">OBC</option>
-                          <option value="Staff Children">Staff Children</option>
-                          <option value="Other">Other</option>
-                        </select>
-                      </div>
-                    </div>
-                        <div className="col-md-3">
-                          <div className="mb-3">
-                            <label htmlFor="concessionamount" className="form-label">
-                              Concession
-                            </label>
-                            <input
-                              type="number"
-                              id="concessionamount"
-                              name="concessionamount"
-                              className="form-control"
-                              value={formData.concessionAmount}
-                              disabled
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="mb-3">
-                            <label htmlFor="finalamount" className="form-label">
-                              Final Amount <span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="number"
-                              id="finalamount"
-                              name="finalamount"
-                              className="form-control"
-                              value={formData.finalAmount}
-                              disabled
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-3">
-                            <label htmlFor="name" className="form-label">
-                              Name of Person Filling the Form<span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              id="name"
-                              name="name"
-                              className="form-control"
-                              value={formData.name}
-                              disabled
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-3">
-                            <label htmlFor="paymentMode" className="form-label">
-                              Payment Option <span className="text-danger">*</span>
-                            </label>
-                            <select
-                              id="paymentMode"
-                              name="paymentMode"
-                              className="form-control"
-                              value={formData.paymentMode}
-                              disabled
-                            >
-                              <option value="">Select</option>
-                              <option value="Cash">Cash</option>
-                              <option value="Cheque">Cheque</option>
-                              <option value="Online">Online</option>
-                            </select>
-                          </div>
-                        </div>
-                        {formData.paymentMode === 'Cheque' && (
-                          <>
-                            <div className="col-md-6">
-                              <div className="mb-3">
-                                <label htmlFor="chequeNumber" className="form-label">
-                                  Cheque Number <span className="text-danger">*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  id="chequeNumber"
-                                  name="chequeNumber"
-                                  className="form-control"
-                                  value={formData.chequeNumber}
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="mb-3">
-                                <label htmlFor="bankName" className="form-label">
-                                  Bank Name <span className="text-danger">*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  id="bankName"
-                                  name="bankName"
-                                  className="form-control"
-                                  value={formData.bankName}
-                                  disabled
-                                />
-                              </div>
-                            </div>
-                          </>
-                        )}
                       </div>
                       <div className="card-header mb-2">
                         <h4 className="card-title text-center custom-heading-font">

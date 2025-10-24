@@ -251,7 +251,8 @@ import GenralAdmissionFees from "./components/DashboardMainForSchool/FeesModuleS
 import GenralTCFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/TCReport/TCFees.js"
 import GenralBoardRegistration from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/BoardRegistrationFees/BoardRegistrationFees.js"
 import GenralBoardExam from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/BoardExamFees/BoardExamFees.js"
-import GenralSchoolFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/SchoolFees/SchoolFees.js"
+import GenralSchoolFeesIncConcession from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/SchoolFees/INCConcession/SchoolFeesIncConcession.js"
+import GenralSchoolFeesExcConcession from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/SchoolFees/EXCConcession/SchoolFeesExcConcession.js"
 import GenralLateFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/LateandExcessFees/LateandExcessFee.js"
 import GenralFeesReundCancelled from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/FeesRefund/FeesRefund.js";
 import GenralFeesCancelled from "./components/DashboardMainForSchool/FeesModuleServices/Reports/GenralReport/FeesCancelled/FeesCancelled.js";
@@ -276,6 +277,8 @@ import LossOfFeeDuetoLeftstudent from "./components/DashboardMainForSchool/FeesM
 import LossOfFeeDuetoLateAdmssion from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/LossofFeeDueTolateAdmission/LossoflateAdmission.js";
 import DefaulterFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/DefaulterFees/DefaulterFees.js";
 import ArrearFeesReceivedReport from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/ArrearFeesReceived/ArrearFeesReport.js";
+import OpeningandClosingArrearReport from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OpeningAndClosingArrear/OpeningAndClosingArrearReport.js"
+import OverAllDefaulter from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OverallDefaulter/OverallDefaulter.js";
 
 import AdvancedFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/AdvancedReport/AdvancedFeesReport.js"
 import OpeningAndClosingAdvanced from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OpeningandClosingAdvanced/OpeningandClosingAdvancedReport.js"
@@ -313,6 +316,9 @@ import NewPassword from "./components/ForgotPassword/NewPassword.js";
 // ================================Comman Pages================================================//
 import SchoolCommanpage from "./components/CommanPage/CommanPageCardsSchool.js";
 import SchoolFeesManagementYear from "./components/CommanPage/YearPage.js";
+
+import SuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/SuccessPage.js'; 
+import FailurePage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/FailurePage.js';
 
 
 // const PrivateRoute = ({ allowedRoles, children }) => {
@@ -441,6 +447,9 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+
+      <Route path="/payment/success" element={ <PublicRoute><SuccessPage /></PublicRoute>} />
+  <Route path="/payment/failure" element={<PublicRoute><FailurePage /></PublicRoute>} />
 
       <Route
         path="/forgot-password"
@@ -1075,8 +1084,13 @@ const AppRoutes = () => {
         />
                 {/* --------------------------------------------Genral Reports-------------------------------------- */}
         <Route
-          path="fees-module/reports/general/school-fee"
-          element={<GenralSchoolFees />}
+          path="fees-module/reports/general/school-fee-inc-concession"
+          element={<GenralSchoolFeesIncConcession  />}
+        />
+
+        <Route
+          path="fees-module/reports/general/school-fee-exc-concession"
+          element={<GenralSchoolFeesExcConcession  />}
         />
         <Route
           path="fees-module/reports/general/late-fees-excess"
@@ -1179,10 +1193,23 @@ const AppRoutes = () => {
           path="fees-module/reports/advanced/defaulter-fees"
           element={<DefaulterFees />}
         />
+
+          <Route
+          path="fees-module/reports/advanced/overall-outstanding"
+          element={<OverAllDefaulter />}
+        />
+
+        
         <Route
           path="fees-module/reports/advanced/arrear-fees"
           element={<ArrearFeesReceivedReport />}
         />
+          <Route
+          path="fees-module/reports/advanced/opening-closing-arrear"
+          element={< OpeningandClosingArrearReport />}
+        />
+
+       
         <Route
           path="fees-module/reports/advanced/advance-fees"
           element={<AdvancedFees/>}

@@ -797,7 +797,7 @@ const RegistrationFees = () => {
     regFeesPaymentMode: 'Payment Mode',
     regFeesTransactionNo: 'Cheque No./Transaction No.',
     regFeesReceiptNo: 'Receipts No.',
-    regFeesDue: 'Fees Due',
+    // regFeesDue: 'Fees Due',
     regFeesPaid: 'Fees Paid',
     regFeesrefundAmount: 'Refund/Cancelled',
     regFeesConcession: 'Concession',
@@ -814,12 +814,12 @@ const RegistrationFees = () => {
     { id: 'regFeesPaymentMode', label: 'Payment Mode' },
     { id: 'regFeesTransactionNo', label: 'Cheq./Tran No.' },
     { id: 'regFeesReceiptNo', label: 'Receipts No.' },
-    { id: 'regFeesDue', label: 'Fees Due' },
+    // { id: 'regFeesDue', label: 'Fees Due' },
     { id: 'regFeesPaid', label: 'Fees Paid' },
     { id: 'regFeesrefundAmount', label: 'CRN' },
     { id: 'netFees', label: 'Net Fees' }, 
     { id: 'regFeesConcession', label: 'Concession' },
-    { id: 'balance', label: 'Balance' }, 
+    { id: 'balance', label: 'Total' }, 
   ];
 
   const [showFilterPanel, setShowFilterPanel] = useState(false);
@@ -1081,7 +1081,7 @@ const RegistrationFees = () => {
   const calculateNetFees = (record) => {
     const paid = parseFloat(record.regFeesPaid || 0);
     const refund = parseFloat(record.regFeesrefundAmount || 0);
-    const netFees = paid - refund;
+    const netFees = paid + refund;
     return netFees === 0 ? '0.00' : netFees.toFixed(2);
   };
 
@@ -1090,7 +1090,7 @@ const RegistrationFees = () => {
     const concession = parseFloat(record.regFeesConcession || 0);
     const paid = parseFloat(record.regFeesPaid || 0);
     const refund = parseFloat(record.regFeesrefundAmount || 0);
-    const balance = due - concession - paid + refund;
+    const balance =  concession + paid + refund;
     return balance === 0 ? '0.00' : balance.toFixed(2);
   };
 
@@ -1140,8 +1140,8 @@ const RegistrationFees = () => {
       const paid = parseFloat(record.regFeesPaid || 0);
       const concession = parseFloat(record.regFeesConcession || 0);
       const refund = parseFloat(record.regFeesrefundAmount || 0);
-      const netFees = paid - refund;
-      const balance = due - concession - paid + refund;
+      const netFees = paid + refund;
+      const balance = concession + paid + refund;
       return {
         feesDue: acc.feesDue + due,
         feesPaid: acc.feesPaid + paid,

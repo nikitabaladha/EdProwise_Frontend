@@ -40,7 +40,7 @@ const MonthWiseFeesCollectionIncConcession = () => {
   const [viewMode, setViewMode] = useState('net');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Month', 'Academic Year', 'Type of Fees', 'Installment', 'Payment Mode'];
+  const tabs = ['Date', 'Academic Year', 'Month','Type of Fees', 'Installment', 'Payment Mode'];
 
   const monthOptions = [
     { value: 'January', label: 'January' },
@@ -348,7 +348,7 @@ const MonthWiseFeesCollectionIncConcession = () => {
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) !== 0);
+      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0));
 
     const matchesClass =
       selectedClasses.length === 0 ||

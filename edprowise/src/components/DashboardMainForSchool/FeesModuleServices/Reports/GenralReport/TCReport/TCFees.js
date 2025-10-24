@@ -20,7 +20,6 @@ const TCFees = () => {
     tcFeesPaymentMode: 'Payment Mode',
     tcFeesTransactionNo: 'Cheque No./Transaction No.',
     tcFeesReceiptNo: 'Receipts No.',
-    tcFeesDue: 'Fees Due',
     tcFeesPaid: 'Fees Paid',
     tcFeesRefundAmount: 'Refund/Cancelled',
     tcFeesConcession: 'Concession',
@@ -37,12 +36,11 @@ const TCFees = () => {
     { id: 'tcFeesPaymentMode', label: 'Payment Mode' },
     { id: 'tcFeesTransactionNo', label: 'Cheq/Tran No.' },
     { id: 'tcFeesReceiptNo', label: 'Receipts No.' },
-    { id: 'tcFeesDue', label: 'Fees Due' },
     { id: 'tcFeesPaid', label: 'Fees Paid' },
     { id: 'tcFeesRefundAmount', label: 'CRN' },
     { id: 'netFees', label: 'Net Fees' },
     { id: 'tcFeesConcession', label: 'Concession' },
-    { id: 'balance', label: 'Balance' },
+    { id: 'balance', label: 'Total' },
   ]);
 
   const [showFilterPanel, setShowFilterPanel] = useState(false);
@@ -289,7 +287,7 @@ const TCFees = () => {
   const calculateNetFees = (record) => {
     const paid = parseFloat(record.tcFeesPaid || 0);
     const refund = parseFloat(record.tcFeesRefundAmount || 0);
-    const netFees = paid - refund;
+    const netFees = paid + refund;
     return netFees === 0 ? '0.00' : netFees.toFixed(2);
   };
 
@@ -322,7 +320,7 @@ const TCFees = () => {
     const concession = parseFloat(record.tcFeesConcession || 0);
     const paid = parseFloat(record.tcFeesPaid || 0);
     const refund = parseFloat(record.tcFeesRefundAmount || 0);
-    const balance = due - concession - paid + refund;
+    const balance = concession + paid + refund;
     return balance === 0 ? '0.00' : balance.toFixed(2);
   };
 
@@ -372,8 +370,8 @@ const TCFees = () => {
       const paid = parseFloat(record.tcFeesPaid || 0);
       const concession = parseFloat(record.tcFeesConcession || 0);
       const refund = parseFloat(record.tcFeesRefundAmount || 0);
-      const netFees = paid - refund;
-      const balance = due - concession - paid + refund;
+      const netFees = paid + refund;
+      const balance = concession + paid + refund;
       return {
         feesDue: acc.feesDue + due,
         feesPaid: acc.feesPaid + paid,

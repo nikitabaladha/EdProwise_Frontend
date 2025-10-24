@@ -271,7 +271,7 @@ useEffect(() => {
         classId: classId || "",
         sectionId: sectionId || null,
         paidAmount: refundData[refundData.length - 1].paidAmount,
-        concessionAmount:student?.concessionAmount,
+        concessionAmount:action === "Refund" ? 0:student?.concessionAmount,
         refundAmount: action === "Refund" ? refundData[refundData.length - 1].refundAmount : 0,
         cancelledAmount: action === "Cancelled/Cheque Return" ? refundData[0].balance : 0,
         balance: refundData[refundData.length - 1].paidAmount - refundData[refundData.length - 1].refundAmount,
@@ -520,7 +520,7 @@ useEffect(() => {
                         <td>
                           {action === "Refund" ? (
                             <Form.Control
-                              type="number"
+                              // type="number"
                               value={item.refundAmount}
                               onChange={(e) => handleRefundAmountChange(index, e.target.value)}
                               min="0"

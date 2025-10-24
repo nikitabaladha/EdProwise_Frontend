@@ -42,7 +42,7 @@ const StudentWiseFeesReportIncConcession = () => {
   const [viewMode, setViewMode] = useState('net'); 
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Academic Year', 'Installment', 'Type of Fees'];
+  const tabs = ['Date','Academic Year', 'Class & Section','Type of Fees','Installment','Payment Mode'];
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -340,7 +340,7 @@ const StudentWiseFeesReportIncConcession = () => {
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) > 0);
+      selectedFeeTypes.some((type) => (row.feesBreakdown[type.value] || 0) );
 
     const matchesClass =
       selectedClasses.length === 0 ||

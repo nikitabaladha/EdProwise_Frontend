@@ -328,19 +328,31 @@ const Sidebar = () => {
                 icon: "solar:settings-bold-duotone",
                 children: [
                   {
-                    label: "School Fees",
-                    link: "/school-dashboard/fees-module/reports/general/school-fee",
+                label: "School Fees",
+                icon: "solar:buildings-bold-duotone",
+                children: [
+                    {
+                    label: "School Fees Inc ",
+                    link: "/school-dashboard/fees-module/reports/general/school-fee-inc-concession",
                     icon: "solar:buildings-bold-duotone",
+                  },
+                    {
+                    label: "School Fees Exc ",
+                    link: "/school-dashboard/fees-module/reports/general/school-fee-exc-concession",
+                    icon: "solar:buildings-bold-duotone",
+                  },
+                ]
+                  },
+                
+                   {
+                    label: "Admission Fee",
+                    link: "/school-dashboard/fees-module/reports/general/admission-fees",
+                    icon: "solar:ticket-bold-duotone",
                   },
                   {
                     label: "Registration Fee",
                     link: "/school-dashboard/fees-module/reports/general/registration-fees",
                     icon: "solar:card-bold-duotone",
-                  },
-                  {
-                    label: "Admission Fee",
-                    link: "/school-dashboard/fees-module/reports/general/admission-fees",
-                    icon: "solar:ticket-bold-duotone",
                   },
                   {
                     label: "TC Fees Report",
@@ -388,6 +400,11 @@ const Sidebar = () => {
                 "label": "Advanced Report",
                 "icon": "solar:layers-bold-duotone",
                 "children": [
+                   {
+                    "label": "Overall Outstanding",
+                    "link": "/school-dashboard/fees-module/reports/advanced/overall-outstanding",
+                    "icon": "solar:shield-warning-bold-duotone"
+                  },
                   {
                     "label": "Defaulter Fees",
                     "link": "/school-dashboard/fees-module/reports/advanced/defaulter-fees",
@@ -403,10 +420,16 @@ const Sidebar = () => {
                     "link": "/school-dashboard/fees-module/reports/advanced/loss-late-admission",
                     "icon": "solar:clock-square-bold-duotone"
                   },
+                  
                   {
                     "label": "Arrear Fees Received",
                     "link": "/school-dashboard/fees-module/reports/advanced/arrear-fees",
                     "icon": "solar:money-bag-bold-duotone"
+                  },
+                   {
+                    "label": "Opening&Closing Arrear",
+                    "link": "/school-dashboard/fees-module/reports/advanced/opening-closing-arrear",
+                    "icon": "solar:arrow-up-bold-duotone"
                   },
                   {
                     "label": "Advance Fees",

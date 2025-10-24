@@ -1776,12 +1776,12 @@ const processedStudentData = students.map((student) => {
    
       const getPriority = (particulars) => {
         const lower = particulars.toLowerCase();
-        if (lower.includes('due') && !lower.includes('cancelled') && !lower.includes('refunded')) return 1; // Regular due first
-        if (lower.includes('received') && !lower.includes('cancelled') && !lower.includes('refunded')) return 2; // Regular receipt second
-        if (lower.includes('cancelled due')) return 3; // Cancelled due third
-        if (lower.includes('cancelled received')) return 4; // Cancelled receipt fourth
-        if (lower.includes('refunded due')) return 5; // Refund due fifth
-        if (lower.includes('refunded received')) return 6; // Refund receipt sixth
+        if (lower.includes('due') && !lower.includes('cancelled') && !lower.includes('refunded')) return 1; 
+        if (lower.includes('received') && !lower.includes('cancelled') && !lower.includes('refunded')) return 2; 
+        if (lower.includes('cancelled due')) return 3;
+        if (lower.includes('cancelled received')) return 4; 
+        if (lower.includes('refunded due')) return 5; 
+        if (lower.includes('refunded received')) return 6; 
         return 7;
       };
       

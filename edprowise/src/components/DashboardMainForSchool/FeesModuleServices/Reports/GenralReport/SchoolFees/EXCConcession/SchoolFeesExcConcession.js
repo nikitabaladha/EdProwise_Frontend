@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef,useMemo } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
-import getAPI from '../../../../../../api/getAPI';
-import { exportToExcel, exportToPDF } from './ExportModalStudentWiseFeesReport';
-import { fetchSchoolData } from '../../../PdfUtlisReport';
+import getAPI from '../../../../../../../api/getAPI';
+import { exportToExcel, exportToPDF } from './SchoolFeesReportExcConcessionexport';
+import { fetchSchoolData } from '../../../../PdfUtlisReport';
 
-const StudentWiseFeesReportIncConcession = () => {
-  const [showFilterPanel, setShowFilterPanel] = useState(false);
+const SchoolFeesReportEXCConcession = () => {
+   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
   const [searchTerm, setSearchTerm] = useState('');
@@ -52,11 +52,12 @@ const StudentWiseFeesReportIncConcession = () => {
     { value: 30, label: '30' },
   ];
 
-
   const viewModeOptions = [
     { value: 'net', label: 'Net' },
     { value: 'gross', label: 'Gross' },
   ];
+
+  const nonNumericColumnsCount = 9; 
 
   const formatAcademicYear = (year) => {
     if (!year) return '-';
@@ -142,7 +143,7 @@ const StudentWiseFeesReportIncConcession = () => {
     setIsLoading(true);
     try {
       const promises = years.map((year) =>
-        getAPI(`/get-all-data-studentwise-fees?schoolId=${schoolId}&academicYear=${year}`)
+        getAPI(`/get-all-data-school-fees-exc?schoolId=${schoolId}&academicYear=${year}`)
       );
       const responses = await Promise.all(promises);
       const unifiedData = responses.flatMap((res, index) => {
@@ -180,10 +181,6 @@ const StudentWiseFeesReportIncConcession = () => {
 
       setFeeTypes(availableFeeTypes);
       setFeeData(unifiedData);
-
-      if (rowsPerPage === 'all' && unifiedData.length > 0) {
-        setRowsPerPage(unifiedData.length);
-      }
 
       const filterOptions = responses[0]?.data?.filterOptions || {};
       setClassOptions(filterOptions.classOptions || []);
@@ -254,7 +251,7 @@ const StudentWiseFeesReportIncConcession = () => {
       fetchFeeData(yearsToFetch);
     } else if (name === 'rowsPerPage') {
       if (selectedOptions?.value === 'all') {
-        setRowsPerPage(feeData.length || 'all');
+        setRowsPerPage(studentDataArray.length || 'all');
       } else {
         setRowsPerPage(selectedOptions ? selectedOptions.value : 'all');
       }
@@ -308,8 +305,7 @@ const StudentWiseFeesReportIncConcession = () => {
     return sections;
   };
 
-
-  const filteredData = feeData.filter((row) => {
+  const filteredData = useMemo(() => feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
       ? String(row.paymentDate || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         String(row.studentAdmissionNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -370,27 +366,62 @@ const StudentWiseFeesReportIncConcession = () => {
       matchesInstallment &&
       matchesViewMode
     );
-  });
+  }), [feeData, searchTerm, selectedPaymentModes, selectedYears, startDate, endDate, selectedFeeTypes, selectedClasses, selectedSections, selectedInstallments, viewMode]);
 
-  const totals = filteredData.reduce(
-    (acc, row) => {
-      const displayTypes = selectedFeeTypes.length > 0
-        ? selectedFeeTypes.map((type) => type.value)
-        : feeTypes;
-      displayTypes.forEach((type) => {
-        acc[type] = (acc[type] || 0) + (row.feesBreakdown[type] || 0);
-      });
-      if (selectedFeeTypes.length === 0) {
-        acc.fineAmount = (acc.fineAmount || 0) + (row.fineAmount || 0);
-        acc.excessAmount = (acc.excessAmount || 0) + (row.excessAmount || 0);
-        acc.totalPaidFee = (acc.totalPaidFee || 0) + (row.totalPaidFee || 0);
+  const groupedByAdmissionNumber = useMemo(() => {
+    return filteredData.reduce((acc, row) => {
+      const adm = row.studentAdmissionNumber;
+      if (!acc[adm]) {
+        acc[adm] = {
+          studentName: row.studentName,
+          className: row.className,
+          sectionName: row.sectionName,
+          academicYear: row.academicYear,
+          rows: [],
+        };
       }
+      acc[adm].rows.push(row);
       return acc;
-    },
-    {}
-  );
+    }, {});
+  }, [filteredData]);
 
-  const tableFields = [
+  const studentDataArray = useMemo(() => {
+    return Object.keys(groupedByAdmissionNumber).map((adm) => {
+      const student = groupedByAdmissionNumber[adm];
+      return {
+        admissionNumber: adm,
+        ...student,
+        rows: student.rows.sort((a, b) => {
+          if (!a.paymentDate || a.paymentDate === '-') return 1;
+          if (!b.paymentDate || b.paymentDate === '-') return -1;
+          const da = new Date(a.paymentDate.split('-').reverse().join('-'));
+          const db = new Date(b.paymentDate.split('-').reverse().join('-'));
+          return da.getTime() - db.getTime();
+        }),
+      };
+    }).sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
+  }, [groupedByAdmissionNumber]);
+
+  const totals = useMemo(() => 
+    filteredData.reduce(
+      (acc, row) => {
+        const displayTypes = selectedFeeTypes.length > 0
+          ? selectedFeeTypes.map((type) => type.value)
+          : feeTypes;
+        displayTypes.forEach((type) => {
+          acc[type] = (acc[type] || 0) + (row.feesBreakdown[type] || 0);
+        });
+        if (selectedFeeTypes.length === 0) {
+          acc.fineAmount = (acc.fineAmount || 0) + (row.fineAmount || 0);
+          acc.excessAmount = (acc.excessAmount || 0) + (row.excessAmount || 0);
+          acc.totalPaidFee = (acc.totalPaidFee || 0) + (row.totalPaidFee || 0);
+        }
+        return acc;
+      },
+      {}
+    ), [filteredData, selectedFeeTypes, feeTypes]);
+
+  const tableFields = useMemo(() => [
     { id: 'paymentDate', label: 'Date', isNumeric: false },
     { id: 'academicYear', label: 'Academic Year', isNumeric: false },
     { id: 'studentAdmissionNumber', label: 'Admission No.', isNumeric: false },
@@ -408,7 +439,7 @@ const StudentWiseFeesReportIncConcession = () => {
           { id: 'excessAmount', label: 'Excess Amount', isNumeric: true },
           { id: 'totalPaidFee', label: 'Fees Paid', isNumeric: true },
         ]),
-  ];
+  ], [selectedFeeTypes, feeTypes]);
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
@@ -432,8 +463,8 @@ const StudentWiseFeesReportIncConcession = () => {
     }
   };
 
-  const totalRecords = filteredData.length;
-  const totalPages = Math.ceil(totalRecords / (rowsPerPage === 'all' ? totalRecords : rowsPerPage));
+  const totalRecords = studentDataArray.length;
+  const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
 
   const maxPagesToShow = 5;
   const pagesToShow = [];
@@ -444,11 +475,11 @@ const StudentWiseFeesReportIncConcession = () => {
     pagesToShow.push(i);
   }
 
-  const paginatedData = () => {
-    const startIndex = (currentPage - 1) * (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
-    const endIndex = startIndex + (rowsPerPage === 'all' ? totalRecords : rowsPerPage);
-    return filteredData.slice(startIndex, endIndex);
-  };
+  const paginatedData = useMemo(() => {
+    if (rowsPerPage === 'all') return studentDataArray;
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    return studentDataArray.slice(startIndex, startIndex + rowsPerPage);
+  }, [studentDataArray, currentPage, rowsPerPage]);
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
@@ -465,8 +496,6 @@ const StudentWiseFeesReportIncConcession = () => {
       setCurrentPage(currentPage + 1);
     }
   };
-
-  const nonNumericColumnsCount = tableFields.filter((field) => !field.isNumeric).length;
 
   return (
     <div className="container">
@@ -496,7 +525,7 @@ const StudentWiseFeesReportIncConcession = () => {
                       placeholder="Show"
                       options={pageShowOptions}
                       value={pageShowOptions.find(
-                        (option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length)
+                        (option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === studentDataArray.length)
                       )}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
@@ -752,7 +781,7 @@ const StudentWiseFeesReportIncConcession = () => {
                 <div className="container">
                   <div className="card-header d-flex justify-content-between align-items-center gap-1">
                     <h2 className="payroll-title text-center mb-0 flex-grow-1">
-                      Studentwise Collection Inc Concession Report 
+                     School Fees Exc Concession Report 
                     </h2>
                   </div>
                 </div>
@@ -764,7 +793,7 @@ const StudentWiseFeesReportIncConcession = () => {
                     </div>
                     <p>Loading data...</p>
                   </div>
-                ) : tableFields.length > 9 ? (
+                ) : studentDataArray.length > 0 ? (
                   <>
                     <div className="table-responsive pb-4 mt-3">
                       <table className="table text-dark border border-secondary mb-1">
@@ -778,30 +807,48 @@ const StudentWiseFeesReportIncConcession = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {paginatedData().length > 0 ? (
-                            paginatedData().map((record, index) => (
-                              <tr key={`${record.studentAdmissionNumber}_${record.paymentDate}_${record.receiptNumber}_${index}`}>
-                                {tableFields.map((field) => (
-                                  <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                    {getFieldValue(record, field)}
-                                  </td>
+                          {paginatedData.map((student) => {
+                            const studentTotals = student.rows.reduce((acc, row) => {
+                              const displayTypes = selectedFeeTypes.length > 0
+                                ? selectedFeeTypes.map((type) => type.value)
+                                : feeTypes;
+                              displayTypes.forEach((type) => {
+                                acc[type] = (acc[type] || 0) + (row.feesBreakdown[type] || 0);
+                              });
+                              if (selectedFeeTypes.length === 0) {
+                                acc.fineAmount = (acc.fineAmount || 0) + (row.fineAmount || 0);
+                                acc.excessAmount = (acc.excessAmount || 0) + (row.excessAmount || 0);
+                                acc.totalPaidFee = (acc.totalPaidFee || 0) + (row.totalPaidFee || 0);
+                              }
+                              return acc;
+                            }, {});
+                            return (
+                              <React.Fragment key={student.admissionNumber}>
+                                {student.rows.map((record, rowIndex) => (
+                                  <tr key={`${record.studentAdmissionNumber}_${record.paymentDate}_${record.receiptNumber}_${rowIndex}`}>
+                                    {tableFields.map((field) => (
+                                      <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                                        {getFieldValue(record, field)}
+                                      </td>
+                                    ))}
+                                  </tr>
                                 ))}
-                              </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td colSpan={tableFields.length} className="text-center">
-                                No data matches the selected filters for{' '}
-                                {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
-                                  formatAcademicYear(selectedAcademicYear)}.
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                        <tfoot>
+                                <tr className="payroll-table-footer">
+                                  <td colSpan={nonNumericColumnsCount} className="text-right border border-secondary p-2">
+                                    <strong>Total</strong>
+                                  </td>
+                                  {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                                    <td key={field.id} className="text-center border border-secondary p-2">
+                                      <strong>{(studentTotals[field.id] || 0).toFixed(2)}</strong>
+                                    </td>
+                                  ))}
+                                </tr>
+                              </React.Fragment>
+                            );
+                          })}
                           <tr className="payroll-table-footer">
                             <td colSpan={nonNumericColumnsCount} className="text-right border border-secondary p-2">
-                              <strong>Total</strong>
+                              <strong>Grand Total</strong>
                             </td>
                             {tableFields.slice(nonNumericColumnsCount).map((field) => (
                               <td key={field.id} className="text-center border border-secondary p-2">
@@ -809,10 +856,10 @@ const StudentWiseFeesReportIncConcession = () => {
                               </td>
                             ))}
                           </tr>
-                        </tfoot>
+                        </tbody>
                       </table>
                     </div>
-                    {totalRecords > 0 && (
+                    {totalRecords > 0 && rowsPerPage !== 'all' && (
                       <div className="card-footer border-top">
                         <nav aria-label="Page navigation example">
                           <ul className="pagination justify-content-end mb-0">
@@ -854,7 +901,10 @@ const StudentWiseFeesReportIncConcession = () => {
                   </>
                 ) : (
                   <div className="text-center mt-3">
-                    <p>No fee types available.</p>
+                    <p>No data matches the selected filters for{' '}
+                      {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
+                        formatAcademicYear(selectedAcademicYear)}.
+                    </p>
                   </div>
                 )}
               </div>
@@ -866,4 +916,4 @@ const StudentWiseFeesReportIncConcession = () => {
   );
 };
 
-export default StudentWiseFeesReportIncConcession;
+export default SchoolFeesReportEXCConcession;

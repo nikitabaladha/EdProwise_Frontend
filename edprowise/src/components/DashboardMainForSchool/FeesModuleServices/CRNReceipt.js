@@ -739,7 +739,11 @@ const RefundReceipt = () => {
                     <td className="text-center">{feeType.feesTypeName || "N/A"}</td>
                     <td className="text-center">{feeType.paidAmount?.toFixed(2) || "0.00"}</td>
                     <td className="text-center">{feeType.refundAmount?.toFixed(2) || "0.00"}</td>
-                    <td className="text-center">{feeType.cancelledAmount?.toFixed(2) || "0.00"}</td>
+                    <td className="text-center">
+                      {refund.status === "Refund"
+                        ? feeType.balance?.toFixed(2) || "0.00"
+                        : feeType.cancelledAmount?.toFixed(2) || "0.00"}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -751,7 +755,11 @@ const RefundReceipt = () => {
                       ? refund.refundAmount?.toFixed(2)
                       : "0.00"}
                   </td>
-                  <td className="text-center">{refund.cancelledAmount?.toFixed(2) || "0.00"}</td>
+                  {/* <td className="text-center">{refund.cancelledAmount?.toFixed(2) || "0.00"}</td> */}
+                  <td className="text-center">
+                    {refund.status === "Refund"
+                      ? refund.balance?.toFixed(2)
+                      : refund.cancelledAmount?.toFixed(2)}</td>
                 </tr>
               )}
               <tr className="table-active">

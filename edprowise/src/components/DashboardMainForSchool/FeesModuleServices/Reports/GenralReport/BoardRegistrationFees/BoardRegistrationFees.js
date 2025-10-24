@@ -972,7 +972,7 @@ const BoardRegistrationFees = () => {
     boardRegFeesPaymentMode: 'Payment Mode',
     boardRegFeesTransactionNo: 'Cheque No./Transaction No.',
     boardRegFeesReceiptNo: 'Receipts No.',
-    boardRegFeesDue: 'Fees Due',
+    // boardRegFeesDue: 'Fees Due',
     boardRegFeesPaid: 'Fees Paid',
     boardRegFeesRefundAmount: 'Refund/Cancelled',
     boardRegFeesConcession: 'Concession',
@@ -989,7 +989,7 @@ const BoardRegistrationFees = () => {
     { id: 'boardRegFeesPaymentMode', label: 'Payment Mode' },
     { id: 'boardRegFeesTransactionNo', label: 'Cheq/TranNo.' },
     { id: 'boardRegFeesReceiptNo', label: 'Receipts No.' },
-    { id: 'boardRegFeesDue', label: 'Fees Due' },
+    // { id: 'boardRegFeesDue', label: 'Fees Due' },
     { id: 'boardRegFeesPaid', label: 'Fees Paid' },
     { id: 'boardRegFeesRefundAmount', label: 'CRN' },
     { id: 'netFees', label: 'Net Fees' },
@@ -1330,7 +1330,7 @@ const BoardRegistrationFees = () => {
     const refund = parseFloat(record.boardRegFeesRefundAmount || 0);
     const cancelled = parseFloat(record.boardRegFeesCancelledAmount || 0);
     const refundOrCancelled = refund > 0 ? refund : cancelled;
-    const netFees = paid - refundOrCancelled;
+    const netFees = paid + refundOrCancelled;
     return netFees === 0 ? '0.00' : netFees.toFixed(2);
   };
 
@@ -1382,7 +1382,7 @@ const BoardRegistrationFees = () => {
     const refund = parseFloat(record.boardRegFeesRefundAmount || 0);
     const cancelled = parseFloat(record.boardRegFeesCancelledAmount || 0);
     const refundOrCancelled = refund > 0 ? refund : cancelled;
-    const balance = due - concession - paid + refundOrCancelled;
+    const balance = concession + paid  + refundOrCancelled;
     return balance === 0 ? '0.00' : balance.toFixed(2);
   };
 
@@ -1461,14 +1461,14 @@ const BoardRegistrationFees = () => {
       const refund = parseFloat(record.boardRegFeesRefundAmount || 0);
       const cancelled = parseFloat(record.boardRegFeesCancelledAmount || 0);
       const refundOrCancelled = refund > 0 ? refund : cancelled;
-      const netFees = paid - refundOrCancelled;
+      const netFees = paid + refundOrCancelled;
       return {
         feesDue: acc.feesDue + due,
         feesPaid: acc.feesPaid + paid,
         refund: acc.refund + refundOrCancelled,
         netFees: acc.netFees + netFees,
         concession: acc.concession + concession,
-        balance: acc.balance + (due - concession - paid + refundOrCancelled),
+        balance: acc.balance + (concession + paid  + refundOrCancelled),
       };
     },
     { feesDue: 0, feesPaid: 0, refund: 0, netFees: 0, concession: 0, balance: 0 }

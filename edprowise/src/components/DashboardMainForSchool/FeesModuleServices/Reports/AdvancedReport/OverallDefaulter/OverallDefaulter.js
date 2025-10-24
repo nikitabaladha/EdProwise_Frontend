@@ -912,6 +912,118 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import { FaFilter, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -919,10 +1031,10 @@ import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
-import { exportToExcel, exportToPDF } from './LeftstudentFeeReport';
+import { exportToExcel, exportToPDF } from './OverallDefaulterExport';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const LossOfFeeDueToLeftStudent = () => {
+const OverAllDefaulter = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
@@ -940,6 +1052,7 @@ const LossOfFeeDueToLeftStudent = () => {
   const [academicYearOptions, setAcademicYearOptions] = useState([]);
   const [installmentOptions, setInstallmentOptions] = useState([]);
   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
+  const [tcStatusOptions, setTCStatusOptions] = useState([]);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
@@ -947,6 +1060,7 @@ const LossOfFeeDueToLeftStudent = () => {
   const [selectedYears, setSelectedYears] = useState([]);
   const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
   const [selectedInstallments, setSelectedInstallments] = useState([]);
+  const [selectedTCStatus, setSelectedTCStatus] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
@@ -954,7 +1068,7 @@ const LossOfFeeDueToLeftStudent = () => {
   const [rowsPerPage, setRowsPerPage] = useState('all');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment'];
+  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Payment Mode'];
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -1086,103 +1200,180 @@ const LossOfFeeDueToLeftStudent = () => {
     setIsLoading(true);
     try {
 
-      const leftPromises = years.map((year) =>
-        getAPI(`/Loss-of-fee-due-to-left-student?schoolId=${schoolId}&academicYear=${year}`)
-      );
+      const lateAdmissionPromises = years.map(async (year) => {
+        try {
+          const res = await getAPI(`/Loss-of-fee-due-to-late-Admission?schoolId=${schoolId}&academicYear=${year}`);
+          return res;
+        } catch (err) {
+          console.warn(`Late Admission API failed for year ${year}:`, err.message);
+          return null;
+        }
+      });
+
+      const defaulterPromises = years.map(async (year) => {
+        try {
+          const res = await getAPI(`/Defaulter-Fees?schoolId=${schoolId}&academicYear=${year}`);
+          return res;
+        } catch (err) {
+          console.warn(`Defaulter API failed for year ${year}:`, err.message);
+          return null;
+        }
+      });
+
+      const leftStudentPromises = years.map(async (year) => {
+        try {
+          const res = await getAPI(`/Loss-of-fee-due-to-left-student?schoolId=${schoolId}&academicYear=${year}`);
+          return res;
+        } catch (err) {
+          console.warn(`Left Student API failed for year ${year}:`, err.message);
+          return null;
+        }
+      });
 
 
-      const latePromises = years.map((year) =>
-        getAPI(`/Loss-of-fee-due-to-late-Admission?schoolId=${schoolId}&academicYear=${year}`)
-      );
-
-      const [leftResponses, lateResponses] = await Promise.all([
-        Promise.all(leftPromises),
-        Promise.all(latePromises),
+      const [lateAdmissionResults, defaulterResults, leftStudentResults] = await Promise.all([
+        Promise.allSettled(lateAdmissionPromises),
+        Promise.allSettled(defaulterPromises),
+        Promise.allSettled(leftStudentPromises),
       ]);
 
 
-      const leftData = leftResponses.flatMap((res, index) => {
+      const lateAdmissionResponses = lateAdmissionResults
+        .filter((p) => p.status === "fulfilled" && p.value)
+        .map((p) => p.value);
+
+      const defaulterResponses = defaulterResults
+        .filter((p) => p.status === "fulfilled" && p.value)
+        .map((p) => p.value);
+
+      const leftStudentResponses = leftStudentResults
+        .filter((p) => p.status === "fulfilled" && p.value)
+        .map((p) => p.value);
+
+
+      const lateAdmissionData = lateAdmissionResponses.flatMap((res, index) => {
         if (!res?.data?.data) {
-          console.warn(`No left-student data found for year ${years[index]}`);
+          console.warn(`No late admission data found for year ${years[index]}`);
           return [];
         }
-        return res.data.data;
+        return res.data.data.map((item) => ({ ...item, source: "Late Admission" }));
+      });
+
+      const defaulterData = defaulterResponses.flatMap((res, index) => {
+        if (!res?.data?.data) {
+          console.warn(`No defaulter data found for year ${years[index]}`);
+          return [];
+        }
+        return res.data.data.map((item) => ({ ...item, source: "Defaulter" }));
+      });
+
+      const leftStudentData = leftStudentResponses.flatMap((res, index) => {
+        if (!res?.data?.data) {
+          console.warn(`No left student data found for year ${years[index]}`);
+          return [];
+        }
+        return res.data.data.map((item) => ({ ...item, source: "Left Student" }));
       });
 
 
-      const lateData = lateResponses.flatMap((res, index) => {
-        if (!res?.data?.data) {
-          console.warn(`No late-admission data found for year ${years[index]}`);
-          return [];
-        }
-        return res.data.data;
-      });
-
-
-      const lateAdmissionSet = new Set(lateData.map((item) => item.admissionNumber));
-      const filteredLeftData = leftData.filter(
+      const lateAdmissionSet = new Set(lateAdmissionData.map((item) => item.admissionNumber));
+      const filteredLeftStudentData = leftStudentData.filter(
         (item) => !lateAdmissionSet.has(item.admissionNumber)
       );
 
 
+      const unifiedData = [...lateAdmissionData, ...defaulterData, ...filteredLeftStudentData];
+
+
       const classSectionMapping = {};
-      filteredLeftData.forEach((record) => {
-        const className = record.className || '-';
-        const sectionName = record.sectionName || '-';
-        if (className !== '-' && sectionName !== '-') {
+      unifiedData.forEach((record) => {
+        const className = record.className || "-";
+        const sectionName = record.sectionName || "-";
+        if (className !== "-" && sectionName !== "-") {
           if (!classSectionMapping[className]) {
             classSectionMapping[className] = new Set();
           }
           classSectionMapping[className].add(sectionName);
         }
       });
-
-
-      Object.keys(classSectionMapping).forEach((className) => {
-        classSectionMapping[className] = Array.from(classSectionMapping[className]);
-      });
-
       setClassSectionMap(classSectionMapping);
 
 
-      const allFeeTypes = leftResponses
+      const allFeeTypes = [...lateAdmissionResponses, ...defaulterResponses, ...leftStudentResponses]
         .flatMap((res) => res?.data?.feeTypes || [])
         .filter((type, index, self) => self.indexOf(type) === index)
         .sort();
 
+
+      const tcStatusOptions = [...lateAdmissionResponses, ...defaulterResponses, ...leftStudentResponses]
+        .flatMap((res) => res?.data?.filterOptions?.tcStatusOptions || [])
+        .filter((opt, index, self) => self.findIndex((o) => o.value === opt.value) === index);
+
+      setFeeData(unifiedData);
       setFeeTypes(allFeeTypes);
+      setTCStatusOptions(tcStatusOptions);
 
 
-      setFeeData(filteredLeftData);
+      const lateAdmissionFilterOptions = lateAdmissionResponses[0]?.data?.filterOptions || {};
+      const defaulterFilterOptions = defaulterResponses[0]?.data?.filterOptions || {};
+      const leftStudentFilterOptions = leftStudentResponses[0]?.data?.filterOptions || {};
+      const combinedFilterOptions = {
+        classOptions: [
+          ...(lateAdmissionFilterOptions.classOptions || []),
+          ...(defaulterFilterOptions.classOptions || []),
+          ...(leftStudentFilterOptions.classOptions || []),
+        ].filter((opt, index, self) => self.findIndex((o) => o.value === opt.value) === index),
+        sectionOptions: [
+          ...(lateAdmissionFilterOptions.sectionOptions || []),
+          ...(defaulterFilterOptions.sectionOptions || []),
+          ...(leftStudentFilterOptions.sectionOptions || []),
+        ].filter((opt, index, self) => self.findIndex((o) => o.value === opt.value) === index),
+        installmentOptions: [
+          ...(lateAdmissionFilterOptions.installmentOptions || []),
+          ...(defaulterFilterOptions.installmentOptions || []),
+          ...(leftStudentFilterOptions.installmentOptions || []),
+        ].filter((opt, index, self) => self.findIndex((o) => o.value === opt.value) === index),
+        paymentModeOptions: [
+          ...(lateAdmissionFilterOptions.paymentModeOptions || []),
+          ...(defaulterFilterOptions.paymentModeOptions || []),
+          ...(leftStudentFilterOptions.paymentModeOptions || []),
+        ].filter((opt, index, self) => self.findIndex((o) => o.value === opt.value) === index),
+        tcStatusOptions: [
+          ...(lateAdmissionFilterOptions.tcStatusOptions || []),
+          ...(defaulterFilterOptions.tcStatusOptions || []),
+          ...(leftStudentFilterOptions.tcStatusOptions || []),
+        ].filter((opt, index, self) => self.findIndex((o) => o.value === opt.value) === index),
+      };
+
+      setClassOptions(combinedFilterOptions.classOptions);
+      setSectionOptions(combinedFilterOptions.sectionOptions);
+      setInstallmentOptions(combinedFilterOptions.installmentOptions);
+      setPaymentModeOptions(combinedFilterOptions.paymentModeOptions);
 
 
-      const filterOptions = leftResponses[0]?.data?.filterOptions || {};
-      setClassOptions(filterOptions.classOptions || []);
-      setSectionOptions(filterOptions.sectionOptions || []);
-      setInstallmentOptions(filterOptions.installmentOptions || []);
-      setPaymentModeOptions(filterOptions.paymentModeOptions || []);
-
-
-      if (rowsPerPage === 'all' && filteredLeftData.length > 0) {
-        setRowsPerPage(filteredLeftData.length);
+      if (rowsPerPage === "all" && unifiedData.length > 0) {
+        const studentDataArray = Object.keys(
+          unifiedData.reduce((acc, row) => {
+            acc[row.admissionNumber] = {};
+            return acc;
+          }, {})
+        ).length;
+        setRowsPerPage(studentDataArray || "all");
       }
     } catch (error) {
-      console.error('Error fetching fee data:', error);
-      toast.error('Error fetching data: ' + error.message);
-
-
+      toast.error("Error fetching data: " + error.message);
       setFeeData([]);
+      setClassSectionMap({});
       setFeeTypes([]);
       setClassOptions([]);
       setSectionOptions([]);
       setInstallmentOptions([]);
       setPaymentModeOptions([]);
-      setClassSectionMap({});
+      setTCStatusOptions([]);
     } finally {
       setIsLoading(false);
     }
   };
-
 
   useEffect(() => {
     if (!schoolId || !selectedAcademicYear) return;
@@ -1219,6 +1410,9 @@ const LossOfFeeDueToLeftStudent = () => {
         setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
       }
       setCurrentPage(1);
+    } else if (name === 'tcStatus') {
+      setSelectedTCStatus(selectedOptions);
+      setCurrentPage(1);
     }
   };
 
@@ -1237,6 +1431,7 @@ const LossOfFeeDueToLeftStudent = () => {
     setSelectedSections([]);
     setSelectedFeeTypes([]);
     setSelectedInstallments([]);
+    setSelectedTCStatus(null);
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
@@ -1263,12 +1458,13 @@ const LossOfFeeDueToLeftStudent = () => {
       className: student.className,
       sectionName: student.sectionName,
       academicYear: student.academicYear,
-      displayDate: student.TCStatusDate || '-',
-      remark: student.Remark || '-',
-      feesDue: Number(installment.feesDue || 0).toFixed(2),
-      feesPaid: Number(installment.feesPaid || 0).toFixed(2),
-      concession: Number(installment.concession || 0).toFixed(2),
-      balance: Number(installment.balance || 0).toFixed(2),
+      displayDate: student.admissionPaymentDate || '-',
+      feesDue: installment.feesDue || 0,
+      feesPaid: installment.feesPaid || 0,
+      concession: installment.concession || 0,
+      balance: installment.balance || 0,
+      source: student.source || 'Defaulter',
+      tcStatus: student.tcStatus || 'Active',
     }))
   );
 
@@ -1279,8 +1475,7 @@ const LossOfFeeDueToLeftStudent = () => {
       (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
       (row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
       (row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      (row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-      (row.remark || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+      (row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase())
       : true;
 
     const matchesPaymentMode =
@@ -1295,10 +1490,14 @@ const LossOfFeeDueToLeftStudent = () => {
       (!startDate && !endDate) ||
       (() => {
         if (!row.displayDate || row.displayDate === '-') return true;
-        const recordDate = new Date(row.displayDate.split('/').reverse().join('-'));
-        const start = startDate ? new Date(startDate) : null;
-        const end = endDate ? new Date(endDate) : null;
-        return (!start || recordDate >= start) && (!end || recordDate <= end);
+        try {
+          const recordDate = new Date(row.displayDate.split('/').reverse().join('-'));
+          const start = startDate ? new Date(startDate) : null;
+          const end = endDate ? new Date(endDate) : null;
+          return (!start || recordDate >= start) && (!end || recordDate <= end);
+        } catch (e) {
+          return true;
+        }
       })();
 
     const matchesFeeType =
@@ -1317,6 +1516,9 @@ const LossOfFeeDueToLeftStudent = () => {
       selectedInstallments.length === 0 ||
       selectedInstallments.some((inst) => row.installmentName === inst.value);
 
+    const matchesTCStatus =
+      !selectedTCStatus || row.tcStatus === selectedTCStatus.value;
+
     return (
       matchesSearchTerm &&
       matchesPaymentMode &&
@@ -1325,7 +1527,8 @@ const LossOfFeeDueToLeftStudent = () => {
       matchesFeeType &&
       matchesClass &&
       matchesSection &&
-      matchesInstallment
+      matchesInstallment &&
+      matchesTCStatus
     );
   });
 
@@ -1337,7 +1540,9 @@ const LossOfFeeDueToLeftStudent = () => {
         className: row.className,
         sectionName: row.sectionName,
         academicYear: row.academicYear,
-        remark: row.remark,
+        displayDate: row.displayDate,
+        source: row.source,
+        tcStatus: row.tcStatus,
         rows: [],
       };
     }
@@ -1363,10 +1568,10 @@ const LossOfFeeDueToLeftStudent = () => {
 
   const grandTotals = studentDataArray.reduce((acc, student) => {
     const studentTotals = student.rows.reduce((acc, row) => {
-      acc.totalFeesDue += Number(row.feesDue) || 0;
-      acc.totalFeesPaid += Number(row.feesPaid) || 0;
-      acc.totalConcession += Number(row.concession) || 0;
-      acc.totalBalance += Number(row.balance) || 0;
+      acc.totalFeesDue += row.feesDue || 0;
+      acc.totalFeesPaid += row.feesPaid || 0;
+      acc.totalConcession += row.concession || 0;
+      acc.totalBalance += row.balance || 0;
       return acc;
     }, { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 });
     acc.totalFeesDue += studentTotals.totalFeesDue;
@@ -1375,11 +1580,6 @@ const LossOfFeeDueToLeftStudent = () => {
     acc.totalBalance += studentTotals.totalBalance;
     return acc;
   }, { totalFeesDue: 0, totalFeesPaid: 0, totalConcession: 0, totalBalance: 0 });
-
-  grandTotals.totalFeesDue = Number(grandTotals.totalFeesDue).toFixed(2);
-  grandTotals.totalFeesPaid = Number(grandTotals.totalFeesPaid).toFixed(2);
-  grandTotals.totalConcession = Number(grandTotals.totalConcession).toFixed(2);
-  grandTotals.totalBalance = Number(grandTotals.totalBalance).toFixed(2);
 
   const totalRecords = studentDataArray.length;
   const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
@@ -1429,8 +1629,8 @@ const LossOfFeeDueToLeftStudent = () => {
     feesPaid: 'Fees Paid',
     concession: 'Concession',
     balance: 'Balance',
-    displayDate: 'Left Date',
-    remark: 'Remark',
+    displayDate: 'Admission Date',
+    source: 'Remark',
   };
 
   const tableFields = Object.keys(headerMapping).map((key) => ({
@@ -1444,17 +1644,18 @@ const LossOfFeeDueToLeftStudent = () => {
       return formatDate(record[fieldId]) || '-';
     } else if (fieldId === 'academicYear') {
       return formatAcademicYear(record[fieldId]) || '-';
+    } else if (fieldId === 'source') {
+      return record[fieldId] || 'Defaulter';
     } else if (
       fieldId === 'admissionNumber' ||
       fieldId === 'studentName' ||
       fieldId === 'className' ||
       fieldId === 'sectionName' ||
-      fieldId === 'installmentName' ||
-      fieldId === 'remark'
+      fieldId === 'installmentName'
     ) {
       return record[fieldId] || '-';
     } else {
-      return record[fieldId] !== undefined ? record[fieldId] : '0.00';
+      return record[fieldId] !== undefined ? record[fieldId] : 0;
     }
   };
 
@@ -1489,6 +1690,15 @@ const LossOfFeeDueToLeftStudent = () => {
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
+                    {/* <Select
+                      isClearable
+                      name="tcStatus"
+                      placeholder="Select Status"
+                      options={tcStatusOptions}
+                      value={selectedTCStatus}
+                      onChange={(selected, action) => handleSelectChange(selected, action)}
+                      className="email-select border border-dark me-lg-2"
+                    /> */}
                     <div
                       className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
@@ -1720,7 +1930,7 @@ const LossOfFeeDueToLeftStudent = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Loss of Fee Due to Left Student</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Over All Outstanding</h2>
                 </div>
               </div>
 
@@ -1747,7 +1957,6 @@ const LossOfFeeDueToLeftStudent = () => {
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Concession</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Balance</th>
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Left Date</th>
                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Remark</th>
                         </tr>
                       </thead>
@@ -1787,10 +1996,7 @@ const LossOfFeeDueToLeftStudent = () => {
                                   {record.balance}
                                 </td>
                                 <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {formatDate(record.displayDate)}
-                                </td>
-                                <td className="text-center align-middle border border-secondary text-nowrap p-2">
-                                  {record.remark || '-'}
+                                  {record.source || 'Defaulter'}
                                 </td>
                               </tr>
                             ))}
@@ -1814,7 +2020,6 @@ const LossOfFeeDueToLeftStudent = () => {
                           <td className="text-center border border-secondary p-2">
                             <strong>{grandTotals.totalBalance}</strong>
                           </td>
-                          <td className="text-center border border-secondary p-2"></td>
                           <td className="text-center border border-secondary p-2"></td>
                         </tr>
                       </tfoot>
@@ -1877,4 +2082,4 @@ const LossOfFeeDueToLeftStudent = () => {
   );
 };
 
-export default LossOfFeeDueToLeftStudent;
+export default OverAllDefaulter;
