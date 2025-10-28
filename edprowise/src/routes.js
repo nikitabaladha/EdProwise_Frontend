@@ -131,7 +131,6 @@ import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettin
 import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
 import MarketingEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/Marketing/MarketingEmail.js";
 
-
 // ===================================PayRoll===========================
 import EmployeeRegistrationList from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationList.js";
 import AddEmployeeRegistration from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/AddEmployeeRegistration.js";
@@ -192,7 +191,6 @@ import AddLetterAndDocuments from "./components/DashboardMainForAdmin/PayrollMod
 import ViewLetterAndDocuments from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LetterAndDocuments/ViewLetterAndDocuments.js";
 import UpdateLetterAndDocuments from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/LetterAndDocuments/UpdateLetterAndDocuments.js";
 import UpdateAwardsAndAchievement from "./components/DashboardMainForAdmin/PayrollModule/EmployeeSelfService/AwardsAndAchievement/UpdateAwardsAndAchievement.js";
-
 
 // FinanceModule //
 import PaymentEntry from "./components/DashboardMainForAdmin/FinanceModule/AccountingEntry/Payment/PaymentEntry.js";
@@ -384,8 +382,6 @@ import CreateBlogCategory from "./components/DashboardMainForAdmin/Blogs/BlogSet
 import CreateBlogTags from "./components/DashboardMainForAdmin/Blogs/BlogSetting/CreateBlogTags/CreateBlogTags.jsx";
 import BlogsStatus from "./components/DashboardMainForAdmin/Blogs/BlogSetting/BlogStatus/BlogsStatus.jsx";
 
-
-
 import TermsAndConditionForSeller from "./components/PrivacyPage/TermsAndConditionForSeller.jsx";
 import ViewBlog from "./components/DashboardMainForAdmin/Blogs/ViewBlog/ViewBlog.js";
 import EducatorZoneBlog from "./components/CommunitySection/SubSection/EducatorZoneBlog/EducatorZoneBlog.jsx";
@@ -427,7 +423,6 @@ import EmployeeLeaveDetailsAndApply from "./components/DashboardMainForEmployee/
 import EmployeeAttendanceReport from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/AttendanceReport/EmployeeAttendanceReport.jsx";
 import LeaveApplyEmployeeList from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeApplyForLeave/LeaveApplyEmployeeList.jsx";
 import ViewEmployeeAttendanceReports from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeAttendenceReport/ViewEmployeeAttendanceReports.jsx";
-
 
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken");
@@ -570,7 +565,10 @@ const AppRoutes = () => {
         <Route path="career" element={<CareerPage />} />
         <Route path="career/:jobName" element={<CareerForm />} />
         <Route path="request-demo" element={<RequestDemoForm />} />
-        <Route path="terms-condition-for-seller" element={<TermsAndConditionForSeller/>}/>
+        <Route
+          path="terms-condition-for-seller"
+          element={<TermsAndConditionForSeller />}
+        />
         <Route
           path="services/digital-services/school-fees-management"
           element={<ServiceFess />}
@@ -636,7 +634,7 @@ const AppRoutes = () => {
           element={<CategoryAndTagRelatedBlog />}
         />
 
-         <Route
+        <Route
           path="community-connect/educator-zone/category-tag-related-blogs"
           element={<EducatorCategoryAndTagRelatedBlog />}
         />
@@ -680,10 +678,22 @@ const AppRoutes = () => {
           <Route path="update-school" element={<UpdateSchool />} />
         </Route>
         {/* Umesh Added */}
-        <Route path="schools/view-school/school-employee" element={<SchoolEmployeeListForAdmin/>}/>
-        <Route path="schools/view-school/school-employee/add-employee" element={<AddEmployeeFromAdminForm/>}/>
-        <Route path="schools/view-school/school-employee/update-employee" element={<UpdateEmployeeFromAdmin/>}/>
-        <Route path="schools/view-school/school-employee/view-employee-details" element={<ViewEmployeeFromAdminFormDetails/>}/>
+        <Route
+          path="schools/view-school/school-employee"
+          element={<SchoolEmployeeListForAdmin />}
+        />
+        <Route
+          path="schools/view-school/school-employee/add-employee"
+          element={<AddEmployeeFromAdminForm />}
+        />
+        <Route
+          path="schools/view-school/school-employee/update-employee"
+          element={<UpdateEmployeeFromAdmin />}
+        />
+        <Route
+          path="schools/view-school/school-employee/view-employee-details"
+          element={<ViewEmployeeFromAdminFormDetails />}
+        />
         {/* Umesh End */}
         {/* Subscriptions Table page and it's Add, View, Update Routes */}
         <Route path="subscriptions" element={<Subscriptions />}>
@@ -809,8 +819,6 @@ const AppRoutes = () => {
           path="payroll-module/admin-setting/define-job-designation"
           element={<DefineJobDesignation />}
         />
-
-
 
         {/* ************Employee Self Services */}
         <Route
@@ -1183,7 +1191,7 @@ const AppRoutes = () => {
         />
 
         <Route
-         path="finance-module/account-entry/journal/update-journal-entry"
+          path="finance-module/account-entry/journal/update-journal-entry"
           element={<UpdateJournal />}
         />
 
@@ -1330,10 +1338,7 @@ const AppRoutes = () => {
           path="finance-module/master/vendor-master"
           element={<VendorMaster />}
         />
-        <Route
-          path="finance-module/master/vendor"
-          element={<CreateVendor />}
-        />
+        <Route path="finance-module/master/vendor" element={<CreateVendor />} />
         <Route
           path="finance-module/master/vendor/add-vendor-form"
           element={<AddNewVendor />}
@@ -1403,12 +1408,17 @@ const AppRoutes = () => {
         <Route path="blog" element={<BlogsInfoTable />} />
         <Route path="blog/add-new-blog" element={<AddNewBlog />} />
         <Route path="blog/update-blog" element={<UpdateBlog />} />
-        <Route path="blog/view-blog/:slug" element={<ViewBlog/>}/>
+        <Route path="blog/view-blog/:slug" element={<ViewBlog />} />
 
-        <Route path="blog/blog-setting/category" element={<CreateBlogCategory />} />
+        <Route
+          path="blog/blog-setting/category"
+          element={<CreateBlogCategory />}
+        />
         <Route path="blog/blog-setting/tags" element={<CreateBlogTags />} />
-        <Route path="blog/blog-setting/blogs-status" element={<BlogsStatus />} />
-
+        <Route
+          path="blog/blog-setting/blogs-status"
+          element={<BlogsStatus />}
+        />
 
         <Route path="*" element={<Page404ForDashboard />} />
       </Route>
@@ -1657,7 +1667,6 @@ const AppRoutes = () => {
           element={<StudentReceipts />}
         />
 
-
         {/* *****************************Payroll Module ***************************************** */}
 
         {/* ===========================Admin Settings=================== */}
@@ -1705,7 +1714,7 @@ const AppRoutes = () => {
           element={<EmployeeIdSettings />}
         />
 
-         <Route
+        <Route
           path="payroll-module/admin-setting/employee-id-setting/edit-setting"
           element={<UpdateEmployeeIdSettings />}
         />
@@ -1739,7 +1748,7 @@ const AppRoutes = () => {
           path="payroll-module/employer/employee-registration/view-employee-registration"
           element={<ViewEmployeeRegistrationFormDetails />}
         />
-        
+
         <Route
           path="payroll-module/employer/registration/update-registration-form"
           element={<UpdateEmployeeRegistrationForm />}
@@ -1790,24 +1799,16 @@ const AppRoutes = () => {
           path="payroll-module/employer/attendance/attendance-report"
           element={<ViewEmployeeAttendanceReports />}
         />
-        
 
         <Route
           path="payroll-module/employee-services/attendance/mark-attendance"
           element={<MarkAttendance />}
         />
 
-        
         <Route
           path="payroll-module/employee-services/attendance/apply-for-leave"
           element={<EmployeeApplyForLeave />}
         />
-
-        
-
-
-
-        
 
         <Route path="*" element={<Page404ForDashboard />} />
       </Route>
@@ -1882,7 +1883,7 @@ const AppRoutes = () => {
       <Route path="*" element={<Page404ForDashboard />} />
 
       {/* ======================================= Employee Routes ================================ */}
-        <Route
+      <Route
         path="/employee-dashboard"
         element={
           <PrivateRoute>
@@ -1904,7 +1905,6 @@ const AppRoutes = () => {
         {/* *****************************Payroll Module ***************************************** */}
 
         {/* ===========================Admin Settings=================== */}
-        
 
         {/* Employee Self Service */}
 
@@ -1928,8 +1928,6 @@ const AppRoutes = () => {
 
         <Route path="*" element={<Page404ForDashboard />} />
       </Route>
-
-
     </Routes>
   );
 };

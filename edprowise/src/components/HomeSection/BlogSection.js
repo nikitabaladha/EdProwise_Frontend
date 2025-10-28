@@ -14,7 +14,7 @@ const BlogSection = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const result = await getAPI(`/get-all-blogs`, {}, true);
+        const result = await getAPI(`/get-all-blogs-for-home`, {}, true);
         console.log("Full API response:", result);
 
         if (result?.data?.success && result?.data?.data) {
