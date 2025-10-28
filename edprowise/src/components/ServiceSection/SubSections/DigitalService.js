@@ -18,13 +18,53 @@ import { RiFilePaperFill } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { IoMdCloseCircle } from "react-icons/io";
 const coursesData = [
-  { id: 1, icon: <FaMoneyBillTrendUp />, title: "School Fees Management Software - Pixel Fees", classid: 1, send:"/services/digital-services/school-fees-management" },
-  { id: 2, icon: <GiReceiveMoney />, title: "Payroll Management Software – Ease Payroll", classid: 2, send: "/services/digital-services/school-payroll" },
-  { id: 3, icon: <FcMoneyTransfer />, title: "Financial Management Software – Book Sync", classid: 3, send: "/services/digital-services/school-financial-management" },
-  { id: 4, icon: <FaBusinessTime />, title: "School Operational Management Software", classid: 4, send: "/services/digital-services/school-operation-management" },
-  { id: 5, icon: <MdInstallMobile />, title: "School Mobile Application", classid: 5, send: "/services/digital-services/school-mobile-application" },
-  { id: 6, icon: <FaLaptopCode />, title: "School Website Design", classid: 6, send: "/services/digital-services/school-website-design" },
-  { id: 7, icon: <TbDeviceMobileCog />, title: "Digital Exam Result System", classid: 1,
+  {
+    id: 1,
+    icon: <FaMoneyBillTrendUp />,
+    title: "School Fees Management Software - Pixel Fees",
+    classid: 1,
+    send: "/services/digital-services/school-fees-management",
+  },
+  {
+    id: 2,
+    icon: <GiReceiveMoney />,
+    title: "Payroll Management Software – Ease Payroll",
+    classid: 2,
+    send: "/services/digital-services/school-payroll",
+  },
+  {
+    id: 3,
+    icon: <FcMoneyTransfer />,
+    title: "Financial Management Software – Book Sync",
+    classid: 3,
+    send: "/services/digital-services/school-financial-management",
+  },
+  {
+    id: 4,
+    icon: <FaBusinessTime />,
+    title: "School Operational Management Software",
+    classid: 4,
+    send: "/services/digital-services/school-operation-management",
+  },
+  {
+    id: 5,
+    icon: <MdInstallMobile />,
+    title: "School Mobile Application",
+    classid: 5,
+    send: "/services/digital-services/school-mobile-application",
+  },
+  {
+    id: 6,
+    icon: <FaLaptopCode />,
+    title: "School Website Design",
+    classid: 6,
+    send: "/services/digital-services/school-website-design",
+  },
+  {
+    id: 7,
+    icon: <TbDeviceMobileCog />,
+    title: "Digital Exam Result System",
+    classid: 1,
     keyFeatures: [
       {
         idFeature: 1,
@@ -334,10 +374,9 @@ const DigitalSection = () => {
       <div className="row-web wpo-courses-wrap service-row">
         {coursesData.map((course, index) => (
           <div
-          key={course.id}
+            key={course.id}
             className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.classid}`}
           >
-            
             <div
               className="wpo-courses-item category-itemm"
               onClick={() => handleItemClick(course)}

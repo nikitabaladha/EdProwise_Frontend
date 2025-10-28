@@ -19,8 +19,7 @@ const HomePage = () => {
       <TestimonialSection />
       <EdprowiseTalk />
       <BlogSection />
-      
-      <FaqContactUsComponent/>
+      <FaqContactUsComponent />
     </>
   );
 };

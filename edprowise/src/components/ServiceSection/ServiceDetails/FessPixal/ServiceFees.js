@@ -7,7 +7,7 @@ const ServiceFess = () => {
   return (
     <>
       <ServiceInfoCommonHeader />
-      <PixalFeesInfoMainPage/>
+      <PixalFeesInfoMainPage />
       <ServiceTabs />
     </>
   );

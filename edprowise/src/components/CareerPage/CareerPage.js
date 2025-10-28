@@ -93,7 +93,7 @@ const CareerPage = () => {
           <div className="row">
             <div className="col col-xs-12">
               <div className="wpo-breadcumb-wrap">
-                <h2>Career</h2> 
+                <h2>Career</h2>
               </div>
             </div>
           </div>
@@ -157,15 +157,19 @@ const CareerPage = () => {
           </div>
 
           {/* Job Cards */}
-          {filteredJobs.map((job) => (
-            <div className="job-card" key={job.id}
-            onClick={window.innerWidth <= 575 ? () => toggleJobDetails(job.id) : null}
+          {/* {filteredJobs.map((job) => (
+            <div
+              className="job-card"
+              key={job.id}
+              onClick={
+                window.innerWidth <= 575 ? () => toggleJobDetails(job.id) : null
+              }
             >
               <div className="details">
                 <h3 className="job-title-name m-0">{job.title}</h3>
                 <button
                   className="apply-btnn job-apply-edpro"
-                  onClick={() => handleApply(job)} 
+                  onClick={() => handleApply(job)}
                 >
                   Apply Now
                 </button>
@@ -191,13 +195,15 @@ const CareerPage = () => {
                   <h3 className="job-title-name m-0">Key Responsibilities</h3>
                   <ul style={{ paddingLeft: "20px" }}>
                     {job.responsibilities.map((resp, index) => (
-                      <li className="job-apply-edpro" key={index}>{resp}</li>
+                      <li className="job-apply-edpro" key={index}>
+                        {resp}
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
             </div>
-          ))}
+          ))} */}
         </div>
       </section>
     </>
