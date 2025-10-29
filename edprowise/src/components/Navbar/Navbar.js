@@ -360,10 +360,10 @@ const Header = () => {
                           <Link to="/login">Sign In</Link>
                         </li> */}
                         <li className="menu-item sign-up-in-mobile">
-                          <Link to="">Sign Up</Link>
+                          <Link>Sign Up</Link>
                         </li>
                         <li className="menu-item sign-up-in-mobile">
-                          <Link to="">Sign In</Link>
+                          <Link>Sign In</Link>
                         </li>
                       </>
                     )}
