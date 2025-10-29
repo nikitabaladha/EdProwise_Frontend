@@ -275,7 +275,6 @@ const Header = () => {
                         <Link
                           to={menu.link}
                           // onClick={(e) => handleMenuClick(menu, index, e)}
-
                           onClick={
                             window.innerWidth <= 992
                               ? (e) => handleMenuClick(menu, index, e)
@@ -354,18 +353,11 @@ const Header = () => {
                       </>
                     ) : (
                       <>
-                        {/* <li className="menu-item sign-up-in-mobile">
+                        <li className="menu-item sign-up-in-mobile">
                           <Link to="/signup">Sign Up</Link>
                         </li>
                         <li className="menu-item sign-up-in-mobile">
                           <Link to="/login">Sign In</Link>
-                        </li> */}
-
-                        <li className="menu-item sign-up-in-mobile">
-                          <Link>Sign Up</Link>
-                        </li>
-                        <li className="menu-item sign-up-in-mobile">
-                          <Link>Sign In</Link>
                         </li>
                       </>
                     )}
@@ -406,7 +398,7 @@ const Header = () => {
                       <div className="close-form">
                         <Link
                           className="login"
-                          // onClick={(event) => handleSignUp(event)}
+                          onClick={(event) => handleSignUp(event)}
                         >
                           <span className="text font-family-web login-weight">
                             Sign Up
@@ -418,7 +410,7 @@ const Header = () => {
 
                         <Link
                           className="theme-btn"
-                          // onClick={(event) => handleSignIn(event)}
+                          onClick={(event) => handleSignIn(event)}
                         >
                           <span className="text font-family-web login-weight">
                             Sign In
