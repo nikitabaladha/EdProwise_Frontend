@@ -342,7 +342,7 @@ const Header = () => {
                         <li className="menu-item sign-up-in-mobile">
                           <Link
                             to="/dashboard"
-                            onClick={(event) => handleSignIn(event)}
+                            // onClick={(event) => handleSignIn(event)}
                           >
                             Dashboard
                           </Link>
@@ -416,7 +416,7 @@ const Header = () => {
 
                         <Link
                           className="theme-btn"
-                          onClick={(event) => handleSignIn(event)}
+                          // onClick={(event) => handleSignIn(event)}
                         >
                           <span className="text font-family-web login-weight">
                             Sign In
