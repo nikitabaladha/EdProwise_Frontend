@@ -1642,6 +1642,7 @@ const StudentRegisterListTable = () => {
           firstName={currentStudent.find(student => student._id === selectedStudentId)?.firstName || "N/A"}
           lastName={currentStudent.find(student => student._id === selectedStudentId)?.lastName || "N/A"}
           className={getClassNameById(currentStudent.find(student => student._id === selectedStudentId)?.masterDefineClass)}
+          parentContactNumber={currentStudent.find(student => student._id === selectedStudentId)?.parentContactNumber || ""}
           academicYear={selectedYear}
           onPaymentSuccess={handlePaymentSuccess}
         />

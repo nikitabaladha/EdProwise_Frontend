@@ -292,24 +292,34 @@ const ReconFeesHeadwise = () => {
         }
 
         setFeeData(admissionResponse.data.data);
-        setLeftStudentData(leftResponse.data?.data || []);
+        const leftData = leftResponse?.data?.data || [];
+        const lateData = lateResponse?.data?.data || [];
+
+
+        const lateAdmissionSet = new Set(lateData.map((item) => item.admissionNumber));
+        const filteredLeftData = leftData.filter(
+          (item) => !lateAdmissionSet.has(item.admissionNumber)
+        );
+
+        setLeftStudentData(filteredLeftData);
         setLateAdmissionData(lateResponse.data?.data || []);
         setDefaulterData(defaulterResponse.data?.data || []);
         setAdmissionFeesData(admissionFeesResponse.data?.data || []);
         setRegistrationFeesData(
-          registrationFeesResponse.data?.combinedDetails ||[]
+          registrationFeesResponse.data?.combinedDetails || []
         );
         setTcFeesData(tcFeesResponse.data?.combinedDetails
-        //   .filter(
-        //   item => item.academicYear === selectedAcademicYear
-        // ) 
-        || []);
+
+
+
+          || []);
         setBoardRegistrationFeesData(boardRegistrationFeesResponse.data?.data
-          ?.[selectedAcademicYear] 
+          ?.[selectedAcademicYear]
           || []);
         setBoardExamFeesData(boardExamFeesResponse.data?.data
           ?.[selectedAcademicYear]
-           || []);
+          || []);
+
         setLateFeesData(lateFeesResponse.data?.data || []);
         setArrearFeesData(arrearFeesResponse.data?.data || []);
 
@@ -437,14 +447,21 @@ const ReconFeesHeadwise = () => {
       return matchesClass;
     });
 
-       let totalReg = 0;
+    let totalReg = 0;
     filteredRegistrationFees.forEach(item => {
-    if (item.recordType === "Registration" && item.regFeesStatus && item.regFeesStatus.includes("Paid")) {
-      totalReg += parseFloat(item.regFeesPaid || item.totalPaid || 0);
-    } else if (item.recordType === "Refund" && item.regFeesrefundAmount) {
-      totalReg -= parseFloat(item.regFeesrefundAmount);
-    }
-  });
+      if (item.recordType === "Registration" && item.regFeesStatus && item.regFeesStatus.includes("Paid")) {
+        const paid = parseFloat(item.regFeesPaid || 0);
+        const concession = parseFloat(item.regFeesConcession || 0);
+        totalReg += paid + concession;
+      } else if (item.recordType === "Refund") {
+        const refund = Math.abs(
+          parseFloat(item.regFeesrefundAmount || 0) ||
+          parseFloat(item.regFeesCancelledAmount || 0)
+        );
+        const concessionAmount = parseFloat(item.regFeesConcession)
+        totalReg -= refund - concessionAmount;
+      }
+    });
 
     setRegistrationFees(Number(totalReg).toFixed(2));
   }, [registrationFeesData, selectedClasses]);
@@ -457,22 +474,27 @@ const ReconFeesHeadwise = () => {
       const matchesSection =
         selectedSections.length === 0 ||
         selectedSections.some((sec) => record.sectionName === sec.value);
-      // const matchesAcademicYear = record.academicYear === selectedAcademicYear;
-      return matchesClass && matchesSection ;
+      return matchesClass && matchesSection;
     });
 
-     let totalTc = 0;
-   filteredTcFees.forEach(item => {
-    if (item.recordType === "Transfer Certificate" && item.tcFeesStatus && item.tcFeesStatus.includes("Paid")) {
-      totalTc += parseFloat(item.tcFeesPaid || item.totalPaid || 0);
-    } else if (item.recordType === "Refund" && item.tcFeesRefundAmount) {
-      totalTc -= parseFloat(item.tcFeesRefundAmount);
-    }
-  });
+    let totalTc = 0;
+    filteredTcFees.forEach(item => {
+      if (item.recordType === "Transfer Certificate" && item.tcFeesStatus && item.tcFeesStatus.includes("Paid")) {
+        const paid = parseFloat(item.tcFeesPaid || 0);
+        const concession = parseFloat(item.tcFeesConcession || 0);
+        totalTc += paid + concession;
+      } else if (item.recordType === "Refund") {
+        const refund = Math.abs(
+          parseFloat(item.tcFeesrefundAmount || 0) ||
+          parseFloat(item.tcFeesCancelledAmount || 0)
+        );
+        const concessionAmount = parseFloat(item.tcFeesConcession)
+        totalTc -= refund - concessionAmount;
+      }
+    });
 
     setTcFees(Number(totalTc).toFixed(2));
 
-    
   }, [tcFeesData, selectedClasses, selectedSections]);
 
   useEffect(() => {
@@ -483,45 +505,59 @@ const ReconFeesHeadwise = () => {
       const matchesSection =
         selectedSections.length === 0 ||
         selectedSections.some((sec) => record.sectionName === sec.value);
-      const matchesAcademicYear = record.academicYear === selectedAcademicYear;
-    return matchesClass && matchesSection && matchesAcademicYear;
+      return matchesClass && matchesSection;
     });
 
-       let totalBoardReg = 0;
-  filteredBoardRegistrationFees.forEach(item => {
-    if (item.recordType === "Board Registration Fee" && item.boardRegFeesStatus && (Array.isArray(item.boardRegFeesStatus) ? item.boardRegFeesStatus.includes("Paid") : item.boardRegFeesStatus.includes("Paid"))) {
-      totalBoardReg += parseFloat(item.boardRegFeesPaid || item.totalPaid || 0);
-    } else if (item.recordType === "Refund" && item.boardRegFeesRefundAmount) {
-      totalBoardReg -= parseFloat(item.boardRegFeesRefundAmount);
-    }
-  });
+    let totalBoardReg = 0;
+    filteredBoardRegistrationFees.forEach(item => {
+      if (item.recordType === "Board Registration Fee" && item.boardRegFeesStatus && (Array.isArray(item.boardRegFeesStatus) ? item.boardRegFeesStatus.includes("Paid") : item.boardRegFeesStatus.includes("Paid"))) {
+        const paid = parseFloat(item.boardRegFeesPaid || 0);
+        const concession = parseFloat(item.boardRegFeesConcession || 0);
+        totalBoardReg += paid + concession;
+      } else if (item.recordType === "Refund") {
+        const refund = Math.abs(
+          parseFloat(item.boardRegFeesrefundAmount || 0) ||
+          parseFloat(item.boardRegFeesCancelledAmount || 0)
+        );
+        const concessionAmount = parseFloat(item.boardRegFeesConcession)
+        totalBoardReg -= refund - concessionAmount;
+      }
+    });
 
     setBoardRegistrationFees(Number(totalBoardReg).toFixed(2));
+
   }, [boardRegistrationFeesData, selectedClasses, selectedSections]);
 
- useEffect(() => {
-  const filteredBoardExamFees = boardExamFeesData.filter((record) => {
-    const matchesClass =
-      selectedClasses.length === 0 ||
-      selectedClasses.some((cls) => record.className === cls.value);
-    const matchesSection =
-      selectedSections.length === 0 ||
-      selectedSections.some((sec) => record.sectionName === sec.value);
-      const matchesAcademicYear = record.academicYear === selectedAcademicYear;
-    return matchesClass && matchesSection && matchesAcademicYear;
-  });
+  useEffect(() => {
+    const filteredBoardExamFees = boardExamFeesData.filter((record) => {
+      const matchesClass =
+        selectedClasses.length === 0 ||
+        selectedClasses.some((cls) => record.className === cls.value);
+      const matchesSection =
+        selectedSections.length === 0 ||
+        selectedSections.some((sec) => record.sectionName === sec.value);
+      return matchesClass && matchesSection;
+    });
 
-  let totalBoardExam = 0;
-  filteredBoardExamFees.forEach(item => {
-    if (item.recordType === "Board Exam Fee" && item.boardExamFeesStatus && (Array.isArray(item.boardExamFeesStatus) ? item.boardExamFeesStatus.includes("Paid") : item.boardExamFeesStatus.includes("Paid"))) {
-      totalBoardExam += parseFloat(item.boardExamFeesPaid || item.totalPaid || 0);
-    } else if (item.recordType === "Refund" && item.boardExamFeesRefundAmount) {
-      totalBoardExam -= parseFloat(item.boardExamFeesRefundAmount);
-    }
-  });
+    let totalBoardExam = 0;
+    filteredBoardExamFees.forEach(item => {
+      if (item.recordType === "Board Exam Fee" && item.boardExamFeesStatus && (Array.isArray(item.boardExamFeesStatus) ? item.boardExamFeesStatus.includes("Paid") : item.boardExamFeesStatus.includes("Paid"))) {
+        const paid = parseFloat(item.boardExamFeesPaid || 0);
+        const concession = parseFloat(item.boardExamFeesConcession || 0);
+        totalBoardExam += paid + concession;
+      } else if (item.recordType === "Refund") {
+        const refund = Math.abs(
+          parseFloat(item.boardExamFeesrefundAmount || 0) ||
+          parseFloat(item.boardExamFeesCancelledAmount || 0)
+        );
+        const concessionAmount = parseFloat(item.boardExamFeesConcession)
+        totalBoardExam -= refund - concessionAmount;
+      }
+    });
 
-  setBoardExaminationFees(totalBoardExam.toFixed(2));
-}, [boardExamFeesData, selectedClasses, selectedSections]);
+    setBoardExaminationFees(Number(totalBoardExam).toFixed(2));
+
+  }, [boardExamFeesData, selectedClasses, selectedSections]);
 
   useEffect(() => {
     const filteredLateFees = lateFeesData.filter((record) => {
@@ -534,93 +570,114 @@ const ReconFeesHeadwise = () => {
       const matchesInstallment =
         !selectedInstallment ||
         record.installmentName === selectedInstallment.value;
-      const paymentDate = record.paymentDate ? new Date(record.paymentDate.split('-').reverse().join('-')) : null;
+      const paymentDate = record.displayDate ? new Date(record.displayDate.split('/').reverse().join('-')) : null;
       const matchesDate =
         (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
         (!endDate || !paymentDate || paymentDate <= new Date(endDate));
       return matchesClass && matchesSection && matchesInstallment && matchesDate;
     });
 
-    const totalLateAndExcessFees = filteredLateFees.reduce((sum, item) => {
-      return sum + (parseFloat(item.paidFine) || 0) + (parseFloat(item.excessFees) || 0);
-    }, 0).toFixed(2);
+    let totalLateAndExcess = 0;
+    const lateFeesBreakdown = { lateExcessFee: 0 };
 
-    setLateAndExcessFees(totalLateAndExcessFees);
+    filteredLateFees.forEach(item => {
+      const lateAmount = (parseFloat(item.paidFine) || 0) + (parseFloat(item.excessFees) || 0);
+      totalLateAndExcess += lateAmount;
+      lateFeesBreakdown.lateExcessFee = totalLateAndExcess;
+    });
+
+    setLateAndExcessFees(Number(totalLateAndExcess).toFixed(2));
   }, [lateFeesData, selectedClasses, selectedSections, selectedInstallment, startDate, endDate]);
 
-  // useEffect(() => {
-  //   console.log("arrearFeesData loaded:", arrearFeesData);
-  //   const filteredArrearFees = arrearFeesData.filter((record) => {
-  //     const matchesClass =
-  //       selectedClasses.length === 0 ||
-  //       selectedClasses.some((cls) => record.className === cls.value);
-  //     const matchesSection =
-  //       selectedSections.length === 0 ||
-  //       selectedSections.some((sec) => record.sectionName === sec.value);
-  //     const matchesInstallment =
-  //       !selectedInstallment ||
-  //       record.installmentName === selectedInstallment.value;
-  //     const paymentDate = record.paymentDate ? new Date(record.paymentDate.split('-').reverse().join('-')) : null;
-  //     const matchesDate =
-  //       (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
-  //       (!endDate || !paymentDate || paymentDate <= new Date(endDate));
-  //     return matchesClass && matchesSection && matchesInstallment && matchesDate;
-  //   });
-
-  //   const totalArrearFeesReceived = filteredArrearFees.reduce((sum, item) => {
-  //     return sum + (parseFloat(item.totalPaid) || 0);
-  //   }, 0).toFixed(2);
-
-  //   setArrearFeesReceived(totalArrearFeesReceived);
-  // }, [arrearFeesData, selectedClasses, selectedSections, selectedInstallment, startDate, endDate]);
-
-useEffect(() => {
-
-
-  const filteredArrearFees = arrearFeesData.filter((record) => {
-    const matchesClass =
-      selectedClasses.length === 0 ||
-      selectedClasses.some((cls) => record.className === cls.value);
-
-    const matchesSection =
-      selectedSections.length === 0 ||
-      selectedSections.some((sec) => record.sectionName === sec.value);
-
-    const matchesInstallment =
-      !selectedInstallment ||
-      record.installmentName === selectedInstallment.value;
-
-    const paymentDate = record.paymentDate
-      ? new Date(record.paymentDate.split("-").reverse().join("-"))
-      : null;
-
-    const matchesDate =
-      (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
-      (!endDate || !paymentDate || paymentDate <= new Date(endDate));
-
-    return matchesClass && matchesSection && matchesInstallment && matchesDate;
-  });
-
-
-  const totalArrearFeesReceived = filteredArrearFees.reduce((sum, record) => {
-    const feeTypePaidSum = Object.values(record.feeTypes || {}).reduce(
-      (innerSum, fee) => innerSum + (parseFloat(fee.totalPaid) || 0),
-      0
-    );
-    return sum + feeTypePaidSum;
-  }, 0);
 
 
 
-  setArrearFeesReceived(totalArrearFeesReceived.toFixed(2));
-}, [
-  arrearFeesData,
-  selectedClasses,
-  selectedSections,
-  selectedInstallment,
-  startDate,
-  endDate,
-]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  useEffect(() => {
+    const filteredArrearFees = arrearFeesData.filter((record) => {
+      const matchesClass =
+        selectedClasses.length === 0 ||
+        selectedClasses.some((cls) => record.className === cls.value);
+
+      const matchesSection =
+        selectedSections.length === 0 ||
+        selectedSections.some((sec) => record.sectionName === sec.value);
+
+      const matchesInstallment =
+        !selectedInstallment ||
+        record.installmentName === selectedInstallment.value;
+
+      const paymentDate = record.paymentDate
+        ? new Date(record.paymentDate.split("-").reverse().join("-"))
+        : null;
+
+      const matchesDate =
+        (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
+        (!endDate || !paymentDate || paymentDate <= new Date(endDate));
+
+      return matchesClass && matchesSection && matchesInstallment && matchesDate;
+    });
+
+    const totalArrearFeesReceived = filteredArrearFees.reduce((sum, record) => {
+
+      const feeTypePaidSum = Object.values(record.feeTypes || {}).reduce(
+        (innerSum, fee) => innerSum + (parseFloat(fee.totalPaid) || 0),
+        0
+      );
+
+
+      const totalRefundCancelled = (record.refundData || []).reduce(
+        (refundSum, refund) => {
+          const feeTypeRefundTotal = (refund.feeTypeRefunds || []).reduce(
+            (innerRefund, ft) =>
+              innerRefund +
+              (parseFloat(ft.refundAmountandcancelledAmount) || 0) ,
+              // (parseFloat(ft.concessionAmount) || 0),
+            0
+          );
+          return refundSum + feeTypeRefundTotal;
+        },
+        0
+      );
+
+
+      const netPaid = feeTypePaidSum + totalRefundCancelled;
+
+      return sum + netPaid;
+    }, 0);
+
+    setArrearFeesReceived(totalArrearFeesReceived.toFixed(2));
+  }, [
+    arrearFeesData,
+    selectedClasses,
+    selectedSections,
+    selectedInstallment,
+    startDate,
+    endDate,
+  ]);
+
 
 
   useEffect(() => {

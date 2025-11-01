@@ -4,17 +4,18 @@ import postAPI from "../../../../../api/postAPI";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 
-const PaymentModal = ({ 
-  show, 
-  onClose, 
-  studentId, 
-  onPaymentSuccess, 
-  schoolId, 
-  classId, 
-  academicYear, 
-  firstName, 
-  lastName, 
-  className
+const PaymentModal = ({
+  show,
+  onClose,
+  studentId,
+  onPaymentSuccess,
+  schoolId,
+  classId,
+  academicYear,
+  firstName,
+  lastName,
+  className,
+  parentContactNumber
 }) => {
   const [formData, setFormData] = useState({
     academicYear: academicYear,
@@ -27,8 +28,8 @@ const PaymentModal = ({
     chequeNumber: "",
     bankName: "",
     name: `${firstName} ${lastName}`.trim() || "",
-    email: "", 
-    phone: "", 
+    email: "",
+    phone: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -47,13 +48,14 @@ const PaymentModal = ({
     infoSection: {
       backgroundColor: "#f8f9fa",
       padding: "15px",
+      color: "Black",
       borderRadius: "8px",
       marginBottom: "20px",
       border: "1px solid #e9ecef",
     },
   };
 
-  // Fetch fee types
+
   const fetchClassRelatedFeeTypes = async () => {
     setLoadingFeeTypes(true);
     try {
@@ -61,13 +63,13 @@ const PaymentModal = ({
         toast.error("Missing required parameters.");
         return;
       }
-      
+
       const response = await getAPI(
         `/get-one-time-feesbyIds/${schoolId}/${classId}/${academicYear}`,
         {},
         true
       );
-      
+
       if (response?.data?.data) {
         const feeTypes = response.data.data.flatMap((feeItem) =>
           feeItem.oneTimeFees.map((fee) => ({
@@ -105,7 +107,7 @@ const PaymentModal = ({
     const registrationFee = parseFloat(formData.registrationFee) || 0;
     const concessionAmount = parseFloat(formData.concessionAmount) || 0;
     const finalAmt = Math.max(0, registrationFee - concessionAmount);
-    
+
     setFormData(prev => ({
       ...prev,
       finalAmount: finalAmt.toString(),
@@ -139,8 +141,8 @@ const PaymentModal = ({
 
   const validateForm = () => {
     const newErrors = {};
-    
-    // 
+
+
     if (!formData.feeTypeId) newErrors.feeTypeId = "Please select a fee type.";
     if (!formData.registrationFee || parseFloat(formData.registrationFee) <= 0) {
       newErrors.registrationFee = "Valid registration fee is required.";
@@ -150,7 +152,7 @@ const PaymentModal = ({
     }
     if (!formData.paymentMode) newErrors.paymentMode = "Please select payment mode.";
     if (!formData.name.trim()) newErrors.name = "Name is required.";
-    
+
 
     if (formData.paymentMode === "Cheque") {
       if (!formData.bankName?.trim()) newErrors.bankName = "Bank name is required.";
@@ -160,7 +162,7 @@ const PaymentModal = ({
         newErrors.chequeNumber = "Cheque number must be exactly 6 digits.";
       }
     }
-    
+
 
     if (formData.concessionType && formData.concessionType !== "null") {
       if (!formData.concessionAmount || parseFloat(formData.concessionAmount) <= 0) {
@@ -170,20 +172,20 @@ const PaymentModal = ({
         newErrors.concessionAmount = "Concession cannot exceed registration fee.";
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
 
   const initiateEasebuzzPayment = (paymentUrl) => {
- 
+
     sessionStorage.setItem('easebuzzPayment', JSON.stringify({
       studentId,
       paymentUrl,
       timestamp: Date.now()
     }));
-  
+
     window.location.href = paymentUrl;
   };
 
@@ -219,7 +221,7 @@ const PaymentModal = ({
           toast.error("Payment URL not received from gateway.");
         }
       } else {
-        // Cash/Cheque success
+
         toast.success("Payment recorded successfully!");
         onPaymentSuccess?.();
         onClose();
@@ -261,26 +263,46 @@ const PaymentModal = ({
       <Modal.Header closeButton>
         <Modal.Title>Process Registration Payment</Modal.Title>
       </Modal.Header>
-      
+
       <Modal.Body style={styles.modalBody}>
-        {/* Student Info */}
+        { }
         <div style={styles.infoSection}>
-          <Row>
-            <Col md={12}>
-              <strong>Student:</strong> {firstName} {lastName}
-              <br />
-              <strong>Academic Year:</strong> {academicYear}
-              <br />
-              <strong>Class:</strong> {className}
-            </Col>
-          </Row>
+        
+         <Row className="mb-2 align-items-center">
+  <Col md={3} sm={4} xs={5}>
+    <strong>Student :</strong>
+  </Col>
+  <Col md={9} sm={8} xs={7}>
+    {firstName} {lastName}
+  </Col>
+</Row>
+
+<Row className="mb-2 align-items-center">
+  <Col md={3} sm={4} xs={5}>
+    <strong>Academic Year :</strong>
+  </Col>
+  <Col md={9} sm={8} xs={7}>
+    {academicYear}
+  </Col>
+</Row>
+
+<Row className="mb-2 align-items-center">
+  <Col md={3} sm={4} xs={5}>
+    <strong>Class :</strong>
+  </Col>
+  <Col md={9} sm={8} xs={7}>
+    {className}
+  </Col>
+</Row>
+
+         
         </div>
 
         <Form>
-          {/* Fee Selection */}
+          { }
           <Row className="mb-3">
             <Col md={12}>
-              <Form.Label className="fw-bold">Fee Type *</Form.Label>
+              <Form.Label className="fw-bold">Fee Type <span style={{ color: "red" }}>*</span></Form.Label>
               {loadingFeeTypes ? (
                 <Spinner animation="border" size="sm" />
               ) : (
@@ -303,7 +325,7 @@ const PaymentModal = ({
             </Col>
           </Row>
 
-          {/* Fee Details */}
+          { }
           <Row className="mb-3">
             <Col md={4}>
               <Form.Label>Registration Fee</Form.Label>
@@ -335,7 +357,6 @@ const PaymentModal = ({
             <Col md={4}>
               <Form.Label>Concession Amount</Form.Label>
               <Form.Control
-                type="number"
                 name="concessionAmount"
                 value={formData.concessionAmount}
                 isInvalid={!!errors.concessionAmount}
@@ -348,7 +369,7 @@ const PaymentModal = ({
 
           <Row className="mb-3">
             <Col md={6}>
-              <Form.Label className="fw-bold">Final Amount *</Form.Label>
+              <Form.Label className="fw-bold">Final Amount</Form.Label>
               <Form.Control
                 type="number"
                 name="finalAmount"
@@ -359,28 +380,32 @@ const PaymentModal = ({
               <Form.Control.Feedback type="invalid">{errors.finalAmount}</Form.Control.Feedback>
             </Col>
             <Col md={6}>
-              <Form.Label className="fw-bold">Payment Mode *</Form.Label>
+              <Form.Label className="fw-bold">
+                Payment Mode <span style={{ color: "red" }}>*</span>
+              </Form.Label>
+
               <Form.Select
                 name="paymentMode"
                 value={formData.paymentMode}
                 isInvalid={!!errors.paymentMode}
                 onChange={handleChange}
+                required
               >
                 <option value="">Select Mode</option>
                 <option value="Cash">Cash</option>
                 <option value="Cheque">Cheque</option>
-                <option value="Online">Online (Easebuzz)</option>
+                <option value="Online">Online</option>
               </Form.Select>
               <Form.Control.Feedback type="invalid">{errors.paymentMode}</Form.Control.Feedback>
             </Col>
           </Row>
 
-          {/* Online Payment Details - Only show when Online is selected */}
+          { }
           {formData.paymentMode === "Online" && (
             <>
               <Row className="mb-3">
                 <Col md={6}>
-                  <Form.Label>Email (Optional)</Form.Label>
+                  <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
                     name="email"
@@ -390,24 +415,18 @@ const PaymentModal = ({
                     onChange={handleChange}
                   />
                   <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-                  <Form.Text className="text-muted">
-                    Used for payment receipt and notifications
-                  </Form.Text>
                 </Col>
                 <Col md={6}>
-                  <Form.Label>Phone (Optional)</Form.Label>
+                  <Form.Label>Phone</Form.Label>
                   <Form.Control
                     type="tel"
                     name="phone"
-                    value={formData.phone}
+                    value={formData.phone || parentContactNumber}
                     isInvalid={!!errors.phone}
                     placeholder="1234567890"
                     onChange={handleChange}
                   />
                   <Form.Control.Feedback type="invalid">{errors.phone}</Form.Control.Feedback>
-                  <Form.Text className="text-muted">
-                    Used for OTP verification if needed
-                  </Form.Text>
                 </Col>
               </Row>
               {errors.emailPhone && (
@@ -416,18 +435,15 @@ const PaymentModal = ({
                 </Alert>
               )}
               <Alert variant="info">
-                <strong>Secure Online Payment:</strong> You will be redirected to Easebuzz payment gateway 
-                to complete payment securely using Credit/Debit Card, Net Banking, or UPI.
+                <strong>Secure Online Payment:</strong> You will be redirected to our secure payment gateway
+                to complete your transaction safely using Credit/Debit Card, Net Banking, or UPI.
                 <br />
-                <small className="d-block mt-1">
-                  <i className="fas fa-info-circle me-1"></i>
-                  Email/Phone are optional but recommended for payment receipts and support.
-                </small>
               </Alert>
+
             </>
           )}
 
-          {/* Cheque Details */}
+          { }
           {formData.paymentMode === "Cheque" && (
             <Row className="mb-3">
               <Col md={6}>
@@ -459,9 +475,9 @@ const PaymentModal = ({
       </Modal.Body>
 
       <Modal.Footer>
-        <Button 
-          variant="secondary" 
-          onClick={onClose} 
+        <Button
+          variant="secondary"
+          onClick={onClose}
           disabled={isSubmitting}
         >
           Cancel

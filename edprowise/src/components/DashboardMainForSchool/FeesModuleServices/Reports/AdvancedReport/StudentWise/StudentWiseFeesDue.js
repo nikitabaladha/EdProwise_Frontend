@@ -5,10 +5,10 @@ import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
-import { exportToExcel, exportToPDF } from './OpeningandClosingAdvancedReportExport';
+import { exportToExcel, exportToPDF } from './StudentWiseFeesDueExport';
 import { fetchSchoolData } from '../../../PdfUtlisReport';
 
-const OpeningAndClosingAdvancedReport = () => {
+const StudentWiseFeesDue = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState('Date');
@@ -25,22 +25,29 @@ const OpeningAndClosingAdvancedReport = () => {
   const [sectionOptions, setSectionOptions] = useState([]);
   const [installmentOptions, setInstallmentOptions] = useState([]);
   const [paymentModeOptions, setPaymentModeOptions] = useState([]);
+  const [statusOptions] = useState([
+    { value: 'Paid', label: 'Paid' },
+    { value: 'Refund', label: 'Refund' },
+    { value: 'Cancelled', label: 'Cancelled' },
+    { value: 'Cheque Return', label: 'Cheque Return' },
+  ]);
   const [academicYearOptions, setAcademicYearOptions] = useState([]);
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
+  const [selectedYears, setSelectedYears] = useState([]);
   const [selectedFeeTypes, setSelectedFeeTypes] = useState([]);
   const [selectedInstallments, setSelectedInstallments] = useState([]);
-  const [selectedYears, setSelectedYears] = useState([]);
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState('all');
-  const [paymentAcademicYear, setPaymentAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Type of Fees', 'Payment Mode'];
+  const tabs = ['Academic Year', 'Class & Section', 'Installment', 'Payment Mode'];
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -54,6 +61,17 @@ const OpeningAndClosingAdvancedReport = () => {
     if (!year) return '-';
     const [startYear, endYear] = year.split('-');
     return `${startYear}-${endYear?.slice(-2) || ''}`;
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr || dateStr === '-') return '-';
+    try {
+      const [day, month, year] = dateStr.split('/');
+      return `${day}-${month}-${year}`;
+    } catch (error) {
+      console.warn('Invalid date format:', dateStr);
+      return '-';
+    }
   };
 
   useEffect(() => {
@@ -109,17 +127,18 @@ const OpeningAndClosingAdvancedReport = () => {
               label: formatAcademicYear(year),
             }))
           );
-          if (!paymentAcademicYear && years.length > 0) {
+          if (!selectedAcademicYear && years.length > 0) {
             const latestYear = years[years.length - 1];
-            setPaymentAcademicYear(latestYear);
+            setSelectedAcademicYear(latestYear);
+            localStorage.setItem('selectedAcademicYear', latestYear);
             setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
           }
         } else {
           toast.error('No academic years found.');
         }
       } catch (err) {
-        toast.error('Error fetching academic years.');
-        console.error(err);
+        toast.error('Error fetching academic years: ' + err.message);
+        console.error('Error fetching academic years:', err);
       } finally {
         setLoadingYears(false);
       }
@@ -163,11 +182,10 @@ const OpeningAndClosingAdvancedReport = () => {
   }, [selectedClasses, classSectionMap, feeData]);
 
   const fetchFeeData = async (years) => {
-    if (!schoolId || !years.length) return;
     setIsLoading(true);
     try {
       const promises = years.map((year) =>
-        getAPI(`/get-opening-and-closing-advanced?schoolId=${schoolId}&academicYear=${year}`)
+        getAPI(`/get-fees-due-student-wise?schoolId=${schoolId}&academicYear=${year}`)
       );
       const responses = await Promise.all(promises);
       const unifiedData = responses.flatMap((res, index) => {
@@ -175,25 +193,13 @@ const OpeningAndClosingAdvancedReport = () => {
           console.warn(`No data found for year ${years[index]}`);
           return [];
         }
-        return res.data.data.map(item => ({
-          ...item,
-          totalReceived: Number(item.totalReceived || 0).toFixed(2),
-          feeTypes: Object.fromEntries(
-            Object.entries(item.feeTypes || {}).map(([type, value]) => [
-              type,
-              {
-                openingAdvance: Number(value.openingAdvance || 0).toFixed(2),
-                received: Number(value.received || 0).toFixed(2),
-                adjusted: Number(value.adjusted || 0).toFixed(2),
-                closingBalance: Number(value.closingBalance || 0).toFixed(2),
-              }
-            ])
-          )
-        }));
+        return res.data.data;
       });
 
+      console.log('Fetched unifiedData:', unifiedData);
+
       const classSectionMapping = {};
-      unifiedData.forEach((record) => {
+      unifiedData.forEach(record => {
         const className = record.className || '-';
         const sectionName = record.sectionName || '-';
         if (className !== '-' && sectionName !== '-') {
@@ -203,50 +209,61 @@ const OpeningAndClosingAdvancedReport = () => {
           classSectionMapping[className].add(sectionName);
         }
       });
+
       setClassSectionMap(classSectionMapping);
 
-      const usedFeeTypes = [...new Set(unifiedData.flatMap(item => Object.keys(item.feeTypes)))];
-      const allFeeTypes = [...new Set(responses
+      const allFeeTypes = responses
         .flatMap((res) => res?.data?.feeTypes || [])
-        .filter(type => !['Admission Fee', 'Admission Fees', 'Registration Fees', 'TC Fees'].includes(type))
-        .filter(type => usedFeeTypes.includes(type))
-      )].sort();
+        .filter((type, index, self) => type && self.indexOf(type) === index)
+        .sort();
 
       setFeeData(unifiedData);
       setFeeTypes(allFeeTypes);
-      setClassOptions([...new Set(unifiedData.map(item => item.className).filter(cls => cls && cls !== '-'))].map(cls => ({ value: cls, label: cls })));
-      setSectionOptions([...new Set(unifiedData.map(item => item.sectionName).filter(sec => sec && sec !== '-'))].map(sec => ({ value: sec, label: sec })));
-      setInstallmentOptions([...new Set(unifiedData.map(item => item.installmentName).filter(inst => inst && inst !== '-'))].map(inst => ({ value: inst, label: inst })));
-      setPaymentModeOptions([...new Set(unifiedData.map(item => item.paymentMode).filter(mode => mode && mode !== '-'))].map(mode => ({ value: mode, label: mode })));
+
+      const filterOptions = responses[0]?.data?.filterOptions || {};
+      setClassOptions(filterOptions.classOptions || []);
+      setSectionOptions(filterOptions.sectionOptions || []);
+      setInstallmentOptions(filterOptions.installmentOptions || []);
+      setPaymentModeOptions(filterOptions.paymentModeOptions || []);
 
       if (rowsPerPage === 'all' && unifiedData.length > 0) {
-        setRowsPerPage(unifiedData.length);
+        const studentDataArray = Object.keys(
+          unifiedData.reduce((acc, row) => {
+            acc[row.admissionNumber] = {};
+            return acc;
+          }, {})
+        ).length;
+        setRowsPerPage(studentDataArray || 'all');
       }
     } catch (error) {
       toast.error('Error fetching data: ' + error.message);
+      console.error('Error fetching fee data:', error);
       setFeeData([]);
+      setClassSectionMap({});
       setFeeTypes([]);
       setClassOptions([]);
       setSectionOptions([]);
       setInstallmentOptions([]);
       setPaymentModeOptions([]);
-      setClassSectionMap({});
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!schoolId || !paymentAcademicYear) return;
+    if (!schoolId || !selectedAcademicYear) return;
     const yearsToFetch = selectedYears.length > 0
       ? selectedYears.map((year) => year.value)
-      : [paymentAcademicYear];
+      : [selectedAcademicYear];
     fetchFeeData(yearsToFetch);
-  }, [schoolId, paymentAcademicYear, selectedYears]);
+  }, [schoolId, selectedAcademicYear, selectedYears]);
 
   const handleSelectChange = (selectedOptions, { name }) => {
     const selected = selectedOptions || [];
-    if (name === 'paymentMode') {
+    if (name === 'academicYear') {
+      setSelectedYears(selected);
+      setCurrentPage(1);
+    } else if (name === 'paymentMode') {
       setSelectedPaymentModes(selected);
       setCurrentPage(1);
     } else if (name === 'class') {
@@ -261,12 +278,12 @@ const OpeningAndClosingAdvancedReport = () => {
     } else if (name === 'installment') {
       setSelectedInstallments(selected);
       setCurrentPage(1);
-    } else if (name === 'academicYear') {
-      setSelectedYears(selected);
+    } else if (name === 'status') {
+      setSelectedStatuses(selected);
       setCurrentPage(1);
     } else if (name === 'rowsPerPage') {
       if (selectedOptions?.value === 'all') {
-        setRowsPerPage(feeData.length || 'all');
+        setRowsPerPage(studentDataArray.length || 'all');
       } else {
         setRowsPerPage(selectedOptions ? selectedOptions.value : 10);
       }
@@ -276,25 +293,28 @@ const OpeningAndClosingAdvancedReport = () => {
 
   const applyFilters = () => {
     setShowFilterPanel(false);
+    setCurrentPage(1);
     const yearsToFetch = selectedYears.length > 0
       ? selectedYears.map((year) => year.value)
-      : [paymentAcademicYear];
+      : [selectedAcademicYear];
     fetchFeeData(yearsToFetch);
   };
 
   const resetFilters = () => {
+    setSelectedYears([]);
     setSelectedPaymentModes([]);
     setSelectedClasses([]);
     setSelectedSections([]);
     setSelectedFeeTypes([]);
     setSelectedInstallments([]);
-    setSelectedYears([]);
+    setSelectedStatuses([]);
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
     setCurrentPage(1);
     setRowsPerPage('all');
-    fetchFeeData([paymentAcademicYear]);
+    setShowFilterPanel(false);
+    fetchFeeData([selectedAcademicYear]);
   };
 
   const toggleFilter = () => {
@@ -307,34 +327,72 @@ const OpeningAndClosingAdvancedReport = () => {
     setShowFilterPanel(false);
   };
 
-  const filteredData = feeData.filter((row) => {
+
+  const processedData = feeData.flatMap((student) =>
+    student.installments.map((installment) => ({
+      admissionNumber: student.admissionNumber,
+      studentName: student.studentName,
+      className: student.className,
+      sectionName: student.sectionName,
+      academicYear: student.academicYear,
+      status: installment.type,
+      displayDate:
+        installment.type === 'Paid' ? installment.paymentDate :
+          installment.type === 'Refund' ? installment.refundDate :
+            installment.type === 'Cancelled' ? installment.cancelledDate :
+              installment.type === 'Cheque Return' ? installment.chequeReturnDate : '-',
+      paymentMode: installment.paymentMode,
+      receiptNumber: installment.receiptNumber,
+      installmentName: installment.installmentName,
+      feesDue: installment.feesDue || 0,
+      feesPaid: installment.feesPaid || 0,
+      refund: installment.refund || 0,
+      cancelled: installment.cancelled || 0,
+      chequeReturn: installment.chequeReturn || 0,
+      concession: installment.concession || 0,
+      balance: installment.balance || 0,
+      netFees: (installment.feesPaid || 0) - (installment.refund || 0) - (installment.cancelled || 0) - (installment.chequeReturn || 0),
+      feeTypes: installment.feeTypes || {},
+    }))
+  );
+
+  const filteredData = processedData.filter((row) => {
     const matchesSearchTerm = searchTerm
-      ? String(row.paymentDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.paymentMode || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
-        String(row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase())
+      ? (row.displayDate || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.admissionNumber || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.studentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.className || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.sectionName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.installmentName || '').toLowerCase().includes(String(searchTerm).toLowerCase()) ||
+      (row.status || '').toLowerCase().includes(String(searchTerm).toLowerCase())
       : true;
 
     const matchesPaymentMode =
       selectedPaymentModes.length === 0 ||
       selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
 
+    const matchesYear =
+      selectedYears.length === 0 ||
+      selectedYears.some((year) => row.academicYear === year.value);
+
     const matchesDate =
       (!startDate && !endDate) ||
       (() => {
-        if (!row.paymentDate || row.paymentDate === '-') return false;
-        const recordDate = new Date(row.paymentDate.split('-').reverse().join('-'));
-        const start = startDate ? new Date(startDate) : null;
-        const end = endDate ? new Date(endDate) : null;
-        return (!start || recordDate >= start) && (!end || recordDate <= end);
+        if (!row.displayDate || row.displayDate === '-') return false;
+        try {
+          const recordDate = new Date(row.displayDate.split('/').reverse().join('-'));
+          const start = startDate ? new Date(startDate) : null;
+          const end = endDate ? new Date(endDate) : null;
+          return (!start || recordDate >= start) && (!end || recordDate <= end);
+        } catch (error) {
+          console.warn('Invalid date in matchesDate:', row.displayDate);
+          return false;
+        }
       })();
 
     const matchesFeeType =
       selectedFeeTypes.length === 0 ||
-      selectedFeeTypes.some((type) => (row.feeTypes[type.value]?.closingBalance || 0) > 0);
+      selectedFeeTypes.some((type) => (row.feeTypes?.[type.value] || 0) > 0);
 
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -342,93 +400,101 @@ const OpeningAndClosingAdvancedReport = () => {
 
     const matchesSection =
       selectedSections.length === 0 ||
-      selectedSections.some((sec) => row.sectionName === sec.value);
+      selectedSections.some((section) => row.sectionName === section.value);
 
     const matchesInstallment =
       selectedInstallments.length === 0 ||
       selectedInstallments.some((inst) => row.installmentName === inst.value);
 
-    const matchesYear =
-      selectedYears.length === 0 ||
-      selectedYears.some((year) => row.academicYear === year.value);
+    const matchesStatus =
+      selectedStatuses.length === 0 ||
+      selectedStatuses.some((status) => row.status === status.value);
 
     return (
       matchesSearchTerm &&
       matchesPaymentMode &&
+      matchesYear &&
       matchesDate &&
       matchesFeeType &&
       matchesClass &&
       matchesSection &&
       matchesInstallment &&
-      matchesYear
+      matchesStatus
     );
   });
 
-  const totals = filteredData.reduce(
-    (acc, row) => {
-      feeTypes.forEach((type) => {
-        if (row.feeTypes[type]) {
-          acc[type] = {
-            openingAdvance: (Number(acc[type]?.openingAdvance) || 0) + Number(row.feeTypes[type].openingAdvance || 0),
-            received: (Number(acc[type]?.received) || 0) + Number(row.feeTypes[type].received || 0),
-            adjusted: (Number(acc[type]?.adjusted) || 0) + Number(row.feeTypes[type].adjusted || 0),
-            closingBalance: (Number(acc[type]?.closingBalance) || 0) + Number(row.feeTypes[type].closingBalance || 0),
-          };
-        }
-      });
-      acc.totalReceived = (Number(acc.totalReceived) || 0) + Number(row.totalReceived || 0);
-      return acc;
-    },
-    { totalReceived: 0 }
-  );
+  console.log('Filtered data:', filteredData);
 
-
-  Object.keys(totals).forEach((key) => {
-    if (key === 'totalReceived') {
-      totals[key] = Number(totals[key] || 0).toFixed(2);
-    } else if (totals[key]) {
-      totals[key].openingAdvance = Number(totals[key].openingAdvance || 0).toFixed(2);
-      totals[key].received = Number(totals[key].received || 0).toFixed(2);
-      totals[key].adjusted = Number(totals[key].adjusted || 0).toFixed(2);
-      totals[key].closingBalance = Number(totals[key].closingBalance || 0).toFixed(2);
+  const groupedByStudent = filteredData.reduce((acc, row) => {
+    const admissionNumber = row.admissionNumber;
+    if (!acc[admissionNumber]) {
+      acc[admissionNumber] = {
+        studentName: row.studentName,
+        className: row.className,
+        sectionName: row.sectionName,
+        academicYear: row.academicYear,
+        rows: [],
+      };
     }
+    acc[admissionNumber].rows.push(row);
+    return acc;
+  }, {});
+
+  console.log('Grouped by student:', groupedByStudent);
+
+  const studentDataArray = Object.keys(groupedByStudent)
+    .map((admissionNumber) => ({
+      admissionNumber,
+      ...groupedByStudent[admissionNumber],
+      rows: groupedByStudent[admissionNumber].rows.sort((a, b) => {
+        if (!a.displayDate || a.displayDate === '-' || !b.displayDate || b.displayDate === '-') return 0;
+        try {
+          return (
+            new Date(a.displayDate.split('/').reverse().join('-')).getTime() -
+            new Date(b.displayDate.split('/').reverse().join('-')).getTime()
+          );
+        } catch (error) {
+          console.warn('Invalid date in sorting:', a.displayDate, b.displayDate);
+          return 0;
+        }
+      }),
+    }))
+    .sort((a, b) => a.admissionNumber.localeCompare(b.admissionNumber));
+
+  const grandTotals = studentDataArray.reduce((acc, student) => {
+    const studentTotals = student.rows.reduce((acc, row) => {
+      acc.totalFeesDue += row.feesDue || 0;
+      acc.totalFeesPaid += row.feesPaid || 0;
+      acc.totalRefundCancelledChequeReturn += (row.refund || 0) + (row.cancelled || 0) + (row.chequeReturn || 0);
+      acc.totalNetFees += row.netFees || 0;
+      acc.totalConcession += row.concession || 0;
+      acc.totalBalance += row.balance || 0;
+      return acc;
+    }, {
+      totalFeesDue: 0,
+      totalFeesPaid: 0,
+      totalRefundCancelledChequeReturn: 0,
+      totalNetFees: 0,
+      totalConcession: 0,
+      totalBalance: 0,
+    });
+    acc.totalFeesDue += studentTotals.totalFeesDue;
+    acc.totalFeesPaid += studentTotals.totalFeesPaid;
+    acc.totalRefundCancelledChequeReturn -= studentTotals.totalRefundCancelledChequeReturn;
+    acc.totalNetFees += studentTotals.totalNetFees;
+    acc.totalConcession += studentTotals.totalConcession;
+    acc.totalBalance += studentTotals.totalBalance;
+    return acc;
+  }, {
+    totalFeesDue: 0,
+    totalFeesPaid: 0,
+    totalRefundCancelledChequeReturn: 0,
+    totalNetFees: 0,
+    totalConcession: 0,
+    totalBalance: 0,
   });
 
-  const tableFields = [
-    { id: 'academicYear', label: 'Academic Year' },
-    { id: 'admissionNumber', label: 'Adm No.' },
-    { id: 'studentName', label: 'Name' },
-    { id: 'className', label: 'Class' },
-    { id: 'sectionName', label: 'Section' },
-    { id: 'installmentName', label: 'Installment' },
-    ...feeTypes.map((type) => ({
-      id: type,
-      label: type,
-      subColumns: [
-        { id: `${type}_openingAdvance`, label: 'Opening Advance', prop: 'openingAdvance' },
-        { id: `${type}_received`, label: 'Rec/Ref', prop: 'received' },
-        { id: `${type}_adjusted`, label: 'Adjusted', prop: 'adjusted' },
-        { id: `${type}_closingBalance`, label: 'Closing Balance', prop: 'closingBalance' },
-      ],
-    })),
-    { id: 'totalReceived', label: 'Total Received' },
-  ];
-
-  const getFieldValue = (record, field, subColumn = null) => {
-    if (field.id === 'academicYear') {
-      return formatAcademicYear(record[field.id]) || '-';
-    }
-    if (field.id === 'totalReceived') {
-      return record[field.id] || '0.00';
-    }
-    if (subColumn) {
-      const feeType = field.id;
-      return record.feeTypes[feeType]?.[subColumn.prop] || '0.00';
-    }
-    return record[field.id] || '-';
-  };
-
-  const totalRecords = filteredData.length;
+  const totalRecords = studentDataArray.length;
   const totalPages = rowsPerPage === 'all' ? 1 : Math.ceil(totalRecords / rowsPerPage);
 
   const maxPagesToShow = 5;
@@ -441,12 +507,9 @@ const OpeningAndClosingAdvancedReport = () => {
   }
 
   const paginatedData = () => {
-    if (rowsPerPage === 'all') {
-      return filteredData;
-    }
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    return filteredData.slice(startIndex, endIndex);
+    const startIndex = rowsPerPage === 'all' ? 0 : (currentPage - 1) * rowsPerPage;
+    const endIndex = rowsPerPage === 'all' ? totalRecords : startIndex + rowsPerPage;
+    return studentDataArray.slice(startIndex, endIndex);
   };
 
   const handlePageClick = (page) => {
@@ -465,19 +528,82 @@ const OpeningAndClosingAdvancedReport = () => {
     }
   };
 
+  const headerMapping = {
+
+    academicYear: 'Academic Year',
+    admissionNumber: 'Admission No.',
+
+    studentName: 'Name',
+    className: 'Class',
+    sectionName: 'Section',
+    installmentName: 'Installment',
+    feesDue: 'Fees Due',
+    feesPaid: 'Fees Paid',
+    refundCancelledChequeReturn: 'CRN',
+    netFees: 'Net Fees',
+    concession: 'Concession',
+    balance: 'Balance',
+  };
+
+  const tableFields = [
+
+    { id: 'academicYear', label: 'Academic Year' },
+    { id: 'admissionNumber', label: 'Admission No.' },
+
+    { id: 'studentName', label: 'Name' },
+    { id: 'className', label: 'Class' },
+    { id: 'sectionName', label: 'Section' },
+    { id: 'installmentName', label: 'Installment' },
+    { id: 'feesDue', label: 'Fees Due' },
+    { id: 'feesPaid', label: 'Fees Paid' },
+    { id: 'refundCancelledChequeReturn', label: 'CRN' },
+    { id: 'netFees', label: 'Net Fees' },
+    { id: 'concession', label: 'Concession' },
+    { id: 'balance', label: 'Balance' },
+  ];
+
+  const getFieldValue = (record, field) => {
+    const fieldId = field.id;
+    if (fieldId === 'displayDate') {
+      return formatDate(record[fieldId]) || '-';
+    } else if (fieldId === 'academicYear') {
+      return formatAcademicYear(record[fieldId]) || '-';
+    } else if (fieldId === 'status') {
+      return record[fieldId] || '-';
+    } else if (fieldId === 'refundCancelledChequeReturn') {
+
+
+
+      return (-record.cancelled || 0).toFixed(2);
+    } else if (fieldId === 'netFees') {
+      const net = record.netFees || 0;
+      return net !== 0 ? net.toFixed(2) : (0).toFixed(2);
+    } else if (
+      fieldId === 'admissionNumber' ||
+      fieldId === 'studentName' ||
+      fieldId === 'className' ||
+      fieldId === 'sectionName' ||
+      fieldId === 'installmentName'
+    ) {
+      return record[fieldId] || '-';
+    } else {
+      return record[fieldId] !== undefined && record[fieldId] !== 0 ? Number(record[fieldId]).toFixed(2) : (0).toFixed(2);
+    }
+  };
+
   return (
     <div className="container">
       <div className="row">
         <div className="col-md-12">
           <div className="card m-2">
-            <div className="card-body">
+            <div className="card-body p-2">
               <div className="container">
-                <div className="row p-1 border border-dark" style={{ background: '#bfbfbf' }}>
-                  <div className="col-md-7 col-12">
+                <div className="row p-1 border border-dark rounded" style={{ background: '#bfbfbf' }}>
+                  <div className="col-md-5 col-12">
                     <input
                       type="text"
-                      className="form-control border border-dark"
-                      placeholder="Search by any field"
+                      className="form-control border-dark"
+                      placeholder="Search by field"
                       value={searchTerm}
                       onChange={(e) => {
                         setSearchTerm(e.target.value);
@@ -485,18 +611,19 @@ const OpeningAndClosingAdvancedReport = () => {
                       }}
                     />
                   </div>
+                  <div className="col-md-2"></div>
                   <div className="col-md-5 px-0 d-flex align-items-center justify-content-end">
                     <Select
                       isClearable
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === feeData.length))}
+                      value={pageShowOptions.find((option) => option.value === rowsPerPage || (option.value === 'all' && rowsPerPage === studentDataArray.length))}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
                       className="email-select border border-dark me-lg-2"
                     />
                     <div
-                      className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
+                      className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
                       style={{ cursor: 'pointer' }}
                       onClick={toggleFilter}
                     >
@@ -504,7 +631,7 @@ const OpeningAndClosingAdvancedReport = () => {
                     </div>
                     <div className="position-relative" ref={dropdownRef}>
                       <div
-                        className="py-1 px-2 mr-2 border border-dark finance-filter-icon"
+                        className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
                         style={{ cursor: 'pointer' }}
                         onClick={toggleExportDropdown}
                         title="Download"
@@ -513,7 +640,7 @@ const OpeningAndClosingAdvancedReport = () => {
                       </div>
                       {showExportDropdown && (
                         <div
-                          className="position-absolute bg-white mx-2 border mr-2 mt-2 border-dark rounded shadow"
+                          className="position-absolute bg-white border mr-2 mt-2 border-dark rounded shadow"
                           style={{
                             top: '100%',
                             right: 0,
@@ -525,30 +652,34 @@ const OpeningAndClosingAdvancedReport = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
+                              if (filteredData.length === 0) {
+                                toast.error('No data to export');
+                                return;
+                              }
                               setIsExporting(true);
                               try {
                                 await exportToExcel(
                                   filteredData,
                                   tableFields,
-                                  tableFields.reduce((acc, field) => ({
-                                    ...acc,
-                                    ...(field.subColumns
-                                      ? field.subColumns.reduce((subAcc, subCol) => ({
-                                          ...subAcc,
-                                          [subCol.id]: `${field.label} ${subCol.label}`,
-                                        }), {})
-                                      : { [field.id]: field.label }
-                                    ),
-                                  }), {}),
+                                  headerMapping,
                                   getFieldValue,
-                                  totals,
+                                  {
+                                    totalFeesDue: grandTotals.totalFeesDue.toFixed(2),
+                                    totalFeesPaid: grandTotals.totalFeesPaid.toFixed(2),
+                                    totalRefundCancelledChequeReturn: grandTotals.totalRefundCancelledChequeReturn.toFixed(2),
+                                    totalNetFees: grandTotals.totalNetFees.toFixed(2),
+                                    totalConcession: grandTotals.totalConcession.toFixed(2),
+                                    totalBalance: grandTotals.totalBalance.toFixed(2),
+                                  },
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
-                                    : paymentAcademicYear
+                                    : selectedAcademicYear
                                 );
+                                toast.success('Exported to Excel successfully');
                               } catch (err) {
-                                toast.error('Export to Excel failed.');
+                                toast.error('Export to Excel failed: ' + err.message);
+                                console.error('Excel export failed:', err);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -561,32 +692,36 @@ const OpeningAndClosingAdvancedReport = () => {
                             className="btn btn-light w-100 text-left py-2 px-3"
                             disabled={isExporting}
                             onClick={async () => {
+                              if (filteredData.length === 0) {
+                                toast.error('No data to export');
+                                return;
+                              }
                               setIsExporting(true);
                               try {
                                 await exportToPDF(
                                   filteredData,
                                   tableFields,
-                                  tableFields.reduce((acc, field) => ({
-                                    ...acc,
-                                    ...(field.subColumns
-                                      ? field.subColumns.reduce((subAcc, subCol) => ({
-                                          ...subAcc,
-                                          [subCol.id]: `${field.label} ${subCol.label}`,
-                                        }), {})
-                                      : { [field.id]: field.label }
-                                    ),
-                                  }), {}),
+                                  headerMapping,
                                   getFieldValue,
-                                  totals,
+                                  {
+                                    totalFeesDue: grandTotals.totalFeesDue.toFixed(2),
+                                    totalFeesPaid: grandTotals.totalFeesPaid.toFixed(2),
+                                    totalRefundCancelledChequeReturn: grandTotals.totalRefundCancelledChequeReturn.toFixed(2),
+                                    totalNetFees: grandTotals.totalNetFees.toFixed(2),
+                                    totalConcession: grandTotals.totalConcession.toFixed(2),
+                                    totalBalance: grandTotals.totalBalance.toFixed(2),
+                                  },
                                   formatAcademicYear,
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
-                                    : paymentAcademicYear,
+                                    : selectedAcademicYear,
                                   school,
                                   logoSrc
                                 );
+                                toast.success('Exported to PDF successfully');
                               } catch (err) {
-                                toast.error('Export to PDF failed.');
+                                toast.error('Export to PDF failed: ' + err.message);
+                                console.error('PDF export failed:', err);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -602,7 +737,7 @@ const OpeningAndClosingAdvancedReport = () => {
                 </div>
 
                 {showFilterPanel && (
-                  <div className="row mt-1 border border-light rounded px-md-3 py-1">
+                  <div className="row mt-2 border mt-1 border-light rounded px-md-3 p-3">
                     <div className="col-12 p-2">
                       <ul className="nav nav-tabs mb-0 justify-content-center">
                         {tabs.map((tab) => (
@@ -619,45 +754,50 @@ const OpeningAndClosingAdvancedReport = () => {
 
                       <div className="tab-content mt-2">
                         {activeTab === 'Date' && (
-                          <div className="row d-lg-flex justify-content-center">
+                          <div className="row d-flex justify-content-center">
                             <div className="col-md-4">
                               <label className="form-label">Start Date</label>
-                              <input
-                                type="date"
-                                className="form-control"
-                                value={startDate}
-                                onChange={(e) => {
-                                  setStartDate(e.target.value);
-                                  setCurrentPage(1);
-                                }}
-                              />
+                              <div className="input-group">
+                                <input
+                                  type="date"
+                                  className="form-control"
+                                  value={startDate}
+                                  onChange={(e) => {
+                                    setStartDate(e.target.value);
+                                    setCurrentPage(1);
+                                  }}
+                                />
+                              </div>
                             </div>
                             <div className="col-md-4">
                               <label className="form-label">End Date</label>
-                              <input
-                                type="date"
-                                className="form-control"
-                                value={endDate}
-                                onChange={(e) => {
-                                  setEndDate(e.target.value);
-                                  setCurrentPage(1);
-                                }}
-                              />
+                              <div className="input-group">
+                                <input
+                                  type="date"
+                                  className="form-control"
+                                  value={endDate}
+                                  onChange={(e) => {
+                                    setEndDate(e.target.value);
+                                    setCurrentPage(1);
+                                  }}
+                                />
+                              </div>
                             </div>
                           </div>
                         )}
 
-                        {activeTab === 'Payment Mode' && (
-                          <div className="row d-lg-flex justify-content-center">
+                        {activeTab === 'Academic Year' && (
+                          <div className="row d-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
                                 isMulti
-                                name="paymentMode"
-                                options={paymentModeOptions}
-                                value={selectedPaymentModes}
+                                name="academicYear"
+                                options={academicYearOptions}
+                                value={selectedYears}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Payment Modes"
+                                placeholder="Select Academic Years"
                                 className="mt-2"
+                                isLoading={loadingYears}
                               />
                             </div>
                           </div>
@@ -692,8 +832,8 @@ const OpeningAndClosingAdvancedReport = () => {
                         )}
 
                         {activeTab === 'Installment' && (
-                          <div className="row d-lg-flex justify-content-center">
-                            <div className="col-md-8">
+                          <div className="row d-flex justify-content-center">
+                            <div className="col-md-6">
                               <CreatableSelect
                                 isMulti
                                 name="installment"
@@ -707,34 +847,33 @@ const OpeningAndClosingAdvancedReport = () => {
                           </div>
                         )}
 
-                        {activeTab === 'Type of Fees' && (
-                          <div className="row d-lg-flex justify-content-center">
+                        {activeTab === 'Payment Mode' && (
+                          <div className="row d-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
                                 isMulti
-                                name="feeType"
-                                options={feeTypes.map((type) => ({ value: type, label: type }))}
-                                value={selectedFeeTypes}
+                                name="paymentMode"
+                                options={paymentModeOptions}
+                                value={selectedPaymentModes}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Fee Types"
+                                placeholder="Select Payment Modes"
                                 className="mt-2"
                               />
                             </div>
                           </div>
                         )}
 
-                        {activeTab === 'Academic Year' && (
-                          <div className="row d-lg-flex justify-content-center">
-                            <div className="col-md-8">
+                        {activeTab === 'Status' && (
+                          <div className="row d-flex justify-content-center">
+                            <div className="col-md-6">
                               <CreatableSelect
                                 isMulti
-                                name="academicYear"
-                                options={academicYearOptions}
-                                value={selectedYears}
+                                name="status"
+                                options={statusOptions}
+                                value={selectedStatuses}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
-                                placeholder="Select Academic Years"
+                                placeholder="Select Statuses"
                                 className="mt-2"
-                                isLoading={loadingYears}
                               />
                             </div>
                           </div>
@@ -745,8 +884,8 @@ const OpeningAndClosingAdvancedReport = () => {
                         <button className="btn btn-secondary me-2" onClick={resetFilters}>
                           Reset
                         </button>
-                        <button className="btn btn-primary" onClick={applyFilters}>
-                          Apply Filters
+                        <button className="ms-2 btn btn-primary" onClick={applyFilters}>
+                          Apply
                         </button>
                       </div>
                     </div>
@@ -756,9 +895,7 @@ const OpeningAndClosingAdvancedReport = () => {
 
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">
-                    Opening and Closing Advanced Report
-                  </h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">StudentWise Fees Due Report</h2>
                 </div>
               </div>
 
@@ -767,113 +904,110 @@ const OpeningAndClosingAdvancedReport = () => {
                   <div className="spinner-border" role="status">
                     <span className="visually-hidden">Loading...</span>
                   </div>
-                  <p>Loading data...</p>
+                  <p>Loading...</p>
                 </div>
-              ) : feeData.length > 0 && feeTypes.length > 0 ? (
+              ) : studentDataArray.length > 0 ? (
                 <>
                   <div className="table-responsive pb-4 mt-3">
                     <table className="table text-dark border border-secondary mb-1">
                       <thead>
                         <tr className="payroll-table-header">
-                          {tableFields.map((field) =>
-                            field.subColumns ? (
-                              <th
-                                key={field.id}
-                                colSpan={field.subColumns.length}
-                                className="text-center align-middle border border-secondary text-nowrap p-2"
-                              >
-                                {field.label}
-                              </th>
-                            ) : (
-                              <th
-                                key={field.id}
-                                className="text-center align-middle border border-secondary text-nowrap p-2"
-                              >
-                                {field.label}
-                              </th>
-                            )
-                          )}
-                        </tr>
-                        <tr className="payroll-table-header">
-                          {tableFields.map((field) =>
-                            field.subColumns ? (
-                              field.subColumns.map((subCol) => (
-                                <th
-                                  key={subCol.id}
-                                  className="text-center align-middle border border-secondary text-nowrap p-2"
-                                >
-                                  {subCol.label}
-                                </th>
-                              ))
-                            ) : (
-                              <th
-                                key={field.id}
-                                className="text-center align-middle border border-secondary text-nowrap p-2"
-                              ></th>
-                            )
-                          )}
+                          {tableFields.map((field) => (
+                            <th
+                              key={field.id}
+                              className="text-center align-middle border border-secondary text-nowrap p-2"
+                            >
+                              {field.label}
+                            </th>
+                          ))}
                         </tr>
                       </thead>
                       <tbody>
-                        {paginatedData().length > 0 ? (
-                          paginatedData().map((record, index) => (
-                            <tr key={`${record.admissionNumber}_${record.installmentName}_${record.academicYear}_${index}`}>
-                              {tableFields.map((field) =>
-                                field.subColumns ? (
-                                  field.subColumns.map((subCol) => (
+                        {paginatedData().map((student, studentIndex) => {
+                          const studentTotals = student.rows.reduce(
+                            (acc, row) => {
+                              acc.totalFeesDue += row.feesDue || 0;
+                              acc.totalFeesPaid += row.feesPaid || 0;
+                              acc.totalRefundCancelledChequeReturn -= (row.refund || 0) + (row.cancelled || 0) + (row.chequeReturn || 0);
+                              acc.totalNetFees += row.netFees || 0;
+                              acc.totalConcession += row.concession || 0;
+                              acc.totalBalance += row.balance || 0;
+                              return acc;
+                            },
+                            {
+                              totalFeesDue: 0,
+                              totalFeesPaid: 0,
+                              totalRefundCancelledChequeReturn: 0,
+                              totalNetFees: 0,
+                              totalConcession: 0,
+                              totalBalance: 0,
+                            }
+                          );
+
+                          return (
+                            <React.Fragment key={student.admissionNumber}>
+                              {student.rows.map((record, rowIndex) => (
+                                <tr key={`${record.admissionNumber}_${record.installmentName}_${record.status}_${studentIndex}_${rowIndex}`}>
+                                  {tableFields.map((field) => (
                                     <td
-                                      key={subCol.id}
+                                      key={field.id}
                                       className="text-center align-middle border border-secondary text-nowrap p-2"
                                     >
-                                      {getFieldValue(record, field, subCol)}
+                                      {getFieldValue(record, field)}
                                     </td>
-                                  ))
-                                ) : (
-                                  <td
-                                    key={field.id}
-                                    className="text-center align-middle border border-secondary text-nowrap p-2"
-                                  >
-                                    {getFieldValue(record, field)}
-                                  </td>
-                                )
-                              )}
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={tableFields.reduce((acc, field) => acc + (field.subColumns ? field.subColumns.length : 1), 0)} className="text-center">
-                              No data matches the selected filters for{' '}
-                              {selectedYears.length > 0
-                                ? selectedYears.map((y) => formatAcademicYear(y.value)).join(', ')
-                                : formatAcademicYear(paymentAcademicYear)}.
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                      <tfoot>
+                                  ))}
+                                </tr>
+                              ))}
+                              <tr className="payroll-table-footer">
+                                <td colSpan={6} className="text-right border border-secondary p-2">
+                                  <strong>Total</strong>
+                                </td>
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalFeesDue.toFixed(2)}</strong>
+                                </td>
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalFeesPaid.toFixed(2)}</strong>
+                                </td>
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalRefundCancelledChequeReturn.toFixed(2)}</strong>
+                                </td>
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalNetFees.toFixed(2)}</strong>
+                                </td>
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalConcession.toFixed(2)}</strong>
+                                </td>
+                                <td className="text-center border border-secondary p-2">
+                                  <strong>{studentTotals.totalBalance.toFixed(2)}</strong>
+                                </td>
+                              </tr>
+                            </React.Fragment>
+                          );
+                        })}
                         <tr className="payroll-table-footer">
                           <td colSpan={6} className="text-right border border-secondary p-2">
-                            <strong>Total</strong>
+                            <strong>Grand Total</strong>
                           </td>
-                          {feeTypes.flatMap((type) => [
-                            <td key={`${type}_openingAdvance`} className="text-center border border-secondary p-2">
-                              <strong>{totals[type]?.openingAdvance || '0.00'}</strong>
-                            </td>,
-                            <td key={`${type}_received`} className="text-center border border-secondary p-2">
-                              <strong>{totals[type]?.received || '0.00'}</strong>
-                            </td>,
-                            <td key={`${type}_adjusted`} className="text-center border border-secondary p-2">
-                              <strong>{totals[type]?.adjusted || '0.00'}</strong>
-                            </td>,
-                            <td key={`${type}_closingBalance`} className="text-center border border-secondary p-2">
-                              <strong>{totals[type]?.closingBalance || '0.00'}</strong>
-                            </td>,
-                          ])}
                           <td className="text-center border border-secondary p-2">
-                            <strong>{totals.totalReceived || '0.00'}</strong>
+                            <strong>{grandTotals.totalFeesDue.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{grandTotals.totalFeesPaid.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{grandTotals.totalRefundCancelledChequeReturn.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{grandTotals.totalNetFees.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{grandTotals.totalConcession.toFixed(2)}</strong>
+                          </td>
+                          <td className="text-center border border-secondary p-2">
+                            <strong>{grandTotals.totalBalance.toFixed(2)}</strong>
                           </td>
                         </tr>
-                      </tfoot>
+                      </tbody>
                     </table>
                   </div>
                   {totalRecords > 0 && rowsPerPage !== 'all' && (
@@ -918,7 +1052,11 @@ const OpeningAndClosingAdvancedReport = () => {
                 </>
               ) : (
                 <div className="text-center mt-3">
-                  <p>No data or fee types available</p>
+                  <p>
+                    No installments match the selected filters for{' '}
+                    {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
+                      formatAcademicYear(selectedAcademicYear)}.
+                  </p>
                 </div>
               )}
             </div>
@@ -929,4 +1067,4 @@ const OpeningAndClosingAdvancedReport = () => {
   );
 };
 
-export default OpeningAndClosingAdvancedReport;
+export default StudentWiseFeesDue;

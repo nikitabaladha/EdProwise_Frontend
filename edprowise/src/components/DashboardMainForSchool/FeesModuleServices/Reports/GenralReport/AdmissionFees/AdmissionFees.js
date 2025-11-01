@@ -921,7 +921,7 @@ const AdmissionFees = () => {
     { id: 'admFeesRefundAmount', label: 'CRN' },
     { id: 'netFees', label: 'Net Fees' },
     { id: 'admFeesConcession', label: 'Concession' },
-    { id: 'balance', label: 'Balance' },
+    { id: 'balance', label: 'Total' },
   ];
 
   const [showFilterPanel, setShowFilterPanel] = useState(false);

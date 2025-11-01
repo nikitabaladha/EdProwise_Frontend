@@ -279,7 +279,7 @@ import DefaulterFees from "./components/DashboardMainForSchool/FeesModuleService
 import ArrearFeesReceivedReport from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/ArrearFeesReceived/ArrearFeesReport.js";
 import OpeningandClosingArrearReport from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OpeningAndClosingArrear/OpeningAndClosingArrearReport.js"
 import OverAllDefaulter from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OverallDefaulter/OverallDefaulter.js";
-
+import StudentWiseFeesDue from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/StudentWise/StudentWiseFeesDue.js"
 import AdvancedFees from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/AdvancedReport/AdvancedFeesReport.js"
 import OpeningAndClosingAdvanced from "./components/DashboardMainForSchool/FeesModuleServices/Reports/AdvancedReport/OpeningandClosingAdvanced/OpeningandClosingAdvancedReport.js"
 // ===================================================FeesRecom==================================================//
@@ -1218,6 +1218,11 @@ const AppRoutes = () => {
          <Route
           path="fees-module/reports/advanced/opening-closing-advance"
           element={<OpeningAndClosingAdvanced />}
+        />
+
+          <Route
+          path="fees-module/reports/advanced/studentwise-fees-due"
+          element={<StudentWiseFeesDue />}
         />
 
    

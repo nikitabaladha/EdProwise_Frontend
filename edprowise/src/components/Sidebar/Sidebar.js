@@ -401,6 +401,11 @@ const Sidebar = () => {
                 "icon": "solar:layers-bold-duotone",
                 "children": [
                    {
+                    label: "StudentWise Fees Due",
+                    link: "/school-dashboard/fees-module/reports/advanced/studentwise-fees-due",
+                    icon: "solar:user-bold-duotone",
+                  },
+                   {
                     "label": "Overall Outstanding",
                     "link": "/school-dashboard/fees-module/reports/advanced/overall-outstanding",
                     "icon": "solar:shield-warning-bold-duotone"
@@ -441,7 +446,7 @@ const Sidebar = () => {
                     "link": "/school-dashboard/fees-module/reports/advanced/opening-closing-advance",
                     "icon": "solar:arrow-up-bold-duotone"
                   },
-                  
+                   
                  
                 ]
               },

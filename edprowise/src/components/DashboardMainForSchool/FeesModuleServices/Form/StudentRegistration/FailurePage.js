@@ -1,60 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import { useLocation, useNavigate } from 'react-router-dom';
-// import postAPI from '../../../../../api/postAPI'; 
-// import { toast } from 'react-toastify';
-// import { Container, Alert, Spinner } from 'react-bootstrap';
-
-// const FailurePage = () => {
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   const [loading, setLoading] = useState(true);
-//   const [message, setMessage] = useState('');
-
-//   useEffect(() => {
-//     const params = new URLSearchParams(location.search);
-//     const postData = Object.fromEntries(params.entries());
-
-//     if (!postData.txnid) {
-//       toast.error('Invalid payment response.');
-//       navigate('/school-dashboard/fees-module/form/registration');
-//       return;
-//     }
-
-//     postAPI('/payment/failure', postData)
-//       .then((response) => {
-//         const res = response.data;
-//         setMessage('Payment failed. Record stored for reference. Please try again.');
-//         toast.error('Payment failed.');
-//         setTimeout(() => navigate('/school-dashboard/fees-module/form/registration'), 3000);
-//       })
-//       .catch((error) => {
-//         console.error('Verification error:', error);
-//         setMessage('Error processing failure. Please contact support.');
-//         toast.error('Processing failed.');
-//       })
-//       .finally(() => setLoading(false));
-//   }, [location, navigate]);
-
-//   if (loading) {
-//     return (
-//       <Container className="mt-5 text-center">
-//         <Spinner animation="border" />
-//         <p>Processing response...</p>
-//       </Container>
-//     );
-//   }
-
-//   return (
-//     <Container className="mt-5">
-//       <Alert variant="danger">
-//         <h4>{message}</h4>
-//         <p>You can retry the payment from the student details page.</p>
-//       </Alert>
-//     </Container>
-//   );
-// };
-
-// export default FailurePage;
 
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -118,7 +61,7 @@ const FailurePage = () => {
           <li>Technical error</li>
         </ul>
         <p>No amount has been deducted from your account. Please try again.</p>
-        
+
         <div className="d-flex justify-content-between">
           <Button variant="outline-danger" onClick={handleRetry}>
             Try Payment Again

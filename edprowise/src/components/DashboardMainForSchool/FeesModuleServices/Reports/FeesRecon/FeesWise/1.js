@@ -1904,53 +1904,78 @@ const ReconFeesFeeswise = () => {
     }));
   }, [lateFeesData, selectedClasses, selectedSections, selectedInstallment, startDate, endDate]);
 
+  
 
   useEffect(() => {
-    const filteredArrearFees = arrearFeesData.filter((record) => {
-      const matchesClass =
-        selectedClasses.length === 0 ||
-        selectedClasses.some((cls) => record.className === cls.value);
+  const filteredArrearFees = arrearFeesData.filter((record) => {
+    const matchesClass =
+      selectedClasses.length === 0 ||
+      selectedClasses.some((cls) => record.className === cls.value);
 
-      const matchesSection =
-        selectedSections.length === 0 ||
-        selectedSections.some((sec) => record.sectionName === sec.value);
+    const matchesSection =
+      selectedSections.length === 0 ||
+      selectedSections.some((sec) => record.sectionName === sec.value);
 
-      const matchesInstallment =
-        !selectedInstallment ||
-        record.installmentName === selectedInstallment.value;
+    const matchesInstallment =
+      !selectedInstallment ||
+      record.installmentName === selectedInstallment.value;
 
-      const paymentDate = record.paymentDate
-        ? new Date(record.paymentDate.split("-").reverse().join("-"))
-        : null;
+    const paymentDate = record.paymentDate
+      ? new Date(record.paymentDate.split("-").reverse().join("-"))
+      : null;
 
-      const matchesDate =
-        (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
-        (!endDate || !paymentDate || paymentDate <= new Date(endDate));
+    const matchesDate =
+      (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
+      (!endDate || !paymentDate || paymentDate <= new Date(endDate));
 
-      return matchesClass && matchesSection && matchesInstallment && matchesDate;
+    return matchesClass && matchesSection && matchesInstallment && matchesDate;
+  });
+
+  const arrearBreakdown = {};
+  let totalArrear = 0;
+
+  filteredArrearFees.forEach((record) => {
+    // Create a map of refunded amounts per feeType for this record
+    const refundMap = {};
+
+    (record.refundData || []).forEach((refund) => {
+      if (refund.status === "Cancelled" ||refund.status === "Cheque Return" ||refund.status === "Refund") {
+        refund.feeTypeRefunds.forEach((item) => {
+          const feeType = item.feeType;
+          const cancelledAmt = Number(item.refundAmountandcancelledAmount || 0);
+          refundMap[feeType] = (refundMap[feeType] || 0) + cancelledAmt;
+        });
+      }
     });
 
 
-    const arrearBreakdown = {};
-    let totalArrear = 0;
-    filteredArrearFees.forEach(record => {
-      Object.entries(record.feeTypes || {}).forEach(([feeType, feeData]) => {
-        const paid = parseFloat(feeData.totalPaid) || 0;
-        arrearBreakdown[feeType] = (arrearBreakdown[feeType] || 0) + paid;
-        totalArrear += paid;
-      });
-    });
+    Object.entries(record.feeTypes || {}).forEach(([feeType, feeData]) => {
+      const paid = parseFloat(feeData.totalPaid) || 0;
+      const refunded = refundMap[feeType] || 0;
+      const netPaid = paid - refunded;
 
-    setArrearFeesReceived(Number(totalArrear).toFixed(2));
-    setFeeBreakdowns(prev => ({ ...prev, 'Arrear Fees Received': { ...arrearBreakdown, total: Number(totalArrear).toFixed(2) } }));
-  }, [
-    arrearFeesData,
-    selectedClasses,
-    selectedSections,
-    selectedInstallment,
-    startDate,
-    endDate,
-  ]);
+      arrearBreakdown[feeType] = (arrearBreakdown[feeType] || 0) + netPaid;
+      totalArrear += netPaid;
+    });
+  });
+
+  setArrearFeesReceived(Number(totalArrear).toFixed(2));
+  setFeeBreakdowns((prev) => ({
+    ...prev,
+    "Arrear Fees Received": {
+      ...arrearBreakdown,
+      total: Number(totalArrear).toFixed(2),
+    },
+  }));
+}, [
+  arrearFeesData,
+  selectedClasses,
+  selectedSections,
+  selectedInstallment,
+  startDate,
+  endDate,
+]);
+
 
 
   useEffect(() => {
