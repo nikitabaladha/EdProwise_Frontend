@@ -3823,7 +3823,7 @@ const StudentAdmissionListTable = () => {
                                   className="align-middle fs-18"
                                 />
                               </Link>
-                              <Link
+                              {/* <Link
                                 className="btn btn-soft-danger btn-sm"
                                 onClick={(e) => {
                                   e.preventDefault();
@@ -3834,7 +3834,7 @@ const StudentAdmissionListTable = () => {
                                   icon="solar:trash-bin-minimalistic-2-broken"
                                   className="align-middle fs-18"
                                 />
-                              </Link>
+                              </Link> */}
                               {shouldShowPaymentButton(student.reportStatus) && (
                                 <Link
                                   className="btn btn-soft-warning btn-sm"

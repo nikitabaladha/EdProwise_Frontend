@@ -876,10 +876,7 @@ const StudentWiseFeesConcession = () => {
     { value: 30, label: '30' },
   ];
 
-  const viewModeOptions = [
-    { value: 'net', label: 'Net' },
-    { value: 'gross', label: 'Gross' },
-  ];
+
 
   const formatAcademicYear = (year) => {
     if (!year) return '-';
@@ -1229,7 +1226,7 @@ const StudentWiseFeesConcession = () => {
       ? selectedFeeTypes.map((type) => ({ id: type.value, label: type.value, isNumeric: true }))
       : [
           ...feeTypes.map((type) => ({ id: type, label: type, isNumeric: true })),
-          { id: 'totalPaidFee', label: 'Fees Paid', isNumeric: true },
+          { id: 'totalPaidFee', label: 'Total', isNumeric: true },
         ]),
   ];
 

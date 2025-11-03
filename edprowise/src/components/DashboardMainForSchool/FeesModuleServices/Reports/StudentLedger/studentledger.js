@@ -201,7 +201,7 @@
 
 //       const netDue = admissionDue - concession;
 //       runningBalance += netDue;
-      
+
 //       addTransaction({
 //         academicYear: student.academicYear,
 //         date: formattedDate,
@@ -283,10 +283,10 @@
 //   const paymentDate = new Date(payment.paymentDate);
 //   const formattedDate = formatDate(paymentDate);
 //   const paidAmount = Number(payment.paidAmount) || 0;
-  
+
 //   let dueParticulars = '';
 //   let receiptParticulars = '';
-  
+
 //   if (payment.type === 'Fine Refund' || payment.type.toLowerCase().includes('fine')) {
 //     dueParticulars = `Fine Due - Cancelled`;
 //     receiptParticulars = `Fine Received - Cancelled`;
@@ -1099,350 +1099,350 @@ const StudentFeeLedger = () => {
     fetchFeeData();
   }, [schoolId, searchQuery, students]);
 
-//   const processedStudentData = students.map((student) => {
-//     const academicHistory = student.academicHistory || [];
-//     const transactions = [];
-//     const processedReceipts = new Set(); 
+  //   const processedStudentData = students.map((student) => {
+  //     const academicHistory = student.academicHistory || [];
+  //     const transactions = [];
+  //     const processedReceipts = new Set(); 
 
-//     const yearHistory = academicHistory.find((h) => h.academicYear === academicYear) || {};
-//     const classInfo = classes.find((c) => c._id === yearHistory?.masterDefineClass) || { className: 'N/A' };
-//     const sectionInfo = classInfo?.sections?.find((s) => s._id === yearHistory?.section) || { name: 'N/A' };
+  //     const yearHistory = academicHistory.find((h) => h.academicYear === academicYear) || {};
+  //     const classInfo = classes.find((c) => c._id === yearHistory?.masterDefineClass) || { className: 'N/A' };
+  //     const sectionInfo = classInfo?.sections?.find((s) => s._id === yearHistory?.section) || { name: 'N/A' };
 
-//     let runningBalance = 0;
-
-
-//     const formatDate = (date) => {
-//       return new Date(date).toLocaleDateString('en-GB', {
-//         day: '2-digit',
-//         month: '2-digit',
-//         year: 'numeric',
-//       }).replace(/\//g, '-');
-//     };
-
-//     const addTransaction = (transaction) => {
-//       const key = `${transaction.date}-${transaction.particulars}-${transaction.receiptNo || ''}-${transaction.due || ''}-${transaction.receipt || ''}`;
-//       if (processedReceipts.has(key)) {
-//         console.log('Skipping duplicate :', key);
-//         return false;
-//       }
-//       processedReceipts.add(key);
-//       transactions.push(transaction);
-//       return true;
-//     };
-
-  
-//     const allPaidPayments = paymentData.filter(
-//       (payment) => 
-//         (payment.admissionNumber === student.AdmissionNumber || 
-//          (payment.registrationNumber === student.registrationNumber && payment.type === 'Registration Fee')) &&
-//         payment.status === 'Paid' &&
-//         !payment.refundDate
-//     );
-
-//     allPaidPayments.forEach((payment) => {
-//       const paymentDate = new Date(payment.paymentDate);
-//       const formattedDate = formatDate(paymentDate);
-//       const paidAmount = Number(payment.paidAmount) || 0;
-
- 
-//       runningBalance += paidAmount;
-//       let dueParticulars = `Fees Due - ${payment.type}`;
-      
-
-//       if (payment.type === 'Registration Fee') {
-//         dueParticulars = `Fees Due - Registration Fee`;
-//       }
-
-//       addTransaction({
-//         academicYear: payment.academicYear,
-//         date: formattedDate,
-//         particulars: dueParticulars,
-//         receiptNo: '',
-//         paymentMode: '',
-//         due: paidAmount.toFixed(2),
-//         receipt: '',
-//         balance: runningBalance.toFixed(2),
-//         paymentDateRaw: paymentDate,
-//       });
-
-   
-//       runningBalance -= paidAmount;
-//       addTransaction({
-//         academicYear: payment.academicYear,
-//         date: formattedDate,
-//         particulars: `Fees Received - ${payment.type}`,
-//         receiptNo: payment.receiptNumber || '',
-//         paymentMode: payment.paymentMode || 'Unknown',
-//         due: '',
-//         receipt: paidAmount.toFixed(2),
-//         balance: runningBalance.toFixed(2),
-//         paymentDateRaw: paymentDate,
-//       });
-//     });
+  //     let runningBalance = 0;
 
 
-//     const cancelledPayments = paymentData.filter(
-//       (payment) => 
-//         (payment.admissionNumber === student.AdmissionNumber || 
-//          payment.registrationNumber === student.registrationNumber) &&
-//         (payment.status === 'Cancelled' || payment.status === 'Cheque Return')
-//     );
+  //     const formatDate = (date) => {
+  //       return new Date(date).toLocaleDateString('en-GB', {
+  //         day: '2-digit',
+  //         month: '2-digit',
+  //         year: 'numeric',
+  //       }).replace(/\//g, '-');
+  //     };
 
-//     cancelledPayments.forEach((payment) => {
-//       const paymentDate = new Date(payment.paymentDate);
-//       const formattedDate = formatDate(payment.paymentDate);
-//       const paidAmount = Number(payment.paidAmount) || 0;
-      
-//       let dueParticulars = `Fees Cancelled Due - ${payment.type}`;
-//       let receiptParticulars = `Fees Cancelled Received - ${payment.type}`;
-      
-//       if (payment.type === 'Fine Refund' || payment.type.toLowerCase().includes('fine')) {
-//         dueParticulars = `Fine Due - Cancelled`;
-//         receiptParticulars = `Fine Received - Cancelled`;
-//       } else if (payment.type === 'Excess Amount' || payment.type.toLowerCase().includes('excess')) {
-//         dueParticulars = `Excess Due - Cancelled`;
-//         receiptParticulars = `Excess Received - Cancelled`;
-//       }
-
-// if (payment.feesType !== 'School Fees') {
-//       runningBalance += paidAmount;
-//       addTransaction({
-//         academicYear: payment.academicYear,
-//         date: formattedDate,
-//         particulars: dueParticulars,
-//         receiptNo: '',
-//         paymentMode: '',
-//         due: (-paidAmount).toFixed(2),
-//         receipt: '',
-//         balance: runningBalance.toFixed(2),
-//         paymentDateRaw: paymentDate,
-//       });
-//     }
-
-//       runningBalance -= paidAmount;
-//       addTransaction({
-//         academicYear: payment.academicYear,
-//         date: formattedDate,
-//         particulars: receiptParticulars,
-//         receiptNo: payment.receiptNumber || '',
-//         paymentMode: payment.paymentMode || 'Unknown',
-//         due: '',
-//         receipt: (-paidAmount).toFixed(2),
-//         balance: runningBalance.toFixed(2),
-//         paymentDateRaw: paymentDate,
-//       });
-//     });
+  //     const addTransaction = (transaction) => {
+  //       const key = `${transaction.date}-${transaction.particulars}-${transaction.receiptNo || ''}-${transaction.due || ''}-${transaction.receipt || ''}`;
+  //       if (processedReceipts.has(key)) {
+  //         console.log('Skipping duplicate :', key);
+  //         return false;
+  //       }
+  //       processedReceipts.add(key);
+  //       transactions.push(transaction);
+  //       return true;
+  //     };
 
 
-//     const refundPayments = paymentData.filter(
-//       (payment) => 
-//         (payment.admissionNumber === student.AdmissionNumber || 
-//          payment.registrationNumber === student.registrationNumber) &&
-//         payment.refundDate
-//     );
+  //     const allPaidPayments = paymentData.filter(
+  //       (payment) => 
+  //         (payment.admissionNumber === student.AdmissionNumber || 
+  //          (payment.registrationNumber === student.registrationNumber && payment.type === 'Registration Fee')) &&
+  //         payment.status === 'Paid' &&
+  //         !payment.refundDate
+  //     );
 
-//     refundPayments.forEach((payment) => {
-//       const refundDate = new Date(payment.refundDate);
-//       const formattedDate = formatDate(refundDate);
-//       const refundAmount = Number(payment.paidAmount) || 0;
-
-//       runningBalance += refundAmount;
-//       addTransaction({
-//         academicYear: payment.academicYear,
-//         date: formattedDate,
-//         particulars: `Fees Refunded Due - ${payment.type}`,
-//         receiptNo: '',
-//         paymentMode: '',
-//         due: (-refundAmount).toFixed(2),
-//         receipt: '',
-//         balance: runningBalance.toFixed(2),
-//         paymentDateRaw: refundDate,
-//       });
-
-//       runningBalance -= refundAmount;
-//       addTransaction({
-//         academicYear: payment.academicYear,
-//         date: formattedDate,
-//         particulars: `Fees Refunded Received - ${payment.type}`,
-//         receiptNo: payment.receiptNumber || '',
-//         paymentMode: payment.paymentMode || 'Unknown',
-//         due: '',
-//         receipt: (-refundAmount).toFixed(2),
-//         balance: runningBalance.toFixed(2),
-//         paymentDateRaw: refundDate,
-//       });
-//     });
+  //     allPaidPayments.forEach((payment) => {
+  //       const paymentDate = new Date(payment.paymentDate);
+  //       const formattedDate = formatDate(paymentDate);
+  //       const paidAmount = Number(payment.paidAmount) || 0;
 
 
-//     feeData.forEach((year) => {
-//       const feeAggregates = {};
-      
-
-//       year.feeInstallments?.forEach((installment) => {
-//         if (!installment.feesTypeId?._id) return;
-//         const dueDate = new Date(installment.dueDate);
-//         const dueMonthStart = new Date(dueDate.getFullYear(), dueDate.getMonth(), 1);
-//         if (dueMonthStart > currentDate) return;
-
-//         const name = installment.installmentName;
-//         if (!feeAggregates[name]) {
-//           feeAggregates[name] = {
-//             totalAmount: 0,
-//             totalFine: 0,
-//             dueDate,
-//           };
-//         }
-//         feeAggregates[name].totalAmount += Number(installment.amount || 0);
-//         feeAggregates[name].totalFine += Number(installment.fineAmount || 0);
-//       });
-
-//       Object.keys(feeAggregates).forEach((name) => {
-//         const { totalAmount, dueDate } = feeAggregates[name];
-//         if (totalAmount > 0) {
-//           const formattedDate = formatDate(dueDate);
-//           runningBalance += totalAmount;
-//           addTransaction({
-//             academicYear: year.academicYear,
-//             date: formattedDate,
-//             particulars: `Fees Due - ${name}`,
-//             receiptNo: '',
-//             paymentMode: '',
-//             due: totalAmount.toFixed(2),
-//             receipt: '',
-//             balance: runningBalance.toFixed(2),
-//             paymentDateRaw: dueDate,
-//           });
-//         }
-//       });
+  //       runningBalance += paidAmount;
+  //       let dueParticulars = `Fees Due - ${payment.type}`;
 
 
-//       const paymentMap = new Map();
-//       year.paidInstallments?.forEach((pi) => {
-//         if (!pi.feesTypeId?._id || pi.cancelledDate) return; 
+  //       if (payment.type === 'Registration Fee') {
+  //         dueParticulars = `Fees Due - Registration Fee`;
+  //       }
 
-//         const name = pi.installmentName || 'Unknown Installment';
-//         const key = `${name}-${pi.receiptNumber}-${pi.paymentDate}`;
-
-//         if (!paymentMap.has(key)) {
-//           paymentMap.set(key, {
-//             installmentName: name,
-//             receiptNumber: pi.receiptNumber,
-//             paymentMode: pi.paymentMode,
-//             totalPaid: 0,
-//             totalFinePaid: Number(pi.paidFine || 0),
-//             totalExcessPaid: Number(pi.excessAmount || 0),
-//             paymentDate: pi.paymentDate,
-//           });
-//         }
-
-//         const payment = paymentMap.get(key);
-//         payment.totalPaid += Number(pi.paidAmount || 0);
-//       });
-
-//       paymentMap.forEach((payment) => {
-//         const paymentDate = new Date(payment.paymentDate);
-//         const formattedDate = formatDate(paymentDate);
-
-//         // Process fines
-//         if (payment.totalFinePaid > 0) {
-//           runningBalance += Number(payment.totalFinePaid);
-//           addTransaction({
-//             academicYear: year.academicYear,
-//             date: formattedDate,
-//             particulars: 'Fine Due',
-//             receiptNo: '',
-//             paymentMode: '',
-//             due: payment.totalFinePaid.toFixed(2),
-//             receipt: '',
-//             balance: runningBalance.toFixed(2),
-//             paymentDateRaw: paymentDate,
-//           });
-//           runningBalance -= Number(payment.totalFinePaid);
-//           addTransaction({
-//             academicYear: year.academicYear,
-//             date: formattedDate,
-//             particulars: 'Fine Received',
-//             receiptNo: payment.receiptNumber,
-//             paymentMode: payment.paymentMode,
-//             due: '',
-//             receipt: payment.totalFinePaid.toFixed(2),
-//             balance: runningBalance.toFixed(2),
-//             paymentDateRaw: paymentDate,
-//           });
-//         }
-
-//         // Process excess amounts
-//         if (payment.totalExcessPaid > 0) {
-//           runningBalance += Number(payment.totalExcessPaid);
-//           addTransaction({
-//             academicYear: year.academicYear,
-//             date: formattedDate,
-//             particulars: 'Excess Amount Due',
-//             receiptNo: '',
-//             paymentMode: '',
-//             due: payment.totalExcessPaid.toFixed(2),
-//             receipt: '',
-//             balance: runningBalance.toFixed(2),
-//             paymentDateRaw: paymentDate,
-//           });
-//           runningBalance -= Number(payment.totalExcessPaid);
-//           addTransaction({
-//             academicYear: year.academicYear,
-//             date: formattedDate,
-//             particulars: 'Excess Amount Received',
-//             receiptNo: payment.receiptNumber,
-//             paymentMode: payment.paymentMode,
-//             due: '',
-//             receipt: payment.totalExcessPaid.toFixed(2),
-//             balance: runningBalance.toFixed(2),
-//             paymentDateRaw: paymentDate,
-//           });
-//         }
-
-//         // Process main payment
-//         if (payment.totalPaid > 0) {
-//           runningBalance -= Number(payment.totalPaid);
-//           addTransaction({
-//             academicYear: year.academicYear,
-//             date: formattedDate,
-//             particulars: `Fees Received - ${payment.installmentName}`,
-//             receiptNo: payment.receiptNumber,
-//             paymentMode: payment.paymentMode,
-//             due: '',
-//             receipt: payment.totalPaid.toFixed(2),
-//             balance: runningBalance.toFixed(2),
-//             paymentDateRaw: paymentDate,
-//           });
-//         }
-//       });
-//     });
+  //       addTransaction({
+  //         academicYear: payment.academicYear,
+  //         date: formattedDate,
+  //         particulars: dueParticulars,
+  //         receiptNo: '',
+  //         paymentMode: '',
+  //         due: paidAmount.toFixed(2),
+  //         receipt: '',
+  //         balance: runningBalance.toFixed(2),
+  //         paymentDateRaw: paymentDate,
+  //       });
 
 
-//     transactions.sort((a, b) => (a.paymentDateRaw || new Date(0)) - (b.paymentDateRaw || new Date(0)));
+  //       runningBalance -= paidAmount;
+  //       addTransaction({
+  //         academicYear: payment.academicYear,
+  //         date: formattedDate,
+  //         particulars: `Fees Received - ${payment.type}`,
+  //         receiptNo: payment.receiptNumber || '',
+  //         paymentMode: payment.paymentMode || 'Unknown',
+  //         due: '',
+  //         receipt: paidAmount.toFixed(2),
+  //         balance: runningBalance.toFixed(2),
+  //         paymentDateRaw: paymentDate,
+  //       });
+  //     });
 
 
-//     let finalBalance = 0;
-//     transactions.forEach((txn) => {
-//       const due = Number(txn.due || 0);
-//       const receipt = Number(txn.receipt || 0);
-//       finalBalance += due;
-//       finalBalance -= receipt;
-//       txn.balance = finalBalance.toFixed(2);
-//     });
+  //     const cancelledPayments = paymentData.filter(
+  //       (payment) => 
+  //         (payment.admissionNumber === student.AdmissionNumber || 
+  //          payment.registrationNumber === student.registrationNumber) &&
+  //         (payment.status === 'Cancelled' || payment.status === 'Cheque Return')
+  //     );
 
-//     return {
-//       admissionNo: student.AdmissionNumber,
-//       studentName: `${student.firstName || ''} ${student.lastName || ''}`.trim() || 'N/A',
-//       class: classInfo.className || 'N/A',
-//       section: sectionInfo.name || 'N/A',
-//       transactions,
-//     };
-//   });
+  //     cancelledPayments.forEach((payment) => {
+  //       const paymentDate = new Date(payment.paymentDate);
+  //       const formattedDate = formatDate(payment.paymentDate);
+  //       const paidAmount = Number(payment.paidAmount) || 0;
 
-const processedStudentData = students.map((student) => {
+  //       let dueParticulars = `Fees Cancelled Due - ${payment.type}`;
+  //       let receiptParticulars = `Fees Cancelled Received - ${payment.type}`;
+
+  //       if (payment.type === 'Fine Refund' || payment.type.toLowerCase().includes('fine')) {
+  //         dueParticulars = `Fine Due - Cancelled`;
+  //         receiptParticulars = `Fine Received - Cancelled`;
+  //       } else if (payment.type === 'Excess Amount' || payment.type.toLowerCase().includes('excess')) {
+  //         dueParticulars = `Excess Due - Cancelled`;
+  //         receiptParticulars = `Excess Received - Cancelled`;
+  //       }
+
+  // if (payment.feesType !== 'School Fees') {
+  //       runningBalance += paidAmount;
+  //       addTransaction({
+  //         academicYear: payment.academicYear,
+  //         date: formattedDate,
+  //         particulars: dueParticulars,
+  //         receiptNo: '',
+  //         paymentMode: '',
+  //         due: (-paidAmount).toFixed(2),
+  //         receipt: '',
+  //         balance: runningBalance.toFixed(2),
+  //         paymentDateRaw: paymentDate,
+  //       });
+  //     }
+
+  //       runningBalance -= paidAmount;
+  //       addTransaction({
+  //         academicYear: payment.academicYear,
+  //         date: formattedDate,
+  //         particulars: receiptParticulars,
+  //         receiptNo: payment.receiptNumber || '',
+  //         paymentMode: payment.paymentMode || 'Unknown',
+  //         due: '',
+  //         receipt: (-paidAmount).toFixed(2),
+  //         balance: runningBalance.toFixed(2),
+  //         paymentDateRaw: paymentDate,
+  //       });
+  //     });
+
+
+  //     const refundPayments = paymentData.filter(
+  //       (payment) => 
+  //         (payment.admissionNumber === student.AdmissionNumber || 
+  //          payment.registrationNumber === student.registrationNumber) &&
+  //         payment.refundDate
+  //     );
+
+  //     refundPayments.forEach((payment) => {
+  //       const refundDate = new Date(payment.refundDate);
+  //       const formattedDate = formatDate(refundDate);
+  //       const refundAmount = Number(payment.paidAmount) || 0;
+
+  //       runningBalance += refundAmount;
+  //       addTransaction({
+  //         academicYear: payment.academicYear,
+  //         date: formattedDate,
+  //         particulars: `Fees Refunded Due - ${payment.type}`,
+  //         receiptNo: '',
+  //         paymentMode: '',
+  //         due: (-refundAmount).toFixed(2),
+  //         receipt: '',
+  //         balance: runningBalance.toFixed(2),
+  //         paymentDateRaw: refundDate,
+  //       });
+
+  //       runningBalance -= refundAmount;
+  //       addTransaction({
+  //         academicYear: payment.academicYear,
+  //         date: formattedDate,
+  //         particulars: `Fees Refunded Received - ${payment.type}`,
+  //         receiptNo: payment.receiptNumber || '',
+  //         paymentMode: payment.paymentMode || 'Unknown',
+  //         due: '',
+  //         receipt: (-refundAmount).toFixed(2),
+  //         balance: runningBalance.toFixed(2),
+  //         paymentDateRaw: refundDate,
+  //       });
+  //     });
+
+
+  //     feeData.forEach((year) => {
+  //       const feeAggregates = {};
+
+
+  //       year.feeInstallments?.forEach((installment) => {
+  //         if (!installment.feesTypeId?._id) return;
+  //         const dueDate = new Date(installment.dueDate);
+  //         const dueMonthStart = new Date(dueDate.getFullYear(), dueDate.getMonth(), 1);
+  //         if (dueMonthStart > currentDate) return;
+
+  //         const name = installment.installmentName;
+  //         if (!feeAggregates[name]) {
+  //           feeAggregates[name] = {
+  //             totalAmount: 0,
+  //             totalFine: 0,
+  //             dueDate,
+  //           };
+  //         }
+  //         feeAggregates[name].totalAmount += Number(installment.amount || 0);
+  //         feeAggregates[name].totalFine += Number(installment.fineAmount || 0);
+  //       });
+
+  //       Object.keys(feeAggregates).forEach((name) => {
+  //         const { totalAmount, dueDate } = feeAggregates[name];
+  //         if (totalAmount > 0) {
+  //           const formattedDate = formatDate(dueDate);
+  //           runningBalance += totalAmount;
+  //           addTransaction({
+  //             academicYear: year.academicYear,
+  //             date: formattedDate,
+  //             particulars: `Fees Due - ${name}`,
+  //             receiptNo: '',
+  //             paymentMode: '',
+  //             due: totalAmount.toFixed(2),
+  //             receipt: '',
+  //             balance: runningBalance.toFixed(2),
+  //             paymentDateRaw: dueDate,
+  //           });
+  //         }
+  //       });
+
+
+  //       const paymentMap = new Map();
+  //       year.paidInstallments?.forEach((pi) => {
+  //         if (!pi.feesTypeId?._id || pi.cancelledDate) return; 
+
+  //         const name = pi.installmentName || 'Unknown Installment';
+  //         const key = `${name}-${pi.receiptNumber}-${pi.paymentDate}`;
+
+  //         if (!paymentMap.has(key)) {
+  //           paymentMap.set(key, {
+  //             installmentName: name,
+  //             receiptNumber: pi.receiptNumber,
+  //             paymentMode: pi.paymentMode,
+  //             totalPaid: 0,
+  //             totalFinePaid: Number(pi.paidFine || 0),
+  //             totalExcessPaid: Number(pi.excessAmount || 0),
+  //             paymentDate: pi.paymentDate,
+  //           });
+  //         }
+
+  //         const payment = paymentMap.get(key);
+  //         payment.totalPaid += Number(pi.paidAmount || 0);
+  //       });
+
+  //       paymentMap.forEach((payment) => {
+  //         const paymentDate = new Date(payment.paymentDate);
+  //         const formattedDate = formatDate(paymentDate);
+
+  //         // Process fines
+  //         if (payment.totalFinePaid > 0) {
+  //           runningBalance += Number(payment.totalFinePaid);
+  //           addTransaction({
+  //             academicYear: year.academicYear,
+  //             date: formattedDate,
+  //             particulars: 'Fine Due',
+  //             receiptNo: '',
+  //             paymentMode: '',
+  //             due: payment.totalFinePaid.toFixed(2),
+  //             receipt: '',
+  //             balance: runningBalance.toFixed(2),
+  //             paymentDateRaw: paymentDate,
+  //           });
+  //           runningBalance -= Number(payment.totalFinePaid);
+  //           addTransaction({
+  //             academicYear: year.academicYear,
+  //             date: formattedDate,
+  //             particulars: 'Fine Received',
+  //             receiptNo: payment.receiptNumber,
+  //             paymentMode: payment.paymentMode,
+  //             due: '',
+  //             receipt: payment.totalFinePaid.toFixed(2),
+  //             balance: runningBalance.toFixed(2),
+  //             paymentDateRaw: paymentDate,
+  //           });
+  //         }
+
+  //         // Process excess amounts
+  //         if (payment.totalExcessPaid > 0) {
+  //           runningBalance += Number(payment.totalExcessPaid);
+  //           addTransaction({
+  //             academicYear: year.academicYear,
+  //             date: formattedDate,
+  //             particulars: 'Excess Amount Due',
+  //             receiptNo: '',
+  //             paymentMode: '',
+  //             due: payment.totalExcessPaid.toFixed(2),
+  //             receipt: '',
+  //             balance: runningBalance.toFixed(2),
+  //             paymentDateRaw: paymentDate,
+  //           });
+  //           runningBalance -= Number(payment.totalExcessPaid);
+  //           addTransaction({
+  //             academicYear: year.academicYear,
+  //             date: formattedDate,
+  //             particulars: 'Excess Amount Received',
+  //             receiptNo: payment.receiptNumber,
+  //             paymentMode: payment.paymentMode,
+  //             due: '',
+  //             receipt: payment.totalExcessPaid.toFixed(2),
+  //             balance: runningBalance.toFixed(2),
+  //             paymentDateRaw: paymentDate,
+  //           });
+  //         }
+
+  //         // Process main payment
+  //         if (payment.totalPaid > 0) {
+  //           runningBalance -= Number(payment.totalPaid);
+  //           addTransaction({
+  //             academicYear: year.academicYear,
+  //             date: formattedDate,
+  //             particulars: `Fees Received - ${payment.installmentName}`,
+  //             receiptNo: payment.receiptNumber,
+  //             paymentMode: payment.paymentMode,
+  //             due: '',
+  //             receipt: payment.totalPaid.toFixed(2),
+  //             balance: runningBalance.toFixed(2),
+  //             paymentDateRaw: paymentDate,
+  //           });
+  //         }
+  //       });
+  //     });
+
+
+  //     transactions.sort((a, b) => (a.paymentDateRaw || new Date(0)) - (b.paymentDateRaw || new Date(0)));
+
+
+  //     let finalBalance = 0;
+  //     transactions.forEach((txn) => {
+  //       const due = Number(txn.due || 0);
+  //       const receipt = Number(txn.receipt || 0);
+  //       finalBalance += due;
+  //       finalBalance -= receipt;
+  //       txn.balance = finalBalance.toFixed(2);
+  //     });
+
+  //     return {
+  //       admissionNo: student.AdmissionNumber,
+  //       studentName: `${student.firstName || ''} ${student.lastName || ''}`.trim() || 'N/A',
+  //       class: classInfo.className || 'N/A',
+  //       section: sectionInfo.name || 'N/A',
+  //       transactions,
+  //     };
+  //   });
+
+  const processedStudentData = students.map((student) => {
     const academicHistory = student.academicHistory || [];
     const transactions = [];
-    const processedReceipts = new Set(); 
+    const processedReceipts = new Set();
 
     const yearHistory = academicHistory.find((h) => h.academicYear === academicYear) || {};
     const classInfo = classes.find((c) => c._id === yearHistory?.masterDefineClass) || { className: 'N/A' };
@@ -1468,19 +1468,19 @@ const processedStudentData = students.map((student) => {
         return false;
       }
       processedReceipts.add(key);
-    
+
       if (!transaction.paymentDateRaw || isNaN(new Date(transaction.paymentDateRaw))) {
-        transaction.paymentDateRaw = new Date(); 
+        transaction.paymentDateRaw = new Date();
       }
-      
+
       transactions.push(transaction);
       return true;
     };
 
     const allPaidPayments = paymentData.filter(
-      (payment) => 
-        (payment.admissionNumber === student.AdmissionNumber || 
-         (payment.registrationNumber === student.registrationNumber && payment.type === 'Registration Fee')) &&
+      (payment) =>
+        (payment.admissionNumber === student.AdmissionNumber ||
+          (payment.registrationNumber === student.registrationNumber && payment.type === 'Registration Fee')) &&
         payment.status === 'Paid' &&
         !payment.refundDate
     );
@@ -1525,9 +1525,9 @@ const processedStudentData = students.map((student) => {
 
 
     const cancelledPayments = paymentData.filter(
-      (payment) => 
-        (payment.admissionNumber === student.AdmissionNumber || 
-         payment.registrationNumber === student.registrationNumber) &&
+      (payment) =>
+        (payment.admissionNumber === student.AdmissionNumber ||
+          payment.registrationNumber === student.registrationNumber) &&
         (payment.status === 'Cancelled' || payment.status === 'Cheque Return')
     );
 
@@ -1535,10 +1535,10 @@ const processedStudentData = students.map((student) => {
       const paymentDate = new Date(payment.paymentDate);
       const formattedDate = formatDate(payment.paymentDate);
       const paidAmount = Number(payment.paidAmount) || 0;
-      
+
       let dueParticulars = `Fees Cancelled Due - ${payment.type}`;
       let receiptParticulars = `Fees Cancelled Received - ${payment.type}`;
-      
+
       if (payment.type === 'Fine Refund' || payment.type.toLowerCase().includes('fine')) {
         dueParticulars = `Fine Due - Cancelled`;
         receiptParticulars = `Fine Received - Cancelled`;
@@ -1578,9 +1578,9 @@ const processedStudentData = students.map((student) => {
 
     // Process refund payments
     const refundPayments = paymentData.filter(
-      (payment) => 
-        (payment.admissionNumber === student.AdmissionNumber || 
-         payment.registrationNumber === student.registrationNumber) &&
+      (payment) =>
+        (payment.admissionNumber === student.AdmissionNumber ||
+          payment.registrationNumber === student.registrationNumber) &&
         payment.refundDate
     );
 
@@ -1588,20 +1588,20 @@ const processedStudentData = students.map((student) => {
       const refundDate = new Date(payment.refundDate);
       const formattedDate = formatDate(refundDate);
       const refundAmount = Number(payment.paidAmount) || 0;
-   if (payment.feesType !== 'School Fees') {
-      runningBalance += refundAmount;
-      addTransaction({
-        academicYear: payment.academicYear,
-        date: formattedDate,
-        particulars: `Fees Refunded Due - ${payment.type}`,
-        receiptNo: '',
-        paymentMode: '',
-        due: (-refundAmount).toFixed(2),
-        receipt: '',
-        balance: runningBalance.toFixed(2),
-        paymentDateRaw: refundDate,
-      });
-    }
+      if (payment.feesType !== 'School Fees') {
+        runningBalance += refundAmount;
+        addTransaction({
+          academicYear: payment.academicYear,
+          date: formattedDate,
+          particulars: `Fees Refunded Due - ${payment.type}`,
+          receiptNo: '',
+          paymentMode: '',
+          due: (-refundAmount).toFixed(2),
+          receipt: '',
+          balance: runningBalance.toFixed(2),
+          paymentDateRaw: refundDate,
+        });
+      }
       runningBalance -= refundAmount;
       addTransaction({
         academicYear: payment.academicYear,
@@ -1741,7 +1741,7 @@ const processedStudentData = students.map((student) => {
           });
         }
 
-  
+
         if (payment.totalPaid > 0) {
           runningBalance -= Number(payment.totalPaid);
           addTransaction({
@@ -1768,33 +1768,33 @@ const processedStudentData = students.map((student) => {
     transactions.sort((a, b) => {
       const dateA = a.paymentDateRaw ? new Date(a.paymentDateRaw) : new Date(0);
       const dateB = b.paymentDateRaw ? new Date(b.paymentDateRaw) : new Date(0);
-     
+
       if (dateA.getTime() !== dateB.getTime()) {
         return dateA - dateB;
       }
-      
-   
+
+
       const getPriority = (particulars) => {
         const lower = particulars.toLowerCase();
-        if (lower.includes('due') && !lower.includes('cancelled') && !lower.includes('refunded')) return 1; 
-        if (lower.includes('received') && !lower.includes('cancelled') && !lower.includes('refunded')) return 2; 
+        if (lower.includes('due') && !lower.includes('cancelled') && !lower.includes('refunded')) return 1;
+        if (lower.includes('received') && !lower.includes('cancelled') && !lower.includes('refunded')) return 2;
         if (lower.includes('cancelled due')) return 3;
-        if (lower.includes('cancelled received')) return 4; 
-        if (lower.includes('refunded due')) return 5; 
-        if (lower.includes('refunded received')) return 6; 
+        if (lower.includes('cancelled received')) return 4;
+        if (lower.includes('refunded due')) return 5;
+        if (lower.includes('refunded received')) return 6;
         return 7;
       };
-      
+
       return getPriority(a.particulars) - getPriority(b.particulars);
     });
 
-  
-  
+
+
     transactions.forEach((txn, index) => {
       console.log(`${index}: ${txn.date} - ${txn.particulars}`);
     });
 
- 
+
     let finalBalance = 0;
     const recalculatedTransactions = transactions.map((txn) => {
       const due = Number(txn.due || 0);
@@ -1939,8 +1939,8 @@ const processedStudentData = students.map((student) => {
                       name="rowsPerPage"
                       placeholder="Show"
                       options={pageShowOptions}
-                      value={pageShowOptions.find((option) => 
-                        option.value === rowsPerPage || 
+                      value={pageShowOptions.find((option) =>
+                        option.value === rowsPerPage ||
                         (option.value === 'all' && rowsPerPage === totalRecords)
                       )}
                       onChange={(selected, action) => handleSelectChange(selected, action)}
@@ -2163,6 +2163,10 @@ const processedStudentData = students.map((student) => {
                           ))}
                         </tbody>
                       </table>
+                      <div className="text-danger fw-bold">
+                        ! Negative Amount Represents Advance and Positive Amount Represents Outstanding
+                      </div>
+
                     </div>
                     {totalRecords > 0 && rowsPerPage !== 'all' && (
                       <div className="card-footer border-top">

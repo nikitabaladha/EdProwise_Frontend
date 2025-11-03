@@ -269,8 +269,7 @@ export const exportToPDF = async (
                     if (record.isTotalsRow) {
                       return `
                         <tr>
-                          <td colspan="${tableFields.length - 6}"><strong>Total</strong></td>
-                          <td><strong>${totals.feesDue}</strong></td>
+                          <td colspan="${9}"><strong>Total</strong></td>
                           <td><strong>${totals.feesPaid}</strong></td>
                           <td><strong>${totals.refund}</strong></td>
                           <td><strong>${totals.netFees}</strong></td>

@@ -70,7 +70,8 @@ textarea::placeholder {
 }
 
 select {
-  color: #9097a7 !important;
+  /* color: #9097a7 !important; */
+color: black !important;
 }
 
 select:focus,

@@ -54,11 +54,19 @@ const UpdateOneTimeFees = () => {
 
       try {
         const feesTypeRes = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`);
-        if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
-          const oneTimeFees = feesTypeRes.data.data.filter(
-            (fee) => fee.groupOfFees === "One Time Fees"
-          );
-          setFeesTypesList(oneTimeFees);
+        // if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
+        //   const oneTimeFees = feesTypeRes.data.data.filter(
+        //     (fee) => fee.groupOfFees === "One Time Fees"
+        //   );
+        //   setFeesTypesList(oneTimeFees);
+         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
+    const oneTimeFees = feesTypeRes.data.data.filter(
+      (fee) =>
+        fee.groupOfFees === "One Time Fees" &&
+        fee.feesTypeName !== "Board Registration Fee" &&
+        fee.feesTypeName !== "Board Exam Fee"
+    );
+    setFeesTypesList(oneTimeFees);
         } else {
           toast.error("Failed to fetch fees types.");
         }

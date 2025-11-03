@@ -1274,7 +1274,7 @@ const RegistrationFees = () => {
                                   getFieldValue,
                                   calculateBalance,
                                   {
-                                    feesDue: totals.feesDue.toFixed(2),
+                                    // feesDue: totals.feesDue.toFixed(2),
                                     feesPaid: totals.feesPaid.toFixed(2),
                                     refund: totals.refund.toFixed(2),
                                     netFees: totals.netFees.toFixed(2),
@@ -1307,7 +1307,7 @@ const RegistrationFees = () => {
                                   getFieldValue,
                                   calculateBalance,
                                   {
-                                    feesDue: totals.feesDue.toFixed(2),
+                                    // feesDue: totals.feesDue.toFixed(2),
                                     feesPaid: totals.feesPaid.toFixed(2),
                                     refund: totals.refund.toFixed(2),
                                     netFees: totals.netFees.toFixed(2),
@@ -1500,11 +1500,8 @@ const RegistrationFees = () => {
                       </tbody>
                       <tfoot>
                         <tr className="payroll-table-footer">
-                          <td colSpan={tableFields.length - 6} className="text-right border border-secondary p-2">
+                          <td colSpan={ 9} className="text-right border border-secondary p-2">
                             <strong>Total</strong>
-                          </td>
-                          <td className="text-center border border-secondary p-2">
-                            <strong>{totals.feesDue.toFixed(2)}</strong>
                           </td>
                           <td className="text-center border border-secondary p-2">
                             <strong>{totals.feesPaid.toFixed(2)}</strong>

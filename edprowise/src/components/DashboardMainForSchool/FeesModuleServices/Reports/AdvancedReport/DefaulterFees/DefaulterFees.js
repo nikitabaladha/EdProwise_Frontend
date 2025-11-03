@@ -165,76 +165,177 @@ const DefaulterFees = () => {
     }
   }, [selectedClasses, classSectionMap, feeData]);
 
-  const fetchFeeData = async (years) => {
-    setIsLoading(true);
-    try {
-      const promises = years.map((year) =>
-        getAPI(`/Defaulter-Fees?schoolId=${schoolId}&academicYear=${year}`)
-      );
-      const responses = await Promise.all(promises);
-      const unifiedData = responses.flatMap((res, index) => {
-        if (!res?.data?.data) {
-          console.warn(`No data found for year ${years[index]}`);
-          return [];
-        }
-        return res.data.data;
-      });
+  // const fetchFeeData = async (years) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const promises = years.map((year) =>
+  //       getAPI(`/Defaulter-Fees?schoolId=${schoolId}&academicYear=${year}`)
+  //     );
+      
+  //     const responses = await Promise.all(promises);
+  //     const unifiedData = responses.flatMap((res, index) => {
+  //       if (!res?.data?.data) {
+  //         console.warn(`No data found for year ${years[index]}`);
+  //         return [];
+  //       }
+  //       return res.data.data;
+  //     });
 
-      console.log('Fetched unifiedData:', unifiedData); 
+  //     console.log('Fetched unifiedData:', unifiedData); 
 
-      const classSectionMapping = {};
-      unifiedData.forEach(record => {
-        const className = record.className || '-';
-        const sectionName = record.sectionName || '-';
-        if (className !== '-' && sectionName !== '-') {
-          if (!classSectionMapping[className]) {
-            classSectionMapping[className] = new Set();
-          }
-          classSectionMapping[className].add(sectionName);
-        }
-      });
+  //     const classSectionMapping = {};
+  //     unifiedData.forEach(record => {
+  //       const className = record.className || '-';
+  //       const sectionName = record.sectionName || '-';
+  //       if (className !== '-' && sectionName !== '-') {
+  //         if (!classSectionMapping[className]) {
+  //           classSectionMapping[className] = new Set();
+  //         }
+  //         classSectionMapping[className].add(sectionName);
+  //       }
+  //     });
 
-      setClassSectionMap(classSectionMapping);
+  //     setClassSectionMap(classSectionMapping);
 
-      const allFeeTypes = responses
-        .flatMap((res) => res?.data?.feeTypes || [])
-        .filter((type, index, self) => self.indexOf(type) === index)
-        .sort();
+  //     const allFeeTypes = responses
+  //       .flatMap((res) => res?.data?.feeTypes || [])
+  //       .filter((type, index, self) => self.indexOf(type) === index)
+  //       .sort();
 
-      setFeeData(unifiedData);
-      setFeeTypes(allFeeTypes);
+  //     setFeeData(unifiedData);
+  //     setFeeTypes(allFeeTypes);
 
-      const filterOptions = responses[0]?.data?.filterOptions || {};
-      setClassOptions(filterOptions.classOptions || []);
-      setSectionOptions(filterOptions.sectionOptions || []);
-      setInstallmentOptions(filterOptions.installmentOptions || []);
-      setPaymentModeOptions(filterOptions.paymentModeOptions || []);
-      setTCStatusOptions(filterOptions.tcStatusOptions || []); // Added for TCStatus options
+  //     const filterOptions = responses[0]?.data?.filterOptions || {};
+  //     setClassOptions(filterOptions.classOptions || []);
+  //     setSectionOptions(filterOptions.sectionOptions || []);
+  //     setInstallmentOptions(filterOptions.installmentOptions || []);
+  //     setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+  //     setTCStatusOptions(filterOptions.tcStatusOptions || []); 
 
-      if (rowsPerPage === 'all' && unifiedData.length > 0) {
-        const studentDataArray = Object.keys(
-          unifiedData.reduce((acc, row) => {
-            acc[row.admissionNumber] = {};
-            return acc;
-          }, {})
-        ).length;
-        setRowsPerPage(studentDataArray || 'all');
+  //     if (rowsPerPage === 'all' && unifiedData.length > 0) {
+  //       const studentDataArray = Object.keys(
+  //         unifiedData.reduce((acc, row) => {
+  //           acc[row.admissionNumber] = {};
+  //           return acc;
+  //         }, {})
+  //       ).length;
+  //       setRowsPerPage(studentDataArray || 'all');
+  //     }
+  //   } catch (error) {
+  //     toast.error('Error fetching data: ' + error.message);
+  //     console.error('Error fetching fee data:', error);
+  //     setFeeData([]);
+  //     setClassSectionMap({});
+  //     setFeeTypes([]);
+  //     setClassOptions([]);
+  //     setSectionOptions([]);
+  //     setInstallmentOptions([]);
+  //     setPaymentModeOptions([]);
+  //     setTCStatusOptions([]); 
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+const fetchFeeData = async (years) => {
+  setIsLoading(true);
+  try {
+    const defaulterPromises = years.map((year) =>
+      getAPI(`/Defaulter-Fees?schoolId=${schoolId}&academicYear=${year}`)
+    );
+
+
+    const latePromises = years.map((year) =>
+      getAPI(`/Loss-of-fee-due-to-late-Admission?schoolId=${schoolId}&academicYear=${year}`)
+    );
+
+  
+    const [defaulterResponses, lateResponses] = await Promise.all([
+      Promise.all(defaulterPromises),
+      Promise.all(latePromises),
+    ]);
+
+
+    const defaulterData = defaulterResponses.flatMap((res, index) => {
+      if (!res?.data?.data) {
+        console.warn(`No defaulter data found for year ${years[index]}`);
+        return [];
       }
-    } catch (error) {
-      toast.error('Error fetching data: ' + error.message);
-      console.error('Error fetching fee data:', error);
-      setFeeData([]);
-      setClassSectionMap({});
-      setFeeTypes([]);
-      setClassOptions([]);
-      setSectionOptions([]);
-      setInstallmentOptions([]);
-      setPaymentModeOptions([]);
-      setTCStatusOptions([]); // Reset TCStatus options on error
-    } finally {
-      setIsLoading(false);
+      return res.data.data;
+    });
+
+    const lateData = lateResponses.flatMap((res, index) => {
+      if (!res?.data?.data) {
+        console.warn(`No late admission data found for year ${years[index]}`);
+        return [];
+      }
+      return res.data.data;
+    });
+
+  
+    const lateAdmissionSet = new Set(lateData.map((item) => item.admissionNumber));
+    const filteredDefaulterData = defaulterData.filter(
+      (item) => !lateAdmissionSet.has(item.admissionNumber)
+    );
+
+    console.log('Filtered Defaulter Data (excluding late admissions):', filteredDefaulterData);
+
+  
+    const classSectionMapping = {};
+    filteredDefaulterData.forEach((record) => {
+      const className = record.className || '-';
+      const sectionName = record.sectionName || '-';
+      if (className !== '-' && sectionName !== '-') {
+        if (!classSectionMapping[className]) {
+          classSectionMapping[className] = new Set();
+        }
+        classSectionMapping[className].add(sectionName);
+      }
+    });
+
+
+    Object.keys(classSectionMapping).forEach((className) => {
+      classSectionMapping[className] = Array.from(classSectionMapping[className]);
+    });
+
+    setClassSectionMap(classSectionMapping);
+
+    const allFeeTypes = defaulterResponses
+      .flatMap((res) => res?.data?.feeTypes || [])
+      .filter((type, index, self) => self.indexOf(type) === index)
+      .sort();
+
+    setFeeTypes(allFeeTypes);
+    setFeeData(filteredDefaulterData);
+
+  
+    const filterOptions = defaulterResponses[0]?.data?.filterOptions || {};
+    setClassOptions(filterOptions.classOptions || []);
+    setSectionOptions(filterOptions.sectionOptions || []);
+    setInstallmentOptions(filterOptions.installmentOptions || []);
+    setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+    setTCStatusOptions(filterOptions.tcStatusOptions || []);
+
+
+    if (rowsPerPage === 'all' && filteredDefaulterData.length > 0) {
+      setRowsPerPage(filteredDefaulterData.length);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching fee data:', error);
+    toast.error('Error fetching data: ' + error.message);
+
+    setFeeData([]);
+    setFeeTypes([]);
+    setClassOptions([]);
+    setSectionOptions([]);
+    setInstallmentOptions([]);
+    setPaymentModeOptions([]);
+    setClassSectionMap({});
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   useEffect(() => {
     if (!schoolId || !selectedAcademicYear) return;

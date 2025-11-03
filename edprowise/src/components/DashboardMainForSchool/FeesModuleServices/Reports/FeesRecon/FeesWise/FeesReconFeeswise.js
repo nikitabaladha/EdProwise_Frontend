@@ -146,7 +146,7 @@ const ReconFeesFeeswise = () => {
 
         const allFeeTypes = response.data.feeTypes || [];
         const schoolFees = allFeeTypes
-          .filter(type => !['Admission Fee', 'Registration Fees', 'TC Fees', 'Transfer Certificate Fee', 'Board Exam Fee', 'Board Registration Fee'].includes(type))
+          .filter(type => !['Admission Fee', 'Registration Fee', 'TC Fees', 'Transfer Certificate Fee', 'Board Exam Fee', 'Board Registration Fee'].includes(type))
           .filter((type, index, self) => type && self.indexOf(type) === index)
           .sort()
           .map(type => ({ key: type, label: type }));
@@ -188,6 +188,7 @@ const ReconFeesFeeswise = () => {
 
         const leftData = leftResponse?.data?.data || [];
         const lateData = lateResponse?.data?.data || [];
+         const DefaulterData = defaulterResponse.data?.data|| [];
 
 
         const lateAdmissionSet = new Set(lateData.map((item) => item.admissionNumber));
@@ -195,9 +196,14 @@ const ReconFeesFeeswise = () => {
           (item) => !lateAdmissionSet.has(item.admissionNumber)
         );
 
+         const filteredDefaulterData = DefaulterData.filter(
+          (item) => !lateAdmissionSet.has(item.admissionNumber)
+        );
+
+
         setLeftStudentData(filteredLeftData);
         setLateAdmissionData(lateResponse.data?.data || []);
-        setDefaulterData(defaulterResponse.data?.data || []);
+        setDefaulterData(filteredDefaulterData);
         setAdmissionFeesData(admissionFeesResponse.data?.combinedDetails || []);
         setRegistrationFeesData(registrationFeesResponse.data?.combinedDetails || []);
         setTcFeesData(tcFeesResponse.data?.combinedDetails || []);
@@ -285,8 +291,7 @@ const ReconFeesFeeswise = () => {
               let amount = 0;
               if (installment.type === "Paid") {
                 const paid = parseFloat(feeData.paid || feeData.paidAmount || 0);
-                const concession = parseFloat(feeData.concession);
-                amount = paid + concession;
+                amount = paid;
               } else if (installment.type === "Cancelled" || installment.type === "Cheque Return") {
                 const paid = -parseFloat(feeData.cancelled || feeData.chequeReturn || 0);
                 const concession = parseFloat(feeData.concession);
@@ -676,7 +681,7 @@ useEffect(() => {
 
         const paid = parseFloat(item.admFeesPaid || 0);
         const concession = parseFloat(item.admFeesConcession || 0);
-        totalAdmissionReceived += paid + concession;
+        totalAdmissionReceived += paid;
       }
 
 
@@ -716,7 +721,7 @@ useEffect(() => {
       if (item.recordType === "Registration" && item.regFeesStatus && item.regFeesStatus.includes("Paid")) {
         const paid = parseFloat(item.regFeesPaid || 0);
         const concession = parseFloat(item.regFeesConcession || 0);
-        totalReg += paid + concession;
+        totalReg += paid ;
       } else if (item.recordType === "Refund") {
         const refund = Math.abs(
           parseFloat(item.regFeesrefundAmount || 0) ||
@@ -730,7 +735,7 @@ useEffect(() => {
     setRegistrationFees(Number(totalReg).toFixed(2));
     setFeeBreakdowns(prev => ({
       ...prev,
-      'Registration Fees': { 'Registration Fee': Number(totalReg).toFixed(2), total: Number(totalReg).toFixed(2) }
+      'Registration Fee': { 'Registration Fee': Number(totalReg).toFixed(2), total: Number(totalReg).toFixed(2) }
     }));
   }, [registrationFeesData, selectedClasses]);
 
@@ -750,7 +755,7 @@ useEffect(() => {
       if (item.recordType === "Transfer Certificate" && item.tcFeesStatus && item.tcFeesStatus.includes("Paid")) {
         const paid = parseFloat(item.tcFeesPaid || 0);
         const concession = parseFloat(item.tcFeesConcession || 0);
-        totalTc += paid + concession;
+        totalTc += paid ;
       } else if (item.recordType === "Refund") {
         const refund = Math.abs(
           parseFloat(item.tcFeesrefundAmount || 0) ||
@@ -972,8 +977,129 @@ useEffect(() => {
   }, [admissionFeesReceived, registrationFees, tcFees, boardRegistrationFees, boardExaminationFees]);
 
 
-  useEffect(() => {
+//  useEffect(() => {
 
+//     const schoolFeesDue = parseFloat(feeBreakdowns['Fees Due-School Fees']?.total || 0);
+//     const oneTimeFeesDue = parseFloat(feeBreakdowns['Fees Due -One Time']?.total || 0);
+//     const closingAdvanceNum = parseFloat(closingAdvance || 0);
+//     const arrearFeesReceivedNum = parseFloat(arrearFeesReceived || 0);
+
+//     const totalA = schoolFeesDue + oneTimeFeesDue + closingAdvanceNum + arrearFeesReceivedNum;
+
+
+//     const schoolFeesReceivedNum = parseFloat(schoolFeesReceived || 0);
+//     const oneTimeFeesReceivedNum = parseFloat(oneTimeFeesReceived || 0);
+//     const lateAndExcessFeesNum = parseFloat(lateAndExcessFees || 0);
+//     const feesConcessionNum = parseFloat(feesConcession || 0);
+//     const openingAdvanceNum = parseFloat(openingAdvance || 0);
+//     const lossDueToLeftNum = parseFloat(lossDueToLeft || 0);
+//     const lossDueToLateAdmissionNum = parseFloat(lossDueToLateAdmission || 0);
+//     const defaulterFeesNum = parseFloat(defaulterFees || 0);
+
+//     const totalB = schoolFeesReceivedNum +
+//         oneTimeFeesReceivedNum +
+//         lateAndExcessFeesNum +
+//         feesConcessionNum +
+//         openingAdvanceNum +
+//         lossDueToLeftNum +
+//         lossDueToLateAdmissionNum +
+//         defaulterFeesNum;
+
+//     const differenceAB = totalA - totalB;
+
+
+//     const totalABreakdown = {};
+
+//     ['Fees Due-School Fees', 'Fees Due -One Time', 'Arrear Fees Received'].forEach(section => {
+//         if (feeBreakdowns[section]) {
+//             Object.entries(feeBreakdowns[section]).forEach(([k, v]) => {
+//                 if (k !== 'total') {
+//                     totalABreakdown[k] = (totalABreakdown[k] || 0) + parseFloat(v || 0);
+//                 }
+//             });
+//         }
+//     });
+//     totalABreakdown.total = totalA;
+
+
+//     const totalBBreakdown = {};
+
+
+//     ['School Fees Received', 'Fees Concession'].forEach(section => {
+//         if (feeBreakdowns[section]) {
+//             Object.entries(feeBreakdowns[section]).forEach(([k, v]) => {
+//                 if (k !== 'total' && k !== 'lateExcessFee') {
+//                     totalBBreakdown[k] = (totalBBreakdown[k] || 0) + parseFloat(v || 0);
+//                 }
+//             });
+//         }
+//     });
+
+
+//     if (feeBreakdowns['One Time Fees Received']) {
+//         Object.entries(feeBreakdowns['One Time Fees Received']).forEach(([k, v]) => {
+//             if (k !== 'total' && k !== 'lateExcessFee') {
+//                 totalBBreakdown[k] = (totalBBreakdown[k] || 0) + parseFloat(v || 0);
+//             }
+//         });
+//     }
+
+
+//     ['Loss of fees due to left students', 'Loss of fees due to late Admission', 'Defaulter Fees'].forEach(section => {
+//         if (feeBreakdowns[section]) {
+//             Object.entries(feeBreakdowns[section]).forEach(([k, v]) => {
+//                 if (k !== 'total') {
+//                     totalBBreakdown[k] = (totalBBreakdown[k] || 0) + parseFloat(v || 0);
+//                 }
+//             });
+//         }
+//     });
+
+
+//     totalBBreakdown.lateExcessFee = lateAndExcessFeesNum;
+
+//     totalBBreakdown.total = totalB;
+
+
+//     const differenceBreakdown = {};
+//     const allKeys = new Set([
+//         ...Object.keys(totalABreakdown),
+//         ...Object.keys(totalBBreakdown)
+//     ]);
+
+//     allKeys.forEach(key => {
+//         if (key !== 'total') {
+//             const a = parseFloat(totalABreakdown[key] || 0);
+//             const b = parseFloat(totalBBreakdown[key] || 0);
+//             differenceBreakdown[key] = a - b;
+//         }
+//     });
+//     differenceBreakdown.total = differenceAB;
+
+
+//     setFeeBreakdowns(prev => ({
+//         ...prev,
+//         'Total (A)': totalABreakdown,
+//         'Total (B)': totalBBreakdown,
+//         'Difference (A-B)': differenceBreakdown
+//     }));
+
+// }, [
+//     feeBreakdowns,
+//     schoolFeesReceived,
+//     oneTimeFeesReceived,
+//     lateAndExcessFees,
+//     feesConcession,
+//     openingAdvance,
+//     closingAdvance,
+//     arrearFeesReceived,
+//     lossDueToLeft,
+//     lossDueToLateAdmission,
+//     defaulterFees
+// ]);
+
+useEffect(() => {
+   
     const schoolFeesDue = parseFloat(feeBreakdowns['Fees Due-School Fees']?.total || 0);
     const oneTimeFeesDue = parseFloat(feeBreakdowns['Fees Due -One Time']?.total || 0);
     const closingAdvanceNum = parseFloat(closingAdvance || 0);
@@ -981,118 +1107,107 @@ useEffect(() => {
 
     const totalA = schoolFeesDue + oneTimeFeesDue + closingAdvanceNum + arrearFeesReceivedNum;
 
-
-    const schoolFeesReceivedNum = parseFloat(schoolFeesReceived || 0);
-    const oneTimeFeesReceivedNum = parseFloat(oneTimeFeesReceived || 0);
+    const schoolFeesReceivedNum = parseFloat(feeBreakdowns['School Fees Received']?.total || 0);
+    const oneTimeFeesReceivedNum = parseFloat(feeBreakdowns['One Time Fees Received']?.total || 0);
     const lateAndExcessFeesNum = parseFloat(lateAndExcessFees || 0);
-    const feesConcessionNum = parseFloat(feesConcession || 0);
+    const feesConcessionNum = parseFloat(feeBreakdowns['Fees Concession']?.total || 0);
     const openingAdvanceNum = parseFloat(openingAdvance || 0);
-    const lossDueToLeftNum = parseFloat(lossDueToLeft || 0);
-    const lossDueToLateAdmissionNum = parseFloat(lossDueToLateAdmission || 0);
-    const defaulterFeesNum = parseFloat(defaulterFees || 0);
+    const lossDueToLeftNum = parseFloat(feeBreakdowns['Loss of fees due to left students']?.total || 0);
+    const lossDueToLateAdmissionNum = parseFloat(feeBreakdowns['Loss of fees due to late Admission']?.total || 0);
+    const defaulterFeesNum = parseFloat(feeBreakdowns['Defaulter Fees']?.total || 0);
 
     const totalB = schoolFeesReceivedNum +
-      oneTimeFeesReceivedNum +
-      lateAndExcessFeesNum +
-      feesConcessionNum +
-      openingAdvanceNum +
-      lossDueToLeftNum +
-      lossDueToLateAdmissionNum +
-      defaulterFeesNum;
+        oneTimeFeesReceivedNum +
+        lateAndExcessFeesNum +
+        feesConcessionNum +
+        openingAdvanceNum +
+        lossDueToLeftNum +
+        lossDueToLateAdmissionNum +
+        defaulterFeesNum;
+
 
     const differenceAB = totalA - totalB;
 
 
-
-
     const totalABreakdown = {};
-
-
-
-    if (feeBreakdowns['Fees Due-School Fees']) {
-      Object.keys(feeBreakdowns['Fees Due-School Fees']).forEach(key => {
-        if (key !== 'total') {
-          totalABreakdown[key] = (totalABreakdown[key] || 0) + parseFloat(feeBreakdowns['Fees Due-School Fees'][key] || 0);
+    ['Fees Due-School Fees', 'Fees Due -One Time', 'Arrear Fees Received'].forEach(section => {
+        if (feeBreakdowns[section]) {
+            Object.entries(feeBreakdowns[section]).forEach(([k, v]) => {
+                if (k !== 'total') {
+                    totalABreakdown[k] = (totalABreakdown[k] || 0) + parseFloat(v || 0);
+                }
+            });
         }
-      });
-    }
-
-
-    if (feeBreakdowns['Fees Due -One Time']) {
-      Object.keys(feeBreakdowns['Fees Due -One Time']).forEach(key => {
-        if (key !== 'total') {
-          totalABreakdown[key] = (totalABreakdown[key] || 0) + parseFloat(feeBreakdowns['Fees Due -One Time'][key] || 0);
-        }
-      });
-    }
-
-
-    if (feeBreakdowns['Arrear Fees Received']) {
-      Object.keys(feeBreakdowns['Arrear Fees Received']).forEach(key => {
-        if (key !== 'total') {
-          totalABreakdown[key] = (totalABreakdown[key] || 0) + parseFloat(feeBreakdowns['Arrear Fees Received'][key] || 0);
-        }
-      });
-    }
-
+    });
     totalABreakdown.total = totalA;
-
 
     const totalBBreakdown = {};
 
-    if (feeBreakdowns['School Fees Received']) {
-      Object.keys(feeBreakdowns['School Fees Received']).forEach(key => {
-        if (key !== 'total' && key !== 'lateExcessFee') {
-          totalBBreakdown[key] = (totalBBreakdown[key] || 0) + parseFloat(feeBreakdowns['School Fees Received'][key] || 0);
+
+    const allColumns = [
+        ...schoolFeeTypes.map(fee => fee.key),
+        ...oneTimeFeeTypes.map(fee => fee.key),
+        'lateExcessFee'
+    ];
+    
+    allColumns.forEach(col => {
+        totalBBreakdown[col] = 0;
+    });
+
+
+    const components = [
+        'School Fees Received',
+        'One Time Fees Received', 
+        'Fees Concession',
+        'Loss of fees due to left students',
+        'Loss of fees due to late Admission',
+        'Defaulter Fees'
+    ];
+
+    components.forEach(component => {
+        if (feeBreakdowns[component]) {
+            Object.entries(feeBreakdowns[component]).forEach(([key, value]) => {
+                if (key !== 'total' && totalBBreakdown.hasOwnProperty(key)) {
+                    totalBBreakdown[key] += parseFloat(value || 0);
+                }
+            });
         }
-      });
+    });
+
+
+    if (totalBBreakdown.hasOwnProperty('lateExcessFee')) {
+        totalBBreakdown['lateExcessFee'] += lateAndExcessFeesNum;
     }
 
-    if (feeBreakdowns['One Time Fees Received']) {
-      Object.keys(feeBreakdowns['One Time Fees Received']).forEach(key => {
-        if (key !== 'total' && key !== 'lateExcessFee') {
-          totalBBreakdown[key] = (totalBBreakdown[key] || 0) + parseFloat(feeBreakdowns['One Time Fees Received'][key] || 0);
-        }
-      });
-    }
-
-    if (feeBreakdowns['Fees Concession']) {
-      Object.keys(feeBreakdowns['Fees Concession']).forEach(key => {
-        if (key !== 'total' && key !== 'lateExcessFee') {
-          totalBBreakdown[key] = (totalBBreakdown[key] || 0) + parseFloat(feeBreakdowns['Fees Concession'][key] || 0);
-        }
-      });
-    }
-
-
-    totalBBreakdown.lateExcessFee = parseFloat(lateAndExcessFees || 0);
+ 
     totalBBreakdown.total = totalB;
+
+    console.log('Total B Breakdown:', totalBBreakdown);
 
 
     const differenceBreakdown = {};
     const allKeys = new Set([
-      ...Object.keys(totalABreakdown),
-      ...Object.keys(totalBBreakdown)
+        ...Object.keys(totalABreakdown),
+        ...Object.keys(totalBBreakdown)
     ]);
 
     allKeys.forEach(key => {
-      if (key !== 'total') {
-        const valueA = parseFloat(totalABreakdown[key] || 0);
-        const valueB = parseFloat(totalBBreakdown[key] || 0);
-        differenceBreakdown[key] = valueA - valueB;
-      }
+        if (key !== 'total') {
+            const a = parseFloat(totalABreakdown[key] || 0);
+            const b = parseFloat(totalBBreakdown[key] || 0);
+            differenceBreakdown[key] = a - b;
+        }
     });
-
     differenceBreakdown.total = differenceAB;
 
     setFeeBreakdowns(prev => ({
-      ...prev,
-      'Total (A)': totalABreakdown,
-      'Total (B)': totalBBreakdown,
-      'Difference (A-B)': differenceBreakdown
+        ...prev,
+        'Total (A)': totalABreakdown,
+        'Total (B)': totalBBreakdown,
+        'Difference (A-B)': differenceBreakdown
     }));
 
-  }, [
+}, [
     feeBreakdowns,
     schoolFeesReceived,
     oneTimeFeesReceived,
@@ -1103,8 +1218,10 @@ useEffect(() => {
     arrearFeesReceived,
     lossDueToLeft,
     lossDueToLateAdmission,
-    defaulterFees
-  ]);
+    defaulterFees,
+    schoolFeeTypes,
+    oneTimeFeeTypes
+]);
 
   useEffect(() => {
     const loadSchoolData = async () => {

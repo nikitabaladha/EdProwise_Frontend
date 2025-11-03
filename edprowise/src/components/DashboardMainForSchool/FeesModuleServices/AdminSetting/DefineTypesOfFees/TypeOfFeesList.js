@@ -211,25 +211,30 @@ const TypeOfFeesList = () => {
                         <td>{feetype.feesTypeName || 'N/A'}</td>
                         <td>{feetype.groupOfFees || 'N/A'}</td>
                         <td>
-                          <div className="d-flex gap-2">
-                            <button
-                              className="btn btn-soft-primary btn-sm"
-                              onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/fees-type-list/update-fees-type", {
-                                  state: { feetype },
-                                })
-                              }
-                            >
-                              <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
-                            </button>
-                            <button
-                              onClick={() => openDeleteDialog(feetype)}
-                              className="btn btn-soft-danger btn-sm"
-                            >
-                              <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
-                            </button>
-                          </div>
+                          {feetype.groupOfFees !== "One Time Fees" ? (
+                            <div className="d-flex gap-2">
+                              <button
+                                className="btn btn-soft-primary btn-sm"
+                                onClick={() =>
+                                  navigate("/school-dashboard/fees-module/admin-setting/fees-structure/fees-type-list/update-fees-type", {
+                                    state: { feetype },
+                                  })
+                                }
+                              >
+                                <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
+                              </button>
+                              <button
+                                onClick={() => openDeleteDialog(feetype)}
+                                className="btn btn-soft-danger btn-sm"
+                              >
+                                <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-muted"></span>
+                          )}
                         </td>
+
                       </tr>
                     ))
                   )}

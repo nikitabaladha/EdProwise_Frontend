@@ -2135,7 +2135,7 @@ const DateWiseConcession = () => {
     academicYear: 'Academic Year',
     paymentMode: 'Payment Mode',
     ...Object.fromEntries(displayedFeeTypes.map((type) => [type, type])),
-    totalPaidFee: 'Fees Paid',
+    totalPaidFee: 'Total',
   };
 
   const tableFields = Object.keys(headerMapping).map((key) => ({
@@ -2469,7 +2469,7 @@ const DateWiseConcession = () => {
                               {type}
                             </th>
                           ))}
-                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+                          <th className="text-center align-middle border border-secondary text-nowrap p-2">Total</th>
                         </tr>
                       </thead>
                       <tbody>

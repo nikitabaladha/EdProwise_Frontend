@@ -78,8 +78,33 @@ const PaymentModal = ({
             amount: fee.amount || 0,
           }))
         );
-        setAvailableFeeTypes(feeTypes);
-      } else {
+
+      //  if (response?.data?.data) {
+      // const feeTypes = response.data.data.flatMap((feeItem) =>
+      //   feeItem.oneTimeFees
+      //     .filter((fee) => fee.feesTypeId.feesTypeName === "Registration Fee")
+      //     .map((fee) => ({
+      //       id: fee.feesTypeId._id,
+      //       name: fee.feesTypeId.feesTypeName,
+      //       amount: fee.amount || 0,
+      //     }))
+      // );
+
+      setAvailableFeeTypes(feeTypes);
+
+    
+      // const registrationFee = feeTypes.find(
+      //   (fee) => fee.name === "Registration Fee"
+      // );
+      // if (registrationFee) {
+      //   setFormData((prev) => ({
+      //     ...prev,
+      //     feeTypeId: registrationFee.id,
+      //     registrationFee: registrationFee.amount.toString(),
+      //     finalAmount: registrationFee.amount.toString(),
+      //   }));
+      // }
+    } else {
         toast.warning("No fee types found for the selected class.");
       }
     } catch (error) {
@@ -267,35 +292,35 @@ const PaymentModal = ({
       <Modal.Body style={styles.modalBody}>
         { }
         <div style={styles.infoSection}>
-        
-         <Row className="mb-2 align-items-center">
-  <Col md={3} sm={4} xs={5}>
-    <strong>Student :</strong>
-  </Col>
-  <Col md={9} sm={8} xs={7}>
-    {firstName} {lastName}
-  </Col>
-</Row>
 
-<Row className="mb-2 align-items-center">
-  <Col md={3} sm={4} xs={5}>
-    <strong>Academic Year :</strong>
-  </Col>
-  <Col md={9} sm={8} xs={7}>
-    {academicYear}
-  </Col>
-</Row>
+          <Row className="mb-2 align-items-center">
+            <Col md={3} sm={4} xs={5}>
+              <strong>Student :</strong>
+            </Col>
+            <Col md={9} sm={8} xs={7}>
+              {firstName} {lastName}
+            </Col>
+          </Row>
 
-<Row className="mb-2 align-items-center">
-  <Col md={3} sm={4} xs={5}>
-    <strong>Class :</strong>
-  </Col>
-  <Col md={9} sm={8} xs={7}>
-    {className}
-  </Col>
-</Row>
+          <Row className="mb-2 align-items-center">
+            <Col md={3} sm={4} xs={5}>
+              <strong>Academic Year :</strong>
+            </Col>
+            <Col md={9} sm={8} xs={7}>
+              {academicYear}
+            </Col>
+          </Row>
 
-         
+          <Row className="mb-2 align-items-center">
+            <Col md={3} sm={4} xs={5}>
+              <strong>Class :</strong>
+            </Col>
+            <Col md={9} sm={8} xs={7}>
+              {className}
+            </Col>
+          </Row>
+
+
         </div>
 
         <Form>
@@ -311,7 +336,8 @@ const PaymentModal = ({
                   value={formData.feeTypeId}
                   isInvalid={!!errors.feeTypeId}
                   onChange={handleChange}
-                  disabled={loadingFeeTypes}
+                  // disabled
+                
                 >
                   <option value="">Select Fee Type</option>
                   {availableFeeTypes.map((fee) => (
