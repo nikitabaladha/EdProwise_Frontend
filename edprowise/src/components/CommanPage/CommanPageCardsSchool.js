@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { IoCubeOutline, IoLogOutOutline } from "react-icons/io5";
-import { BsReceipt  } from "react-icons/bs";
+import { IoCubeOutline, IoLogOutOutline, IoSettingsOutline } from "react-icons/io5";
+import { BsReceipt } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-import { useLogout } from '../../useLogout';
+import { useLogout } from "../../useLogout";
+import EaseBuzzModal from "./EaseBuzzModal";
 
 
 const DashboardInformationCards = () => {
@@ -12,8 +13,10 @@ const DashboardInformationCards = () => {
 
   const [hoveredCard, setHoveredCard] = useState(null);
   const [isLogoutHovered, setIsLogoutHovered] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const role = userDetails?.role;
+
 
   const navigateToProcurementService = (event) => {
     event.preventDefault();
@@ -120,6 +123,25 @@ const DashboardInformationCards = () => {
       marginBottom: '15px',
       position: 'relative',
     },
+        settingsIcon: {
+      position: "absolute",
+      top: "10px",
+      right: "100px", 
+      fontSize: "1.2rem",
+      color: "#fff",
+      cursor: "pointer",
+      backgroundColor: "#1a1729",
+      padding: "12px",
+      borderRadius: "10%",
+      boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+      width: "70px",
+      height: "35px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      textAlign: "center",
+    },
+
     logoutIcon: {
       position: 'absolute',
       top: '10px',
@@ -157,6 +179,11 @@ const DashboardInformationCards = () => {
   
   return (
     <div style={styles.wrapper}>
+         <span style={styles.settingsIcon} 
+         onClick={() => setIsSettingsOpen(true)}
+         >
+        <IoSettingsOutline />
+      </span>
       <span
         style={styles.logoutIcon}
         onClick={logout}
@@ -191,6 +218,12 @@ const DashboardInformationCards = () => {
           </div>
         ))}
       </div>
+         {isSettingsOpen && (
+        <EaseBuzzModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+        />
+      )}
     </div>
   );
   

@@ -701,6 +701,8 @@ const TCFeesReceipt = () => {
         schoolId={schoolId}
         setIsCancelled={setIsCancelledOrReturned}
         action={selectedAction}
+        transactionNumber={students?.transactionNumber}
+        easebuzzId={students?.easebuzzId}
       />
     </div>
   );

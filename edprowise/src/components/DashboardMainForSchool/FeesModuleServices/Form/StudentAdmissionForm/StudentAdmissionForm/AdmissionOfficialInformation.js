@@ -382,6 +382,8 @@ const FeesReceipt = () => {
         schoolId={schoolId}
         setIsCancelled={setIsCancelledOrReturned}
         action={selectedAction}
+        transactionNumber={student.transactionNumber}
+        easebuzzId={student.easebuzzId}
       />
     </div>
   );

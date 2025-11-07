@@ -4,7 +4,8 @@ import { toast } from "react-toastify";
 import postAPI from "../../../api/postAPI";
 import getAPI from "../../../api/getAPI";
 
-const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId,sectionId, schoolId, setIsCancelled, action, }) => {
+
+const CancelReceiptModal = ({ show, onClose, student, feeTypeName, classId,sectionId, schoolId, setIsCancelled, action, transactionNumber,easebuzzId }) => {
   const [cancelReason, setCancelReason] = useState("");
   const [chequeSpecificReason, setChequeSpecificReason] = useState("");
   const [additionalComment, setAdditionalComment] = useState("");
@@ -230,147 +231,253 @@ useEffect(() => {
     console.log("Updated refundData after change:", newRefundData);
   };
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    try {
-      if (!cancelReason && action === "Cancelled/Cheque Return") {
-        toast.error("Please select a cancel reason.");
-        setIsLoading(false);
-        return;
-      }
+  // const handleSubmit = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     if (!cancelReason && action === "Cancelled/Cheque Return") {
+  //       toast.error("Please select a cancel reason.");
+  //       setIsLoading(false);
+  //       return;
+  //     }
 
-      if (action === "Refund") {
-        if (!paymentMode) {
-          toast.error("Please select a payment mode.");
-          setIsLoading(false);
-          return;
-        }
+  //     if (action === "Refund") {
+  //       if (!paymentMode) {
+  //         toast.error("Please select a payment mode.");
+  //         setIsLoading(false);
+  //         return;
+  //       }
 
-        if (paymentMode === "Cheque" && (!chequeNumber || !bankName)) {
-          toast.error("Cheque number and bank name are required for Cheque payment mode.");
-          setIsLoading(false);
-          return;
-        }
+  //       if (paymentMode === "Cheque" && (!chequeNumber || !bankName)) {
+  //         toast.error("Cheque number and bank name are required for Cheque payment mode.");
+  //         setIsLoading(false);
+  //         return;
+  //       }
 
-        const totalNewRefundAmount = refundData[refundData.length - 1].refundAmount;
-        if (totalNewRefundAmount <= 0) {
-          toast.error("Refund amount must be greater than zero.");
-          setIsLoading(false);
-          return;
-        }
-      }
+  //       const totalNewRefundAmount = refundData[refundData.length - 1].refundAmount;
+  //       if (totalNewRefundAmount <= 0) {
+  //         toast.error("Refund amount must be greater than zero.");
+  //         setIsLoading(false);
+  //         return;
+  //       }
+  //     }
 
-      const payload = {
-        schoolId,
-        academicYear: student?.academicYear || "",
-        refundType: feeTypeName || "",
-        registrationNumber: student?.registrationNumber || null,
-        admissionNumber: student?.admissionNumber || student?.AdmissionNumber || null,
-        firstName: student?.firstName || "",
-        lastName: student?.lastName || "",
-        classId: classId || "",
-        sectionId: sectionId || null,
-        paidAmount: refundData[refundData.length - 1].paidAmount,
-        concessionAmount:action === "Refund" ? 0:student?.concessionAmount,
-        refundAmount: action === "Refund" ? refundData[refundData.length - 1].refundAmount : 0,
-        cancelledAmount: action === "Cancelled/Cheque Return" ? refundData[0].balance : 0,
-        balance: refundData[refundData.length - 1].paidAmount - refundData[refundData.length - 1].refundAmount,
-        paymentMode: action === "Refund" ? paymentMode : student?.paymentMode || "",
-        chequeNumber: paymentMode === "Cheque" ? chequeNumber : student?.chequeNumber,
-        bankName: paymentMode === "Cheque" ? bankName : student?.bankName,
-        paymentDate: action === "Refund" ? new Date() : student?.paymentDate || null,
-        refundDate: action === "Refund" ? new Date() : null,
-        cancelledDate: action === "Cancelled/Cheque Return" ? new Date() : null,
-        feeTypeRefunds: action === "Refund" ? [{
-          feetype: feeTypeName,
-          refundAmount: refundData[refundData.length - 1].refundAmount,
-          paidAmount: refundData[refundData.length - 1].paidAmount,
-          balance: refundData[refundData.length - 1].paidAmount - refundData[refundData.length - 1].refundAmount,
-        }] : refundData.map(item => ({
-          feetype: item.feeType || feeTypeName,
-          refundAmount: 0,
-          cancelledAmount: item.balance,
-          paidAmount: item.paidAmount,
-          balance: item.paidAmount - item.refundAmount,
-        })),
-        installmentName: student?.installmentName || null,
-        existancereceiptNumber: student?.receiptNumber || student?.receiptNumberBrf || student?.receiptNumberBef,
-        status: action === "Refund" ? "Refund" : student?.paymentMode === "Cheque" ? "Cheque Return" : "Cancelled",
-        cancelReason: action === "Cancelled/Cheque Return" ? cancelReason : undefined,
-        chequeSpecificReason: action === "Cancelled/Cheque Return" && student?.paymentMode === "Cheque" ? chequeSpecificReason : undefined,
-        additionalComment,
-      };
+  //     const payload = {
+  //       schoolId,
+  //       academicYear: student?.academicYear || "",
+  //       refundType: feeTypeName || "",
+  //       registrationNumber: student?.registrationNumber || null,
+  //       admissionNumber: student?.admissionNumber || student?.AdmissionNumber || null,
+  //       firstName: student?.firstName || "",
+  //       lastName: student?.lastName || "",
+  //       classId: classId || "",
+  //       sectionId: sectionId || null,
+  //       paidAmount: refundData[refundData.length - 1].paidAmount,
+  //       concessionAmount:action === "Refund" ? 0:student?.concessionAmount,
+  //       refundAmount: action === "Refund" ? refundData[refundData.length - 1].refundAmount : 0,
+  //       cancelledAmount: action === "Cancelled/Cheque Return" ? refundData[0].balance : 0,
+  //       balance: refundData[refundData.length - 1].paidAmount - refundData[refundData.length - 1].refundAmount,
+  //       paymentMode: action === "Refund" ? paymentMode : student?.paymentMode || "",
+  //       chequeNumber: paymentMode === "Cheque" ? chequeNumber : student?.chequeNumber,
+  //       bankName: paymentMode === "Cheque" ? bankName : student?.bankName,
+  //       paymentDate: action === "Refund" ? new Date() : student?.paymentDate || null,
+  //       refundDate: action === "Refund" ? new Date() : null,
+  //       cancelledDate: action === "Cancelled/Cheque Return" ? new Date() : null,
+  //       feeTypeRefunds: action === "Refund" ? [{
+  //         feetype: feeTypeName,
+  //         refundAmount: refundData[refundData.length - 1].refundAmount,
+  //         paidAmount: refundData[refundData.length - 1].paidAmount,
+  //         balance: refundData[refundData.length - 1].paidAmount - refundData[refundData.length - 1].refundAmount,
+  //       }] : refundData.map(item => ({
+  //         feetype: item.feeType || feeTypeName,
+  //         refundAmount: 0,
+  //         cancelledAmount: item.balance,
+  //         paidAmount: item.paidAmount,
+  //         balance: item.paidAmount - item.refundAmount,
+  //       })),
+  //       installmentName: student?.installmentName || null,
+  //       existancereceiptNumber: student?.receiptNumber || student?.receiptNumberBrf || student?.receiptNumberBef,
+  //       status: action === "Refund" ? "Refund" : student?.paymentMode === "Cheque" ? "Cheque Return" : "Cancelled",
+  //       cancelReason: action === "Cancelled/Cheque Return" ? cancelReason : undefined,
+  //       chequeSpecificReason: action === "Cancelled/Cheque Return" && student?.paymentMode === "Cheque" ? chequeSpecificReason : undefined,
+  //       additionalComment,
+  //       existanceTransactionnumber:transactionNumber
+  //     };
 
-      console.log("Submitting payload:", JSON.stringify(payload, null, 2));
+  //     console.log("Submitting payload:", JSON.stringify(payload, null, 2));
 
-      const response = await postAPI("/create-cancelled-refund", payload);
-      console.log("Post API Response:", JSON.stringify(response, null, 2));
+  //     const response = await postAPI("/create-cancelled-refund", payload);
+  //     console.log("Post API Response:", JSON.stringify(response, null, 2));
 
-      if (response.hasError) {
-        const errorMessage = response.message || "Failed to process action.";
-        toast.error(errorMessage);
-        setIsLoading(false);
-        return;
-      }
+  //     if (response.hasError) {
+  //       const errorMessage = response.message || "Failed to process action.";
+  //       toast.error(errorMessage);
+  //       setIsLoading(false);
+  //       return;
+  //     }
 
-      toast.success("Receipt action completed successfully.");
-      setIsCancelled(true);
-      setHasPreviousRefund(true);
+  //     toast.success("Receipt action completed successfully.");
+  //     setIsCancelled(true);
+  //     setHasPreviousRefund(true);
 
-   const receiptIdentifier = student?.receiptNumber || student?.receiptNumberBrf || student?.receiptNumberBef;
-    const updatedRefund = await getAPI(`/get-all-cancelled-refund/${schoolId}/${receiptIdentifier}`);
+  //  const receiptIdentifier = student?.receiptNumber || student?.receiptNumberBrf || student?.receiptNumberBef;
+  //   const updatedRefund = await getAPI(`/get-all-cancelled-refund/${schoolId}/${receiptIdentifier}`);
 
-      if (!updatedRefund.hasError && updatedRefund.data && updatedRefund.data.data && updatedRefund.data.data.refunds && updatedRefund.data.data.refunds.length > 0) {
-        const refunds = updatedRefund.data.data.refunds;
-        const totalRefundAmount = refunds.reduce(
-          (sum, refund) => sum + (Number(refund.refundAmount) || 0),
-          0
-        );
-        const totalCancelledAmount = refunds.reduce(
-          (sum, refund) => sum + (Number(refund.cancelledAmount) || 0),
-          0
-        );
-        const paidAmount = Number(refunds[0]?.paidAmount) || Number(student?.finalAmount) || 0;
-        const totalBalance = paidAmount - totalRefundAmount - totalCancelledAmount;
+  //     if (!updatedRefund.hasError && updatedRefund.data && updatedRefund.data.data && updatedRefund.data.data.refunds && updatedRefund.data.data.refunds.length > 0) {
+  //       const refunds = updatedRefund.data.data.refunds;
+  //       const totalRefundAmount = refunds.reduce(
+  //         (sum, refund) => sum + (Number(refund.refundAmount) || 0),
+  //         0
+  //       );
+  //       const totalCancelledAmount = refunds.reduce(
+  //         (sum, refund) => sum + (Number(refund.cancelledAmount) || 0),
+  //         0
+  //       );
+  //       const paidAmount = Number(refunds[0]?.paidAmount) || Number(student?.finalAmount) || 0;
+  //       const totalBalance = paidAmount - totalRefundAmount - totalCancelledAmount;
 
-        setRefundData([
-          {
-            feeType: feeTypeName,
-            paidAmount,
-            refundAmount: totalRefundAmount,
-            balance: totalBalance >= 0 ? totalBalance : 0,
-          },
-          {
-            feeType: "",
-            paidAmount: totalBalance >= 0 ? totalBalance : 0,
-            refundAmount: 0,
-            balance: totalBalance >= 0 ? totalBalance : 0,
-          },
-        ]);
-        setHasPreviousRefund(true);
-      } else {
-        console.log("No updated refund data, keeping current refundData.");
-        setRefundData([
-          {
-            feeType: feeTypeName,
-            paidAmount: student?.finalAmount || 0,
-            refundAmount: 0,
-            balance: student?.finalAmount || 0,
-          },
-        ]);
-        setHasPreviousRefund(false);
-      }
-      onClose();
-    } catch (error) {
-      console.error("Error processing action:", error);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to process action.";
-      toast.error(errorMessage);
+  //       setRefundData([
+  //         {
+  //           feeType: feeTypeName,
+  //           paidAmount,
+  //           refundAmount: totalRefundAmount,
+  //           balance: totalBalance >= 0 ? totalBalance : 0,
+  //         },
+  //         {
+  //           feeType: "",
+  //           paidAmount: totalBalance >= 0 ? totalBalance : 0,
+  //           refundAmount: 0,
+  //           balance: totalBalance >= 0 ? totalBalance : 0,
+  //         },
+  //       ]);
+  //       setHasPreviousRefund(true);
+  //     } else {
+  //       console.log("No updated refund data, keeping current refundData.");
+  //       setRefundData([
+  //         {
+  //           feeType: feeTypeName,
+  //           paidAmount: student?.finalAmount || 0,
+  //           refundAmount: 0,
+  //           balance: student?.finalAmount || 0,
+  //         },
+  //       ]);
+  //       setHasPreviousRefund(false);
+  //     }
+  //     onClose();
+  //   } catch (error) {
+  //     console.error("Error processing action:", error);
+  //     const errorMessage =
+  //       error.response?.data?.message ||
+  //       error.message ||
+  //       "Failed to process action.";
+  //     toast.error(errorMessage);
+  //     setIsLoading(false);
+  //   }
+  // };
+
+const handleSubmit = async () => {
+  setIsLoading(true);
+  try {
+    if (!cancelReason && action === "Cancelled/Cheque Return") {
+      toast.error("Please select a cancel reason.");
       setIsLoading(false);
+      return;
     }
-  };
+
+    if (action === "Refund") {
+      if (!paymentMode) {
+        toast.error("Please select a payment mode.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (paymentMode === "Cheque" && (!chequeNumber || !bankName)) {
+        toast.error("Cheque number and bank name are required for Cheque payment mode.");
+        setIsLoading(false);
+        return;
+      }
+
+      const totalNewRefundAmount = refundData[refundData.length - 1].refundAmount;
+      if (totalNewRefundAmount <= 0) {
+        toast.error("Refund amount must be greater than zero.");
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    const basePayload = {
+      schoolId,
+      academicYear: student?.academicYear || "",
+      refundType: feeTypeName || "",
+      registrationNumber: student?.registrationNumber || null,
+      admissionNumber: student?.admissionNumber || student?.AdmissionNumber || null,
+      firstName: student?.firstName || "",
+      lastName: student?.lastName || "",
+      classId: classId || "",
+      sectionId: sectionId || null,
+      paidAmount: refundData[refundData.length - 1].paidAmount,
+      concessionAmount: action === "Refund" ? 0 : student?.concessionAmount,
+      refundAmount: action === "Refund" ? refundData[refundData.length - 1].refundAmount : 0,
+      cancelledAmount: action === "Cancelled/Cheque Return" ? refundData[0].balance : 0,
+      balance: refundData[refundData.length - 1].paidAmount - refundData[refundData.length - 1].refundAmount,
+      paymentMode: action === "Refund" ? paymentMode : student?.paymentMode || "",
+      chequeNumber: paymentMode === "Cheque" ? chequeNumber : student?.chequeNumber,
+      bankName: paymentMode === "Cheque" ? bankName : student?.bankName,
+      paymentDate: action === "Refund" ? new Date() : student?.paymentDate || null,
+      refundDate: action === "Refund" ? new Date() : null,
+      cancelledDate: action === "Cancelled/Cheque Return" ? new Date() : null,
+      feeTypeRefunds: action === "Refund" ? [{
+        feeType: feeTypeName,
+        refundAmount: refundData[refundData.length - 1].refundAmount,
+        paidAmount: refundData[refundData.length - 1].paidAmount,
+        balance: refundData[refundData.length - 1].paidAmount - refundData[refundData.length - 1].refundAmount,
+      }] : refundData.map(item => ({
+        feeType: item.feeType || feeTypeName,
+        refundAmount: 0,
+        cancelledAmount: item.balance,
+        paidAmount: item.paidAmount,
+        balance: item.paidAmount - item.refundAmount,
+      })),
+      installmentName: student?.installmentName || null,
+      existancereceiptNumber: student?.receiptNumber || student?.receiptNumberBrf || student?.receiptNumberBef,
+      status: action === "Refund" ? "Refund" : student?.paymentMode === "Cheque" ? "Cheque Return" : "Cancelled",
+      cancelReason: action === "Cancelled/Cheque Return" ? cancelReason : undefined,
+      chequeSpecificReason: action === "Cancelled/Cheque Return" && student?.paymentMode === "Cheque" ? chequeSpecificReason : undefined,
+      additionalComment,
+      existanceTransactionnumber: transactionNumber
+    };
+
+ 
+    if (paymentMode === "Online") {
+      basePayload.onlineRefundPayload = {
+        key: process.env.REACT_APP_EASEBUZZ_KEY,
+        easebuzz_id: easebuzzId,
+        refund_amount: refundData[refundData.length - 1].refundAmount,
+        // phone: student?.phone || "999999999",
+        // email: student?.email || "student@example.com",
+        // amount: refundData[refundData.length - 1].paidAmount,
+      };
+    }
+
+    console.log("Final Payload:", JSON.stringify(basePayload, null, 2));
+
+    const response = await postAPI("/create-cancelled-refund", basePayload);
+    console.log("API Response:", response);
+
+    if (response.hasError) {
+      toast.error(response.message || "Failed to process.");
+      setIsLoading(false);
+      return;
+    }
+
+    toast.success("Action completed successfully.");
+    setIsCancelled(true);
+    onClose();
+  } catch (error) {
+    console.error("Submit error:", error);
+    toast.error(error.response?.data?.message || "Network error");
+    setIsLoading(false);
+  }
+};
 
   return (
     <>

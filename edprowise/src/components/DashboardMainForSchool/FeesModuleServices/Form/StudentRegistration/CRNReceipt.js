@@ -309,80 +309,80 @@ const RefundReceipt = () => {
         </div> */}
 
         <div className="table-responsive mb-4" style={{ zIndex: 1, position: "relative" }}>
-  <table className="table table-bordered">
-    <thead className="table-primary">
-      <tr>
-        <th className="text-center">Type</th>
-        <th className="text-center">Paid Amount (₹)</th>
-        <th className="text-center">
-          {refund.status === "Refund" ? "Refund Amount (₹)" : "Total Refund (₹)"}
-        </th>
-        <th className="text-center">Balance Amount (₹)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {refund.refundType === "School Fees" ? (
-        <tr>
-          <td className="text-center">School Fees</td>
-          <td className="text-center">
-            {refundData.feeTypeRefunds
-              ? refundData.feeTypeRefunds
-                  .reduce((sum, feeType) => sum + (feeType.paidAmount || 0), 0)
-                  .toFixed(2)
-              : refund.paidAmount?.toFixed(2) || "0.00"}
-          </td>
-          <td className="text-center">
-            {refund.status === "Refund"
-              ? refundData.feeTypeRefunds
-                ? refundData.feeTypeRefunds
-                    .reduce((sum, feeType) => sum + (feeType.refundAmount || 0), 0)
-                    .toFixed(2)
-                : refund.refundAmount?.toFixed(2) || "0.00"
-              : refundData.feeTypeRefunds
-                ? refundData.feeTypeRefunds
-                    .reduce((sum, feeType) => sum + (feeType.cancelledAmount || 0), 0)
-                    .toFixed(2)
-                : refund.totalRefundAmount?.toFixed(2) || "0.00"}
-          </td>
-          <td className="text-center">
-            {refundData.feeTypeRefunds
-              ? refundData.feeTypeRefunds
-                  .reduce((sum, feeType) => sum + (feeType.balance || 0), 0)
-                  .toFixed(2)
-              : refund.balance?.toFixed(2) || "0.00"}
-          </td>
-        </tr>
-      ) : (
-        <tr>
-          <td className="text-center">{refund.refundType || "N/A"}</td>
-          <td className="text-center">{refund.paidAmount?.toFixed(2) || "0.00"}</td>
-          <td className="text-center">
-            {refund.status === "Refund"
-              ? refund.refundAmount?.toFixed(2) || "0.00"
-              : refund.totalRefundAmount?.toFixed(2) || "0.00"}
-          </td>
-          <td className="text-center">{refund.balance?.toFixed(2) || "0.00"}</td>
-        </tr>
-      )}
-      <tr className="table-active">
-        <td colSpan="3" className="text-end fw-bold">
-          Total
-        </td>
-        <td className="text-center fw-bold">
-          {refund.status === "Refund"
-            ? refundData.totalRefundAmount?.toFixed(2) || "0.00"
-            : refund.refundType === "School Fees"
-              ? refundData.feeTypeRefunds
-                ? refundData.feeTypeRefunds
-                    .reduce((sum, feeType) => sum + (feeType.cancelledAmount || 0), 0)
-                    .toFixed(2)
-                : refund.cancelledAmount?.toFixed(2) || "0.00"
-              : refund.cancelledAmount?.toFixed(2) || "0.00"}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+          <table className="table table-bordered">
+            <thead className="table-primary">
+              <tr>
+                <th className="text-center">Type</th>
+                <th className="text-center">Paid Amount (₹)</th>
+                <th className="text-center">
+                  {refund.status === "Refund" ? "Refund Amount (₹)" : "Total Refund (₹)"}
+                </th>
+                <th className="text-center">Balance Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {refund.refundType === "School Fees" ? (
+                <tr>
+                  <td className="text-center">School Fees</td>
+                  <td className="text-center">
+                    {refundData.feeTypeRefunds
+                      ? refundData.feeTypeRefunds
+                        .reduce((sum, feeType) => sum + (feeType.paidAmount || 0), 0)
+                        .toFixed(2)
+                      : refund.paidAmount?.toFixed(2) || "0.00"}
+                  </td>
+                  <td className="text-center">
+                    {refund.status === "Refund"
+                      ? refundData.feeTypeRefunds
+                        ? refundData.feeTypeRefunds
+                          .reduce((sum, feeType) => sum + (feeType.refundAmount || 0), 0)
+                          .toFixed(2)
+                        : refund.refundAmount?.toFixed(2) || "0.00"
+                      : refundData.feeTypeRefunds
+                        ? refundData.feeTypeRefunds
+                          .reduce((sum, feeType) => sum + (feeType.cancelledAmount || 0), 0)
+                          .toFixed(2)
+                        : refund.totalRefundAmount?.toFixed(2) || "0.00"}
+                  </td>
+                  <td className="text-center">
+                    {refundData.feeTypeRefunds
+                      ? refundData.feeTypeRefunds
+                        .reduce((sum, feeType) => sum + (feeType.balance || 0), 0)
+                        .toFixed(2)
+                      : refund.balance?.toFixed(2) || "0.00"}
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  <td className="text-center">{refund.refundType || "N/A"}</td>
+                  <td className="text-center">{refund.paidAmount?.toFixed(2) || "0.00"}</td>
+                  <td className="text-center">
+                    {refund.status === "Refund"
+                      ? refund.refundAmount?.toFixed(2) || "0.00"
+                      : refund.totalRefundAmount?.toFixed(2) || "0.00"}
+                  </td>
+                  <td className="text-center">{refund.balance?.toFixed(2) || "0.00"}</td>
+                </tr>
+              )}
+              <tr className="table-active">
+                <td colSpan="3" className="text-end fw-bold">
+                  Total
+                </td>
+                <td className="text-center fw-bold">
+                  {refund.status === "Refund"
+                    ? refundData.totalRefundAmount?.toFixed(2) || "0.00"
+                    : refund.refundType === "School Fees"
+                      ? refundData.feeTypeRefunds
+                        ? refundData.feeTypeRefunds
+                          .reduce((sum, feeType) => sum + (feeType.cancelledAmount || 0), 0)
+                          .toFixed(2)
+                        : refund.cancelledAmount?.toFixed(2) || "0.00"
+                      : refund.cancelledAmount?.toFixed(2) || "0.00"}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <div className="row mb-4 text-black" style={{ zIndex: 1, position: "relative" }}>
           <div className="col-md-6">

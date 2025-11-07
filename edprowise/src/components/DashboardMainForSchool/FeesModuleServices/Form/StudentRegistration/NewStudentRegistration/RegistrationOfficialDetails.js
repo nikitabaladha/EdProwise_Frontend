@@ -389,6 +389,9 @@ const RegistartionFeesReceipt = () => {
         schoolId={schoolId}
         setIsCancelled={setIsCancelledOrReturned}
         action={selectedAction}
+        transactionNumber={student.transactionNumber}
+         easebuzzId={student.easebuzzId}
+        hash={student.hash} 
       />
     </div>
   );

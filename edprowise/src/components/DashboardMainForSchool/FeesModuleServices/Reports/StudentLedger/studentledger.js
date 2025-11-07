@@ -1539,13 +1539,19 @@ const StudentFeeLedger = () => {
       let dueParticulars = `Fees Cancelled Due - ${payment.type}`;
       let receiptParticulars = `Fees Cancelled Received - ${payment.type}`;
 
-      if (payment.type === 'Fine Refund' || payment.type.toLowerCase().includes('fine')) {
-        dueParticulars = `Fine Due - Cancelled`;
-        receiptParticulars = `Fine Received - Cancelled`;
-      } else if (payment.type === 'Excess Amount' || payment.type.toLowerCase().includes('excess')) {
-        dueParticulars = `Excess Due - Cancelled`;
-        receiptParticulars = `Excess Received - Cancelled`;
-      }
+  if (
+  payment.status === 'Cancelled' &&
+  (payment.type === 'Fine Refund' || payment.type.toLowerCase().includes('fine'))
+) {
+  dueParticulars = `Fine Due - Cancelled`;
+  receiptParticulars = `Fine Received - Cancelled`;
+} else if (
+  payment.status === 'Cancelled' &&
+  (payment.type === 'Excess Amount' || payment.type.toLowerCase().includes('excess'))
+) {
+  dueParticulars = `Excess Due - Cancelled`;
+  receiptParticulars = `Excess Received - Cancelled`;
+}
 
       if (payment.feesType !== 'School Fees') {
         runningBalance += paidAmount;
@@ -1583,38 +1589,61 @@ const StudentFeeLedger = () => {
           payment.registrationNumber === student.registrationNumber) &&
         payment.refundDate
     );
+refundPayments.forEach((payment) => {
+  const refundDate = new Date(payment.refundDate);
+  const formattedDate = formatDate(refundDate);
+  const refundAmount = Number(payment.paidAmount) || 0;
 
-    refundPayments.forEach((payment) => {
-      const refundDate = new Date(payment.refundDate);
-      const formattedDate = formatDate(refundDate);
-      const refundAmount = Number(payment.paidAmount) || 0;
-      if (payment.feesType !== 'School Fees') {
-        runningBalance += refundAmount;
-        addTransaction({
-          academicYear: payment.academicYear,
-          date: formattedDate,
-          particulars: `Fees Refunded Due - ${payment.type}`,
-          receiptNo: '',
-          paymentMode: '',
-          due: (-refundAmount).toFixed(2),
-          receipt: '',
-          balance: runningBalance.toFixed(2),
-          paymentDateRaw: refundDate,
-        });
-      }
-      runningBalance -= refundAmount;
-      addTransaction({
-        academicYear: payment.academicYear,
-        date: formattedDate,
-        particulars: `Fees Refunded Received - ${payment.type}`,
-        receiptNo: payment.receiptNumber || '',
-        paymentMode: payment.paymentMode || 'Unknown',
-        due: '',
-        receipt: (-refundAmount).toFixed(2),
-        balance: runningBalance.toFixed(2),
-        paymentDateRaw: refundDate,
-      });
+  let dueParticulars = `Fees Refunded Due - ${payment.type}`;
+  let receiptParticulars = `Fees Refunded Received - ${payment.type}`;
+
+
+  if (
+    payment.status === 'Refund' &&
+    (payment.type === 'Fine Refund' || payment.type.toLowerCase().includes('fine'))
+  ) {
+    dueParticulars = `Fine Due - Refunded`;
+    receiptParticulars = `Fine Received - Refunded`;
+  }
+
+  else if (
+    payment.status === 'Refund' &&
+    (payment.type === 'Excess Amount' || payment.type.toLowerCase().includes('excess'))
+  ) {
+    dueParticulars = `Excess Due - Refunded`;
+    receiptParticulars = `Excess Received - Refunded`;
+  }
+
+
+  if (payment.feesType !== 'School Fees') {
+    runningBalance += refundAmount;
+    addTransaction({
+      academicYear: payment.academicYear,
+      date: formattedDate,
+      particulars: dueParticulars,
+      receiptNo: '',
+      paymentMode: '',
+      due: (-refundAmount).toFixed(2),
+      receipt: '',
+      balance: runningBalance.toFixed(2),
+      paymentDateRaw: refundDate,
     });
+  }
+
+  runningBalance -= refundAmount;
+  addTransaction({
+    academicYear: payment.academicYear,
+    date: formattedDate,
+    particulars: receiptParticulars,
+    receiptNo: payment.receiptNumber || '',
+    paymentMode: payment.paymentMode || 'Unknown',
+    due: '',
+    receipt: (-refundAmount).toFixed(2),
+    balance: runningBalance.toFixed(2),
+    paymentDateRaw: refundDate,
+  });
+});
+
 
 
     feeData.forEach((year) => {

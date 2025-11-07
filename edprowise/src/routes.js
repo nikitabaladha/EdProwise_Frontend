@@ -317,9 +317,22 @@ import NewPassword from "./components/ForgotPassword/NewPassword.js";
 import SchoolCommanpage from "./components/CommanPage/CommanPageCardsSchool.js";
 import SchoolFeesManagementYear from "./components/CommanPage/YearPage.js";
 
+// ================================Easebuzz Pages================================================//
+
 import SuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/SuccessPage.js'; 
 import FailurePage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/FailurePage.js';
 
+import AdmissionSuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/SuccessPage.js'; 
+import AdmissionFailurePage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/FailurePage.js';
+
+import TCSuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/FailurePage.js'; 
+import TCFailurePage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/FailurePage.js';
+
+
+// ================================Student Temp Login================================================//
+
+import StudentLoginTemp from './components/TempStudent/Login/login.js'; 
+import StudentSignupTemp from './components/TempStudent/Signup/signup.js'; 
 
 // const PrivateRoute = ({ allowedRoles, children }) => {
 //   const { isAuthenticated, role } = useAuth();
@@ -448,8 +461,32 @@ const AppRoutes = () => {
         }
       />
 
-      <Route path="/payment/success" element={ <PublicRoute><SuccessPage /></PublicRoute>} />
+         <Route
+        path="/student-login"
+        element={
+          <PublicRoute>
+            <StudentLoginTemp />
+          </PublicRoute>
+        }
+      />
+
+       <Route
+        path="/student-signup"
+        element={
+          <PublicRoute>
+            <StudentSignupTemp/>
+          </PublicRoute>
+        }
+      />
+
+  <Route path="/payment/success" element={<PublicRoute><SuccessPage /></PublicRoute>} />
   <Route path="/payment/failure" element={<PublicRoute><FailurePage /></PublicRoute>} />
+
+  <Route path="/payment/admission/success" element={<PublicRoute><AdmissionSuccessPage /></PublicRoute>} />
+  <Route path="/payment/admission/failure" element={<PublicRoute><AdmissionFailurePage /></PublicRoute>} />
+
+  <Route path="/payment/tc/success" element={<PublicRoute><TCSuccessPage /></PublicRoute>} />
+  <Route path="/payment/tc/failure" element={<PublicRoute><TCFailurePage /></PublicRoute>} />
 
       <Route
         path="/forgot-password"

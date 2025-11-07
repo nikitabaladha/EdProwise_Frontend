@@ -29,7 +29,7 @@ const PaymentModal = ({
     bankName: "",
     name: `${firstName} ${lastName}`.trim() || "",
     email: "",
-    phone: "",
+    phone: parentContactNumber || "",
   });
 
   const [errors, setErrors] = useState({});
@@ -55,7 +55,6 @@ const PaymentModal = ({
     },
   };
 
-
   const fetchClassRelatedFeeTypes = async () => {
     setLoadingFeeTypes(true);
     try {
@@ -79,32 +78,8 @@ const PaymentModal = ({
           }))
         );
 
-      //  if (response?.data?.data) {
-      // const feeTypes = response.data.data.flatMap((feeItem) =>
-      //   feeItem.oneTimeFees
-      //     .filter((fee) => fee.feesTypeId.feesTypeName === "Registration Fee")
-      //     .map((fee) => ({
-      //       id: fee.feesTypeId._id,
-      //       name: fee.feesTypeId.feesTypeName,
-      //       amount: fee.amount || 0,
-      //     }))
-      // );
-
-      setAvailableFeeTypes(feeTypes);
-
-    
-      // const registrationFee = feeTypes.find(
-      //   (fee) => fee.name === "Registration Fee"
-      // );
-      // if (registrationFee) {
-      //   setFormData((prev) => ({
-      //     ...prev,
-      //     feeTypeId: registrationFee.id,
-      //     registrationFee: registrationFee.amount.toString(),
-      //     finalAmount: registrationFee.amount.toString(),
-      //   }));
-      // }
-    } else {
+        setAvailableFeeTypes(feeTypes);
+      } else {
         toast.warning("No fee types found for the selected class.");
       }
     } catch (error) {
@@ -123,10 +98,10 @@ const PaymentModal = ({
         academicYear,
         name: `${firstName} ${lastName}`.trim() || "",
         email: "",
-        phone: "",
+        phone: parentContactNumber || "",
       }));
     }
-  }, [show, academicYear, firstName, lastName]);
+  }, [show, academicYear, firstName, lastName, parentContactNumber]);
 
   useEffect(() => {
     const registrationFee = parseFloat(formData.registrationFee) || 0;
@@ -147,7 +122,6 @@ const PaymentModal = ({
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
 
-
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
     }
@@ -164,47 +138,59 @@ const PaymentModal = ({
     }
   };
 
-  const validateForm = () => {
-    const newErrors = {};
+ const validateForm = () => {
+  const newErrors = {};
 
+  if (!formData.feeTypeId) newErrors.feeTypeId = "Please select a fee type.";
+  if (!formData.registrationFee || parseFloat(formData.registrationFee) <= 0) {
+    newErrors.registrationFee = "Valid registration fee is required.";
+  }
+  if (parseFloat(formData.finalAmount) <= 0) {
+    newErrors.finalAmount = "Final amount must be greater than zero.";
+  }
+  if (!formData.paymentMode) newErrors.paymentMode = "Please select payment mode.";
+  if (!formData.name.trim()) newErrors.name = "Name is required.";
 
-    if (!formData.feeTypeId) newErrors.feeTypeId = "Please select a fee type.";
-    if (!formData.registrationFee || parseFloat(formData.registrationFee) <= 0) {
-      newErrors.registrationFee = "Valid registration fee is required.";
-    }
-    if (parseFloat(formData.finalAmount) <= 0) {
-      newErrors.finalAmount = "Final amount must be greater than zero.";
-    }
-    if (!formData.paymentMode) newErrors.paymentMode = "Please select payment mode.";
-    if (!formData.name.trim()) newErrors.name = "Name is required.";
-
-
-    if (formData.paymentMode === "Cheque") {
-      if (!formData.bankName?.trim()) newErrors.bankName = "Bank name is required.";
-      if (!formData.chequeNumber?.trim()) {
-        newErrors.chequeNumber = "Cheque number is required.";
-      } else if (!/^\d{6}$/.test(formData.chequeNumber)) {
-        newErrors.chequeNumber = "Cheque number must be exactly 6 digits.";
-      }
+  // === ONLINE PAYMENT VALIDATION ===
+  if (formData.paymentMode === "Online") {
+    if (!formData.email?.trim()) {
+      newErrors.email = "Email is required for online payment.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
     }
 
-
-    if (formData.concessionType && formData.concessionType !== "null") {
-      if (!formData.concessionAmount || parseFloat(formData.concessionAmount) <= 0) {
-        newErrors.concessionAmount = "Valid concession amount is required.";
-      }
-      if (parseFloat(formData.concessionAmount) > parseFloat(formData.registrationFee || 0)) {
-        newErrors.concessionAmount = "Concession cannot exceed registration fee.";
-      }
+    if (!formData.phone?.trim()) {
+      newErrors.phone = "Phone number is required for online payment.";
+    } else if (!/^\d{10}$/.test(formData.phone.replace(/\D/g, ""))) {
+      newErrors.phone = "Phone number must be exactly 10 digits.";
     }
+  }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // === CHEQUE VALIDATION ===
+  if (formData.paymentMode === "Cheque") {
+    if (!formData.bankName?.trim()) newErrors.bankName = "Bank name is required.";
+    if (!formData.chequeNumber?.trim()) {
+      newErrors.chequeNumber = "Cheque number is required.";
+    } else if (!/^\d{6}$/.test(formData.chequeNumber)) {
+      newErrors.chequeNumber = "Cheque number must be exactly 6 digits.";
+    }
+  }
 
+  // === CONCESSION VALIDATION ===
+  if (formData.concessionType && formData.concessionType !== "null" && formData.concessionType !== "") {
+    if (!formData.concessionAmount || parseFloat(formData.concessionAmount) <= 0) {
+      newErrors.concessionAmount = "Valid concession amount is required.";
+    }
+    if (parseFloat(formData.concessionAmount) > parseFloat(formData.registrationFee || 0)) {
+      newErrors.concessionAmount = "Concession cannot exceed registration fee.";
+    }
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const initiateEasebuzzPayment = (paymentUrl) => {
-
     sessionStorage.setItem('easebuzzPayment', JSON.stringify({
       studentId,
       paymentUrl,
@@ -246,14 +232,18 @@ const PaymentModal = ({
           toast.error("Payment URL not received from gateway.");
         }
       } else {
-
         toast.success("Payment recorded successfully!");
         onPaymentSuccess?.();
         onClose();
       }
-    } catch (error) {
-      console.error("Payment submission error:", error);
-      toast.error("An error occurred while processing payment.");
+    }catch (error) {
+  const errorMessage =
+    error?.response?.data?.message ||
+    error?.message ||
+    "An error occurred while processing payment.";
+
+  toast.error(errorMessage);
+
     } finally {
       setIsSubmitting(false);
     }
@@ -280,7 +270,7 @@ const PaymentModal = ({
           bankName: "",
           name: `${firstName} ${lastName}`.trim() || "",
           email: "",
-          phone: "",
+          phone: parentContactNumber || "",
         });
         setErrors({});
       }}
@@ -290,9 +280,7 @@ const PaymentModal = ({
       </Modal.Header>
 
       <Modal.Body style={styles.modalBody}>
-        { }
         <div style={styles.infoSection}>
-
           <Row className="mb-2 align-items-center">
             <Col md={3} sm={4} xs={5}>
               <strong>Student :</strong>
@@ -319,12 +307,9 @@ const PaymentModal = ({
               {className}
             </Col>
           </Row>
-
-
         </div>
 
         <Form>
-          { }
           <Row className="mb-3">
             <Col md={12}>
               <Form.Label className="fw-bold">Fee Type <span style={{ color: "red" }}>*</span></Form.Label>
@@ -336,8 +321,6 @@ const PaymentModal = ({
                   value={formData.feeTypeId}
                   isInvalid={!!errors.feeTypeId}
                   onChange={handleChange}
-                  // disabled
-                
                 >
                   <option value="">Select Fee Type</option>
                   {availableFeeTypes.map((fee) => (
@@ -351,7 +334,6 @@ const PaymentModal = ({
             </Col>
           </Row>
 
-          { }
           <Row className="mb-3">
             <Col md={4}>
               <Form.Label>Registration Fee</Form.Label>
@@ -426,12 +408,11 @@ const PaymentModal = ({
             </Col>
           </Row>
 
-          { }
           {formData.paymentMode === "Online" && (
             <>
               <Row className="mb-3">
                 <Col md={6}>
-                  <Form.Label>Email</Form.Label>
+                  <Form.Label>Email <span style={{ color: "red" }}>*</span></Form.Label>
                   <Form.Control
                     type="email"
                     name="email"
@@ -443,11 +424,11 @@ const PaymentModal = ({
                   <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                 </Col>
                 <Col md={6}>
-                  <Form.Label>Phone</Form.Label>
+                  <Form.Label>Phone (Parent Contact)<span style={{ color: "red" }}>*</span></Form.Label>
                   <Form.Control
                     type="tel"
                     name="phone"
-                    value={formData.phone || parentContactNumber}
+                    value={formData.phone}
                     isInvalid={!!errors.phone}
                     placeholder="1234567890"
                     onChange={handleChange}
@@ -465,11 +446,9 @@ const PaymentModal = ({
                 to complete your transaction safely using Credit/Debit Card, Net Banking, or UPI.
                 <br />
               </Alert>
-
             </>
           )}
 
-          { }
           {formData.paymentMode === "Cheque" && (
             <Row className="mb-3">
               <Col md={6}>

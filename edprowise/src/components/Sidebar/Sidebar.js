@@ -628,6 +628,8 @@ const Sidebar = () => {
     Guest: [
       { id: "login", label: "Login", icon: "solar:login-bold", link: "/login" },
     ],
+     
+    
   };
 
 

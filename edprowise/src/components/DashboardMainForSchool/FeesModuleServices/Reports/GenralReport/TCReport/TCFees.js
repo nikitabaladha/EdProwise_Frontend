@@ -140,7 +140,8 @@ const TCFees = () => {
 
         if (feeDataRes.data.combinedDetails) {
           feeDataRes.data.combinedDetails.forEach((record) => {
-            const key = `${record.paymentId || record.tcFeesReceiptNo}_${record.admissionNumber}_${record.academicYear}_${record.tcFeesStatus}`;
+const key = `${record.paymentId || record.tcFeesReceiptNo || record.tcFeesTransactionNo}_${record.admissionNumber}_${record.academicYear}_${record.tcFeesStatus}`;
+
             if (!processedKeys.has(key)) {
               unifiedData.push({
                 ...record,

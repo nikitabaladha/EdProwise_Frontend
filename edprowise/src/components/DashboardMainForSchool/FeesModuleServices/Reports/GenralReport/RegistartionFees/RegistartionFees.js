@@ -917,7 +917,8 @@ const RegistrationFees = () => {
 
         if (feeDataRes.data.combinedDetails) {
           feeDataRes.data.combinedDetails.forEach((record) => {
-            const key = `${record.paymentId}_${record.registrationNumber}_${record.academicYear}_${record.regFeesStatus}`;
+            // const key = `${record.paymentId}_${record.registrationNumber}_${record.academicYear}_${record.regFeesStatus}`;
+            const key = `${record.paymentId || record.regFeesReceiptNo || record.regFeesTransactionNo}_${record.registrationNumber}_${record.academicYear}_${record.regFeesStatus}`;
             if (!processedKeys.has(key)) {
               unifiedData.push({
                 ...record,

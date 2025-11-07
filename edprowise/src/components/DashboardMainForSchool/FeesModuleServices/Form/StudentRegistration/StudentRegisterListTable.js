@@ -1425,9 +1425,9 @@ const StudentRegisterListTable = () => {
                                 ? new Date(student.paymentDate)
                                     .toLocaleDateString("en-GB")
                                     .replace(/\//g, "-")
-                                : ""}
+                                : "-"}
                             </td>
-                            <td>{student.registrationNumber || "N/A"}</td>
+                            <td>{student.registrationNumber || "-"}</td>
                             <td>
                               {student.firstName} {student.lastName}
                             </td>

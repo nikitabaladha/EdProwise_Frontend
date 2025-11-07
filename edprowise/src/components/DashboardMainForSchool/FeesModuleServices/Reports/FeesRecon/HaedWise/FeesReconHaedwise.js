@@ -1253,6 +1253,7 @@ const ReconFeesHeadwise = () => {
   const [defaulterFees, setDefaulterFees] = useState(0);
   const [lateAndExcessFees, setLateAndExcessFees] = useState(0);
   const [registrationFees, setRegistrationFees] = useState(0);
+    const [admissionFees, setAdmissionFees] = useState(0);
   const [tcFees, setTcFees] = useState(0);
   const [boardRegistrationFees, setBoardRegistrationFees] = useState(0);
   const [boardExaminationFees, setBoardExaminationFees] = useState(0);
@@ -1568,7 +1569,7 @@ const ReconFeesHeadwise = () => {
         setLeftStudentData(filteredLeftData);
         setLateAdmissionData(lateResponse.data?.data || []);
         setDefaulterData(filteredDefaulterData);
-        setAdmissionFeesData(admissionFeesResponse.data?.data || []);
+       setAdmissionFeesData(admissionFeesResponse.data?.combinedDetails || []);
         setRegistrationFeesData(
           registrationFeesResponse.data?.combinedDetails || []
         );
@@ -1696,18 +1697,43 @@ const ReconFeesHeadwise = () => {
     setDefaulterFees(totalDefaulter);
   }, [defaulterData, selectedClasses, selectedSections, selectedInstallment]);
 
-  useEffect(() => {
+ useEffect(() => {
     const filteredAdmissionFees = admissionFeesData.filter((record) => {
-      const matchesClass =
-        selectedClasses.length === 0 ||
+      const matchesClass = selectedClasses.length === 0 ||
         selectedClasses.some((cls) => record.className === cls.value);
-      const matchesSection =
-        selectedSections.length === 0 ||
+      const matchesSection = selectedSections.length === 0 ||
         selectedSections.some((sec) => record.sectionName === sec.value);
       return matchesClass && matchesSection;
     });
 
-    setAdmissionFeesData(filteredAdmissionFees);
+    let totalAdmissionReceived = 0;
+
+    filteredAdmissionFees.forEach(item => {
+
+      if (item.recordType === "Admission Fee" &&
+        item.admFeesStatus &&
+        item.admFeesStatus.includes("Paid")) {
+
+        const paid = parseFloat(item.admFeesPaid || 0);
+        const concession = parseFloat(item.admFeesConcession || 0);
+        totalAdmissionReceived += paid;
+      }
+
+
+      else if (item.recordType === "Refund") {
+        const refund = Math.abs(
+          parseFloat(item.admFeesRefundAmount || 0) ||
+          parseFloat(item.admFeesCancelledAmount || 0)
+        );
+        const concessionAmount = parseFloat(item.admFeesConcession)
+        totalAdmissionReceived -= refund;
+      }
+    });
+
+    const final = Number(totalAdmissionReceived).toFixed(2);
+    setAdmissionFees(final);
+
+ 
   }, [admissionFeesData, selectedClasses, selectedSections]);
 
   useEffect(() => {
@@ -1830,35 +1856,53 @@ const ReconFeesHeadwise = () => {
 
   }, [boardExamFeesData, selectedClasses, selectedSections]);
 
-  useEffect(() => {
-    const filteredLateFees = lateFeesData.filter((record) => {
-      const matchesClass =
-        selectedClasses.length === 0 ||
-        selectedClasses.some((cls) => record.className === cls.value);
-      const matchesSection =
-        selectedSections.length === 0 ||
-        selectedSections.some((sec) => record.sectionName === sec.value);
-      const matchesInstallment =
-        !selectedInstallment ||
-        record.installmentName === selectedInstallment.value;
-      const paymentDate = record.displayDate ? new Date(record.displayDate.split('/').reverse().join('-')) : null;
-      const matchesDate =
-        (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
-        (!endDate || !paymentDate || paymentDate <= new Date(endDate));
-      return matchesClass && matchesSection && matchesInstallment && matchesDate;
-    });
+useEffect(() => {
+  const filteredLateFees = lateFeesData.filter((record) => {
+    const matchesClass =
+      selectedClasses.length === 0 ||
+      selectedClasses.some((cls) => record.className === cls.value);
+    const matchesSection =
+      selectedSections.length === 0 ||
+      selectedSections.some((sec) => record.sectionName === sec.value);
+    const matchesInstallment =
+      !selectedInstallment ||
+      record.installmentName === selectedInstallment.value;
 
-    let totalLateAndExcess = 0;
-    const lateFeesBreakdown = { lateExcessFee: 0 };
+    const paymentDate = record.paymentDate
+      ? new Date(record.paymentDate.split("/").reverse().join("-"))
+      : null;
 
-    filteredLateFees.forEach(item => {
-      const lateAmount = (parseFloat(item.paidFine) || 0) + (parseFloat(item.excessFees) || 0);
-      totalLateAndExcess += lateAmount;
-      lateFeesBreakdown.lateExcessFee = totalLateAndExcess;
-    });
+    const matchesDate =
+      (!startDate || !paymentDate || paymentDate >= new Date(startDate)) &&
+      (!endDate || !paymentDate || paymentDate <= new Date(endDate));
 
-    setLateAndExcessFees(Number(totalLateAndExcess).toFixed(2));
-  }, [lateFeesData, selectedClasses, selectedSections, selectedInstallment, startDate, endDate]);
+    return matchesClass && matchesSection && matchesInstallment && matchesDate;
+  });
+
+  let totalLateAndExcess = 0;
+
+  filteredLateFees.forEach((item) => {
+    const lateAmount =
+      (parseFloat(item.paidFine) || 0) + (parseFloat(item.excessFees) || 0);
+
+
+    totalLateAndExcess += lateAmount;
+
+  
+    if (item.reportStatus?.includes("Cancelled")) {
+      totalLateAndExcess -= lateAmount;
+    }
+  });
+
+  setLateAndExcessFees(Number(totalLateAndExcess).toFixed(2));
+}, [
+  lateFeesData,
+  selectedClasses,
+  selectedSections,
+  selectedInstallment,
+  startDate,
+  endDate,
+]);
 
   useEffect(() => {
     const filteredArrearFees = arrearFeesData.filter((record) => {
@@ -2052,7 +2096,7 @@ const ReconFeesHeadwise = () => {
   totals.yearlyDues = Number(totals.yearlyDues).toFixed(2);
 
   const netFeesDue = (Number(totals.yearlyDues) - Number(lossDueToLeft) - Number(lossDueToLateAdmission) - Number(defaulterFees)).toFixed(2);
-  const finalFees = (Number(netFeesDue) + Number(lateAndExcessFees) + Number(registrationFees) + Number(tcFees) + Number(boardRegistrationFees) + Number(boardExaminationFees) + Number(arrearFeesReceived)).toFixed(2);
+  const finalFees = (Number(netFeesDue) + Number(lateAndExcessFees) +Number(admissionFees)+ Number(registrationFees) + Number(tcFees) + Number(boardRegistrationFees) + Number(boardExaminationFees) + Number(arrearFeesReceived)).toFixed(2);
   
   const difference = (Number(finalFees) - Number(dailyCollectionTotal)).toFixed(2);
 
@@ -2355,6 +2399,12 @@ const ReconFeesHeadwise = () => {
                             Add: Late Fee & Excess Fees
                           </td>
                           <td className="text-center border border-dark p-2">{lateAndExcessFees}</td>
+                        </tr>
+                          <tr>
+                          <td colSpan={5} className="text-right border border-dark p-2">
+                            Add: Admission Fees
+                          </td>
+                          <td className="text-center border border-dark p-2">{admissionFees}</td>
                         </tr>
                         <tr>
                           <td colSpan={5} className="text-right border border-dark p-2">

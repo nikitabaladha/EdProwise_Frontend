@@ -779,39 +779,96 @@ const StudentWiseFeesReportIncConcession = () => {
                         </thead>
                         <tbody>
                           {paginatedData().length > 0 ? (
-                            paginatedData().map((record, index) => (
-                              <tr key={`${record.studentAdmissionNumber}_${record.paymentDate}_${record.receiptNumber}_${index}`}>
-                                {tableFields.map((field) => (
-                                  <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                    {getFieldValue(record, field)}
+                            (() => {
+
+                              const groupedByDate = {};
+                              paginatedData().forEach((record) => {
+                                const date = record.paymentDate || 'Unknown';
+                                if (!groupedByDate[date]) groupedByDate[date] = [];
+                                groupedByDate[date].push(record);
+                              });
+
+                              const dateKeys = Object.keys(groupedByDate).sort((a, b) => {
+                                if (a === 'Unknown') return 1;
+                                if (b === 'Unknown') return -1;
+                                return new Date(a.split('-').reverse().join('-')) - new Date(b.split('-').reverse().join('-'));
+                              });
+
+                              const rows = [];
+
+                              dateKeys.forEach((date) => {
+                                const records = groupedByDate[date];
+
+
+                                records.forEach((record, index) => {
+                                  rows.push(
+                                    <tr key={`${record.studentAdmissionNumber}_${record.paymentDate}_${record.receiptNumber}_${index}`}>
+                                      {tableFields.map((field) => (
+                                        <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                                          {getFieldValue(record, field)}
+                                        </td>
+                                      ))}
+                                    </tr>
+                                  );
+                                });
+
+
+                                const dateTotals = records.reduce((acc, record) => {
+                                  tableFields.forEach((field) => {
+                                    if (field.isNumeric) {
+                                      const value = parseFloat(getFieldValue(record, field)) || 0;
+                                      acc[field.id] = (acc[field.id] || 0) + value;
+                                    }
+                                  });
+                                  return acc;
+                                }, {});
+
+
+                                rows.push(
+                                  <tr key={`subtotal-${date}`} className="fw-bold">
+                                    <td colSpan={nonNumericColumnsCount} className=" border border-secondary p-2">
+                                       <strong>{date}-Total</strong>
+                                    </td>
+                                    {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                                      <td key={field.id} className="text-center border border-secondary p-2">
+                                        <strong>{(dateTotals[field.id] || 0).toFixed(2)}</strong>
+                                      </td>
+                                    ))}
+                                  </tr>
+                                );
+                              });
+
+
+                              rows.push(
+                                <tr key="grand-total" className=" fw-bold">
+                                  <td colSpan={nonNumericColumnsCount} className=" border border-secondary p-2">
+                                    <strong>Grand Total</strong>
                                   </td>
-                                ))}
-                              </tr>
-                            ))
+                                  {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                                    <td key={field.id} className="text-center border border-secondary p-2">
+                                       <strong>{(totals[field.id] || 0).toFixed(2)}</strong>
+                                    </td>
+                                  ))}
+                                </tr>
+                              );
+
+                              return rows;
+                            })()
                           ) : (
                             <tr>
                               <td colSpan={tableFields.length} className="text-center">
                                 No data matches the selected filters for{' '}
                                 {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
-                                  formatAcademicYear(selectedAcademicYear)}.
+                                  formatAcademicYear(selectedAcademicYear)}
+                                .
                               </td>
                             </tr>
                           )}
                         </tbody>
-                        <tfoot>
-                          <tr className="payroll-table-footer">
-                            <td colSpan={nonNumericColumnsCount} className="text-right border border-secondary p-2">
-                              <strong>Total</strong>
-                            </td>
-                            {tableFields.slice(nonNumericColumnsCount).map((field) => (
-                              <td key={field.id} className="text-center border border-secondary p-2">
-                                <strong>{(totals[field.id] || 0).toFixed(2)}</strong>
-                              </td>
-                            ))}
-                          </tr>
-                        </tfoot>
+                       <tfoot style={{ display: 'none' }}></tfoot>
                       </table>
                     </div>
+
                     {totalRecords > 0 && (
                       <div className="card-footer border-top">
                         <nav aria-label="Page navigation example">
@@ -842,7 +899,7 @@ const StudentWiseFeesReportIncConcession = () => {
                               <button
                                 className="page-link"
                                 onClick={handleNextPage}
-                                disabled={currentPage === totalPages}
+                                disabled={currentPage < totalPages}
                               >
                                 Next
                               </button>

@@ -39,10 +39,10 @@ const StudentWiseFeesReportIncConcession = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState('all');
-  const [viewMode, setViewMode] = useState('net'); 
+  const [viewMode, setViewMode] = useState('net');
   const dropdownRef = useRef(null);
 
-  const tabs = ['Date','Academic Year', 'Class & Section','Type of Fees','Installment','Payment Mode'];
+  const tabs = ['Date', 'Academic Year', 'Class & Section', 'Type of Fees', 'Installment', 'Payment Mode'];
 
   const pageShowOptions = [
     { value: 'all', label: 'All' },
@@ -237,7 +237,7 @@ const StudentWiseFeesReportIncConcession = () => {
       setCurrentPage(1);
     } else if (name === 'class') {
       setSelectedClasses(selected);
-      setSelectedSections([]); 
+      setSelectedSections([]);
       setCurrentPage(1);
     } else if (name === 'section') {
       setSelectedSections(selected);
@@ -284,7 +284,7 @@ const StudentWiseFeesReportIncConcession = () => {
     setStartDate('');
     setEndDate('');
     setSearchTerm('');
-    setViewMode('net'); 
+    setViewMode('net');
     setCurrentPage(1);
     setRowsPerPage('all');
     fetchFeeData([selectedAcademicYear]);
@@ -312,12 +312,12 @@ const StudentWiseFeesReportIncConcession = () => {
   const filteredData = feeData.filter((row) => {
     const matchesSearchTerm = searchTerm
       ? String(row.paymentDate || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        String(row.studentAdmissionNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        String(row.studentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        String(row.paymentMode || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        String(row.className || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        String(row.sectionName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        String(row.academicYear || '').toLowerCase().includes(searchTerm.toLowerCase())
+      String(row.studentAdmissionNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(row.studentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(row.paymentMode || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(row.className || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(row.sectionName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(row.academicYear || '').toLowerCase().includes(searchTerm.toLowerCase())
       : true;
 
     const matchesPaymentMode =
@@ -354,10 +354,10 @@ const StudentWiseFeesReportIncConcession = () => {
       selectedInstallments.length === 0 ||
       selectedInstallments.some((inst) => row.installmentName === inst.value);
 
-    const matchesViewMode = viewMode === 'net' || 
-      (viewMode === 'gross' && 
-       (!row.cancelledDate && 
-        !Object.values(row.feesBreakdown || {}).some(amount => Number(amount) < 0)));
+    const matchesViewMode = viewMode === 'net' ||
+      (viewMode === 'gross' &&
+        (!row.cancelledDate &&
+          !Object.values(row.feesBreakdown || {}).some(amount => Number(amount) < 0)));
 
     return (
       matchesSearchTerm &&
@@ -403,11 +403,11 @@ const StudentWiseFeesReportIncConcession = () => {
     ...(selectedFeeTypes.length > 0
       ? selectedFeeTypes.map((type) => ({ id: type.value, label: type.value, isNumeric: true }))
       : [
-          ...feeTypes.map((type) => ({ id: type, label: type, isNumeric: true })),
-          { id: 'fineAmount', label: 'Fine Amount', isNumeric: true },
-          { id: 'excessAmount', label: 'Excess Amount', isNumeric: true },
-          { id: 'totalPaidFee', label: 'Fees Paid', isNumeric: true },
-        ]),
+        ...feeTypes.map((type) => ({ id: type, label: type, isNumeric: true })),
+        { id: 'fineAmount', label: 'Fine Amount', isNumeric: true },
+        { id: 'excessAmount', label: 'Excess Amount', isNumeric: true },
+        { id: 'totalPaidFee', label: 'Fees Paid', isNumeric: true },
+      ]),
   ];
 
   const getFieldValue = (record, field) => {
@@ -550,7 +550,7 @@ const StudentWiseFeesReportIncConcession = () => {
                                   selectedYears.length > 0
                                     ? selectedYears.map((y) => y.value).join(',')
                                     : selectedAcademicYear,
-                                  viewMode 
+                                  viewMode
                                 );
                               } catch (err) {
                                 toast.error('Export to Excel failed.');
@@ -579,7 +579,7 @@ const StudentWiseFeesReportIncConcession = () => {
                                     : selectedAcademicYear,
                                   school,
                                   logoSrc,
-                                  viewMode 
+                                  viewMode
                                 );
                               } catch (err) {
                                 toast.error('Export to PDF failed.');
@@ -752,7 +752,7 @@ const StudentWiseFeesReportIncConcession = () => {
                 <div className="container">
                   <div className="card-header d-flex justify-content-between align-items-center gap-1">
                     <h2 className="payroll-title text-center mb-0 flex-grow-1">
-                      Studentwise Collection Inc Concession Report 
+                      Studentwise Collection Inc Concession Report
                     </h2>
                   </div>
                 </div>
@@ -779,39 +779,97 @@ const StudentWiseFeesReportIncConcession = () => {
                         </thead>
                         <tbody>
                           {paginatedData().length > 0 ? (
-                            paginatedData().map((record, index) => (
-                              <tr key={`${record.studentAdmissionNumber}_${record.paymentDate}_${record.receiptNumber}_${index}`}>
-                                {tableFields.map((field) => (
-                                  <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
-                                    {getFieldValue(record, field)}
+                            (() => {
+
+                              const groupedByDate = {};
+                              paginatedData().forEach((record) => {
+                                const date = record.paymentDate || 'Unknown';
+                                if (!groupedByDate[date]) groupedByDate[date] = [];
+                                groupedByDate[date].push(record);
+                              });
+
+                              const dateKeys = Object.keys(groupedByDate).sort((a, b) => {
+                                if (a === 'Unknown') return 1;
+                                if (b === 'Unknown') return -1;
+                                return new Date(a.split('-').reverse().join('-')) - new Date(b.split('-').reverse().join('-'));
+                              });
+
+                              const rows = [];
+
+                              dateKeys.forEach((date) => {
+                                const records = groupedByDate[date];
+
+
+                                records.forEach((record, index) => {
+                                  rows.push(
+                                    <tr key={`${record.studentAdmissionNumber}_${record.paymentDate}_${record.receiptNumber}_${index}`}>
+                                      {tableFields.map((field) => (
+                                        <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                                          {getFieldValue(record, field)}
+                                        </td>
+                                      ))}
+                                    </tr>
+                                  );
+                                });
+
+
+                                const dateTotals = records.reduce((acc, record) => {
+                                  tableFields.forEach((field) => {
+                                    if (field.isNumeric) {
+                                      const value = parseFloat(getFieldValue(record, field)) || 0;
+                                      acc[field.id] = (acc[field.id] || 0) + value;
+                                    }
+                                  });
+                                  return acc;
+                                }, {});
+
+
+                               rows.push(
+                                  <tr key={`subtotal-${date}`} className="fw-bold">
+                                    <td colSpan={nonNumericColumnsCount} className=" border border-secondary p-2">
+                                       <strong>{date}-Total</strong>
+                                    </td>
+                                    {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                                      <td key={field.id} className="text-center border border-secondary p-2">
+                                        <strong>{(dateTotals[field.id] || 0).toFixed(2)}</strong>
+                                      </td>
+                                    ))}
+                                  </tr>
+                                );
+                              });
+
+
+                              rows.push(
+                                <tr key="grand-total" className=" fw-bold">
+                                  <td colSpan={nonNumericColumnsCount} className=" border border-secondary p-2">
+                                    <strong>Grand Total</strong>
                                   </td>
-                                ))}
-                              </tr>
-                            ))
+                                  {tableFields.slice(nonNumericColumnsCount).map((field) => (
+                                    <td key={field.id} className="text-center border border-secondary p-2">
+                                       <strong>{(totals[field.id] || 0).toFixed(2)}</strong>
+                                    </td>
+                                  ))}
+                                </tr>
+                              );
+                              return rows;
+                            })()
                           ) : (
                             <tr>
                               <td colSpan={tableFields.length} className="text-center">
                                 No data matches the selected filters for{' '}
                                 {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
-                                  formatAcademicYear(selectedAcademicYear)}.
+                                  formatAcademicYear(selectedAcademicYear)}
+                                .
                               </td>
                             </tr>
                           )}
                         </tbody>
-                        <tfoot>
-                          <tr className="payroll-table-footer">
-                            <td colSpan={nonNumericColumnsCount} className="text-right border border-secondary p-2">
-                              <strong>Total</strong>
-                            </td>
-                            {tableFields.slice(nonNumericColumnsCount).map((field) => (
-                              <td key={field.id} className="text-center border border-secondary p-2">
-                                <strong>{(totals[field.id] || 0).toFixed(2)}</strong>
-                              </td>
-                            ))}
-                          </tr>
+                        <tfoot style={{ display: 'none' }}>
+                          { }
                         </tfoot>
                       </table>
                     </div>
+
                     {totalRecords > 0 && (
                       <div className="card-footer border-top">
                         <nav aria-label="Page navigation example">
@@ -842,7 +900,7 @@ const StudentWiseFeesReportIncConcession = () => {
                               <button
                                 className="page-link"
                                 onClick={handleNextPage}
-                                disabled={currentPage === totalPages}
+                                disabled={currentPage < totalPages}
                               >
                                 Next
                               </button>
@@ -857,6 +915,8 @@ const StudentWiseFeesReportIncConcession = () => {
                     <p>No fee types available.</p>
                   </div>
                 )}
+
+                { }
               </div>
             </div>
           </div>

@@ -146,7 +146,7 @@ const ReconFeesFeeswise = () => {
 
         const allFeeTypes = response.data.feeTypes || [];
         const schoolFees = allFeeTypes
-          .filter(type => !['Admission Fee', 'Registration Fee', 'TC Fees', 'Transfer Certificate Fee', 'Board Exam Fee', 'Board Registration Fee'].includes(type))
+          .filter(type => !['Admission Fee', 'Registration Fee', 'Transfer Certificate Fee ', 'Transfer Certificate Fee', 'Board Exam Fee', 'Board Registration Fee'].includes(type))
           .filter((type, index, self) => type && self.indexOf(type) === index)
           .sort()
           .map(type => ({ key: type, label: type }));
@@ -156,7 +156,7 @@ const ReconFeesFeeswise = () => {
         const oneTimeFees = [
           { key: 'Admission Fee', label: 'Admission Fee' },
           { key: 'Registration Fee', label: 'Registration Fee' },
-          { key: 'TC Fee', label: 'TC Fee' },
+          { key: 'Transfer Certificate Fee', label: 'Transfer Certificate Fee' },
           { key: 'Board Exam Fee', label: 'Board Exam Fee' },
           { key: 'Board Registration Fee', label: 'Board Registration Fee' },
         ];
@@ -374,13 +374,34 @@ const ReconFeesFeeswise = () => {
         return matchesClass && matchesSection;
       });
 
-      filteredAdmissionFees.forEach((item) => {
-        if (item.recordType === "Admission Fee" && item.admFeesStatus && item.admFeesStatus.includes("Paid")) {
-          const concession = parseFloat(item.admFeesConcession || 0);
-          concessionBreakdown['Admission Fee'] = (concessionBreakdown['Admission Fee'] || 0) + concession;
-          totalConcession += concession;
-        }
-      });
+      // filteredAdmissionFees.forEach((item) => {
+      //   if (item.recordType === "Admission Fee" && item.admFeesStatus && item.admFeesStatus.includes("Paid")) {
+      //     const concession = parseFloat(item.admFeesConcession || 0);
+      //     concessionBreakdown['Admission Fee'] = (concessionBreakdown['Admission Fee'] || 0) + concession;
+      //     totalConcession += concession;
+      //   }else if (item.recordType === "Refund") {
+      //   const concessionAmount = parseFloat(item.admFeesConcession)
+      // totalConcession-= concessionAmount;
+      //  }
+      // });
+
+  filteredAdmissionFees.forEach((item) => {
+  if (
+    item.recordType === "Admission Fee" &&
+    item.admFeesStatus &&
+    item.admFeesStatus.includes("Paid")
+  ) {
+    const concession = parseFloat(item.admFeesConcession || 0);
+    concessionBreakdown["Admission Fee"] =
+      (concessionBreakdown["Admission Fee"] || 0) + concession;
+    totalConcession += concession;
+  } else if (item.recordType === "Refund") {
+    const concessionAmount = Math.abs(parseFloat(item.admFeesConcession || 0));
+    concessionBreakdown["Admission Fee"] =
+      (concessionBreakdown["Admission Fee"] || 0) - concessionAmount;
+    totalConcession -= concessionAmount;
+  }
+});
 
 
       const filteredRegistrationFees = registrationFeesData.filter((record) => {
@@ -390,13 +411,31 @@ const ReconFeesFeeswise = () => {
         return matchesClass;
       });
 
-      filteredRegistrationFees.forEach((item) => {
-        if (item.recordType === "Registration" && item.regFeesStatus && item.regFeesStatus.includes("Paid")) {
-          const concession = parseFloat(item.regFeesConcession || 0);
-          concessionBreakdown['Registration Fee'] = (concessionBreakdown['Registration Fee'] || 0) + concession;
-          totalConcession += concession;
-        }
-      });
+      // filteredRegistrationFees.forEach((item) => {
+      //   if (item.recordType === "Registration" && item.regFeesStatus && item.regFeesStatus.includes("Paid")) {
+      //     const concession = parseFloat(item.regFeesConcession || 0);
+      //     concessionBreakdown['Registration Fee'] = (concessionBreakdown['Registration Fee'] || 0) + concession;
+      //     totalConcession += concession;
+      //   }
+      // });
+
+ filteredRegistrationFees.forEach((item) => {
+  if (
+    item.recordType === "Registration" &&
+    item.regFeesStatus &&
+    item.regFeesStatus.includes("Paid")
+  ) {
+    const concession = parseFloat(item.regFeesConcession || 0);
+    concessionBreakdown["Registration Fee"] =
+      (concessionBreakdown["Registration Fee"] || 0) + concession;
+    totalConcession += concession;
+  } else if (item.recordType === "Refund") {
+    const concessionAmount = Math.abs(parseFloat(item.regFeesConcession || 0));
+    concessionBreakdown["Registration Fee"] =
+      (concessionBreakdown["Registration Fee"] || 0) - concessionAmount;
+    totalConcession -= concessionAmount;
+  }
+});
 
 
       const filteredTcFees = tcFeesData.filter((record) => {
@@ -409,13 +448,38 @@ const ReconFeesFeeswise = () => {
         return matchesClass && matchesSection;
       });
 
+
+      //   filteredTcFees.forEach((item) => {
+      //   if (item.recordType === "Transfer Certificate" && item.tcFeesStatus && item.tcFeesStatus.includes("Paid")) {
+      //     const concession = parseFloat(item.tcFeesConcession || 0);
+      //     concessionBreakdown['Transfer Certificate Fee'] = (concessionBreakdown['Transfer Certificate Fee'] || 0) + concession;
+      //     totalConcession += concession;
+      //   }
+      // });
+
       filteredTcFees.forEach((item) => {
-        if (item.recordType === "Transfer Certificate" && item.tcFeesStatus && item.tcFeesStatus.includes("Paid")) {
-          const concession = parseFloat(item.tcFeesConcession || 0);
-          concessionBreakdown['TC Fee'] = (concessionBreakdown['TC Fee'] || 0) + concession;
-          totalConcession += concession;
-        }
-      });
+  if (
+    item.recordType === "Transfer Certificate" &&
+    item.tcFeesStatus &&
+    item.tcFeesStatus.includes("Paid")
+  ) {
+    const concession = parseFloat(item.tcFeesConcession || 0);
+    concessionBreakdown["Transfer Certificate Fee"] =
+      (concessionBreakdown["Transfer Certificate Fee"] || 0) + concession;
+    totalConcession += concession;
+  } else if (item.recordType === "Refund") {
+    const concessionAmount = Math.abs(parseFloat(item.tcFeesConcession || 0));
+    concessionBreakdown["Transfer Certificate Fee"] =
+      (concessionBreakdown["Transfer Certificate Fee"] || 0) - concessionAmount;
+    totalConcession -= concessionAmount;
+  }
+});
+
+
+
+
+
+      
 
 
       const filteredBoardRegistrationFees = boardRegistrationFeesData.filter((record) => {
@@ -691,7 +755,7 @@ useEffect(() => {
           parseFloat(item.admFeesCancelledAmount || 0)
         );
         const concessionAmount = parseFloat(item.admFeesConcession)
-        totalAdmissionReceived -= refund - concessionAmount;
+        totalAdmissionReceived -= refund;
       }
     });
 
@@ -728,7 +792,7 @@ useEffect(() => {
           parseFloat(item.regFeesCancelledAmount || 0)
         );
         const concessionAmount = parseFloat(item.regFeesConcession)
-        totalReg -= refund - concessionAmount;
+        totalReg -= refund;
       }
     });
 
@@ -762,14 +826,14 @@ useEffect(() => {
           parseFloat(item.tcFeesCancelledAmount || 0)
         );
         const concessionAmount = parseFloat(item.tcFeesConcession)
-        totalTc -= refund - concessionAmount;
+        totalTc -= refund ;
       }
     });
 
     setTcFees(Number(totalTc).toFixed(2));
     setFeeBreakdowns(prev => ({
       ...prev,
-      'TC Fees': { 'TC Fee': Number(totalTc).toFixed(2), total: Number(totalTc).toFixed(2) }
+      'Transfer Certificate Fee ': { 'Transfer Certificate  Fee': Number(totalTc).toFixed(2), total: Number(totalTc).toFixed(2) }
     }));
   }, [tcFeesData, selectedClasses, selectedSections]);
 
@@ -796,7 +860,7 @@ useEffect(() => {
           parseFloat(item.boardRegFeesCancelledAmount || 0)
         );
         const concessionAmount = parseFloat(item.boardRegFeesConcession)
-        totalBoardReg -= refund - concessionAmount;
+        totalBoardReg -= refund ;
       }
     });
 
@@ -830,7 +894,7 @@ useEffect(() => {
           parseFloat(item.boardExamFeesCancelledAmount || 0)
         );
         const concessionAmount = parseFloat(item.boardExamFeesConcession)
-        totalBoardExam -= refund - concessionAmount;
+        totalBoardExam -= refund;
       }
     });
 
@@ -968,7 +1032,7 @@ useEffect(() => {
       'One Time Fees Received': {
         'Admission Fee': Number(admissionFeesReceived),
         'Registration Fee': Number(registrationFees),
-        'TC Fee': Number(tcFees),
+        'Transfer Certificate Fee': Number(tcFees),
         'Board Registration Fee': Number(boardRegistrationFees),
         'Board Exam Fee': Number(boardExaminationFees),
         total: totalOneTimeReceived
@@ -1182,7 +1246,7 @@ useEffect(() => {
  
     totalBBreakdown.total = totalB;
 
-    console.log('Total B Breakdown:', totalBBreakdown);
+  
 
 
     const differenceBreakdown = {};
