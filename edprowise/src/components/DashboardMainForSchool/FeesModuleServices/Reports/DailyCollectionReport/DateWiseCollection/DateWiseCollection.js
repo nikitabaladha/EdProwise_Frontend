@@ -36,14 +36,14 @@ const DateWiseFeesCollectionIncConcession = () => {
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState('all');
+  const [rowsPerPage, setRowsPerPage] = useState(100);
   const [viewMode, setViewMode] = useState('net');
   const dropdownRef = useRef(null);
 
   const tabs = ['Date', 'Academic Year', 'Type of Fees', 'Installment', 'Payment Mode'];
 
   const pageShowOptions = [
-    { value: 'all', label: 'All' },
+    // { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -493,7 +493,7 @@ const DateWiseFeesCollectionIncConcession = () => {
       ? {
         fineAmount: 'Fine Amount',
         excessAmount: 'Excess Amount',
-        totalPaidFee: 'Fees Paid',
+        totalPaidFee: 'Total',
       }
       : {}),
   };
@@ -837,7 +837,7 @@ const DateWiseFeesCollectionIncConcession = () => {
                             <>
                               <th className="text-center align-middle border border-secondary text-nowrap p-2">Fine Amount</th>
                               <th className="text-center align-middle border border-secondary text-nowrap p-2">Excess Amount</th>
-                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Total</th>
                             </>
                           )}
                         </tr>

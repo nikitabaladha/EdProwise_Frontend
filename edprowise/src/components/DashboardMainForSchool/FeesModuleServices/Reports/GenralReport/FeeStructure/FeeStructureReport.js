@@ -668,7 +668,7 @@ const FeesStructureReport = () => {
                           Reset
                         </button>
                         <button className="ms-2 btn btn-primary" onClick={applyFilters}>
-                          Apply
+                         Close Filters
                         </button>
                       </div>
                     </div>

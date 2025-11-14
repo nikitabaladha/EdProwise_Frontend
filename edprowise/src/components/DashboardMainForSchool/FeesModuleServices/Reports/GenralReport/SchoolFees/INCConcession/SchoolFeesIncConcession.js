@@ -38,14 +38,14 @@ const SchoolFeesReportIncConcession = () => {
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState('all');
+  const [rowsPerPage, setRowsPerPage] = useState(1000);
   const [viewMode, setViewMode] = useState('net'); 
   const dropdownRef = useRef(null);
 
   const tabs = ['Date','Academic Year', 'Class & Section','Type of Fees','Installment','Payment Mode'];
 
   const pageShowOptions = [
-    { value: 'all', label: 'All' },
+    // { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -118,12 +118,6 @@ const SchoolFeesReportIncConcession = () => {
               label: formatAcademicYear(year),
             }))
           );
-          if (!selectedAcademicYear && years.length > 0) {
-            const latestYear = years[years.length - 1];
-            setSelectedAcademicYear(latestYear);
-            localStorage.setItem('selectedAcademicYear', latestYear);
-            setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
-          }
         } else {
           toast.error('No academic years found.');
         }
@@ -139,36 +133,139 @@ const SchoolFeesReportIncConcession = () => {
     }
   }, [schoolId]);
 
-  const fetchFeeData = async (years) => {
+  // const fetchFeeData = async (years) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const promises = years.map((year) =>
+  //       getAPI(`/get-all-data-school-fees-inc?schoolId=${schoolId}&academicYear=${year}`)
+  //     );
+  //     const responses = await Promise.all(promises);
+  //     const unifiedData = responses.flatMap((res, index) => {
+  //       if (!res?.data?.data) {
+  //         console.warn(`No data found for year ${years[index]}`);
+  //         return [];
+  //       }
+  //       return res.data.data.map((record) => {
+  //         const totalPaidFee = Object.values(record.feeTypes || {}).reduce(
+  //           (sum, amount) => sum + (Number(amount) || 0),
+  //           0
+  //         ) + (Number(record.fineAmount) || 0) + (Number(record.excessAmount) || 0);
+  //         return {
+  //           ...record,
+  //           academicYear: record.academicYear,
+  //           feesBreakdown: record.feeTypes || {},
+  //           totalPaidFee,
+  //         };
+  //       });
+  //     });
+
+  //     let availableFeeTypes = responses
+  //       .flatMap((res) => res?.data?.feeTypes || [])
+  //       .filter((type, index, self) => self.indexOf(type) === index)
+  //       .sort();
+
+  //     if (selectedInstallments.length > 0) {
+  //       const selectedInstallmentNames = selectedInstallments.map((inst) => inst.value);
+  //       availableFeeTypes = unifiedData
+  //         .filter((record) => selectedInstallmentNames.includes(record.installmentName))
+  //         .flatMap((record) => Object.keys(record.feesBreakdown))
+  //         .filter((type, index, self) => self.indexOf(type) === index)
+  //         .sort();
+  //     }
+
+  //     setFeeTypes(availableFeeTypes);
+  //     setFeeData(unifiedData);
+
+  //     const filterOptions = responses[0]?.data?.filterOptions || {};
+  //     setClassOptions(filterOptions.classOptions || []);
+  //     setSectionOptions(filterOptions.sectionOptions || []);
+  //     setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+  //     setInstallmentOptions(filterOptions.installmentOptions || []);
+
+  //     const classSectionMapping = {};
+  //     unifiedData.forEach((record) => {
+  //       const className = record.className && record.className !== '-' ? record.className : null;
+  //       const sectionName = record.sectionName && record.sectionName !== '-' ? record.sectionName : null;
+  //       if (className && sectionName) {
+  //         if (!classSectionMapping[className]) {
+  //           classSectionMapping[className] = [];
+  //         }
+  //         if (!classSectionMapping[className].some((sec) => sec.value === sectionName)) {
+  //           classSectionMapping[className].push({ value: sectionName, label: sectionName });
+  //         }
+  //       }
+  //     });
+  //     setClassSectionMap(classSectionMapping);
+  //   } catch (error) {
+  //     toast.error('Error fetching data: ' + error.message);
+  //     setFeeData([]);
+  //     setFeeTypes([]);
+  //     setClassOptions([]);
+  //     setSectionOptions([]);
+  //     setClassSectionMap({});
+  //     setInstallmentOptions([]);
+  //     setPaymentModeOptions([]);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (!schoolId || !selectedAcademicYear) return;
+  //   const yearsToFetch = selectedYears.length > 0
+  //     ? selectedYears.map((year) => year.value)
+  //     : [selectedAcademicYear];
+  //   fetchFeeData(yearsToFetch);
+  // }, [schoolId, selectedAcademicYear, selectedYears, selectedInstallments]);
+
+
+
+useEffect(() => {
+  if (!schoolId) return;
+
+  const academicYear = startDate
+    ? selectedAcademicYear
+    : (selectedAcademicYear || localStorage.getItem('selectedAcademicYear'));
+
+  const fetchFeeData = async () => {
     setIsLoading(true);
     try {
-      const promises = years.map((year) =>
-        getAPI(`/get-all-data-school-fees-inc?schoolId=${schoolId}&academicYear=${year}`)
-      );
-      const responses = await Promise.all(promises);
-      const unifiedData = responses.flatMap((res, index) => {
-        if (!res?.data?.data) {
-          console.warn(`No data found for year ${years[index]}`);
-          return [];
-        }
-        return res.data.data.map((record) => {
-          const totalPaidFee = Object.values(record.feeTypes || {}).reduce(
+      let apiUrl = `/get-all-data-school-fees-inc?schoolId=${schoolId}`;
+
+      if (startDate && endDate) {
+        apiUrl += `&startdate=${startDate}&enddate=${endDate}`;
+      }
+
+      if (academicYear) {
+        apiUrl += `&academicYear=${academicYear}`;
+      }
+
+      const response = await getAPI(apiUrl);
+
+      const resData = response?.data?.data || [];
+      const feeTypesFromAPI = response?.data?.feeTypes || [];
+      const filterOptions = response?.data?.filterOptions || {};
+
+     
+      const unifiedData = resData.map((record) => {
+        const totalPaidFee =
+          Object.values(record.feeTypes || {}).reduce(
             (sum, amount) => sum + (Number(amount) || 0),
             0
-          ) + (Number(record.fineAmount) || 0) + (Number(record.excessAmount) || 0);
-          return {
-            ...record,
-            academicYear: record.academicYear,
-            feesBreakdown: record.feeTypes || {},
-            totalPaidFee,
-          };
-        });
+          ) +
+          (Number(record.fineAmount) || 0) +
+          (Number(record.excessAmount) || 0);
+
+        return {
+          ...record,
+          academicYear: record.academicYear || academicYear,
+          feesBreakdown: record.feeTypes || {},
+          totalPaidFee,
+        };
       });
 
-      let availableFeeTypes = responses
-        .flatMap((res) => res?.data?.feeTypes || [])
-        .filter((type, index, self) => self.indexOf(type) === index)
-        .sort();
+
+      let availableFeeTypes = [...feeTypesFromAPI].sort();
 
       if (selectedInstallments.length > 0) {
         const selectedInstallmentNames = selectedInstallments.map((inst) => inst.value);
@@ -182,16 +279,18 @@ const SchoolFeesReportIncConcession = () => {
       setFeeTypes(availableFeeTypes);
       setFeeData(unifiedData);
 
-      const filterOptions = responses[0]?.data?.filterOptions || {};
+   
       setClassOptions(filterOptions.classOptions || []);
       setSectionOptions(filterOptions.sectionOptions || []);
       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
       setInstallmentOptions(filterOptions.installmentOptions || []);
 
+     
       const classSectionMapping = {};
       unifiedData.forEach((record) => {
         const className = record.className && record.className !== '-' ? record.className : null;
         const sectionName = record.sectionName && record.sectionName !== '-' ? record.sectionName : null;
+
         if (className && sectionName) {
           if (!classSectionMapping[className]) {
             classSectionMapping[className] = [];
@@ -201,6 +300,7 @@ const SchoolFeesReportIncConcession = () => {
           }
         }
       });
+
       setClassSectionMap(classSectionMapping);
     } catch (error) {
       toast.error('Error fetching data: ' + error.message);
@@ -216,18 +316,15 @@ const SchoolFeesReportIncConcession = () => {
     }
   };
 
-  useEffect(() => {
-    if (!schoolId || !selectedAcademicYear) return;
-    const yearsToFetch = selectedYears.length > 0
-      ? selectedYears.map((year) => year.value)
-      : [selectedAcademicYear];
-    fetchFeeData(yearsToFetch);
-  }, [schoolId, selectedAcademicYear, selectedYears, selectedInstallments]);
+  fetchFeeData();
+}, [schoolId, selectedAcademicYear, startDate, endDate, selectedInstallments]);
+
 
   const handleSelectChange = (selectedOptions, { name }) => {
     const selected = selectedOptions || [];
-    if (name === 'academicYear') {
-      setSelectedYears(selected);
+        if (name === 'academicYear') {
+      const selectedYear = selectedOptions?.value || '';
+      setSelectedAcademicYear(selectedYear);
       setCurrentPage(1);
     } else if (name === 'paymentMode') {
       setSelectedPaymentModes(selected);
@@ -245,10 +342,6 @@ const SchoolFeesReportIncConcession = () => {
     } else if (name === 'installment') {
       setSelectedInstallments(selected);
       setCurrentPage(1);
-      const yearsToFetch = selectedYears.length > 0
-        ? selectedYears.map((year) => year.value)
-        : [selectedAcademicYear];
-      fetchFeeData(yearsToFetch);
     } else if (name === 'rowsPerPage') {
       if (selectedOptions?.value === 'all') {
         setRowsPerPage(studentDataArray.length || 'all');
@@ -262,14 +355,7 @@ const SchoolFeesReportIncConcession = () => {
     }
   };
 
-  const applyFilters = () => {
-    setShowFilterPanel(false);
-    const yearsToFetch = selectedYears.length > 0
-      ? selectedYears.map((year) => year.value)
-      : [selectedAcademicYear];
-    fetchFeeData(yearsToFetch);
-    setCurrentPage(1);
-  };
+
 
   const resetFilters = () => {
     setSelectedYears([]);
@@ -284,7 +370,13 @@ const SchoolFeesReportIncConcession = () => {
     setViewMode('net'); 
     setCurrentPage(1);
     setRowsPerPage('all');
-    fetchFeeData([selectedAcademicYear]);
+      setSelectedAcademicYear(localStorage.getItem('selectedAcademicYear'));
+  };
+
+  
+  const applyFilters = () => {
+    setShowFilterPanel(false);
+    setCurrentPage(1);
   };
 
   const toggleFilter = () => {
@@ -320,9 +412,9 @@ const SchoolFeesReportIncConcession = () => {
       selectedPaymentModes.length === 0 ||
       selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
 
-    const matchesYear =
-      selectedYears.length === 0 ||
-      selectedYears.some((year) => row.academicYear === year.value);
+    // const matchesYear =
+    //   selectedYears.length === 0 ||
+    //   selectedYears.some((year) => row.academicYear === year.value);
 
     const matchesDate =
       (!startDate && !endDate) ||
@@ -358,7 +450,7 @@ const SchoolFeesReportIncConcession = () => {
     return (
       matchesSearchTerm &&
       matchesPaymentMode &&
-      matchesYear &&
+      // matchesYear &&
       matchesDate &&
       matchesFeeType &&
       matchesClass &&
@@ -366,7 +458,7 @@ const SchoolFeesReportIncConcession = () => {
       matchesInstallment &&
       matchesViewMode
     );
-  }), [feeData, searchTerm, selectedPaymentModes, selectedYears, startDate, endDate, selectedFeeTypes, selectedClasses, selectedSections, selectedInstallments, viewMode]);
+  }), [feeData, searchTerm, selectedPaymentModes, startDate, endDate, selectedFeeTypes, selectedClasses, selectedSections, selectedInstallments, viewMode]);
 
   const groupedByAdmissionNumber = useMemo(() => {
     return filteredData.reduce((acc, row) => {
@@ -437,7 +529,7 @@ const SchoolFeesReportIncConcession = () => {
           ...feeTypes.map((type) => ({ id: type, label: type, isNumeric: true })),
           { id: 'fineAmount', label: 'Fine Amount', isNumeric: true },
           { id: 'excessAmount', label: 'Excess Amount', isNumeric: true },
-          { id: 'totalPaidFee', label: 'Fees Paid', isNumeric: true },
+          { id: 'totalPaidFee', label: 'Total', isNumeric: true },
         ]),
   ], [selectedFeeTypes, feeTypes]);
 
@@ -576,9 +668,7 @@ const SchoolFeesReportIncConcession = () => {
                                   getFieldValue,
                                   totals,
                                   formatAcademicYear,
-                                  selectedYears.length > 0
-                                    ? selectedYears.map((y) => y.value).join(',')
-                                    : selectedAcademicYear,
+                               selectedAcademicYear,
                                   viewMode 
                                 );
                               } catch (err) {
@@ -603,9 +693,7 @@ const SchoolFeesReportIncConcession = () => {
                                   getFieldValue,
                                   totals,
                                   formatAcademicYear,
-                                  selectedYears.length > 0
-                                    ? selectedYears.map((y) => y.value).join(',')
-                                    : selectedAcademicYear,
+                                  selectedAcademicYear,
                                   school,
                                   logoSrc,
                                   viewMode 
@@ -720,10 +808,9 @@ const SchoolFeesReportIncConcession = () => {
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
-                                isMulti
                                 name="academicYear"
                                 options={academicYearOptions}
-                                value={selectedYears}
+                                   value={academicYearOptions.find((option) => option.value === selectedAcademicYear)}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Academic Years"
                                 className="mt-2"
@@ -771,7 +858,7 @@ const SchoolFeesReportIncConcession = () => {
                           Reset
                         </button>
                         <button className="btn btn-primary" onClick={applyFilters}>
-                          Apply Filters
+                          Close Filters
                         </button>
                       </div>
                     </div>
@@ -902,7 +989,7 @@ const SchoolFeesReportIncConcession = () => {
                 ) : (
                   <div className="text-center mt-3">
                     <p>No data matches the selected filters for{' '}
-                      {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
+                      {
                         formatAcademicYear(selectedAcademicYear)}.
                     </p>
                   </div>

@@ -406,7 +406,7 @@ const StudentWiseFeesReportIncConcession = () => {
         ...feeTypes.map((type) => ({ id: type, label: type, isNumeric: true })),
         { id: 'fineAmount', label: 'Fine Amount', isNumeric: true },
         { id: 'excessAmount', label: 'Excess Amount', isNumeric: true },
-        { id: 'totalPaidFee', label: 'Fees Paid', isNumeric: true },
+        { id: 'totalPaidFee', label: 'Total', isNumeric: true },
       ]),
   ];
 

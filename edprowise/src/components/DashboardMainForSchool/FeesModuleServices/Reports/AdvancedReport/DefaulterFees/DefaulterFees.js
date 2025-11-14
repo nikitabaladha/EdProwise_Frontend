@@ -239,48 +239,59 @@ const DefaulterFees = () => {
 
 const fetchFeeData = async (years) => {
   setIsLoading(true);
+
+  // Separate promises
+  const defaulterPromises = years.map((year) =>
+    getAPI(`/Defaulter-Fees?schoolId=${schoolId}&academicYear=${year}`).catch(err => {
+      console.warn(`Defaulter API failed for year ${year}:`, err);
+      return { data: { data: [], feeTypes: [], filterOptions: {} } }; // fallback
+    })
+  );
+
+  const latePromises = years.map((year) =>
+    getAPI(`/Loss-of-fee-due-to-late-Admission?schoolId=${schoolId}&academicYear=${year}`).catch(err => {
+      console.warn(`Late admission API failed for year ${year}:`, err);
+      return { data: { data: [] } }; // empty fallback
+    })
+  );
+
   try {
-    const defaulterPromises = years.map((year) =>
-      getAPI(`/Defaulter-Fees?schoolId=${schoolId}&academicYear=${year}`)
-    );
-
-
-    const latePromises = years.map((year) =>
-      getAPI(`/Loss-of-fee-due-to-late-Admission?schoolId=${schoolId}&academicYear=${year}`)
-    );
-
-  
     const [defaulterResponses, lateResponses] = await Promise.all([
       Promise.all(defaulterPromises),
       Promise.all(latePromises),
     ]);
 
-
+    // Process Defaulter Data (always try)
     const defaulterData = defaulterResponses.flatMap((res, index) => {
-      if (!res?.data?.data) {
-        console.warn(`No defaulter data found for year ${years[index]}`);
+      const year = years[index];
+      if (!res?.data?.data || !Array.isArray(res.data.data)) {
+        console.warn(`No defaulter data found for year ${year}`);
         return [];
       }
       return res.data.data;
     });
 
+    // Process Late Admission Data (optional)
     const lateData = lateResponses.flatMap((res, index) => {
-      if (!res?.data?.data) {
-        console.warn(`No late admission data found for year ${years[index]}`);
+      const year = years[index];
+      if (!res?.data?.data || !Array.isArray(res.data.data)) {
+        console.warn(`No late admission data found for year ${year}`);
         return [];
       }
       return res.data.data;
     });
 
-  
-    const lateAdmissionSet = new Set(lateData.map((item) => item.admissionNumber));
+    // Build exclusion set only if late data exists
+    const lateAdmissionSet = new Set(lateData.map(item => item.admissionNumber));
+
+    // Filter defaulters: exclude late admissions
     const filteredDefaulterData = defaulterData.filter(
-      (item) => !lateAdmissionSet.has(item.admissionNumber)
+      item => !lateAdmissionSet.has(item.admissionNumber)
     );
 
     console.log('Filtered Defaulter Data (excluding late admissions):', filteredDefaulterData);
 
-  
+    // Class-Section Mapping
     const classSectionMapping = {};
     filteredDefaulterData.forEach((record) => {
       const className = record.className || '-';
@@ -292,24 +303,22 @@ const fetchFeeData = async (years) => {
         classSectionMapping[className].add(sectionName);
       }
     });
-
-
     Object.keys(classSectionMapping).forEach((className) => {
       classSectionMapping[className] = Array.from(classSectionMapping[className]);
     });
-
     setClassSectionMap(classSectionMapping);
 
+    // Fee Types: collect from all defaulter responses
     const allFeeTypes = defaulterResponses
-      .flatMap((res) => res?.data?.feeTypes || [])
+      .flatMap(res => res?.data?.feeTypes || [])
       .filter((type, index, self) => self.indexOf(type) === index)
       .sort();
-
     setFeeTypes(allFeeTypes);
-    setFeeData(filteredDefaulterData);
 
-  
-    const filterOptions = defaulterResponses[0]?.data?.filterOptions || {};
+    // Use first valid response for filter options
+    const validResponse = defaulterResponses.find(res => res?.data?.filterOptions);
+    const filterOptions = validResponse?.data?.filterOptions || {};
+
     setClassOptions(filterOptions.classOptions || []);
     setSectionOptions(filterOptions.sectionOptions || []);
     setInstallmentOptions(filterOptions.installmentOptions || []);
@@ -317,19 +326,20 @@ const fetchFeeData = async (years) => {
     setTCStatusOptions(filterOptions.tcStatusOptions || []);
 
 
+    setFeeData(filteredDefaulterData);
+
+
     if (rowsPerPage === 'all' && filteredDefaulterData.length > 0) {
       setRowsPerPage(filteredDefaulterData.length);
+    } else if (filteredDefaulterData.length === 0) {
+      setRowsPerPage(10); 
     }
-  } catch (error) {
-    console.error('Error fetching fee data:', error);
-    toast.error('Error fetching data: ' + error.message);
 
+  } catch (error) {
+    console.error('Unexpected error in fetchFeeData:', error);
+    toast.error('Failed to load data. Please try again.');
     setFeeData([]);
     setFeeTypes([]);
-    setClassOptions([]);
-    setSectionOptions([]);
-    setInstallmentOptions([]);
-    setPaymentModeOptions([]);
     setClassSectionMap({});
   } finally {
     setIsLoading(false);

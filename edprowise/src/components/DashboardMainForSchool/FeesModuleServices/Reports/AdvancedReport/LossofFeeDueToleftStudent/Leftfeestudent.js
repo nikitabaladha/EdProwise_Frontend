@@ -173,14 +173,23 @@ const LossOfFeeDueToLeftStudent = () => {
     setIsLoading(true);
     try {
 
-      const leftPromises = years.map((year) =>
-        getAPI(`/Loss-of-fee-due-to-left-student?schoolId=${schoolId}&academicYear=${year}`)
-      );
+
+const leftPromises = years.map((year) =>
+  getAPI(`/Loss-of-fee-due-to-left-student?schoolId=${schoolId}&academicYear=${year}`)
+    .catch(err => {
+      console.warn(`Left-student API failed for year ${year}:`, err);
+      return { data: { data: [] } };      
+    })
+);
 
 
-      const latePromises = years.map((year) =>
-        getAPI(`/Loss-of-fee-due-to-late-Admission?schoolId=${schoolId}&academicYear=${year}`)
-      );
+const latePromises = years.map((year) =>
+  getAPI(`/Loss-of-fee-due-to-late-Admission?schoolId=${schoolId}&academicYear=${year}`)
+    .catch(err => {
+      console.warn(`Late-admission API failed for year ${year}:`, err);
+      return { data: { data: [] } };        
+    })
+);
 
       const [leftResponses, lateResponses] = await Promise.all([
         Promise.all(leftPromises),

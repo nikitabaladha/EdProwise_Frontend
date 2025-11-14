@@ -66,12 +66,12 @@ const TCFees = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState('all');
+  const [rowsPerPage, setRowsPerPage] = useState(100);
   const dropdownRef = useRef(null);
 
   const tabs = ['Date', 'Academic Year', 'Class', 'Payment Mode', 'Status'];
   const pageShowOptions = [
-    { value: 'all', label: 'All' },
+    // { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -107,11 +107,6 @@ const TCFees = () => {
               label: formatAcademicYear(year),
             }))
           );
-          if (!selectedAcademicYear && years.length > 0) {
-            const latestYear = years[years.length - 1];
-            setSelectedAcademicYear(latestYear);
-            localStorage.setItem('selectedAcademicYear', latestYear);
-          }
         } else {
           toast.error('No academic years found.');
         }
@@ -128,80 +123,175 @@ const TCFees = () => {
     }
   }, [schoolId]);
 
-  useEffect(() => {
-    if (!schoolId || !selectedAcademicYear) return;
+//   useEffect(() => {
+//     if (!schoolId || !selectedAcademicYear) return;
 
-    const fetchInitialData = async () => {
-      setIsLoading(true);
-      try {
-        const feeDataRes = await getAPI(`/get-all-data-tc?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
-        const unifiedData = [];
-        const processedKeys = new Set();
+//     const fetchInitialData = async () => {
+//       setIsLoading(true);
+//       try {
+//         const feeDataRes = await getAPI(`/get-all-data-tc?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
+//         const unifiedData = [];
+//         const processedKeys = new Set();
 
-        if (feeDataRes.data.combinedDetails) {
-          feeDataRes.data.combinedDetails.forEach((record) => {
-const key = `${record.paymentId || record.tcFeesReceiptNo || record.tcFeesTransactionNo}_${record.admissionNumber}_${record.academicYear}_${record.tcFeesStatus}`;
+//         if (feeDataRes.data.combinedDetails) {
+//           feeDataRes.data.combinedDetails.forEach((record) => {
+// const key = `${record.paymentId || record.tcFeesReceiptNo || record.tcFeesTransactionNo}_${record.admissionNumber}_${record.academicYear}_${record.tcFeesStatus}`;
 
-            if (!processedKeys.has(key)) {
-              unifiedData.push({
-                ...record,
-                studentName: `${record.firstName} ${record.lastName}`.trim() || '-',
-                tcFeesStatus: record.tcFeesStatus || 'Paid',
-              });
-              processedKeys.add(key);
-            }
-          });
-        }
+//             if (!processedKeys.has(key)) {
+//               unifiedData.push({
+//                 ...record,
+//                 studentName: `${record.firstName} ${record.lastName}`.trim() || '-',
+//                 tcFeesStatus: record.tcFeesStatus || 'Paid',
+//               });
+//               processedKeys.add(key);
+//             }
+//           });
+//         }
 
-        unifiedData.sort((a, b) => {
-          const admNoA = a.admissionNumber || '-';
-          const admNoB = b.admissionNumber || '-';
-          const dateA = a.tcFeesDate || '-';
-          const dateB = b.tcFeesDate || '-';
-          return dateA.localeCompare(dateB) || admNoA.localeCompare(admNoB);
-        });
+//         unifiedData.sort((a, b) => {
+//           const admNoA = a.admissionNumber || '-';
+//           const admNoB = b.admissionNumber || '-';
+//           const dateA = a.tcFeesDate || '-';
+//           const dateB = b.tcFeesDate || '-';
+//           return dateA.localeCompare(dateB) || admNoA.localeCompare(admNoB);
+//         });
 
-        setFeeData(unifiedData);
+//         setFeeData(unifiedData);
 
-        const modes = new Set();
-        const statuses = new Set();
-        const classes = new Set();
-        unifiedData.forEach((record) => {
-          if (record.tcFeesPaymentMode) modes.add(record.tcFeesPaymentMode);
-          if (record.tcFeesStatus) statuses.add(record.tcFeesStatus);
-          if (record.className) classes.add(record.className);
-        });
-        setPaymentModes(
-          Array.from(modes)
-            .filter((mode) => mode && mode !== '-')
-            .map((mode) => ({ value: mode, label: mode }))
-        );
-        setStatusOptions(
-          Array.from(statuses)
-            .filter((status) => status && status !== '-')
-            .map((status) => ({ value: status, label: status }))
-        );
-        setClassOptions(
-          Array.from(classes)
-            .filter((cls) => cls && cls !== '-')
-            .map((cls) => ({ value: cls, label: cls }))
-        );
-        if (rowsPerPage === 'all' && unifiedData.length > 0) {
-          setRowsPerPage(unifiedData.length);
-        }
-      } catch (error) {
-        toast.error('Error initializing data: ' + error.message);
-        setFeeData([]);
-        setPaymentModes([]);
-        setStatusOptions([]);
-        setClassOptions([]);
-      } finally {
-        setIsLoading(false);
+//         const modes = new Set();
+//         const statuses = new Set();
+//         const classes = new Set();
+//         unifiedData.forEach((record) => {
+//           if (record.tcFeesPaymentMode) modes.add(record.tcFeesPaymentMode);
+//           if (record.tcFeesStatus) statuses.add(record.tcFeesStatus);
+//           if (record.className) classes.add(record.className);
+//         });
+//         setPaymentModes(
+//           Array.from(modes)
+//             .filter((mode) => mode && mode !== '-')
+//             .map((mode) => ({ value: mode, label: mode }))
+//         );
+//         setStatusOptions(
+//           Array.from(statuses)
+//             .filter((status) => status && status !== '-')
+//             .map((status) => ({ value: status, label: status }))
+//         );
+//         setClassOptions(
+//           Array.from(classes)
+//             .filter((cls) => cls && cls !== '-')
+//             .map((cls) => ({ value: cls, label: cls }))
+//         );
+//         if (rowsPerPage === 'all' && unifiedData.length > 0) {
+//           setRowsPerPage(unifiedData.length);
+//         }
+//       } catch (error) {
+//         toast.error('Error initializing data: ' + error.message);
+//         setFeeData([]);
+//         setPaymentModes([]);
+//         setStatusOptions([]);
+//         setClassOptions([]);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     fetchInitialData();
+//   }, [schoolId, selectedAcademicYear]);
+
+useEffect(() => {
+  if (!schoolId) return;
+
+  const academicYear = startDate
+    ? selectedAcademicYear
+    : (selectedAcademicYear || localStorage.getItem('selectedAcademicYear'));
+
+  const fetchInitialData = async () => {
+    setIsLoading(true);
+    try {
+      let apiUrl = `/get-all-data-tc?schoolId=${schoolId}`;
+
+      if (startDate && endDate) {
+        apiUrl += `&startdate=${startDate}&enddate=${endDate}`;
       }
-    };
 
-    fetchInitialData();
-  }, [schoolId, selectedAcademicYear]);
+      if (academicYear) {
+        apiUrl += `&academicYear=${academicYear}`;
+      }
+
+      const feeDataRes = await getAPI(apiUrl);
+      const unifiedData = [];
+      const processedKeys = new Set();
+
+      if (feeDataRes.data.combinedDetails) {
+        feeDataRes.data.combinedDetails.forEach((record) => {
+          const key = `${record.paymentId || record.tcFeesReceiptNo || record.tcFeesTransactionNo}_${record.admissionNumber}_${record.academicYear}_${record.tcFeesStatus}`;
+
+          if (!processedKeys.has(key)) {
+            unifiedData.push({
+              ...record,
+              studentName: `${record.firstName} ${record.lastName}`.trim() || '-',
+              tcFeesStatus: record.tcFeesStatus || 'Paid',
+            });
+            processedKeys.add(key);
+          }
+        });
+      }
+
+      unifiedData.sort((a, b) => {
+        const admNoA = a.admissionNumber || '-';
+        const admNoB = b.admissionNumber || '-';
+        const dateA = a.tcFeesDate || '-';
+        const dateB = b.tcFeesDate || '-';
+        return dateA.localeCompare(dateB) || admNoA.localeCompare(admNoB);
+      });
+
+      setFeeData(unifiedData);
+
+      const modes = new Set();
+      const statuses = new Set();
+      const classes = new Set();
+
+      unifiedData.forEach((record) => {
+        if (record.tcFeesPaymentMode) modes.add(record.tcFeesPaymentMode);
+        if (record.tcFeesStatus) statuses.add(record.tcFeesStatus);
+        if (record.className) classes.add(record.className);
+      });
+
+      setPaymentModes(
+        Array.from(modes)
+          .filter((mode) => mode && mode !== '-')
+          .map((mode) => ({ value: mode, label: mode }))
+      );
+
+      setStatusOptions(
+        Array.from(statuses)
+          .filter((status) => status && status !== '-')
+          .map((status) => ({ value: status, label: status }))
+      );
+
+      setClassOptions(
+        Array.from(classes)
+          .filter((cls) => cls && cls !== '-')
+          .map((cls) => ({ value: cls, label: cls }))
+      );
+
+      if (rowsPerPage === 'all' && unifiedData.length > 0) {
+        setRowsPerPage(unifiedData.length);
+      }
+    } catch (error) {
+      toast.error('Error initializing TC data: ' + error.message);
+      setFeeData([]);
+      setPaymentModes([]);
+      setStatusOptions([]);
+      setClassOptions([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchInitialData();
+}, [schoolId, selectedAcademicYear, startDate, endDate]);
+
 
   useEffect(() => {
     const loadSchoolData = async () => {
@@ -268,6 +358,7 @@ const key = `${record.paymentId || record.tcFeesReceiptNo || record.tcFeesTransa
     if (storedYear) {
       setSelectedAcademicYear(storedYear);
     }
+      setSelectedAcademicYear('');
   };
 
   const applyFilters = () => {
@@ -681,7 +772,7 @@ const key = `${record.paymentId || record.tcFeesReceiptNo || record.tcFeesTransa
                           Reset
                         </button>
                         <button className="btn btn-primary" onClick={applyFilters}>
-                          Apply Filters
+                          Close Filters
                         </button>
                       </div>
                     </div>

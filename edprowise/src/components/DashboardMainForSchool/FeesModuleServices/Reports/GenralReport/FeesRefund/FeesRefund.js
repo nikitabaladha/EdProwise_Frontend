@@ -34,13 +34,13 @@ const FeesRefundReportStudentWise = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState('all');
+  const [rowsPerPage, setRowsPerPage] = useState(1000);
   const dropdownRef = useRef(null);
 
   const tabs = ['Date', 'Academic Year', 'Class & Section', 'Fees Type'];
 
   const pageShowOptions = [
-    { value: 'all', label: 'All' },
+    // { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -65,7 +65,7 @@ const FeesRefundReportStudentWise = () => {
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (!userDetails?.schoolId) {
-      toast.error('School ID not found. Please log in again.');
+      console.error('School ID not found. Please log in again.');
       return;
     }
     setSchoolId(userDetails.schoolId);
@@ -79,7 +79,7 @@ const FeesRefundReportStudentWise = () => {
         setLogoSrc(logoSrc);
       } catch (error) {
         console.error('Failed to fetch school data:', error);
-        toast.error('Failed to fetch school data.');
+        console.error('Failed to fetch school data.');
       }
     };
     if (schoolId) {
@@ -115,17 +115,11 @@ const FeesRefundReportStudentWise = () => {
               label: formatAcademicYear(year),
             }))
           );
-          if (!selectedAcademicYear && years.length > 0) {
-            const latestYear = years[years.length - 1];
-            setSelectedAcademicYear(latestYear);
-            localStorage.setItem('selectedAcademicYear', latestYear);
-            setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
-          }
         } else {
-          toast.error('No academic years found.');
+          console.error('No academic years found.');
         }
       } catch (err) {
-        toast.error('Error fetching academic years: ' + err.message);
+        console.error('Error fetching academic years: ' + err.message);
         console.error('Error fetching academic years:', err);
       } finally {
         setLoadingYears(false);
@@ -169,19 +163,106 @@ const FeesRefundReportStudentWise = () => {
     }
   }, [selectedClasses, classSectionMap, refundData]);
 
-  const fetchRefundData = async (years, startDate, endDate) => {
+  // const fetchRefundData = async (years, startDate, endDate) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const classSectionMapping = {};
+  //     const queryParams = new URLSearchParams({
+  //       schoolId,
+  //       academicYear: years.join(','),
+  //       ...(startDate && { startDate }),
+  //       ...(endDate && { endDate }),
+  //     });
+  //     const response = await getAPI(`/get-all-fees-refund-report?${queryParams}`);
+  //     if (response.hasError || !response.data?.data) {
+  //       console.warn(`No data found for years ${years.join(', ')}`);
+  //       setRefundData([]);
+  //       setClassSectionMap({});
+  //       setRefundTypes([]);
+  //       setRefundTypeOptions([]);
+  //       setClassOptions([]);
+  //       setSectionOptions([]);
+  //       return;
+  //     }
+
+  //     const unifiedData = response.data.data;
+  //     unifiedData.forEach(record => {
+  //       const className = record.className || '-';
+  //       const sectionName = record.sectionName || '-';
+  //       if (className !== '-' && sectionName !== '-') {
+  //         if (!classSectionMapping[className]) {
+  //           classSectionMapping[className] = new Set();
+  //         }
+  //         classSectionMapping[className].add(sectionName);
+  //       }
+  //     });
+
+  //     const refundTypes = [...new Set(unifiedData.map(record => record.refundType).filter(Boolean))].sort();
+  //     const classes = [...new Set(unifiedData.map((request) => request.className))]
+  //       .filter(Boolean)
+  //       .sort()
+  //       .map((name) => ({ value: name, label: name }));
+  //     const sections = [...new Set(unifiedData.map((request) => request.sectionName))]
+  //       .filter(Boolean)
+  //       .sort()
+  //       .map((name) => ({ value: name, label: name }));
+
+  //     setClassSectionMap(classSectionMapping);
+  //     setRefundTypes(refundTypes);
+  //     setRefundTypeOptions(refundTypes.map((type) => ({ value: type, label: type })));
+  //     setClassOptions(classes);
+  //     setSectionOptions(sections);
+  //     setRefundData(unifiedData);
+
+  //     if (rowsPerPage === 'all' && unifiedData.length > 0) {
+  //       setRowsPerPage(unifiedData.length);
+  //     }
+  //     console.log('Fetched Refund Data:', unifiedData);
+  //   } catch (error) {
+  //     console.error('Error fetching refund data: ' + error.message);
+  //     console.error('Error fetching refund data:', error);
+  //     setRefundData([]);
+  //     setClassSectionMap({});
+  //     setRefundTypes([]);
+  //     setRefundTypeOptions([]);
+  //     setClassOptions([]);
+  //     setSectionOptions([]);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (!schoolId || !selectedAcademicYear) return;
+  //   const yearsToFetch = selectedYears.length > 0
+  //     ? selectedYears.map((year) => year.value)
+  //     : [selectedAcademicYear];
+  //   fetchRefundData(yearsToFetch, startDate, endDate);
+  // }, [schoolId, selectedAcademicYear, selectedYears, startDate, endDate]);
+
+
+  useEffect(() => {
+    if (!schoolId) return;
+    const academicYear = startDate
+      ? selectedAcademicYear
+      : (selectedAcademicYear || localStorage.getItem('selectedAcademicYear'));
+ const fetchRefundData = async () => {
     setIsLoading(true);
     try {
       const classSectionMapping = {};
-      const queryParams = new URLSearchParams({
-        schoolId,
-        academicYear: years.join(','),
-        ...(startDate && { startDate }),
-        ...(endDate && { endDate }),
-      });
-      const response = await getAPI(`/get-all-fees-refund-report?${queryParams}`);
+     let apiUrl = `/get-all-fees-refund-report?schoolId=${schoolId}`;
+  
+        if (startDate && endDate) {
+          apiUrl += `&startdate=${startDate}&enddate=${endDate}`;
+        }
+  
+        if (academicYear) {
+          apiUrl += `&academicYear=${academicYear}`;
+        }
+
+            const response = await getAPI(apiUrl);
+  
       if (response.hasError || !response.data?.data) {
-        console.warn(`No data found for years ${years.join(', ')}`);
         setRefundData([]);
         setClassSectionMap({});
         setRefundTypes([]);
@@ -225,7 +306,7 @@ const FeesRefundReportStudentWise = () => {
       }
       console.log('Fetched Refund Data:', unifiedData);
     } catch (error) {
-      toast.error('Error fetching refund data: ' + error.message);
+      console.error('Error fetching refund data: ' + error.message);
       console.error('Error fetching refund data:', error);
       setRefundData([]);
       setClassSectionMap({});
@@ -238,19 +319,15 @@ const FeesRefundReportStudentWise = () => {
     }
   };
 
-  useEffect(() => {
-    if (!schoolId || !selectedAcademicYear) return;
-    const yearsToFetch = selectedYears.length > 0
-      ? selectedYears.map((year) => year.value)
-      : [selectedAcademicYear];
-    fetchRefundData(yearsToFetch, startDate, endDate);
-  }, [schoolId, selectedAcademicYear, selectedYears, startDate, endDate]);
+      fetchRefundData();
+  }, [schoolId, selectedAcademicYear, startDate, endDate]);
 
   const handleSelectChange = (selectedOptions, { name }) => {
     const selected = selectedOptions || [];
-    if (name === 'academicYear') {
-      setSelectedYears(selected);
-      setCurrentPage(1);
+      if (name === 'academicYear') {
+        const selectedYear = selectedOptions?.value || '';
+        setSelectedAcademicYear(selectedYear);
+        setCurrentPage(1);
     } else if (name === 'refundType') {
       setSelectedRefundTypes(selected);
       setCurrentPage(1);
@@ -270,14 +347,7 @@ const FeesRefundReportStudentWise = () => {
     }
   };
 
-  const applyFilters = () => {
-    setShowFilterPanel(false);
-    setCurrentPage(1);
-    const yearsToFetch = selectedYears.length > 0
-      ? selectedYears.map((year) => year.value)
-      : [selectedAcademicYear];
-    fetchRefundData(yearsToFetch, startDate, endDate);
-  };
+
 
   const resetFilters = () => {
     setSelectedYears([]);
@@ -290,8 +360,13 @@ const FeesRefundReportStudentWise = () => {
     setCurrentPage(1);
     setRowsPerPage('all');
     setShowFilterPanel(false);
-    fetchRefundData([selectedAcademicYear]);
-  };
+       setSelectedAcademicYear(localStorage.getItem('selectedAcademicYear'));
+    };
+  
+       const applyFilters = () => {
+      setShowFilterPanel(false);
+      setCurrentPage(1);
+    };
 
   const toggleFilter = () => {
     setShowFilterPanel(!showFilterPanel);
@@ -313,9 +388,9 @@ const FeesRefundReportStudentWise = () => {
          request.refundType?.toLowerCase().includes(searchTerm.toLowerCase()))
       : true;
 
-    const matchesYear =
-      selectedYears.length === 0 ||
-      selectedYears.some((year) => request.academicYear === year.value);
+    // const matchesYear =
+    //   selectedYears.length === 0 ||
+    //   selectedYears.some((year) => request.academicYear === year.value);
 
     const matchesClass =
       selectedClasses.length === 0 ||
@@ -333,7 +408,7 @@ const FeesRefundReportStudentWise = () => {
       (!startDate || new Date(request.paymentDate) >= new Date(startDate)) &&
       (!endDate || new Date(request.paymentDate) <= new Date(endDate));
 
-    return matchesSearchTerm && matchesYear && matchesClass && matchesSection && matchesRefundType && matchesDateRange;
+    return matchesSearchTerm  && matchesClass && matchesSection && matchesRefundType && matchesDateRange;
   });
 
   const totalRecords = filteredData.length;
@@ -475,7 +550,7 @@ const FeesRefundReportStudentWise = () => {
                             disabled={isExporting}
                             onClick={async () => {
                               if (filteredData.length === 0) {
-                                toast.error('No data to export');
+                                console.error('No data to export');
                                 return;
                               }
                               setIsExporting(true);
@@ -492,10 +567,10 @@ const FeesRefundReportStudentWise = () => {
                                   },
                                   school
                                 );
-                                toast.success('Exported to Excel successfully');
+                                // toast.success('Exported to Excel successfully');
                               } catch (err) {
-                                console.error('Excel export failed:', err);
-                                toast.error('Export to Excel failed: ' + err.message);
+                                toast.error('Excel export failed:', err);
+                                console.error('Export to Excel failed: ' + err.message);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -509,7 +584,7 @@ const FeesRefundReportStudentWise = () => {
                             disabled={isExporting}
                             onClick={async () => {
                               if (filteredData.length === 0) {
-                                toast.error('No data to export');
+                                console.error('No data to export');
                                 return;
                               }
                               setIsExporting(true);
@@ -527,10 +602,10 @@ const FeesRefundReportStudentWise = () => {
                                   school,
                                   logoSrc
                                 );
-                                toast.success('Exported to PDF successfully');
+                                // toast.success('Exported to PDF successfully');
                               } catch (err) {
-                                console.error('PDF export failed:', err);
-                                toast.error('Export to PDF failed: ' + err.message);
+                                toast.error('PDF export failed:', err);
+                                console.error('Export to PDF failed: ' + err.message);
                               } finally {
                                 setIsExporting(false);
                                 setShowExportDropdown(false);
@@ -566,10 +641,9 @@ const FeesRefundReportStudentWise = () => {
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
-                                isMulti
                                 name="academicYear"
                                 options={academicYearOptions}
-                                value={selectedYears}
+                               value={academicYearOptions.find((option) => option.value === selectedAcademicYear)}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Academic Years"
                                 className="mt-2"
@@ -658,7 +732,7 @@ const FeesRefundReportStudentWise = () => {
                           Reset
                         </button>
                         <button className="ms-2 btn btn-primary" onClick={applyFilters}>
-                          Apply
+                         Close Filters
                         </button>
                       </div>
                     </div>
@@ -768,7 +842,7 @@ const FeesRefundReportStudentWise = () => {
                 <div className="text-center mt-3">
                   <p>
                     No refunds match the selected filters for{' '}
-                    {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
+                    {
                       formatAcademicYear(selectedAcademicYear)}.
                   </p>
                 </div>

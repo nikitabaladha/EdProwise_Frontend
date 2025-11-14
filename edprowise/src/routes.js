@@ -5,7 +5,7 @@ import PagenotFound404 from "./404page.js";
 import UnauthorizedAccess from "./UnauthorizedPage.js";
 import { ThemeProvider } from "./components/ThemeProvider";
 import RemoveThemeAttribute from './RemoveThemeAttribute';
-import Test from "../src/components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/test.js"
+
 
 
 
@@ -196,7 +196,7 @@ import SchoolFeesReceiptsView from "./components/DashboardMainForSchool/FeesModu
 import StudentReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/Recipt.js"
 import FeeReceiptsSchoolFees from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/FeeReceiptsForm.js"
 import BoardRegistrationFeeTable from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistartionTable.js";
-import BoardRegistrationFeeTableReceipts  from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceiptsforTable.js";
+import BoardRegistrationFeeTableReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceiptsforTable.js";
 import BoardRegistrationFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationFees.js";
 import BoardRegistrationFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceipts.js"
 import BoardExamFeeTable from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardExamFees/BoardExamTable.js";
@@ -233,7 +233,7 @@ import PromoteStudent from './components/DashboardMainForSchool/FeesModuleServic
 import FeesRefund from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/Feesrefund.js"
 import CreateFeesRefund from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/CreateFeesreFund.js'
 import Refundreceipt from './components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/FeesRefund/RefundReceipt.js'
-import  CRNreceipt from './components/DashboardMainForSchool/FeesModuleServices/CRNReceipt.js'
+import CRNreceipt from './components/DashboardMainForSchool/FeesModuleServices/CRNReceipt.js'
 
 import StudentProfile from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentProfile/StudentAdmissionListTable.js';
 import StudentProfileUpdate from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentProfile/UpdateAdmissionDetail/UpdateAdmissionForm.js';
@@ -241,7 +241,8 @@ import StudentProfileView from './components/DashboardMainForSchool/FeesModuleSe
 import StudentCount from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentCount/StudentCountReport.js';
 import StudentCountRecon from './components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentCountRecon/StudentCountReconReport.js';
 import StudentMaster from "./components/DashboardMainForSchool/FeesModuleServices/StudentDBA/StudentMaster/StudentMaster.js"
-import AcademicYearsSetting  from './components/DashboardMainForSchool/FeesModuleServices/AdminSetting/AcademicYear/AcademicYear.js'
+import AcademicYearsSetting from './components/DashboardMainForSchool/FeesModuleServices/AdminSetting/AcademicYear/AcademicYear.js'
+import RegistartionLink from './components/DashboardMainForSchool/FeesModuleServices/AdminSetting/RegistrationLink/RegistartionL.js'
 // ===================================================Reports==========================================================================================================//
 import StudentLedger from "./components/DashboardMainForSchool/FeesModuleServices/Reports/StudentLedger/studentledger.js"
 
@@ -265,7 +266,7 @@ import DailyCollectionDatsewiseCollection from "./components/DashboardMainForSch
 import DailyCollectionDatsewiseCollectionWithConcession from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/DateWiseCollectionWithConcession/DateWiseCollection.js"
 import DailyCollectionStudentwiseCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/StudentWiseCollection/StudentWiseCollection.js"
 import DailyCollectionStudentwiseCollectionWithConcesssion from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/StudentWiseCollectionWithConcession/StudentWiseCollection.js"
-import DailyCollectionMonthwiseCollection  from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/MonthWiseCollectionINCConcession/MonthWiseCollection.js"
+import DailyCollectionMonthwiseCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/MonthWiseCollectionINCConcession/MonthWiseCollection.js"
 import DailyCollectionMonthwiseExcConcessionCollection from "./components/DashboardMainForSchool/FeesModuleServices/Reports/DailyCollectionReport/MonthWiseCollectionEXCConcession/MonthWiseCollection.js"
 // ===================================================Concession===================================================//
 import ConcessionReportDatewise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesConcessionReport/FeesConcessionReportDatewise/FeesConcessionReportDatewise.js";
@@ -319,21 +320,27 @@ import SchoolFeesManagementYear from "./components/CommanPage/YearPage.js";
 
 // ================================Easebuzz Pages================================================//
 
-import SuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/SuccessPage.js'; 
+import SuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/SuccessPage.js';
 import FailurePage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/FailurePage.js';
 
-import AdmissionSuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/SuccessPage.js'; 
+import AdmissionSuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/SuccessPage.js';
 import AdmissionFailurePage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/FailurePage.js';
 
-import TCSuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/FailurePage.js'; 
+import TCSuccessPage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/FailurePage.js';
 import TCFailurePage from './components/DashboardMainForSchool/FeesModuleServices/Form/StudentTCForm/FailurePage.js';
 
 
 // ================================Student Temp Login================================================//
 
-import StudentLoginTemp from './components/TempStudent/Login/login.js'; 
-import StudentSignupTemp from './components/TempStudent/Signup/signup.js'; 
-
+import StudentLoginTemp from './components/TempStudent/Login/login.js';
+import StudentSignupTemp from './components/TempStudent/Signup/signup.js';
+import RegistrationClosed  from './components/TempStudent/RegistrationClosed.js';
+import StudentDashboard from './components/TempStudent/StudentDashboard/studentpage.js';
+import TempStudentRegistrationForm from "./components/TempStudent/StudentDashboard/Registration/NewStudentRegistration/StudentRegistrationForm.js";
+import TempStudentRegistrationTable from './components/TempStudent/StudentDashboard/Registration/StudentRegisterListTable.js'
+import TempStudentRegistrationUpdate from './components/TempStudent/StudentDashboard/Registration/UpdateStudentRegistrationForm.js/UpdateStudentRegistrationForm.js'
+import TempStudentRegistrationView from './components/TempStudent/StudentDashboard/Registration/ViewStudentInfoRegister/ViewStudentInfoRegister.js'
+import TempStudentRegistrationReceipts from "./components/TempStudent/StudentDashboard/Registration/NewStudentRegistration/RegistrationOfficialDetails.js";
 // const PrivateRoute = ({ allowedRoles, children }) => {
 //   const { isAuthenticated, role } = useAuth();
 
@@ -406,8 +413,21 @@ const PublicRoute = ({ children }) => {
 
 
 
+const TempStudentRoute = ({ children }) => {
+  const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+  const role = userDetails?.role;
+
+  if (role === "Tempstudent") {
+    return children;
+  } else {
+    return <Navigate to="/unauthorized" replace />;
+  }
+};
+
+
 const AppRoutes = () => {
   const { isAuthenticated, role } = useAuth();
+
   return (
     <Routes>
 
@@ -461,7 +481,7 @@ const AppRoutes = () => {
         }
       />
 
-         <Route
+      <Route
         path="/student-login"
         element={
           <PublicRoute>
@@ -470,23 +490,53 @@ const AppRoutes = () => {
         }
       />
 
-       <Route
-        path="/student-signup"
+
+      <Route
+        path="/student-signup/:schoolId"
         element={
           <PublicRoute>
-            <StudentSignupTemp/>
+            <StudentSignupTemp />
           </PublicRoute>
         }
       />
 
-  <Route path="/payment/success" element={<PublicRoute><SuccessPage /></PublicRoute>} />
-  <Route path="/payment/failure" element={<PublicRoute><FailurePage /></PublicRoute>} />
 
-  <Route path="/payment/admission/success" element={<PublicRoute><AdmissionSuccessPage /></PublicRoute>} />
-  <Route path="/payment/admission/failure" element={<PublicRoute><AdmissionFailurePage /></PublicRoute>} />
+      <Route
+        path="/registration-closed/:schoolId"
+        element={
+          <PublicRoute>
+            <RegistrationClosed />
+          </PublicRoute>} />
 
-  <Route path="/payment/tc/success" element={<PublicRoute><TCSuccessPage /></PublicRoute>} />
-  <Route path="/payment/tc/failure" element={<PublicRoute><TCFailurePage /></PublicRoute>} />
+
+      <Route
+        path="/student-dashboard"
+        element={
+          <TempStudentRoute>
+            <StudentDashboard />
+          </TempStudentRoute>
+        }
+      >
+        <Route index element={<StudentDashboard />} />
+        <Route path="registration-form" element={<TempStudentRegistrationForm />} />
+        <Route path="registration" element={< TempStudentRegistrationTable />} />
+        <Route path="registration/update" element={< TempStudentRegistrationUpdate />} />
+        <Route path="registration/view" element={< TempStudentRegistrationView />} />
+        <Route path="registration/receipts" element={< TempStudentRegistrationReceipts />} />
+
+      </Route>
+
+
+
+
+      <Route path="/payment/success" element={<PublicRoute><SuccessPage /></PublicRoute>} />
+      <Route path="/payment/failure" element={<PublicRoute><FailurePage /></PublicRoute>} />
+
+      <Route path="/payment/admission/success" element={<PublicRoute><AdmissionSuccessPage /></PublicRoute>} />
+      <Route path="/payment/admission/failure" element={<PublicRoute><AdmissionFailurePage /></PublicRoute>} />
+
+      <Route path="/payment/tc/success" element={<PublicRoute><TCSuccessPage /></PublicRoute>} />
+      <Route path="/payment/tc/failure" element={<PublicRoute><TCFailurePage /></PublicRoute>} />
 
       <Route
         path="/forgot-password"
@@ -850,8 +900,14 @@ const AppRoutes = () => {
           path="fees-module/admin-setting/acadmic-year-setting"
           element={<AcademicYearsSetting />}
         />
+        <Route
+          path="fees-module/admin-setting/registration-link-status"
+          element={<RegistartionLink />}
+        />
 
-   
+
+
+
 
         {/*------------------------------------ Prefix Seetings----------------------------- */}
 
@@ -1050,7 +1106,7 @@ const AppRoutes = () => {
           element={< Refundreceipt />}
         />
 
-         <Route
+        <Route
           path="fees-module/form/crn-receipts"
           element={< CRNreceipt />}
         />
@@ -1075,7 +1131,7 @@ const AppRoutes = () => {
           element={<BoardRegistrationFee />}
         />
 
-         <Route
+        <Route
           path="fees-module/fees-receipts/board-registration"
           element={<BoardRegistrationFeeTable />}
         />
@@ -1085,7 +1141,7 @@ const AppRoutes = () => {
           element={<BoardRegistrationFeeReceipts />}
         />
 
-        
+
         <Route
           path="fees-module/fees-receipts/board-registration/receipts"
           element={<BoardRegistrationFeeTableReceipts />}
@@ -1093,7 +1149,7 @@ const AppRoutes = () => {
 
         <Route
           path="fees-module/fees-receipts/board-exam"
-          element={< BoardExamFeeTable/>}
+          element={< BoardExamFeeTable />}
         />
 
         <Route
@@ -1101,14 +1157,14 @@ const AppRoutes = () => {
           element={<BoardExamFee />}
         />
 
-       
+
 
         <Route
           path="fees-module/fees-receipts/board-exam/fees/receipts"
           element={<BoardExamFeeReceipts />}
         />
 
-          <Route
+        <Route
           path="fees-module/fees-receipts/board-exam/receipts"
           element={<BoardExamFeeTableReceipts />}
         />
@@ -1119,19 +1175,19 @@ const AppRoutes = () => {
           path="fees-module/reports/student-ledger"
           element={<StudentLedger />}
         />
-                {/* --------------------------------------------Genral Reports-------------------------------------- */}
+        {/* --------------------------------------------Genral Reports-------------------------------------- */}
         <Route
           path="fees-module/reports/general/school-fee-inc-concession"
-          element={<GenralSchoolFeesIncConcession  />}
+          element={<GenralSchoolFeesIncConcession />}
         />
 
         <Route
           path="fees-module/reports/general/school-fee-exc-concession"
-          element={<GenralSchoolFeesExcConcession  />}
+          element={<GenralSchoolFeesExcConcession />}
         />
         <Route
           path="fees-module/reports/general/late-fees-excess"
-          element={<GenralLateFees/>}
+          element={<GenralLateFees />}
         />
         <Route
           path="fees-module/reports/general/registration-fees"
@@ -1159,26 +1215,26 @@ const AppRoutes = () => {
         />
         <Route
           path="fees-module/reports/general/fees-cancelled"
-          element={<GenralFeesCancelled/>}
+          element={<GenralFeesCancelled />}
         />
         <Route
           path="fees-module/reports/general/fees-cheque-return"
-          element={<GenralFeesChequeReturn/>}
+          element={<GenralFeesChequeReturn />}
         />
         <Route
           path="fees-module/reports/general/fees-structure"
-          element={<GenralFeesStructure/>}
+          element={<GenralFeesStructure />}
         />
 
-        
 
-          {/* --------------------------------------------Daily Collection-------------------------------------- */}
+
+        {/* --------------------------------------------Daily Collection-------------------------------------- */}
         <Route
           path="fees-module/reports/daily-collection/datewise-collection-inc-concession"
           element={<DailyCollectionDatsewiseCollection />}
         />
 
-          <Route
+        <Route
           path="fees-module/reports/daily-collection/monthwise-collection-inc-concession"
           element={<DailyCollectionMonthwiseCollection />}
         />
@@ -1203,7 +1259,7 @@ const AppRoutes = () => {
 
 
 
-     {/* --------------------------------------------Concession Reports-------------------------------------- */}
+        {/* --------------------------------------------Concession Reports-------------------------------------- */}
 
         <Route
           path="fees-module/reports/concession/date-wise"
@@ -1216,7 +1272,7 @@ const AppRoutes = () => {
         />
 
 
-       {/* --------------------------------------------Advanced Reports-------------------------------------- */}
+        {/* --------------------------------------------Advanced Reports-------------------------------------- */}
         <Route
           path="fees-module/reports/advanced/loss-left-students"
           element={<LossOfFeeDuetoLeftstudent />}
@@ -1231,60 +1287,60 @@ const AppRoutes = () => {
           element={<DefaulterFees />}
         />
 
-          <Route
+        <Route
           path="fees-module/reports/advanced/overall-outstanding"
           element={<OverAllDefaulter />}
         />
 
-        
+
         <Route
           path="fees-module/reports/advanced/arrear-fees"
           element={<ArrearFeesReceivedReport />}
         />
-          <Route
+        <Route
           path="fees-module/reports/advanced/opening-closing-arrear"
           element={< OpeningandClosingArrearReport />}
         />
 
-       
+
         <Route
           path="fees-module/reports/advanced/advance-fees"
-          element={<AdvancedFees/>}
+          element={<AdvancedFees />}
         />
 
-         <Route
+        <Route
           path="fees-module/reports/advanced/opening-closing-advance"
           element={<OpeningAndClosingAdvanced />}
         />
 
-          <Route
+        <Route
           path="fees-module/reports/advanced/studentwise-fees-due"
           element={<StudentWiseFeesDue />}
         />
 
-   
 
 
-     
-       {/* --------------------------------------------FeesRecon-------------------------------------- */}
 
 
-      <Route
+        {/* --------------------------------------------FeesRecon-------------------------------------- */}
+
+
+        <Route
           path="fees-module/reports/audit/fees-wise"
           element={<FeesReconFeesWise />}
         />
 
-       <Route
+        <Route
           path="fees-module/reports/audit/headcount"
           element={<FeesReconHaedwise />}
         />
 
-          <Route
+        <Route
           path="fees-module/reports/audit/student-wise"
           element={<FeesReconStudentWise />}
         />
 
-         <Route
+        <Route
           path="fees-module/reports/audit/fees-vs-finance"
           element={<FeesReconFeesvsFinance />}
         />
@@ -1308,18 +1364,18 @@ const AppRoutes = () => {
         />
         <Route
           path="fees-module/student-dba/student-count"
-          element={<StudentCount/>}
+          element={<StudentCount />}
         />
         <Route
           path="fees-module/student-dba/student-count-recon"
-          element={<StudentCountRecon/>}
+          element={<StudentCountRecon />}
         />
-         <Route
+        <Route
           path="fees-module/student-dba/student-master"
-          element={<StudentMaster/>}
+          element={<StudentMaster />}
         />
 
-        
+
 
       </Route>
 

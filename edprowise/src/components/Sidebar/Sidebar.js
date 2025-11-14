@@ -506,6 +506,12 @@ const Sidebar = () => {
                 link: "/school-dashboard/fees-module/admin-setting/acadmic-year-setting",
 
               },
+                 {
+                label: "Registartion Link Status ",
+                icon: "bx-trending-up",
+                link: "/school-dashboard/fees-module/admin-setting/registration-link-status",
+
+              },
               {
                 label: "Prefix Settings",
                 icon: "bx-edit",

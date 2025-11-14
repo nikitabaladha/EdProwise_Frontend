@@ -1251,10 +1251,17 @@ const handleFinalSubmit = async (e, frontendReceiptDetails = null, isImport = fa
           throw new Error(response.message || `Failed to save receipt for ${academicYear}`);
         }
 
+        const savedReceipt = response.data.receipts?.[0];  
+if (!savedReceipt) {
+  throw new Error('Server did not return a receipt object');
+}
+
         receiptDetailsToProcess.push({
           ...receiptDetails,
-          _id: response.data.receipt._id,
-          receiptNumber: response.data.receipt.receiptNumber,
+          _id: savedReceipt._id,
+          receiptNumber: savedReceipt.receiptNumber,
+          // _id: response.data.receipt._id,
+          // receiptNumber: response.data.receipt.receiptNumber,
           bankName: formData.paymentMode === 'Cheque' ? formData.bankName : undefined,
           installments: receiptDetails.installments.map((inst) => ({
             ...inst,

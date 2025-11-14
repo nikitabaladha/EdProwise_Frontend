@@ -470,7 +470,7 @@
 //         ...Object.fromEntries(displayedFeeTypes.map((type) => [type, type])),
 //         fineAmount: 'Fine Amount',
 //         excessAmount: 'Excess Amount',
-//         totalPaidFee: 'Fees Paid',
+//         totalPaidFee: 'Total',
 //       }
 //     : {
 //         month: 'Month',
@@ -479,7 +479,7 @@
 //         ...Object.fromEntries(displayedFeeTypes.map((type) => [type, type])),
 //         fineAmount: 'Fine Amount',
 //         excessAmount: 'Excess Amount',
-//         totalPaidFee: 'Fees Paid',
+//         totalPaidFee: 'Total',
 //       };
 
 //   const tableFields = Object.keys(headerMapping).map((key) => ({
@@ -829,7 +829,7 @@
 //                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Fine Amount</th>
 //                           <th className="text-center align-middle border border-secondary text-nowrap p-2">Excess Amount</th>
 //                           {selectedFeeTypes.length === 0 && (
-//                             <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+//                             <th className="text-center align-middle border border-secondary text-nowrap p-2">Total</th>
 //                           )}
 //                         </tr>
 //                       </thead>
@@ -1552,7 +1552,7 @@ const groupedData = filteredData.reduce((acc, record, index) => {
           ? {
               fineAmount: 'Fine Amount',
               excessAmount: 'Excess Amount',
-              totalPaidFee: 'Fees Paid',
+              totalPaidFee: 'Total',
             }
           : {}),
       }
@@ -1565,7 +1565,7 @@ const groupedData = filteredData.reduce((acc, record, index) => {
           ? {
               fineAmount: 'Fine Amount',
               excessAmount: 'Excess Amount',
-              totalPaidFee: 'Fees Paid',
+              totalPaidFee: 'Total',
             }
           : {}),
       };
@@ -1927,7 +1927,7 @@ const groupedData = filteredData.reduce((acc, record, index) => {
                             <>
                               <th className="text-center align-middle border border-secondary text-nowrap p-2">Fine Amount</th>
                               <th className="text-center align-middle border border-secondary text-nowrap p-2">Excess Amount</th>
-                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Fees Paid</th>
+                              <th className="text-center align-middle border border-secondary text-nowrap p-2">Total</th>
                             </>
                           )}
                         </tr>

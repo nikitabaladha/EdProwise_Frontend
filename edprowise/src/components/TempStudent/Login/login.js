@@ -38,6 +38,7 @@ const AdminLogin = () => {
         localStorage.setItem("userDetails", JSON.stringify(userDetails));
 
         toast.success("Login successful!");
+        navigate("/student-dashboard");
       } else {
         setGeneralError(response.data.message);
       }
@@ -53,14 +54,7 @@ const AdminLogin = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const navigateToHome = (event) => {
-    event.preventDefault();
-    navigate("/");
-  };
-  const navigateToSignup = (event) => {
-    event.preventDefault();
-    navigate("/student-signup");
-  };
+ 
 
   return (
     <>
@@ -174,15 +168,7 @@ const AdminLogin = () => {
                     </button>
                   </div>
 
-                  <Link to="/" onClick={navigateToHome}>
-                    {" "}
-                    Go to Home{" "}
-                  </Link>
-                  <div className=" mt-3 text-center">
-                    <Link onClick={navigateToSignup}>
-                      If you are not Register, Sign Up Here
-                    </Link>
-                  </div>
+               
                 </form>
               </div>
             </div>

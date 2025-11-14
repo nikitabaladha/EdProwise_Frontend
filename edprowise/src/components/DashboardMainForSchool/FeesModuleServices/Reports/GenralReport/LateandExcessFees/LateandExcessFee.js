@@ -43,13 +43,13 @@ const LateandExcessFee = () => {
   const [endDate, setEndDate] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState('all');
+  const [rowsPerPage, setRowsPerPage] = useState(1000);
   const dropdownRef = useRef(null);
 
   const tabs = ['Date', 'Academic Year', 'Class & Section', 'Installment', 'Payment Mode'];
 
   const pageShowOptions = [
-    { value: 'all', label: 'All' },
+    // { value: 'all', label: 'All' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
     { value: 20, label: '20' },
@@ -65,7 +65,7 @@ const LateandExcessFee = () => {
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (!userDetails?.schoolId) {
-      toast.error('School ID not found. Please log in again.');
+      console.error('School ID not found. Please log in again.');
       return;
     }
     setSchoolId(userDetails.schoolId);
@@ -87,17 +87,11 @@ const LateandExcessFee = () => {
               label: formatAcademicYear(year),
             }))
           );
-          if (!selectedAcademicYear && years.length > 0) {
-            const latestYear = years[years.length - 1];
-            setSelectedAcademicYear(latestYear);
-            localStorage.setItem('selectedAcademicYear', latestYear);
-            setSelectedYears([{ value: latestYear, label: formatAcademicYear(latestYear) }]);
-          }
         } else {
-          toast.error('No academic years found.');
+          console.error('No academic years found.');
         }
       } catch (err) {
-        toast.error('Error fetching academic years.');
+        console.error('Error fetching academic years.');
         console.error(err);
       } finally {
         setLoadingYears(false);
@@ -168,66 +162,190 @@ const LateandExcessFee = () => {
     };
   }, []);
 
-  const fetchFeeData = async (years) => {
+  // const fetchFeeData = async (years) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const classSectionMapping = {};
+  //     const promises = years.map((year) =>
+  //       getAPI(`/get-all-students-fees-with-late-fees?schoolId=${schoolId}&academicYear=${year}${startDate ? `&startDate=${startDate}` : ''}${endDate ? `&endDate=${endDate}` : ''}`)
+  //     );
+  //     const responses = await Promise.all(promises);
+  //     const unifiedData = responses.flatMap((res, index) => {
+  //       if (!res?.data?.data) {
+  //         console.warn(`No data found for year ${years[index]}`);
+  //         return [];
+  //       }
+  //       return res.data.data;
+  //     });
+
+  //     const processedData = unifiedData.flatMap((record) => {
+  //       const className = record.className || '-';
+  //       const sectionName = record.sectionName || '-';
+  //       if (className !== '-' && sectionName !== '-') {
+  //         if (!classSectionMapping[className]) {
+  //           classSectionMapping[className] = new Set();
+  //         }
+  //         classSectionMapping[className].add(sectionName);
+  //       }
+  //       return (record.reportStatus || ['Paid']).map((status) => ({
+  //         ...record,
+  //         status,
+  //         receiptNo: (status === 'Cancelled' || status === 'Cheque Return')
+  //           ? record.refundReceiptNumbers || '-'
+  //           : record.receiptNo,
+  //         displayDate: status === 'Paid' ? record.paymentDate : record.cancelledDate,
+  //         lateFees: (status === 'Cancelled' || status === 'Cheque Return') ? -(record.lateFees || 0) : (record.lateFees || 0),
+  //         paidFine: (status === 'Cancelled' || status === 'Cheque Return') ? -(record.paidFine || 0) : (record.paidFine || 0),
+  //         excessFees: (status === 'Cancelled' || status === 'Cheque Return') ? -(record.excessFees || 0) : (record.excessFees || 0),
+  //       }));
+  //     }).filter(
+  //       (record) => Math.abs(record.lateFees) > 0 || Math.abs(record.paidFine) > 0 || Math.abs(record.excessFees) > 0
+  //     );
+
+  //     setClassSectionMap(classSectionMapping);
+  //     setFeeData(processedData);
+
+  //     const allFeeTypes = responses
+  //       .flatMap((res) => res?.data?.feeTypes || [])
+  //       .filter((type, index, self) => type && self.indexOf(type) === index)
+  //       .sort();
+  //     setFeeTypes(allFeeTypes);
+
+  //     const filterOptions = responses[0]?.data?.filterOptions || {};
+  //     setClassOptions(filterOptions.classOptions || []);
+  //     setSectionOptions(filterOptions.sectionOptions || []);
+  //     setInstallmentOptions(filterOptions.installmentOptions || []);
+  //     setPaymentModeOptions(filterOptions.paymentModeOptions || []);
+
+  //     if (rowsPerPage === 'all' && processedData.length > 0) {
+  //       setRowsPerPage(processedData.length);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching data: ' + error.message);
+  //     setFeeData([]);
+  //     setClassSectionMap({});
+  //     setFeeTypes([]);
+  //     setClassOptions([]);
+  //     setSectionOptions([]);
+  //     setInstallmentOptions([]);
+  //     setPaymentModeOptions([]);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (!schoolId || !selectedAcademicYear) return;
+  //   const yearsToFetch = selectedYears.length > 0
+  //     ? selectedYears.map((year) => year.value)
+  //     : [selectedAcademicYear];
+  //   fetchFeeData(yearsToFetch);
+  // }, [schoolId, selectedAcademicYear, selectedYears]);
+
+
+useEffect(() => {
+  if (!schoolId) return;
+
+  const academicYear = startDate
+    ? selectedAcademicYear
+    : (selectedAcademicYear || localStorage.getItem('selectedAcademicYear'));
+
+  const fetchFeeData = async () => {
     setIsLoading(true);
     try {
       const classSectionMapping = {};
-      const promises = years.map((year) =>
-        getAPI(`/get-all-students-fees-with-late-fees?schoolId=${schoolId}&academicYear=${year}${startDate ? `&startDate=${startDate}` : ''}${endDate ? `&endDate=${endDate}` : ''}`)
-      );
-      const responses = await Promise.all(promises);
-      const unifiedData = responses.flatMap((res, index) => {
-        if (!res?.data?.data) {
-          console.warn(`No data found for year ${years[index]}`);
-          return [];
-        }
-        return res.data.data;
-      });
 
-      const processedData = unifiedData.flatMap((record) => {
-        const className = record.className || '-';
-        const sectionName = record.sectionName || '-';
-        if (className !== '-' && sectionName !== '-') {
-          if (!classSectionMapping[className]) {
-            classSectionMapping[className] = new Set();
+
+      let apiUrl = `/get-all-students-fees-with-late-fees?schoolId=${schoolId}`;
+
+      if (startDate && endDate) {
+        apiUrl += `&startdate=${startDate}&enddate=${endDate}`;
+      }
+
+      if (academicYear) {
+        apiUrl += `&academicYear=${academicYear}`;
+      }
+
+   
+      const response = await getAPI(apiUrl);
+
+      const unifiedData = response?.data?.data || [];
+      if (!unifiedData.length) {
+        console.warn(`No data found for academic year ${academicYear}`);
+        setFeeData([]);
+        setClassSectionMap({});
+        setFeeTypes([]);
+        setClassOptions([]);
+        setSectionOptions([]);
+        setInstallmentOptions([]);
+        setPaymentModeOptions([]);
+        return;
+      }
+
+    
+      const processedData = unifiedData
+        .flatMap((record) => {
+          const className = record.className || '-';
+          const sectionName = record.sectionName || '-';
+
+          if (className !== '-' && sectionName !== '-') {
+            if (!classSectionMapping[className]) {
+              classSectionMapping[className] = new Set();
+            }
+            classSectionMapping[className].add(sectionName);
           }
-          classSectionMapping[className].add(sectionName);
-        }
-        return (record.reportStatus || ['Paid']).map((status) => ({
-          ...record,
-          status,
-          receiptNo: (status === 'Cancelled' || status === 'Cheque Return')
-            ? record.refundReceiptNumbers || '-'
-            : record.receiptNo,
-          displayDate: status === 'Paid' ? record.paymentDate : record.cancelledDate,
-          lateFees: (status === 'Cancelled' || status === 'Cheque Return') ? -(record.lateFees || 0) : (record.lateFees || 0),
-          paidFine: (status === 'Cancelled' || status === 'Cheque Return') ? -(record.paidFine || 0) : (record.paidFine || 0),
-          excessFees: (status === 'Cancelled' || status === 'Cheque Return') ? -(record.excessFees || 0) : (record.excessFees || 0),
-        }));
-      }).filter(
-        (record) => Math.abs(record.lateFees) > 0 || Math.abs(record.paidFine) > 0 || Math.abs(record.excessFees) > 0
-      );
+
+          return (record.reportStatus || ['Paid']).map((status) => ({
+            ...record,
+            status,
+            receiptNo:
+              status === 'Cancelled' || status === 'Cheque Return'
+                ? record.refundReceiptNumbers || '-'
+                : record.receiptNo,
+            displayDate:
+              status === 'Paid' ? record.paymentDate : record.cancelledDate,
+            lateFees:
+              status === 'Cancelled' || status === 'Cheque Return'
+                ? -(record.lateFees || 0)
+                : record.lateFees || 0,
+            paidFine:
+              status === 'Cancelled' || status === 'Cheque Return'
+                ? -(record.paidFine || 0)
+                : record.paidFine || 0,
+            excessFees:
+              status === 'Cancelled' || status === 'Cheque Return'
+                ? -(record.excessFees || 0)
+                : record.excessFees || 0,
+          }));
+        })
+        .filter(
+          (record) =>
+            Math.abs(record.lateFees) > 0 ||
+            Math.abs(record.paidFine) > 0 ||
+            Math.abs(record.excessFees) > 0
+        );
 
       setClassSectionMap(classSectionMapping);
       setFeeData(processedData);
 
-      const allFeeTypes = responses
-        .flatMap((res) => res?.data?.feeTypes || [])
-        .filter((type, index, self) => type && self.indexOf(type) === index)
+
+      const allFeeTypes = (response?.data?.feeTypes || [])
+        .filter((type, i, self) => type && self.indexOf(type) === i)
         .sort();
       setFeeTypes(allFeeTypes);
 
-      const filterOptions = responses[0]?.data?.filterOptions || {};
+      const filterOptions = response?.data?.filterOptions || {};
       setClassOptions(filterOptions.classOptions || []);
       setSectionOptions(filterOptions.sectionOptions || []);
       setInstallmentOptions(filterOptions.installmentOptions || []);
       setPaymentModeOptions(filterOptions.paymentModeOptions || []);
 
+ 
       if (rowsPerPage === 'all' && processedData.length > 0) {
         setRowsPerPage(processedData.length);
       }
     } catch (error) {
-      toast.error('Error fetching data: ' + error.message);
+      console.error('Error fetching data:', error);
       setFeeData([]);
       setClassSectionMap({});
       setFeeTypes([]);
@@ -240,18 +358,15 @@ const LateandExcessFee = () => {
     }
   };
 
-  useEffect(() => {
-    if (!schoolId || !selectedAcademicYear) return;
-    const yearsToFetch = selectedYears.length > 0
-      ? selectedYears.map((year) => year.value)
-      : [selectedAcademicYear];
-    fetchFeeData(yearsToFetch);
-  }, [schoolId, selectedAcademicYear, selectedYears]);
+  fetchFeeData();
+}, [schoolId, selectedAcademicYear, startDate, endDate]);
+
 
   const handleSelectChange = (selectedOptions, { name }) => {
     const selected = selectedOptions || [];
-    if (name === 'academicYear') {
-      setSelectedYears(selected);
+  if (name === 'academicYear') {
+      const selectedYear = selectedOptions?.value || '';
+      setSelectedAcademicYear(selectedYear);
       setCurrentPage(1);
     } else if (name === 'paymentMode') {
       setSelectedPaymentModes(selected);
@@ -275,14 +390,14 @@ const LateandExcessFee = () => {
     }
   };
 
-  const applyFilters = () => {
-    setShowFilterPanel(false);
-    setCurrentPage(1);
-    const yearsToFetch = selectedYears.length > 0
-      ? selectedYears.map((year) => year.value)
-      : [selectedAcademicYear];
-    fetchFeeData(yearsToFetch);
-  };
+  // const applyFilters = () => {
+  //   setShowFilterPanel(false);
+  //   setCurrentPage(1);
+  //   const yearsToFetch = selectedYears.length > 0
+  //     ? selectedYears.map((year) => year.value)
+  //     : [selectedAcademicYear];
+  //   fetchFeeData(yearsToFetch);
+  // };
 
   const resetFilters = () => {
     setSelectedYears([]);
@@ -296,8 +411,14 @@ const LateandExcessFee = () => {
     setCurrentPage(1);
     setRowsPerPage('all');
     setShowFilterPanel(false);
-    fetchFeeData([selectedAcademicYear]);
+          setSelectedAcademicYear(localStorage.getItem('selectedAcademicYear'));
   };
+
+   const applyFilters = () => {
+    setShowFilterPanel(false);
+    setCurrentPage(1);
+  };
+
 
   const toggleFilter = () => {
     setShowFilterPanel(!showFilterPanel);
@@ -327,9 +448,9 @@ const LateandExcessFee = () => {
       selectedPaymentModes.length === 0 ||
       selectedPaymentModes.some((mode) => row.paymentMode === mode.value);
 
-    const matchesYear =
-      selectedYears.length === 0 ||
-      selectedYears.some((year) => row.academicYear === year.value);
+    // const matchesYear =
+    //   selectedYears.length === 0 ||
+    //   selectedYears.some((year) => row.academicYear === year.value);
 
     const matchesDate =
       (!startDate && !endDate) ||
@@ -356,7 +477,7 @@ const LateandExcessFee = () => {
     return (
       matchesSearchTerm &&
       matchesPaymentMode &&
-      matchesYear &&
+      // matchesYear &&
       matchesDate &&
       matchesClass &&
       matchesSection &&
@@ -521,7 +642,7 @@ const LateandExcessFee = () => {
                       className="email-select border border-dark me-lg-2"
                     />
                     <div
-                      className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon"
+                      className="ms-2 p-1 px-2 border mr-2 border-dark finance-filter-icon mx-2"
                       style={{ cursor: 'pointer' }}
                       onClick={toggleFilter}
                     >
@@ -564,9 +685,7 @@ const LateandExcessFee = () => {
                                     total: totals.total.toFixed(2),
                                   },
                                   formatAcademicYear,
-                                  selectedYears.length > 0
-                                    ? selectedYears.map((y) => y.value).join(',')
-                                    : selectedAcademicYear
+                                  selectedAcademicYear
                                 );
                               } catch (err) {
                                 toast.error('Export to Excel failed.');
@@ -596,9 +715,7 @@ const LateandExcessFee = () => {
                                     total: totals.total.toFixed(2),
                                   },
                                   formatAcademicYear,
-                                  selectedYears.length > 0
-                                    ? selectedYears.map((y) => y.value).join(',')
-                                    : selectedAcademicYear,
+                                selectedAcademicYear,
                                   school,
                                   logoSrc
                                 );
@@ -716,10 +833,11 @@ const LateandExcessFee = () => {
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
-                                isMulti
+                                // isMulti
                                 name="academicYear"
                                 options={academicYearOptions}
-                                value={selectedYears}
+                                // value={selectedYears}
+                                  value={academicYearOptions.find((option) => option.value === selectedAcademicYear)}
                                 onChange={(selected, action) => handleSelectChange(selected, action)}
                                 placeholder="Select Academic Years"
                                 className="mt-2"
@@ -751,7 +869,7 @@ const LateandExcessFee = () => {
                           Reset
                         </button>
                         <button className="ms-2 btn btn-primary" onClick={applyFilters}>
-                          Apply
+                       Close Filters
                         </button>
                       </div>
                     </div>
@@ -904,7 +1022,9 @@ const LateandExcessFee = () => {
                 <div className="text-center mt-3">
                   <p>
                     No paid installments match the selected filters for{' '}
-                    {selectedYears.map((y) => formatAcademicYear(y.value)).join(', ') ||
+                    {
+                    // selectedYears.map((y) => formatAcademicYear(y.value)).join(', ')
+                    //  ||
                       formatAcademicYear(selectedAcademicYear)}.
                   </p>
                 </div>
