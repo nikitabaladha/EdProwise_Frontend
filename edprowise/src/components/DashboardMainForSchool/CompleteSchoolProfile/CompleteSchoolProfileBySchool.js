@@ -1,40 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import getAPI from "../../../api/getAPI";
-import postAPI from "../../../api/postAPI";
+import getAPI from "../../../api/getAPI.js";
+import postAPI from "../../../api/postAPI.js";
 
 import "react-toastify/dist/ReactToastify.css";
 import EmailVerificationModal from "./EmailVerificationModal";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-
-import CountryStateCityData from "../../CountryStateCityData.json";
-
+import CountryStateCityData from "../../CityData.json";
 import CreatableSelect from "react-select/creatable";
 
+
 const countryData = CountryStateCityData;
-
-// Helper functions for local storage
-// const saveFormDataToLocalStorage = (data) => {
-//   const dataToSave = { ...data };
-//   ['profileImage', 'affiliationCertificate', 'panFile'].forEach(key => {
-//     if (dataToSave[key] instanceof File) {
-//       dataToSave[key] = null;
-//     }
-//   });
-//   localStorage.setItem('schoolProfileFormData', JSON.stringify(dataToSave));
-// };
-
-// const loadFormDataFromLocalStorage = () => {
-//   const savedData = localStorage.getItem('schoolProfileFormData');
-//   return savedData ? JSON.parse(savedData) : null;
-// };
-
-// const clearFormDataFromLocalStorage = () => {
-//   localStorage.removeItem('schoolProfileFormData');
-// };
-
 
 const CompleteSchoolProfile = () => {
   const navigate = useNavigate();
@@ -53,7 +31,6 @@ const CompleteSchoolProfile = () => {
     affiliationCertificate: null,
     affiliationUpto: "",
     deliveryAddress: "",
-    // deliveryLocation: "",
     deliveryLandMark: "",
     deliveryPincode: "",
     contactPersonName: "",
@@ -73,57 +50,65 @@ const CompleteSchoolProfile = () => {
     isCustomDeliveryCountry: false,
     isCustomDeliveryState: false,
     isCustomDeliveryCity: false,
-    acceptTermsAndConditions: false,
   });
 
   const [timer, setTimer] = useState(0);
-  const [isVerificationSuccessful, setIsVerificationSuccessful] = useState(false);
-  const [emailVerificationState, setEmailVerificationState] = useState("unverified"); // 'unverified', 'pending', 'verified'
+
+  const [isVerificationSuccessful, setIsVerificationSuccessful] =
+    useState(false);
+
+  const [emailVerificationState, setEmailVerificationState] =
+    useState("unverified"); // 'unverified', 'pending', 'verified'
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [verifyingOTP, setVerifyingOTP] = useState(false); // For verifying OTP
+
   const [otpData, setOtpData] = useState({
     email: "",
-    otp: ""
+
+    otp: "",
   });
+
   useEffect(() => {
     let interval;
-    if (emailVerificationState === 'pending' && timer > 0) {
+
+    if (emailVerificationState === "pending" && timer > 0) {
       interval = setInterval(() => {
         setTimer((prev) => prev - 1);
       }, 1000);
     }
+
     return () => clearInterval(interval);
   }, [emailVerificationState, timer]);
 
-// Load saved data on component mount
-  // useEffect(() => {
-  //   const savedFormData = loadFormDataFromLocalStorage();
-  //   if (savedFormData) {
-  //     setFormData(savedFormData);
-  //     if (savedFormData.schoolEmail && savedFormData.isVerificationSuccessful) {
-  //       setIsVerificationSuccessful(true);
-  //       setEmailVerificationState('verified');
-  //     }
-  //   }
-  // }, []);
-
-
   const handleSendOTP = async () => {
-    if (!formData.schoolEmail.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)) {
+    if (
+      !formData.schoolEmail.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
+    ) {
       toast.error("Please enter a valid email address");
+
       return;
     }
+
     setSending(true);
+
     try {
       const response = await postAPI("/send-otp-email-verification", {
-        email: formData.schoolEmail
+        email: formData.schoolEmail,
       });
+
       setSending(true);
+
       if (!response.data.hasError) {
         setEmailVerificationState("pending");
-        setOtpData(prev => ({ ...prev, email: formData.schoolEmail }));
+
+        setOtpData((prev) => ({ ...prev, email: formData.schoolEmail }));
+
         setIsModalOpen(true);
+
         setTimer(60);
+
         toast.success("OTP sent to your email!");
       } else {
         toast.error("Failed to send OTP");
@@ -137,18 +122,23 @@ const CompleteSchoolProfile = () => {
 
   const handleVerifyOTP = async () => {
     try {
+      setVerifyingOTP(true);
 
-      setVerifyingOTP(true)
       const response = await postAPI("/verify-email-code", {
         email: otpData.email,
-        verificationCode: otpData.otp
+
+        verificationCode: otpData.otp,
       });
 
       if (!response.data.hasError) {
         setEmailVerificationState("verified");
+
         setIsVerificationSuccessful(true);
+
         setIsModalOpen(false);
+
         setTimer(0);
+
         toast.success("Email verified successfully!");
       } else {
         toast.error("Invalid OTP");
@@ -165,12 +155,12 @@ const CompleteSchoolProfile = () => {
   };
 
   const handleOTPChange = (e) => {
-    setOtpData(prev => ({
+    setOtpData((prev) => ({
       ...prev,
-      otp: e.target.value
+
+      otp: e.target.value,
     }));
   };
-
 
   const profileImageRef = useRef(null);
   const affiliationCertificateRef = useRef(null);
@@ -266,156 +256,78 @@ const CompleteSchoolProfile = () => {
   //   }
   // };
 
+  // Get countries from countryData keys
+  const countryOptions = Object.keys(countryData).map((country) => ({
+    value: country,
+    label: country,
+  }));
+
+  // Get states based on selected country
+  const stateOptions =
+    formData.country && !formData.isCustomCountry
+      ? Object.keys(countryData[formData.country]).map((state) => ({
+          value: state,
+          label: state,
+        }))
+      : [];
+
+  // Get cities based on selected state and country
+  const cityOptions =
+    formData.state && !formData.isCustomState && formData.country
+      ? (countryData[formData.country][formData.state] || []).map((city) => ({
+          value: city,
+          label: city,
+        }))
+      : [];
+
   const handleChange = (e) => {
     const { name, value, files, type, checked } = e.target;
 
-    const newFormData = {
-      ...formData,
-      [name]: type === "checkbox" ? checked : files ? files[0] : value
-    };
-
-    setFormData(newFormData);
-    // saveFormDataToLocalStorage(newFormData);
+    if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checked,
+        ...(checked
+          ? {
+              deliveryAddress: prev.schoolAddress,
+              deliveryCity: prev.city,
+              deliveryState: prev.state,
+              deliveryCountry: prev.country,
+              deliveryLandMark: prev.landMark,
+              deliveryPincode: prev.schoolPincode,
+            }
+          : {
+              deliveryAddress: "",
+              deliveryCity: "",
+              deliveryState: "",
+              deliveryCountry: "",
+              deliveryLandMark: "",
+              deliveryPincode: "",
+            }),
+      }));
+    } else if (files) {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: files[0],
+      }));
+    } else {
+      const updatedValue = ["panNo"].includes(name)
+        ? value.replace(/[a-z]/g, (char) => char.toUpperCase())
+        : value;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: updatedValue,
+      }));
+    }
   };
 
-  //  const handleNavigate = () => {
-  //   saveFormDataToLocalStorage(formData);
-  //   navigate('/terms-condition-for-seller');
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-  //   const schoolId = userDetails?.schoolId;
-
-  //   const userId = userDetails?.id;
-
-  //   const formDataToSend = new FormData();
-
-  //   const allowedFields = [
-  //     "schoolName",
-  //     "panFile",
-  //     "panNo",
-  //     "schoolAddress",
-  //     "city",
-  //     "state",
-  //     "country",
-  //     "landMark",
-  //     "schoolPincode",
-  //     "schoolMobileNo",
-  //     "schoolEmail",
-  //     "profileImage",
-  //     "affiliationCertificate",
-  //     "affiliationUpto",
-  //     "deliveryAddress",
-  //     "deliveryCity",
-  //     "deliveryState",
-  //     "deliveryCountry",
-  //     "deliveryLandMark",
-  //     "deliveryPincode",
-  //     "contactPersonName",
-  //     "numberOfStudents",
-  //     "principalName",
-  //     "schoolAlternateContactNo",
-  //     "acceptTermsAndConditions"
-  //   ];
-
-  //   // Append only allowed fields to formDataToSend
-  //   for (const key of allowedFields) {
-  //     if (formData[key] instanceof File) {
-  //       formDataToSend.append(key, formData[key]);
-  //     } else {
-  //       formDataToSend.append(key, formData[key] || "");
-  //     }
-  //   }
-
-  //   if (!isVerificationSuccessful) {
-  //     return toast.error("Email verification not done");
-  //   }
-
-  //   try {
-  //     const response = await postAPI(
-  //       `/school-profile/${schoolId}`,
-  //       formDataToSend,
-  //       {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //       true
-  //     );
-
-  //     if (!response.data.hasError) {
-  //       const storedUserResponse = await getAPI(`/get-user-by-id/${userId}`);
-
-  //       if (!storedUserResponse.hasError) {
-  //         localStorage.setItem(
-  //           "userDetails",
-  //           JSON.stringify(storedUserResponse.data.data)
-  //         );
-  //       }
-
-  //       // Reset formData state
-  //       setFormData({
-  //         schoolName: "",
-  //         schoolMobileNo: "",
-  //         schoolEmail: "",
-  //         schoolAddress: "",
-  //         affiliationUpto: "",
-  //         panNo: "",
-  //         profileImage: null,
-  //         affiliationCertificate: null,
-  //         panFile: null,
-  //         landMark: "",
-  //         schoolPincode: "",
-  //         deliveryAddress: "",
-  //         deliveryLandMark: "",
-  //         deliveryPincode: "",
-  //         contactPersonName: "",
-  //         numberOfStudents: "",
-  //         principalName: "",
-  //         schoolAlternateContactNo: "",
-  //         sameAsSchoolAddress: false,
-
-  //         country: "",
-  //         state: "",
-  //         city: "",
-  //         isCustomCountry: false,
-  //         isCustomState: false,
-  //         isCustomCity: false,
-  //         deliveryCountry: "",
-  //         deliveryState: "",
-  //         deliveryCity: "",
-  //         isCustomDeliveryCountry: false,
-  //         isCustomDeliveryState: false,
-  //         isCustomDeliveryCity: false,
-  //         acceptTermsAndConditions: false,
-  //       });
-
-  //       toast.success("School Profile successfully created!");
-  //       clearFormDataFromLocalStorage();
-  //       navigate("/school-dashboard");
-  //     } else {
-  //       toast.error("Failed to update School.");
-  //     }
-  //   } catch (error) {
-  //     if (
-  //       error.response &&
-  //       error.response.data &&
-  //       error.response.data.message
-  //     ) {
-  //       toast.error(error.response.data.message);
-  //     } else {
-  //       console.log(error);
-  //       toast.error("An unexpected error occurred. Please try again.");
-  //     }
-  //   }
-  // };
+  const [sending, setSending] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
     const userId = userDetails?.id;
-
     const formDataToSend = new FormData();
 
     const allowedFields = [
@@ -458,9 +370,9 @@ const CompleteSchoolProfile = () => {
       }
     }
 
-    if (!isVerificationSuccessful) {
-      return toast.error("Email verification not done");
-    }
+   
+
+    setSending(true);
 
     try {
       const response = await postAPI(
@@ -515,12 +427,12 @@ const CompleteSchoolProfile = () => {
           isCustomDeliveryCountry: false,
           isCustomDeliveryState: false,
           isCustomDeliveryCity: false,
-          acceptTermsAndConditions: false,
         });
 
         toast.success("School Profile successfully created!");
-        // clearFormDataFromLocalStorage();
-        navigate("/school-dashboard");
+        // navigate("/school-dashboard");
+        navigate("/school/go-to-dashboard");
+        //
       } else {
         toast.error(response.data.message || "Failed to update School.");
       }
@@ -531,15 +443,15 @@ const CompleteSchoolProfile = () => {
         console.error(error);
         toast.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setSending(false);
     }
   };
-  
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userDetails");
     window.location.href = "/login";
   };
-
 
   return (
     <>
@@ -627,7 +539,8 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="mobileNo" className="form-label">
-                          School Mobile Number <span className="text-danger">*</span>
+                          School Mobile Number{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="tel"
@@ -665,7 +578,15 @@ const CompleteSchoolProfile = () => {
                         <label htmlFor="email" className="form-label">
                           School Email <span className="text-danger">*</span>
                         </label>
-                        <span style={{ display: "flex", alignItems: "center", justifyContent: "end" }}>
+                        <span
+                          style={{
+                            display: "flex",
+
+                            alignItems: "center",
+
+                            justifyContent: "end",
+                          }}
+                        >
                           <input
                             type="email"
                             id="email"
@@ -674,26 +595,49 @@ const CompleteSchoolProfile = () => {
                             value={formData.schoolEmail}
                             onChange={handleChange}
                             required
-                            disabled={emailVerificationState === 'verified'}
+                            // disabled={emailVerificationState === "verified"}
                             placeholder="Example : example@gmail.com"
                           />
-                          <div className="form-label" style={{ position: "absolute", margin: "0 0.9rem 0 0" }}>
+
+                          {/* <div
+                            className="form-label"
+                            style={{
+                              position: "absolute",
+
+                              margin: "0 0.9rem 0 0",
+                            }}
+                          >
                             <div
-                              className={`d-inline-block px-2 py-1 rounded ${emailVerificationState === 'verified' ? 'text-success' : 'text-black'} ${!formData.schoolEmail ? 'text-muted' : ''}`}
+                              className={`d-inline-block px-2 py-1 rounded ${
+                                emailVerificationState === "verified"
+                                  ? "text-success"
+                                  : "text-black"
+                              } ${!formData.schoolEmail ? "text-muted" : ""}`}
                               style={{
-                                cursor: emailVerificationState === 'verified' || !formData.schoolEmail ? 'default' : 'pointer',
-                                opacity: emailVerificationState === 'verified' || !formData.schoolEmail ? 0.7 : 1
+                                cursor:
+                                  emailVerificationState === "verified" ||
+                                  !formData.schoolEmail
+                                    ? "default"
+                                    : "pointer",
+
+                                opacity:
+                                  emailVerificationState === "verified" ||
+                                  !formData.schoolEmail
+                                    ? 0.7
+                                    : 1,
                               }}
                               onClick={async () => {
-                                if (emailVerificationState !== 'verified' && formData.schoolEmail) {
+                                if (
+                                  emailVerificationState !== "verified" &&
+                                  formData.schoolEmail
+                                ) {
                                   await handleSendOTP();
                                 }
                               }}
                             >
-                              {emailVerificationState === 'verified' ? (
+                              {emailVerificationState === "verified" ? (
                                 <>
                                   <i className="fas fa-check-circle me-1"></i>
-                                  {/* Verified */}
                                 </>
                               ) : sending ? (
                                 "Verifying..."
@@ -701,7 +645,7 @@ const CompleteSchoolProfile = () => {
                                 "Verify"
                               )}
                             </div>
-                          </div>
+                          </div> */}
                         </span>
                       </div>
                     </div>
@@ -730,15 +674,13 @@ const CompleteSchoolProfile = () => {
                       />
                     </div>
                   </div>
+
                   <div className="row">
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="country" className="form-label">
-
                           Country <span className="text-danger">*</span>
-
                         </label>
-
                         <CreatableSelect
                           id="country"
                           name="country"
@@ -746,9 +688,9 @@ const CompleteSchoolProfile = () => {
                           value={
                             formData.country
                               ? {
-                                value: formData.country,
-                                label: formData.country,
-                              }
+                                  value: formData.country,
+                                  label: formData.country,
+                                }
                               : null
                           }
                           onChange={(selectedOption) => {
@@ -785,6 +727,7 @@ const CompleteSchoolProfile = () => {
                         />
                       </div>
                     </div>
+
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label htmlFor="state" className="form-label">
@@ -817,9 +760,9 @@ const CompleteSchoolProfile = () => {
                             value={
                               formData.state
                                 ? {
-                                  value: formData.state,
-                                  label: formData.state,
-                                }
+                                    value: formData.state,
+                                    label: formData.state,
+                                  }
                                 : null
                             }
                             onChange={(selectedOption) => {
@@ -854,22 +797,15 @@ const CompleteSchoolProfile = () => {
                         )}
                       </div>
                     </div>
+
                     <div className="col-md-4">
-
                       <div className="mb-3">
-
                         <label htmlFor="city" className="form-label">
-
                           City <span className="text-danger">*</span>
-
                         </label>
-
                         {formData.isCustomState || formData.isCustomCountry ? (
-
                           <input
-
                             type="text"
-
                             id="city"
                             name="city"
                             className="form-control"
@@ -892,9 +828,9 @@ const CompleteSchoolProfile = () => {
                             value={
                               formData.city
                                 ? {
-                                  value: formData.city,
-                                  label: formData.city,
-                                }
+                                    value: formData.city,
+                                    label: formData.city,
+                                  }
                                 : null
                             }
                             onChange={(selectedOption) => {
@@ -928,7 +864,6 @@ const CompleteSchoolProfile = () => {
                       </div>
                     </div>
                   </div>
-
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -971,7 +906,6 @@ const CompleteSchoolProfile = () => {
                     </h4>
                     <h4 className="mb-3"> Same As Above</h4>
 
-
                     <div className="form-check ms-1">
                       <input
                         type="checkbox"
@@ -986,7 +920,6 @@ const CompleteSchoolProfile = () => {
                         htmlFor="sameAsSchoolAddress"
                       />
                     </div>
-
                   </div>
                   <div className="row">
                     <div className="mb-3">
@@ -1022,14 +955,14 @@ const CompleteSchoolProfile = () => {
                     </div>
                   </div>
                   <div className="row">
-
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label
                           htmlFor="deliveryLandMark"
                           className="form-label"
                         >
-                          Delivery LandMark <span className="text-danger">*</span>
+                          Delivery LandMark{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
                           <input
@@ -1060,7 +993,8 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="deliveryPincode" className="form-label">
-                          Delivery Pincode <span className="text-danger">*</span>
+                          Delivery Pincode{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         {formData.sameAsSchoolAddress ? (
                           <input
@@ -1084,6 +1018,229 @@ const CompleteSchoolProfile = () => {
                             onChange={handleChange}
                             required
                             placeholder="Example : 560045"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryCountry" className="form-label">
+                          Delivery Country{" "}
+                          <span className="text-danger">*</span>
+                        </label>
+                        {formData.sameAsSchoolAddress ? (
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={formData.country}
+                            readOnly
+                            disabled
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="deliveryCountry"
+                            name="deliveryCountry"
+                            options={countryOptions}
+                            value={
+                              formData.deliveryCountry
+                                ? {
+                                    value: formData.deliveryCountry,
+                                    label: formData.deliveryCountry,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom = !countryOptions.some(
+                                (option) =>
+                                  option.value === selectedOption?.value
+                              );
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryCountry: selectedOption?.value || "",
+                                deliveryState: "",
+                                deliveryCity: "",
+                                isCustomDeliveryCountry: isCustom,
+                                isCustomDeliveryState: false,
+                                isCustomDeliveryCity: false,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryCountry: inputValue,
+                                deliveryState: "",
+                                deliveryCity: "",
+                                isCustomDeliveryCountry: true,
+                                isCustomDeliveryState: false,
+                                isCustomDeliveryCity: false,
+                              }));
+                            }}
+                            placeholder="Select or type country"
+                            isSearchable
+                            required
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Delivery State */}
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryState" className="form-label">
+                          Delivery State <span className="text-danger">*</span>
+                        </label>
+                        {formData.sameAsSchoolAddress ? (
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={formData.state}
+                            readOnly
+                            disabled
+                          />
+                        ) : formData.isCustomDeliveryCountry ? (
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={formData.deliveryState}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryState: e.target.value,
+                                deliveryCity: "",
+                                isCustomDeliveryState: true,
+                                isCustomDeliveryCity: false,
+                              }))
+                            }
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="deliveryState"
+                            name="deliveryState"
+                            options={Object.keys(
+                              countryData[formData.deliveryCountry] || {}
+                            ).map((state) => ({
+                              value: state,
+                              label: state,
+                            }))}
+                            value={
+                              formData.deliveryState
+                                ? {
+                                    value: formData.deliveryState,
+                                    label: formData.deliveryState,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom = !Object.keys(
+                                countryData[formData.deliveryCountry] || {}
+                              ).includes(selectedOption?.value);
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryState: selectedOption?.value || "",
+                                deliveryCity: "",
+                                isCustomDeliveryState: isCustom,
+                                isCustomDeliveryCity: false,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryState: inputValue,
+                                deliveryCity: "",
+                                isCustomDeliveryState: true,
+                                isCustomDeliveryCity: false,
+                              }));
+                            }}
+                            placeholder="Select or type state"
+                            isSearchable
+                            required
+                            isDisabled={!formData.deliveryCountry}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Delivery City */}
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="deliveryCity" className="form-label">
+                          Delivery City <span className="text-danger">*</span>
+                        </label>
+                        {formData.sameAsSchoolAddress ? (
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={formData.city}
+                            readOnly
+                            disabled
+                          />
+                        ) : formData.isCustomDeliveryState ||
+                          formData.isCustomDeliveryCountry ? (
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={formData.deliveryCity}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryCity: e.target.value,
+                                isCustomDeliveryCity: true,
+                              }))
+                            }
+                            required
+                          />
+                        ) : (
+                          <CreatableSelect
+                            id="deliveryCity"
+                            name="deliveryCity"
+                            options={(
+                              countryData[formData.deliveryCountry]?.[
+                                formData.deliveryState
+                              ] || []
+                            ).map((city) => ({
+                              value: city,
+                              label: city,
+                            }))}
+                            value={
+                              formData.deliveryCity
+                                ? {
+                                    value: formData.deliveryCity,
+                                    label: formData.deliveryCity,
+                                  }
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              const isCustom = !(
+                                countryData[formData.deliveryCountry]?.[
+                                  formData.deliveryState
+                                ] || []
+                              ).includes(selectedOption?.value);
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryCity: selectedOption?.value || "",
+                                isCustomDeliveryCity: isCustom,
+                              }));
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                deliveryCity: inputValue,
+                                isCustomDeliveryCity: true,
+                              }));
+                            }}
+                            placeholder="Select or type city"
+                            isSearchable
+                            required
+                            isDisabled={!formData.deliveryState}
+                            classNamePrefix="react-select"
+                            className="custom-react-select"
                           />
                         )}
                       </div>
@@ -1553,7 +1710,6 @@ const CompleteSchoolProfile = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-
                         />
                       </div>
                     </div>
@@ -1562,7 +1718,8 @@ const CompleteSchoolProfile = () => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label htmlFor="affiliationUpto" className="form-label">
-                          Affiliation Upto <span className="text-danger">*</span>
+                          Affiliation Upto{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <select
                           id="affiliationUpto"
@@ -1594,7 +1751,8 @@ const CompleteSchoolProfile = () => {
                           htmlFor="affiliationCertificate"
                           className="form-label"
                         >
-                          Affiliation Certificate <span className="text-danger">*</span>
+                          Affiliation Certificate{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="file"
@@ -1667,6 +1825,7 @@ const CompleteSchoolProfile = () => {
                     <button
                       type="submit"
                       className="btn btn-primary custom-submit-button"
+                      disabled={sending}
                     >
                       {sending ? "Submitting..." : "Submit"}
                     </button>
@@ -1677,21 +1836,11 @@ const CompleteSchoolProfile = () => {
           </div>
         </div>
       </div>
-      {isModalOpen && (
-        <EmailVerificationModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          otpData={otpData}
-          onOtpChange={(e) => setOtpData(prev => ({ ...prev, otp: e.target.value }))}
-          onVerify={handleVerifyOTP}
-          onResend={handleResendOTP}
-          timer={timer}
-          emailVerificationState={emailVerificationState}
-          sending={sending}
-          verifyingOTP={verifyingOTP}
-        />
-      )}
+
+
+      
     </>
   );
 };
+
 export default CompleteSchoolProfile;

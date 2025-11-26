@@ -9,6 +9,7 @@ const AddShifts = () => {
   const [numericValue, setNumericValue] = useState('');
   const [alphaPrefix, setAlphaPrefix] = useState('');
   const [alphaNumber, setAlphaNumber] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleCheckboxChange = (value) => {
     setType(prev => prev === value ? '' : value);
@@ -17,37 +18,55 @@ const AddShifts = () => {
     setAlphaNumber('');
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  const academicYear = localStorage.getItem("selectedAcademicYear");
 
-    if (type === 'numeric' && !numericValue) {
-      toast.error("Please enter a numeric value.");
-      return;
+  if (!academicYear) {
+    toast.error("Academic year is missing. Please select an academic year.");
+    setLoading(false);
+    return;
+  }
+
+  if (type === 'numeric' && !numericValue) {
+    toast.error("Please enter a numeric value.");
+    setLoading(false);
+    return;
+  }
+
+  if (type === 'alphanumeric' && (!alphaPrefix || !alphaNumber)) {
+    toast.error("Please enter both prefix and number.");
+    setLoading(false);
+    return;
+  }
+
+  let payload = { type, academicYear };
+
+  if (type === 'numeric') {
+    payload.value = numericValue;
+  } else {
+    payload.prefix = alphaPrefix;
+    payload.number = alphaNumber;
+  }
+
+  try {
+    const response = await postAPI("/create-prefix", payload, {}, true);
+
+    if (!response.hasError) {
+      toast.success("Prefix saved successfully!");
+      navigate(-1);
+    } else {
+      toast.error(response.message || "Failed to save prefix.");
     }
+  } catch (err) {
+    const errorMessage = err?.response?.data?.message || "An error occurred while saving prefix.";
+    toast.error(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
 
-    if (type === 'alphanumeric' && (!alphaPrefix || !alphaNumber)) {
-      toast.error("Please enter both prefix and number.");
-      return;
-    }
-
-    const payload = type === 'numeric'
-      ? { type, value: numericValue }
-      : { type, prefix: alphaPrefix, number: alphaNumber };
-
-    try {
-      const response = await postAPI("/create-prefix", payload, {}, true);
-
-      if (!response.hasError) {
-        toast.success("Prefix saved successfully!");
-        navigate(-1);
-      } else {
-        toast.error(response.message || "Failed to save prefix.");
-      }
-    } catch (err) {
-      const errorMessage = err?.response?.data?.message || "An error occurred while saving prefix.";
-      toast.error(errorMessage);
-    }
-  };
 
   return (
     <div className="container mt-4">
@@ -147,8 +166,11 @@ const AddShifts = () => {
 
 
             <div className="text-end">
-              <button type="submit" className="btn btn-primary">
-                Submit Prefix
+              <button type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {loading ? "Submitting..." : "Submit"}
               </button>
             </div>
           </form>

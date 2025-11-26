@@ -647,7 +647,251 @@ const UpdateSeller = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="gstFile" className="form-label">
+                        GST File <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="file"
+                        id="gstFile"
+                        name="gstFile"
+                        className="form-control"
+                        accept="image/*,application/pdf"
+                        onChange={handleChange}
+                        ref={gstFileRef}
+                        // required
+                      />
+                      {seller?.gstFile ? (
+                        <div>
+                          <small>
+                            Existing GST File: {getBaseFileName(seller.gstFile)}
+                          </small>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="pan" className="form-label">
+                        PAN Number <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="pan"
+                        name="pan"
+                        className="form-control"
+                        value={formData.pan}
+                        onChange={handleChange}
+                        // required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="panFile" className="form-label">
+                        PAN File <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="file"
+                        id="panFile"
+                        name="panFile"
+                        className="form-control"
+                        accept="image/*,application/pdf"
+                        onChange={handleChange}
+                        ref={panFileRef}
+                        // required
+                      />
+                      {seller?.panFile ? (
+                        <div>
+                          <small>
+                            Existing PAN File: {getBaseFileName(seller.panFile)}
+                          </small>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="tan" className="form-label">
+                        TAN Number
+                      </label>
+                      <input
+                        type="text"
+                        id="tan"
+                        name="tan"
+                        className="form-control"
+                        value={formData.tan || "Not Provided"}
+                        onChange={handleChange}
+                        // required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="tanFile" className="form-label">
+                        TAN File
+                      </label>
+                      <input
+                        type="file"
+                        id="tanFile"
+                        name="tanFile"
+                        className="form-control"
+                        accept="image/*,application/pdf"
+                        onChange={handleChange}
+                        ref={tanFileRef}
+                        // required
+                      />
+                      {seller?.tanFile ? (
+                        <div>
+                          <small>
+                            Existing TAN File: {getBaseFileName(seller.tanFile)}
+                          </small>
+                        </div>
+                      ) : (
+                        <h5>Not Provided</h5>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="cin" className="form-label">
+                        CIN Number
+                      </label>
+                      <input
+                        type="text"
+                        id="cin"
+                        name="cin"
+                        className="form-control"
+                        value={formData.cin || "Not Provided"}
+                        onChange={handleChange}
+                        // required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="cinFile" className="form-label">
+                        CIN File
+                      </label>
+                      <input
+                        type="file"
+                        id="cinFile"
+                        name="cinFile"
+                        className="form-control"
+                        accept="image/*,application/pdf"
+                        onChange={handleChange}
+                        ref={cinFileRef}
+                        // required
+                      />
+                      {seller?.cinFile ? (
+                        <div>
+                          <small>
+                            Existing PAN File: {getBaseFileName(seller.cinFile)}
+                          </small>
+                        </div>
+                      ) : (
+                        <h5>Not Provided</h5>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <h4 className="card-title text-center custom-heading-font">
+                  Address Details
+                </h4>
+                <hr></hr>
+                <div className="row">
+                  <div className="mb-3">
+                    <label htmlFor="address" className="form-label">
+                      Address <span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="address"
+                      name="address"
+                      rows={3}
+                      value={formData.address}
+                      onChange={handleChange}
+                      // required
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="cityStateCountry" className="form-label">
+                        City State Country Location{" "}
+                        <span className="text-danger">*</span>
+                      </label>
+
+                      <Select
+                        id="cityStateCountry"
+                        name="cityStateCountry"
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === formData.cityStateCountry
+                        )}
+                        onChange={(selectedOption) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            cityStateCountry: selectedOption
+                              ? selectedOption.value
+                              : "",
+                          }))
+                        }
+                        placeholder="Select City-State-Country"
+                        isSearchable
+                        // required
+                        classNamePrefix="react-select"
+                        className="custom-react-select"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="landmark" className="form-label">
+                        Land Mark <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="landmark"
+                        name="landmark"
+                        className="form-control"
+                        value={formData.landmark}
+                        onChange={handleChange}
+                        // required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="pincode" className="form-label">
+                        Pin Code <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="pincode"
+                        name="pincode"
+                        className="form-control"
+                        value={formData.pincode}
+                        onChange={handleChange}
+                        // required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <h4 className="card-title text-center custom-heading-font">
+                  Contact Details
+                </h4>
+                <hr></hr>
+                <div className="row">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="contactNo" className="form-label">
                         Contact Number <span className="text-danger">*</span>

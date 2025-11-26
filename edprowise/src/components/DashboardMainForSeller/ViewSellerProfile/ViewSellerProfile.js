@@ -131,6 +131,12 @@ const ViewSellerProfile = () => {
                       <p className="form-control">{sellerProfile?.randomId}</p>
                     </div>
                     <div className="mb-3">
+                      <label htmlFor="randomId" className="form-label">
+                        Seller Id
+                      </label>
+                      <p className="form-control">{sellerProfile?.randomId}</p>
+                    </div>
+                    <div className="mb-3">
                       <label htmlFor="companyName" className="form-label">
                         Company Name
                       </label>
@@ -138,6 +144,7 @@ const ViewSellerProfile = () => {
                         {sellerProfile?.companyName}
                       </p>
                     </div>
+
                     <div className="mb-3">
                       <label htmlFor="gstin" className="form-label">
                         GSTIN
@@ -154,6 +161,13 @@ const ViewSellerProfile = () => {
                     </div>
                   </div>
                   <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="userId" className="form-label">
+                        User Id
+                      </label>
+                      <p className="form-control">{sellerProfile?.userId}</p>
+                    </div>
+
                     <div className="mb-3">
                       <label htmlFor="userId" className="form-label">
                         User Id

@@ -239,7 +239,9 @@ const RequestDemoForm = () => {
                         {selectedServices.length > 0
                           ? `${selectedServices.length} services selected`
                           : "Select services"}
-                        <span className="arrow">{isDropdownOpen ? "▲" : "▼"}</span>
+                        <span className="arrow">
+                          {isDropdownOpen ? "▲" : "▼"}
+                        </span>
                       </div>
 
                       {isDropdownOpen && (
@@ -253,7 +255,9 @@ const RequestDemoForm = () => {
                                 type="checkbox"
                                 className="check-box-demo"
                                 value={service.title}
-                                checked={selectedServices.includes(service.title)}
+                                checked={selectedServices.includes(
+                                  service.title
+                                )}
                                 onChange={handleCheckboxChange}
                               />
                               {service.title}
@@ -268,7 +272,9 @@ const RequestDemoForm = () => {
                       <h4>Selected Services:</h4>
                       <ul>
                         {selectedServices.map((service, index) => (
-                          <li key={index} style={{ color: "#4e545c" }}>{service}</li>
+                          <li key={index} style={{ color: "#4e545c" }}>
+                            {service}
+                          </li>
                         ))}
                       </ul>
                     </div>

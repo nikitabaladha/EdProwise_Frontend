@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+
+import  { useState } from "react";
 import postAPI from "../../../../../api/postAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const AddFeesType = () => {
-  const [fees, setFees] = useState([""]);
-  const [message, setMessage] = useState("");
+  const [fees, setFees] = useState([{ name: "", group: "School Fees" }]);
   const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
   const handleAddFeeType = () => {
-    setFees([...fees, ""]);
+    setFees([...fees, { name: "", group: "School Fees" }]);
   };
 
   const handleRemoveFeeType = (index) => {
@@ -18,19 +19,32 @@ const AddFeesType = () => {
 
   const handleFeeChange = (index, value) => {
     const updatedFees = [...fees];
-    updatedFees[index] = value;
+    updatedFees[index].name = value;
+    setFees(updatedFees);
+  };
+
+  const handleGroupChange = (index, value) => {
+    const updatedFees = [...fees];
+    updatedFees[index].group = value;
     setFees(updatedFees);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
+   setLoading(true);
+   
+     const academicYear = localStorage.getItem("selectedAcademicYear");
+   
+     if (!academicYear) {
+       toast.error("Academic year is missing. Please select an academic year.");
+       setLoading(false);
+       return;
+     }
+   
 
-    const trimmedFees = fees.map((f) => f.trim());
-
-    const hasEmpty = trimmedFees.some((f) => f === "");
+    const hasEmpty = fees.some((f) => f.name.trim() === "");
     if (hasEmpty) {
-      toast.error("Fees Type fields are required.");
+      toast.error("Fees Name fields are required.");
       return;
     }
 
@@ -43,8 +57,17 @@ const AddFeesType = () => {
     }
 
     try {
-      for (const fee of trimmedFees) {
-        await postAPI("/create-fess-type", { feesTypeName: fee, schoolId }, true);
+      for (const fee of fees) {
+        await postAPI(
+          "/create-fess-type",
+          {
+            feesTypeName: fee.name.trim(),
+            groupOfFees: fee.group,
+            schoolId,
+            academicYear
+          },
+          true
+        );
       }
       toast.success("Fees Types created successfully!");
       navigate(-1);
@@ -53,6 +76,8 @@ const AddFeesType = () => {
         error.response?.data?.message ||
         "An error occurred while creating fees types.";
       toast.error(errMsg);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -69,16 +94,34 @@ const AddFeesType = () => {
               </div>
               <form onSubmit={handleSubmit}>
                 {fees.map((fee, index) => (
-                  <div className="row align-items-end mb-3" key={index}>
-                    <div className="col-12 col-md-8 mb-2 mb-md-0">
-                      <label className="form-label">Fees Name {index + 1}</label>
+                  <div className="row align-items-center mb-3" key={index}>
+                     <div className="col-12 col-md-4 mb-2">
+                      <label className="form-label">Group of Fees</label>
+                      <select
+                        className="form-select"
+                        value={fee.group}
+                        onChange={(e) =>
+                          handleGroupChange(index, e.target.value)
+                        }
+                      >
+                        <option value="School Fees">School Fees</option>
+                        <option value="One Time Fees">One Time Fees</option>
+                      </select>
+                    </div>
+                    <div className="col-12 col-md-4 mb-2">
+                      <label className="form-label">
+                        Fees Name {index + 1}
+                      </label>
                       <input
                         type="text"
                         className="form-control"
-                        value={fee}
-                        onChange={(e) => handleFeeChange(index, e.target.value)}
+                        value={fee.name}
+                        onChange={(e) =>
+                          handleFeeChange(index, e.target.value)
+                        }
                       />
                     </div>
+                   
                     <div className="col-12 col-md-4 d-flex flex-row gap-2">
                       {index === fees.length - 1 && (
                         <button
@@ -103,8 +146,11 @@ const AddFeesType = () => {
                 ))}
 
                 <div className="text-end">
-                  <button type="submit" className="btn btn-primary">
-                    Create Fees Type List
+                  <button type="submit"
+                   className="btn btn-primary"
+                      disabled={loading}
+                  >
+                    {loading ? "Submitting..." : "Submit"}
                   </button>
                 </div>
               </form>
@@ -117,3 +163,4 @@ const AddFeesType = () => {
 };
 
 export default AddFeesType;
+

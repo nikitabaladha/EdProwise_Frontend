@@ -4,6 +4,7 @@ import postAPI from "../../api/postAPI";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from '../../AuthContext';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const AdminLogin = () => {
 
   const [generalError, setGeneralError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -32,6 +34,9 @@ const AdminLogin = () => {
 
       if (!response.hasError) {
         const { token, userDetails } = response.data;
+        
+        login(token, userDetails);
+        
         localStorage.setItem("accessToken", JSON.stringify(token));
         localStorage.setItem("userDetails", JSON.stringify(userDetails));
 

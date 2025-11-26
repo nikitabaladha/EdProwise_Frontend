@@ -2,7 +2,7 @@ import { Modal, Button } from 'react-bootstrap';
 
 const LeaveViewModal = ({ show, onHide, record, onStatusChange }) => {
   if (!record) return null;
-
+ 
   return (
     <Modal show={show} onHide={onHide} size="md" centered>
       <Modal.Header closeButton>
@@ -15,7 +15,7 @@ const LeaveViewModal = ({ show, onHide, record, onStatusChange }) => {
         <p><strong>From Date:</strong> {record.fromDate}</p>
         <p><strong>To Date:</strong> {record.toDate}</p>
         <p><strong>Days:</strong> {record.numberOfDays}</p>
-        <p><strong>Status:</strong> <span className={`badge bg-${record.status === 'approved' ? 'success' : record.status === 'rejected' ? 'danger' : 'warning'}`}>{record.status}</span></p>
+        <p><strong>Status:</strong> <span className={`badge bg-${record.status === 'approved' ? 'success' : record.status === 'rejected' ? 'danger' : 'warning'}`}>{record.status === "pending"? "Pending":record.status === "approved"? "Approved" : "Reject"}</span></p>
       </Modal.Body>
       <Modal.Footer>
         <Button

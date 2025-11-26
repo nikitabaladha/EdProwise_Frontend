@@ -6,7 +6,7 @@ import SchoolDashboardRecentOrders from "./SchoolDashboardRecentOrders";
 
 const Dashboard = () => {
   const [totalCounts, setTotalCounts] = useState({});
-
+ 
   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
   const id = userDetails?.schoolId;
 
@@ -23,22 +23,6 @@ const Dashboard = () => {
     }
   };
 
-  // const fetchPerformance = async (year) => {
-  //   try {
-  //     const response = await getAPI(`/get-by-month-year/${year}`, {}, true);
-  //     if (
-  //       !response.hasError &&
-  //       response.data &&
-  //       Array.isArray(response.data.data)
-  //     ) {
-  //       setPerformance(response.data.data);
-  //     } else {
-  //       console.error("Invalid response format or error in response");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error fetching Total Counts:", err);
-  //   }
-  // };
 
   useEffect(() => {
     // fetchSchoolData();

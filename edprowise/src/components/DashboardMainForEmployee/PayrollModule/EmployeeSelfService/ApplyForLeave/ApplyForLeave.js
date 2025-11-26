@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Modal, Button } from "react-bootstrap";
-// return (
+// return ( 
 //     <Modal show={show} onHide={onClose} centered dialogClassName="custom-modal">
 //       <Modal.Body className="modal-body-scrollable">
 //         <div className="container">
@@ -171,13 +171,6 @@ const ApplyForLeave = () => {
                 <div className="col-xl-12">
                     <div className="card m-2">
                         <div className="card-body pb-0">
-                            {/* <div className="container">
-                                <div className="card-header mb-2">
-                                    <h4 className="text-center payroll-title">
-                                        Ap Leave
-                                    </h4>
-                                </div>
-                            </div> */}
 
                             <div className="row m-0 salary-slip-box pt-2 my-2">
                                 <div className="col-md-8">

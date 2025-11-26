@@ -1,5 +1,7 @@
 import React from 'react';
 import { useConcessionForm } from '../UpdateConcessionForm/useConcessionForm';
+import { generateTCPDF } from "./generateStudentPDF";
+import { toast } from 'react-toastify';
 
 
 const ConcessionForm = () => {
@@ -15,8 +17,38 @@ const ConcessionForm = () => {
         cancelSubmittingForm,
         toggleRowSelection,
         getFileNameFromPath,
-        generateAcademicYears
+        academicYears,
+        schoolId
     } = useConcessionForm();
+
+      const renderFileViewButton = (filePath, altText) => {
+    if (!filePath) return <div className="text-secondary small mt-1">No file</div>;
+
+    const fileUrl = `${process.env.REACT_APP_API_URL_FOR_IMAGE}${filePath}`;
+
+    return (
+      <div className="mt-1">
+        <a
+          href={fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-sm btn-primary"
+        >
+          View {altText}
+        </a>
+      </div>
+    );
+  };
+
+    const handleDownloadPDF = async () => {
+        console.log("SchoolId",schoolId)
+        try {
+            await generateTCPDF(schoolId,formData, classes, sections, feeTypes, getFileNameFromPath);
+            toast.success("TC PDF downloaded successfully.");
+        } catch (error) {
+            toast.error("Failed to generate PDF. Please try again.");
+        }
+    };
 
     return (
         <div className="container">
@@ -29,75 +61,93 @@ const ConcessionForm = () => {
                                     <h4 className="card-title text-center custom-heading-font">
                                         View Concession Form
                                     </h4>
+                                    {/* <button
+                                        className="btn btn-primary"
+                                        onClick={handleDownloadPDF}
+                                        title="Download TC Form as PDF"
+                                    >
+                                        Download PDF
+                                    </button> */}
                                 </div>
                             </div>
                             <form onSubmit={handleSubmit}>
                                 <div className="row">
-                                    <div className="col-md-12">
-                                        <div className="mb-3">
-                                            <label htmlFor="AdmissionNumber" className="form-label">
-                                                Admission No
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="AdmissionNumber"
-                                                name="AdmissionNumber"
-                                                className="form-control"
-                                                value={formData.AdmissionNumber}
-                                                disabled
+                                    <div className="col-md-4 d-flex flex-column align-items-center">
+                                        <div className="border rounded d-flex justify-content-center align-items-center mb-2"
+                                            style={{ width: "150px", height: "180px", overflow: "hidden" }}>
+                                            <img
+                                                src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`}
+                                                alt="Student"
+                                                className="w-100 h-100 object-fit-cover"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="firstName" className="form-label">
-                                                First Name<span className="text-danger">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="firstName"
-                                                name="firstName"
-                                                className="form-control"
-                                                value={formData.firstName}
-                                                disabled
+                                    <div className="col-md-8">
+                                        <div className="row">
+                                            <div className="mb-3">
+                                                <label htmlFor="AdmissionNumber" className="form-label">
+                                                    Admission No
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="AdmissionNumber"
+                                                    name="AdmissionNumber"
+                                                    className="form-control"
+                                                    value={formData.AdmissionNumber}
+                                                    disabled
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="mb-3">
+                                                    <label htmlFor="firstName" className="form-label">
+                                                        First Name <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="firstName"
+                                                        name="firstName"
+                                                        className="form-control"
+                                                        value={formData.firstName}
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="mb-3">
+                                                    <label htmlFor="middleName" className="form-label">
+                                                        Middle Name
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="middleName"
+                                                        name="middleName"
+                                                        className="form-control"
+                                                        value={formData.middleName}
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <div className="mb-3">
+                                                    <label htmlFor="lastName" className="form-label">
+                                                        Last Name <span className="text-danger">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="lastName"
+                                                        name="lastName"
+                                                        className="form-control"
+                                                        value={formData.lastName}
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
 
-                                            />
                                         </div>
                                     </div>
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="middleName" className="form-label">
-                                                Middle Name
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="middleName"
-                                                name="middleName"
-                                                className="form-control"
-                                                value={formData.middleName}
-                                                disabled
-
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className="mb-3">
-                                            <label htmlFor="lastName" className="form-label">
-                                                Last Name<span className="text-danger">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="lastName"
-                                                name="lastName"
-                                                className="form-control"
-                                                value={formData.lastName}
-                                                disabled
-
-                                            />
-                                        </div>
-                                    </div>
-
+                                </div>
+                                <div className="row">
                                     <div className="col-md-4">
                                         <div className="mb-3">
                                             <label htmlFor="masterDefineClass" className="form-label">
@@ -174,55 +224,39 @@ const ConcessionForm = () => {
                                             <label htmlFor="castOrIncomeCertificate" className="form-label">
                                                 Caste/Income Certificate<span className="text-danger">*</span>
                                             </label>
-                                            {typeof formData.castOrIncomeCertificate === 'string' && (
-                                                <div className="mt-2">
-
-                                                    {formData.castOrIncomeCertificate.match(/\.(jpeg|jpg|png|gif)$/i) ? (
-                                                        <img
-                                                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.castOrIncomeCertificate}`}
-                                                            alt="ID Card"
-                                                            style={{ maxWidth: '200px', borderRadius: '8px', marginTop: '5px' }}
-                                                        />
-                                                    ) : formData.castOrIncomeCertificate.match(/\.pdf$/i) ? (
-                                                        <iframe
-                                                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.castOrIncomeCertificate}`}
-                                                            title="ID Card PDF Preview"
-                                                            style={{ border: '1px solid #ccc', marginTop: '5px' }}
-                                                        // width="100%"
-                                                        // height="400px"
-                                                        ></iframe>
-                                                    ) : (
-                                                        <div className="text-muted small mt-1">
-                                                            {getFileNameFromPath(formData.castOrIncomeCertificate)}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
+                                           {typeof formData.castOrIncomeCertificate === 'string' && (
+                            <div className="mt-2">
+                              {renderFileViewButton(formData.castOrIncomeCertificate, " Caste/Income Certificate")}
+                            </div>
+                          )}
 
                                         </div>
                                     </div>
 
-                                    <div className="col-md-4">
+                                    {/* <div className="col-md-4">
                                         <div className="mb-3">
-                                            <label htmlFor="applicableAcademicYear" className="form-label">
+                                            <label htmlFor="academicYear" className="form-label">
                                                 Applicable Academic Year <span className="text-danger">*</span>
                                             </label>
                                             <select
-                                                id="applicableAcademicYear"
-                                                name="applicableAcademicYear"
+                                                id="academicYear"
+                                                name="academicYear"
                                                 className="form-control"
-                                                value={formData.applicableAcademicYear}
+                                                value={formData.academicYear}
+                                                // onChange={handleChange}
+                                                required
                                                 disabled
                                             >
-                                                <option value="">Select Academic Year</option>
-                                                {generateAcademicYears(2015, 2030).map((year) => (
-                                                    <option key={year} value={year}>
-                                                        {year}
+                                                <option value="" disabled>Select Year</option>
+                                                {academicYears.map((year) => (
+                                                    <option key={year._id} value={year.academicYear}>
+                                                        {year.academicYear}
                                                     </option>
                                                 ))}
                                             </select>
+
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
 
 
@@ -298,7 +332,7 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="number"
+                                                              
                                                                 name="totalFees"
                                                                 className="form-control text-end"
                                                                 value={detail.totalFees}
@@ -311,7 +345,7 @@ const ConcessionForm = () => {
                                                         <td>
                                                             <div className="input-group">
                                                                 <input
-                                                                    type="number"
+                                                                  
                                                                     name="concessionPercentage"
                                                                     className="form-control text-end"
                                                                     value={detail.concessionPercentage}
@@ -326,7 +360,7 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="number"
+                                                              
                                                                 name="concessionAmount"
                                                                 className="form-control text-end"
                                                                 value={detail.concessionAmount}
@@ -336,7 +370,7 @@ const ConcessionForm = () => {
                                                         </td>
                                                         <td>
                                                             <input
-                                                                type="number"
+                                                              
                                                                 name="balancePayable"
                                                                 className="form-control text-end"
                                                                 value={detail.balancePayable}
@@ -347,10 +381,40 @@ const ConcessionForm = () => {
                                                     </tr>
                                                 ))}
                                             </tbody>
+                                             <tfoot className="bg-light-subtle">
+                                                <tr>
+                                                    <td colSpan="3" className="fw-bold">Totals</td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.totalFees || 0), 0)
+                                                            }
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails.length > 0
+                                                            ? (
+                                                                formData.concessionDetails.reduce(
+                                                                    (sum, detail) => sum + Number(detail.concessionPercentage || 0),
+                                                                    0
+                                                                ) / formData.concessionDetails.length
+                                                            )
+                                                            : "0"}%
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.concessionAmount || 0), 0)
+                                                            }
+                                                    </td>
+                                                    <td className="fw-bold">
+                                                        {formData.concessionDetails
+                                                            .reduce((sum, detail) => sum + Number(detail.balancePayable || 0), 0)
+                                                            }
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
-                                <div className="d-flex justify-content-end">
+                                <div className="d-flex justify-content-end mt-3">
                                     <div className="text" style={{ marginLeft: "2px" }}>
                                         <button
                                             type="button"

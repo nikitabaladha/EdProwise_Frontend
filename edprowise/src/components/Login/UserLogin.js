@@ -29,11 +29,13 @@
 //     event.preventDefault();
 //     navigate("/");
 //   };
+
 //   const navigateToForgotPassword = (event) => {
 //     event.preventDefault();
+
 //     navigate("/forgot-password");
 //   };
-  
+
 //   const navigateToSignup = (event) => {
 //     event.preventDefault();
 //     navigate("/signup");
@@ -46,6 +48,9 @@
 
 //       if (!response.hasError) {
 //         const { token, userDetails } = response.data;
+        
+//         login(token, userDetails);
+        
 //         localStorage.setItem("accessToken", JSON.stringify(token));
 //         localStorage.setItem("userDetails", JSON.stringify(userDetails));
 
@@ -57,7 +62,7 @@
 //               return navigate(`/complete-school-profile`);
 //             } else if (userDetails.status === "Completed") {
 //               return navigate(
-//                 "/school-dashboard/procurement-services/dashboard"
+//                 "/school/go-to-dashboard"
 //               );
 //             }
 //           } else if (userDetails.role === "Auditor") {
@@ -116,7 +121,7 @@
 //             <div className="form-content justify-content-end">
 //               <div className="form-items">
 //                 <div className="website-logoo-inside logo-normal">
-//                   <Link onClick={navigateToHome} className="custom-link">
+//                   <Link to="/" className="custom-link">
 //                     <div>
 //                       <img
 //                         className="logos"
@@ -127,7 +132,7 @@
 //                   </Link>
 //                 </div>
 //                 <h3 className="font-md">Whatever School Need, We Provide</h3>
-//                 <p>We Listen... We Resolve... We Deliver</p>
+//                 <p>We Listen...We Resolve...We Deliver</p>
 //                 <form onSubmit={handleSubmit}>
 //                   <input
 //                     className="form-control"
@@ -158,14 +163,14 @@
 //                       onChange={handleChange}
 //                       required
 //                       className="form-control pe-5"
-//                       placeholder="Enter Password"
+//                       placeholder="Enter password"
 //                     />
 //                     {showPassword ? (
 //                       <FaEye
 //                         onClick={togglePasswordVisibility}
 //                         style={{
 //                           position: "absolute",
-//                           right: "60px",
+//                           right: "10px",
 //                           top: "50%",
 //                           transform: "translateY(-80%)",
 //                           cursor: "pointer",
@@ -176,7 +181,7 @@
 //                         onClick={togglePasswordVisibility}
 //                         style={{
 //                           position: "absolute",
-//                           right: "60px",
+//                           right: "10px",
 //                           top: "50%",
 //                           transform: "translateY(-80%)",
 //                           cursor: "pointer",
@@ -190,10 +195,7 @@
 //                       {generalError}
 //                     </div>
 //                   )}
-//                   <div className="form-button d-flex" style={{
-//                       width:"80%",
-//                       justifySelf:"center",
-//                     }}>
+//                   <div className="form-button d-flex">
 //                     <button
 //                       id="submit"
 //                       type="submit"
@@ -201,24 +203,23 @@
 //                       style={{
 //                         backgroundColor: "#ffc801",
 //                         borderColor: "#ffc801",
-                        
 //                       }}
 //                     >
 //                       Sign In
 //                     </button>
 //                   </div>
 //                   <div className=" text-center">
-//                   <Link onClick={navigateToForgotPassword} >
-//                     Forgot Password?{"  "}
-//                   </Link>
+//                     <Link onClick={navigateToForgotPassword}>
+//                       Forgot Password?{"  "}
+//                     </Link>
 //                   </div>
-//                   {/* <div className=" mt-3 text-center">
-//                   <Link to="/" onClick={navigateToHome}>
-//                     {"  "}
-//                     Go to Home{" "}
-//                   </Link>
-//                   </div> */}
-//                   <div className="mt-2 text-center">
+//                   <div className=" mt-3 text-center">
+//                     <Link to="/" onClick={navigateToHome}>
+//                       {"  "}
+//                       Go to Home{" "}
+//                     </Link>
+//                   </div>
+//                   <div className=" mt-3 text-center">
 //                     <Link onClick={navigateToSignup}>
 //                       If you are not Register, Sign Up Here
 //                     </Link>
@@ -240,6 +241,7 @@ import postAPI from "../../api/postAPI";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from '../../AuthContext';
 
 const UserLogin = () => {
   const [formData, setFormData] = useState({
@@ -253,6 +255,7 @@ const UserLogin = () => {
   const [showEmailField, setShowEmailField] = useState(false);
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -260,8 +263,20 @@ const UserLogin = () => {
     setGeneralError("");
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
+  const navigateToHome = (event) => {
+    event.preventDefault();
+    navigate("/");
+  };
+
+  const navigateToForgotPassword = (event) => {
+    event.preventDefault();
+
+    navigate("/forgot-password");
+  };
+
+  const navigateToSignup = (event) => {
+    event.preventDefault();
+    navigate("/signup");
   };
 
   const handleSubmit = async (e) => {
@@ -274,26 +289,47 @@ const UserLogin = () => {
         setShowEmailField(true);
         return;
       }
-
       if (!response.hasError) {
         const { token, userDetails } = response.data;
+        
+        login(token, userDetails);
+        
         localStorage.setItem("accessToken", JSON.stringify(token));
         localStorage.setItem("userDetails", JSON.stringify(userDetails));
 
         toast.success("Login successful!");
 
         setTimeout(() => {
-          const { role, status } = userDetails;
-          if (role === "School") {
-            navigate(status === "Pending" ? "/complete-school-profile" : "/school-dashboard/procurement-services/dashboard");
-          } else if (role === "Seller") {
-            navigate(status === "Pending" ? "/complete-seller-profile" : "/seller-dashboard/procurement-services/dashboard");
-          } else if (role === "Auditor") {
-            navigate("/auditor-dashboard/procurement-services/dashboard");
-          } else if (role === "User") {
-            navigate("/user-dashboard/procurement-services/dashboard");
-          } else if (role === "Employee") {
-            navigate("/school-dashboard/procurement-services/dashboard"); 
+          if (userDetails && userDetails.role === "School") {
+            if (userDetails.status === "Pending") {
+              return navigate(`/complete-school-profile`);
+            } else if (userDetails.status === "Completed") {
+              return navigate(
+                "/school/go-to-dashboard"
+              );
+            }
+          } else if (userDetails.role === "Auditor") {
+            return navigate(
+              "/auditor-dashboard/procurement-services/dashboard"
+            );
+          } else if (userDetails.role === "User") {
+            return navigate("/user-dashboard/procurement-services/dashboard");
+          } else if (userDetails && userDetails.role === "Seller") {
+            if (userDetails.status === "Pending") {
+              return navigate(`/complete-seller-profile`);
+            } else if (userDetails.status === "Completed") {
+              return navigate(
+                "/seller-dashboard/procurement-services/dashboard"
+              );
+            }
+          } else if (userDetails && userDetails.role === "Employee") {
+            navigate("/school/go-to-dashboard"); 
+          } else if (userDetails.role === "Principal") {
+            return navigate(
+              "/principal-dashboard" 
+            );
+          } else if (userDetails.role === "Student") {
+            return navigate("/student/management-year");
           } else {
             toast.error("No dashboard available for your role!");
           }
@@ -317,14 +353,133 @@ const UserLogin = () => {
           <div className="info-holder">
             <img src={`${process.env.PUBLIC_URL}/assets/images/graphic15.svg`} alt="" />
           </div>
-        </div>
-        <div className="form-holder" style={{ height: "100vh", justifyContent: "center", alignItems: "center" }}>
-          <div className="form-content justify-content-end">
-            <div className="form-items">
-              <div className="website-logoo-inside logo-normal">
-                <Link onClick={() => navigate("/")} className="custom-link">
-                  <img className="logos" src="/assets/website-images/EdProwise New Logo-1.png" alt="logo" />
-                </Link>
+          <div
+            className="form-holder"
+            style={{
+              height: "100vh",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div className="form-content justify-content-end">
+              <div className="form-items">
+                <div className="website-logoo-inside logo-normal">
+                  <Link to="/" className="custom-link">
+                    <div>
+                      <img
+                        className="logos"
+                        src="/assets/website-images/EdProwise New Logo-1.png"
+                        alt="logo"
+                      />
+                    </div>
+                  </Link>
+                </div>
+                <h3 className="font-md">Whatever School Need, We Provide</h3>
+                <p>We Listen...We Resolve...We Deliver</p>
+                <form onSubmit={handleSubmit}>
+                  <input
+                    className="form-control"
+                    type="text"
+                    name="userId"
+                    value={formData.userId}
+                    onChange={handleChange}
+                    placeholder="User ID"
+                    required=""
+                    onKeyDown={(e) => {
+                      if (e.key === " ") {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
+
+                  <div
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      width: "100%",
+                    }}
+                  >
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      className="form-control pe-5"
+                      placeholder="Enter password"
+                    />
+                    {showPassword ? (
+                      <FaEye
+                        onClick={togglePasswordVisibility}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-80%)",
+                          cursor: "pointer",
+                        }}
+                      />
+                    ) : (
+                      <FaEyeSlash
+                        onClick={togglePasswordVisibility}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-80%)",
+                          cursor: "pointer",
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  {showEmailField && (
+                  <input
+                    className="form-control mt-2"
+                    type="email"
+                    name="emailId"
+                    value={formData.emailId}
+                    onChange={handleChange}
+                    placeholder="Email ID"
+                    required
+                  />
+                )}
+
+                  {generalError && (
+                    <div className="alert alert-danger mt-3">
+                      {generalError}
+                    </div>
+                  )}
+                  <div className="form-button d-flex">
+                    <button
+                      id="submit"
+                      type="submit"
+                      className="btn btn-primary"
+                      style={{
+                        backgroundColor: "#ffc801",
+                        borderColor: "#ffc801",
+                      }}
+                    >
+                      Sign In
+                    </button>
+                  </div>
+                  <div className=" text-center">
+                    <Link onClick={navigateToForgotPassword}>
+                      Forgot Password?{"  "}
+                    </Link>
+                  </div>
+                  <div className=" mt-3 text-center">
+                    <Link to="/" onClick={navigateToHome}>
+                      {"  "}
+                      Go to Home{" "}
+                    </Link>
+                  </div>
+                  <div className=" mt-3 text-center">
+                    <Link onClick={navigateToSignup}>
+                      If you are not Register, Sign Up Here
+                    </Link>
+                  </div>
+                </form>
               </div>
               <h3 className="font-md">Whatever School Needs, We Provide</h3>
               <p>We Listen... We Resolve... We Deliver</p>

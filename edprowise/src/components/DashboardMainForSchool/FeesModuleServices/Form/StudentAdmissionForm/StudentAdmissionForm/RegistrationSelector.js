@@ -23,8 +23,8 @@ const RegistrationSelector = ({
               </div>
               <form onSubmit={handleRegistrationSubmit}>
                 <div className="row">
-                  <div className="col-md-12">
-                    <div className="mb-3">
+                  <div className="col-md-6">
+                    <div className="mb-4">
                       <label htmlFor="registrationNumber" className="form-label">
                         Registration No
                       </label>
@@ -48,12 +48,15 @@ const RegistrationSelector = ({
                       </datalist>
                     </div>
                   </div>
-                </div>
-                <div className="text-end">
+                  <div className="col-md-6">
+                  <div className="mt-3">
                   <button type="submit" className="btn btn-primary custom-submit-button">
                     Submit
                   </button>
+              </div>
                 </div>
+                </div>
+                
               </form>
             </div>
           </div>

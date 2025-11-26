@@ -8,7 +8,8 @@ import postAPI from '../../../../../../api/postAPI';
 import putAPI from '../../../../../../api/putAPI';
 import LeaveViewModal from './LeaveViewModal';
 import LeaveEditModal from './LeaveEditModal';
-
+import ConfirmationDialog from "../../../../../ConfirmationDialog";
+   
 const EmployeeLeaveDetailsAndApply = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -20,7 +21,13 @@ const EmployeeLeaveDetailsAndApply = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState(null);
-  const [academicYear] = useState('2025-26');
+  const [academicYear, setAcademicYear] = useState();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteType, setDeleteType] = useState("");
+  const [showLeaveReport, setShowLeaveReport] = useState(false)
+  const [reportFilters, setReportFilters] = useState({ from: '', to: '' });
+  const [leaveReport, setLeaveReport] = useState([]);
+
   const [formData, setFormData] = useState({
     leaveType: '',
     leaveReason: '',
@@ -37,30 +44,62 @@ const EmployeeLeaveDetailsAndApply = () => {
     }
     setSchoolId(userDetails.schoolId);
     setEmployeeId(userDetails.userId);
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
+    fetchEmployeeData(userDetails.schoolId, userDetails.userId, academicYear);
+  }, []);
 
-    fetchEmployeeData(userDetails.schoolId, userDetails.userId);
-  }, [academicYear]);
-
-  const fetchEmployeeData = async (schoolId, empId) => {
+  const fetchEmployeeData = async (schoolId, empId, academicYear) => {
     try {
-      const employeeRes = await getAPI(`/get-employee-self-details/${schoolId}/${empId}`);
-      if (!employeeRes.hasError && employeeRes.data?.data) {
-        setEmployeeDetails(employeeRes.data.data);
+      const employeeRes = await getAPI(`/get-employee-details/${schoolId}/${empId}/${academicYear}`);
+      console.log("employeeRes", employeeRes);
+
+      if (!employeeRes.hasError && employeeRes.data?.data.employeeInfo) {
+        console.log("Set", setEmployeeDetails(employeeRes.data.data.employeeInfo));
+
+        // setEmployeeDetails(employeeRes.data.data.employeeInfo);
       }
 
       const leaveRes = await getAPI(`/getall-payroll-annual-leave/${schoolId}?academicYear=${academicYear}`);
-      if (!leaveRes.hasError && leaveRes.data?.data?.ctcComponent) {
-        setLeaveTypes(leaveRes.data.data.ctcComponent);
-      }
+      const summaryRes = await getAPI(`/employee-leave-summary/${schoolId}/${empId}/${academicYear}`);
+
+      let summaryData = summaryRes?.data?.data || {};
+      let leaveList = leaveRes?.data?.data?.ctcComponent || [];
+
+      console.log("summary res", summaryRes);
+      const merged = leaveList.map(item => {
+        const type = item.annualLeaveTypeName;
+        const entitled = item.days || 0;
+        const availedLeave = summaryData[type]?.availedLeave || 0;
+        const pendingApproval = summaryData[type]?.pendingApproval || 0;
+        const carryForward = item.isCarryForward ? (summaryData[type]?.carryForward || 0) : 0;
+        const mandatoryExpiredLeaves = summaryData[type]?.mandatoryExpiredLeaves || 0;
+
+        let maxToBeExpired = 0;
+        if (item.isCarryForward) {
+          maxToBeExpired = Math.max(availedLeave, mandatoryExpiredLeaves);
+        }
+
+        const balanceLeave = (entitled + carryForward) - availedLeave;
+
+        return {
+          ...item,
+          availedLeave,
+          pendingApproval,
+          carryForward,
+          maxToBeExpired,
+          balanceLeave,
+        };
+      });
+
+      setLeaveTypes(merged);
 
       const historyRes = await getAPI(`/get-employee-leave/${schoolId}/${empId}`);
-      console.log(historyRes);
-
       const leaves = historyRes?.data?.data?.leaveRecords?.[academicYear] || [];
       setLeaveHistory(leaves);
 
     } catch (error) {
-      toast.error('Failed to fetch data');
+      toast.error("Failed to fetch leave details");
     }
   };
 
@@ -99,8 +138,8 @@ const EmployeeLeaveDetailsAndApply = () => {
       updatedLeave,
     };
     const res = await putAPI('/update-employee-leave', payload, {}, true);
-    console.log("update res",res);
-    
+    console.log("update res", res);
+
     if (!res.hasError) {
       toast.success("Leave updated successfully");
       fetchEmployeeData(schoolId, employeeId);
@@ -109,7 +148,6 @@ const EmployeeLeaveDetailsAndApply = () => {
       toast.error(res.message || "Failed to update");
     }
   };
- 
 
   const handleLeaveSubmit = async (e) => {
     e.preventDefault();
@@ -147,26 +185,69 @@ const EmployeeLeaveDetailsAndApply = () => {
     return `${day}-${month}-${year}`;
   };
 
-  const handleGenerateReport = () => {
+  const handleGenerateReport = async () => {
+    if (!reportFilters.from || !reportFilters.to) {
+      toast.error("Please select both From and To dates");
+      return;
+    }
 
+    try {
+      const res = await getAPI(
+        `/approved-leaves/${schoolId}/${employeeId}?fromDate=${reportFilters.from}&toDate=${reportFilters.to}&academicYear=${academicYear}`
+      );
+
+      console.log("Approve leaves", res);
+
+      if (!res.hasError) {
+        setLeaveReport(res.data.data);
+        setShowLeaveReport(true);
+      } else {
+        setLeaveReport([]);
+        setShowLeaveReport(false);
+        toast.error(res.message || "Failed to fetch report");
+      }
+    } catch (err) {
+      setShowLeaveReport(false);
+      toast.error("Server error while generating report");
+    }
   };
 
-  // Calculate totals for the leave balance table
   const calculateTotals = () => {
-    const totals = leaveTypes.reduce(
-      (acc, leave) => ({
-        carryForward: acc.carryForward + (leave.carryForward || 0),
-        entitledLeave: acc.entitledLeave + (leave.days || 0),
-        availedLeave: acc.availedLeave + (leave.availedLeave || 0),
-        balanceLeave: acc.balanceLeave + ((leave.days || 0) + (leave.carryForward || 0) - (leave.availedLeave || 0)),
-        pendingApproval: acc.pendingApproval + (leave.pendingApproval || 0),
-      }),
-      { carryForward: 0, entitledLeave: 0, availedLeave: 0, balanceLeave: 0, pendingApproval: 0 }
-    );
-    return totals;
+    return leaveTypes.reduce((acc, leave) => ({
+      carryForward: acc.carryForward + (leave.carryForward || 0),
+      entitledLeave: acc.entitledLeave + (leave.days || 0),
+      availedLeave: acc.availedLeave + (leave.availedLeave || 0),
+      maxToBeExpired: acc.maxToBeExpired + (leave.isCarryForward ? leave.maxToBeExpired || 0 : 0),
+      balanceLeave: acc.balanceLeave + ((leave.days || 0) + (leave.carryForward || 0) - (leave.availedLeave || 0)),
+      pendingApproval: acc.pendingApproval + (leave.pendingApproval || 0),
+    }), {
+      carryForward: 0,
+      entitledLeave: 0,
+      availedLeave: 0,
+      maxToBeExpired: 0,
+      balanceLeave: 0,
+      pendingApproval: 0
+    });
+  };
+  const totals = calculateTotals();
+
+  const openDeleteDialog = (leave) => {
+    setSelectedLeave(leave);
+    setDeleteType("employeeLeave");
+    setIsDeleteDialogOpen(true);
   };
 
-  const totals = calculateTotals();
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+    setSelectedLeave(null);
+  };
+
+  const handleDeleteConfirmed = (id) => {
+    fetchEmployeeData(schoolId, employeeId);
+    setIsDeleteDialogOpen(false);
+    setSelectedLeave(null);
+  };
+
 
   return (
     <>
@@ -178,7 +259,7 @@ const EmployeeLeaveDetailsAndApply = () => {
                 <div className="row m-0 salary-slip-box pt-2 my-2">
                   <div className="col-md-8">
                     <p className="text-dark payroll-box-text">
-                      <strong>Employee ID: </strong> {employeeDetails.employeeId || 'N/A'}
+                      <strong>Employee ID: </strong> {employeeId || 'N/A'}
                     </p>
                   </div>
                   <div className="col-md-4">
@@ -216,6 +297,7 @@ const EmployeeLeaveDetailsAndApply = () => {
                         <th className="text-center align-content-center border border-dark p-2">Carry Forward</th>
                         <th className="text-center align-content-center border border-dark p-2">Entitled Leave</th>
                         <th className="text-center align-content-center border border-dark p-2">Availed Leave</th>
+                        {/* <th className="text-center align-content-center border border-dark p-2">maximum to be expired</th> */}
                         <th className="text-center align-content-center border border-dark p-2">Balance Leave</th>
                         <th className="text-center align-content-center border border-dark p-2">Leave Pending for Approval</th>
                       </tr>
@@ -227,7 +309,7 @@ const EmployeeLeaveDetailsAndApply = () => {
                             {leave.annualLeaveTypeName}
                           </td>
                           <td className="text-end align-content-center border border-dark p-2">
-                            {leave.carryForward || 0}
+                            {leave.isCarryForward ? leave.carryForward || 0 : "-"}
                           </td>
                           <td className="text-end align-content-center border border-dark p-2">
                             {leave.days || 0}
@@ -235,6 +317,10 @@ const EmployeeLeaveDetailsAndApply = () => {
                           <td className="text-end align-content-center border border-dark p-2">
                             {leave.availedLeave || 0}
                           </td>
+
+                          {/* <td className="text-end align-content-center border border-dark p-2">
+                                {leave.isCarryForward ? leave.maxToBeExpired : "-"}
+                              </td> */}
                           <td className="text-end align-content-center border border-dark p-2">
                             {(leave.days || 0) + (leave.carryForward || 0) - (leave.availedLeave || 0)}
                           </td>
@@ -308,22 +394,34 @@ const EmployeeLeaveDetailsAndApply = () => {
                             <td>{formatDate(leave.fromDate)}</td>
                             <td>{formatDate(leave.toDate)}</td>
                             <td>{leave.numberOfDays}</td>
-                            <td>{leave.status}</td>
+                            <td>{leave.status === "pending" ? "Pending" : leave.status === "approved" ? "Approved" : "Reject"}</td>
                             <td>
                               <div className="d-flex gap-2">
                                 <Link className="btn btn-light btn-sm" onClick={() => openView(leave)}>
                                   <iconify-icon icon="solar:eye-broken" className="align-middle fs-18" />
                                 </Link>
-
-                                <Link className="btn btn-soft-primary btn-sm" onClick={() => openEdit(leave, index)}>
+                                {
+                                  leave.status === "pending" ? <><Link className="btn btn-soft-primary btn-sm" onClick={() => openEdit(leave, index)}>
+                                    <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
+                                  </Link></> : ""
+                                }
+                                {/* <Link className="btn btn-soft-primary btn-sm" onClick={() => openEdit(leave, index)}>
                                   <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
-                                </Link>
+                                </Link> */}
 
-                                <Link className="btn btn-soft-danger btn-sm"
-                                // onClick={() => openDeleteDialog(leave)}
+                                {
+                                  leave.status === "pending" ? <><Link className="btn btn-soft-danger btn-sm"
+                                    // onClick={ openDeleteDialog(leave)}
+                                  >
+                                    <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
+                                  </Link></> : ""
+                                }
+
+                                {/* <Link className="btn btn-soft-danger btn-sm"
+                                  onClick={() => openDeleteDialog(leave)}
                                 >
                                   <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
-                                </Link>
+                                </Link> */}
                               </div>
                             </td>
                           </tr>
@@ -460,7 +558,12 @@ const EmployeeLeaveDetailsAndApply = () => {
                     <h4 className="text-center mb-0 payroll-title">Generate Leave Report</h4>
                   </div>
                 </div>
-                <form onSubmit="">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleGenerateReport();
+                  }}
+                >
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -469,9 +572,10 @@ const EmployeeLeaveDetailsAndApply = () => {
                         </label>
                         <input
                           type="date"
-                          id="leaveStartDate"
-                          name="leaveStartDate"
+                          name="from"
                           className="form-control"
+                          value={reportFilters.from}
+                          onChange={(e) => setReportFilters(prev => ({ ...prev, from: e.target.value }))}
                           required
                         />
                       </div>
@@ -483,9 +587,10 @@ const EmployeeLeaveDetailsAndApply = () => {
                         </label>
                         <input
                           type="date"
-                          id="leaveEndDate"
-                          name="leaveEndDate"
+                          name="to"
                           className="form-control"
+                          value={reportFilters.to}
+                          onChange={(e) => setReportFilters(prev => ({ ...prev, to: e.target.value }))}
                           required
                         />
                       </div>
@@ -501,6 +606,66 @@ const EmployeeLeaveDetailsAndApply = () => {
                     </div>
                   </div>
                 </form>
+                {
+                  showLeaveReport && (
+                    <>
+                      <div className="table-responsive py-4">
+                        <table className="table align-middle mb-0 table-hover table-centered table-nowrap text-center">
+                          <thead className="bg-light-subtle">
+                            <tr className="payroll-table-header">
+                              <th style={{ width: 20 }}>
+                                <div className="form-check ms-1">
+                                  <input type="checkbox" className="form-check-input" id="customCheck1" />
+                                  <label className="form-check-label" htmlFor="customCheck1" />
+                                </div>
+                              </th>
+                              <th>Type of Leave</th>
+                              <th>Apply Date</th>
+                              <th>Leave Date</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {leaveReport.length ? (
+                              leaveReport.map((leave, index) => (
+                                <tr key={index}>
+                                  <td style={{ width: 20 }}>
+                                    <div className="form-check ms-1">
+                                      <input type="checkbox" className="form-check-input" />
+                                      <label className="form-check-label" />
+                                    </div>
+                                  </td>
+                                  <td>{leave.leaveType}</td>
+                                  <td>{formatDate(leave.applyDate)}</td>
+                                  <td>{formatDate(leave.date)}</td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan="6" className="text-center">No approved leaves found in selected date range</td>
+                              </tr>
+                            )}
+                          </tbody>
+
+                        </table>
+                      </div>
+                      <div className="card-footer border-top">
+                        <nav aria-label="Page navigation example">
+                          <ul className="pagination justify-content-end mb-0">
+                            <li className="page-item">
+                              <button className="page-link">Previous</button>
+                            </li>
+                            <li className="page-item">
+                              <button className="page-link pagination-button">1</button>
+                            </li>
+                            <li className="page-item">
+                              <button className="page-link">Next</button>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+                    </>
+                  )
+                }
               </div>
             </div>
           </div>
@@ -523,10 +688,18 @@ const EmployeeLeaveDetailsAndApply = () => {
           academicYear={academicYear}
         />
       )}
+
+      {isDeleteDialogOpen && selectedLeave && (
+        <ConfirmationDialog
+          onClose={handleDeleteCancel}
+          deleteType={deleteType}
+          id={selectedLeave._id}
+          onDeleted={handleDeleteConfirmed}
+        />
+      )}
     </>
   );
 };
-
 export default EmployeeLeaveDetailsAndApply;
 
 

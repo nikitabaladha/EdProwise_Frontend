@@ -20,6 +20,7 @@ const UpdateSubCategory = () => {
     mainCategoryId: "",
     edprowiseMargin: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isLoading, setIsLoading] = useState(true);
 

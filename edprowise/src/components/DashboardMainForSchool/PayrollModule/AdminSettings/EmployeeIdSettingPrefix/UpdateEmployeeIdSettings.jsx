@@ -3,7 +3,7 @@ import putAPI from "../../../../../api/putAPI";
 import getAPI from "../../../../../api/getAPI";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from 'react-router-dom';
-
+ 
 const UpdateEmployeeIdSettings = () => {
   const navigate = useNavigate();
   const location = useLocation();

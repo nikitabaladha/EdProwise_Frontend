@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import ConfirmationDialog from "../../../../ConfirmationDialog";
-import getAPI from "../../../../../api/getAPI";
+import getAPI from '../../../../../api/getAPI';
 import { toast } from "react-toastify";
 
 const SchoolShifts = () => {
@@ -14,31 +14,52 @@ const SchoolShifts = () => {
   const [deleteType, setDeleteType] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
 
+
   const [shifts, setShifts] = useState([]);
   const [schoolId, setSchoolId] = useState(null);
+
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+
+
+   useEffect(() => {
+      const fetchAcademicYears = async () => {
+        try {
+          setLoadingYears(true);
+          const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+          const schoolId = userDetails?.schoolId; 
+          const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+          setAcademicYears(response.data.data || []);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setLoadingYears(false);
+        }
+      };
+  
+      fetchAcademicYears();
+    }, []);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
-
     if (!id) {
       toast.error("School ID not found. Please log in again.");
       return;
     }
-
     setSchoolId(id);
   }, []);
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchShifts = async () => {
       try {
-        const response = await getAPI(`/master-define-shift/${schoolId}`);
+        const response = await getAPI(`/master-define-shift-year/${schoolId}/year/${selectedYear}`);
+        console.log("Fetched Shifts:", response);
         if (!response.hasError) {
-          const shiftArray = Array.isArray(response.data?.data)
-            ? response.data.data
-            : [];
+          const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
           setShifts(shiftArray);
         } else {
           toast.error(response.message || "Failed to fetch shifts.");
@@ -50,7 +71,8 @@ const SchoolShifts = () => {
     };
 
     fetchShifts();
-  }, [schoolId]);
+  }, [schoolId,selectedYear]);
+
 
   const indexOfLastRequest = currentPage * requestPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
@@ -99,10 +121,11 @@ const SchoolShifts = () => {
     });
   };
 
+
   const navigateToAddNewClass = (event) => {
     event.preventDefault();
-    navigate(`/school-dashboard/fees-module/admin-setting/shifts/add-shift`);
-  };
+    navigate(`/school-dashboard/fees-module/admin-setting/grade/shifts/add-shift`);
+  }
   return (
     <>
       <div className="container-fluid">
@@ -110,21 +133,36 @@ const SchoolShifts = () => {
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All Class & Section</h4>
+                <h4 className="card-title flex-grow-1">All Shifts</h4>
                 <Link
                   onClick={(event) => navigateToAddNewClass(event)}
                   className="btn btn-sm btn-primary"
                 >
                   Add Shift
                 </Link>
+                  <div className="d-flex align-items-center gap-2">
+                 <select
+                    className="form-select form-select-sm w-auto"
+                    value={selectedYear}
+                    onChange={(e) => {
+                      setSelectedYear(e.target.value);
+                      localStorage.setItem("selectedAcademicYear", e.target.value);
+                    }}
+                    disabled={loadingYears}
+                  >
+                    <option value="" disabled>Select Year</option>
+                    {academicYears.map((year) => (
+                      <option key={year._id} value={year.academicYear}>
+                        {year.academicYear}
+                      </option>
+                    ))}
 
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
+                  </select>
                 </div>
               </div>
 
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered text-center">
+                <table className="table align-middle mb-0  table-centered text-center">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th style={{ width: 20 }}>
@@ -151,38 +189,26 @@ const SchoolShifts = () => {
                       <tr key={index}>
                         <td>
                           <div className="form-check ms-1">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                              id={`customCheck-${index}`}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor={`customCheck-${index}`}
-                            >
-                              &nbsp;
-                            </label>
+                            <input type="checkbox" className="form-check-input" id={`customCheck-${index}`} />
+                            <label className="form-check-label" htmlFor={`customCheck-${index}`}>&nbsp;</label>
                           </div>
                         </td>
                         <td>{shift.masterDefineShiftName}</td>
                         <td>
-                          {new Date(shift.startTime).toLocaleTimeString(
-                            "en-US",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: true,
-                              timeZone: "UTC",
-                            }
-                          )}
+                          {new Date(shift.startTime).toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true,
+                            timeZone: 'UTC'
+                          })}
                         </td>
 
                         <td>
-                          {new Date(shift.endTime).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
+                          {new Date(shift.endTime).toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit',
                             hour12: true,
-                            timeZone: "UTC",
+                            timeZone: 'UTC'
                           })}
                         </td>
 
@@ -197,25 +223,16 @@ const SchoolShifts = () => {
                             <button
                               className="btn btn-soft-primary btn-sm"
                               onClick={() =>
-                                navigate(
-                                  "/school-dashboard/fees-module/admin-setting/shifts/update-shift",
-                                  {
-                                    state: { shift },
-                                  }
-                                )
+                                navigate("/school-dashboard/fees-module/admin-setting/grade/shifts/update-shift", {
+                                  state: { shift }
+                                })
                               }
                             >
-                              <iconify-icon
-                                icon="solar:pen-2-broken"
-                                className="align-middle fs-18"
-                              />
+                              <iconify-icon icon="solar:pen-2-broken" className="align-middle fs-18" />
                             </button>
 
                             <Link
-                              onClick={(e) => {
-                                e.preventDefault();
-                                openDeleteDialog(shift);
-                              }}
+                              onClick={(e) => { e.preventDefault(); openDeleteDialog(shift); }}
                               className="btn btn-soft-danger btn-sm"
                             >
                               <iconify-icon
@@ -227,6 +244,7 @@ const SchoolShifts = () => {
                         </td>
                       </tr>
                     ))}
+
                   </tbody>
                 </table>
               </div>
@@ -285,6 +303,6 @@ const SchoolShifts = () => {
         />
       )}
     </>
-  );
-};
+  )
+}
 export default SchoolShifts;

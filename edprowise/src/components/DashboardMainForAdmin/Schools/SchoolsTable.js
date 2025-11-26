@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import getAPI from "../../../api/getAPI";
 import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
 
+import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
+
 const SchoolsTable = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -106,11 +108,11 @@ const SchoolsTable = () => {
       setSchools((prevSchools) =>
         prevSchools.filter((school) => school.schoolId !== schoolId)
       );
-
-      fetchSchoolData();
     } catch (error) {
       console.error("Error deleting school:", error);
       toast.error("Failed to delete school. Please try again.");
+
+      fetchSchoolData();
     }
   };
 

@@ -1,6 +1,7 @@
 
 
 import React from 'react';
+import CreatableSelect from 'react-select/creatable';
 
 const Form = ({
   handleSubmit,
@@ -8,124 +9,170 @@ const Form = ({
   formData,
   handleChange,
   cityOptions,
+  countryOptions,
+  stateOptions,
   classes,
   handleClassChange,
   sections,
   shifts,
-  isNursery,
   isSubmitting,
   getFileNameFromPath,
   showAdditionalData,
-  handleShiftChange
+  handleShiftChange,
+  handlePhotoUpload,
+  selectedFeeType,
+  admissionFees,
+  concessionAmount,
+  finalAmount,
+  availableFeeTypes,
+  handleFeeTypeChange,
+  handleConcessionChange,
+  handleCountryChange,
+  handleStateChange,
+  handleCityChange,
 }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="row">
-        <div className="col-md-12">
-          <div className="mb-3">
-            <label htmlFor="registrationNumber" className="form-label">
-              Registration No
+        <div className="col-md-4 d-flex flex-column align-items-center">
+          <div className="border rounded d-flex justify-content-center align-items-center mb-2"
+            style={{ width: "150px", height: "180px", overflow: "hidden" }}>
+            {formData.studentPhoto ? (
+              typeof formData.studentPhoto === "string" ? (
+                <img
+                  src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`}
+                  alt="Student"
+                  className="w-100 h-100 object-fit-cover"
+                />
+              ) : (
+                <img
+                  src={URL.createObjectURL(formData.studentPhoto)}
+                  alt="Student"
+                  className="w-100 h-100 object-fit-cover"
+                />
+              )
+            ) : (
+              <div className="text-secondary">Photo</div>
+            )}
+          </div>
+          <div className="mb-3 w-100 text-center">
+            <label className="form-label mb-1 d-block text-start">
             </label>
             <input
-              type="text"
-              id="registrationNumber"
-              name="registrationNumber"
-              className="form-control"
-              value={formData.registrationNumber}
-              onChange={handleChange}
-              required
-              disabled
+              type="file"
+              id="studentPhoto"
+              name="studentPhoto"
+              className="d-none"
+              accept=".jpg,.jpeg"
+              onChange={handlePhotoUpload}
             />
+            <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
+              Upload Photo
+            </label>
           </div>
         </div>
 
+        <div className="col-md-8">
+          <div className="row">
+            <div className="mb-3">
+              <label htmlFor="registrationNumber" className="form-label">
+                Registration No
+              </label>
+              <input
+                type="text"
+                id="registrationNumber"
+                name="registrationNumber"
+                className="form-control"
+                value={formData.registrationNumber}
+                onChange={handleChange}
+                required
+                disabled
+              />
+            </div>
+            <div className="col-md-4">
+              <div className="mb-3">
+                <label htmlFor="firstName" className="form-label">
+                  First Name <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  className="form-control"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="mb-3">
+                <label htmlFor="middleName" className="form-label">
+                  Middle Name
+                </label>
+                <input
+                  type="text"
+                  id="middleName"
+                  name="middleName"
+                  className="form-control"
+                  value={formData.middleName}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="mb-3">
+                <label htmlFor="lastName" className="form-label">
+                  Last Name <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  className="form-control"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label htmlFor="dateOfBirth" className="form-label">
+                  Date Of Birth <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="dateOfBirth"
+                  name="dateOfBirth"
+                  className="form-control"
+                  value={formData.dateOfBirth}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label htmlFor="age" className="form-label">
+                  Age <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="age"
+                  name="age"
+                  className="form-control"
+                  value={formData.age}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
         <div className="col-md-4">
-          <div className="mb-3">
-            <label htmlFor="firstName" className="form-label">
-              First Name<span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              id="firstName"
-              name="firstName"
-              className="form-control"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="mb-3">
-            <label htmlFor="middleName" className="form-label">
-              Middle Name
-            </label>
-            <input
-              type="text"
-              id="middleName"
-              name="middleName"
-              className="form-control"
-              value={formData.middleName}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="mb-3">
-            <label htmlFor="lastName" className="form-label">
-              Last Name<span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              className="form-control"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-
-        <div className="col-md-3">
-          <div className="mb-3">
-            <label
-              htmlFor="dateOfBirth"
-              className="form-label"
-            >
-              Date Of Birth
-            </label>
-            <input
-              type="date"
-              id="dateOfBirth"
-              name="dateOfBirth"
-              className="form-control"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-        <div className="col-md-3">
-          {" "}
-          <div className="mb-3">
-            <label htmlFor="age" className="form-label">
-              Age<span className="text-danger">*</span>
-            </label>
-            <input
-              type="number"
-              id="age"
-              name="age"
-              className="form-control"
-              value={formData.age}
-              onChange={handleChange}
-              required
-
-            />
-          </div>
-        </div>
-
-        <div className="col-md-3">
           {" "}
           <div className="mb-3">
             <label htmlFor="nationality" className="form-label">
@@ -151,7 +198,7 @@ const Form = ({
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-md-4">
           {" "}
           <div className="mb-3">
             <label htmlFor="gender" className="form-label">
@@ -174,7 +221,7 @@ const Form = ({
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-md-4">
           {" "}
           <div className="mb-3">
             <label htmlFor="bloodGroup" className="form-label">
@@ -200,7 +247,7 @@ const Form = ({
             </select>
           </div>
         </div>
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="mb-3">
             <label htmlFor="masterDefineClass" className="form-label">
               Class<span className="text-danger">*</span>
@@ -223,7 +270,7 @@ const Form = ({
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="mb-3">
             <label htmlFor="masterDefineShift" className="form-label">
               Shift<span className="text-danger">*</span>
@@ -246,7 +293,7 @@ const Form = ({
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="mb-3">
             <label htmlFor="section" className="form-label">
               Section<span className="text-danger">*</span>
@@ -291,40 +338,76 @@ const Form = ({
             required
           />
         </div>
-      </div>
-
-      <div className="row">
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="mb-3">
-            <label
-              htmlFor="cityStateCountry"
-              className="form-label"
-            >
-              City-State-Country<span className="text-danger">*</span>
+            <label htmlFor="country" className="form-label">
+              Country <span className="text-danger">*</span>
             </label>
-
-            <select
-              id="cityStateCountry"
-              name="cityStateCountry"
-              className="form-control"
-              value={formData.cityStateCountry}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select City-State-Country</option>
-              {cityOptions.map((option, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+            <CreatableSelect
+              id="country"
+              name="country"
+              options={countryOptions}
+              value={formData.country ? { value: formData.country, label: formData.country } : null}
+              onChange={handleCountryChange}
+              isClearable
+              isSearchable
+              placeholder="Select or type a country"
+              formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+              noOptionsMessage={() => "Type to add a new country"}
+            />
           </div>
         </div>
-        <div className="col-md-3">
-          {" "}
+
+        <div className="col-md-4">
+          <div className="mb-3">
+            <label htmlFor="state" className="form-label">
+              State <span className="text-danger">*</span>
+            </label>
+            <CreatableSelect
+              id="state"
+              name="state"
+              options={stateOptions}
+              value={formData.state ? { value: formData.state, label: formData.state } : null}
+              onChange={handleStateChange}
+              isClearable
+              isSearchable
+              placeholder="Select or type a state"
+              formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+              noOptionsMessage={() => formData.country ? "Type to add a new state" : "Select a country first"}
+              isValidNewOption={(inputValue) => inputValue.length > 0}
+            />
+          </div>
+        </div>
+
+        <div className="col-md-4">
+          <div className="mb-3">
+            <label htmlFor="city" className="form-label">
+              City <span className="text-danger">*</span>
+            </label>
+            <CreatableSelect
+              id="city"
+              name="city"
+              options={cityOptions}
+              value={formData.city ? { value: formData.city, label: formData.city } : null}
+              onChange={handleCityChange}
+              isClearable
+              isSearchable
+              placeholder="Select or type a city"
+              formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+              noOptionsMessage={() => formData.state ? "Type to add a new city" : "Select a state first"}
+              isValidNewOption={(inputValue) => inputValue.length > 0}
+            />
+          </div>
+        </div>
+      </div>
+
+
+
+      <div className="row">
+        <div className="col-md-4">
           <div className="mb-3">
             <label htmlFor="pincode" className="form-label">
-              Pincode<span className="text-danger">*</span>
+              Pincode <span className="text-danger">*</span>
             </label>
             <input
               type="number"
@@ -337,8 +420,7 @@ const Form = ({
             />
           </div>
         </div>
-
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="mb-3">
             <label htmlFor="parentContactNumber" className="form-label">
               Parent Contact No.<span className="text-danger">*</span>
@@ -355,17 +437,17 @@ const Form = ({
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="mb-3">
-            <label htmlFor="motherLanguage" className="form-label">
-              Mother Language<span className="text-danger">*</span>
+            <label htmlFor="motherTongue" className="form-label">
+              Mother Tongue<span className="text-danger">*</span>
             </label>
             <input
               type="text"
-              id="motherLanguage"
-              name="motherLanguage"
+              id="motherTongue"
+              name="motherTongue"
               className="form-control"
-              value={formData.motherLanguage}
+              value={formData.motherTongue}
               onChange={handleChange}
               required
             />
@@ -373,123 +455,119 @@ const Form = ({
         </div>
       </div>
 
-      {
-        !isNursery && (
-          <>
-            <div className="row">
-              <div className="col-md-6">
-                {" "}
-                <div className="mb-3">
-                  <label htmlFor="previousSchoolName" className="form-label">
-                    Previous School Name<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="previousSchoolName"
-                    name="previousSchoolName"
-                    className="form-control"
-                    value={formData.previousSchoolName}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div className="col-md-6">
-                {" "}
-                <div className="mb-3">
-                  <label htmlFor="addressOfPreviousSchool" className="form-label">
-                    Address Of Previous School<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="addressOfPreviousSchool"
-                    name="addressOfPreviousSchool"
-                    className="form-control"
-                    value={formData.addressOfPreviousSchool}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div className="col-md-4">
-                {" "}
-                <div className="mb-3">
-                  <label htmlFor="previousSchoolBoard" className="form-label">
-                    Previous School Board<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="previousSchoolBoard"
-                    name="previousSchoolBoard"
-                    className="form-control"
-                    value={formData.previousSchoolBoard}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
 
-              <div className="col-md-4">
-                <div className="mb-3">
-                  <label
-                    htmlFor="previousSchoolResult"
-                    className="form-label"
-                  >
-                    Result Of Previous School<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="file"
-                    id="previousSchoolResult"
-                    name="previousSchoolResult"
-                    className="form-control"
-                    accept="image/*,application/pdf"
-                    onChange={handleChange}
-
-                  />
-                  {typeof formData.previousSchoolResult === 'string' && (
-                    <div className="text-muted small mt-1">
-                      Existing file: {getFileNameFromPath(formData.previousSchoolResult)}
-                    </div>
-                  )}
-                  {formData.previousSchoolResult instanceof File && (
-                    <div className="text-muted small mt-1">
-                      New file selected: {formData.previousSchoolResult.name}
-                    </div>
-                  )}
-
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="mb-3">
-                  <label
-                    htmlFor="tcCertificate"
-                    className="form-label"
-                  >
-                    TC Certificate<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="file"
-                    id="tcCertificate"
-                    name="tcCertificate"
-                    className="form-control"
-                    accept="image/*,application/pdf"
-                    onChange={handleChange}
-
-                  />
-                  {typeof formData.tcCertificate === 'string' && (
-                    <div className="text-muted small mt-1">
-                      Existing file: {getFileNameFromPath(formData.tcCertificate)}
-                    </div>
-                  )}
-                  {formData.tcCertificate instanceof File && (
-                    <div className="text-muted small mt-1">
-                      New file selected: {formData.tcCertificate.name}
-                    </div>
-                  )}
-                </div>
-              </div>
+      <>
+        <div className="row">
+          <div className="col-md-6">
+            {" "}
+            <div className="mb-3">
+              <label htmlFor="previousSchoolName" className="form-label">
+                Previous School Name
+              </label>
+              <input
+                type="text"
+                id="previousSchoolName"
+                name="previousSchoolName"
+                className="form-control"
+                value={formData.previousSchoolName}
+                onChange={handleChange}
+              />
             </div>
-          </>
-        )
-      }
+          </div>
+          <div className="col-md-6">
+            {" "}
+            <div className="mb-3">
+              <label htmlFor="addressOfPreviousSchool" className="form-label">
+                Address Of Previous School
+              </label>
+              <input
+                type="text"
+                id="addressOfPreviousSchool"
+                name="addressOfPreviousSchool"
+                className="form-control"
+                value={formData.addressOfPreviousSchool}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div className="col-md-4">
+            {" "}
+            <div className="mb-3">
+              <label htmlFor="previousSchoolBoard" className="form-label">
+                Previous School Board
+              </label>
+              <input
+                type="text"
+                id="previousSchoolBoard"
+                name="previousSchoolBoard"
+                className="form-control"
+                value={formData.previousSchoolBoard}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
+          <div className="col-md-4">
+            <div className="mb-3">
+              <label
+                htmlFor="previousSchoolResult"
+                className="form-label"
+              >
+                Result Of Previous School
+              </label>
+              <input
+                type="file"
+                id="previousSchoolResult"
+                name="previousSchoolResult"
+                className="form-control"
+                accept=".jpg,.jpeg,.pdf"
+                onChange={handleChange}
+
+              />
+              {typeof formData.previousSchoolResult === 'string' && (
+                <div className="text-muted small mt-1">
+                  Existing file: {getFileNameFromPath(formData.previousSchoolResult)}
+                </div>
+              )}
+              {formData.previousSchoolResult instanceof File && (
+                <div className="text-muted small mt-1">
+                  New file selected: {formData.previousSchoolResult.name}
+                </div>
+              )}
+
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="mb-3">
+              <label
+                htmlFor="tcCertificate"
+                className="form-label"
+              >
+                TC Certificate
+              </label>
+              <input
+                type="file"
+                id="tcCertificate"
+                name="tcCertificate"
+                className="form-control"
+                accept=".jpg,.jpeg,.pdf"
+                onChange={handleChange}
+
+              />
+              {typeof formData.tcCertificate === 'string' && (
+                <div className="text-muted small mt-1">
+                  Existing file: {getFileNameFromPath(formData.tcCertificate)}
+                </div>
+              )}
+              {formData.tcCertificate instanceof File && (
+                <div className="text-muted small mt-1">
+                  New file selected: {formData.tcCertificate.name}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </>
       <div className="row">
         <div className="col-md-4">
           <div className="mb-3">
@@ -504,10 +582,19 @@ const Form = ({
               id="proofOfResidence"
               name="proofOfResidence"
               className="form-control"
-              accept="image/*,application/pdf"
+              accept=".jpg,.jpeg,.pdf"
               onChange={handleChange}
-              required
             />
+               {typeof formData.proofOfResidence === 'string' && (
+                <div className="text-muted small mt-1">
+                  Existing file: {getFileNameFromPath(formData.proofOfResidence)}
+                </div>
+              )}
+              {formData.proofOfResidence instanceof File && (
+                <div className="text-muted small mt-1">
+                  New file selected: {formData.proofOfResidence.name}
+                </div>
+              )}
           </div>
         </div>
 
@@ -543,7 +630,7 @@ const Form = ({
               id="aadharPassportFile"
               name="aadharPassportFile"
               className="form-control"
-              accept="image/*,application/pdf"
+              accept=".jpg,.jpeg,.pdf"
               onChange={handleChange}
             />
             {typeof formData.aadharPassportFile === 'string' && (
@@ -600,7 +687,7 @@ const Form = ({
                 id="castCertificate"
                 name="castCertificate"
                 className="form-control"
-                accept="image/*,application/pdf"
+                accept=".jpg,.jpeg,.pdf"
                 onChange={handleChange}
 
               />
@@ -621,7 +708,7 @@ const Form = ({
 
       <div className="card-header mb-2">
         <h4 className="card-title text-center custom-heading-font">
-          Sibling Information Study In Same School<span className="text-danger">*</span>
+          Sibling Information Study In Same School
         </h4>
       </div>
       <div className="row">
@@ -690,18 +777,28 @@ const Form = ({
               id="idCardFile"
               name="idCardFile"
               className="form-control"
-              accept="image/*,application/pdf"
+              accept=".jpg,.jpeg,.pdf"
               onChange={handleChange}
-              required={!formData.siblingInfoChecked}
+              // required={!formData.siblingInfoChecked}
               disabled={formData.siblingInfoChecked}
             />
+              {typeof formData.idCardFile === 'string' && (
+                <div className="text-muted small mt-1">
+                  Existing file: {getFileNameFromPath(formData.idCardFile)}
+                </div>
+              )}
+              {formData.idCardFile instanceof File && (
+                <div className="text-muted small mt-1">
+                  New file selected: {formData.idCardFile.name}
+                </div>
+              )}
           </div>
         </div>
       </div>
 
       <div className="card-header mb-2">
         <h4 className="card-title text-center custom-heading-font">
-          Family Information <span className="text-danger">*</span>
+          Family Information 
         </h4>
       </div>
       <div className="row">
@@ -900,40 +997,133 @@ const Form = ({
               <input
                 type="checkbox"
                 className="form-check-input"
-                id="agreementCheck"
+                id="customCheck1"
                 name="agreementChecked"
                 checked={formData.agreementChecked}
                 onChange={handleChange}
-
               />
-              <label
-                className="form-check-label"
-                htmlFor="agreementCheck"
-              >
-                I Understand & agree that the registration of my ward does not guarantee admission to the school & the registration fee is neither transferable nor refundable.
+              <label className="form-check-label" htmlFor="customCheck1">
+                I Understand & agree that the registration of my word does not guarantee admission to the school & the registration fee is neither transferable not refundable.
               </label>
             </div>
 
             <div className="col-md-6">
               <div className="mb-3">
+                <label htmlFor="selectedFeeType" className="form-label">
+                  Fee Type <span className="text-danger">*</span>
+                </label>
+                <select
+                  id="selectedFeeType"
+                  name="selectedFeeType"
+                  className="form-control"
+                  value={selectedFeeType}
+                  onChange={handleFeeTypeChange}
+                  required
+                >
+                  <option value="">Select Fee Type</option>
+                  {availableFeeTypes.map((feeType) => (
+                    <option key={feeType.id} value={feeType.id}>
+                      {feeType.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+              <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="concessionType" className="form-label">
+                          Concession Type
+                        </label>
+                        <select
+                          id="concessionType"
+                          name="concessionType"
+                          className="form-control"
+                          value={formData.concessionType}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select</option>
+                          <option value="EWS">EWS</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                          <option value="Staff Children">Staff Children</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+
+            <div className="col-md-4">
+              <div className="mb-3">
+                <label htmlFor="admissionFees" className="form-label">
+                  Admission Fees <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="admissionFees"
+                  name="admissionFees"
+                  className="form-control"
+                  value={admissionFees}
+                  readOnly
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="mb-3">
+                <label htmlFor="concessionAmount" className="form-label">
+                  Concession
+                </label>
+                <input
+                  // type="number"
+                  id="concessionAmount"
+                  name="concessionAmount"
+                  className="form-control"
+                  value={concessionAmount}
+                  onChange={handleConcessionChange}
+                  max={admissionFees}
+
+                />
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="mb-3">
+                <label htmlFor="finalamount" className="form-label">
+                  Final Amount <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="finalamount"
+                  name="finalamount"
+                  className="form-control"
+                  value={finalAmount}
+                  readOnly
+                  required
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
                 <label htmlFor="name" className="form-label">
-                  Name <span className="text-danger">*</span>
+                  Name of Person Filling the Form <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   id="name"
                   name="name"
                   className="form-control"
-                  required
                   value={formData.name}
                   onChange={handleChange}
+                  required
                 />
               </div>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-6">
               <div className="mb-3">
                 <label htmlFor="paymentMode" className="form-label">
-                  Payment Option <span className="text-danger">*</span>
+                  Payment Option  <span className="text-danger">*</span>
                 </label>
                 <select
                   id="paymentMode"
@@ -943,51 +1133,51 @@ const Form = ({
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select</option>
+                  <option value="">Select </option>
                   <option value="Cash">Cash</option>
                   <option value="Cheque">Cheque</option>
                   <option value="Online">Online</option>
                 </select>
               </div>
             </div>
-          </div>
 
-          {formData.paymentMode === 'Cheque' && (
-            <div className="row">
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label htmlFor="chequeNumber" className="form-label">
-                    Cheque Number <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="chequeNumber"
-                    name="chequeNumber"
-                    className="form-control"
-                    value={formData.chequeNumber}
-                    onChange={handleChange}
-                    required
-                  />
+            {formData.paymentMode === 'Cheque' && (
+              <>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="chequeNumber" className="form-label">
+                      Cheque Number <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="chequeNumber"
+                      name="chequeNumber"
+                      className="form-control"
+                      value={formData.chequeNumber}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label htmlFor="bankName" className="form-label">
-                    Bank Name <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="bankName"
-                    name="bankName"
-                    className="form-control"
-                    value={formData.bankName}
-                    onChange={handleChange}
-                    required
-                  />
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label htmlFor="bankName" className="form-label">
+                      Bank Name <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="bankName"
+                      name="bankName"
+                      className="form-control"
+                      value={formData.bankName}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
+              </>
+            )}
+          </div>
 
           <div className="text-end">
             <button

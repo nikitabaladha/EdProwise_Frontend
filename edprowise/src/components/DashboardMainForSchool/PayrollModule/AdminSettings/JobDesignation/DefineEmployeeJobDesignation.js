@@ -12,17 +12,42 @@ const DefineEmployeeJobDesignation = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [deleteType, setDeleteType] = useState("");
+  const [academicYearList, setAcademicYearList] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+
     if (!id) {
       toast.error("School ID not found. Please log in again.");
       return;
     }
     setSchoolId(id);
+    setAcademicYear(academicYear);
+    fetchAcademicYears(id);
+
     fetchData(id, academicYear);
-  }, [academicYear]);
+  }, []);
+
+  useEffect(() => {
+    if (schoolId && academicYear) {
+      fetchData(schoolId, academicYear);
+      setCurrentPage(1);
+    }
+  }, [academicYear, schoolId]);
+
+  const fetchAcademicYears = async (schoolId) => {
+    try {
+      const response = await getAPI(`/get-payroll-academic-year/${schoolId}`);
+      setAcademicYearList(response.data.data || []);
+    } catch (err) {
+      toast.error('Failed to fetch academic years.');
+    }
+  };
+
 
   const fetchData = async (schoolId, year) => {
     try {
@@ -37,6 +62,7 @@ const DefineEmployeeJobDesignation = () => {
           isNew: false,
         }));
         setDesignation(formatted);
+        // setCurrentPage(1);
       } else {
         toast.error(res.message || "Something went wrong while fetching.");
       }
@@ -45,6 +71,18 @@ const DefineEmployeeJobDesignation = () => {
       console.error("Fetch error:", error);
     }
   };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = designation.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(designation.length / itemsPerPage);
+
+  // Pagination logic
+
+  const handleNextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const handlePreviousPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+  const handlePageClick = (page) => setCurrentPage(page);
+
 
 
   const handleAddRow = () => {
@@ -122,7 +160,7 @@ const DefineEmployeeJobDesignation = () => {
     );
   };
 
-
+  
   return (
     <>
       <div className="container">
@@ -137,17 +175,16 @@ const DefineEmployeeJobDesignation = () => {
                     </h4>
                     <div>
                       <select
-                        id="yearSelect"
-                        className="custom-select border border-dark"
-                        aria-label="Select Year"
+                        className="form-select form-select-sm w-auto"
                         value={academicYear}
                         onChange={(e) => setAcademicYear(e.target.value)}
                       >
-                        <option>2025-26</option>
-                        <option>2026-27</option>
-                        <option>2027-28</option>
-                        <option>2028-29</option>
-                        <option>2029-30</option>
+                        <option value="">Select Year</option>
+                        {academicYearList.map((yearObj, index) => (
+                          <option key={index} value={yearObj.academicYear}>
+                            {yearObj.academicYear}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <button
@@ -182,7 +219,7 @@ const DefineEmployeeJobDesignation = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {designation.map((comp) => (
+                      {currentItems.map((comp) => (
                         <tr key={comp.id} className='payroll-table-body text-center'>
                           <td>
                             <div className="form-check ms-1">
@@ -240,20 +277,24 @@ const DefineEmployeeJobDesignation = () => {
                     </tbody>
                   </table>
 
-                  
                 </div>
 
                 <div className="card-footer border-top">
                   <nav aria-label="Page navigation example">
                     <ul className="pagination justify-content-end mb-0">
                       <li className="page-item">
-                        <button className="page-link">Previous</button>
+                        <button className="page-link" onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
                       </li>
+                      {Array.from({ length: Math.min(3, totalPages) }, (_, i) => currentPage - 1 + i)
+                        .filter(p => p >= 1 && p <= totalPages)
+                        .map(page => (
+                          <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
+                            <button className={`page-link pagination-button ${currentPage === page ? "active" : ""
+                              }`} onClick={() => handlePageClick(page)}>{page}</button>
+                          </li>
+                        ))}
                       <li className="page-item">
-                        <button className="page-link pagination-button">1</button>
-                      </li>
-                      <li className="page-item">
-                        <button className="page-link">Next</button>
+                        <button className="page-link" onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
                       </li>
                     </ul>
                   </nav>

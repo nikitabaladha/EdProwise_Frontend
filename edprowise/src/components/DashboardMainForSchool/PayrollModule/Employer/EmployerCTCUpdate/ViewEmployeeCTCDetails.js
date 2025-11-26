@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const ViewEmployeeCTCDetails = () => {
     const location = useLocation();
@@ -9,7 +9,7 @@ const ViewEmployeeCTCDetails = () => {
     const [employeeDetails, setEmployeeDetails] = useState({});
     const [ctcComponents, setCtcComponents] = useState([]);
     const [annualCostToInstitution, setAnnualCostToInstitution] = useState(0);
-
+ 
     useEffect(() => {
         if (employeeData) {
             setEmployeeDetails(employeeData.employeeInfo || {});
@@ -19,8 +19,8 @@ const ViewEmployeeCTCDetails = () => {
     }, [employeeData]);
 
     const handleBack = () => {
-    navigate(-1);
-  };
+        navigate(-1);
+    };
     return (
         <div className="container">
             <div className="row">
@@ -33,12 +33,12 @@ const ViewEmployeeCTCDetails = () => {
                                         Employee CTC Details
                                     </h4>
                                     <button
-                    type="button"
-                    className="btn btn-primary custom-submit-button"
-                    onClick={() => navigate(-1)}
-                  >
-                    Back
-                  </button>
+                                        type="button"
+                                        className="btn btn-primary custom-submit-button"
+                                        onClick={() => navigate(-1)}
+                                    >
+                                        Back
+                                    </button>
                                 </div>
                             </div>
 

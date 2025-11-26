@@ -6,8 +6,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 const UpdateFeesType = () => {
   const navigate = useNavigate();
   const location = useLocation();
+    const [loading, setLoading] = useState(false);
 
   const [feeName, setFeeName] = useState("");
+  const [groupOfFees, setGroupOfFees] = useState("School Fees");
   const [id, setId] = useState(null);
 
   useEffect(() => {
@@ -15,19 +17,34 @@ const UpdateFeesType = () => {
 
     if (!data) {
       toast.error("No fees type data provided.");
-      navigate(-1); 
+      navigate(-1);
       return;
     }
 
     setFeeName(data.feesTypeName || "");
+    setGroupOfFees(data.groupOfFees || "School Fees");
     setId(data._id || null);
   }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+       const academicYear = localStorage.getItem("selectedAcademicYear");
+   
+     if (!academicYear) {
+       toast.error("Academic year is missing. Please select an academic year.");
+       setLoading(false);
+       return;
+     }
 
     if (!feeName.trim()) {
       toast.error("Fees Type name is required.");
+      return;
+    }
+
+    if (!groupOfFees) {
+      toast.error("Group of Fees is required.");
       return;
     }
 
@@ -40,7 +57,16 @@ const UpdateFeesType = () => {
     }
 
     try {
-      await putAPI(`/update-fess-type/${id}`, { feesTypeName: feeName.trim(), schoolId }, true);
+      await putAPI(
+        `/update-fess-type/${id}`,
+        {
+          feesTypeName: feeName.trim(),
+          groupOfFees,
+          schoolId,
+          academicYear
+        },
+        true
+      );
       toast.success("Fees Type updated successfully!");
       navigate(-1);
     } catch (error) {
@@ -48,6 +74,8 @@ const UpdateFeesType = () => {
         error.response?.data?.message ||
         "An error occurred while updating the Fees Type.";
       toast.error(errMsg);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -73,9 +101,25 @@ const UpdateFeesType = () => {
                     placeholder="Enter new Fees Type name"
                   />
                 </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Group of Fees</label>
+                  <select
+                    className="form-select"
+                    value={groupOfFees}
+                    onChange={(e) => setGroupOfFees(e.target.value)}
+                  >
+                    <option value="School Fees">School Fees</option>
+                    <option value="One Time Fees">One Time Fees</option>
+                  </select>
+                </div>
+
                 <div className="text-end">
-                  <button type="submit" className="btn btn-primary">
-                    Update Fees Type
+                  <button type="submit" 
+                  className="btn btn-primary"
+                  disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Update"}
                   </button>
                 </div>
               </form>

@@ -274,7 +274,7 @@ const Signup = () => {
                   </div>
                   <div className=" mt-2 text-center">
                     <Link onClick={navigateToLogin}>
-                      If you are Registered, Sign In Here
+                      If Already Registered, Sign In Here
                     </Link>
                   </div>
                 </form>

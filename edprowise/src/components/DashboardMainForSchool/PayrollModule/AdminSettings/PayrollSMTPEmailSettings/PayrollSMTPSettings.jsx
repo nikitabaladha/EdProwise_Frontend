@@ -8,7 +8,7 @@ const PayrollSMTPSettings = () => {
   const [testEmail, setTestEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [schoolId, setSchoolId] = useState(null);
-      
+       
   const [formData, setFormData] = useState({
   schoolId: "",
   mailType: "",

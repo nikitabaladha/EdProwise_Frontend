@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useLogout } from '../../useLogout';
 
 import { CgProfile } from "react-icons/cg";
 import { BiLogOut } from "react-icons/bi";
@@ -12,29 +13,36 @@ import getAPI from "../../api/getAPI";
 
 const EmployeeDashboardHeader = () => {
   const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userDetails");
-    window.location.href = "/login";
-  };
-
+  const logout = useLogout();
+  
+const [schoolId, setSchoolId] = useState(null);
+  const [employeeId, setEmployeeId] = useState(null);
+  const [employeeDetails, setEmployeeDetails] = useState({});
+  
   const [school, setSchool] = useState(null);
-
+  
   const fetchSchoolData = async () => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const schoolId = userDetails?.schoolId;
+    const empId = userDetails?.userId;
+    const academicYear = localStorage.getItem("selectedAcademicYear");
 
-    if (!schoolId) {
-      console.error("School ID not found in localStorage");
+    if (!schoolId || !empId || !academicYear) {
+      console.error(`School id ${schoolId}, empId ${empId} , academic Year ${academicYear} not found in localStorage`);
       return;
     }
 
     try {
-      const response = await getAPI(`/school-profile/${schoolId}`, {}, true);
+      const employeeRes = await getAPI(`/get-employee-details/${schoolId}/${empId}/${academicYear}`);
+      console.log("employeeRes", employeeRes);
 
-      if (!response.hasError && response.data && response.data.data) {
-        setSchool(response.data.data);
-      } else {
+      if (!employeeRes.hasError && employeeRes.data?.data.employeeInfo) {
+        console.log("Set", setEmployeeDetails(employeeRes.data.data.employeeInfo));
+         
+        // setEmployeeDetails(employeeRes.data.data.employeeInfo);
+      }
+    
+       else {
         console.error("Invalid response format or error in response");
       }
     } catch (err) {
@@ -60,16 +68,40 @@ const EmployeeDashboardHeader = () => {
     });
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, [])
+
   const toggleSidebar = () => {
     const htmlElement = document.documentElement;
     const bodyElement = document.body;
 
     htmlElement.classList.toggle("sidebar-enable");
 
-    if (bodyElement.style.overflow === "hidden") {
-      bodyElement.style.overflow = "";
-    } else {
+    if (htmlElement.classList.contains("sidebar-enable")) {
       bodyElement.style.overflow = "hidden";
+
+      if (!document.querySelector(".offcanvas-backdrop")) {
+        const backdrop = document.createElement("div");
+        backdrop.className = "offcanvas-backdrop fade show";
+        bodyElement.appendChild(backdrop);
+      }
+    } else {
+      bodyElement.style.overflow = "";
+
+
+      const backdrop = document.querySelector(".offcanvas-backdrop");
+      if (backdrop) backdrop.remove();
     }
   };
 
@@ -80,11 +112,17 @@ const EmployeeDashboardHeader = () => {
     if (
       htmlElement.classList.contains("sidebar-enable") &&
       mainNav &&
-      !mainNav.contains(event.target)
+      !mainNav.contains(event.target) &&
+      !event.target.closest(".button-toggle-menu")
     ) {
-      toggleSidebar();
+      htmlElement.classList.remove("sidebar-enable");
+      document.body.style.overflow = "";
+
+      const backdrop = document.querySelector(".offcanvas-backdrop");
+      if (backdrop) backdrop.remove();
     }
   };
+
 
   useEffect(() => {
     document.addEventListener("click", handleDocumentClick);
@@ -188,21 +226,46 @@ const EmployeeDashboardHeader = () => {
                     event.stopPropagation();
                     toggleSidebar();
                   }}
+                  style={{
+                    display: isMobile ? "block" : "none"
+                  }}
                 >
                   <iconify-icon
                     icon="solar:hamburger-menu-broken"
-                    className="fs-24 align-middle"
+                    className="fs-24 align-middle "
                   />
                 </button>
               </div>
               {/* Menu Toggle Button */}
               <div className="topbar-item">
                 <h4 className="fw-bold topbar-button pe-none text-uppercase mb-0">
-                  Welcome! {school?.schoolName}
+                  Welcome! {employeeDetails.employeeName || 'N/A'}
                 </h4>
               </div>
             </div>
             <div className="d-flex align-items-center gap-1">
+              {/* Go To Dashboard */}
+              <div className="topbar-item">
+                <button
+                  type="button"
+                  className="topbar-button"
+                  id="light-dark-mode"
+                  onClick={() => {
+                    const sidebarTab = localStorage.getItem('sidebartab');
+                    if (sidebarTab === 'FeesModule') {
+                      navigate('/school/fees-management-year');
+                    } else {
+                      navigate('/school/go-to-dashboard');
+                    }
+                  }}
+                >
+                  <iconify-icon
+                    icon="solar:logout-2-outline"
+                    className="fs-24 align-middle"
+                  />
+                </button>
+              </div>
+
               {/* Theme Color (Light/Dark) */}
               <div className="topbar-item">
                 <button
@@ -213,7 +276,7 @@ const EmployeeDashboardHeader = () => {
                 >
                   <iconify-icon
                     icon="solar:moon-bold-duotone"
-                    className="fs-24 align-middle"
+                    className="fs-24 align-middle "
                   />
                 </button>
               </div>
@@ -397,7 +460,7 @@ const EmployeeDashboardHeader = () => {
                     }
                   >
                     <CgProfile className="bx bx-user-circle text-muted fs-18 align-middle me-1" />
-                    <span className="align-middle">{school?.schoolName}</span>
+                    <span className="align-middle">{employeeDetails.employeeName || 'N/A'}</span>
                   </Link>
 
                   <Link
@@ -413,7 +476,7 @@ const EmployeeDashboardHeader = () => {
                   <div className="dropdown-divider my-1" />
                   <Link className="dropdown-item text-danger">
                     <BiLogOut className="bx bx-log-out fs-18 align-middle me-1" />
-                    <span className="align-middle" onClick={handleLogout}>
+                    <span className="align-middle" onClick={logout}>
                       Logout
                     </span>
                   </Link>

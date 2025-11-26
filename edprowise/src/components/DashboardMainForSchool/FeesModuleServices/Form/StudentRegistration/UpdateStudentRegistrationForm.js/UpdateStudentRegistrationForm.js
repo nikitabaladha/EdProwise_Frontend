@@ -1,6 +1,6 @@
 import React from "react";
-
-import useStudentRegistration from "./UseStudentRegistrationUpdate";
+import CreatableSelect from 'react-select/creatable';
+import UseStudentRegistrationUpdate from "./UseStudentRegistrationUpdate";
 
 const StudentRegistrationForm = () => {
   const {
@@ -12,11 +12,19 @@ const StudentRegistrationForm = () => {
     classes,
     shifts,
     cityOptions,
-    isNursery,
+    countryOptions,
+    stateOptions,
+  
     handlePhotoUpload,
-    getFileNameFromPath,      
-    existingFiles 
-  } = useStudentRegistration();
+    getFileNameFromPath,
+    existingFiles,
+    handleCountryChange,
+    handleStateChange,
+    handleCityChange,
+    handleDownload
+  } = UseStudentRegistrationUpdate();
+
+  
 
   return (
     <div className="container">
@@ -25,31 +33,26 @@ const StudentRegistrationForm = () => {
           <div className="card m-2">
             <div className="card-body custom-heading-padding">
               <div className="container">
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
+                <div className="card-header mb-2 d-flex justify-content-between">
+                  <h4 className="card-title custom-heading-font flex-grow-1 text-center">
                     Student Registration Form
                   </h4>
                 </div>
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="row">
-
                   <div className="col-md-4 d-flex flex-column align-items-center">
                     <div
                       className="border rounded d-flex justify-content-center align-items-center mb-2"
-                      style={{
-                        width: "150px",
-                        height: "180px",
-                        overflow: "hidden",
-                      }}
+                      style={{ width: "150px", height: "180px", overflow: "hidden" }}
                     >
                       {formData.studentPhoto ? (
                         <img
-                        src={
-                          typeof formData.studentPhoto === "string"
-                            ? formData.studentPhoto
-                            : URL.createObjectURL(formData.studentPhoto)
-                        }
+                          src={
+                            typeof formData.studentPhoto === "string"
+                              ? `${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`
+                              : URL.createObjectURL(formData.studentPhoto)
+                          }
                           alt="Passport"
                           className="w-100 h-100 object-fit-cover"
                         />
@@ -64,20 +67,22 @@ const StudentRegistrationForm = () => {
                       )}
                     </div>
                     <div className="mb-3 w-100 text-center">
-                      <label className="form-label mb-1 d-block text-start">
-                      </label>
                       <input
                         type="file"
                         id="studentPhoto"
                         name="studentPhoto"
                         className="d-none"
-                        accept="image/*"
+                        accept=".jpg,.jpeg"
                         onChange={handlePhotoUpload}
-                      
                       />
                       <label htmlFor="studentPhoto" className="btn btn-primary btn-sm">
                         Upload Photo
                       </label>
+                      {formData.studentPhoto instanceof File && (
+                        <div className="text-muted small mt-1">
+                          New file selected: {formData.studentPhoto.name}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -130,7 +135,7 @@ const StudentRegistrationForm = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="dateOfBirth" className="form-label">
                             Date Of Birth <span className="text-danger">*</span>
@@ -146,7 +151,7 @@ const StudentRegistrationForm = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-4">
                         <div className="mb-3">
                           <label htmlFor="age" className="form-label">
                             Age <span className="text-danger">*</span>
@@ -162,32 +167,32 @@ const StudentRegistrationForm = () => {
                           />
                         </div>
                       </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="nationality" className="form-label">
+                            Nationality <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            id="nationality"
+                            name="nationality"
+                            className="form-control"
+                            value={formData.nationality}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="">Select Nationality</option>
+                            <option value="India">India</option>
+                            <option value="International">International</option>
+                            <option value="SAARC Countries">SAARC Countries</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col-md-2">
-                    <div className="mb-3">
-                      <label htmlFor="nationality" className="form-label">
-                        Nationality <span className="text-danger">*</span>
-                      </label>
-                      <select
-                        id="nationality"
-                        name="nationality"
-                        className="form-control"
-                        value={formData.nationality}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select Nationality</option>
-                        <option value="India">India</option>
-                        <option value="International">International</option>
-                        <option value="SAARC Countries">SAARC Countries</option>
-                      </select>
-                    </div>
-                  </div>
 
-                  <div className="col-md-2">
+                <div className="row">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="gender" className="form-label">
                         Gender <span className="text-danger">*</span>
@@ -206,10 +211,68 @@ const StudentRegistrationForm = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="bloodGroup" className="form-label">
+                        Blood Group
+                      </label>
+                      <select
+                        id="bloodGroup"
+                        name="bloodGroup"
+                        className="form-control"
+                        value={formData.bloodGroup}
+                        onChange={handleChange}
+                      >
+                        <option value="">Select Blood Group</option>
+                        <option value="AB-">AB-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="O-">O-</option>
+                        <option value="O+">O+</option>
+                        <option value="B-">B-</option>
+                        <option value="B+">B+</option>
+                        <option value="A-">A-</option>
+                        <option value="A+">A+</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="parentContactNumber" className="form-label">
+                        Parent Contact Number
+                      </label>
+                      <input
+                        type="tel"
+                        id="parentContactNumber"
+                        name="parentContactNumber"
+                        className="form-control"
+                        value={formData.parentContactNumber}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="motherTongue" className="form-label">
+                        Mother Tongue <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="motherTongue"
+                        name="motherTongue"
+                        className="form-control"
+                        value={formData.motherTongue}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="masterDefineClass" className="form-label">
-                        Master Define Class <span className="text-danger">*</span>
+                        Class <span className="text-danger">*</span>
                       </label>
                       <select
                         id="masterDefineClass"
@@ -228,11 +291,10 @@ const StudentRegistrationForm = () => {
                       </select>
                     </div>
                   </div>
-
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="masterDefineShift" className="form-label">
-                        Master Define Shift <span className="text-danger">*</span>
+                        Shift <span className="text-danger">*</span>
                       </label>
                       <select
                         id="masterDefineShift"
@@ -249,74 +311,6 @@ const StudentRegistrationForm = () => {
                           </option>
                         ))}
                       </select>
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label htmlFor="fatherName" className="form-label">
-                        Father Name <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="fatherName"
-                        name="fatherName"
-                        className="form-control"
-                        value={formData.fatherName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label htmlFor="fatherContactNo" className="form-label">
-                        Father Contact Number <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        id="fatherContactNo"
-                        name="fatherContactNo"
-                        className="form-control"
-                        value={formData.fatherContactNo}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label htmlFor="motherName" className="form-label">
-                        Mother Name <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="motherName"
-                        name="motherName"
-                        className="form-control"
-                        value={formData.motherName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-3">
-                    <div className="mb-3">
-                      <label htmlFor="motherContactNo" className="form-label">
-                        Mother Contact Number <span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        id="motherContactNo"
-                        name="motherContactNo"
-                        className="form-control"
-                        value={formData.motherContactNo}
-                        onChange={handleChange}
-                        required
-                      />
                     </div>
                   </div>
                 </div>
@@ -339,29 +333,66 @@ const StudentRegistrationForm = () => {
                 </div>
 
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-3">
                     <div className="mb-3">
-                      <label htmlFor="cityStateCountry" className="form-label">
-                        City-State-Country <span className="text-danger">*</span>
+                      <label htmlFor="country" className="form-label">
+                        Country <span className="text-danger">*</span>
                       </label>
-                      <select
-                        id="cityStateCountry"
-                        name="cityStateCountry"
-                        className="form-control"
-                        value={formData.cityStateCountry}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select City-State-Country</option>
-                        {cityOptions.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+                      <CreatableSelect
+                        id="country"
+                        name="country"
+                        options={countryOptions}
+                        value={formData.country ? { value: formData.country, label: formData.country } : null}
+                        onChange={handleCountryChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a country"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => "Type to add a new country"}
+                      />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="state" className="form-label">
+                        State <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        id="state"
+                        name="state"
+                        options={stateOptions}
+                        value={formData.state ? { value: formData.state, label: formData.state } : null}
+                        onChange={handleStateChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a state"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => formData.country ? "Type to add a new state" : "Select a country first"}
+                        isValidNewOption={(inputValue) => inputValue.length > 0}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="city" className="form-label">
+                        City <span className="text-danger">*</span>
+                      </label>
+                      <CreatableSelect
+                        id="city"
+                        name="city"
+                        options={cityOptions}
+                        value={formData.city ? { value: formData.city, label: formData.city } : null}
+                        onChange={handleCityChange}
+                        isClearable
+                        isSearchable
+                        placeholder="Select or type a city"
+                        formatCreateLabel={(inputValue) => `Use "${inputValue}"`}
+                        noOptionsMessage={() => formData.state ? "Type to add a new city" : "Select a state first"}
+                        isValidNewOption={(inputValue) => inputValue.length > 0}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
                     <div className="mb-3">
                       <label htmlFor="pincode" className="form-label">
                         Pincode <span className="text-danger">*</span>
@@ -378,110 +409,103 @@ const StudentRegistrationForm = () => {
                     </div>
                   </div>
                 </div>
-
-                {!isNursery && (
-                  <>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="previousSchoolName" className="form-label">
-                            Previous School Name <span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="previousSchoolName"
-                            name="previousSchoolName"
-                            className="form-control"
-                            value={formData.previousSchoolName}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label htmlFor="addressOfpreviousSchool" className="form-label">
-                            Address Of Previous School <span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="addressOfpreviousSchool"
-                            name="addressOfpreviousSchool"
-                            className="form-control"
-                            value={formData.addressOfpreviousSchool}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="mb-3">
-                          <label htmlFor="previousSchoolBoard" className="form-label">
-                            Previous School Board <span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="previousSchoolBoard"
-                            name="previousSchoolBoard"
-                            className="form-control"
-                            value={formData.previousSchoolBoard}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="mb-3">
-                          <label htmlFor="previousSchoolResult" className="form-label">
-                            Result Of Previous School <span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="file"
-                            id="previousSchoolResult"
-                            name="previousSchoolResult"
-                            className="form-control"
-                            accept="image/*,application/pdf"
-                            onChange={handleChange}
-                          />
-                          {existingFiles.previousSchoolResult && !formData.previousSchoolResult && (
-                            <div className="text-muted small mt-1">
-                              Existing file: {getFileNameFromPath(existingFiles.previousSchoolResult)}
-                            </div>
-                          )}
-                          {formData.previousSchoolResult && (
-                            <div className="text-muted small mt-1">
-                              New file selected: {formData.previousSchoolResult.name}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="mb-3">
-                          <label htmlFor="tcCertificate" className="form-label">
-                            TC Certificate <span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="file"
-                            id="tcCertificate"
-                            name="tcCertificate"
-                            className="form-control"
-                            accept="image/*,application/pdf"
-                            onChange={handleChange}
-                          />
-                          {existingFiles.tcCertificate && !formData.tcCertificate && (
-                            <div className="text-muted small mt-1">
-                              Existing file: {getFileNameFromPath(existingFiles.tcCertificate)}
-                            </div>
-                          )}
-                          {formData.tcCertificate && (
-                            <div className="text-muted small mt-1">
-                              New file selected: {formData.tcCertificate.name}
-                            </div>
-                          )}
-                        </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="previousSchoolName" className="form-label">
+                          Previous School Name
+                        </label>
+                        <input
+                          type="text"
+                          id="previousSchoolName"
+                          name="previousSchoolName"
+                          className="form-control"
+                          value={formData.previousSchoolName}
+                          onChange={handleChange}
+                        />
                       </div>
                     </div>
-                  </>
-                )}
-
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label htmlFor="addressOfPreviousSchool" className="form-label">
+                          Address Of Previous School
+                        </label>
+                        <input
+                          type="text"
+                          id="addressOfPreviousSchool"
+                          name="addressOfPreviousSchool"
+                          className="form-control"
+                          value={formData.addressOfPreviousSchool}
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="previousSchoolBoard" className="form-label">
+                          Previous School Board
+                        </label>
+                        <input
+                          type="text"
+                          id="previousSchoolBoard"
+                          name="previousSchoolBoard"
+                          className="form-control"
+                          value={formData.previousSchoolBoard}
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="previousSchoolResult" className="form-label">
+                          Result Of Previous School
+                        </label>
+                        <input
+                          type="file"
+                          id="previousSchoolResult"
+                          name="previousSchoolResult"
+                          className="form-control"
+                          accept=".jpg,.jpeg,.pdf"
+                          onChange={handleChange}
+                        />
+                        {existingFiles.previousSchoolResult && !formData.previousSchoolResult && (
+                          <div className="text-muted small mt-1">
+                            Existing file: {getFileNameFromPath(existingFiles.previousSchoolResult)}
+                          </div>
+                        )}
+                        {formData.previousSchoolResult && (
+                          <div className="text-muted small mt-1">
+                            New file selected: {formData.previousSchoolResult.name}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label htmlFor="tcCertificate" className="form-label">
+                          TC Certificate
+                        </label>
+                        <input
+                          type="file"
+                          id="tcCertificate"
+                          name="tcCertificate"
+                          className="form-control"
+                          accept=".jpg,.jpeg,.pdf"
+                          onChange={handleChange}
+                        />
+                        {existingFiles.tcCertificate && !formData.tcCertificate && (
+                          <div className="text-muted small mt-1">
+                            Existing file: {getFileNameFromPath(existingFiles.tcCertificate)}
+                          </div>
+                        )}
+                        {formData.tcCertificate && (
+                          <div className="text-muted small mt-1">
+                            New file selected: {formData.tcCertificate.name}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -505,7 +529,6 @@ const StudentRegistrationForm = () => {
                       </select>
                     </div>
                   </div>
-
                   {formData.studentCategory !== "General" && (
                     <div className="col-md-4">
                       <div className="mb-3">
@@ -517,7 +540,7 @@ const StudentRegistrationForm = () => {
                           id="castCertificate"
                           name="castCertificate"
                           className="form-control"
-                          accept="image/*,application/pdf"
+                          accept=".jpg,.jpeg,.pdf"
                           onChange={handleChange}
                         />
                         {existingFiles.castCertificate && !formData.castCertificate && (
@@ -543,7 +566,7 @@ const StudentRegistrationForm = () => {
                         id="aadharPassportFile"
                         name="aadharPassportFile"
                         className="form-control"
-                        accept="image/*,application/pdf"
+                        accept=".jpg,.jpeg,.pdf"
                         onChange={handleChange}
                       />
                       {existingFiles.aadharPassportFile && !formData.aadharPassportFile && (
@@ -558,7 +581,6 @@ const StudentRegistrationForm = () => {
                       )}
                     </div>
                   </div>
-
                   <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="aadharPassportNumber" className="form-label">
@@ -575,7 +597,32 @@ const StudentRegistrationForm = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="proofOfResidence" className="form-label">
+                        Proof Of Residence <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="file"
+                        id="proofOfResidence"
+                        name="proofOfResidence"
+                        className="form-control"
+                        accept=".jpg,.jpeg,.pdf"
+                        onChange={handleChange}
+                      />
+                      {existingFiles.proofOfResidence && !formData.proofOfResidence && (
+                        <div className="text-muted small mt-1">
+                          Existing file: {getFileNameFromPath(existingFiles.proofOfResidence)}
+                        </div>
+                      )}
+                      {formData.proofOfResidence && (
+                        <div className="text-muted small mt-1">
+                          New file selected: {formData.proofOfResidence.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="howReachUs" className="form-label">
                         How did you reach us <span className="text-danger">*</span>
@@ -593,6 +640,7 @@ const StudentRegistrationForm = () => {
                         <option value="Advertisement">Advertisement</option>
                         <option value="Student">Student</option>
                         <option value="Online Search">Online Search</option>
+                        <option value="Others">Others</option>
                       </select>
                     </div>
                   </div>
@@ -600,7 +648,7 @@ const StudentRegistrationForm = () => {
 
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
-                    Understanding
+                    Sibling Information Study In Same School
                   </h4>
                 </div>
                 <div className="row">
@@ -608,20 +656,346 @@ const StudentRegistrationForm = () => {
                     <input
                       type="checkbox"
                       className="form-check-input"
-                      id="customCheck1"
+                      id="siblingInfoChecked"
+                      name="siblingInfoChecked"
+                      checked={formData.siblingInfoChecked}
+                      onChange={handleChange}
+                    />
+                    <label className="form-check-label" htmlFor="siblingInfoChecked">
+                      In case of no sibling, click here.
+                    </label>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="relationType" className="form-label">
+                        Relation Type {!formData.siblingInfoChecked && <span className="text-danger">*</span>}
+                      </label>
+                      <select
+                        id="relationType"
+                        name="relationType"
+                        className="form-control"
+                        value={formData.relationType || ''}
+                        onChange={handleChange}
+                        required={!formData.siblingInfoChecked}
+                        disabled={formData.siblingInfoChecked}
+                      >
+                        <option value="">Select Relation</option>
+                        <option value="Brother">Brother</option>
+                        <option value="Sister">Sister</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="siblingName" className="form-label">
+                        Sibling Name {!formData.siblingInfoChecked && <span className="text-danger">*</span>}
+                      </label>
+                      <input
+                        type="text"
+                        id="siblingName"
+                        name="siblingName"
+                        className="form-control"
+                        value={formData.siblingName}
+                        onChange={handleChange}
+                        required={!formData.siblingInfoChecked}
+                        disabled={formData.siblingInfoChecked}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="idCardFile" className="form-label">
+                        ID Card {!formData.siblingInfoChecked && <span className="text-danger">*</span>}
+                      </label>
+                      <input
+                        type="file"
+                        id="idCardFile"
+                        name="idCardFile"
+                        className="form-control"
+                        accept=".jpg,.jpeg,.pdf"
+                        onChange={handleChange}
+                        disabled={formData.siblingInfoChecked}
+                      />
+                      {existingFiles.idCardFile && !formData.idCardFile && (
+                        <div className="text-muted small mt-1">
+                          Existing file: {getFileNameFromPath(existingFiles.idCardFile)}
+                        </div>
+                      )}
+                      {formData.idCardFile && (
+                        <div className="text-muted small mt-1">
+                          New file selected: {formData.idCardFile.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card-header mb-2">
+                  <h4 className="card-title text-center custom-heading-font">
+                    Family Information
+                  </h4>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="mb-3">
+                      <label htmlFor="parentalStatus" className="form-label">
+                        Parental Status <span className="text-danger">*</span>
+                      </label>
+                      <select
+                        id="parentalStatus"
+                        name="parentalStatus"
+                        className="form-control"
+                        value={formData.parentalStatus}
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="">Select</option>
+                        <option value="Single Father">Single Father</option>
+                        <option value="Single Mother">Single Mother</option>
+                        <option value="Parents">Parents</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {formData.parentalStatus !== 'Single Mother' && (
+                  <div className="row">
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="fatherName" className="form-label">
+                          Father Name <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="fatherName"
+                          name="fatherName"
+                          className="form-control"
+                          value={formData.fatherName}
+                          onChange={handleChange}
+                          required
+                          disabled={formData.parentalStatus === 'Single Mother'}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="fatherContactNo" className="form-label">
+                          Father Contact Number <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          id="fatherContactNo"
+                          name="fatherContactNo"
+                          className="form-control"
+                          value={formData.fatherContactNo}
+                          onChange={handleChange}
+                          required
+                          disabled={formData.parentalStatus === 'Single Mother'}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="fatherQualification" className="form-label">
+                          Father Higher Qualification
+                        </label>
+                        <input
+                          type="text"
+                          id="fatherQualification"
+                          name="fatherQualification"
+                          className="form-control"
+                          value={formData.fatherQualification}
+                          onChange={handleChange}
+                          disabled={formData.parentalStatus === 'Single Mother'}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="fatherProfession" className="form-label">
+                          Father Profession <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="fatherProfession"
+                          name="fatherProfession"
+                          className="form-control"
+                          value={formData.fatherProfession}
+                          onChange={handleChange}
+                          required
+                          disabled={formData.parentalStatus === 'Single Mother'}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {formData.parentalStatus !== 'Single Father' && (
+                  <div className="row">
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="motherName" className="form-label">
+                          Mother Name <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="motherName"
+                          name="motherName"
+                          className="form-control"
+                          value={formData.motherName}
+                          onChange={handleChange}
+                          required
+                          disabled={formData.parentalStatus === 'Single Father'}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="motherContactNo" className="form-label">
+                          Mother Contact Number <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          id="motherContactNo"
+                          name="motherContactNo"
+                          className="form-control"
+                          value={formData.motherContactNo}
+                          onChange={handleChange}
+                          required
+                          disabled={formData.parentalStatus === 'Single Father'}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="motherQualification" className="form-label">
+                          Mother Higher Qualification
+                        </label>
+                        <input
+                          type="text"
+                          id="motherQualification"
+                          name="motherQualification"
+                          className="form-control"
+                          value={formData.motherQualification}
+                          onChange={handleChange}
+                          disabled={formData.parentalStatus === 'Single Father'}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="motherProfession" className="form-label">
+                          Mother Profession <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="motherProfession"
+                          name="motherProfession"
+                          className="form-control"
+                          value={formData.motherProfession}
+                          onChange={handleChange}
+                          required
+                          disabled={formData.parentalStatus === 'Single Father'}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="row">
+                  <div className="card-header mb-2">
+                    <h4 className="card-title text-center custom-heading-font">
+                      Understanding
+                    </h4>
+                  </div>
+                  <div className="form-check ms-1 mb-2">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="agreementChecked"
                       name="agreementChecked"
                       checked={formData.agreementChecked}
                       onChange={handleChange}
+                      required
                     />
-                    <label className="form-check-label" htmlFor="customCheck1">
-                      I Understand & agree that the registration of my word does not guarantee admission to the school & the registration fee is neither transferable not refundable.
+                    <label className="form-check-label" htmlFor="agreementChecked">
+                      I Understand & agree that the registration of my ward does not guarantee admission to the school & the registration fee is neither transferable nor refundable.
                     </label>
                   </div>
-
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="registrationFee" className="form-label">
+                        Registration Fees <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="registrationFee"
+                        name="registrationFee"
+                        className="form-control"
+                        value={formData.registrationFee}
+                        disabled
+                        required
+                      />
+                    </div>
+                  </div>
+                   <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="concessionType" className="form-label">
+                          Concession Type
+                        </label>
+                        <select
+                          id="concessionType"
+                          name="concessionType"
+                          className="form-control"
+                          value={formData.concessionType}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select</option>
+                          <option value="EWS">EWS</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                          <option value="Staff Children">Staff Children</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="concessionAmount" className="form-label">
+                        Concession
+                      </label>
+                      <input
+                        type="number"
+                        id="concessionAmount"
+                        name="concessionAmount"
+                        className="form-control"
+                        value={formData.concessionAmount}
+                        onChange={handleChange}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="mb-3">
+                      <label htmlFor="finalAmount" className="form-label">
+                        Final Amount <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="finalAmount"
+                        name="finalAmount"
+                        className="form-control"
+                        value={formData.finalAmount}
+                        disabled
+                        required
+                      />
+                    </div>
+                  </div>
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="name" className="form-label">
-                        Name <span className="text-danger">*</span>
+                        Name of person filling the form <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -631,11 +1005,10 @@ const StudentRegistrationForm = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        readOnly
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="paymentMode" className="form-label">
                         Payment Option <span className="text-danger">*</span>
@@ -647,6 +1020,7 @@ const StudentRegistrationForm = () => {
                         value={formData.paymentMode}
                         onChange={handleChange}
                         required
+                        disabled
                       >
                         <option value="">Select</option>
                         <option value="Cash">Cash</option>
@@ -655,10 +1029,9 @@ const StudentRegistrationForm = () => {
                       </select>
                     </div>
                   </div>
-
                   {formData.paymentMode === 'Cheque' && (
                     <>
-                      <div className="col-md-3">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="chequeNumber" className="form-label">
                             Cheque Number <span className="text-danger">*</span>
@@ -671,10 +1044,11 @@ const StudentRegistrationForm = () => {
                             value={formData.chequeNumber}
                             onChange={handleChange}
                             required
+                            disabled
                           />
                         </div>
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-6">
                         <div className="mb-3">
                           <label htmlFor="bankName" className="form-label">
                             Bank Name <span className="text-danger">*</span>
@@ -687,6 +1061,7 @@ const StudentRegistrationForm = () => {
                             value={formData.bankName}
                             onChange={handleChange}
                             required
+                            disabled
                           />
                         </div>
                       </div>
@@ -699,60 +1074,26 @@ const StudentRegistrationForm = () => {
                     For Official Use Only
                   </h4>
                 </div>
-
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
-                      <label htmlFor="dateOfApplicatopnReceive" className="form-label">
+                      <label htmlFor="dateOfApplicationReceive" className="form-label">
                         Application Received on
                       </label>
                       <input
                         type="date"
-                        id="dateOfApplicatopnReceive"
-                        name="dateOfApplicatopnReceive"
+                        id="dateOfApplicationReceive"
+                        name="dateOfApplicationReceive"
                         className="form-control"
                         value={student?.createdAt ? student.createdAt.substring(0, 10) : ''}
-                        readOnly
-                      />
-
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="receivedBy" className="form-label">
-                       Payment Mode
-                      </label>
-                      <input
-                        type="text"
-                        id="receivedBy"
-                        name="receivedBy"
-                        className="form-control"
-                        value={formData.paymentMode}
-                        readOnly
+                        disabled
                       />
                     </div>
                   </div>
                   <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="transationOrChequetNumber" className="form-label">
-                        Transaction No./ Cheque No.
-                      </label>
-                      <input
-                        type="text"
-                        id="transationOrChequetNumber"
-                        name="transationOrChequetNumber"
-                        className="form-control"
-                        value={student?.transactionNumber || ''}
-                        readOnly
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="receiptNumber" className="form-label">
-                        Receipts No.
+                        Receipt No.
                       </label>
                       <input
                         type="text"
@@ -760,11 +1101,11 @@ const StudentRegistrationForm = () => {
                         name="receiptNumber"
                         className="form-control"
                         value={student?.receiptNumber || ''}
-                        readOnly
+                        disabled
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="registrationNumber" className="form-label">
                         Registration No.
@@ -775,29 +1116,65 @@ const StudentRegistrationForm = () => {
                         name="registrationNumber"
                         className="form-control"
                         value={student?.registrationNumber || ''}
-                        readOnly
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="paymentMode" className="form-label">
+                        Payment Mode
+                      </label>
+                      <input
+                        type="text"
+                        id="paymentMode"
+                        name="paymentMode"
+                        className="form-control"
+                        value={formData.paymentMode}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="paymentDate" className="form-label">
+                        Payment Date
+                      </label>
+                      <input
+                        type="text"
+                        id="paymentDate"
+                        name="paymentDate"
+                        className="form-control"
+                        value={student?.paymentDate ? new Date(student.paymentDate).toLocaleDateString('en-GB') : ''}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="transactionOrChequeNumber" className="form-label">
+                        Transaction No./Cheque No.
+                      </label>
+                      <input
+                        type="text"
+                        id="transactionOrChequeNumber"
+                        name="transactionOrChequeNumber"
+                        className="form-control"
+                        value={student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ''}
+                        disabled
                       />
                     </div>
                   </div>
                 </div>
+
                 <div className="d-flex justify-content-end">
-                  <div className="mr-2">
-                    <button
-                      type="submit"
-                      className="btn btn-primary custom-submit-button"
-                    >
-                      Update
-                    </button>
-                  </div>
-                  <div className="text" style={{ marginLeft: "2px" }}>
-                    {/* <button
-                      type="button"
-                      className="btn btn-primary "
-                      onClick={() => navigate(-1)}
-                    >
-                      Discard Changes
-                    </button> */}
-                  </div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary custom-submit-button"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Updating...' : 'Update'}
+                  </button>
                 </div>
               </form>
             </div>

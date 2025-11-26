@@ -7,20 +7,23 @@ const LeaveApplyEmployeeList = () => {
   const [schoolId, setSchoolId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [academicYear] = useState('2025-26');
+  const [academicYear,  setAcademicYear] = useState('');
   const [leaveRecords, setLeaveRecords] = useState([]);
-
+ 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (!userDetails?.schoolId) {
       toast.error('School ID not found. Please log in again.');
       return;
     }
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+    setAcademicYear(academicYear);
+    
     setSchoolId(userDetails.schoolId);
-    fetchLeaveRecords(userDetails.schoolId);
-  }, [academicYear]);
+    fetchLeaveRecords(userDetails.schoolId, academicYear);
+  }, []);
 
-  const fetchLeaveRecords = async (schoolId) => {
+  const fetchLeaveRecords = async (schoolId,academicYear) => {
   try {
     const response = await getAPI(`/get-all-employee-leaves?schoolId=${schoolId}&academicYear=${academicYear}`);
     if (!response.hasError && Array.isArray(response.data.data)) {
@@ -39,25 +42,6 @@ const LeaveApplyEmployeeList = () => {
 };
 
 
-//   const fetchLeaveRecords = async (schoolId) => {
-//   try {
-//     const response = await getAPI(`/get-all-employee-leaves?schoolId=${schoolId}&academicYear=${academicYear}`);
-//     console.log("get response", response);
-
-//     if (!response.hasError && Array.isArray(response.data.data)) {
-//       // Directly set flat list
-//       const withIndex = response.data.data.map((item, idx) => ({ ...item, index: idx }));
-//       setLeaveRecords(withIndex);
-//     } else {
-//       toast.error('No leave records found.');
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     toast.error('Error fetching leave records');
-//   }
-// };
-
-
  const handleStatusChange = async (record, status) => {
   try {
     const res = await putAPI('/update-employee-leave-status', {
@@ -72,7 +56,7 @@ const LeaveApplyEmployeeList = () => {
 
     if (!res.hasError) {
       toast.success('Status updated successfully');
-      fetchLeaveRecords(schoolId);
+      fetchLeaveRecords(schoolId, academicYear);
     } else {
       toast.error(res.message);
     }
@@ -138,7 +122,7 @@ const LeaveApplyEmployeeList = () => {
                           <td>{formatDate(rec.toDate)}</td>
                           <td>{rec.numberOfDays}</td>
                           <td>
-                            <span className={`badge bg-${rec.status === 'approved' ? 'success' : rec.status === 'rejected' ? 'danger' : 'warning'}`}>{rec.status}</span>
+                            <span className={`badge bg-${rec.status === 'approved' ? 'success' : rec.status === 'rejected' ? 'danger' : 'warning'}`}>{rec.status === "pending"? "Pending":rec.status === "approved"? "Approved" : "Reject"}</span>
                           </td>
                           <td>
                             <button

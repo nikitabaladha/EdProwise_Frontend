@@ -11,7 +11,9 @@ const UpdateFeeStructure = () => {
   const [classData, setClassData] = useState([]);
   const [feesTypesList, setFeesTypesList] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [forms, setForms] = useState([]);
+  const academicYear = localStorage.getItem("selectedAcademicYear");
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -28,16 +30,19 @@ const UpdateFeeStructure = () => {
 
     const fetchData = async () => {
       try {
-        const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
+        const classRes = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClassData(classRes?.data?.data || []);
       } catch (error) {
         toast.error("Error fetching class and section data.");
       }
 
       try {
-        const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`);
+        const feesTypeRes = await getAPI(`/getall-fess-type-year/${schoolId}/year/${academicYear}`);
         if (!feesTypeRes.hasError && Array.isArray(feesTypeRes.data.data)) {
-          setFeesTypesList(feesTypeRes.data.data);
+          const SchoolFees = feesTypeRes.data.data.filter(
+            (fee) => fee.groupOfFees === "School Fees"
+          );
+          setFeesTypesList(SchoolFees);
         } else {
           toast.error("Failed to fetch fees types.");
         }
@@ -127,6 +132,8 @@ const UpdateFeeStructure = () => {
 
   const handleSubmitAll = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    const academicYear = localStorage.getItem('selectedAcademicYear'); 
 
     if (!existingStructure?._id) {
       toast.error("No fee structure ID found for updating");
@@ -145,6 +152,7 @@ const UpdateFeeStructure = () => {
 
     const form = forms[0];
     const payload = {
+      academicYear:academicYear,
       classId: form.selectedClassId,
       sectionIds: form.selectedSections,
       installments: form.installments.map((inst) => ({
@@ -167,6 +175,8 @@ const UpdateFeeStructure = () => {
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Server error.");
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -295,11 +305,18 @@ const UpdateFeeStructure = () => {
                                       required
                                     >
                                       <option value="">Select Fee Type</option>
-                                      {feesTypesList.map((type) => (
-                                        <option key={type._id} value={type._id}>
-                                          {type.feesTypeName}
-                                        </option>
-                                      ))}
+                                      {feesTypesList
+                                    .filter((type) => {
+                                      const selectedFeeTypes = inst.feesDetails.map((f) => f.feesType);
+                                      return (
+                                        !selectedFeeTypes.includes(type._id) || fee.feesType === type._id
+                                      );
+                                    })
+                                    .map((type) => (
+                                      <option key={type._id} value={type._id}>
+                                        {type.feesTypeName}
+                                      </option>
+                                    ))}
                                     </select>
                                   </div>
                                   <div className="col-md-5">
@@ -357,8 +374,11 @@ const UpdateFeeStructure = () => {
                   <button type="button" className="btn btn-secondary" onClick={() => navigate(-1)}>
                     Cancel
                   </button>
-                  <button type="submit" className="btn btn-success">
-                    Update Fees Structure
+                  <button type="submit" 
+                  className="btn btn-success"
+                    disabled={loading}
+                  >
+                    {loading ? "Updating..." : "Update"}
                   </button>
                 </div>
               </form>

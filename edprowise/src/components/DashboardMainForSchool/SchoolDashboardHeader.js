@@ -2,23 +2,26 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useLogout } from '../../useLogout';
 
 import { CgProfile } from "react-icons/cg";
 import { BiLogOut } from "react-icons/bi";
 import { IoKeyOutline } from "react-icons/io5";
 import { ThemeContext } from "../ThemeProvider";
-
+import { AiFillMessage } from "react-icons/ai";
 import getAPI from "../../api/getAPI";
 
 const SchoolDashboardHeader = () => {
   const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userDetails");
-    window.location.href = "/login";
-  };
+  const logout = useLogout();
+  // const handleLogout = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("userDetails");
+  //   window.location.href = "/login";
+  // };
 
   const [school, setSchool] = useState(null);
+
 
   const fetchSchoolData = async () => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -60,16 +63,40 @@ const SchoolDashboardHeader = () => {
     });
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, [])
+
   const toggleSidebar = () => {
     const htmlElement = document.documentElement;
     const bodyElement = document.body;
 
     htmlElement.classList.toggle("sidebar-enable");
 
-    if (bodyElement.style.overflow === "hidden") {
-      bodyElement.style.overflow = "";
-    } else {
+    if (htmlElement.classList.contains("sidebar-enable")) {
       bodyElement.style.overflow = "hidden";
+
+      if (!document.querySelector(".offcanvas-backdrop")) {
+        const backdrop = document.createElement("div");
+        backdrop.className = "offcanvas-backdrop fade show";
+        bodyElement.appendChild(backdrop);
+      }
+    } else {
+      bodyElement.style.overflow = "";
+
+
+      const backdrop = document.querySelector(".offcanvas-backdrop");
+      if (backdrop) backdrop.remove();
     }
   };
 
@@ -80,11 +107,17 @@ const SchoolDashboardHeader = () => {
     if (
       htmlElement.classList.contains("sidebar-enable") &&
       mainNav &&
-      !mainNav.contains(event.target)
+      !mainNav.contains(event.target) &&
+      !event.target.closest(".button-toggle-menu")
     ) {
-      toggleSidebar();
+      htmlElement.classList.remove("sidebar-enable");
+      document.body.style.overflow = "";
+
+      const backdrop = document.querySelector(".offcanvas-backdrop");
+      if (backdrop) backdrop.remove();
     }
   };
+
 
   useEffect(() => {
     document.addEventListener("click", handleDocumentClick);
@@ -188,10 +221,13 @@ const SchoolDashboardHeader = () => {
                     event.stopPropagation();
                     toggleSidebar();
                   }}
+                  style={{
+                    display: isMobile ? "block" : "none",
+                  }}
                 >
                   <iconify-icon
                     icon="solar:hamburger-menu-broken"
-                    className="fs-24 align-middle"
+                    className="fs-24 align-middle "
                   />
                 </button>
               </div>
@@ -203,6 +239,28 @@ const SchoolDashboardHeader = () => {
               </div>
             </div>
             <div className="d-flex align-items-center gap-1">
+              {/* Go To Dashboard */}
+              <div className="topbar-item">
+                <button
+                  type="button"
+                  className="topbar-button"
+                  id="light-dark-mode"
+                  onClick={() => {
+                    const sidebarTab = localStorage.getItem("sidebartab");
+                    if (sidebarTab === "FeesModule") {
+                      navigate("/school/fees-management-year");
+                    } else {
+                      navigate("/school/go-to-dashboard");
+                    }
+                  }}
+                >
+                  <iconify-icon
+                    icon="solar:logout-2-outline"
+                    className="fs-24 align-middle"
+                  />
+                </button>
+              </div>
+
               {/* Theme Color (Light/Dark) */}
               <div className="topbar-item">
                 <button
@@ -213,8 +271,23 @@ const SchoolDashboardHeader = () => {
                 >
                   <iconify-icon
                     icon="solar:moon-bold-duotone"
-                    className="fs-24 align-middle"
+                    className="fs-24 align-middle "
                   />
+                </button>
+              </div>
+
+              {/*Message */}
+              <div className="topbar-item">
+                <button
+                  type="button"
+                  className="topbar-button"
+                  id="light-dark-mode"
+                  // onClick={toggleTheme}
+                >
+                  <AiFillMessage className="fs-24 align-middle " />
+                  <span className="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">
+                    3<span className="visually-hidden">unread messages</span>
+                  </span>
                 </button>
               </div>
               {/* Notification */}
@@ -413,7 +486,7 @@ const SchoolDashboardHeader = () => {
                   <div className="dropdown-divider my-1" />
                   <Link className="dropdown-item text-danger">
                     <BiLogOut className="bx bx-log-out fs-18 align-middle me-1" />
-                    <span className="align-middle" onClick={handleLogout}>
+                    <span className="align-middle" onClick={logout}>
                       Logout
                     </span>
                   </Link>

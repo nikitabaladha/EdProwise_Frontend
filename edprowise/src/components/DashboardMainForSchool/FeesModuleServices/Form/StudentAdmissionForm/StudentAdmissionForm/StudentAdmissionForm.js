@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from "react";
-import CityData from "../../../../../CityData.json";
-import { useNavigate } from "react-router-dom";
-import getAPI from "../../../../../../api/getAPI";
-import { toast } from "react-toastify";
-import postAPI from "../../../../../../api/postAPI";
-import {
-  validateBasicForm,
-  validateFullForm,
-} from "../FormValidation/FormValidation";
-import RegistrationSelector from "./RegistrationSelector";
-import Form from "./Form";
+import React, { useState, useEffect } from 'react';
+import countryData from "../../../../../CityData.json";
+import { useNavigate } from 'react-router-dom';
+import getAPI from '../../../../../../api/getAPI';
+import { toast } from 'react-toastify';
+import postAPI from '../../../../../../api/postAPI';
+import { validateBasicForm, validateFullForm } from '../FormValidation/FormValidation';
+import RegistrationSelector from "./RegistrationSelector"
+import Form from './Form'
 
 const StudentAdmissionForm = () => {
   const navigate = useNavigate();
-  const [schoolId, setSchoolId] = useState("");
+  const [schoolId, setSchoolId] = useState('');
   const [existingStudents, setExistingStudents] = useState([]);
   const [showFullForm, setShowFullForm] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -22,28 +19,39 @@ const StudentAdmissionForm = () => {
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
   const [shifts, setShifts] = useState([]);
+  const [oneTimeFeesList, setOneTimeFeesList] = useState([]);
+  const [availableFeeTypes, setAvailableFeeTypes] = useState([]);
+  const [selectedFeeType, setSelectedFeeType] = useState('');
+  const [concessionAmount, setConcessionAmount] = useState(0);
+  const [finalAmount, setFinalAmount] = useState(0);
+  const [admissionFees, setAdmissionFees] = useState(0);
+  const academicYear = localStorage.getItem('selectedAcademicYear');
 
   const [formData, setFormData] = useState({
-    registrationNumber: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    dateOfBirth: "",
-    age: "",
-    nationality: "",
-    gender: "",
-    bloodGroup: "",
-    masterDefineClass: "",
-    section: "",
-    masterDefineShift: "",
-    currentAddress: "",
-    cityStateCountry: "",
-    pincode: "",
-    parentContactNumber: "",
-    motherLanguage: "",
-    previousSchoolName: "",
-    addressOfPreviousSchool: "",
-    previousSchoolBoard: "",
+    academicYear: academicYear,
+    studentPhoto: null,
+    registrationNumber: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    dateOfBirth: '',
+    age: '',
+    nationality: '',
+    gender: '',
+    bloodGroup: '',
+    masterDefineClass: '',
+    section: '',
+    masterDefineShift: '',
+    currentAddress: '',
+    country: '',
+    state: '',
+    city: '',
+    pincode: '',
+    parentContactNumber: '',
+    motherTongue: '',
+    previousSchoolName: '',
+    addressOfPreviousSchool: '',
+    previousSchoolBoard: '',
     previousSchoolResult: null,
     tcCertificate: null,
     proofOfResidence: null,
@@ -53,22 +61,23 @@ const StudentAdmissionForm = () => {
     castCertificate: null,
     siblingInfoChecked: false,
     relationType: null,
-    siblingName: "",
+    siblingName: '',
     idCardFile: null,
-    parentalStatus: "Parents",
-    fatherName: "",
-    fatherContactNo: "",
-    fatherQualification: "",
-    fatherProfession: "",
-    motherName: "",
-    motherContactNo: "",
-    motherQualification: "",
-    motherProfession: "",
+    parentalStatus: 'Parents',
+    fatherName: '',
+    fatherContactNo: '',
+    fatherQualification: '',
+    fatherProfession: '',
+    motherName: '',
+    motherContactNo: '',
+    motherQualification: '',
+    motherProfession: '',
     agreementChecked: false,
-    name: "",
-    paymentMode: "",
-    chequeNumber: "",
-    bankName: "",
+    concessionType: null,
+    name: '',
+    paymentMode: '',
+    chequeNumber: '',
+    bankName: ''
   });
 
   useEffect(() => {
@@ -88,17 +97,15 @@ const StudentAdmissionForm = () => {
 
     const fetchStudents = async () => {
       try {
-        const response = await getAPI(`/get-registartion-form/${schoolId}`);
+        const response = await getAPI(`/get-registartion-formbySchoolId/${schoolId}`);
+        console.log("API response:", response);
 
         if (!response.hasError) {
-          const studentArray = Array.isArray(response.data.students)
-            ? response.data.students.map((student) => ({
-                ...student,
-                registrationNumber:
-                  student.registrationNumber ||
-                  `ABC${10000 + response.data.students.indexOf(student) + 1}`,
-              }))
-            : [];
+          const studentArray = Array.isArray(response.data.students) ?
+            response.data.students.map(student => ({
+              ...student,
+              registrationNumber: student.registrationNumber || `ABC${10000 + response.data.students.indexOf(student) + 1}`
+            })) : [];
           setExistingStudents(studentArray);
         } else {
           toast.error(response.message || "Failed to fetch student list.");
@@ -116,14 +123,10 @@ const StudentAdmissionForm = () => {
     const fetchData = async () => {
       try {
         if (!schoolId) return;
-        const response = await getAPI(
-          `/get-class-and-section/${schoolId}`,
-          {},
-          true
-        );
+        const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${academicYear}`, {}, true);
         setClasses(response?.data?.data || []);
       } catch (error) {
-        toast.error("Error fetching class and section data.");
+        toast.error('Error fetching class and section data.');
       }
     };
 
@@ -135,11 +138,9 @@ const StudentAdmissionForm = () => {
 
     const fetchShifts = async () => {
       try {
-        const response = await getAPI(`/master-define-shift/${schoolId}`);
+        const response = await getAPI(`/master-define-shift-year/${schoolId}/year/${academicYear}`);
         if (!response.hasError) {
-          const shiftArray = Array.isArray(response.data?.data)
-            ? response.data.data
-            : [];
+          const shiftArray = Array.isArray(response.data?.data) ? response.data.data : [];
           setShifts(shiftArray);
         } else {
           toast.error(response.message || "Failed to fetch shifts.");
@@ -153,14 +154,63 @@ const StudentAdmissionForm = () => {
     fetchShifts();
   }, [schoolId]);
 
+  const fetchClassRelatedFeeTypes = async (classId, sectionId) => {
+    try {
+      if (!schoolId || !classId || !sectionId) return;
+
+      const response = await getAPI(`/get-one-time-feesBysectionIds/${schoolId}/${classId}/${sectionId}/${academicYear}`, {}, true);
+      if (response?.data?.data) {
+        setOneTimeFeesList(response.data.data);
+
+        const feeTypes = response.data.data.flatMap(feeItem =>
+          feeItem.oneTimeFees.map(fee => ({
+            id: fee.feesTypeId._id,
+            name: fee.feesTypeId.feesTypeName,
+            amount: fee.amount
+          }))
+        );
+        setAvailableFeeTypes(feeTypes);
+      }
+    } catch (error) {
+      toast.error("Error fetching fee types for selected class");
+      console.error("Fee type fetch error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (formData.masterDefineClass && formData.section) {
+      fetchClassRelatedFeeTypes(formData.masterDefineClass, formData.section);
+    }
+  }, [formData.masterDefineClass, formData.section]);
+
+  const handleFeeTypeChange = (e) => {
+    const feeTypeId = e.target.value;
+    setSelectedFeeType(feeTypeId);
+
+    const selectedFee = availableFeeTypes.find(fee => fee.id === feeTypeId);
+    if (selectedFee) {
+      setAdmissionFees(selectedFee.amount);
+      setFinalAmount(selectedFee.amount - concessionAmount);
+    } else {
+      setAdmissionFees(0);
+      setFinalAmount(0);
+    }
+  };
+
+  const handleConcessionChange = (e) => {
+    const concession = Number(e.target.value);
+    setConcessionAmount(concession);
+    setFinalAmount(admissionFees - concession);
+  };
+
   const handleClassChange = (e) => {
     const classId = e.target.value;
-    const selectedClass = classes.find((c) => c._id === classId);
+    const selectedClass = classes.find(c => c._id === classId);
 
     let filteredSections = selectedClass?.sections || [];
     if (formData.masterDefineShift) {
       filteredSections = filteredSections.filter(
-        (section) => section.shiftId === formData.masterDefineShift
+        section => section.shiftId === formData.masterDefineShift
       );
     }
 
@@ -169,7 +219,7 @@ const StudentAdmissionForm = () => {
     setFormData({
       ...formData,
       masterDefineClass: classId,
-      section: "",
+      section: ''
     });
   };
 
@@ -177,38 +227,29 @@ const StudentAdmissionForm = () => {
     const shiftId = e.target.value;
 
     if (formData.masterDefineClass) {
-      const selectedClass = classes.find(
-        (c) => c._id === formData.masterDefineClass
-      );
-      const filteredSections =
-        selectedClass?.sections.filter(
-          (section) => section.shiftId === shiftId
-        ) || [];
+      const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
+      const filteredSections = selectedClass?.sections.filter(
+        section => section.shiftId === shiftId
+      ) || [];
       setSections(filteredSections);
     }
 
     setFormData({
       ...formData,
       masterDefineShift: shiftId,
-      section: "",
+      section: ''
     });
   };
   useEffect(() => {
     if (formData.masterDefineClass && formData.masterDefineShift) {
-      const selectedClass = classes.find(
-        (c) => c._id === formData.masterDefineClass
-      );
-      const filteredSections =
-        selectedClass?.sections.filter(
-          (section) => section.shiftId === formData.masterDefineShift
-        ) || [];
+      const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
+      const filteredSections = selectedClass?.sections.filter(
+        section => section.shiftId === formData.masterDefineShift
+      ) || [];
       setSections(filteredSections);
 
-      if (
-        formData.section &&
-        !filteredSections.some((s) => s._id === formData.section)
-      ) {
-        setFormData((prev) => ({ ...prev, section: "" }));
+      if (formData.section && !filteredSections.some(s => s._id === formData.section)) {
+        setFormData(prev => ({ ...prev, section: '' }));
       }
     }
   }, [formData.masterDefineShift, formData.masterDefineClass, classes]);
@@ -221,8 +262,8 @@ const StudentAdmissionForm = () => {
     } else if (type === "file") {
       setFormData((prev) => ({ ...prev, [name]: files[0] }));
     } else {
-      if (name === "nationality") {
-        setFormData((prev) => ({
+      if (name === 'nationality') {
+        setFormData(prev => ({
           ...prev,
           nationality: value,
           studentCategory:
@@ -243,109 +284,137 @@ const StudentAdmissionForm = () => {
         const today = new Date();
         if (birthDate > today) {
           toast.error("Date of birth cannot be in the future");
-          setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
+          setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
           return;
         }
         const maxAgeDate = new Date();
         maxAgeDate.setFullYear(maxAgeDate.getFullYear() - 120);
         if (birthDate < maxAgeDate) {
           toast.error("Please enter a valid date of birth");
-          setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
+          setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
           return;
         }
 
         let age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
 
-        if (
-          monthDiff < 0 ||
-          (monthDiff === 0 && today.getDate() < birthDate.getDate())
-        ) {
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
           age--;
         }
 
-        setFormData((prev) => ({
+        setFormData(prev => ({
           ...prev,
-          age: age > 0 ? age.toString() : "0",
+          age: age > 0 ? age.toString() : '0'
         }));
+
       } catch (error) {
         console.error("Error calculating age:", error);
         toast.error("Invalid date format");
-        setFormData((prev) => ({ ...prev, dateOfBirth: "", age: "" }));
+        setFormData(prev => ({ ...prev, dateOfBirth: '', age: '' }));
       }
     } else {
-      setFormData((prev) => ({ ...prev, age: "" }));
+      setFormData(prev => ({ ...prev, age: '' }));
     }
   }, [formData.dateOfBirth]);
 
   const handleRegistrationSubmit = (e) => {
     e.preventDefault();
     if (!formData.registrationNumber) {
-      toast.error("Please select a registration number");
+      toast.error('Please select a registration number');
       return;
     }
 
     const student = existingStudents.find(
-      (s) => s.registrationNumber === formData.registrationNumber
+      s => s.registrationNumber === formData.registrationNumber
     );
 
     if (!student) {
-      toast.error(
-        "Invalid registration number. Please select a valid registration number from the list."
-      );
+      toast.error('Invalid registration number. Please select a valid registration number from the list.');
       return;
     }
     if (student) {
       setSelectedStudent(student);
 
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
-        firstName: student.firstName,
-        middleName: student.middleName,
-        lastName: student.lastName,
-        dateOfBirth: student.dateOfBirth
-          ? student.dateOfBirth.split("T")[0]
-          : "",
-        nationality: student.nationality,
-        gender: student.gender,
-        masterDefineClass:
-          student?.masterDefineClass?._id || student?.masterDefineClass || "",
-        masterDefineShift:
-          student?.masterDefineShift?._id || student?.masterDefineShift || "",
-        currentAddress: student.currentAddress,
-        cityStateCountry: student.cityStateCountry,
-        pincode: student.pincode,
-        parentContactNumber:
-          student.fatherContactNo || student.motherContactNo || "",
-        previousSchoolName: student.previousSchoolName || "",
-        addressOfPreviousSchool: student.addressOfpreviousSchool || "",
-        previousSchoolBoard: student.previousSchoolBoard || "",
+        studentPhoto: student.studentPhoto || null,
+        registrationNumber: student.registrationNumber || '',
+        firstName: student.firstName || '',
+        middleName: student.middleName || '',
+        lastName: student.lastName || '',
+        dateOfBirth: student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '',
+        age: student.age || '',
+        nationality: student.nationality || '',
+        gender: student.gender || '',
+        bloodGroup: student.bloodGroup || '',
+        masterDefineClass: student?.masterDefineClass?._id || student?.masterDefineClass || '',
+        masterDefineShift: student?.masterDefineShift?._id || student?.masterDefineShift || '',
+        currentAddress: student.currentAddress || '',
+        country: student?.country || '',
+        state: student?.state || '',
+        city: student?.city || '',
+        pincode: student.pincode || '',
+        parentContactNumber: student.fatherContactNo || student.motherContactNo || '',
+        motherTongue: student.motherTongue || '',
+        previousSchoolName: student.previousSchoolName || '',
+        addressOfPreviousSchool: student.addressOfPreviousSchool || '',
+        previousSchoolBoard: student.previousSchoolBoard || '',
         previousSchoolResult: student?.previousSchoolResult || null,
         tcCertificate: student?.tcCertificate || null,
-        aadharPassportNumber: student.aadharPassportNumber,
-        castCertificate: student?.castCertificate || null,
+        proofOfResidence: student?.proofOfResidence || null,
+        aadharPassportNumber: student.aadharPassportNumber || '',
         aadharPassportFile: student.aadharPassportFile || null,
-        studentCategory: student.studentCategory,
-        siblingInfoChecked: false,
-        relationType: null,
-        fatherName: student.fatherName,
-        fatherContactNo: student.fatherContactNo,
-        motherName: student.motherName,
-        motherContactNo: student.motherContactNo,
-        name: student.name,
-        paymentMode: student.paymentMode,
+        studentCategory: student.studentCategory || '',
+        castCertificate: student?.castCertificate || null,
+        siblingInfoChecked: student.siblingInfoChecked || false,
+        relationType: student.relationType || null,
+        siblingName: student.siblingName || '',
+        idCardFile: student.idCardFile || null,
+        parentalStatus: student.parentalStatus || 'Parents',
+        fatherName: student.fatherName || '',
+        fatherContactNo: student.fatherContactNo || '',
+        fatherQualification: student.fatherQualification || '',
+        fatherProfession: student.fatherProfession || '',
+        motherName: student.motherName || '',
+        motherContactNo: student.motherContactNo || '',
+        motherQualification: student.motherQualification || '',
+        motherProfession: student.motherProfession || '',
+        agreementChecked: student.agreementChecked || false,
+        name: student.name || ''
       }));
 
       if (student?.masterDefineClass?._id || student?.masterDefineClass) {
-        const classId =
-          student?.masterDefineClass?._id || student?.masterDefineClass;
-        const selectedClass = classes.find((c) => c._id === classId);
+        const classId = student?.masterDefineClass?._id || student?.masterDefineClass;
+        const selectedClass = classes.find(c => c._id === classId);
         setSections(selectedClass?.sections || []);
       }
+
     }
 
     setShowFullForm(true);
   };
+
+
+  const handlePhotoUpload = (e) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  const maxSize = 300 * 1024; 
+
+  if (file.size > maxSize) {
+    toast.error("Image size should not exceed 300KB.");
+    e.target.value = null;
+    return;
+  }
+
+  setFormData(prev => ({
+    ...prev,
+    studentPhoto: file
+  }));
+};
+
+
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -362,6 +431,7 @@ const StudentAdmissionForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Submit button clicked');
     setIsSubmitting(true);
 
     const isNursery = isNurseryClass(formData.masterDefineClass);
@@ -375,22 +445,26 @@ const StudentAdmissionForm = () => {
 
     const submissionData = {
       ...formData,
+      admissionFees,
+      concessionAmount,
+      finalAmount,
       ...(formData.siblingInfoChecked && {
         relationType: null,
-        siblingName: "",
-        idCardFile: null,
-      }),
+        siblingName: '',
+        idCardFile: null
+      })
     };
 
     const formDataObj = new FormData();
 
     const fileFields = [
-      "previousSchoolResult",
-      "tcCertificate",
-      "proofOfResidence",
-      "aadharPassportFile",
-      "castCertificate",
-      "idCardFile",
+      'studentPhoto',
+      'previousSchoolResult',
+      'tcCertificate',
+      'proofOfResidence',
+      'aadharPassportFile',
+      'castCertificate',
+      'idCardFile'
     ];
 
     Object.entries(submissionData).forEach(([key, value]) => {
@@ -398,7 +472,7 @@ const StudentAdmissionForm = () => {
         if (fileFields.includes(key)) {
           if (value instanceof File) {
             formDataObj.append(key, value, value.name);
-          } else if (typeof value === "string" && value) {
+          } else if (typeof value === 'string' && value) {
             formDataObj.append(key, value);
           }
         } else if (Array.isArray(value)) {
@@ -411,27 +485,31 @@ const StudentAdmissionForm = () => {
       }
     });
 
-    formDataObj.append("schoolId", schoolId);
+    formDataObj.append('schoolId', schoolId);
 
     try {
-      const response = await postAPI("/create-admission-form", formDataObj, {
-        "Content-Type": "multipart/form-data",
+      const response = await postAPI('/create-admission-form', formDataObj, {
+        'Content-Type': 'multipart/form-data',
       });
 
+      console.log("API response:", response);
+
       if (response?.hasError) {
-        toast.error(response.message || "Something went wrong");
+        toast.error(response.message || 'Something went wrong');
       } else {
-        toast.success("Admission Form Submitted successfully");
+        toast.success('Admission Form Submitted successfully');
         const studentData = response.data?.student || response.student;
 
-        navigate(
-          `/school-dashboard/fees-module/form/admission-form/admission-details`,
-          {
-            state: {
-              student: response.data?.admission,
-            },
-          }
-        );
+       const selectedClass = classes.find(c => c._id === formData.masterDefineClass);
+
+        navigate(`/school-dashboard/fees-module/form/admission-form/admission-details`, {
+          state: {
+            student: response.data?.admission,
+            className: selectedClass?.className || '',
+            sectionName: sections.find(s => s._id === formData.section)?.name || '',
+            feeTypeName: availableFeeTypes.find(fee => fee.id === selectedFeeType)?.name || ''
+          },
+        });
       }
     } catch (error) {
       const backendMessage = error?.response?.data?.message;
@@ -439,26 +517,109 @@ const StudentAdmissionForm = () => {
       if (backendMessage) {
         toast.error(backendMessage);
       } else {
-        toast.error("An error occurred during registration");
+        toast.error('An error occurred during registration');
       }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const cityOptions = Object.entries(CityData).flatMap(([state, cities]) =>
-    cities.map((city) => `${city}, ${state}, India`)
-  );
+  const countryOptions = Object.keys(countryData).map(country => ({
+    value: country,
+    label: country
+  }));
+  const stateOptions = formData.country && countryData[formData.country]
+    ? Object.keys(countryData[formData.country]).map(state => ({
+      value: state,
+      label: state
+    }))
+    : [];
+
+  const cityOptions = formData.state && formData.country && countryData[formData.country]?.[formData.state]
+    ? countryData[formData.country][formData.state].map(city => ({
+      value: city,
+      label: city
+    }))
+    : [];
+
+
+  const handleCountryChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === 'create-option') {
+      setFormData(prev => ({
+        ...prev,
+        country: selectedOption.value,
+        state: '',
+        city: ''
+      }));
+    } else if (actionMeta.action === 'select-option') {
+
+      setFormData(prev => ({
+        ...prev,
+        country: selectedOption ? selectedOption.value : '',
+        state: '',
+        city: ''
+      }));
+    } else if (actionMeta.action === 'clear') {
+
+      setFormData(prev => ({
+        ...prev,
+        country: '',
+        state: '',
+        city: ''
+      }));
+    }
+  };
+
+  const handleStateChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === 'create-option') {
+      setFormData(prev => ({
+        ...prev,
+        state: selectedOption.value,
+        city: ''
+      }));
+    } else if (actionMeta.action === 'select-option') {
+      setFormData(prev => ({
+        ...prev,
+        state: selectedOption ? selectedOption.value : '',
+        city: ''
+      }));
+    } else if (actionMeta.action === 'clear') {
+      setFormData(prev => ({
+        ...prev,
+        state: '',
+        city: ''
+      }));
+    }
+  };
+
+  const handleCityChange = (selectedOption, actionMeta) => {
+    if (actionMeta.action === 'create-option') {
+      setFormData(prev => ({
+        ...prev,
+        city: selectedOption.value
+      }));
+    } else if (actionMeta.action === 'select-option') {
+      setFormData(prev => ({
+        ...prev,
+        city: selectedOption ? selectedOption.value : ''
+      }));
+    } else if (actionMeta.action === 'clear') {
+      setFormData(prev => ({
+        ...prev,
+        city: ''
+      }));
+    }
+  };
 
   const isNurseryClass = (classId) => {
-    const selectedClass = classes.find((c) => c._id === classId);
+    const selectedClass = classes.find(c => c._id === classId);
     return selectedClass?.className === "Nursery";
   };
 
   const isNursery = isNurseryClass(formData.masterDefineClass);
 
   const getFileNameFromPath = (path) => {
-    if (!path) return "";
+    if (!path) return '';
     return path.split(/[\\/]/).pop();
   };
 
@@ -496,12 +657,26 @@ const StudentAdmissionForm = () => {
                 handleClassChange={handleClassChange}
                 sections={sections}
                 shifts={shifts}
+                countryOptions={countryOptions}
+                stateOptions={stateOptions}
                 cityOptions={cityOptions}
                 isNursery={isNursery}
                 getFileNameFromPath={getFileNameFromPath}
                 isSubmitting={isSubmitting}
                 showAdditionalData={showAdditionalData}
                 handleShiftChange={handleShiftChange}
+                handlePhotoUpload={handlePhotoUpload}
+                selectedFeeType={selectedFeeType}
+                admissionFees={admissionFees}
+                concessionAmount={concessionAmount}
+                finalAmount={finalAmount}
+                availableFeeTypes={availableFeeTypes}
+                handleFeeTypeChange={handleFeeTypeChange}
+                handleConcessionChange={handleConcessionChange}
+                handleCountryChange={handleCountryChange}
+                handleStateChange={handleStateChange}
+                handleCityChange={handleCityChange}
+
               />
             </div>
           </div>

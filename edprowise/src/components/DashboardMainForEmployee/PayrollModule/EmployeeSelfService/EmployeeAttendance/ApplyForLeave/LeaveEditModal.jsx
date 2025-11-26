@@ -9,7 +9,6 @@ const LeaveEditModal = ({
   academicYear,
 }) => {
   const [updatedLeave, setUpdatedLeave] = useState({ ...leave });
-
   useEffect(() => {
     if (leave) setUpdatedLeave({ ...leave });
   }, [leave]);

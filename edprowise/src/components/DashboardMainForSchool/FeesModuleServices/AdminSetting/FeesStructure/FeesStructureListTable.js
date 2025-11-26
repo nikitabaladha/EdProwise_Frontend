@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import ConfirmationDialog from "../../../../ConfirmationDialog";
 import getAPI from '../../../../../api/getAPI';
 import { toast } from "react-toastify";
+import ExcelSheetModal from './ExcelSheetModal'; 
 
 const FeeStructureList = () => {
   const navigate = useNavigate();
-
   const [feeStructures, setFeeStructures] = useState([]);
   const [classMap, setClassMap] = useState({});
   const [sectionMap, setSectionMap] = useState({});
@@ -17,6 +17,29 @@ const FeeStructureList = () => {
   const [deleteType, setDeleteType] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [schoolId, setSchoolId] = useState("");
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        toast.error("Error fetching academic years.");
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
@@ -31,22 +54,18 @@ const FeeStructureList = () => {
   }, []);
 
   useEffect(() => {
-    if (!schoolId) return;
+    if (!schoolId || !selectedYear) return;
 
     const fetchData = async () => {
       try {
-        // Fee structures
-        const feeRes = await getAPI(`/get-fees-structure/${schoolId}`, {}, true);
+        const feeRes = await getAPI(`/get-fees-structure/${schoolId}/${selectedYear}`, {}, true);
         setFeeStructures(feeRes?.data?.data || []);
 
-        // Class & Section Maps
         const classRes = await getAPI(`/get-class-and-section/${schoolId}`, {}, true);
         const classMap = {};
         const sectionMap = {};
-
         classRes?.data?.data?.forEach(cls => {
           classMap[cls._id] = cls.className;
-
           cls.sections?.forEach(section => {
             sectionMap[section._id] = section.name;
           });
@@ -55,21 +74,28 @@ const FeeStructureList = () => {
         setClassMap(classMap);
         setSectionMap(sectionMap);
 
-        // Fee Type Map
         const feesTypeRes = await getAPI(`/getall-fess-type/${schoolId}`, {}, true);
         const feesMap = {};
         feesTypeRes?.data?.data?.forEach(ft => {
           feesMap[ft._id] = ft.feesTypeName;
         });
         setFeesTypeMap(feesMap);
-
       } catch (error) {
         toast.error("Error fetching data.");
       }
     };
 
     fetchData();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
+
+  const handleImportSuccess = async () => {
+    try {
+      const feeRes = await getAPI(`/get-fees-structure/${schoolId}/${selectedYear}`, {}, true);
+      setFeeStructures(feeRes?.data?.data || []);
+    } catch (error) {
+      toast.error("Error refreshing fee structures.");
+    }
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -93,25 +119,51 @@ const FeeStructureList = () => {
 
   const navigateToAddNew = (event) => {
     event.preventDefault();
-    navigate(`/school-dashboard/fees-module/admin-setting/fees-structure/add-fees-structure`);
+    navigate(`/school-dashboard/fees-module/admin-setting/fees-structure/school-fees/add-school-fees`);
   };
 
   return (
     <>
       <div className="container-fluid">
+        <div className="d-flex justify-content-end mb-2 gap-2">
+          <Link
+            onClick={navigateToAddNew}
+            className="btn btn-sm btn-primary"
+          >
+            Create Fee Structure
+          </Link>
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={() => setShowImportModal(true)}
+          >
+            Import
+          </button>
+        </div>
         <div className="row">
           <div className="col-xl-12">
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                <h4 className="card-title flex-grow-1">All Fee Structures</h4>
-                <Link onClick={navigateToAddNew} className="btn btn-sm btn-primary">Create Fee Structure</Link>
-                <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
-                </div>
+                <h4 className="card-title flex-grow-1">All School Fees</h4>
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    localStorage.setItem("selectedAcademicYear", e.target.value);
+                  }}
+                  disabled={loadingYears}
+                >
+                  <option value="" disabled>Select Year</option>
+                  {academicYears.map((year) => (
+                    <option key={year._id} value={year.academicYear}>
+                      {year.academicYear}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered text-center">
+                <table className="table align-middle mb-0  table-centered text-center">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th style={{ width: 20 }}>
@@ -136,12 +188,11 @@ const FeeStructureList = () => {
                         </td>
                         <td>{classMap[structure.classId] || "N/A"}</td>
                         <td>{structure.sectionIds?.map(id => sectionMap[id] || "N/A").join(", ") || "N/A"}</td>
-
                         <td>
                           ₹
                           {Array.isArray(structure.installments)
                             ? structure.installments.reduce((sum, inst) =>
-                              sum + (inst.fees?.reduce((subSum, fee) => subSum + fee.amount, 0) || 0), 0)
+                                sum + (inst.fees?.reduce((subSum, fee) => subSum + fee.amount, 0) || 0), 0)
                             : 0}
                         </td>
                         <td>{structure.installments?.length || 0}</td>
@@ -149,7 +200,7 @@ const FeeStructureList = () => {
                           <div className="d-flex gap-2">
                             <button
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/view-fees-structure", {
+                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/school-fees/view-school-fees", {
                                   state: { structure }
                                 })
                               }
@@ -160,7 +211,7 @@ const FeeStructureList = () => {
                             <button
                               className="btn btn-soft-primary btn-sm"
                               onClick={() =>
-                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/update-fees-structure", {
+                                navigate("/school-dashboard/fees-module/admin-setting/fees-structure/school-fees/update-school-fees", {
                                   state: { structure }
                                 })
                               }
@@ -208,6 +259,14 @@ const FeeStructureList = () => {
           </div>
         </div>
       </div>
+
+      <ExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        schoolId={schoolId}
+        academicYear={selectedYear}
+        onImportSuccess={handleImportSuccess}
+      />
 
       {isDeleteDialogOpen && (
         <ConfirmationDialog

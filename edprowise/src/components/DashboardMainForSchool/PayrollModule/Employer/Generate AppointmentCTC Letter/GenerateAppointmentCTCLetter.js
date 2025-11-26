@@ -261,7 +261,6 @@ const GenerateAppointmentCTCLetter = () => {
                                         </div>
                                     </>
                                 )}
-
                             </form>
                         </div>
                     </div>

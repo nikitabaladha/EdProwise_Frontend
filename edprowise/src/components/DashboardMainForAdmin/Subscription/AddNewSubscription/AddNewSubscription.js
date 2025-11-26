@@ -33,15 +33,15 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+ 
     if (formData.subscriptionNoOfMonth <= 0 || formData.monthlyRate <= 0) {
       toast.error(
         "Please enter valid values for number of months and monthly rate."
       );
       return;
     }
-    setSending(true);
-
+    // setSending(true);
+ 
     try {
       const response = await postAPI(
         "/subscription",
@@ -54,16 +54,15 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
         },
         true
       );
-
+ 
       if (!response.hasError) {
-        toast.success("Subscription added successfully");
-
+        toast.success(response.message || "Subscription added successfully");
+ 
         const schoolId = response.data.data.schoolId;
-
         const schoolDetails = await getAPI(`/school/${schoolId}`, {}, true);
+ 
         if (!schoolDetails.hasError) {
           const schoolData = schoolDetails.data.data;
-
           const newSubscription = {
             id: response.data.data._id,
             subscriptionFor: response.data.data.subscriptionFor,
@@ -77,9 +76,8 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
             schoolEmail: schoolData.schoolEmail,
             schoolId: schoolData.schoolId,
           };
-
+ 
           addSubscription(newSubscription);
-
           setFormData({
             schoolId: "",
             subscriptionFor: "",
@@ -87,7 +85,7 @@ const AddNewSubscription = ({ addSubscription, schools }) => {
             subscriptionNoOfMonth: "",
             monthlyRate: "",
           });
-
+ 
           navigate(-1);
         } else {
           toast.error("Failed to fetch school details");

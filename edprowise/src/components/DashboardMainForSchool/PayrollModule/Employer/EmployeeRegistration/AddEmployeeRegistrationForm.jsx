@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 const AddEmployeeRegistrationForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [sending, setSending] = useState(false);
+  //   const [academicYear, setAcademicYear] = useState("");
   const [formData, setFormData] = useState({
     employeeName: '',
     emailId: '',
@@ -17,6 +19,7 @@ const AddEmployeeRegistrationForm = () => {
     categoryOfEmployees: '',
     grade: '',
     jobDesignation: '',
+    securityDepositAmount: '',
     joiningDate: '',
   });
   const [dropdowns, setDropdowns] = useState({
@@ -25,7 +28,8 @@ const AddEmployeeRegistrationForm = () => {
     designations: [],
   });
   const [schoolId, setSchoolId] = useState(location.state?.schoolId || null);
-  
+  //   const [academicYear, setAcademicYear] = useState(location.state?.academicYear || null);
+  const academicYear = localStorage.getItem("selectedAcademicYear");
   useEffect(() => {
     if (!schoolId) {
       toast.error("School ID not found");
@@ -35,30 +39,30 @@ const AddEmployeeRegistrationForm = () => {
 
     const fetchSettings = async () => {
       try {
-        const [grades, categories, designations,] = await Promise.all([
-          getAPI(`/getall-grade/${schoolId}`),
-          getAPI(`/getall-category/${schoolId}`),
-          getAPI(`/getall-job-designation/${schoolId}`),
+        const [grades, categories, designations] = await Promise.all([
+          getAPI(`/getall-employee-grade/${schoolId}?academicYear=${academicYear}`, {}, true),
+          getAPI(`/getall-employee-category/${schoolId}?academicYear=${academicYear}`, {}, true),
+          getAPI(`/getall-employee-job-designation/${schoolId}?academicYear=${academicYear}`, {}, true),
         ]);
 
-        if (!grades) {
-          toast.error("Grade Not founds");
+        if (!grades.data?.grade || grades.data.grade.length === 0) {
+          toast.error(`Grades not found for ${academicYear}`);
         }
-         if (!categories) {
-          toast.error("Grade Not founds");
+
+        if (!categories.data?.categories || categories.data.categories.length === 0) {
+          toast.error(`Categories not found ${academicYear}`);
         }
-         if (!designations) {
-          toast.error("Grade Not founds");
+
+        if (!designations.data?.designation || designations.data.designation.length === 0) {
+          toast.error(`Designations not found ${academicYear}`);
         }
 
         setDropdowns({
-          grades: grades.data.data || [],
-          categories: categories.data.data || [],
-          designations: designations.data.data || [],
+          grades: grades.data?.grade || [],
+          categories: categories.data?.categories || [],
+          designations: designations.data?.designation || [],
         });
-        console.log("grades", grades);
-        console.log("category", categories);
-        console.log("designation", designations);
+
 
       } catch (err) {
         toast.error("Error fetching data");
@@ -78,28 +82,35 @@ const AddEmployeeRegistrationForm = () => {
     setFormData({ ...formData, [name]: selectedOption?.value || '' });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const payload = {
-      ...formData,
-      schoolId,
-    };
+    try {
+      const payload = {
+        ...formData,
+        schoolId,
+      };
+      setSending(true);
+      const res = await postAPI(`/create-employee-registration/${academicYear}`, payload, {}, true);
+      console.log(res);
 
-    const res = await postAPI('/create-employee-registration', payload, {}, true);
-
-    if (res && !res.hasError) {
-      toast.success(res.message || "Employee registered successfully");
-      navigate(-1);
-    } else {
-      toast.error(res.message || "Failed to register employee");
+      if (res && !res.hasError) {
+        toast.success(res.message || "Employee registered successfully");
+        navigate(-1);
+      } else {
+        toast.error(res.message || "Failed to register employee");
+      }
+    } catch (err) {
+      if (err.response?.data?.message) {
+        toast.error(err.response.data.message);
+      } else {
+        console.error(err);
+        toast.error(err || "Something went wrong during registration");
+      }
+    } finally {
+      setSending(false);
     }
-  } catch (err) {
-    console.error("Error submitting employee registration:", err);
-    toast.error("Something went wrong during registration");
-  }
-};
+  };
 
 
   return (
@@ -265,7 +276,7 @@ const AddEmployeeRegistrationForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-6">
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="jobDesignation" className="form-label">
                         Job Designation <span className="text-danger">*</span>
@@ -285,7 +296,26 @@ const AddEmployeeRegistrationForm = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-6">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="securityDepositAmount" className="form-label">
+                        Security Deposit Amount <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="securityDepositAmount"
+                        name="securityDepositAmount"
+                        className="form-control"
+                        value={formData.securityDepositAmount}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter Amount"
+                        min="0"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
                     <div className="mb-3">
                       <label htmlFor="joiningDate" className="form-label">
                         Joining Date <span className="text-danger">*</span>

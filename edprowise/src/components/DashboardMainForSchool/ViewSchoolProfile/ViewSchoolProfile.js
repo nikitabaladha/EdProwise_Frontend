@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import getAPI from "../../../api/getAPI";
+import getAPI from "../../../api/getAPI.js";
 
 import { Link } from "react-router-dom";
 

@@ -1,5 +1,5 @@
 import React from 'react'
-
+ 
 const FreezeITDeclaration = () => {
     return (
         <div className="container">

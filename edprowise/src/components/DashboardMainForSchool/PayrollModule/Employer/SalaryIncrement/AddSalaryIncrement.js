@@ -1,5 +1,5 @@
 import React from 'react'
-
+  
 const AddSalaryIncrement = () => {
   return (
     <div className="container">

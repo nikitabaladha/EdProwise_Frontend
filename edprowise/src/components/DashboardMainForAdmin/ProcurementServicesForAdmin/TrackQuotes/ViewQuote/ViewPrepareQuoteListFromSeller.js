@@ -11,6 +11,9 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
   const location = useLocation();
   const { sellerId, enquiryNumber } = location.state || {};
 
+  console.log("enquiryNumber from Admin", enquiryNumber);
+  console.log("sellerId from Admin", sellerId);
+
   const [preparedQuotes, setPreparedQuotes] = useState([]);
   const [editedQuote, setEditedQuote] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -44,6 +47,10 @@ const ViewPrepareQuoteListFromSeller = ({ onQuoteUpdated }) => {
             sellerState: response.data.data.sellerState,
             edprowiseState: response.data.data.edprowiseState,
           });
+
+          setTimeout(() => {
+            console.log("Locationdata from admin", locationData);
+          }, 3000);
         } else {
           console.error("Invalid response format or error in response");
         }

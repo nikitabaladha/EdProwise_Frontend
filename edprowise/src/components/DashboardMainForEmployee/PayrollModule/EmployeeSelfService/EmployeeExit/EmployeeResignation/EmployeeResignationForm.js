@@ -5,7 +5,7 @@ const EmployeeResignationForm = () => {
     const countryData = CountryStateCityData;
     const [formData, setFormData] = useState({
         country: "",
-        state: "",
+        state: "", 
         city: "",
         isCustomCountry: false,
         isCustomState: false,

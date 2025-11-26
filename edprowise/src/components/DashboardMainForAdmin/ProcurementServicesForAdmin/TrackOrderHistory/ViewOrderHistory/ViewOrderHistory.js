@@ -105,14 +105,9 @@ const ViewOrderHistory = () => {
     fetchOrderDetails();
   }, [enquiryNumber]);
 
-  const generateInvoicePDFForEdprowise = async () => {
-    const missingFields = [];
-    if (!sellerId) missingFields.push("Seller ID");
-    if (!enquiryNumber) missingFields.push("Enquiry Number");
-    if (!schoolId) missingFields.push("School ID");
-
-    if (missingFields.length > 0) {
-      toast.error(`Missing: ${missingFields.join(", ")}`);
+  const fetchInvoiceDataForEdprowise = async () => {
+    if (!sellerId || !enquiryNumber || !schoolId) {
+      console.error("Seller ID, Enquiry Number, or School ID is missing");
       return;
     }
 
@@ -356,7 +351,7 @@ const ViewOrderHistory = () => {
                     ) && (
                       <>
                         <Link
-                          onClick={() => generateInvoicePDFForBuyer()}
+                          onClick={() => fetchInvoiceDataForBuyer()}
                           className="btn btn-soft-info btn-sm"
                           title="Download PDF Invoice For Buyer"
                           data-bs-toggle="popover"

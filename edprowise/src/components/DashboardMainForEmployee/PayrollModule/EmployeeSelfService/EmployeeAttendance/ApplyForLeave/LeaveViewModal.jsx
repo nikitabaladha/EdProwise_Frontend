@@ -5,7 +5,6 @@ const LeaveViewModal = ({ isOpen, onClose, leave }) => {
   if (!isOpen || !leave) return null;
 
   const formatDate = (date) => date?.split("-").reverse().join("-");
-
   return (
     <Modal show={true} onHide={onClose} centered>
       <Modal.Header closeButton>

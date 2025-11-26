@@ -10,8 +10,17 @@ const ViewSeller = () => {
   const location = useLocation();
 
   const sellerId = location.state?.sellerId;
+  console.log("sellerId", sellerId);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (sellerId) {
+      fetchSellerProfileData();
+    } else {
+      console.error("No profile ID provided");
+    }
+  }, [sellerId]);
 
   const [sellerProfile, setSellerProfile] = useState(null);
 

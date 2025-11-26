@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
 import { toast } from 'react-toastify';
+<<<<<<< HEAD
+=======
+import { generateTCPDF } from "./generateStudentPDF";
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
 
 
 const UpdateTCForm = () => {
@@ -32,6 +36,13 @@ const UpdateTCForm = () => {
     reasonForLeaving: '',
     anyRemarks: '',
     agreementChecked: false,
+<<<<<<< HEAD
+=======
+    TCfees: '',
+    concessionAmount: '',
+    concessionType:'',
+    finalAmount: '',
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
     name: '',
     paymentMode: '',
     chequeNumber: '',
@@ -69,6 +80,10 @@ const UpdateTCForm = () => {
   useEffect(() => {
     if (student) {
       setFormData({
+<<<<<<< HEAD
+=======
+        studentPhoto: student.studentPhoto || null,
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
         AdmissionNumber: student.AdmissionNumber || '',
         firstName: student.firstName || '',
         middleName: student.middleName || '',
@@ -90,6 +105,7 @@ const UpdateTCForm = () => {
         agreementChecked: student.agreementChecked || '',
         reasonForLeaving: student.reasonForLeaving || '',
         anyRemarks: student.anyRemarks || '',
+<<<<<<< HEAD
         name: student.name || '',
         paymentMode: student.paymentMode || '',
         ApplicationReceivedOn: student.ApplicationReceivedOn ? student.ApplicationReceivedOn.split('T')[0] : '',
@@ -97,12 +113,37 @@ const UpdateTCForm = () => {
         transactionNumber: student.transactionNumber || '',
         receiptNumber: student.receiptNumber || '',
         certificateNumber: student.certificateNumber || '',
+=======
+        TCfees: student.TCfees || 0,
+        concessionType:student.concessionType ||'',
+        concessionAmount: student.concessionAmount || 0,
+        finalAmount: student.finalAmount || 0,
+        name: student.name || '',
+        paymentMode: student.paymentMode || '',
+        ApplicationReceivedOn: student.ApplicationReceivedOn ? student.ApplicationReceivedOn.split('T')[0] : '',
+        transactionNumber: student.transactionNumber || '',
+        receiptNumber: student.receiptNumber || '',
+        certificateNumber: student.certificateNumber || '',
+          chequeNumber: student. chequeNumber ||'',
+        bankName: student.bankName ||''
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
       });
     }
   }, [student]);
 
   
+<<<<<<< HEAD
 
+=======
+const handleDownloadPDF = async () => {
+    try {
+      await generateTCPDF(formData, student, classes, schoolId);
+      toast.success("TC PDF downloaded successfully.");
+    } catch (error) {
+      toast.error("Failed to generate PDF. Please try again.");
+    }
+  };
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
 
   return (
     <div className="container">
@@ -111,6 +152,7 @@ const UpdateTCForm = () => {
           <div className="card m-2">
             <div className="card-body custom-heading-padding">
               <div className="container">
+<<<<<<< HEAD
                 <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
                     Transfer Certificate Form
@@ -220,6 +262,129 @@ const UpdateTCForm = () => {
                   </div>
 
                   <div className="col-md-2">
+=======
+               <div className="card-header mb-2">
+                  <h4 className="card-title text-center custom-heading-font">
+                    View Transfer Certificate Form
+                  </h4>
+                  {/* <button
+                    className="btn btn-primary"
+                    onClick={handleDownloadPDF}
+                    title="Download TC Form as PDF"
+                  >
+                    Download PDF
+                  </button> */}
+                </div>
+              </div>
+              <form onSubmit={""}>
+              <div className="row">
+                  <div className="col-md-4 d-flex flex-column align-items-center">
+                    <div className="border rounded d-flex justify-content-center align-items-center mb-2"
+                      style={{ width: "150px", height: "180px", overflow: "hidden" }}>
+                          <img
+                            src={`${process.env.REACT_APP_API_URL_FOR_IMAGE}${formData.studentPhoto}`}
+                            alt="Student"
+                            className="w-100 h-100 object-fit-cover"
+                          />
+                    </div>
+                  </div>
+
+                  <div className="col-md-8">
+                    <div className="row">
+                      <div className="mb-3">
+                        <label htmlFor="AdmissionNumber" className="form-label">
+                          Admission No
+                        </label>
+                        <input
+                          type="text"
+                          id="AdmissionNumber"
+                          name="AdmissionNumber"
+                          className="form-control"
+                          value={formData.AdmissionNumber}
+                          disabled
+                        />
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="firstName" className="form-label">
+                            First Name <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="firstName"
+                            name="firstName"
+                            className="form-control"
+                            value={formData.firstName}
+                           disabled
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="middleName" className="form-label">
+                            Middle Name
+                          </label>
+                          <input
+                            type="text"
+                            id="middleName"
+                            name="middleName"
+                            className="form-control"
+                           disabled
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="mb-3">
+                          <label htmlFor="lastName" className="form-label">
+                            Last Name <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="lastName"
+                            name="lastName"
+                            className="form-control"
+                            value={formData.lastName}
+                           disabled
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="dateOfBirth" className="form-label">
+                            Date Of Birth <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            id="dateOfBirth"
+                            name="dateOfBirth"
+                            className="form-control"
+                            value={formData.dateOfBirth}
+                            disabled
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="mb-3">
+                          <label htmlFor="age" className="form-label">
+                            Age <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="age"
+                            name="age"
+                            className="form-control"
+                            value={formData.age}
+                            disabled
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+
+                  <div className="col-md-4">
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="nationality" className="form-label">
@@ -244,7 +409,11 @@ const UpdateTCForm = () => {
                     </div>
                   </div>
 
+<<<<<<< HEAD
                   <div className="col-md-3">
+=======
+                  <div className="col-md-4">
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="fatherName" className="form-label">
@@ -261,7 +430,11 @@ const UpdateTCForm = () => {
                     </div>
                   </div>
 
+<<<<<<< HEAD
                   <div className="col-md-3">
+=======
+                  <div className="col-md-4">
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="motherName" className="form-label">
@@ -505,10 +678,86 @@ const UpdateTCForm = () => {
                     </label>
                   </div>
 
+<<<<<<< HEAD
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label htmlFor="name" className="form-label">
                         Name <span className="text-danger">*</span>
+=======
+                  <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="TCfees" className="form-label">
+                          TC Fees <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="TCfees"
+                          name="TCfees"
+                          className="form-control"
+                          value={formData.TCfees}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="concessionType" className="form-label">
+                          Concession Type
+                        </label>
+                        <select
+                          id="concessionType"
+                          name="concessionType"
+                          className="form-control"
+                          value={formData.concessionType}
+                          disabled
+                        >
+                          <option value="">Select</option>
+                          <option value="EWS">EWS</option>
+                          <option value="SC">SC</option>
+                          <option value="ST">ST</option>
+                          <option value="OBC">OBC</option>
+                          <option value="Staff Children">Staff Children</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="concessionamount" className="form-label">
+                          Concession
+                        </label>
+                        <input
+                          // type="number"
+                          id="concessionamount"
+                          name="concessionamount"
+                          className="form-control"
+                          value={formData.concessionAmount}
+                           disabled
+
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="mb-3">
+                        <label htmlFor="finalamount" className="form-label">
+                          Final Amount <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          id="finalamount"
+                          name="finalamount"
+                          className="form-control"
+                          value={formData.finalAmount}
+                          disabled
+                        />
+                      </div>
+                    </div>
+
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label htmlFor="name" className="form-label">
+                      Name of Person Filling the Form  <span className="text-danger">*</span>
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                       </label>
                       <input
                         type="text"
@@ -520,7 +769,11 @@ const UpdateTCForm = () => {
                       />
                     </div>
                   </div>
+<<<<<<< HEAD
                   <div className="col-md-3">
+=======
+                  <div className="col-md-6">
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                     <div className="mb-3">
                       <label htmlFor="paymentMode" className="form-label">
                         Payment Option <span className="text-danger">*</span>
@@ -573,6 +826,7 @@ const UpdateTCForm = () => {
                         />
                       </div>
                     </div>
+<<<<<<< HEAD
                   </div>
                 )}
 
@@ -665,10 +919,123 @@ const UpdateTCForm = () => {
                         disabled
                       />
                     </div>
+=======
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                   </div>
+                )}
+
+                <div className="card-header mb-2">
+                  <h4 className="card-title text-center custom-heading-font">
+                    For Official Use Only
+                  </h4>
+                </div>
+
+<<<<<<< HEAD
+
+=======
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="receivedBy" className="form-label">
+                       Application Received On
+                      </label>
+                      <input
+                        type="text"
+                        id="receivedBy"
+                        name="receivedBy"
+                        className="form-control"
+                        value={student?.paymentDate ? new Date(student.paymentDate).toLocaleDateString('en-GB') : ''}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="receiptNumber" className="form-label">
+                        Receipts No.
+                      </label>
+                      <input
+                        type="text"
+                        id="receiptNumber"
+                        name="receiptNumber"
+                        className="form-control"
+                        value={formData.receiptNumber}
+                        required
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="certificateNumber" className="form-label">
+                        Certificate No.
+                      </label>
+                      <input
+                        type="text"
+                        id="certificateNumber"
+                        name="certificateNumber"
+                        className="form-control"
+                        value={formData.certificateNumber}
+                        required
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-4">
+                    {" "}
+                    <div className="mb-3">
+                      <label htmlFor="feesReceivedBy" className="form-label">
+                        Payment Mode
+                      </label>
+                      <input
+                        type="text"
+                        id="feesReceivedBy"
+                        name="feesReceivedBy"
+                        className="form-control"
+                        required
+                        value={formData.paymentMode}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="receivedBy" className="form-label">
+                        Payment Date
+                      </label>
+                      <input
+                        type="text"
+                        id="receivedBy"
+                        name="receivedBy"
+                        className="form-control"
+                        value={student?.paymentDate ? new Date(student.paymentDate).toLocaleDateString('en-GB') : ''}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label htmlFor="transationOrChequetNumber" className="form-label">
+                        Transaction No./ Cheque No.
+                      </label>
+                      <input
+                        type="text"
+                        id="transationOrChequetNumber"
+                        name="transationOrChequetNumber"
+                        className="form-control"
+                        value={student?.chequeNumber ? student.chequeNumber : student?.transactionNumber || ''}
+                        disabled
+                      />
+                    </div>
+                  </div>
+
+                
                 </div>
 
 
+>>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                 <div className="d-flex justify-content-end">
                   <div className="mr-2">
                     {" "}

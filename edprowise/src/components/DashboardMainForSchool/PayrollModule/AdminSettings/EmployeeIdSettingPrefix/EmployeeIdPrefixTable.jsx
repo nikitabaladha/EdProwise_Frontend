@@ -5,12 +5,12 @@ import getAPI from "../../../../../api/getAPI";
 import postAPI from "../../../../../api/postAPI";
 import putAPI from "../../../../../api/putAPI";
 import { useNavigate } from "react-router-dom";
-
+ 
 const EmployeeIdPrefixTable = () => {
   const navigate = useNavigate();
   const [employeeId, setEmployeeId] = useState([]);
   const [schoolId, setSchoolId] = useState(null);
-  const [academicYear, setAcademicYear] = useState("2025-26");
+  const [academicYear, setAcademicYear] = useState("");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [deleteType, setDeleteType] = useState("");
@@ -20,13 +20,16 @@ const EmployeeIdPrefixTable = () => {
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
+    const academicYear = localStorage.getItem("selectedAcademicYear");
+
     if (!id) {
       toast.error("School ID not found. Please log in again.");
       return;
     }
     setSchoolId(id);
+    setAcademicYear(academicYear);
     fetchData(id, academicYear);
-  }, [academicYear]);
+  }, []);
 
   const fetchData = async (schoolId) => {
     try {

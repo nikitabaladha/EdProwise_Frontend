@@ -1,60 +1,131 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import ConfirmationDialog from "../../../../ConfirmationDialog";
-import getAPI from "../../../../../api/getAPI";
-import { toast } from "react-toastify";
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import ConfirmationDialog from '../../../../ConfirmationDialog';
+import getAPI from '../../../../../api/getAPI';
+import { toast } from 'react-toastify';
+import ExcelSheetModal from './ExcelSheetModal';
+import { exportToExcel } from '../../../../export-excel';
 
 const ClassAndSection = () => {
   const navigate = useNavigate();
-
   const [requests, setRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [requestPerPage] = useState(5);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [deleteType, setDeleteType] = useState("");
+  const [deleteType, setDeleteType] = useState('');
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [schoolId, setSchoolId] = useState('');
+  const [shifts, setShifts] = useState([]);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedAcademicYear") || "");
+  const [loadingYears, setLoadingYears] = useState(false);
 
-  const [schoolId, setSchoolId] = useState("");
+  useEffect(() => {
+    const fetchAcademicYears = async () => {
+      try {
+        setLoadingYears(true);
+        const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+        const schoolId = userDetails?.schoolId;
+        const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
+        setAcademicYears(response.data.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingYears(false);
+      }
+    };
+
+    fetchAcademicYears();
+  }, []);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     const id = userDetails?.schoolId;
-
     if (!id) {
       toast.error("School ID not found. Please log in again.");
       return;
     }
-
     setSchoolId(id);
   }, []);
 
   useEffect(() => {
+    if (!schoolId || !selectedYear) return;
+
     const fetchData = async () => {
       try {
-        if (!schoolId) return;
-        const response = await getAPI(
-          `/get-class-and-section/${schoolId}`,
-          {},
-          true
-        );
+        const classResponse = await getAPI(`/get-class-and-section-year/${schoolId}/year/${selectedYear}`, {}, true);
+        setRequests(classResponse?.data?.data || []);
 
-        setRequests(response?.data?.data || []);
+        const shiftResponse = await getAPI(`/master-define-shift-year/${schoolId}/year/${selectedYear}`);
+        if (!shiftResponse.hasError) {
+          const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
+          setShifts(shiftArray);
+        } else {
+          toast.error(shiftResponse.message || 'Failed to fetch shifts.');
+          setShifts([]);
+        }
       } catch (error) {
-        toast.error("Error fetching class and section data.");
+        toast.error('Error fetching data.');
+        console.error('Fetch Error:', error);
       }
     };
 
     fetchData();
-  }, [schoolId]);
+  }, [schoolId, selectedYear]);
 
-  // Pagination logic
+  const handleOpenImportModal = async () => {
+    if (!schoolId || !selectedYear) {
+      toast.error("Please select a school and academic year.");
+      return;
+    }
+
+    try {
+      const shiftResponse = await getAPI(`/master-define-shift-year/${schoolId}/year/${selectedYear}`);
+      if (!shiftResponse.hasError) {
+        const shiftArray = Array.isArray(shiftResponse.data?.data) ? shiftResponse.data.data : [];
+        setShifts(shiftArray);
+      } else {
+        toast.error(shiftResponse.message || 'Failed to fetch shifts.');
+        setShifts([]);
+      }
+    } catch (error) {
+      toast.error('Error fetching shifts.');
+      console.error('Fetch Error:', error);
+    }
+    setShowImportModal(true);
+  };
+
+  const handleImportSuccess = async () => {
+    try {
+      const response = await getAPI(`/get-class-and-section-year/${schoolId}/year/${selectedYear}`, {}, true);
+      setRequests(response?.data?.data || []);
+    } catch (error) {
+      toast.error('Error refreshing class and section data.');
+    }
+  };
+
+  const handleExport = () => {
+    const exportData = requests.flatMap((classandsection) =>
+      classandsection.sections.map((section) => ({
+        Class: classandsection.className,
+        Section: section.name,
+        Shift: getShiftName(section.shiftId),
+      }))
+    );
+
+    if (!exportData.length) {
+      toast.error('No data to export');
+      return;
+    }
+
+    exportToExcel(exportData, 'ClassAndSectionData', 'ClassAndSection');
+    toast.success('Data exported successfully!');
+  };
+
   const indexOfLastRequest = currentPage * requestPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
-  const currentRequests = requests.slice(
-    indexOfFirstRequest,
-    indexOfLastRequest
-  );
-
+  const currentRequests = requests.slice(indexOfFirstRequest, indexOfLastRequest);
   const totalPages = Math.ceil(requests.length / requestPerPage);
 
   const handleNextPage = () => {
@@ -72,7 +143,6 @@ const ClassAndSection = () => {
   const pageRange = 1;
   const startPage = Math.max(1, currentPage - pageRange);
   const endPage = Math.min(totalPages, currentPage + pageRange);
-
   const pagesToShow = Array.from(
     { length: endPage - startPage + 1 },
     (_, index) => startPage + index
@@ -81,36 +151,47 @@ const ClassAndSection = () => {
   const openDeleteDialog = (request) => {
     setSelectedRequest(request);
     setIsDeleteDialogOpen(true);
-    setDeleteType("classandsection");
+    setDeleteType('classandsection');
   };
 
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
   };
+
   const handleDeleteConfirmed = (_id) => {
-    setRequests((prevRequests) =>
-      prevRequests.filter((request) => request._id !== _id)
-    );
+    setRequests((prevRequests) => prevRequests.filter((request) => request._id !== _id));
   };
-  // const navigateToViewRequestInfo = (event, request) => {
-  //   event.preventDefault();
-  //   navigate(`/school-dashboard/enquiry/enquity-details`, {
-  //     state: { request }, // Pass student data through state
-  //   });
-  // };
-  // fees-module/admin-setting/class-section/create-class-section
 
   const navigateToAddNewClass = (event) => {
     event.preventDefault();
-    navigate(
-      `/school-dashboard/fees-module/admin-setting/class-section/create-class-section`
-    );
+    navigate(`/school-dashboard/fees-module/admin-setting/grade/class-section/create-class-section`);
   };
+
+  const getShiftName = (shiftId) => {
+    const shift = shifts.find((s) => s._id === shiftId);
+    return shift ? shift.masterDefineShiftName : 'N/A';
+  };
+
   return (
     <>
       <div className="container-fluid">
         <div className="row">
           <div className="col-xl-12">
+            <div className="d-flex justify-content-end mb-2 gap-2">
+              <button
+                className="btn btn-sm btn-primary"
+                onClick={handleOpenImportModal} 
+              >
+                Import
+              </button>
+              <button
+                className="btn btn-sm btn-secondary"
+                onClick={handleExport}
+              >
+                Export
+              </button>
+            </div>
+
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center gap-1">
                 <h4 className="card-title flex-grow-1">All Class & Section</h4>
@@ -120,14 +201,28 @@ const ClassAndSection = () => {
                 >
                   Create Class & Section
                 </Link>
-
                 <div className="text-end">
-                  <Link className="btn btn-sm btn-outline-light">Export</Link>
+                  <select
+                    className="form-select"
+                    value={selectedYear}
+                    onChange={(e) => {
+                      setSelectedYear(e.target.value);
+                      localStorage.setItem("selectedAcademicYear", e.target.value);
+                    }}
+                    disabled={loadingYears}
+                  >
+                    <option value="" disabled>Select Year</option>
+                    {academicYears.map((year) => (
+                      <option key={year._id} value={year.academicYear}>
+                        {year.academicYear}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
               <div className="table-responsive">
-                <table className="table align-middle mb-0 table-hover table-centered text-center">
+                <table className="table align-middle mb-0 table-centered text-center">
                   <thead className="bg-light-subtle">
                     <tr>
                       <th style={{ width: 20 }}>
@@ -145,7 +240,7 @@ const ClassAndSection = () => {
                       </th>
                       <th>Class</th>
                       <th>Section</th>
-
+                      <th>Shift</th>
                       <th className="text-start">Action</th>
                     </tr>
                   </thead>
@@ -154,26 +249,23 @@ const ClassAndSection = () => {
                       <tr key={index}>
                         <td>
                           <div className="form-check ms-1">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                            />
+                            <input type="checkbox" className="form-check-input" />
                           </div>
                         </td>
-
                         <td>{classandsection.className}</td>
+                        <td>{classandsection.sections.map((section) => section.name).join(', ')}</td>
                         <td>
                           {classandsection.sections
-                            .map((section) => section.name)
-                            .join(", ")}
+                            .map((section) => getShiftName(section.shiftId))
+                            .filter((name, idx, arr) => arr.indexOf(name) === idx)
+                            .join(', ')}
                         </td>
-
                         <td>
                           <div className="d-flex gap-2">
                             <button
                               onClick={() =>
                                 navigate(
-                                  "/school-dashboard/fees-module/admin-setting/class-section/view-class-section",
+                                  '/school-dashboard/fees-module/admin-setting/grade/class-section/view-class-section',
                                   {
                                     state: { classandsection },
                                   }
@@ -190,7 +282,7 @@ const ClassAndSection = () => {
                               className="btn btn-soft-primary btn-sm"
                               onClick={() =>
                                 navigate(
-                                  "/school-dashboard/fees-module/admin-setting/class-section/update-class-section",
+                                  '/school-dashboard/fees-module/admin-setting/grade/class-section/update-class-section',
                                   {
                                     state: { classandsection },
                                   }
@@ -237,14 +329,10 @@ const ClassAndSection = () => {
                     {pagesToShow.map((page) => (
                       <li
                         key={page}
-                        className={`page-item ${
-                          currentPage === page ? "active" : ""
-                        }`}
+                        className={`page-item ${currentPage === page ? 'active' : ''}`}
                       >
                         <button
-                          className={`page-link pagination-button ${
-                            currentPage === page ? "active" : ""
-                          }`}
+                          className={`page-link pagination-button ${currentPage === page ? 'active' : ''}`}
                           onClick={() => handlePageClick(page)}
                         >
                           {page}
@@ -267,6 +355,15 @@ const ClassAndSection = () => {
           </div>
         </div>
       </div>
+
+      <ExcelSheetModal
+        show={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        shifts={shifts}
+        schoolId={schoolId}
+        onImportSuccess={handleImportSuccess}
+      />
+
       {isDeleteDialogOpen && (
         <ConfirmationDialog
           onClose={handleDeleteCancel}
@@ -278,4 +375,5 @@ const ClassAndSection = () => {
     </>
   );
 };
+
 export default ClassAndSection;
