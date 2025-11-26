@@ -7,11 +7,7 @@ const UpdateShift = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state?.shift;
-<<<<<<< HEAD
-
-=======
   const [loading, setLoading] = useState(false);
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
   const [shift, setShift] = useState({
     shiftName: '',
     startTime: '',
@@ -22,11 +18,6 @@ const UpdateShift = () => {
     if (data) {
       const extractTime = (isoTime) =>
         isoTime ? new Date(isoTime).toISOString().substring(11, 16) : '';
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
       setShift({
         shiftName: data.masterDefineShiftName || '',
         startTime: extractTime(data.startTime),
@@ -34,11 +25,6 @@ const UpdateShift = () => {
       });
     }
   }, [data]);
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
 
   const handleInputChange = (field, value) => {
     setShift((prev) => ({ ...prev, [field]: value }));
@@ -46,9 +32,6 @@ const UpdateShift = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-
-=======
     setLoading(true);
 
     const academicYear = localStorage.getItem("selectedAcademicYear");
@@ -65,7 +48,6 @@ const UpdateShift = () => {
       setLoading(false);
       return;
     }
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
     if (!shift.shiftName || !shift.startTime || !shift.endTime) {
       toast.error("Please fill in all fields before submitting.");
       return;
@@ -75,10 +57,7 @@ const UpdateShift = () => {
       masterDefineShiftName: shift.shiftName,
       startTime: shift.startTime,
       endTime: shift.endTime,
-<<<<<<< HEAD
-=======
       academicYear
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
     };
 
     try {
@@ -93,11 +72,8 @@ const UpdateShift = () => {
     } catch (err) {
       const errorText = err.response?.data?.message || err.message || 'Something went wrong!';
       toast.error(errorText);
-<<<<<<< HEAD
-=======
     } finally {
       setLoading(false);
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
     }
   };
 
@@ -152,14 +128,9 @@ const UpdateShift = () => {
                   <button
                     type="submit"
                     className="btn btn-primary custom-submit-button"
-<<<<<<< HEAD
-                  >
-                    Update Shift
-=======
                     disabled={loading}
                   >
                     {loading ? "Updating..." : "Update"}
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                   </button>
                 </div>
               </form>

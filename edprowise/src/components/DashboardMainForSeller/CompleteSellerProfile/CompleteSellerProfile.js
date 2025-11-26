@@ -1440,10 +1440,6 @@ const CompleteSellerProfile = () => {
 
   return (
     <>
-<<<<<<< HEAD
-
-=======
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
       <div className="container">
         <div className="row">
           <div className="col-xl-12">
@@ -1684,7 +1680,6 @@ const CompleteSellerProfile = () => {
                   <div className="row">
                     <div className="col-md-4">
                       <div className="mb-3">
-<<<<<<< HEAD
                         <label htmlFor="country" className="form-label">
                           Country <span className="text-danger">*</span>
                         </label>
@@ -1738,33 +1733,6 @@ const CompleteSellerProfile = () => {
                           }}
 
                           placeholder="Select or type a country"
-=======
-                        <label
-                          htmlFor="cityStateCountry"
-                          className="form-label"
-                        >
-                          City State Country Location{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-
-                        <Select
-                          id="cityStateCountry"
-                          name="cityStateCountry"
-                          options={cityOptions}
-                          value={cityOptions.find(
-                            (option) =>
-                              option.value === formData.cityStateCountry
-                          )}
-                          onChange={(selectedOption) =>
-                            setFormData((prevState) => ({
-                              ...prevState,
-                              cityStateCountry: selectedOption
-                                ? selectedOption.value
-                                : "",
-                            }))
-                          }
-                          placeholder="Select City-State-Country"
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                           isSearchable
                           required
                           classNamePrefix="react-select"
@@ -2177,10 +2145,6 @@ const CompleteSellerProfile = () => {
                           className="form-control"
                           accept="image/*"
                           onChange={handleChange}
-<<<<<<< HEAD
-
-=======
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                         />
                       </div>
                     </div>
@@ -2380,19 +2344,9 @@ const CompleteSellerProfile = () => {
                           onChange={handleChange}
                         // required
                         >
-<<<<<<< HEAD
-                          <option value="">Select Company Turnover</option>
-                          <option value="1 to 10 Lakh">
-                            1 to 10 Lakh
-                          </option>
-                          <option value="10 to 50 Lakh">
-                            10 to 50 Lakh
-                          </option>
-=======
                           <option value="">Select Company Ternover</option>
                           <option value="1 to 10 Lakh">1 to 10 Lakh</option>
                           <option value="10 to 50 Lakh">10 to 50 Lakh</option>
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                           <option value="50 Lakh to 1 Crore">
                             50 Lakh to 1 Crore
                           </option>

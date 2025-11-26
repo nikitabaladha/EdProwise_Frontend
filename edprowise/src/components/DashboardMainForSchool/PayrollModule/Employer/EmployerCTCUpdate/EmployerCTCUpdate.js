@@ -15,11 +15,7 @@ const EmployerCTCUpdate = () => {
   const [componentAmounts, setComponentAmounts] = useState({});
   const [annualCostToInstitution, setAnnualCostToInstitution] = useState(0);
 
-<<<<<<< HEAD
-
-=======
  
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
   useEffect(() => {
           const userDetails = JSON.parse(localStorage.getItem("userDetails"));
           const id = userDetails?.schoolId;
@@ -29,33 +25,6 @@ const EmployerCTCUpdate = () => {
           }
           setSchoolId(id);
       }, []);
-<<<<<<< HEAD
-  const handleProceed = async () => {
-    if (!employeeId.trim()) {
-      toast.warning("Please enter a valid Employee ID.");
-      return;
-    }
-
-    try {
-      const response = await getAPI(`/get-employee-self-details/${schoolId}/${employeeId}`);
-      if (!response.hasError && response.data?.data) {
-        setEmployeeDetails(response.data.data);
-        setShowForm(true);
-        const ctcRes = await getAPI(`/getall-payroll-ctc-component/${schoolId}`);
-        if (!ctcRes.hasError && Array.isArray(ctcRes.data?.ctcComponent)) {
-          setCtcComponents(ctcRes.data.ctcComponent);
-        } else {
-          toast.error("CTC component data not found.");
-        }
-      } else {
-        setShowForm(false);
-        toast.error("No employee data found.");
-      }
-    } catch (error) {
-      toast.error(error.response.data.message || "Error occurred.");
-    }
-  };
-=======
 
   // const handleProceed = async () => {
   //   if (!employeeId.trim()) {
@@ -122,7 +91,6 @@ const EmployerCTCUpdate = () => {
     toast.error(error.response?.data?.message || "Error occurred.");
   }
 };
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -246,31 +214,19 @@ const EmployerCTCUpdate = () => {
                       <div className="col-md-4">
 
                         <p className='text-dark payroll-box-text'>
-<<<<<<< HEAD
-                          <strong>Designation : </strong> {employeeDetails.jobDesignation}
-=======
                           <strong>Designation : </strong> {employeeDetails.currentAcademicYearData.jobDesignation}
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                         </p>
                       </div>
 
                       <div className="col-md-4">
                         <p className='text-dark' >
-<<<<<<< HEAD
-                          <strong>Category of Employees : </strong> {employeeDetails.categoryOfEmployees}
-=======
                           <strong>Category of Employees : </strong> {employeeDetails.currentAcademicYearData?.categoryOfEmployees}
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                         </p>
                       </div>
 
                       <div className="col-md-4">
                         <p className='text-dark payroll-box-text' >
-<<<<<<< HEAD
-                          <strong> Grade : </strong> {employeeDetails.grade}
-=======
                           <strong> Grade : </strong> {employeeDetails.currentAcademicYearData?.grade}
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                         </p>
                       </div>
                     </div>

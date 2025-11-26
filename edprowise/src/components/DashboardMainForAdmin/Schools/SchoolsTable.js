@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import getAPI from "../../../api/getAPI";
 import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
 
-import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
+// import StatusDeleteConfirmDialog from "../../StatusDeleteConfirmDialog";
 
 const SchoolsTable = () => {
   const location = useLocation();

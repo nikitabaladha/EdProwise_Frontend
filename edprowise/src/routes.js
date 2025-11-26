@@ -133,9 +133,9 @@ import UpdateSubCategory from "./components/DashboardMainForAdmin/ProcurementSer
 
 // ====================EmailSettings====================================
 // add on admin umesh new routes
-import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettings/SMTPHostSettings/SMTPHostSettings.js";
-import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
-import MarketingEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/Marketing/MarketingEmail.js";
+// import SMTPHostSettings from "./components/DashboardMainForAdmin/EmailSMTPSettings/SMTPHostSettings/SMTPHostSettings.js";
+// import EmailTemplatesList from "./components/DashboardMainForAdmin/EmailSMTPSettings/EmailTamplatesTable/EmailTemplatesList.js";
+// import MarketingEmail from "./components/DashboardMainForAdmin/EmailSMTPSettings/Marketing/MarketingEmail.js";
 
 // ===================================PayRoll===========================
 import EmployeeRegistrationList from "./components/DashboardMainForAdmin/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationList.js";
@@ -322,15 +322,13 @@ import UpdateFeesType from "./components/DashboardMainForSchool/FeesModuleServic
 import AddShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/AddShifts.js";
 import UpdateShifts from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Shifts/UpdateShifts.js";
 import FeesStructureListTable from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/FeesStructure/FeesStructureListTable.js";
-<<<<<<< HEAD
 import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
 import StudentReceipts from "./components/DashboardMainForSchool/FeesReceipts/SchoolFees/Recipt.js";
 import RegistrationOfficialDetails from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentRegistration/NewStudentRegistration/RegistrationOfficialDetails.js";
 import AdmissionOfficialInformation from "./components/DashboardMainForSchool/FeesModuleServices/Form/StudentAdmissionForm/StudentAdmissionForm/AdmissionOfficialInformation.js";
-=======
-import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
+// import SchoolFeesReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/SchoolFeesReceipts.js";
 import SchoolFeesReceiptsView from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/ViewRecipt.js";
-import StudentReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/Recipt.js";
+// import StudentReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/Recipt.js";
 import FeeReceiptsSchoolFees from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/SchoolFees/FeeReceiptsForm.js";
 import BoardRegistrationFee from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationFees.js";
 import BoardRegistrationFeeReceipts from "./components/DashboardMainForSchool/FeesModuleServices/FeesReceipts/BoardRegistrationFees/BoardRegistrationReceipts.js";
@@ -341,7 +339,6 @@ import AdmissionPrefix from "./components/DashboardMainForSchool/FeesModuleServi
 import AddAdmissionPrefix from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/PrefixSetting/AdmissionPrefix/AddPrefix.js";
 import Fine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/FineTable.js";
 import AddFine from "./components/DashboardMainForSchool/FeesModuleServices/AdminSetting/Fine/Addfine.js";
-<<<<<<< HEAD
 
 ///////////////////////////////// Payroll Module ///////////////////////////////////////
 import DefineEmployeeCategory from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/DefineCategory/DefineEmployeeCategory.js";
@@ -408,7 +405,6 @@ import StudentMaster from "./components/DashboardMainForSchool/FeesModuleService
 
 import FeesReconHaedwise from "./components/DashboardMainForSchool/FeesModuleServices/Reports/FeesRecon/HaedWise/FeesReconHaedwise.js";
 // ================================================Seller Routes============================================
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
 import CompleteSellerProfile from "./components/DashboardMainForSeller/CompleteSellerProfile/CompleteSellerProfile";
 
 import ViewSellerProfile from "./components/DashboardMainForSeller/ViewSellerProfile/ViewSellerProfile";
@@ -428,7 +424,6 @@ import TrackOrderHistoryTableForSeller from "./components/DashboardMainForSeller
 import ViewOrderHistoryForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/TrackOrderHistory/ViewOrderHistory/ViewOrderHistory";
 
 import PayToEdprowiseForSeller from "./components/DashboardMainForSeller/ProcurementServicesForSeller/PayToEdProwise/PayToEdProwise.js";
-<<<<<<< HEAD
 
 // umesh Added
 import ForgotPassword from "./components/ForgotPasswordorUserId/ForgotPassword.js";
@@ -495,12 +490,10 @@ import EmployeeLeaveDetailsAndApply from "./components/DashboardMainForEmployee/
 import EmployeeAttendanceReport from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/AttendanceReport/EmployeeAttendanceReport.jsx";
 import LeaveApplyEmployeeList from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeApplyForLeave/LeaveApplyEmployeeList.jsx";
 import ViewEmployeeAttendanceReports from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeAttendenceReport/ViewEmployeeAttendanceReports.jsx";
-=======
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
 
 // umesh Added
-import ForgotPassword from "./components/ForgotPassword/ForgotPassword.js";
-import NewPassword from "./components/ForgotPassword/NewPassword.js";
+// import ForgotPassword from "./components/ForgotPassword/ForgotPassword.js";
+// import NewPassword from "./components/ForgotPassword/NewPassword.js";
 
 
 // ================================Comman Pages================================================//
@@ -509,34 +502,34 @@ import SchoolFeesManagementYear from "./components/CommanPage/YearPage.js";
 import SchoolPayrollAcademicYear from "./components/CommanPage/PayrollYearPage.js";
 import StudentManagementYear from  "./components/CommanPage/StudentyearPage.js"
 // ===============================Payroll Module ===========================
-import EmployeeRegistrationFormList from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationFormList.jsx";
-import AddEmployeeRegistrationForm from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/AddEmployeeRegistrationForm.jsx";
-import UpdateEmployeeRegistration from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/UpdateEmployeeRegistration.jsx";
-import ViewEmployeeRegistrationFormDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/ViewEmployeeRegistrationFormDetails.jsx";
-import EmployerUpdateEmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/UpdateDetails/EmployerUpdateEmployeeDetails.js";
-import FreezeITDeclaration from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/FreezeITDeclaration/FreezeITDeclaration.js";
-import SchoolDefineCtcComponentsList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCDefineComponents/SchoolDefineCtcComponentsList.jsx";
-import DefinePayrollGrade from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/Grade/DefinePayrollGrade.js";
-import DefineEmployeeCategory from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/DefineCategory/DefineEmployeeCategory.js";
-import AnnualLeaveAdminSetting from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/AnnualLeaveUpdate/AnnualLeaveAdminSetting.jsx";
-import CarryForwardSetting from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/AnnualLeaveUpdate/CarryForwordSetting.jsx";
-import EmployeeOvertimeAllowanceRate from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/OvertimeAllowanceRate/EmployeeOvertimeAllowanceRate.jsx";
-import EmployeeIdPrefixTable from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdPrefixTable.jsx";
-import EmployeeIdSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdSettings.js";
-import UpdateEmployeeIdSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/UpdateEmployeeIdSettings.jsx";
-import DefineEmployeeJobDesignation from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/JobDesignation/DefineEmployeeJobDesignation.js";
-import PayrollSMTPSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/PayrollSMTPEmailSettings/PayrollSMTPSettings.jsx";
+// // import EmployeeRegistrationFormList from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationFormList.jsx";
+// import AddEmployeeRegistrationForm from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/AddEmployeeRegistrationForm.jsx";
+// import UpdateEmployeeRegistration from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/UpdateEmployeeRegistration.jsx";
+// import ViewEmployeeRegistrationFormDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/ViewEmployeeRegistrationFormDetails.jsx";
+// // // import EmployerUpdateEmployeeDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/UpdateDetails/EmployerUpdateEmployeeDetails.js";
+// // import FreezeITDeclaration from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/FreezeITDeclaration/FreezeITDeclaration.js";
+// // import SchoolDefineCtcComponentsList from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/CTCDefineComponents/SchoolDefineCtcComponentsList.jsx";
+// // import DefinePayrollGrade from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/Grade/DefinePayrollGrade.js";
+// // import DefineEmployeeCategory from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/DefineCategory/DefineEmployeeCategory.js";
+// import AnnualLeaveAdminSetting from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/AnnualLeaveUpdate/AnnualLeaveAdminSetting.jsx";
+// import CarryForwardSetting from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/AnnualLeaveUpdate/CarryForwordSetting.jsx";
+// import EmployeeOvertimeAllowanceRate from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/OvertimeAllowanceRate/EmployeeOvertimeAllowanceRate.jsx";
+// import EmployeeIdPrefixTable from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdPrefixTable.jsx";
+// import EmployeeIdSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/EmployeeIdSettings.js";
+// import UpdateEmployeeIdSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/EmployeeIdSettingPrefix/UpdateEmployeeIdSettings.jsx";
+// import DefineEmployeeJobDesignation from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/JobDesignation/DefineEmployeeJobDesignation.js";
+// import PayrollSMTPSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/PayrollSMTPEmailSettings/PayrollSMTPSettings.jsx";
 import SchoolHolidayCalendar from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/SchoolHolidayCalendar/SchoolHolidayCalendar.jsx";
 import DefineAcademicYear from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/DefineAcadmicYear/DefineAcadmicYear.jsx";
 import ProvidentFundSettings from "./components/DashboardMainForSchool/PayrollModule/AdminSettings/ProvidentFoundSetting/ProvidentFundSettings.jsx";
-import EmployeeDashboardMain from "./components/DashboardMainForEmployee/EmployeeDashboardMain.js";
-import UpdatePayrollEmployeeDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeDetails/UpdatePayrollEmployeeDetails.jsx";
+// import EmployeeDashboardMain from "./components/DashboardMainForEmployee/EmployeeDashboardMain.js";
+// import UpdatePayrollEmployeeDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeDetails/UpdatePayrollEmployeeDetails.jsx";
 import EmployeeProvidentFund from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ProvidentFund/EmployeeProvidentFund.jsx";
 import EmployeeItDeclaration from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/EmployeeItDeclaration.js";
 import EmployeeRentDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/EmployeeRentDetails.js";
-import EmployeeMarkAttendance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/MarkAttendance/EmployeeMarkAttendance.jsx";
-import EmployeeLeaveDetailsAndApply from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/ApplyForLeave/EmployeeLeaveDetailsAndApply.jsx";
-import EmployeeAttendanceReport from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/AttendanceReport/EmployeeAttendanceReport.jsx";
+// import EmployeeMarkAttendance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/MarkAttendance/EmployeeMarkAttendance.jsx";
+// import EmployeeLeaveDetailsAndApply from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/ApplyForLeave/EmployeeLeaveDetailsAndApply.jsx";
+// import EmployeeAttendanceReport from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/EmployeeAttendance/AttendanceReport/EmployeeAttendanceReport.jsx";
 import OvertimeAllowanceList from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/OvertimeAllowance/OvertimeAllowanceList.jsx";
 import ApplyOvertimeAllowance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/OvertimeAllowance/ApplyOvertimeAllowance/ApplyOvertimeAllowance.jsx";
 import ViewOvertimeAllowance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/OvertimeAllowance/ViewOvertimeAllowance/ViewOvertimeAllowance.jsx";
@@ -555,15 +548,15 @@ import VerifySupportingSubmittedForTaxList from "./components/DashboardMainForSc
 import VerifyEmployerRentDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/VerifyEmployerRentDetails.jsx";
 import ViewTelephoneExamptionDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/ViewTelephoneExamptionDetails.js";
 import ViewInternetExamptionDetails from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/ITDeclaration/ViewInternetExamptionDetails.js";
-import CTCUpdatedEmployeeTable from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/CTCUpdatedEmployeeTable.js";
-import EmployerCTCUpdate from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/EmployerCTCUpdate.js";
-import ViewEmployeeCTCDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/ViewEmployeeCTCDetails.js";
-import UpdateEmployeeCTCDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/UpdateEmployeeCTCDetails.jsx";
-import PayrollCTCMaster from "./components/DashboardMainForSchool/PayrollModule/Employer/CTCMaster/PayrollCTCMaster.jsx";
-import SingleEmployeeSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/Employer/SalaryIncrement/SingleEmployeeIncrement/SingleEmployeeSalaryIncrement.jsx";
-import BulkEmployeeSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/Employer/SalaryIncrement/BulkEmployeeIncrement/BulkEmployeeSalaryIncrement.jsx";
-import LeaveApplyEmployeeList from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeApplyForLeave/LeaveApplyEmployeeList.jsx";
-import ViewEmployeeAttendanceReports from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeAttendenceReport/ViewEmployeeAttendanceReports.jsx";
+// import CTCUpdatedEmployeeTable from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/CTCUpdatedEmployeeTable.js";
+// import EmployerCTCUpdate from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/EmployerCTCUpdate.js";
+// import ViewEmployeeCTCDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/ViewEmployeeCTCDetails.js";
+// import UpdateEmployeeCTCDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployerCTCUpdate/UpdateEmployeeCTCDetails.jsx";
+// import PayrollCTCMaster from "./components/DashboardMainForSchool/PayrollModule/Employer/CTCMaster/PayrollCTCMaster.jsx";
+// import SingleEmployeeSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/Employer/SalaryIncrement/SingleEmployeeIncrement/SingleEmployeeSalaryIncrement.jsx";
+// import BulkEmployeeSalaryIncrement from "./components/DashboardMainForSchool/PayrollModule/Employer/SalaryIncrement/BulkEmployeeIncrement/BulkEmployeeSalaryIncrement.jsx";
+// import LeaveApplyEmployeeList from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeApplyForLeave/LeaveApplyEmployeeList.jsx";
+// import ViewEmployeeAttendanceReports from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/EmployeeAttendenceReport/ViewEmployeeAttendanceReports.jsx";
 import EmployeeLeaveRecords from "./components/DashboardMainForSchool/PayrollModule/Employer/Attendance/LeaveRecords/EmployeeLeaveRecords.jsx";
 import OvertimeAllowanceApproval from "./components/DashboardMainForSchool/PayrollModule/Employer/OvertimeAllowance/OvertimeAllowanceApproval/OvertimeAllowanceApproval.jsx";
 import ViewOvertimeAllowanceDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/OvertimeAllowance/OvertimeAllowanceApproval/ViewOvertimeAllowanceDetails.jsx";
@@ -577,7 +570,7 @@ import EmployeeTelephoneAllowanceList from "./components/DashboardMainForSchool/
 import VerifyTelephoneAllowanceDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/TelephoneAllowanceDetails/VerifyTelephoneAllowanceDetails.jsx";
 import EmployeeInternetAllowanceList from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/InternetAllowanceDetails/EmployeeInternetAllowanceList.jsx";
 import VerifyInternetAllowanceDetails from "./components/DashboardMainForSchool/PayrollModule/Employer/CheckSupportingSubmittedForTax/InternetAllowanceDetails/VerifyInternetAllowanceDetails.jsx";
-import MarkAttendance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/Attendance/MarkAttendance/MarkAttendance.jsx";
+// import MarkAttendance from "./components/DashboardMainForEmployee/PayrollModule/EmployeeSelfService/Attendance/MarkAttendance/MarkAttendance.jsx";
 
 // Operational Services
 import SchoolOperationalAcademicYear from "./components/CommanPage/OperationalYear.js";
@@ -1254,10 +1247,6 @@ const AppRoutes = () => {
       </Route>
 
       {/* ===================================================Admin Routes==================================== */}
-<<<<<<< HEAD
-
-=======
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
       <Route
         path="/admin-dashboard"
         element={
@@ -1381,661 +1370,18 @@ const AppRoutes = () => {
           path="procurement-services/update-bank-detail"
           element={<UpdateBankDetail />}
         />
-<<<<<<< HEAD
-
-        {/*=============================== Email routes================== */}
-
-        <Route path="email/smtp-setting" element={<SMTPHostSettings />} />
-        <Route path="email/templates" element={<EmailTemplatesList />} />
-        <Route path="email/marketing" element={<MarketingEmail />} />
-
-        {/* *****************************Payroll Module ***************************************** */}
-
-        {/* ===========================Admin Settings=================== */}
         <Route
-          path="payroll-module/admin-setting/freeze-it-declaration"
-          element={<FreezeITDeclaration />}
+          path="procurement-services/quote-proposal"
+          element={<QuoteProposalForAll />}
         />
-
         <Route
-          path="payroll-module/admin-setting/ctc-components"
-          element={<DefineCtcComponentsList />}
+          path="procurement-services/invoice-for-edprowise"
+          element={<InvoiceForEdProwiseForAll />}
         />
-
         <Route
-          path="payroll-module/admin-setting/ctc-components/define-ctc-components"
-          element={<DefineCtcCOmponents />}
+          path="procurement-services/invoice-for-buyer"
+          element={<InvoiceForBuyerForAll />}
         />
-
-        <Route
-          path="payroll-module/admin-setting/define-grade"
-          element={<DefineGrade />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/define-category"
-          element={<DefineCategory />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/annual-leave-update"
-          element={<AnnualLeaveUpdate />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/overtime-allowance-rate"
-          element={<OvertimeAllowanceRate />}
-        />
-
-        <Route
-          path="payroll-module/admin-setting/define-job-designation"
-          element={<DefineJobDesignation />}
-        />
-
-        {/* ************Employee Self Services */}
-        <Route
-          path="payroll-module/employee-services/update-details"
-          element={<EmployeeDetails />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/salary-slip"
-          element={<SalarySlip />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/income-tax/it-declaration"
-          element={<ItDeclaration />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/income-tax/it-declaration/rent-details"
-          element={<RentDetails />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/income-tax/income-tax-computation-sheet"
-          element={<IncomeTaxComputationSheet />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/income-tax/form16"
-          element={<Form16Self />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/income-tax/previous-employment-income"
-          element={<PreviousEmploymentIncome />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/request-for-loan"
-          element={<RequestForLoan />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/loan-summary"
-          element={<LoanSummary />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/loan-summary/my-loan-statement"
-          element={<LoanStatement />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/my-attendance-report"
-          element={<MyAttendanceReport />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/apply-for-leave"
-          element={<ApplyForLeave />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/exit/employee-resignation-form"
-          element={<EmployeeResignationForm />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/exit/exit-interview"
-          element={<EmployeeExitInterview />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/letter-documents"
-          element={<LetterAndDocuments />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/letter-documents/add-letter-documents"
-          element={<AddLetterAndDocuments />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/letter-documents/view-letter-documents"
-          element={<ViewLetterAndDocuments />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/letter-documents/update-letter-documents"
-          element={<UpdateLetterAndDocuments />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/award-achievement"
-          element={<AwardsAndAchievement />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/award-achievement/add-award-achievement"
-          element={<AddAwardsAndAchievement />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/award-achievement/view-award-achievement"
-          element={<ViewAwardAndAchievement />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/award-achievement/update-award-achievement"
-          element={<UpdateAwardsAndAchievement />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/promotion-nomination"
-          element={<PromotionNomination />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/promotion-nomination/view-promotion-nomination"
-          element={<ViewPromotionNomination />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/promotion-nomination/update-promotion-nomination"
-          element={<UpdatePromotionNomination />}
-        />
-
-        <Route
-          path="payroll-module/employee-services/exit/relieving-and-experience-letter"
-          element={<EmployeeRelievingAndExperienceLetter />}
-        />
-
-        {/* ************Employer************  */}
-
-        <Route
-          path="payroll-module/employer/registration"
-          element={<EmployeeRegistrationList />}
-        />
-
-        <Route
-          path="payroll-module/employer/registration/registration-form"
-          element={<AddEmployeeRegistration />}
-        />
-
-        <Route
-          path="payroll-module/employer/registration/update-registration-form"
-          element={<UpdateEmployeeRegistrationForm />}
-        />
-
-        <Route
-          path="payroll-module/employer/registration/view-registration-form"
-          element={<ViewEmployeeRegisterDetails />}
-        />
-
-        <Route
-          path="payroll-module/employer/update-employee-details"
-          element={<UpdateEmployeeDetails />}
-        />
-
-        <Route
-          path="payroll-module/employer/ctc-Update"
-          element={<CTCUpdate />}
-        />
-
-        <Route
-          path="payroll-module/employer/payroll-process"
-          element={<AddProcessPayroll />}
-        />
-
-        <Route
-          path="payroll-module/employer/salary-increment/bulk-employee-increment"
-          element={<BulkEmployeeIncrement />}
-        />
-
-        <Route
-          path="payroll-module/employer/salary-increment/single-employee-increment"
-          element={<SingleEmployeeIncrement />}
-        />
-
-        <Route
-          path="payroll-module/employer/form-16-list"
-          element={<Form16 />}
-        />
-
-        <Route
-          path="payroll-module/employer/generate-appointment-ctc-letter"
-          element={<GenerateAppointmentCTCLetter />}
-        />
-
-        <Route
-          path="payroll-module/employer/supporting-tax-submitted"
-          element={<CheckSupportingSubmittedForTaxList />}
-        />
-
-        <Route
-          path="payroll-module/employer/supporting-tax-submitted/view-supporting-submitted-for-Tax"
-          element={<ViewCheckSupportingSubmittedForTaxList />}
-        />
-
-        <Route
-          path="payroll-module/employer/supporting-tax-submitted/view-supporting-submitted-for-Tax/view-rent-details"
-          element={<VerifyRentDetails />}
-        />
-
-        <Route
-          path="payroll-module/employer/loan-to-employees/pay-loan"
-          element={<PayLoanEmployeeTable />}
-        />
-
-        <Route
-          path="payroll-module/employer/loan-to-employees/pay-loan/pay-loan-detail"
-          element={<PayLoan />}
-        />
-
-        <Route
-          path="payroll-module/employer/loan-to-employees/loan-statement"
-          element={<EmployeeLoanStatement />}
-        />
-
-        <Route
-          path="payroll-module/employer/loan-to-employees/loan-statement/view-loan-summary"
-          element={<ViewEmployeeLoanSummary />}
-        />
-
-        <Route
-          path="payroll-module/employer/loan-to-employees/loan-statement/view-loan-summary/view-loan-Statement"
-          element={<ViewEmployeeLoanStatement />}
-        />
-
-        <Route
-          path="payroll-module/employer/overtime-allowance"
-          element={<OvertimeAllowanceEmployeesTable />}
-        />
-
-        <Route
-          path="payroll-module/employer/overtime-allowance/view-overtime-allowance-detail"
-          element={<ViewOvertimeAllowanceEmployeesDetail />}
-        />
-
-        <Route
-          path="payroll-module/employer/performance-tracking"
-          element={<PerformanceTrackingTable />}
-        />
-
-        <Route
-          path="payroll-module/employer/performance-tracking/employee-performance-appraisal"
-          element={<ViewEmployeePerformanceAppraisal />}
-        />
-
-        <Route
-          path="payroll-module/employer/resign/resignation"
-          element={<ResignationReport />}
-        />
-
-        <Route
-          path="payroll-module/employer/resign/resignation/resignation-approval-form"
-          element={<EmployerResignationApproval />}
-        />
-
-        <Route
-          path="payroll-module/employer/resign/resignation/view-employee-resignation-detail"
-          element={<ViewEmployeeResignationDetail />}
-        />
-
-        <Route
-          path="payroll-module/employer/resign/resignation/view-employee-exit-interview"
-          element={<ViewEmployeeExitInterview />}
-        />
-
-        <Route
-          path="payroll-module/employer/resign/resignation/relieving-and-experience-letter"
-          element={<RelievingAndExperienceLetter />}
-        />
-
-        <Route
-          path="payroll-module/employer/awards-and-achievement"
-          element={<EmployerAwadsAndAchievement />}
-        />
-
-        <Route
-          path="payroll-module/employer/awards-and-achievement/awards-and-achievement-certificate"
-          element={<AwardsAndAchievementCertificate />}
-        />
-
-        <Route
-          path="payroll-module/employer/promotion-nomination"
-          element={<PromotionNominationTable />}
-        />
-
-        <Route
-          path="payroll-module/employer/promotion-nomination/view-promotion-nomination-detail"
-          element={<ViewPromotionNominationDetail />}
-        />
-
-        {/* *****************************Finance Module********************* */}
-
-        <Route
-          path="finance-module/account-entry/payment-entry"
-          element={<PaymentEntryTable />}
-        />
-
-        <Route
-          path="finance-module/account-entry/payment-entry/payment-entry-form"
-          element={<PaymentEntry />}
-        />
-
-        <Route
-          path="finance-module/account-entry/payment-entry/view-payment-entry"
-          element={<ViewPaymentEntry />}
-        />
-
-        <Route
-          path="finance-module/account-entry/payment-entry/update-payment-entry"
-          element={<UpdatePaymentEntry />}
-        />
-
-        <Route
-          path="finance-module/account-entry/receipts"
-          element={<ReceiptsTable />}
-        />
-
-        <Route
-          path="finance-module/account-entry/receipts/receipts-entry"
-          element={<Receipts />}
-        />
-
-        <Route
-          path="finance-module/account-entry/receipts/view-receipts-entry"
-          element={<ViewReceipts />}
-        />
-
-        <Route
-          path="finance-module/account-entry/receipts/update-receipts-entry"
-          element={<UpdateReceipts />}
-        />
-
-        <Route
-          path="finance-module/account-entry/contra"
-          element={<ContraTable />}
-        />
-
-        <Route
-          path="finance-module/account-entry/contra/contra-form"
-          element={<Contra />}
-        />
-
-        <Route
-          path="finance-module/account-entry/contra/view-contra-form"
-          element={<ViewContra />}
-        />
-
-        <Route
-          path="finance-module/account-entry/contra/update-contra-form"
-          element={<UpdateContra />}
-        />
-
-        <Route
-          path="finance-module/account-entry/journal"
-          element={<JournalTable />}
-        />
-
-        <Route
-          path="finance-module/account-entry/journal/journal-entry"
-          element={<Journal />}
-        />
-
-        <Route
-          path="finance-module/account-entry/journal/view-journal-entry"
-          element={<ViewJournal />}
-        />
-
-        <Route
-          path="finance-module/account-entry/journal/update-journal-entry"
-          element={<UpdateJournal />}
-        />
-
-        <Route
-          path="finance-module/display/ledger-book"
-          element={<LedgerBook />}
-        />
-
-        <Route
-          path="finance-module/display/payment-ledger"
-          element={<PaymentLedger />}
-        />
-
-        <Route
-          path="finance-module/display/receipts-ledger"
-          element={<ReceiptsLedger />}
-        />
-
-        <Route
-          path="finance-module/display/contra-ledger"
-          element={<ContraLedger />}
-        />
-
-        <Route
-          path="finance-module/display/journal-ledger"
-          element={<JournalLedger />}
-        />
-
-        <Route
-          path="finance-module/display/trail-balance"
-          element={<TrailBalance />}
-        />
-
-        <Route
-          path="finance-module/reports/cash-book"
-          element={<CashBookReport />}
-        />
-
-        <Route
-          path="finance-module/reports/bank-book"
-          element={<BankBookReport />}
-        />
-
-        <Route
-          path="finance-module/reports/income-ledger"
-          element={<IncomeLedgerReport />}
-        />
-
-        <Route
-          path="finance-module/reports/expenses-ledger"
-          element={<ExpensesLedgerReport />}
-        />
-
-        <Route
-          path="finance-module/reports/journal-ledger"
-          element={<JournalLedgerReport />}
-        />
-
-        <Route
-          path="finance-module/reports/tds-report"
-          element={<TDSReport />}
-        />
-
-        <Route
-          path="finance-module/msi-reports/analysis-of-p-and-l"
-          element={<AnalysisofPandL />}
-        />
-
-        <Route
-          path="finance-module/msi-reports/ratio-analysis"
-          element={<RatioAnalysis />}
-        />
-
-        <Route
-          path="finance-module/audit-and-documentation/verification-of-payment-entry"
-          element={<VerificationofPaymentEntry />}
-        />
-        <Route
-          path="finance-module/audit-and-documentation/verification-of-receipt-entry"
-          element={<VerificationofReceiptEntry />}
-        />
-        <Route
-          path="finance-module/audit-and-documentation/verification-of-contra-entry"
-          element={<VerificationofContraEntry />}
-        />
-        <Route
-          path="finance-module/audit-and-documentation/verification-of-journal-entry"
-          element={<VerificationofJournalEntry />}
-        />
-        <Route
-          path="finance-module/audit-and-documentation/auditor-remarks"
-          element={<AuditorRemarks />}
-        />
-        <Route
-          path="finance-module/audit-and-documentation/upload-document-for-auditor"
-          element={<UploadDocumentforAuditor />}
-        />
-
-        <Route
-          path="finance-module/financial-statement/balance-sheet"
-          element={<BalanceSheet />}
-        />
-
-        <Route
-          path="finance-module/financial-statement/income-and-expenditure-account"
-          element={<IncomeAndExpenditureAccount />}
-        />
-
-        <Route
-          path="finance-module/financial-statement/schedule-to-income"
-          element={<ScheduleToIncome />}
-        />
-
-        <Route
-          path="finance-module/financial-statement/schedule-to-expenditure"
-          element={<ScheduleToExpenditure />}
-        />
-
-        <Route
-          path="finance-module/financial-statement/schedule-to-liabilities"
-          element={<ScheduleToLiabilities />}
-        />
-
-        <Route
-          path="finance-module/financial-statement/schedule-to-assets"
-          element={<ScheduleToAssets />}
-        />
-
-        <Route
-          path="finance-module/financial-statement/fixed-assets-schedule"
-          element={<FixedAssetsSchedule />}
-        />
-
-        <Route
-          path="finance-module/audit-pack/document-for-auditor"
-          element={<DocumentForAuditor />}
-        />
-
-        <Route
-          path="finance-module/master/depreciation-master"
-          element={<DepreciationMaster />}
-        />
-        <Route
-          path="finance-module/master/vendor-master"
-          element={<VendorMaster />}
-        />
-        <Route path="finance-module/master/vendor" element={<CreateVendor />} />
-        <Route
-          path="finance-module/master/vendor/add-vendor-form"
-          element={<AddNewVendor />}
-        />
-        <Route
-          path="finance-module/master/tds-rate-chart"
-          element={<TDSRateChart />}
-        />
-        <Route
-          path="finance-module/master/ledger-master"
-          element={<LedgerMaster />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger"
-          element={<CreateAndAlterLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/create-head-of-ledger"
-          element={<CreateHeadOfLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/create-ledger"
-          element={<CreateLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/create-group-ledger"
-          element={<CreateGroupLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/create-bs-ledger"
-          element={<CreateBAndSLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/update-head-of-ledger"
-          element={<UpdateHeadOfLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/update-ledger"
-          element={<UpdateLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/update-group-ledger"
-          element={<UpdateGroupLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/update-bs-ledger"
-          element={<UpdateBAndSLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/delete-head-of-ledger"
-          element={<DeleteHeadOfLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/delete-ledger"
-          element={<DeleteLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/delete-group-ledger"
-          element={<DeleteGroupLedger />}
-        />
-        <Route
-          path="finance-module/master/create-and-alter-ledger/delete-bs-ledger"
-          element={<DeleteBAndSLedger />}
-        />
-
-        {/* **************************************Blog************************************ */}
-        <Route path="blog" element={<BlogsInfoTable />} />
-        <Route path="blog/add-new-blog" element={<AddNewBlog />} />
-        <Route path="blog/update-blog" element={<UpdateBlog />} />
-        <Route path="blog/view-blog/:slug" element={<ViewBlog />} />
-
-        <Route
-          path="blog/blog-setting/category"
-          element={<CreateBlogCategory />}
-        />
-        <Route path="blog/blog-setting/tags" element={<CreateBlogTags />} />
-        <Route
-          path="blog/blog-setting/blogs-status"
-          element={<BlogsStatus />}
-        />
-
-        <Route path="*" element={<Page404ForDashboard />} />
-      </Route>
-      {/* ==========================================Schhool Routes================================*/}
-=======
         <Route
           path="procurement-services/quote-proposal"
           element={<QuoteProposalForAll />}
@@ -2069,7 +1415,6 @@ const AppRoutes = () => {
       </Route>
 
       {/* ==========================================School Routes================================*/}
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
       <Route
         path="/school-dashboard"
         element={
@@ -2144,36 +1489,36 @@ const AppRoutes = () => {
           path="fees-module/form/registration"
           element={<StudentRegisterListTable />}
         /> */}
-        <Route
+        {/* <Route
           path="fees-module/form/registration"
           element={
             <PrivateRoute>
               <StudentRegisterListTable />
             </PrivateRoute>
           }
-        />
+        /> */}
 
-        <Route
+        {/* <Route
           path="fees-module/form/registration-form"
           element={<StudentRegistrationForm />}
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="fees-module/form/registed-student-info"
           element={<ViewStudentInfoRegister />}
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="fees-module/form/update-registed-student-info"
           element={<UpdateStudentRegistrationForm />}
-        />
+        /> */}
         <Route
           path="fees-module/form/registration-form/receipts"
           element={<RegistrationOfficialDetails />}
         />
 
-        <Route
+        {/* <Route
           path="fees-module/form/admission"
           element={<StudentAdmissionListTable />}
-        />
+        /> */}
         <Route
           path="fees-module/form/admission-form"
           element={<StudentAdmissionForm />}
@@ -2208,10 +1553,10 @@ const AppRoutes = () => {
           element={<UpdateTCForm />}
         />
 
-        <Route
+        {/* <Route
           path="fees-module/form/trasfer-certificate-form-details"
           element={<TcOfficialInformation />}
-        />
+        /> */}
 
         <Route
           path="fees-module/form/concession-table"
@@ -2229,10 +1574,10 @@ const AppRoutes = () => {
           path="fees-module/form/update-concession-form"
           element={<UpdateConcessionForm />}
         />
-        <Route
+        {/* <Route
           path="fees-module/form/concession-form-details"
           element={<ConcessionFormInformation />}
-        />
+        /> */}
 
         {/*---------------------- Admin Settings ------------------*/}
 
@@ -2268,27 +1613,16 @@ const AppRoutes = () => {
         />
 
         <Route
-<<<<<<< HEAD
-          path="fees-module/admin-setting/class-section/update-class-section"
-=======
           path="fees-module/admin-setting/grade/class-section/update-class-section"
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
           element={<UpdateClassAndSection />}
         />
 
         <Route
-<<<<<<< HEAD
-          path="fees-module/admin-setting/class-section/view-class-section"
-=======
           path="fees-module/admin-setting/grade/class-section/view-class-section"
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
           element={<ViewClassAndSection />}
         />
 
         <Route
-<<<<<<< HEAD
-          path="fees-module/admin-setting/fees-type-list"
-=======
           path="fees-module/admin-setting/grade/shifts"
           element={<SchoolShifts />}
         />
@@ -2306,7 +1640,6 @@ const AppRoutes = () => {
 
         <Route
           path="fees-module/admin-setting/fees-structure/fees-type-list"
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
           element={<TypeOfFeesList />}
         />
         <Route
@@ -2315,20 +1648,12 @@ const AppRoutes = () => {
         />
 
         <Route
-<<<<<<< HEAD
-          path="fees-module/admin-setting/fees-type-list/update-fees-type"
-=======
           path="fees-module/admin-setting/fees-structure/fees-type-list/update-fees-type"
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
           element={<UpdateFeesType />}
         />
 
         <Route
-<<<<<<< HEAD
-          path="fees-module/admin-setting/fees-structure"
-=======
           path="fees-module/admin-setting/fees-structure/school-fees"
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
           element={<FeesStructureListTable />}
         />
         <Route
@@ -2337,31 +1662,18 @@ const AppRoutes = () => {
         />
 
         <Route
-<<<<<<< HEAD
-          path="fees-module/admin-setting/fees-structure/update-fees-structure"
-=======
           path="fees-module/admin-setting/fees-structure/school-fees/update-school-fees"
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
           element={<UpdateFeesStructure />}
         />
 
         <Route
-<<<<<<< HEAD
-          path="fees-module/admin-setting/fees-structure/view-fees-structure"
-=======
           path="fees-module/admin-setting/fees-structure/school-fees/view-school-fees"
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
           element={<ViewFeesStructure />}
         />
 
         <Route
-<<<<<<< HEAD
-          path="fees-module/admin-setting/shifts"
-          element={<SchoolShifts />}
-=======
           path="fees-module/admin-setting/fees-structure/one-time-fees"
           element={<OneTimeFees />}
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
         />
         <Route
           path="fees-module/admin-setting/fees-structure/one-time-fees-add"
@@ -2369,7 +1681,6 @@ const AppRoutes = () => {
         />
 
         <Route
-<<<<<<< HEAD
           path="fees-module/admin-setting/shifts/update-shift"
           element={<UpdateShifts />}
         />
@@ -2396,11 +1707,6 @@ const AppRoutes = () => {
         <Route
           path="fees-module/admin-setting/fine/add-fine"
           element={<AddFine />}
-        />
-
-=======
-          path="fees-module/admin-setting/fees-structure/one-time-fees-update"
-          element={<UpdateOneTimeFees />}
         />
 
         <Route
@@ -2467,14 +1773,12 @@ const AppRoutes = () => {
 
         {/* --------------------------------------------Fees Receipts------------------------------------------------------- */}
 
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
         <Route
           path="fees-module/fees-receipts/school-fees"
           element={<SchoolFeesReceipts />}
         />
 
         <Route
-<<<<<<< HEAD
           path="fees-module/fees-receipts/school-fees/student-receipts"
           element={<StudentReceipts />}
         />
@@ -2482,7 +1786,7 @@ const AppRoutes = () => {
         {/* *****************************Payroll Module ***************************************** */}
 
         {/* ===========================Admin Settings=================== */}
-=======
+         <Route
           path="fees-module/fees-receipts/fees-refund"
           element={<FeesRefund />}
         />
@@ -2525,10 +1829,10 @@ const AppRoutes = () => {
           element={<BoardExamFee />}
         />
 
-        <Route
+        {/* <Route
           path="fees-module/fees-receipts/board-exam-fees/receipts"
           element={<BoardExamFeeReceipts />}
-        />
+        /> */}
 
         {/* --------------------------------------------Reports------------------------------------------------------- */}
 
@@ -2684,10 +1988,10 @@ const AppRoutes = () => {
         />
 
         {/* Update Details */}
-        <Route
+        {/* <Route
           path="payroll-module/employer/update-employee-details"
           element={<EmployerUpdateEmployeeDetails />}
-        />
+        /> */}
 
         {/* CTC Update */}
         <Route
@@ -2829,7 +2133,6 @@ const AppRoutes = () => {
 
         {/* ------------------------ Admin Setting ---------------------- */}
 
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
         <Route
           path="payroll-module/admin-setting/freeze-it-declaration"
           element={<FreezeITDeclaration />}
@@ -2841,14 +2144,11 @@ const AppRoutes = () => {
         />
 
         <Route
-<<<<<<< HEAD
           path="payroll-module/admin-setting/ctc-components/define-ctc-components"
           element={<DefineCtcCOmponents />}
         />
 
         <Route
-=======
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
           path="payroll-module/admin-setting/define-grade"
           element={<DefinePayrollGrade />}
         />
@@ -2859,28 +2159,19 @@ const AppRoutes = () => {
         />
 
         <Route
-<<<<<<< HEAD
-          path="payroll-module/admin-setting/annual-leave-update"
-=======
           path="payroll-module/admin-setting/leave-setting/annual-leave-update"
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
           element={<AnnualLeaveAdminSetting />}
         />
 
-        <Route
-<<<<<<< HEAD
-          path="payroll-module/admin-setting/overtime-allowance-rate"
-          element={<OvertimeAllowanceRate />}
-=======
+        {/* <Route
           path="payroll-module/admin-setting/leave-setting/carry-forword-setting"
           element={<CarryForwardSetting />}
-        />
+        /> */}
 
-        <Route
+        {/* <Route
           path="payroll-module/admin-setting/overtime-allowance-rate"
           element={<EmployeeOvertimeAllowanceRate />}
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
-        />
+        /> */}
 
         <Route
           path="payroll-module/admin-setting/employee-id-setting"
@@ -2905,7 +2196,6 @@ const AppRoutes = () => {
           element={<PayrollSMTPSettings />}
         />
 
-<<<<<<< HEAD
         {/* Employer */}
         <Route
           path="payroll-module/employer/employee-registration"
@@ -2989,7 +2279,6 @@ const AppRoutes = () => {
         />
 
         <Route path="*" element={<Page404ForDashboard />} />
-=======
         <Route
           path="payroll-module/admin-setting/school-holiday-calendar"
           element={<SchoolHolidayCalendar />}
@@ -3581,7 +2870,6 @@ const AppRoutes = () => {
         />
 
 
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
       </Route>
 
       {/* =========================================Seller Routes============================================= */}
@@ -3656,21 +2944,6 @@ const AppRoutes = () => {
       </Route>
       <Route path="*" element={<Page404ForDashboard />} />
 
-<<<<<<< HEAD
-      {/* ======================================= Employee Routes ================================ */}
-      <Route
-        path="/employee-dashboard"
-        element={
-          <PrivateRoute>
-            <EmployeeDashboardMain />
-          </PrivateRoute>
-        }
-      >
-        <Route index element={<SchoolProcurementDashboard />} />
-        {/*School Dashboard Route */}
-        <Route path="view-school-profile" element={<ViewSchoolProfile />} />
-        <Route path="update-school-profile" element={<UpdateSchoolProfile />} />
-=======
       {/* ==================================== Employee Routes ==================================== */}
       <Route
         path="/employee-dashboard"
@@ -4708,7 +3981,6 @@ const AppRoutes = () => {
         <Route path="career" element={<CareerPage />} />
         <Route path="career/:jobName" element={<CareerForm />} />
         <Route path="request-demo" element={<RequestDemoForm />} />
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
         <Route
           path="change-school-admin-password"
           element={<ChangePasswordForSchoolAdmin />}

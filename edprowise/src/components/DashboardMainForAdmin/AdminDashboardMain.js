@@ -7,11 +7,11 @@ import Page404ForWebsite from "../Pages404/Page404ForDashboard";
 
 // export default AdminDashboardMain;
 
-import React, { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
-import AdminDashboardHeader from './AdminDashboardHeader';
-import Sidebar from '../Sidebar/Sidebar';
-import Footer from '../Footer/Footer';
+// import React, { useEffect } from 'react';
+// import { Outlet } from 'react-router-dom';
+// import AdminDashboardHeader from './AdminDashboardHeader';
+// import Sidebar from '../Sidebar/Sidebar';
+// import Footer from '../Footer/Footer';
 import { ThemeProvider } from '../ThemeProvider';
 import { SchoolPayrollSettingsProvider } from "../DashboardMainForSchool/PayrollModule/AdminSettings/ProvidentFoundSetting/SchoolPayrollSettingsContext";
 const AdminDashboardMain = () => {

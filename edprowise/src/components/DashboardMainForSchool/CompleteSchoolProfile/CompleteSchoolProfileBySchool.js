@@ -257,28 +257,28 @@ const CompleteSchoolProfile = () => {
   // };
 
   // Get countries from countryData keys
-  const countryOptions = Object.keys(countryData).map((country) => ({
-    value: country,
-    label: country,
-  }));
+  // const countryOptions = Object.keys(countryData).map((country) => ({
+  //   value: country,
+  //   label: country,
+  // }));
 
   // Get states based on selected country
-  const stateOptions =
-    formData.country && !formData.isCustomCountry
-      ? Object.keys(countryData[formData.country]).map((state) => ({
-          value: state,
-          label: state,
-        }))
-      : [];
+  // const stateOptions =
+  //   formData.country && !formData.isCustomCountry
+  //     ? Object.keys(countryData[formData.country]).map((state) => ({
+  //         value: state,
+  //         label: state,
+  //       }))
+  //     : [];
 
   // Get cities based on selected state and country
-  const cityOptions =
-    formData.state && !formData.isCustomState && formData.country
-      ? (countryData[formData.country][formData.state] || []).map((city) => ({
-          value: city,
-          label: city,
-        }))
-      : [];
+  // const cityOptions =
+  //   formData.state && !formData.isCustomState && formData.country
+  //     ? (countryData[formData.country][formData.state] || []).map((city) => ({
+  //         value: city,
+  //         label: city,
+  //       }))
+  //     : [];
 
   const handleChange = (e) => {
     const { name, value, files, type, checked } = e.target;
@@ -321,7 +321,7 @@ const CompleteSchoolProfile = () => {
     }
   };
 
-  const [sending, setSending] = useState(false);
+  // const [sending, setSending] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

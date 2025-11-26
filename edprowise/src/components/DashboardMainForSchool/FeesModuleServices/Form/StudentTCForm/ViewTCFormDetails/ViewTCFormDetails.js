@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom';
 import getAPI from '../../../../../../api/getAPI';
 import { toast } from 'react-toastify';
-<<<<<<< HEAD
-=======
 import { generateTCPDF } from "./generateStudentPDF";
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
 
 
 const UpdateTCForm = () => {
@@ -36,13 +33,10 @@ const UpdateTCForm = () => {
     reasonForLeaving: '',
     anyRemarks: '',
     agreementChecked: false,
-<<<<<<< HEAD
-=======
     TCfees: '',
     concessionAmount: '',
     concessionType:'',
     finalAmount: '',
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
     name: '',
     paymentMode: '',
     chequeNumber: '',
@@ -80,10 +74,7 @@ const UpdateTCForm = () => {
   useEffect(() => {
     if (student) {
       setFormData({
-<<<<<<< HEAD
-=======
         studentPhoto: student.studentPhoto || null,
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
         AdmissionNumber: student.AdmissionNumber || '',
         firstName: student.firstName || '',
         middleName: student.middleName || '',
@@ -105,15 +96,6 @@ const UpdateTCForm = () => {
         agreementChecked: student.agreementChecked || '',
         reasonForLeaving: student.reasonForLeaving || '',
         anyRemarks: student.anyRemarks || '',
-<<<<<<< HEAD
-        name: student.name || '',
-        paymentMode: student.paymentMode || '',
-        ApplicationReceivedOn: student.ApplicationReceivedOn ? student.ApplicationReceivedOn.split('T')[0] : '',
-        // feesReceivedBy: student.feesReceivedBy || '',
-        transactionNumber: student.transactionNumber || '',
-        receiptNumber: student.receiptNumber || '',
-        certificateNumber: student.certificateNumber || '',
-=======
         TCfees: student.TCfees || 0,
         concessionType:student.concessionType ||'',
         concessionAmount: student.concessionAmount || 0,
@@ -126,15 +108,11 @@ const UpdateTCForm = () => {
         certificateNumber: student.certificateNumber || '',
           chequeNumber: student. chequeNumber ||'',
         bankName: student.bankName ||''
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
       });
     }
   }, [student]);
 
   
-<<<<<<< HEAD
-
-=======
 const handleDownloadPDF = async () => {
     try {
       await generateTCPDF(formData, student, classes, schoolId);
@@ -143,7 +121,6 @@ const handleDownloadPDF = async () => {
       toast.error("Failed to generate PDF. Please try again.");
     }
   };
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
 
   return (
     <div className="container">
@@ -152,117 +129,6 @@ const handleDownloadPDF = async () => {
           <div className="card m-2">
             <div className="card-body custom-heading-padding">
               <div className="container">
-<<<<<<< HEAD
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    Transfer Certificate Form
-                  </h4>
-                </div>
-              </div>
-              <form onSubmit={""}>
-                <div className="row">
-                  <div className="col-md-12">
-                    <div className="mb-3">
-                      <label htmlFor="AdmissionNumber" className="form-label">
-                        Admission No
-                      </label>
-                      <input
-                        type="text"
-                        id="AdmissionNumber"
-                        name="AdmissionNumber"
-                        className="form-control"
-                        value={formData.AdmissionNumber}
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="firstName" className="form-label">
-                        First Name<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        className="form-control"
-                        value={formData.firstName}
-                       disabled
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="middleName" className="form-label">
-                        Middle Name
-                      </label>
-                      <input
-                        type="text"
-                        id="middleName"
-                        name="middleName"
-                        className="form-control"
-                        value={formData.middleName}
-                       disabled
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="lastName" className="form-label">
-                        Last Name<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        className="form-control"
-                        value={formData.lastName}
-                       disabled
-                      />
-                    </div>
-                  </div>
-
-
-                  <div className="col-md-2">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="dateOfBirth"
-                        className="form-label"
-                      >
-                        Date Of Birth<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="dateOfBirth"
-                        name="dateOfBirth"
-                        className="form-control"
-                        value={formData.dateOfBirth}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-2">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="age" className="form-label">
-                        Age<span className="text-danger">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        id="age"
-                        name="age"
-                        className="form-control"
-                        value={formData.age}
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-2">
-=======
                <div className="card-header mb-2">
                   <h4 className="card-title text-center custom-heading-font">
                     View Transfer Certificate Form
@@ -384,7 +250,6 @@ const handleDownloadPDF = async () => {
                 <div className="row">
 
                   <div className="col-md-4">
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="nationality" className="form-label">
@@ -409,11 +274,7 @@ const handleDownloadPDF = async () => {
                     </div>
                   </div>
 
-<<<<<<< HEAD
-                  <div className="col-md-3">
-=======
                   <div className="col-md-4">
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="fatherName" className="form-label">
@@ -430,11 +291,7 @@ const handleDownloadPDF = async () => {
                     </div>
                   </div>
 
-<<<<<<< HEAD
-                  <div className="col-md-3">
-=======
                   <div className="col-md-4">
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                     {" "}
                     <div className="mb-3">
                       <label htmlFor="motherName" className="form-label">
@@ -678,12 +535,6 @@ const handleDownloadPDF = async () => {
                     </label>
                   </div>
 
-<<<<<<< HEAD
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="name" className="form-label">
-                        Name <span className="text-danger">*</span>
-=======
                   <div className="col-md-3">
                       <div className="mb-3">
                         <label htmlFor="TCfees" className="form-label">
@@ -757,7 +608,6 @@ const handleDownloadPDF = async () => {
                     <div className="mb-3">
                       <label htmlFor="name" className="form-label">
                       Name of Person Filling the Form  <span className="text-danger">*</span>
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                       </label>
                       <input
                         type="text"
@@ -769,11 +619,7 @@ const handleDownloadPDF = async () => {
                       />
                     </div>
                   </div>
-<<<<<<< HEAD
-                  <div className="col-md-3">
-=======
                   <div className="col-md-6">
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                     <div className="mb-3">
                       <label htmlFor="paymentMode" className="form-label">
                         Payment Option <span className="text-danger">*</span>
@@ -826,7 +672,6 @@ const handleDownloadPDF = async () => {
                         />
                       </div>
                     </div>
-<<<<<<< HEAD
                   </div>
                 )}
 
@@ -836,103 +681,6 @@ const handleDownloadPDF = async () => {
                   </h4>
                 </div>
 
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="dateOfApplicationReceived"
-                        className="form-label"
-                      >
-                        Application Received On
-                      </label>
-                      <input
-                        type="date"
-                        id="dateOfApplicationReceived"
-                        name="dateOfApplicationReceived"
-                        className="form-control"
-                        value={formData.ApplicationReceivedOn}
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    {" "}
-                    <div className="mb-3">
-                      <label htmlFor="feesReceivedBy" className="form-label">
-                       Payment Mode
-                      </label>
-                      <input
-                        type="text"
-                        id="feesReceivedBy"
-                        name="feesReceivedBy"
-                        className="form-control"
-                        required
-                        value={formData.paymentMode}
-                      // onChange={handleChange}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="mb-3">
-                      <label htmlFor="transationOrChequetNumber" className="form-label">
-                        Transaction No
-                      </label>
-                      <input
-                        type="text"
-                        id="transationOrChequetNumber"
-                        name="transationOrChequetNumber"
-                        className="form-control"
-                        value={formData.transactionNumber}
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="receiptNumber" className="form-label">
-                        Receipts No.
-                      </label>
-                      <input
-                        type="text"
-                        id="receiptNumber"
-                        name="receiptNumber"
-                        className="form-control"
-                        value={formData.receiptNumber}
-                        disabled
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="mb-3">
-                      <label htmlFor="certificateNumber" className="form-label">
-                        Certificate No.
-                      </label>
-                      <input
-                        type="text"
-                        id="certificateNumber"
-                        name="certificateNumber"
-                        className="form-control"
-                        value={formData.certificateNumber}
-                        disabled
-                      />
-                    </div>
-=======
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
-                  </div>
-                )}
-
-                <div className="card-header mb-2">
-                  <h4 className="card-title text-center custom-heading-font">
-                    For Official Use Only
-                  </h4>
-                </div>
-
-<<<<<<< HEAD
-
-=======
                 <div className="row">
                   <div className="col-md-4">
                     <div className="mb-3">
@@ -1035,7 +783,6 @@ const handleDownloadPDF = async () => {
                 </div>
 
 
->>>>>>> 5c437d67c3bae2a8477ca8109767aa304e7f90d6
                 <div className="d-flex justify-content-end">
                   <div className="mr-2">
                     {" "}
