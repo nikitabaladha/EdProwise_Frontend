@@ -4,19 +4,20 @@ import { ToastContainer, toast } from "react-toastify";
 import postAPI from "../../api/postAPI";
 
 const coursesData = [
-  { id: 1, title: "School Fees Management Software - Pixel Fees" },
-  { id: 2, title: "Payroll Management Software – Ease Payroll" },
-  { id: 3, title: "Financial Management Software – Book Sync" },
-  { id: 4, title: "School Operational Management Software" },
-  { id: 5, title: "School Mobile Application" },
-  { id: 6, title: "School Website Design" },
-  { id: 7, title: "Digital Exam Result System" },
-  { id: 8, title: "Digital Student Attendance" },
-  { id: 9, title: "Digital Staff Attendance" },
-  { id: 10, title: "Library Management Software" },
-  { id: 11, title: "Entrance Management Software" },
-  { id: 12, title: "Online Payment Gateway" },
-  { id: 13, title: "SMS & WhatsApp Integration Services" },
+  { id: 1, title: "Orbit School" },
+  { id: 2, title: "School Fees Management Software - Pixel Fees" },
+  { id: 3, title: "Payroll Management Software – Ease Payroll" },
+  { id: 4, title: "Financial Management Software – Book Sync" },
+  { id: 5, title: "School Operational Management Software" },
+  { id: 6, title: "School Mobile Application" },
+  { id: 7, title: "School Website Design" },
+  { id: 8, title: "Digital Exam Result System" },
+  { id: 9, title: "Digital Student Attendance" },
+  { id: 10, title: "Digital Staff Attendance" },
+  { id: 11, title: "Library Management Software" },
+  { id: 12, title: "Entrance Management Software" },
+  { id: 13, title: "Online Payment Gateway" },
+  { id: 14, title: "SMS & WhatsApp Integration Services" },
 ];
 
 const RequestDemoForm = () => {

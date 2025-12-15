@@ -21,7 +21,7 @@ const menuData = [
       { name: "Hire School Teacher", link: "/services/hire-teacher" },
     ],
   },
-  { name: "Orders", link: "/order", subMenu: [] },
+  // { name: "Orders", link: "/order", subMenu: [] },
   {
     name: "About Us",
     link: "/about-us",
@@ -37,6 +37,14 @@ const menuData = [
     ],
   },
   { name: "Contact Us", link: "/contact-us", subMenu: [] },
+  // {
+  //   name: "Orbit School",
+  //   link: "https://orbitschool.edprowise.com",
+  //   external: true,
+  //   className: "text font-family-web login-weight",
+  //   subMenu: []
+  // }
+
 ];
 
 const Header = () => {
@@ -133,8 +141,8 @@ const Header = () => {
 
       case "Employee":
         route = "/employee-dashboard/payroll-module/employee/update-details";
-        break; 
- 
+        break;
+
       case "Auditor":
         route = "/auditor-dashboard";
         break;
@@ -184,12 +192,11 @@ const Header = () => {
 
   return (
     <header id="header">
-      {location.pathname === "/" && <Topbar />}
+      <Topbar />
       <div className="wpo-site-header wpo-header-style-2">
         <nav
-          className={`navigation navbar navbar-expand-lg navbar-light ${
-            isSticky ? "sticky-header sticky-on" : ""
-          }`}
+          className={`navigation navbar navbar-expand-lg navbar-light ${isSticky ? "sticky-header sticky-on" : ""
+            }`}
         >
           <div className="container-fluid">
             <div className="row align-items-center">
@@ -237,12 +244,11 @@ const Header = () => {
                   </Link>
                 </div>
               </div>
-              <div className="col-lg-8 col-md-1 col-0">
+              <div className="col-lg-7 col-md-1 col-0">
                 <div
                   id="navbar"
-                  className={`collapse navbar-collapse navigation-holder ${
-                    isMobileMenuOpen ? "show" : ""
-                  }`}
+                  className={`collapse navbar-collapse navigation-holder ${isMobileMenuOpen ? "show" : ""
+                    }`}
                 >
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="sidebar-logo">
@@ -267,13 +273,12 @@ const Header = () => {
                     {menuData.map((menu, index) => (
                       <li
                         key={index}
-                        className={` ${
-                          menu.subMenu.length > 0
-                            ? "menu-item-has-children"
-                            : ""
+                        className={` ${menu.subMenu.length > 0
+                          ? "menu-item-has-children"
+                          : ""
 
                           // menu-item
-                        }`}
+                          }`}
                       >
                         <Link
                           to={menu.link}
@@ -283,9 +288,8 @@ const Header = () => {
                               ? (e) => handleMenuClick(menu, index, e)
                               : undefined
                           }
-                          className={`nav-item ${
-                            isActive(menu.link, menu.subMenu) ? "active" : ""
-                          }`}
+                          className={`nav-item ${isActive(menu.link, menu.subMenu) ? "active" : ""
+                            }`}
                         >
                           {menu.name}
                         </Link>
@@ -303,9 +307,8 @@ const Header = () => {
                                         onClick={(e) =>
                                           handleSubMenuClick(subItem, e)
                                         }
-                                        className={`${
-                                          isActive(subItem.link) ? "active" : ""
-                                        }`}
+                                        className={`${isActive(subItem.link) ? "active" : ""
+                                          }`}
                                       >
                                         {subItem.name}
                                       </Link>
@@ -325,9 +328,8 @@ const Header = () => {
                                       onClick={(e) =>
                                         handleSubMenuClick(subItem, e)
                                       }
-                                      className={`${
-                                        isActive(subItem.link) ? "active" : ""
-                                      }`}
+                                      className={`${isActive(subItem.link) ? "active" : ""
+                                        }`}
                                     >
                                       {subItem.name}
                                     </Link>
@@ -340,12 +342,12 @@ const Header = () => {
                       </li>
                     ))}
                     {localStorage.getItem("accessToken") &&
-                    localStorage.getItem("userDetails") ? (
+                      localStorage.getItem("userDetails") ? (
                       <>
                         <li className="menu-item sign-up-in-mobile">
                           <Link
                             to="/dashboard"
-                            // onClick={(event) => handleSignIn(event)}
+                          // onClick={(event) => handleSignIn(event)}
                           >
                             Dashboard
                           </Link>
@@ -363,6 +365,15 @@ const Header = () => {
                           <Link to="/login">Sign In</Link>
                         </li> */}
                         <li className="menu-item sign-up-in-mobile">
+                          <a
+                            href="https://orbitschool.edproiwse.com"
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                          >
+                            Orbit School
+                          </a>
+                        </li>
+                        <li className="menu-item sign-up-in-mobile">
                           <Link>Sign Up</Link>
                         </li>
                         <li className="menu-item sign-up-in-mobile">
@@ -374,15 +385,15 @@ const Header = () => {
                   {/* Signup Login Button */}
                 </div>
               </div>
-              <div className="col-lg-2 col-md-3 col-0">
+              <div className="col-lg-3 col-md-3 col-0">
                 <div className="header-right">
                   {localStorage.getItem("accessToken") &&
-                  localStorage.getItem("userDetails") ? (
+                    localStorage.getItem("userDetails") ? (
                     <>
                       <div className="close-form">
                         <Link
                           className="login"
-                          // onClick={(event) => handleSignIn(event)}
+                        // onClick={(event) => handleSignIn(event)}
                         >
                           <span className="text font-family-web login-weight">
                             Dashboard
@@ -405,9 +416,26 @@ const Header = () => {
                   ) : (
                     <>
                       <div className="close-form">
+                        <a
+                          href="https://orbitschool.edproiwse.com" // Directly links to the URL
+                          className="theme-btn"
+                          style={{
+                            background: "#854cf4",
+                            color: "white",
+                            marginRight: "10px"
+                          }}
+                        // You can remove the onClick handler entirely
+                        >
+                          <span className="text font-family-web login-weight">
+                            Orbit School
+                          </span>
+                          <span className="mobile">
+                            <i className="fi flaticon-charity"></i>
+                          </span>
+                        </a>
                         <Link
                           className="login"
-                          // onClick={(event) => handleSignUp(event)}
+                        // onClick={(event) => handleSignUp(event)}
                         >
                           <span className="text font-family-web login-weight">
                             Sign Up
@@ -419,7 +447,7 @@ const Header = () => {
 
                         <Link
                           className="theme-btn"
-                          // onClick={(event) => handleSignIn(event)}
+                        // onClick={(event) => handleSignIn(event)}
                         >
                           <span className="text font-family-web login-weight">
                             Sign In

@@ -97,33 +97,10 @@ const TabsWithContent = () => {
   };
 
   const handleProcurementClick = () => {
-    setActiveTab(null); 
+    setActiveTab(null);
     setShowProcurement(prev => !prev);
   };
 
-  // useEffect(() => {
-  //   if (contentRef.current) {
-  //     if (activeTab) {
-  //       contentRef.current.style.maxHeight = contentRef.current.scrollHeight + 'px';
-  //       contentRef.current.style.opacity = '1';
-  //     } else {
-  //       contentRef.current.style.maxHeight = '0px';
-  //       contentRef.current.style.opacity = '0';
-  //     }
-  //   }
-  // }, [activeTab]);
-
-  // useEffect(() => {
-  //   if (procurementRef.current) {
-  //     if (showProcurement) {
-  //       procurementRef.current.style.maxHeight = procurementRef.current.scrollHeight + 'px';
-  //       procurementRef.current.style.opacity = '1';
-  //     } else {
-  //       procurementRef.current.style.maxHeight = '0px';
-  //       procurementRef.current.style.opacity = '0';
-  //     }
-  //   }
-  // }, [showProcurement]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -144,7 +121,7 @@ const TabsWithContent = () => {
       }
     }
   }, [activeTab]);
-  
+
   useEffect(() => {
     if (procurementRef.current) {
       if (showProcurement) {
@@ -160,7 +137,7 @@ const TabsWithContent = () => {
       }
     }
   }, [showProcurement]);
-  
+
   const activeContent = tabs.find(tab => tab.id === activeTab)?.content;
 
   return (
@@ -196,38 +173,22 @@ const TabsWithContent = () => {
           </div>
 
 
-        {/* Procurement Tab Button */}
+          {/* Procurement Tab Button */}
 
-          <div className="tab-buttons-scroll" style={{paddingTop:"20px"}}>
+          <div className="tab-buttons-scroll" style={{ paddingTop: "20px" }}>
             <button
-              className={`tab-button ${showProcurement ? 'active' : ''}`} onClick={handleProcurementClick}
-              style={{backgroundColor: showProcurement ? "#04d3d4" : "#ffffff",
+              className={`tab-button ${showProcurement ? 'active' : ''}`}
+              onClick={() => window.open("https://orbitschool.edprowise.com", "_blank")}
+              style={{
+                backgroundColor: showProcurement ? "#04d3d4" : "#ffffff",
                 color: showProcurement ? "#fff" : "#000",
-                transition: 'background-color 0.3s, color 0.3s'}}
+                transition: 'background-color 0.3s, color 0.3s'
+              }}
             >
-              Procurement Management – High Quality, Low Cost, On Time delivery
+              Orbit School
             </button>
 
-          </div>
-          <div ref={procurementRef} className="row-web wpo-courses-wrap tab-content-box"
-            style={{
-              maxHeight: '0',
-              backgroundColor: "#04d3d4",
-            }}
 
-          >
-            {procurementPoints.map((point, index) => (
-             <div key={index} className={`category-items col-lg-4 col-md-6 col-12 grid-web s${index + 1}`}>
-              <div className="wpo-courses-item category-itemm">
-               <div className="wpo-courses-text">
-                 <h2 className="category-h2 font-weight-web-h2">
-                    {point.title}
-                  </h2>
-                 <p className="category-text font-family-web">{point.description}</p>
-               </div>
-             </div>
-           </div>
-            ))}
           </div>
         </div>
       </section>

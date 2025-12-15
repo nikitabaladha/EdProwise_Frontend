@@ -120,8 +120,8 @@ const ServiceMainSection = () => {
                 <button id="businessSection" className={`category-item-btn   ${activeTab === "businessSection" ? "active" : ""}`}
                   onClick={() => showTab("businessSection")}>Academic & Admin</button>
 
-                <button id="procurementSection" className={`category-item-btn   ${activeTab === "procurementSection" ? "active" : ""}`}
-                  onClick={() => showTab("procurementSection")}>Get Goods for your School</button>
+                {/* <button id="procurementSection" className={`category-item-btn   ${activeTab === "procurementSection" ? "active" : ""}`}
+                  onClick={() => showTab("procurementSection")}>Get Goods for your School</button> */}
 
 
                 <button id="recruitmentSection" className={`category-item-btn  ${activeTab === "recruitmentSection" ? "active" : ""}`}

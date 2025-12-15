@@ -17,6 +17,11 @@ import { IoLibrarySharp } from "react-icons/io5";
 import { RiFilePaperFill } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { IoMdCloseCircle } from "react-icons/io";
+import { FaTruck } from "react-icons/fa";
+import { FiUserCheck } from "react-icons/fi";        // Visitor check-in
+import { FaUsers } from "react-icons/fa";            // CRM / customers
+import { PiBrainBold } from "react-icons/pi";        // AI / Teacher GPT
+
 const coursesData = [
   {
     id: 1,
@@ -60,6 +65,10 @@ const coursesData = [
     classid: 6,
     send: "/services/digital-services/school-website-design",
   },
+
+  // ----------------------------
+  // Digital Exam Result System
+  // ----------------------------
   {
     id: 7,
     icon: <TbDeviceMobileCog />,
@@ -71,38 +80,42 @@ const coursesData = [
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Automated Result Calculation & Grading",
         featureDescription:
-          "Automatically calculates and posts results based on customizable grading systems, including percentages, GPA, and letter grades, reducing manual errors and saving time.",
+          "Automatically calculates and posts results based on customizable grading systems.",
       },
       {
         idFeature: 2,
         featureIcon: <AiOutlineReconciliation />,
         featureTitle: "Real-Time Result Access",
         featureDescription:
-          "Students and parents can access exam results instantly, with the ability to download reports, view individual performance, and track subject-wise analysis.",
+          "Students and parents can access results instantly with detailed analytics.",
       },
       {
         idFeature: 3,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Secure Access & Verification",
         featureDescription:
-          "Results are available securely through personalized logins for students, parents, and teachers. Students can verify their results before final publication, ensuring accuracy and transparency.",
+          "Secure login for students and parents with result verification.",
       },
       {
         idFeature: 4,
         featureIcon: <AiOutlineReconciliation />,
         featureTitle: "Comprehensive Performance Analytics",
         featureDescription:
-          "Provides detailed insights into student performance, including grade trends, subject-wise analysis, and overall results, helping educators assess areas for improvement.",
+          "Performance insights including grade trends and subject analysis.",
       },
       {
         idFeature: 5,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Integration & Report Generation",
         featureDescription:
-          "Seamlessly integrates with other school management systems and generates downloadable reports (PDF, Excel, etc.), while also allowing for the automated re-check process if students request a review.",
+          "Integrates with school systems and generates downloadable reports.",
       },
     ],
   },
+
+  // ----------------------------
+  // Digital Student Attendance
+  // ----------------------------
   {
     id: 8,
     icon: <AiOutlineReconciliation />,
@@ -112,40 +125,44 @@ const coursesData = [
       {
         idFeature: 1,
         featureIcon: <TbDeviceMobileCog />,
-        featureTitle: "Automated Result Processing",
+        featureTitle: "Automated Attendance Processing",
         featureDescription:
-          "Automatically records student attendance through various methods like biometric systems, RFID, or mobile apps, reducing manual errors and saving time.",
+          "Records attendance via biometric, RFID, or mobile apps.",
       },
       {
         idFeature: 2,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: "Result Analytics",
+        featureTitle: "Real-Time Attendance Analytics",
         featureDescription:
-          "Teachers, students, and parents can access real-time attendance data, with immediate notifications for absentees and late arrivals.",
+          "Real-time data with instant notifications for absentees.",
       },
       {
         idFeature: 3,
         featureIcon: <TbDeviceMobileCog />,
-        featureTitle: " Leave Management",
+        featureTitle: "Leave Management",
         featureDescription:
-          "Students can apply for leave through the system, and attendance records are updated automatically upon approval, ensuring seamless integration with attendance reports.",
+          "Students can apply for leave and updates sync automatically.",
       },
       {
         idFeature: 4,
         featureIcon: <AiOutlineReconciliation />,
         featureTitle: "Attendance Reports & Analytics",
         featureDescription:
-          "Generate detailed reports that track student attendance patterns, including tardiness, absenteeism, and overall attendance percentage for better monitoring and intervention.",
+          "Tracks attendance patterns and generates detailed reports.",
       },
       {
         idFeature: 5,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Secure Access & Notifications",
         featureDescription:
-          "Secure access for teachers, parents, and school administrators to view attendance data. Automated notifications are sent to parents for unexplained absences or late arrivals.",
+          "Secure data access and automated parent alerts.",
       },
     ],
   },
+
+  // ----------------------------
+  // Digital Staff Attendance
+  // ----------------------------
   {
     id: 9,
     icon: <AiOutlineReconciliation />,
@@ -155,40 +172,44 @@ const coursesData = [
       {
         idFeature: 1,
         featureIcon: <TbDeviceMobileCog />,
-        featureTitle: "Biometric/Face Recognition & RFID Integration",
+        featureTitle: "Biometric/Face Recognition & RFID",
         featureDescription:
-          "Staff attendance is recorded automatically through biometric systems, face recognition, or RFID, ensuring accurate and secure attendance logging.",
+          "Accurate automated staff attendance logging.",
       },
       {
         idFeature: 2,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: " Real-Time Attendance Monitoring",
+        featureTitle: "Real-Time Attendance Monitoring",
         featureDescription:
-          "Provides real-time tracking of staff attendance, including arrival and departure times, allowing for immediate access to attendance data. ",
+          "Live tracking of arrival and departure.",
       },
       {
         idFeature: 3,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Leave Management & Approval",
         featureDescription:
-          "Staff can apply for leave, track approval status, and update their attendance records accordingly, while administrators can easily manage leave requests and maintain accurate records.",
+          "Apply and manage staff leave digitally.",
       },
       {
         idFeature: 4,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: "Attendance Reports & Analytics ",
+        featureTitle: "Attendance Reports & Analytics",
         featureDescription:
-          "Generates detailed reports on staff attendance, including late arrivals, absences, and overall attendance percentage, offering insights for HR management and compliance. ",
+          "Detailed staff attendance insights and trends.",
       },
       {
         idFeature: 5,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Automated Notifications & Alerts",
         featureDescription:
-          "Sends automated alerts for tardiness, absenteeism, and leave status to the concerned staff members and HR team, ensuring timely follow-up and action.",
+          "Alerts for tardiness, absenteeism, and leave status.",
       },
     ],
   },
+
+  // ----------------------------
+  // Library Management Software
+  // ----------------------------
   {
     id: 10,
     icon: <IoLibrarySharp />,
@@ -200,24 +221,28 @@ const coursesData = [
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Book Cataloging & Search",
         featureDescription:
-          "Efficiently catalogs books and other materials in the library, allowing users (students, staff) to search for titles by author, subject, ISBN, or keyword, with detailed information about each item.",
+          "Catalogs and searches books with detailed metadata.",
       },
       {
         idFeature: 2,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: "Barcode/QR Code Integration: ",
+        featureTitle: "Barcode/QR Code Integration",
         featureDescription:
-          " Utilizes barcode or QR code scanning for quick check-ins and check-outs of library items, ensuring accurate tracking and reducing manual data entry.",
+          "Quick check-in/out using barcode or QR code.",
       },
       {
         idFeature: 3,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Reporting & Analytics",
         featureDescription:
-          ": Generates reports on library usage, popular books, overdue items, and inventory status. Analytics help the library team assess trends and improve resource management.",
+          "Reports on usage, overdue items, and trends.",
       },
     ],
   },
+
+  // ----------------------------
+  // Entrance Management Software
+  // ----------------------------
   {
     id: 11,
     icon: <RiFilePaperFill />,
@@ -229,39 +254,42 @@ const coursesData = [
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Online Registration & Application",
         featureDescription:
-          "Enables students to register for entrance exams online, submit necessary documents, and track their application status in real-time, streamlining the entire registration process.",
+          "Register and upload documents online.",
       },
       {
         idFeature: 2,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: "Admit Card Generation ",
+        featureTitle: "Admit Card Generation",
         featureDescription:
-          "Automatically generates and sends digital admit cards to students, including exam details, venue, and schedule, reducing manual errors and ensuring timely distribution.",
+          "Auto-generates digital admit cards.",
       },
       {
         idFeature: 3,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Exam Scheduling & Slot Management",
         featureDescription:
-          "Manages multiple exam dates, times, and slots, ensuring efficient scheduling of students based on their preferences or availability, while avoiding overlaps.",
+          "Efficient scheduling with no conflicts.",
       },
       {
         idFeature: 4,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: "Secure Exam Environment: ",
+        featureTitle: "Secure Exam Environment",
         featureDescription:
-          "Provides features to ensure a secure examination environment, such as live tracking of exam sessions, monitoring of attendance, and restriction of unauthorized access. ",
+          "Monitors attendance and prevents unauthorized access.",
       },
       {
         idFeature: 5,
         featureIcon: <TbDeviceMobileCog />,
-        featureTitle:
-          "Result Processing & Reporting:Result Processing & Reporting",
+        featureTitle: "Result Processing & Reporting",
         featureDescription:
-          " Automates the grading process and generates detailed results, including performance analytics, rank lists, and scorecards, for both students and administrators.",
+          "Automated grading and result generation.",
       },
     ],
   },
+
+  // ----------------------------
+  // Online Payment Gateway
+  // ----------------------------
   {
     id: 12,
     icon: <TbDeviceMobileDollar />,
@@ -273,38 +301,42 @@ const coursesData = [
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Multiple Payment Methods",
         featureDescription:
-          ": Supports various payment options such as credit/debit cards, net banking, UPI, wallets, and EMI options, allowing parents and students to choose the most convenient method for fee payment.",
+          "Supports UPI, cards, net banking, wallets.",
       },
       {
         idFeature: 2,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: "Secure Transactions ",
+        featureTitle: "Secure Transactions",
         featureDescription:
-          "Ensures secure, encrypted payment processing to protect sensitive financial information, adhering to industry standards like PCI-DSS for data security. ",
+          "Encrypted, PCI-DSS compliant secure payments.",
       },
       {
         idFeature: 3,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Instant Payment Confirmation",
         featureDescription:
-          " Provides real-time payment confirmation and receipt generation, allowing parents to receive immediate acknowledgment of payment and reducing administrative workload.",
+          "Instant confirmation and receipt.",
       },
       {
         idFeature: 4,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: " Integration with School Management Systems",
+        featureTitle: "System Integration",
         featureDescription:
-          "Seamlessly integrates with the school’s financial management and fee tracking system, updating payment records automatically and reducing manual data entry.",
+          "Auto-updates fee records in ERP.",
       },
       {
         idFeature: 5,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Payment History & Reports",
         featureDescription:
-          "Allows users (students/parents) to view their payment history, including past transactions, receipts, and outstanding dues. The school can generate reports for auditing and financial tracking.",
+          "Full transaction history with downloadable reports.",
       },
     ],
   },
+
+  // ----------------------------
+  // SMS & WhatsApp Integration
+  // ----------------------------
   {
     id: 13,
     icon: <TbDeviceMobileMessage />,
@@ -316,39 +348,242 @@ const coursesData = [
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Automated Notifications",
         featureDescription:
-          "Instantly send updates on exams, events, and emergencies to students, parents, and staff.",
+          "Send instant alerts and updates.",
       },
       {
         idFeature: 2,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: "Attendance Alerts ",
+        featureTitle: "Attendance Alerts",
         featureDescription:
-          " Notify parents about student absences, late arrivals, and leave approvals. ",
+          "Instant parent alerts for absences.",
       },
       {
         idFeature: 3,
         featureIcon: <TbDeviceMobileCog />,
         featureTitle: "Fee Payment Reminders",
         featureDescription:
-          "Send reminders for due payments and confirm successful transactions.",
+          "Auto-reminders for due fees.",
       },
       {
         idFeature: 4,
         featureIcon: <AiOutlineReconciliation />,
-        featureTitle: "  Parent-Teacher Communication",
+        featureTitle: "Parent-Teacher Communication",
         featureDescription:
-          "Enable direct, quick communication between parents and teachers via SMS/WhatsApp. ",
+          "Direct communication channel.",
       },
       {
         idFeature: 5,
         featureIcon: <TbDeviceMobileCog />,
-        featureTitle: " Bulk Messaging",
+        featureTitle: "Bulk Messaging",
         featureDescription:
-          "Efficiently send personalized messages to large groups, saving time and enhancing communication.",
+          "Send personalized messages in bulk.",
+      },
+    ],
+  },
+
+  // ----------------------------
+  // Transport Management
+  // ----------------------------
+  {
+    id: 14,
+    icon: <FaTruck />,
+    title: "Transport Management",
+    classid: 2,
+    keyFeatures: [
+      {
+        idFeature: 1,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "Smart Transport Management System for Schools",
+        featureDescription:
+          "Real-time GPS tracking, routes, RFID attendance, notifications.",
+      },
+      {
+        idFeature: 2,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "Safer, Smarter & Fully Automated School Transport",
+        featureDescription:
+          "SOS alerts, speed violation reports, transparent communication.",
+      },
+      {
+        idFeature: 3,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle: "Track Every Bus. Protect Every Child.",
+        featureDescription:
+          "AI-powered monitoring, boarding reports, trip records.",
+      },
+      {
+        idFeature: 4,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "Digital School Transport Powered by AI & GPS",
+        featureDescription:
+          "Automated route planning, fee collection, full visibility.",
+      },
+      {
+        idFeature: 5,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "End-to-End Transport Automation for Schools & Parents",
+        featureDescription:
+          "Driver insights, compliance tracking, paperless communication.",
+      },
+    ],
+  },
+
+  // ----------------------------
+  // Visitor Management
+  // ----------------------------
+  {
+    id: 15,
+    icon: <FiUserCheck />,
+    title: "Visitor Management System",
+    classid: 2,
+    keyFeatures: [
+      {
+        idFeature: 1,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "Smart Visitor Management System for Schools",
+        featureDescription:
+          "Pre-approved appointments, OTP, visitor badges, real-time logs.",
+      },
+      {
+        idFeature: 2,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "Secure, Verified & Hassle-Free Campus Visits",
+        featureDescription:
+          "Instant identification, purpose logging, staff approvals.",
+      },
+      {
+        idFeature: 3,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "Track Every Visitor. Protect Every Student.",
+        featureDescription:
+          "OTP, ID scan, photo logs, transparency in entry records.",
+      },
+      {
+        idFeature: 4,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "Digital Campus Gate Pass Powered by AI & Automation",
+        featureDescription:
+          "Blacklist alerts, automated check-ins, visitor history.",
+      },
+      {
+        idFeature: 5,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "End-to-End Visitor Control for Schools & Parents",
+        featureDescription:
+          "Tracks parents, vendors, and service personnel securely.",
+      },
+    ],
+  },
+
+  // ----------------------------
+  // CRM for Schools
+  // ----------------------------
+  {
+    id: 16,
+    icon: <FaUsers />,
+    title: "CRM for School",
+    classid: 2,
+    keyFeatures: [
+      {
+        idFeature: 1,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle: "Smart CRM System for Schools",
+        featureDescription:
+          "Lead tracking, automated follow-ups, counsellor insights.",
+      },
+      {
+        idFeature: 2,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle: "Convert More Enquiries into Admissions",
+        featureDescription:
+          "Lead capture, nurture campaigns, WhatsApp/SMS automation.",
+      },
+      {
+        idFeature: 3,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle: "Track Every Lead. Grow Every Admission.",
+        featureDescription:
+          "Monitor interactions, assign counsellors, avoid missed leads.",
+      },
+      {
+        idFeature: 4,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "AI-Powered CRM for School Admissions & Parent Engagement",
+        featureDescription:
+          "Lead scoring, analytics, automated marketing.",
+      },
+      {
+        idFeature: 5,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "End-to-End Admission CRM for Schools & Counsellors",
+        featureDescription:
+          "Auto lead capture, distribution, nurturing, conversions.",
+      },
+    ],
+  },
+
+  // ----------------------------
+  // TeacherGPT
+  // ----------------------------
+  {
+    id: 17,
+    icon: <PiBrainBold />,
+    title: "AI for Teacher - Teacher GPT",
+    classid: 2,
+    keyFeatures: [
+      {
+        idFeature: 1,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "TeacherGPT: AI Teaching Assistant for Every Classroom",
+        featureDescription:
+          "Generates lesson plans, worksheets, question papers.",
+      },
+      {
+        idFeature: 2,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "AI That Teaches, Supports & Enhances Learning",
+        featureDescription:
+          "Solves doubts, generates personalized study material.",
+      },
+      {
+        idFeature: 3,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle: "Teach Smarter. Learn Faster.",
+        featureDescription:
+          "Automated assessments, reports, personalized support.",
+      },
+      {
+        idFeature: 4,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle:
+          "AI-Powered Support for Teachers & Students",
+        featureDescription:
+          "Quizzes, activities, explanations, revision tools.",
+      },
+      {
+        idFeature: 5,
+        featureIcon: <TbDeviceMobileCog />,
+        featureTitle: "Your Personal AI Tutor & Teaching Partner",
+        featureDescription:
+          "AI-driven guidance, practice questions, revision support.",
       },
     ],
   },
 ];
+
 
 const DigitalSection = () => {
   const [showModal, setShowModal] = useState(false);
@@ -427,7 +662,7 @@ const DigitalSection = () => {
                   </div>
                 </div>
               </div>
-              <div className="text-dark modal-close" onClick={closeModal}>
+              <div className="text-white modal-close" onClick={closeModal}>
                 <IoMdCloseCircle />
               </div>
             </div>

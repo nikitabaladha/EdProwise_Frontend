@@ -35,7 +35,7 @@ const Footer = () => {
       name: "Services",
       link: "/services/digital-services",
     },
-    { name: "Orders", link: "/order" },
+    // { name: "Orders", link: "/order" },
     {
       name: "Community Connect",
       link: "/community-connect/gallery",
@@ -56,7 +56,7 @@ const Footer = () => {
     {
       name: "Download Brochure",
     },
-    { name: "Become A Supplier", link: "/signup" },
+    // { name: "Become A Supplier", link: "/signup" },
   ];
   return (
     <footer className="wpo-site-footer">
@@ -92,11 +92,11 @@ const Footer = () => {
                         <i className="fi flaticon-facebook-app-symbol"></i>
                       </a>
                     </li>
-                    <li>
+                    {/* <li>
                       <a href="https://x.com/edprowise?s=09">
                         <i className="fi flaticon-twitter"></i>
                       </a>
-                    </li>
+                    </li> */}
                     <li>
                       <a href="https://www.linkedin.com/company/edprowise/">
                         <i className="fi flaticon-linkedin"></i>

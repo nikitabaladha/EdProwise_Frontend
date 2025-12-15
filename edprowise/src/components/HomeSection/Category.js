@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaLaptopCode } from "react-icons/fa";
 import { PiHandshakeBold } from "react-icons/pi";
-import { BsCart4 } from "react-icons/bs";
+import { FaSchool } from "react-icons/fa6";
 import { FcManager } from "react-icons/fc";
 
 const coursesData = [
@@ -16,19 +16,20 @@ const coursesData = [
   },
   {
     id: 2,
-    icon:<PiHandshakeBold />,
+    icon: <PiHandshakeBold />,
     title: "Academic & Admin",
     description:
       "Offers PF and ESI management, international tours, student counseling, skill-based courses, and personalized solutions.",
-    link: "/services/business-services",
+    link: "/services/academic-admin-services",
   },
   {
     id: 3,
-    icon: <BsCart4 />,
-    title: "Procurement ",
+    icon: <FaSchool />,
+    title: "Orbit School ",
     description:
-      "EdProwise procurement services include bulk discounts, vendor management, quality assurance, timely delivery, easy ordering, customized solutions, and transparent pricing.",
-    link: "/services/procurement-services",
+      "A complete digital transformation ecosystem for modern schools - Smart Learning, STEM Labs, AI Tools, ERP, Branding & more.",
+    link: "https://orbitschool.edprowise.com",
+    external: true,
   },
   {
     id: 4,
@@ -36,7 +37,7 @@ const coursesData = [
     title: "Recruitment",
     description:
       "EdProwise offers recruitment services, including digital portals, candidate screening, job matching, interview scheduling, onboarding support, and efficient talent acquisition.",
-      link: "/services/recruitment-services",
+    link: "/services/hire-teacher",
   },
 ];
 
@@ -58,21 +59,21 @@ const Category = () => {
               key={course.id}
               className={`category-items col-lg-3 col-md-6 col-6 grid-web s${course.id}`}
             >
-            
+
               <div className="wpo-courses-item category-itemm">
                 <Link to={course.link}>
-                <div className="wpo-courses-text">
-                  <div className="courses-icon category-icons">
-                  {course.icon}
-                    {/* <i className=></i> */}
+                  <div className="wpo-courses-text">
+                    <div className="courses-icon category-icons">
+                      {course.icon}
+                      {/* <i className=></i> */}
+                    </div>
+                    <h2 className="category-h2 font-weight-web-h2">
+                      {course.title}
+                    </h2>
+                    <p className="category-text font-family-web ">
+                      {course.description}
+                    </p>
                   </div>
-                  <h2 className="category-h2 font-weight-web-h2">
-                    {course.title}
-                  </h2>
-                  <p className="category-text font-family-web ">
-                    {course.description}
-                  </p>
-                </div>
                 </Link>
               </div>
             </div>

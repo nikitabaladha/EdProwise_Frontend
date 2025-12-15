@@ -25,12 +25,12 @@ const WhyChooseEdProwise = () => {
   }, [isMobile]);
 
   const chooseData = [
-    { id: 1, className: "s1", iconClass: <GiThreeFriends />, title: "Connect Ecosystem", description: "The Central Dashboard offers real-time access to vital information, enhancing communication and collaboration among principals, teachers, management, and parents." },
-    { id: 2, className: "s2", iconClass: <FaStore />, title: "Marketplace For School", description: "Marketplace for a wide range of services including technology integration, educational consultation, and professional development, tailored to educational operations." },
-    { id: 3, className: "s3", iconClass: <FaShieldAlt />, title: "Zero Leakage Of Fees", description: "Through meticulous reconciliation of school fees, we guarantee zero leakage, ensuring transparency and swift resolution of discrepancies." },
-    { id: 4, className: "s4", iconClass: <GiDiamondTrophy />, title: "Expertise In Educational Solutions", description: "With a dedicated focus on the education sector, we bring deep expertise and understanding of the unique challenges faced by educational institutions." },
-    { id: 5, className: "s5", iconClass: <PiMedalBold />, title: "Commitment To Excellence", description: "We empower educational institutions with transformative solutions that enable them to achieve their goals effectively and sustainably." },
-    { id: 6, className: "s6", iconClass: <GiTeamIdea />, title: "Innovative Approach", description: "We leverage innovative technologies and strategic insights to deliver solutions that drive efficiency and foster continuous improvement." },
+    { id: 1, className: "s4", iconClass: <GiDiamondTrophy />, title: "Expertise In Educational Solutions", description: "With a dedicated focus on the education sector, we bring deep expertise and understanding of the unique challenges faced by educational institutions." },
+    { id: 2, className: "s5", iconClass: <PiMedalBold />, title: "Commitment To Excellence", description: "We empower educational institutions with transformative solutions that enable them to achieve their goals effectively and sustainably." },
+    { id: 3, className: "s6", iconClass: <GiTeamIdea />, title: "Innovative Approach", description: "We leverage innovative technologies and strategic insights to deliver solutions that drive efficiency and foster continuous improvement." },
+    { id: 4, className: "s1", iconClass: <GiThreeFriends />, title: "Connect Ecosystem", description: "The Digital App offers real-time access to vital information, enhancing communication and collaboration among principals, teachers, management, and parents." },
+    { id: 5, className: "s2", iconClass: <FaStore />, title: "Upgrade & Grow your School", description: "Upgrade your school with digital systems, smart learning, automation, improved academics, efficient management and modern infrastructure to build a future-ready ecosystem." },
+    { id: 6, className: "s3", iconClass: <FaShieldAlt />, title: "Zero Leakage Of Fees", description: "Through meticulous reconciliation of school fees, we guarantee zero leakage, ensuring transparency and swift resolution of discrepancies." },
   ];
 
   const settings = {

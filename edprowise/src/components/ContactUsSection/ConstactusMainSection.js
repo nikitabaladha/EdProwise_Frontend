@@ -76,6 +76,7 @@ const ConstactusMainSection = () => {
   };
 
   const serviceOptions = [
+  "Orbit School",
   "General Inquiry",
   "Pricing Information",
   "Complaint or Service Issue",
@@ -153,7 +154,7 @@ const ConstactusMainSection = () => {
                 </div>
               </div>
               <div className="wpo-contact-title">
-                <h2>Have Any Question?</h2>
+                <h2>Grow Your School With EdProwise !</h2>
                 <p>
                   Want to get in touch? We'd love to hear from you. Here's how
                   you can reach us..

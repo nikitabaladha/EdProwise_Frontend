@@ -351,7 +351,7 @@ const ViewOrderHistory = () => {
                     ) && (
                       <>
                         <Link
-                          onClick={() => fetchInvoiceDataForBuyer()}
+                          // onClick={() => fetchInvoiceDataForBuyer()}
                           className="btn btn-soft-info btn-sm"
                           title="Download PDF Invoice For Buyer"
                           data-bs-toggle="popover"
@@ -470,7 +470,7 @@ const ViewOrderHistory = () => {
                     ) && (
                       <>
                         <button
-                          onClick={() => generateInvoicePDFForEdprowise()}
+                          // onClick={() => generateInvoicePDFForEdprowise()}
                           className="btn btn-soft-info btn-sm me-2"
                           title="Download PDF Invoice For Edprowise"
                           data-bs-toggle="popover"

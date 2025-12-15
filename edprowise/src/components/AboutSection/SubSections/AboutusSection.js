@@ -46,7 +46,7 @@ const AboutusSection = () => {
                 <div className="wpo-about-text">
                   <div className="wpo-section-title mt-0">
                     {/* <small>About Edprowise</small> */}
-                    <h2>Whatever School Need, We Provide</h2>
+                    <h2>Transforming Schools, Empowering Students</h2>
                   </div>
                   <h3>Empowering Schools with End-to-End Educational Services</h3>
                   <p className="about-para-text">

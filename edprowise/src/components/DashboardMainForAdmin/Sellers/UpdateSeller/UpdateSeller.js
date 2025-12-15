@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Select from "react-select";
 
 import getAPI from "../../../../api/getAPI";
 import putAPI from "../../../../api/putAPI";
@@ -665,7 +666,7 @@ const UpdateSeller = () => {
                       {seller?.gstFile ? (
                         <div>
                           <small>
-                            Existing GST File: {getBaseFileName(seller.gstFile)}
+                            {/* Existing GST File: {getBaseFileName(seller.gstFile)} */}
                           </small>
                         </div>
                       ) : null}
@@ -707,7 +708,7 @@ const UpdateSeller = () => {
                       {seller?.panFile ? (
                         <div>
                           <small>
-                            Existing PAN File: {getBaseFileName(seller.panFile)}
+                            {/* Existing PAN File: {getBaseFileName(seller.panFile)} */}
                           </small>
                         </div>
                       ) : null}
@@ -749,7 +750,7 @@ const UpdateSeller = () => {
                       {seller?.tanFile ? (
                         <div>
                           <small>
-                            Existing TAN File: {getBaseFileName(seller.tanFile)}
+                            {/* Existing TAN File: {getBaseFileName(seller.tanFile)} */}
                           </small>
                         </div>
                       ) : (
@@ -793,7 +794,7 @@ const UpdateSeller = () => {
                       {seller?.cinFile ? (
                         <div>
                           <small>
-                            Existing PAN File: {getBaseFileName(seller.cinFile)}
+                            {/* Existing PAN File: {getBaseFileName(seller.cinFile)} */}
                           </small>
                         </div>
                       ) : (

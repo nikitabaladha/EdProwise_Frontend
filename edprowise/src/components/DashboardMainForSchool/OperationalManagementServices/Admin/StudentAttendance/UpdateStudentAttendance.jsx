@@ -70,8 +70,8 @@ console.log("Attendance Date:", record.attendanceDate);
                     type="date"
                     className="form-control form-select-sm me-2 w-auto"
                     required
-                    value={attendanceDate}
-                    onChange={(e) => setAttendanceDate(e.target.value)}
+                    // value={attendanceDate}
+                    // onChange={(e) => setAttendanceDate(e.target.value)}
                   />
                   <button
                     className="btn btn-primary btn-sm"

@@ -14,7 +14,7 @@ const TeamSection = () => {
     },
     {
       name: "Jai Gupta",
-      role: "COO",
+      role: "COO & CFO",
       image: "assets/website-images/jayGupta-preview (1).jpg",
       description:
         "CA with 5 Year of experience in Audit",
@@ -32,16 +32,16 @@ const TeamSection = () => {
         linkedin: "https://www.linkedin.com/in/dhiru805",
       },
     },
-    {
-      name: "Dhruv Anand",
-      role: "CFO",
-      image: "assets/website-images/DhruvPhota.jpg",
-      description:
-        "CA With 5 Year of experience in Audit",
-      socialLinks: {
-        linkedin: "#",
-      },
-    },
+    // {
+    //   name: "Dhruv Anand",
+    //   role: "CFO",
+    //   image: "assets/website-images/DhruvPhota.jpg",
+    //   description:
+    //     "CA With 5 Year of experience in Audit",
+    //   socialLinks: {
+    //     linkedin: "#",
+    //   },
+    // },
   ];
 
   return (
@@ -69,7 +69,7 @@ const TeamSection = () => {
         <div className="wpo-team-wrap">
           <div className="row">
             {teamMembers.map((member, index) => (
-              <div key={index} className="col col-lg-3 col-md-6 col-6">
+              <div key={index} className="col col-lg-4 col-md-12 col-12">
                 <div className="wpo-team-item">
                   <div className="wpo-team-img">
                     <div className="wpo-team-img-box">

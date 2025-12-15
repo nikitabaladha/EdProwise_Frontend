@@ -45,11 +45,11 @@ const Topbar = () => {
                     <i className="fi flaticon-facebook-app-symbol"></i>
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a href="https://x.com/edprowise?s=09">
                     <i className="fi flaticon-twitter"></i>
                   </a>
-                </li>
+                </li> */}
                 <li>
                   <a href="https://www.linkedin.com/company/edprowise/">
                     <i className="fi flaticon-linkedin"></i>
