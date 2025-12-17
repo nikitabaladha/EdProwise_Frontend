@@ -371,7 +371,7 @@ const Header = () => {
                         </li> */}
                         <li className="menu-item sign-up-in-mobile">
                           <a
-                            href="https://orbitschool.edproiwse.com"
+                            href="https://orbitschool.edprowise.com"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -422,7 +422,7 @@ const Header = () => {
                     <>
                       <div className="close-form">
                         <a
-                          href="https://orbitschool.edproiwse.com" // Directly links to the URL
+                          href="https://orbitschool.edprowise.com" // Directly links to the URL
                           className="theme-btn"
                           style={{
                             background: "#854cf4",
