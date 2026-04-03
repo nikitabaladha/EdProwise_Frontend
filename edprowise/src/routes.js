@@ -292,12 +292,12 @@ import PayToEdprowiseForSeller from "./components/DashboardMainForSeller/Procure
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword.js";
 import NewPassword from "./components/ForgotPassword/NewPassword.js";
 
-
 // ================================Comman Pages================================================//
 import SchoolCommanpage from "./components/CommanPage/CommanPageCardsSchool.js";
 import SchoolFeesManagementYear from "./components/CommanPage/YearPage.js";
 import SchoolPayrollAcademicYear from "./components/CommanPage/PayrollYearPage.js";
-import StudentManagementYear from  "./components/CommanPage/StudentyearPage.js"
+import StudentManagementYear from "./components/CommanPage/StudentyearPage.js";
+
 // ===============================Payroll Module ===========================
 import EmployeeRegistrationFormList from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/EmployeeRegistrationFormList.jsx";
 import AddEmployeeRegistrationForm from "./components/DashboardMainForSchool/PayrollModule/Employer/EmployeeRegistration/AddEmployeeRegistrationForm.jsx";
@@ -482,7 +482,6 @@ import ViewPrincipalProfile from "./components/DashboardMainForPrincipal/Princip
 import UpdatePrincipalProfile from "./components/DashboardMainForPrincipal/PrincipalProfile/UpdatePrincipalProfile/UpdatePrincipalProfile.js";
 import PrincipalChangePassword from "./components/DashboardMainForPrincipal/PrincipalProfile/ChangePassword/PrincipalChangePassword.jsx";
 
-
 // ===================== Student Dashboard ===============================================
 import StudentDashboardMain from "./components/DashboardMainForStudent/StudentDashboardMain.js";
 import StudentDashboard from "./components/DashboardMainForStudent/StudentDashboard/StudentDashboard.jsx";
@@ -572,9 +571,8 @@ import TeacherUpdateLessonPlan from "./components/DashboardMainForTeacher/PlanLe
 // Common Calendar page
 import CalendarPage from "./components/CommanPage/CalendarPage.jsx";
 
-
 // Visitor Operation
-import SchoolVisitorAcademicYear from "./components/CommanPage/VisitorYear.jsx"
+import SchoolVisitorAcademicYear from "./components/CommanPage/VisitorYear.jsx";
 import VisitorDashboard from "./components/DashboardMainForSchool/VisitorManagements/VisitorDashboard/VisitorDashboard.jsx";
 import VisitorEntryList from "./components/DashboardMainForSchool/VisitorManagements/VisitorEntry/VisitorEntryList.jsx";
 import ViewVisitorDetails from "./components/DashboardMainForSchool/VisitorManagements/VisitorEntry/ViewVisitorDetails.jsx";
@@ -607,9 +605,8 @@ import VisitorCriminalRecord from "./components/DashboardMainForSchool/VisitorMa
 import VisitorApproverList from "./components/DashboardMainForSchool/VisitorManagements/Settings/ApproverList/VisitorApproverList.jsx";
 import ApproverCategory from "./components/DashboardMainForSchool/VisitorManagements/Settings/ApproverCategory/ApproverCategory.jsx";
 
-
 // Trasport
-import SchoolTransportAcademicYear from "./components/CommanPage/TransportYear.jsx" 
+import SchoolTransportAcademicYear from "./components/CommanPage/TransportYear.jsx";
 import SchoolsBusLists from "./components/DashboardMainForSchool/BusTransports/Settings/VechicalRegistration/SchoolsBusLists.jsx";
 import AddSchoolBusDetails from "./components/DashboardMainForSchool/BusTransports/Settings/VechicalRegistration/AddSchoolBusDetails.jsx";
 import ViewSchoolBusDetails from "./components/DashboardMainForSchool/BusTransports/Settings/VechicalRegistration/ViewSchoolBusDetails.jsx";
@@ -650,24 +647,6 @@ import ExamQuestionPage from "./components/StudentTestPages/ExamQuestionPage.jsx
 import MarketingEmail from "./components/DashboardMainForAdmin/EmailAndMarketing/Marketing/MarketingEmail.js";
 import ViewStudentTestDetails from "./components/DashboardMainForSchool/OperationalManagementServices/Admin/EntranceManagement/AssignTestAndResult/ViewStudentTestDetails.jsx";
 import Messenger from "./components/DashboardMainForSchool/OperationalManagementServices/Admin/Messenger/Messenger.js";
- 
-
-// const PrivateRoute = ({ allowedRoles, children }) => {
-//   const { isAuthenticated, role } = useAuth();
-
-//   if (!isAuthenticated) {
-//     console.log('Not authenticated, redirecting to login');
-//     return <Navigate to="/login" replace />;
-//   }
-
-//   if (allowedRoles && !allowedRoles.includes(role)) {
-//     console.log(`Role ${role} not allowed, redirecting to unauthorized`);
-//     return <Navigate to="/unauthorized" replace />;
-//   }
-
-//   console.log('Access granted');
-//   return children ? children : <Outlet />;
-// };
 
 const DashboardLayout = ({ children }) => {
   return <ThemeProvider>{children}</ThemeProvider>;
@@ -794,7 +773,7 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       />
- 
+
       <Route
         path="/login/admin"
         element={
@@ -857,14 +836,13 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/shool-dashboard/test/:testLink/test" 
+        path="/shool-dashboard/test/:testLink/test"
         element={
           <PublicRoute>
             <ExamQuestionPage />
           </PublicRoute>
         }
       />
-
 
       <Route
         path="/complete-admin-profile"
@@ -1037,7 +1015,6 @@ const AppRoutes = () => {
           element={<PasswordUpdateEmailTamplate />}
         />
         <Route path="email/marketing" element={<MarketingEmail />} />
-
       </Route>
 
       {/* ==========================================School Routes================================*/}
@@ -1906,13 +1883,13 @@ const AppRoutes = () => {
         />
         <Route
           path="operational-service/entrance-management/test-list/view-assign-test"
-          element={<StudentAssignTestDetails/>}
+          element={<StudentAssignTestDetails />}
         />
 
         <Route
           path="operational-service/entrance-management/test-list/view-assign-test/view-test"
-          element={<ViewStudentTestDetails/>}
-        /> 
+          element={<ViewStudentTestDetails />}
+        />
         {/* Subject define by class only */}
         <Route
           path="operational-service/entrance-management/class-subject-define-list"
@@ -1921,7 +1898,7 @@ const AppRoutes = () => {
 
         <Route
           path="operational-service/entrance-management/subject-define-list/define-class-subjects"
-          element={<DefineSubjectForClass/>}
+          element={<DefineSubjectForClass />}
         />
 
         <Route
@@ -1934,7 +1911,7 @@ const AppRoutes = () => {
           element={<UpdateSubjectsForClass />}
         />
         {/* end of subject by class only */}
-        
+
         {/* Question Set */}
         <Route
           path="operational-service/entrance-management/question-set-list"
@@ -1957,7 +1934,7 @@ const AppRoutes = () => {
         />
 
         {/* Teacher feedBack */}
-<Route
+        <Route
           path="operational-service/teachers-feedback"
           element={<TeacherFeedbackClassAndSectionList />}
         />
@@ -1970,7 +1947,7 @@ const AppRoutes = () => {
           path="operational-service/teachers-feedback/teacher-list/feedback-fill-student"
           element={<TeacherFeedbacFillStudentList />}
         />
- 
+
         <Route
           path="operational-service/teachers-feedback/teacher-list/feedback-fill-student/view-feedback-details"
           element={<ViewTeacherFeedbackDetails />}
@@ -1998,7 +1975,7 @@ const AppRoutes = () => {
 
         <Route
           path="operational-service/student-attendance/student-present-report"
-          element={<PresentStudentAttendanceClassReportList/>}
+          element={<PresentStudentAttendanceClassReportList />}
         />
 
         <Route
@@ -2006,9 +1983,9 @@ const AppRoutes = () => {
           element={<StudentPresentReport />}
         />
 
-         <Route
+        <Route
           path="operational-service/student-attendance/student-absent-report"
-          element={<AbsentStudentAttendanceClassReportList/>}
+          element={<AbsentStudentAttendanceClassReportList />}
         />
 
         <Route
@@ -2035,8 +2012,7 @@ const AppRoutes = () => {
           element={<StudentLateArrival />}
         />
 
-
-          {/* Roll Number */}
+        {/* Roll Number */}
         <Route
           path="operational-service/student-attendance/define-roll-numbers/define-student-roll-number"
           element={<DefineRollNumber />}
@@ -2052,12 +2028,12 @@ const AppRoutes = () => {
           element={<ViewStudentRollNumber />}
         />
 
-        <Route 
+        <Route
           path="operational-service/student-attendance/define-roll-numbers/update-student-roll-number"
           element={<UpdateRollNumber />}
         />
 
-        {/* Other Ops management */} 
+        {/* Other Ops management */}
         {/* School Holiday */}
 
         <Route
@@ -2192,7 +2168,7 @@ const AppRoutes = () => {
           path="operational-service/other-management/class-chat"
           element={<ClassGroupChat />}
         />
- {/* Setting */}
+        {/* Setting */}
         {/*Define subject By class and section  Subject */}
         <Route
           path="operational-service/setting/subject-define-list"
@@ -2214,12 +2190,8 @@ const AppRoutes = () => {
           element={<UpdateSubjectsForClassSection />}
         />
 
-        <Route
-          path="operational-service/message"
-          element={<Messenger />}
-        />
+        <Route path="operational-service/message" element={<Messenger />} />
         {/* End subject by class and section */}
-
 
         {/* ==================Visitor ============================= */}
         <Route
@@ -2231,14 +2203,11 @@ const AppRoutes = () => {
           }
         />
 
-        <Route
-          path="visitor/Visitor-list"
-          element={<VisitorEntryList />}
-        />
+        <Route path="visitor/Visitor-list" element={<VisitorEntryList />} />
 
         <Route
           path="visitor/Visitor-list/add-unschedule-visitor"
-          element={<UnscheduleVisitorForm/>}
+          element={<UnscheduleVisitorForm />}
         />
 
         <Route
@@ -2278,9 +2247,8 @@ const AppRoutes = () => {
           element={<UpdateBlacklistOffender />}
         />
 
-       
         {/* Report */}
-         <Route
+        <Route
           path="visitor/report/visitor-report"
           element={<VisitorRecordReport />}
         />
@@ -2323,7 +2291,7 @@ const AppRoutes = () => {
 
         <Route
           path="transport/setting/bus-details/view-bus-details"
-          element={<ViewSchoolBusDetails/>}
+          element={<ViewSchoolBusDetails />}
         />
 
         <Route
@@ -2346,11 +2314,11 @@ const AppRoutes = () => {
           element={<ViewRegisterBusStaffDetails />}
         />
 
-         <Route
+        <Route
           path="transport/setting/bus-staff-details/update-staff-details"
           element={<UpdateRegisterBusStaffDetails />}
         />
-<Route
+        <Route
           path="transport/setting/route-for-students"
           element={<RouteForStudents />}
         />
@@ -2365,17 +2333,15 @@ const AppRoutes = () => {
           element={<ViewRouteForStudent />}
         />
 
-         <Route
+        <Route
           path="transport/setting/route-for-students/update-route-details"
           element={<UpdateRouteForStudent />}
         />
 
-         <Route
+        <Route
           path="transport/setting/location"
           element={<PickupDropLocationRecord />}
         />
-
-
       </Route>
 
       {/* =========================================Seller Routes============================================= */}
@@ -2599,7 +2565,6 @@ const AppRoutes = () => {
           element={<EmployeeAttendanceReport />}
         />
       </Route>
-      
 
       {/* ===================================== Principal Routes ================================= */}
 
@@ -2625,10 +2590,7 @@ const AppRoutes = () => {
           element={<UpdatePrincipalProfile />}
         />
 
-        <Route
-          path="change-password"
-          element={<PrincipalChangePassword />}
-        />
+        <Route path="change-password" element={<PrincipalChangePassword />} />
 
         <Route
           path="approval/student-admission"
@@ -2706,29 +2668,44 @@ const AppRoutes = () => {
           element={<ViewSalaryPayoutApprovalDetails />}
         />
 
-         {/* Note */}
+        {/* Note */}
         <Route path="notes-notice/notes" element={<PrincipalNotes />} />
 
-        <Route path="notes-notice/notes/add-note" element={<AddPrincipalNotes />} />
+        <Route
+          path="notes-notice/notes/add-note"
+          element={<AddPrincipalNotes />}
+        />
 
-        <Route path="notes-notice/notes/view-note" element={<ViewPrincipalNotesDetails />} />
+        <Route
+          path="notes-notice/notes/view-note"
+          element={<ViewPrincipalNotesDetails />}
+        />
 
-        <Route path="notes-notice/notes/update-note" element={<UpdatePrincipalNotes />} />
+        <Route
+          path="notes-notice/notes/update-note"
+          element={<UpdatePrincipalNotes />}
+        />
 
-       {/* Notices */}
+        {/* Notices */}
         <Route path="notes-notice/notices" element={<PrincipalNotices />} />
 
-        <Route path="notes-notice/notices/add-notice" element={<AddPrincipalNotices />} />
-
-        <Route path="notes-notice/notices/view-notice" element={<ViewPrincipalNoticeDetails />} />
-
-        <Route path="notes-notice/notices/update-notice" element={<UpdatePrincipalNotices />} />
-
-         {/* Holiday */}
         <Route
-          path="holiday"
-          element={< PrincipleSchoolHolidaysList/>}
+          path="notes-notice/notices/add-notice"
+          element={<AddPrincipalNotices />}
         />
+
+        <Route
+          path="notes-notice/notices/view-notice"
+          element={<ViewPrincipalNoticeDetails />}
+        />
+
+        <Route
+          path="notes-notice/notices/update-notice"
+          element={<UpdatePrincipalNotices />}
+        />
+
+        {/* Holiday */}
+        <Route path="holiday" element={<PrincipleSchoolHolidaysList />} />
 
         <Route
           path="holiday/add-holiday"
@@ -2736,57 +2713,54 @@ const AppRoutes = () => {
         />
         <Route
           path="holiday/view-holiday"
-          element={<ViewSchoolHolidaysPrinciple/>}
+          element={<ViewSchoolHolidaysPrinciple />}
         />
 
         <Route
           path="holiday/update-holiday"
-          element={<UpdateSchoolHolidaysPrinciple/>}
+          element={<UpdateSchoolHolidaysPrinciple />}
         />
 
         <Route
           path="attendance/student-attendance"
-          element={<StudentAttendancePrinciple/>}
+          element={<StudentAttendancePrinciple />}
         />
 
         <Route
           path="attendance/staff-attendance"
-          element={<StaffAttendancePrinciple/>}
+          element={<StaffAttendancePrinciple />}
         />
 
-        <Route
-          path="mis-report"
-          element={<MisScreenCards/>}
-        />
+        <Route path="mis-report" element={<MisScreenCards />} />
 
         <Route
           path="mis-report/fees-collection-report"
-          element={<PrincipalFeesCollectionReport/>}
+          element={<PrincipalFeesCollectionReport />}
         />
 
         <Route
           path="mis-report/balance-to-collect-report"
-          element={<BalanceToCollectReport/>}
+          element={<BalanceToCollectReport />}
         />
 
-         <Route
+        <Route
           path="mis-report/defaulter-report"
-          element={<DefaulterReportPrincipal/>}
+          element={<DefaulterReportPrincipal />}
         />
 
         <Route
           path="mis-report/arrear-fees-receive-report"
-          element={<ArrearFeesReceivedByPrincipal/>}
+          element={<ArrearFeesReceivedByPrincipal />}
         />
 
         <Route
           path="mis-report/concession-report"
-          element={<ConcessionReportByPrincipal/>}
+          element={<ConcessionReportByPrincipal />}
         />
- 
+
         <Route
           path="mis-report/left-student-report"
-          element={<LossFromLeftStudent/>}
+          element={<LossFromLeftStudent />}
         />
 
         {/* ============Procurement Services========== */}
@@ -2807,13 +2781,19 @@ const AppRoutes = () => {
           element={<PrincipalViewRequestedQuote />}
         />
 
-        <Route path="procurement-services/track-quote/view-quote" element={<PrincipalViewQuoteDetails />} />
+        <Route
+          path="procurement-services/track-quote/view-quote"
+          element={<PrincipalViewQuoteDetails />}
+        />
         <Route
           path="procurement-services/track-quote/view-quote-table"
           element={<PrincipalViewAllQuoteTable />}
         />
 
-        <Route path="procurement-services/view-cart" element={<PrincipalViewCart />} />
+        <Route
+          path="procurement-services/view-cart"
+          element={<PrincipalViewCart />}
+        />
 
         <Route
           path="procurement-services/track-order-history"
@@ -2823,35 +2803,34 @@ const AppRoutes = () => {
           path="procurement-services/track-order-history/view-order-history"
           element={<PrincipalViewOrderHistory />}
         />
-                {/* end P */}
-                {/* Notification */}
-            <Route
+        {/* end P */}
+        {/* Notification */}
+        <Route
           path="view-all-notification"
           element={<ViewAllNotifications />}
-        />     
+        />
 
-           {/* Visiting */}
+        {/* Visiting */}
 
         <Route
           path="visiting-schedule"
           element={<PrincipalScheduleVisitor />}
-        /> 
+        />
 
         <Route
           path="visiting-schedule/apply-visiting"
           element={<PrincipalApplyForVisiting />}
-        /> 
+        />
 
         <Route
           path="visiting-schedule/update-visit-details"
           element={<PrincipalUpdateVisitingDetails />}
-        /> 
+        />
 
         <Route
           path="visiting-schedule/view-visit-details"
           element={<PrincipalViewVisitingDetails />}
-        /> 
-
+        />
       </Route>
 
       {/* ===================================== Student Routes ================================= */}
@@ -2860,7 +2839,7 @@ const AppRoutes = () => {
         path="/student-dashboard"
         element={
           // allowedRoles={["Student"]}
-          <PrivateRoute >
+          <PrivateRoute>
             <DashboardLayout>
               <StudentDashboardMain />
             </DashboardLayout>
@@ -2872,17 +2851,14 @@ const AppRoutes = () => {
         <Route
           path="view-principal-profile"
           element={<ViewPrincipalProfile />}
-        /> 
- 
+        />
+
         <Route
           path="update-principal-profile"
           element={<UpdatePrincipalProfile />}
         />
 
-        <Route
-          path="change-password"
-          element={<PrincipalChangePassword />}
-        />
+        <Route path="change-password" element={<PrincipalChangePassword />} />
 
         <Route
           path="attendance-leave/attendance-report"
@@ -2908,104 +2884,104 @@ const AppRoutes = () => {
           path="attendance-leave/leave-record/update-leave-details"
           element={<StudentUpdateLeave />}
         />
-        
-         {/* Note */}
+
+        {/* Note */}
         <Route path="notes-notice/notes" element={<StudentNotes />} />
 
-        <Route path="notes-notice/notes/add-note" element={<AddStudentNotes />} />
+        <Route
+          path="notes-notice/notes/add-note"
+          element={<AddStudentNotes />}
+        />
 
-        <Route path="notes-notice/notes/view-note" element={<ViewStudentNotesDetails />} />
+        <Route
+          path="notes-notice/notes/view-note"
+          element={<ViewStudentNotesDetails />}
+        />
 
-        <Route path="notes-notice/notes/update-note" element={<UpdateStudentNotes />} />
+        <Route
+          path="notes-notice/notes/update-note"
+          element={<UpdateStudentNotes />}
+        />
 
-       {/* Notices */}
+        {/* Notices */}
         <Route path="notes-notice/notices" element={<StudentNotices />} />
 
-        <Route path="notes-notice/notices/add-notice" element={<AddStudentNotices />} />
-
-        <Route path="notes-notice/notices/view-notice" element={<ViewStudentNoticeDetails />} />
-
-        <Route path="notes-notice/notices/update-notice" element={<UpdateStudentNotices />} />
-
-         {/* Holiday */}
         <Route
-          path="holiday"
-          element={< StudentSchoolHolidaysList/>}
+          path="notes-notice/notices/add-notice"
+          element={<AddStudentNotices />}
         />
+
+        <Route
+          path="notes-notice/notices/view-notice"
+          element={<ViewStudentNoticeDetails />}
+        />
+
+        <Route
+          path="notes-notice/notices/update-notice"
+          element={<UpdateStudentNotices />}
+        />
+
+        {/* Holiday */}
+        <Route path="holiday" element={<StudentSchoolHolidaysList />} />
 
         <Route
           path="holiday/view-holiday"
-          element={<ViewSchoolHolidaysStudent/>}
-        /> 
+          element={<ViewSchoolHolidaysStudent />}
+        />
 
-        <Route
-          path="class-timetable"
-          element={<ClassTimetable/>}
-        />
-        
+        <Route path="class-timetable" element={<ClassTimetable />} />
+
         {/* Exam */}
-        <Route
-          path="exam/exam-list"
-          element={<ExamTimetableList/>}
-        />
+        <Route path="exam/exam-list" element={<ExamTimetableList />} />
 
         <Route
           path="exam/exam-list/exam-timetable"
-          element={<ViewExamTimetable/>}
+          element={<ViewExamTimetable />}
         />
 
-        <Route
-          path="exam/exam-result-list"
-          element={<ExamResultList/>}
-        />
+        <Route path="exam/exam-result-list" element={<ExamResultList />} />
 
         <Route
           path="exam/exam-result-list/view-result"
-          element={<ViewExamResult/>}
+          element={<ViewExamResult />}
         />
 
         {/* Feedback */}
-        <Route
-          path="teachers-feedback"
-          element={<TeachersList/>}
-        />
+        <Route path="teachers-feedback" element={<TeachersList />} />
 
-         <Route
+        <Route
           path="teachers-feedback/view-fill-feedback"
-          element={<ViewTeacherFeedbackForm/>}
+          element={<ViewTeacherFeedbackForm />}
         />
 
         <Route
           path="teachers-feedback/fill-feedback"
-          element={<FeedbackForm/>}
+          element={<FeedbackForm />}
         />
 
-         {/* Class Chat */}
-        <Route
-          path="class-chat"
-          element={<StudentClassGroupChat />}
-        />
+        {/* Class Chat */}
+        <Route path="class-chat" element={<StudentClassGroupChat />} />
 
         {/* Homework */}
 
         <Route
           path="homework/homework-assign-list"
-          element={<StudentHomeworkList/>}
+          element={<StudentHomeworkList />}
         />
 
         <Route
           path="homework/homework-assign-list/submit-homework"
-          element={<ViewSubmitHomework/>}
+          element={<ViewSubmitHomework />}
         />
- 
+
         <Route
           path="homework/homework-submit-list"
-          element={<StudentSubmitHomework/>}
+          element={<StudentSubmitHomework />}
         />
 
         <Route
           path="homework/homework-submit-list/view-submit-homework"
-          element={<ViewCheckSubmitHomework/>}
+          element={<ViewCheckSubmitHomework />}
         />
 
         {/* ============Procurement Services========== */}
@@ -3026,13 +3002,19 @@ const AppRoutes = () => {
           element={<PrincipalViewRequestedQuote />}
         />
 
-        <Route path="procurement-services/track-quote/view-quote" element={<PrincipalViewQuoteDetails />} />
+        <Route
+          path="procurement-services/track-quote/view-quote"
+          element={<PrincipalViewQuoteDetails />}
+        />
         <Route
           path="procurement-services/track-quote/view-quote-table"
           element={<PrincipalViewAllQuoteTable />}
         />
 
-        <Route path="procurement-services/view-cart" element={<PrincipalViewCart />} />
+        <Route
+          path="procurement-services/view-cart"
+          element={<PrincipalViewCart />}
+        />
 
         <Route
           path="procurement-services/track-order-history"
@@ -3042,49 +3024,46 @@ const AppRoutes = () => {
           path="procurement-services/track-order-history/view-order-history"
           element={<PrincipalViewOrderHistory />}
         />
-                {/* end P */}
-                {/* Notification */}
+        {/* end P */}
+        {/* Notification */}
         <Route
           path="view-all-notification"
           element={<ViewAllNotifications />}
-        />     
+        />
 
         {/* Parents Visit */}
-        <Route
-          path="visiting-schedule"
-          element={<ParentsScheduleVisitor />}
-        /> 
+        <Route path="visiting-schedule" element={<ParentsScheduleVisitor />} />
 
         <Route
           path="visiting-schedule/apply-visiting"
           element={<ParentsApplyForVisiting />}
-        /> 
+        />
 
         <Route
           path="visiting-schedule/update-visit-details"
           element={<ParentsUpdateVisitingDetails />}
-        /> 
+        />
 
         <Route
           path="visiting-schedule/view-visit-details"
           element={<ParentsViewVisitingDetails />}
-        /> 
+        />
 
         {/* Parents Child pickup */}
         <Route
           path="child-pickup"
           element={<ParentApplyChildrenPickupList />}
-        /> 
+        />
 
         <Route
           path="child-pickup/apply-child-pickup"
           element={<ParentApplyForChildPickup />}
-        /> 
+        />
 
         <Route
           path="child-pickup/update-child-pickup"
           element={<ParentUpdateChildPickupInfo />}
-        /> 
+        />
 
         <Route
           path="child-pickup/view-child-pickup"
@@ -3092,13 +3071,13 @@ const AppRoutes = () => {
         />
       </Route>
 
-{/* ===================================== Teachers Routes ================================= */}
+      {/* ===================================== Teachers Routes ================================= */}
 
       <Route
         path="/teacher-dashboard"
         element={
           // allowedRoles={["Teacher"]}
-          <PrivateRoute >
+          <PrivateRoute>
             <DashboardLayout>
               <TeacherDashboardMain />
             </DashboardLayout>
@@ -3107,45 +3086,32 @@ const AppRoutes = () => {
       >
         <Route index element={<TeacherDashboard />} />
 
-        <Route
-          path="view-teacher-profile"
-          element={<ViewTeacherProfile />}
-        /> 
- 
+        <Route path="view-teacher-profile" element={<ViewTeacherProfile />} />
+
         <Route
           path="update-teacher-profile"
           element={<UpdateTeacherProfile />}
         />
 
-        <Route
-          path="change-password"
-          element={<TeacherChangePassword />}
-        />
+        <Route path="change-password" element={<TeacherChangePassword />} />
 
         {/* Timetable */}
-        <Route
-          path="lectures-timetable"
-          element={<TeacherTimetable />}
-        />
+        <Route path="lectures-timetable" element={<TeacherTimetable />} />
 
-
-         {/* Holiday */}
-        <Route
-          path="holiday"
-          element={< TeachersSchoolHolidaysList/>}
-        />
+        {/* Holiday */}
+        <Route path="holiday" element={<TeachersSchoolHolidaysList />} />
 
         <Route
           path="holiday/view-holiday"
-          element={<ViewSchoolHolidaysTeacher/>}
-        /> 
+          element={<ViewSchoolHolidaysTeacher />}
+        />
 
-            {/* Student Attendance */}
+        {/* Student Attendance */}
         <Route
           path="student-attendance-leave/mark-attendance"
           element={<MarkStudentAttendance />}
         />
- 
+
         <Route
           path="student-attendance-leave/attendance-report"
           element={<StudentAttendanceReportTeacher />}
@@ -3192,124 +3158,124 @@ const AppRoutes = () => {
           element={<TeacherUpdateLeaveDetails />}
         />
 
-
-
-         {/* Note */}
+        {/* Note */}
         <Route path="notes-notice/notes" element={<TeacherNotes />} />
 
-        <Route path="notes-notice/notes/add-note" element={<AddTeacherNotes />} />
+        <Route
+          path="notes-notice/notes/add-note"
+          element={<AddTeacherNotes />}
+        />
 
-        <Route path="notes-notice/notes/view-note" element={<ViewTeacherNotesDetails />} />
+        <Route
+          path="notes-notice/notes/view-note"
+          element={<ViewTeacherNotesDetails />}
+        />
 
-        <Route path="notes-notice/notes/update-note" element={<UpdateTeacherNotes />} />
+        <Route
+          path="notes-notice/notes/update-note"
+          element={<UpdateTeacherNotes />}
+        />
 
-       {/* Notices */}
+        {/* Notices */}
         <Route path="notes-notice/notices" element={<TeacherNotices />} />
 
-        <Route path="notes-notice/notices/add-notice" element={<AddTeacherNotices />} />
-
-        <Route path="notes-notice/notices/view-notice" element={<ViewTeacherNoticeDetails />} />
-
-        <Route path="notes-notice/notices/update-notice" element={<UpdateTeacherNotices />} />
-
-        
         <Route
-          path="class-timetable"
-          element={<ClassTimetable/>}
+          path="notes-notice/notices/add-notice"
+          element={<AddTeacherNotices />}
         />
-        
+
+        <Route
+          path="notes-notice/notices/view-notice"
+          element={<ViewTeacherNoticeDetails />}
+        />
+
+        <Route
+          path="notes-notice/notices/update-notice"
+          element={<UpdateTeacherNotices />}
+        />
+
+        <Route path="class-timetable" element={<ClassTimetable />} />
+
         {/* ========== Exam =========  */}
-                {/* Timetable */}
-        <Route
-          path="exam/exam-list"
-          element={<TeacherExamTimetableList/>}
-        />
+        {/* Timetable */}
+        <Route path="exam/exam-list" element={<TeacherExamTimetableList />} />
 
         <Route
           path="exam/exam-list/exam-timetable"
-          element={<TeacherViewExamTimetable/>}
+          element={<TeacherViewExamTimetable />}
         />
 
-                    {/* Result */}
+        {/* Result */}
         <Route
           path="exam/exam-result-list"
-          element={<TeacherExamResultList/>}
-        /> 
+          element={<TeacherExamResultList />}
+        />
 
         <Route
           path="exam/exam-result-list/view-result"
-          element={<TeacherViewExamResult/>}
+          element={<TeacherViewExamResult />}
         />
 
-                         {/* Fill Marks  */}
+        {/* Fill Marks  */}
 
         <Route
           path="exam/exam-marks-list"
-          element={<TeacherFillExamMarksList/>}
-        /> 
+          element={<TeacherFillExamMarksList />}
+        />
 
         <Route
           path="exam/exam-marks-list/fill-marks"
-          element={<TeacherFillStudentExamMarks/>}
+          element={<TeacherFillStudentExamMarks />}
         />
 
         <Route
           path="exam/exam-marks-list/view-fill-marks"
-          element={<ViewTeacherFillExamMarks/>}
+          element={<ViewTeacherFillExamMarks />}
         />
 
         <Route
           path="exam/exam-marks-list/update-fill-marks"
-          element={<UpdateTeacherFillMarks/>}
+          element={<UpdateTeacherFillMarks />}
         />
-            {/* Documents */}
-        <Route
-          path="documents"
-          element={<TeacherLetterAndDocuments/>}
-        />
+        {/* Documents */}
+        <Route path="documents" element={<TeacherLetterAndDocuments />} />
 
         <Route
           path="documents/add-documents"
-          element={<TeacherAddLetterAndDocuments/>}
+          element={<TeacherAddLetterAndDocuments />}
         />
 
         <Route
           path="documents/view-documents"
-          element={<TeacherViewLetterAndDocuments/>}
+          element={<TeacherViewLetterAndDocuments />}
         />
 
         <Route
           path="documents/update-documents"
-          element={<TeacherUpdateLetterAndDocuments/>}
+          element={<TeacherUpdateLetterAndDocuments />}
         />
 
         {/* Resignation */}
-        <Route
-          path="resignation"
-          element={<TeacherResignationList/>}
-        />
+        <Route path="resignation" element={<TeacherResignationList />} />
 
         <Route
           path="resignation/add-resignation"
-          element={<TeacherResignationForm/>}
+          element={<TeacherResignationForm />}
         />
 
         <Route
           path="resignation/view-resignation"
-          element={<ViewTeacherResignation/>}
+          element={<ViewTeacherResignation />}
         />
 
         <Route
           path="resignation/update-resignation"
-          element={<UpdateTeacherResignation/>}
+          element={<UpdateTeacherResignation />}
         />
-        
+
         {/* Lesson Plan */}
-           {/* Plan Lesson */}
-        <Route
-          path="lesson-plan"
-          element={<TeacherPlanLessonList />}
-        />
+        {/* Plan Lesson */}
+        <Route path="lesson-plan" element={<TeacherPlanLessonList />} />
 
         <Route
           path="lesson-plan/add-lesson-plan"
@@ -3326,60 +3292,51 @@ const AppRoutes = () => {
           element={<TeacherUpdateLessonPlan />}
         />
 
-        
-
-
         {/* Feedback */}
-        <Route
-          path="teachers-feedback"
-          element={<TeachersList/>}
-        />
+        <Route path="teachers-feedback" element={<TeachersList />} />
 
-         <Route
+        <Route
           path="teachers-feedback/view-fill-feedback"
-          element={<ViewTeacherFeedbackForm/>}
+          element={<ViewTeacherFeedbackForm />}
         />
 
         <Route
           path="teachers-feedback/fill-feedback"
-          element={<FeedbackForm/>}
+          element={<FeedbackForm />}
         />
 
-         {/* Class Chat */}
-        <Route
-          path="class-chat"
-          element={<StudentClassGroupChat />}
-        />
+        {/* Class Chat */}
+        <Route path="class-chat" element={<StudentClassGroupChat />} />
 
         {/* Homework */}
 
         <Route
           path="homework/homework-assign-list"
-          element={<HomeworkAssignList/>}
+          element={<HomeworkAssignList />}
         />
 
         <Route
           path="homework/homework-assign-list/assign-homework"
-          element={<AssignHomework/>}
+          element={<AssignHomework />}
         />
 
         <Route
           path="homework/homework-assign-list/view-assign-homework"
-          element={<ViewAssignHomework/>}
+          element={<ViewAssignHomework />}
         />
- 
+
         <Route
           path="homework/homework-assign-list/update-assign-homework"
-          element={<UpdateAssignHomework/>}
+          element={<UpdateAssignHomework />}
         />
-        <Route 
+        <Route
           path="homework/homework-submit-list"
-          element={<TeacherSubmitHomeworkList/>}
+          element={<TeacherSubmitHomeworkList />}
         />
 
         <Route
           path="homework/homework-submit-list/view-submit-homework"
-          element={<ViewHomeworkToCheck/>}
+          element={<ViewHomeworkToCheck />}
         />
 
         {/* ============Procurement Services========== */}
@@ -3400,13 +3357,19 @@ const AppRoutes = () => {
           element={<PrincipalViewRequestedQuote />}
         />
 
-        <Route path="procurement-services/track-quote/view-quote" element={<PrincipalViewQuoteDetails />} />
+        <Route
+          path="procurement-services/track-quote/view-quote"
+          element={<PrincipalViewQuoteDetails />}
+        />
         <Route
           path="procurement-services/track-quote/view-quote-table"
           element={<PrincipalViewAllQuoteTable />}
         />
 
-        <Route path="procurement-services/view-cart" element={<PrincipalViewCart />} />
+        <Route
+          path="procurement-services/view-cart"
+          element={<PrincipalViewCart />}
+        />
 
         <Route
           path="procurement-services/track-order-history"
@@ -3416,41 +3379,34 @@ const AppRoutes = () => {
           path="procurement-services/track-order-history/view-order-history"
           element={<PrincipalViewOrderHistory />}
         />
-                {/* end P */}
-                {/* Notification */}
-            <Route
+        {/* end P */}
+        {/* Notification */}
+        <Route
           path="view-all-notification"
           element={<ViewAllNotifications />}
-        />     
+        />
 
         {/* Visiting */}
 
-        <Route
-          path="visiting-schedule"
-          element={<TeacherScheduleVisitor />}
-        /> 
+        <Route path="visiting-schedule" element={<TeacherScheduleVisitor />} />
 
         <Route
           path="visiting-schedule/apply-visiting"
           element={<TeacherApplyForVisiting />}
-        /> 
+        />
 
         <Route
           path="visiting-schedule/update-visit-details"
           element={<TeacherUpdateVisitingDetails />}
-        /> 
+        />
 
         <Route
           path="visiting-schedule/view-visit-details"
           element={<TeacherViewVisitingDetails />}
-        /> 
-
-
+        />
       </Route>
 
-
-
-{/* Website Routes */}
+      {/* Website Routes */}
       <Route
         path="/"
         element={

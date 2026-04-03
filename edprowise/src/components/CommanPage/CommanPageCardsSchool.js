@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { IoCubeOutline, IoLogOutOutline } from "react-icons/io5";
-import { BsReceipt  } from "react-icons/bs";
+import { BsReceipt } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-import { useLogout } from '../../useLogout';
-
+import { useLogout } from "../../useLogout";
 
 const DashboardInformationCards = () => {
   const navigate = useNavigate();
@@ -35,7 +34,7 @@ const DashboardInformationCards = () => {
     }
   };
 
-   const navigateToPayrollModule = (event) => {
+  const navigateToPayrollModule = (event) => {
     event.preventDefault();
     localStorage.setItem("sidebartab", "PayrollModule");
     if (role === "School" || role === "Employee") {
@@ -112,7 +111,6 @@ const DashboardInformationCards = () => {
     },
   ];
 
-
   const styles = {
     container: {
       display: "flex",
@@ -128,7 +126,7 @@ const DashboardInformationCards = () => {
     card: {
       position: "relative",
       minWidth: "270px",
-      maxWidth:"270px",
+      maxWidth: "270px",
       height: "240px",
       boxShadow:
         "inset 5px 5px 5px #a9fffd, inset -5px -5px 15px #a9fffd, 5px 5px 15px rgba(0, 0, 0, 0.3), -5px -5px 15px rgba(255, 255, 255, 0.1)",
@@ -210,7 +208,7 @@ const DashboardInformationCards = () => {
       transition: "all 0.3s ease",
       // backgroundColor: "#1a1729",
       padding: "12px",
-      border:"2px solid",
+      border: "2px solid",
       borderRadius: "10%",
       boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
       transform: isCalendarHovered ? "scale(1.1)" : "scale(1)",
@@ -234,9 +232,8 @@ const DashboardInformationCards = () => {
       padding: "20px",
       width: "100%",
     },
-
   };
-  
+
   return (
     <div style={styles.wrapper}>
       <button
@@ -289,7 +286,6 @@ const DashboardInformationCards = () => {
       </div>
     </div>
   );
-  
 };
 
 export default DashboardInformationCards;

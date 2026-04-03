@@ -166,7 +166,6 @@
 //     setShowExportModal(!showExportModal);
 //   };
 
-
 //   const getFieldValue = (record, field) => {
 //     const fieldId = field.id;
 //     if (fieldId === 'academicYear') {
@@ -480,39 +479,40 @@
 
 // export default AdmissionFees;
 
+import React, { useState, useEffect, useRef } from "react";
+import { FaFilter, FaDownload } from "react-icons/fa";
+import { toast } from "react-toastify";
+import CreatableSelect from "react-select/creatable";
+// import getAPI from "../../../../../../api/getAPI";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { FaFilter, FaDownload } from 'react-icons/fa';
-import { toast } from 'react-toastify';
-import CreatableSelect from 'react-select/creatable';
-import getAPI from '../../../../../../api/getAPI';
-import { Link } from 'react-router-dom';
-import { exportToExcel, exportToPDF } from './ExportModal';
-import { fetchSchoolData } from '../../../PdfUtlisReport';
+import getAPI from "../../../../../api/getAPI";
+import { Link } from "react-router-dom";
+import { exportToExcel, exportToPDF } from "./ExportModal";
+import { fetchSchoolData } from "../../PdfUtlisReport";
 
 const AdmissionFees = () => {
   const headerMapping = {
-    admFeesDate: 'Date',
-    academicYear: 'Academic Year',
-    admNo: 'Adm No.',
-    studentName: 'Name',
-    class: 'Class',
-    section: 'Section',
-    admFeesPaymentMode: 'Payment Mode',
-    admFeesTransactionNo: 'Cheque No./Transaction No.',
-    admFeesReceiptNo: 'Receipts No.',
-    admFeesDue: 'Fees Due',
-    admFeesPaid: 'Fees Paid',
-    admFeesConcession: 'Concession',
+    admFeesDate: "Date",
+    academicYear: "Academic Year",
+    admNo: "Adm No.",
+    studentName: "Name",
+    class: "Class",
+    section: "Section",
+    admFeesPaymentMode: "Payment Mode",
+    admFeesTransactionNo: "Cheque No./Transaction No.",
+    admFeesReceiptNo: "Receipts No.",
+    admFeesDue: "Fees Due",
+    admFeesPaid: "Fees Paid",
+    admFeesConcession: "Concession",
   };
 
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
-  const [activeTab, setActiveTab] = useState('Date');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [schoolId, setSchoolId] = useState('');
+  const [activeTab, setActiveTab] = useState("Date");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [schoolId, setSchoolId] = useState("");
   const [school, setSchool] = useState(null);
-  const [logoSrc, setLogoSrc] = useState('');
+  const [logoSrc, setLogoSrc] = useState("");
   const [paymentModes, setPaymentModes] = useState([]);
   const [feeData, setFeeData] = useState([]);
   const [tableFields] = useState(
@@ -528,25 +528,33 @@ const AdmissionFees = () => {
   const [sectionOptions, setSectionOptions] = useState([]);
   const [academicYearOptions, setAcademicYearOptions] = useState([]);
   const [academicYears, setAcademicYears] = useState([]);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState(localStorage.getItem('selectedAcademicYear') || '');
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState(
+    localStorage.getItem("selectedAcademicYear") || ""
+  );
   const [selectedPaymentModes, setSelectedPaymentModes] = useState([]);
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const dropdownRef = useRef(null);
-  const tabs = ['Date', 'Payment Mode', 'Class & Section', 'Section', 'Academic Year'];
+  const tabs = [
+    "Date",
+    "Payment Mode",
+    "Class & Section",
+    "Section",
+    "Academic Year",
+  ];
 
   const formatAcademicYear = (year) => {
-    if (!year) return '-';
-    const [startYear, endYear] = year.split('-');
+    if (!year) return "-";
+    const [startYear, endYear] = year.split("-");
     return `${startYear}-${endYear.slice(2)}`;
   };
 
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
     if (!userDetails?.schoolId) {
-      toast.error('School ID not found. Please log in again.');
+      toast.error("School ID not found. Please log in again.");
       return;
     }
     setSchoolId(userDetails.schoolId);
@@ -558,7 +566,9 @@ const AdmissionFees = () => {
         setLoadingYears(true);
         const response = await getAPI(`/get-feesmanagment-year/${schoolId}`);
         if (!response.hasError && response.data?.data) {
-          const years = response.data.data.map((item) => item.academicYear).sort((a, b) => a.localeCompare(b));
+          const years = response.data.data
+            .map((item) => item.academicYear)
+            .sort((a, b) => a.localeCompare(b));
           setAcademicYears(years);
           setAcademicYearOptions(
             years.map((year) => ({
@@ -568,13 +578,16 @@ const AdmissionFees = () => {
           );
           if (!selectedAcademicYear && years.length > 0) {
             setSelectedAcademicYear(years[years.length - 1]);
-            localStorage.setItem('selectedAcademicYear', years[years.length - 1]);
+            localStorage.setItem(
+              "selectedAcademicYear",
+              years[years.length - 1]
+            );
           }
         } else {
-          toast.error('No academic years found.');
+          toast.error("No academic years found.");
         }
       } catch (err) {
-        toast.error('Error fetching academic years.');
+        toast.error("Error fetching academic years.");
         console.error(err);
       } finally {
         setLoadingYears(false);
@@ -590,25 +603,49 @@ const AdmissionFees = () => {
     const fetchAdmissionData = async () => {
       setIsLoading(true);
       try {
-        const response = await getAPI(`/get-all-data-admission?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`);
+        const response = await getAPI(
+          `/get-all-data-admission?schoolId=${schoolId}&academicYear=${selectedAcademicYear}`
+        );
         if (!response?.data?.data) {
-          throw new Error('No admission data found');
+          throw new Error("No admission data found");
         }
 
         const data = response.data.data;
-        data.sort((a, b) => (a.student.admissionNo || '-').localeCompare(b.student.admissionNo || '-'));
+        data.sort((a, b) =>
+          (a.student.admissionNo || "-").localeCompare(
+            b.student.admissionNo || "-"
+          )
+        );
         setFeeData(data);
 
-        const modes = new Set(data.map(record => record.student?.admFeesPaymentMode).filter(mode => mode && mode !== '-'));
-        setPaymentModes(Array.from(modes).map(mode => ({ value: mode, label: mode })));
+        const modes = new Set(
+          data
+            .map((record) => record.student?.admFeesPaymentMode)
+            .filter((mode) => mode && mode !== "-")
+        );
+        setPaymentModes(
+          Array.from(modes).map((mode) => ({ value: mode, label: mode }))
+        );
 
-        const classes = new Set(data.map(record => record.className).filter(cls => cls && cls !== '-'));
-        setClassOptions(Array.from(classes).map(cls => ({ value: cls, label: cls })));
+        const classes = new Set(
+          data
+            .map((record) => record.className)
+            .filter((cls) => cls && cls !== "-")
+        );
+        setClassOptions(
+          Array.from(classes).map((cls) => ({ value: cls, label: cls }))
+        );
 
-        const sections = new Set(data.map(record => record.sectionName).filter(sec => sec && sec !== '-'));
-        setSectionOptions(Array.from(sections).map(sec => ({ value: sec, label: sec })));
+        const sections = new Set(
+          data
+            .map((record) => record.sectionName)
+            .filter((sec) => sec && sec !== "-")
+        );
+        setSectionOptions(
+          Array.from(sections).map((sec) => ({ value: sec, label: sec }))
+        );
       } catch (error) {
-        toast.error('Error fetching admission data: ' + error.message);
+        toast.error("Error fetching admission data: " + error.message);
         setFeeData([]);
         setPaymentModes([]);
         setClassOptions([]);
@@ -627,7 +664,7 @@ const AdmissionFees = () => {
         setSchool(school);
         setLogoSrc(logoSrc);
       } catch (error) {
-        console.error('Failed to fetch school data:', error);
+        console.error("Failed to fetch school data:", error);
       }
     };
     if (schoolId) {
@@ -641,21 +678,21 @@ const AdmissionFees = () => {
         setShowExportDropdown(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const handleSelectChange = (selectedOptions, { name }) => {
-    if (name === 'academicYear') {
-      const selectedYear = selectedOptions?.value || '';
+    if (name === "academicYear") {
+      const selectedYear = selectedOptions?.value || "";
       setSelectedAcademicYear(selectedYear);
-    } else if (name === 'paymentMode') {
+    } else if (name === "paymentMode") {
       setSelectedPaymentModes(selectedOptions || []);
-    } else if (name === 'class') {
+    } else if (name === "class") {
       setSelectedClasses(selectedOptions || []);
-    } else if (name === 'section') {
+    } else if (name === "section") {
       setSelectedSections(selectedOptions || []);
     }
   };
@@ -664,10 +701,10 @@ const AdmissionFees = () => {
     setSelectedPaymentModes([]);
     setSelectedClasses([]);
     setSelectedSections([]);
-    setStartDate('');
-    setEndDate('');
-    setSearchTerm('');
-    const storedYear = localStorage.getItem('selectedAcademicYear');
+    setStartDate("");
+    setEndDate("");
+    setSearchTerm("");
+    const storedYear = localStorage.getItem("selectedAcademicYear");
     if (storedYear) {
       setSelectedAcademicYear(storedYear);
     }
@@ -685,18 +722,18 @@ const AdmissionFees = () => {
 
   const getFieldValue = (record, field) => {
     const fieldId = field.id;
-    if (fieldId === 'academicYear') {
-      return formatAcademicYear(record[fieldId]) || '-';
-    } else if (fieldId === 'studentName') {
-      return record.student?.studentName || '-';
-    } else if (fieldId === 'admNo') {
-      return record.student?.admissionNo || '-';
-    } else if (fieldId === 'class') {
-      return record.className || '-';
-    } else if (fieldId === 'section') {
-      return record.sectionName || '-';
+    if (fieldId === "academicYear") {
+      return formatAcademicYear(record[fieldId]) || "-";
+    } else if (fieldId === "studentName") {
+      return record.student?.studentName || "-";
+    } else if (fieldId === "admNo") {
+      return record.student?.admissionNo || "-";
+    } else if (fieldId === "class") {
+      return record.className || "-";
+    } else if (fieldId === "section") {
+      return record.sectionName || "-";
     } else {
-      return record.student?.[fieldId] || record[fieldId] || '-';
+      return record.student?.[fieldId] || record[fieldId] || "-";
     }
   };
 
@@ -704,21 +741,29 @@ const AdmissionFees = () => {
     const due = parseFloat(record.student?.admFeesDue || 0);
     const concession = parseFloat(record.student?.admFeesConcession || 0);
     const paid = parseFloat(record.student?.admFeesPaid || 0);
-    return (due - concession - paid);
+    return due - concession - paid;
   };
 
   const filteredData = feeData.filter((record) => {
     const matchesSearchTerm = searchTerm
-      ? Object.values(record).some((value) =>
-        value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
-      ) ||
-      Object.values(record.student || {}).some((value) =>
-        value && typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      ? Object.values(record).some(
+          (value) =>
+            value &&
+            typeof value === "string" &&
+            value.toLowerCase().includes(searchTerm.toLowerCase())
+        ) ||
+        Object.values(record.student || {}).some(
+          (value) =>
+            value &&
+            typeof value === "string" &&
+            value.toLowerCase().includes(searchTerm.toLowerCase())
+        )
       : true;
     const matchesPaymentMode =
       selectedPaymentModes.length === 0 ||
-      selectedPaymentModes.some((mode) => record.student?.admFeesPaymentMode === mode.value);
+      selectedPaymentModes.some(
+        (mode) => record.student?.admFeesPaymentMode === mode.value
+      );
     const matchesClass =
       selectedClasses.length === 0 ||
       selectedClasses.some((cls) => record.className === cls.value);
@@ -727,14 +772,22 @@ const AdmissionFees = () => {
       selectedSections.some((sec) => record.sectionName === sec.value);
     const matchesDate =
       (!startDate && !endDate) ||
-      (record.student?.admFeesDate !== '-' &&
+      (record.student?.admFeesDate !== "-" &&
         (() => {
-          const recordDate = new Date(record.student.admFeesDate.split('-').reverse().join('-'));
+          const recordDate = new Date(
+            record.student.admFeesDate.split("-").reverse().join("-")
+          );
           const start = startDate ? new Date(startDate) : null;
           const end = endDate ? new Date(endDate) : null;
           return (!start || recordDate >= start) && (!end || recordDate <= end);
         })());
-    return matchesSearchTerm && matchesPaymentMode && matchesClass && matchesSection && matchesDate;
+    return (
+      matchesSearchTerm &&
+      matchesPaymentMode &&
+      matchesClass &&
+      matchesSection &&
+      matchesDate
+    );
   });
 
   const totals = filteredData.reduce(
@@ -759,9 +812,11 @@ const AdmissionFees = () => {
         <div className="col-md-12">
           <div className="card m-2">
             <div className="card-body">
-
               <div className="container">
-                <div className="row p-1 border border-dark" style={{ background: '#bfbfbf' }}>
+                <div
+                  className="row p-1 border border-dark"
+                  style={{ background: "#bfbfbf" }}
+                >
                   <div className="col-md-5 col-12">
                     <input
                       type="text"
@@ -775,7 +830,7 @@ const AdmissionFees = () => {
                   <div className="col-md-5 px-0 d-flex align-content-center justify-content-end">
                     <div
                       className="py-1 px-2 mr-2 mx-2 border border-dark finance-filter-icon"
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: "pointer" }}
                       onClick={toggleFilterPanel}
                     >
                       <FaFilter />
@@ -783,7 +838,7 @@ const AdmissionFees = () => {
                     <div className="position-relative" ref={dropdownRef}>
                       <div
                         className="py-1 px-2 mr-2 border border-dark finance-filter-icon"
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: "pointer" }}
                         onClick={toggleExportDropdown}
                         title="Download"
                       >
@@ -793,10 +848,10 @@ const AdmissionFees = () => {
                         <div
                           className="position-absolute bg-white border mr-2 mt-2 border-dark rounded shadow"
                           style={{
-                            top: '100%',
+                            top: "100%",
                             right: 0,
                             zIndex: 1000,
-                            minWidth: '150px',
+                            minWidth: "150px",
                           }}
                         >
                           <button
@@ -823,7 +878,7 @@ const AdmissionFees = () => {
                               }
                             }}
                           >
-                            {isExporting ? 'Exporting...' : 'Export to Excel'}
+                            {isExporting ? "Exporting..." : "Export to Excel"}
                           </button>
 
                           <button
@@ -852,9 +907,8 @@ const AdmissionFees = () => {
                               }
                             }}
                           >
-                            {isExporting ? 'Exporting...' : 'Export to PDF'}
+                            {isExporting ? "Exporting..." : "Export to PDF"}
                           </button>
-
                         </div>
                       )}
                     </div>
@@ -867,7 +921,9 @@ const AdmissionFees = () => {
                         {tabs.map((tab) => (
                           <li className="nav-item" key={tab}>
                             <Link
-                              className={`nav-link fw-bold ${activeTab === tab ? 'active' : ''}`}
+                              className={`nav-link fw-bold ${
+                                activeTab === tab ? "active" : ""
+                              }`}
                               onClick={() => setActiveTab(tab)}
                             >
                               {tab}
@@ -876,7 +932,7 @@ const AdmissionFees = () => {
                         ))}
                       </ul>
                       <div className="tab-content mt-2">
-                        {activeTab === 'Date' && (
+                        {activeTab === "Date" && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-4">
                               <label className="form-label">Start Date</label>
@@ -898,7 +954,7 @@ const AdmissionFees = () => {
                             </div>
                           </div>
                         )}
-                        {activeTab === 'Payment Mode' && (
+                        {activeTab === "Payment Mode" && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
@@ -906,14 +962,16 @@ const AdmissionFees = () => {
                                 name="paymentMode"
                                 options={paymentModes}
                                 value={selectedPaymentModes}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                onChange={(selected, action) =>
+                                  handleSelectChange(selected, action)
+                                }
                                 placeholder="Select Payment Modes"
                                 className="mt-2"
                               />
                             </div>
                           </div>
                         )}
-                        {activeTab === 'Class & Section' && (
+                        {activeTab === "Class & Section" && (
                           <div className="row d-flex justify-content-center">
                             <div className="col-md-4">
                               <CreatableSelect
@@ -921,7 +979,9 @@ const AdmissionFees = () => {
                                 name="class"
                                 options={classOptions}
                                 value={selectedClasses}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                onChange={(selected, action) =>
+                                  handleSelectChange(selected, action)
+                                }
                                 placeholder="Select Classes"
                                 className="mt-2"
                               />
@@ -932,14 +992,16 @@ const AdmissionFees = () => {
                                 name="section"
                                 options={sectionOptions}
                                 value={selectedSections}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                onChange={(selected, action) =>
+                                  handleSelectChange(selected, action)
+                                }
                                 placeholder="Select Sections"
                                 className="mt-2"
                               />
                             </div>
                           </div>
                         )}
-                        {activeTab === 'Section' && (
+                        {activeTab === "Section" && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
@@ -947,21 +1009,28 @@ const AdmissionFees = () => {
                                 name="section"
                                 options={sectionOptions}
                                 value={selectedSections}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                onChange={(selected, action) =>
+                                  handleSelectChange(selected, action)
+                                }
                                 placeholder="Select Sections"
                                 className="mt-2"
                               />
                             </div>
                           </div>
                         )}
-                        {activeTab === 'Academic Year' && (
+                        {activeTab === "Academic Year" && (
                           <div className="row d-lg-flex justify-content-center">
                             <div className="col-md-8">
                               <CreatableSelect
                                 name="academicYear"
                                 options={academicYearOptions}
-                                value={academicYearOptions.find((option) => option.value === selectedAcademicYear)}
-                                onChange={(selected, action) => handleSelectChange(selected, action)}
+                                value={academicYearOptions.find(
+                                  (option) =>
+                                    option.value === selectedAcademicYear
+                                )}
+                                onChange={(selected, action) =>
+                                  handleSelectChange(selected, action)
+                                }
                                 placeholder="Select Academic Year"
                                 className="mt-2"
                               />
@@ -970,10 +1039,15 @@ const AdmissionFees = () => {
                         )}
                       </div>
                       <div className="text-end mt-3">
-                        <button className="btn btn-secondary me-2" onClick={resetFilters}>
+                        <button
+                          className="btn btn-secondary me-2"
+                          onClick={resetFilters}
+                        >
                           Reset
                         </button>
-                        <button className="btn btn-primary">Apply Filters</button>
+                        <button className="btn btn-primary">
+                          Apply Filters
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -981,7 +1055,9 @@ const AdmissionFees = () => {
               </div>
               <div className="container">
                 <div className="card-header d-flex justify-content-between align-items-center gap-1">
-                  <h2 className="payroll-title text-center mb-0 flex-grow-1">Admission Fees Report</h2>
+                  <h2 className="payroll-title text-center mb-0 flex-grow-1">
+                    Admission Fees Report
+                  </h2>
                 </div>
               </div>
               {isLoading || loadingYears ? (
@@ -997,19 +1073,30 @@ const AdmissionFees = () => {
                     <thead>
                       <tr className="payroll-table-header">
                         {tableFields.map((field) => (
-                          <th key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                          <th
+                            key={field.id}
+                            className="text-center align-middle border border-secondary text-nowrap p-2"
+                          >
                             {headerMapping[field.id] || field.label}
                           </th>
                         ))}
-                        <th className="text-center align-middle border border-secondary text-nowrap p-2">Balance</th>
+                        <th className="text-center align-middle border border-secondary text-nowrap p-2">
+                          Balance
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredData.length > 0 ? (
                         filteredData.map((record, index) => (
-                          <tr key={`${record.student.admissionNo}_${index}`} className="payroll-table-row">
+                          <tr
+                            key={`${record.student.admissionNo}_${index}`}
+                            className="payroll-table-row"
+                          >
                             {tableFields.map((field) => (
-                              <td key={field.id} className="text-center align-middle border border-secondary text-nowrap p-2">
+                              <td
+                                key={field.id}
+                                className="text-center align-middle border border-secondary text-nowrap p-2"
+                              >
                                 {getFieldValue(record, field)}
                               </td>
                             ))}
@@ -1020,19 +1107,36 @@ const AdmissionFees = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={tableFields.length + 1} className="text-center">
-                            No data matches the selected filters for {formatAcademicYear(selectedAcademicYear)}.
+                          <td
+                            colSpan={tableFields.length + 1}
+                            className="text-center"
+                          >
+                            No data matches the selected filters for{" "}
+                            {formatAcademicYear(selectedAcademicYear)}.
                           </td>
                         </tr>
                       )}
                     </tbody>
                     <tfoot>
                       <tr className="payroll-table-footer">
-                        <td colSpan={tableFields.length - 3} className="text-right border border-secondary p-2"><strong>Total</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.feesDue}</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.feesPaid}</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.concession}</strong></td>
-                        <td className="text-center border border-secondary p-2"><strong>{totals.balance}</strong></td>
+                        <td
+                          colSpan={tableFields.length - 3}
+                          className="text-right border border-secondary p-2"
+                        >
+                          <strong>Total</strong>
+                        </td>
+                        <td className="text-center border border-secondary p-2">
+                          <strong>{totals.feesDue}</strong>
+                        </td>
+                        <td className="text-center border border-secondary p-2">
+                          <strong>{totals.feesPaid}</strong>
+                        </td>
+                        <td className="text-center border border-secondary p-2">
+                          <strong>{totals.concession}</strong>
+                        </td>
+                        <td className="text-center border border-secondary p-2">
+                          <strong>{totals.balance}</strong>
+                        </td>
                       </tr>
                     </tfoot>
                   </table>

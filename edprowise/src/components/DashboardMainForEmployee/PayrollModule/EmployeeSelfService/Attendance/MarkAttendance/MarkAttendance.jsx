@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import getAPI from "../../../../../../api/getAPI";
-import putAPI from "../../../../../../api/putAPI"; 
-import { Link } from 'react-router-dom';
+import putAPI from "../../../../../../api/putAPI";
+import { Link } from "react-router-dom";
 
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
-import { useNavigate } from 'react-router-dom';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import 'moment/locale/en-gb'; 
-moment.locale('en-gb');       
- 
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
+import { useNavigate } from "react-router-dom";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import "moment/locale/en-gb";
+moment.locale("en-gb");
+
 const localizer = momentLocalizer(moment);
 
 const MarkAttendance = () => {
@@ -23,42 +23,41 @@ const MarkAttendance = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState(Views.MONTH);
   const [isLoading, setIsLoading] = useState(false);
-    
 
   useEffect(() => {
-        const fetchEmployeeDetails = async () => {
-            const userDetails = JSON.parse(localStorage.getItem("userDetails"));
-            const id = userDetails?.schoolId;
-            const empId = userDetails?.userId;
+    const fetchEmployeeDetails = async () => {
+      const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+      const id = userDetails?.schoolId;
+      const empId = userDetails?.userId;
 
-            if (!id || !empId) {
-                toast.error("Authentication details missing");
-                return;
-            }
+      if (!id || !empId) {
+        toast.error("Authentication details missing");
+        return;
+      }
 
-            setSchoolId(id);
-            setEmployeeId(empId);
+      setSchoolId(id);
+      setEmployeeId(empId);
 
-            try {
-                setIsLoading(true);
-                const response = await getAPI(`/get-employee-self-details/${id}/${empId}`);
-                
-                if (!response.hasError && response.data?.data) {
-                   
-                  
-                } else {
-                    toast.error(response.message || "No employee data found");
-                }
-            } catch (error) {
-                console.error("Fetch error:", error);
-                toast.error("Failed to load employee details");
-            } finally {
-                setIsLoading(false);
-            }
-        };
+      try {
+        setIsLoading(true);
+        const response = await getAPI(
+          `/get-employee-self-details/${id}/${empId}`
+        );
 
-        fetchEmployeeDetails();
-    }, []);
+        if (!response.hasError && response.data?.data) {
+        } else {
+          toast.error(response.message || "No employee data found");
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        toast.error("Failed to load employee details");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEmployeeDetails();
+  }, []);
 
   const handleSelectSlot = ({ start }) => {
     setSelectedDate(start);
@@ -66,9 +65,9 @@ const MarkAttendance = () => {
   };
 
   const handleAddAttendance = (type) => {
-    if (type === 'leave') {
+    if (type === "leave") {
       navigate(
-        '/school-dashboard/payroll-module/employee-services/attendance/apply-for-leave',
+        "/school-dashboard/payroll-module/employee-services/attendance/apply-for-leave",
         {
           state: {
             selectedDate: selectedDate.toISOString(),
@@ -80,9 +79,9 @@ const MarkAttendance = () => {
 
     const newEvent = {
       id: Date.now(),
-      title: '✅ Present',
+      title: "✅ Present",
       start: selectedDate,
-      end: moment(selectedDate).add(1, 'hour').toDate(),
+      end: moment(selectedDate).add(1, "hour").toDate(),
       allDay: true,
     };
 
@@ -122,16 +121,16 @@ const MarkAttendance = () => {
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-box">
-            <h3>{moment(selectedDate).format('MMMM Do, YYYY')}</h3>
+            <h3>{moment(selectedDate).format("MMMM Do, YYYY")}</h3>
             <p>Mark Attendance for this day:</p>
             <button
-              onClick={() => handleAddAttendance('present')}
+              onClick={() => handleAddAttendance("present")}
               className="btn present"
             >
               ✅ Present
             </button>
             <button
-              onClick={() => handleAddAttendance('leave')}
+              onClick={() => handleAddAttendance("leave")}
               className="btn leave"
             >
               🟡 Leave Request
@@ -150,4 +149,3 @@ const MarkAttendance = () => {
 };
 
 export default MarkAttendance;
-

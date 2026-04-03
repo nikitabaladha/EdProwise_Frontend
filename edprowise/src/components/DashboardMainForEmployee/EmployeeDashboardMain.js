@@ -8,17 +8,17 @@ import { SchoolPayrollSettingsProvider } from "../DashboardMainForSchool/Payroll
 const EmployeeDashboardMain = () => {
   return (
     <>
-    <SchoolPayrollSettingsProvider>
-      <div className="wrapper">
-        <EmployeeDashboardHeader />
-        <Sidebar />
+      <SchoolPayrollSettingsProvider>
+        <div className="wrapper">
+          <EmployeeDashboardHeader />
+          <Sidebar />
 
-        <div className="page-content custom-font-size">
-          <Outlet />
+          <div className="page-content custom-font-size">
+            <Outlet />
+          </div>
+
+          <Footer />
         </div>
-
-        <Footer />
-      </div>
       </SchoolPayrollSettingsProvider>
     </>
   );

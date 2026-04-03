@@ -7,13 +7,17 @@ const UpdateStudentAttendance = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const record = location.state;
-console.log("Attendance Date:", record.attendanceDate);
+  console.log("Attendance Date:", record.attendanceDate);
 
   const [students, setStudents] = useState(
     record?.students?.map((s) => ({
       ...s,
       status: s.status || "Present",
     })) || []
+  );
+
+  const [attendanceDate, setAttendanceDate] = useState(
+    record?.attendanceDate || ""
   );
 
   const handleStatusChange = (index, newStatus) => {
@@ -39,7 +43,7 @@ console.log("Attendance Date:", record.attendanceDate);
       const res = await putAPI("/update-student-attendance", payload, true);
 
       toast.success(res.message || "Attendance updated successfully");
-      navigate(-1); 
+      navigate(-1);
     } catch (error) {
       console.error("Error saving attendance:", error);
       toast.error("Failed to update attendance");
@@ -53,7 +57,7 @@ console.log("Attendance Date:", record.attendanceDate);
       </div>
     );
   }
- 
+
   return (
     <div className="container-fluid">
       <div className="d-flex justify-content-end me-3 mb-2 gap-2 align-items-center"></div>
