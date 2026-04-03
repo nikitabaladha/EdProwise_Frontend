@@ -27,16 +27,16 @@ const WebsiteMain = () => {
     const loadScripts = async () => {
       try {
         await loadScript(
-          `${process.env.PUBLIC_URL}/assets/website-js/jquery.min.js`
+          `${process.env.PUBLIC_URL}/assets/website-js/jquery.min.js`,
         );
         await loadScript(
-          `${process.env.PUBLIC_URL}/assets/website-js/jquery.nice-select.min.js`
+          `${process.env.PUBLIC_URL}/assets/website-js/jquery.nice-select.min.js`,
         );
         await loadScript(
-          `${process.env.PUBLIC_URL}/assets/website-js/bootstrap.bundle.min.js`
+          `${process.env.PUBLIC_URL}/assets/website-js/bootstrap.bundle.min.js`,
         );
         await loadScript(
-          `${process.env.PUBLIC_URL}/assets/website-js/script.js`
+          `${process.env.PUBLIC_URL}/assets/website-js/script.js`,
         );
 
         $(document).ready(() => {

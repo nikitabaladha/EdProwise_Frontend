@@ -1,11 +1,13 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
+// edprowise/src/setupproxy.js
 
-module.exports = function(app) {
+const { createProxyMiddleware } = require("http-proxy-middleware");
+
+module.exports = function (app) {
   app.use(
-    '/sitemap.xml',
+    "/sitemap.xml",
     createProxyMiddleware({
       target: process.env.REACT_APP_API_URL_FOR_IMAGE,
       changeOrigin: true,
-    })
+    }),
   );
 };

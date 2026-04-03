@@ -9,7 +9,7 @@ REACT_APP_API_URL_CHAT=https://generativelanguage.googleapis.com/v1/models/gemin
 # REACT_APP_WORKER_URL=https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js
 # REACT_APP_API_URL_CHAT=https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=AIzaSyBfs9WeNijH57hmTDodzzU0KmUjyZkXCgw
 
-# Frontend Domain
+Frontend Domain
 
 REACT_APP_API_URL=https://edprowise.com/api
 REACT_APP_API_URL_FOR_IMAGE=https://edprowise.com
